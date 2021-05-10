@@ -92,6 +92,10 @@ final class PromotedPropertyResolver
                 continue;
             }
 
+            if ($matchedParam->flags !== 0) {
+                continue;
+            }
+
             // is param used above assign?
             if ($this->isParamUsedBeforeAssign($assignedExpr, $firstParamAsVariable)) {
                 continue;
