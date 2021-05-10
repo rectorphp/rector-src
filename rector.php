@@ -25,52 +25,33 @@ use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     // include sets
-//    $containerConfigurator->import(SetList::CODING_STYLE);
-//    $containerConfigurator->import(SetList::CODE_QUALITY);
-//    $containerConfigurator->import(SetList::CODE_QUALITY_STRICT);
-//    $containerConfigurator->import(SetList::DEAD_CODE);
-//    $containerConfigurator->import(SetList::PRIVATIZATION);
-//    $containerConfigurator->import(SetList::NAMING);
-//    $containerConfigurator->import(SetList::TYPE_DECLARATION);
-//    $containerConfigurator->import(SetList::PHP_71);
-//    $containerConfigurator->import(SetList::PHP_72);
-//    $containerConfigurator->import(SetList::PHP_73);
-//    $containerConfigurator->import(SetList::EARLY_RETURN);
-//    $containerConfigurator->import(SetList::TYPE_DECLARATION_STRICT);
-//    $containerConfigurator->import(NetteSetList::NETTE_UTILS_CODE_QUALITY);
-//    $containerConfigurator->import(PHPUnitSetList::PHPUNIT_CODE_QUALITY);
+    $containerConfigurator->import(SetList::CODING_STYLE);
+    $containerConfigurator->import(SetList::CODE_QUALITY);
+    $containerConfigurator->import(SetList::CODE_QUALITY_STRICT);
+    $containerConfigurator->import(SetList::DEAD_CODE);
+    $containerConfigurator->import(SetList::PRIVATIZATION);
+    $containerConfigurator->import(SetList::NAMING);
+    $containerConfigurator->import(SetList::TYPE_DECLARATION);
+    $containerConfigurator->import(SetList::PHP_71);
+    $containerConfigurator->import(SetList::PHP_72);
+    $containerConfigurator->import(SetList::PHP_73);
+    $containerConfigurator->import(SetList::EARLY_RETURN);
+    $containerConfigurator->import(SetList::TYPE_DECLARATION_STRICT);
+    $containerConfigurator->import(NetteSetList::NETTE_UTILS_CODE_QUALITY);
+    $containerConfigurator->import(PHPUnitSetList::PHPUNIT_CODE_QUALITY);
 
     $services = $containerConfigurator->services();
 
-<<<<<<< HEAD
     $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
-//
-//    $configuration = ValueObjectInliner::inline([
-//        new InferParamFromClassMethodReturn(AbstractRector::class, 'refactor', 'getNodeTypes'),
-//    ]);
-//    $services->set(InferParamFromClassMethodReturnRector::class)
-//        ->call('configure', [[
-//            InferParamFromClassMethodReturnRector::INFER_PARAMS_FROM_CLASS_METHOD_RETURNS => $configuration,
-//        ]]);
-//
-//    $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
-//
-//    $services->set(PreferThisOrSelfMethodCallRector::class)
-//        ->call('configure', [[
-//            PreferThisOrSelfMethodCallRector::TYPE_TO_PREFERENCE => [
-//                TestCase::class => PreferenceSelfThis::PREFER_THIS,
-//            ],
-//        ]]);
-=======
+
     $configuration = ValueObjectInliner::inline([
         new InferParamFromClassMethodReturn(AbstractRector::class, 'refactor', 'getNodeTypes'),
     ]);
+
     $services->set(InferParamFromClassMethodReturnRector::class)
         ->call('configure', [[
             InferParamFromClassMethodReturnRector::INFER_PARAMS_FROM_CLASS_METHOD_RETURNS => $configuration,
         ]]);
-
-    $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
 
     $services->set(PreferThisOrSelfMethodCallRector::class)
         ->call('configure', [[
@@ -78,7 +59,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 TestCase::class => PreferenceSelfThis::PREFER_THIS,
             ],
         ]]);
->>>>>>> 2ae6ab2c2 ([PHP 8] Use promoted properties)
 
     $parameters = $containerConfigurator->parameters();
 

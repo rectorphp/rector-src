@@ -58,6 +58,9 @@ final class InjectMethodFactory
 
         if ($framework === FrameworkName::SYMFONY) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+
+            // @todo depends on PHP version
+            // add attribute on PHP 8+ and Symfony 5.2+
             $phpDocInfo->addPhpDocTagNode(new PhpDocTagNode('@required', new GenericTagValueNode('')));
         }
 

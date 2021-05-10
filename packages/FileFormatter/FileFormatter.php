@@ -25,16 +25,7 @@ final class FileFormatter
         private EditorConfigParserInterface $editorConfigParser,
         private ParameterProvider $parameterProvider,
         private array $fileFormatters = []
-<<<<<<< HEAD
-<<<<<<< HEAD
     ) {
-=======
-    )
-    {
->>>>>>> 2ae6ab2c2 ([PHP 8] Use promoted properties)
-=======
-    ) {
->>>>>>> 1896c6db4 ([PHP 8] Use promoted properties)
     }
 
     /**

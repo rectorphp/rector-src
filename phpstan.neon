@@ -494,13 +494,9 @@ parameters:
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         # temporary out of order after rector-src extract
         - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         # temporary out of order after rector-src extract
         - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
@@ -509,24 +505,11 @@ parameters:
         -
             message: '#Do not call parent method if parent method is empty#'
             path: packages/BetterPhpDocParser/PhpDoc/DoctrineAnnotationTagValueNode.php
-=======
-=======
->>>>>>> 2ae6ab2c2 ([PHP 8] Use promoted properties)
-=======
->>>>>>> 5288d92bc (bump workflow version to PHP 8)
-=======
 
         # temporary out of order after rector-src extract
         - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
->>>>>>> 8f4d07170 (skip static error)
-<<<<<<< HEAD
->>>>>>> 76f411989 (bump workflow version to PHP 8)
-=======
-=======
 
         # bug in PHP 8, fix in dev-main
         -
             message: '#Do not call parent method if parent method is empty#'
             path: packages/BetterPhpDocParser/PhpDoc/DoctrineAnnotationTagValueNode.php
->>>>>>> 83f18a5ac (fixup! [PHP 8] Use promoted properties)
->>>>>>> 2ae6ab2c2 ([PHP 8] Use promoted properties)

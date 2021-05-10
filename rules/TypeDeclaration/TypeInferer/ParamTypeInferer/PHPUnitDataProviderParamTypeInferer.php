@@ -26,6 +26,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\Contract\TypeInferer\ParamTypeInfererInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 final class PHPUnitDataProviderParamTypeInferer implements ParamTypeInfererInterface
 {
@@ -49,8 +50,9 @@ final class PHPUnitDataProviderParamTypeInferer implements ParamTypeInfererInter
 
     /**
      * Prevents circular reference
-     * @required
      */
+
+    #[Required]
     public function autowirePHPUnitDataProviderParamTypeInferer(NodeTypeResolver $nodeTypeResolver): void
     {
         $this->nodeTypeResolver = $nodeTypeResolver;
