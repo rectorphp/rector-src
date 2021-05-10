@@ -6,7 +6,6 @@ use Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
-use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
 use Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector;
@@ -44,7 +43,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ]);
 
     $services->set(StringableForToStringRector::class);
-    $services->set(AnnotationToAttributeRector::class);
     $services->set(ClassOnObjectRector::class);
     $services->set(GetDebugTypeRector::class);
     $services->set(TokenGetAllToObjectRector::class);
