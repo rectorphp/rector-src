@@ -29,7 +29,12 @@ final class NodeNameResolver
         private ClassNaming $classNaming,
         private InvalidNameNodeReporter $invalidNameNodeReporter,
         private array $nodeNameResolvers = []
+<<<<<<< HEAD
     ) {
+=======
+    )
+    {
+>>>>>>> 2ae6ab2c2 ([PHP 8] Use promoted properties)
     }
 
     /**

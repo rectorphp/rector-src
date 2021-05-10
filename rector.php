@@ -42,6 +42,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services = $containerConfigurator->services();
 
+<<<<<<< HEAD
     $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
 //
 //    $configuration = ValueObjectInliner::inline([
@@ -60,6 +61,24 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 //                TestCase::class => PreferenceSelfThis::PREFER_THIS,
 //            ],
 //        ]]);
+=======
+    $configuration = ValueObjectInliner::inline([
+        new InferParamFromClassMethodReturn(AbstractRector::class, 'refactor', 'getNodeTypes'),
+    ]);
+    $services->set(InferParamFromClassMethodReturnRector::class)
+        ->call('configure', [[
+            InferParamFromClassMethodReturnRector::INFER_PARAMS_FROM_CLASS_METHOD_RETURNS => $configuration,
+        ]]);
+
+    $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
+
+    $services->set(PreferThisOrSelfMethodCallRector::class)
+        ->call('configure', [[
+            PreferThisOrSelfMethodCallRector::TYPE_TO_PREFERENCE => [
+                TestCase::class => PreferenceSelfThis::PREFER_THIS,
+            ],
+        ]]);
+>>>>>>> 2ae6ab2c2 ([PHP 8] Use promoted properties)
 
     $parameters = $containerConfigurator->parameters();
 
