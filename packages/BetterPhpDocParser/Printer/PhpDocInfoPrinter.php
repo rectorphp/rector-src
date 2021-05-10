@@ -88,42 +88,17 @@ final class PhpDocInfoPrinter
     private $phpDocInfo;
 
     /**
-     * @var EmptyPhpDocDetector
-     */
-    private $emptyPhpDocDetector;
-
-    /**
-     * @var DocBlockInliner
-     */
-    private $docBlockInliner;
-
-    /**
-     * @var RemoveNodesStartAndEndResolver
-     */
-    private $removeNodesStartAndEndResolver;
-
-    /**
-     * @var ChangedPhpDocNodeVisitor
-     */
-    private $changedPhpDocNodeVisitor;
-
-    /**
      * @var PhpDocNodeTraverser
      */
     private $changedPhpDocNodeTraverser;
 
     public function __construct(
-        EmptyPhpDocDetector $emptyPhpDocDetector,
-        DocBlockInliner $docBlockInliner,
-        RemoveNodesStartAndEndResolver $removeNodesStartAndEndResolver,
-        ChangedPhpDocNodeVisitor $changedPhpDocNodeVisitor,
+        private EmptyPhpDocDetector $emptyPhpDocDetector,
+        private DocBlockInliner $docBlockInliner,
+        private RemoveNodesStartAndEndResolver $removeNodesStartAndEndResolver,
+        private ChangedPhpDocNodeVisitor $changedPhpDocNodeVisitor,
         ChangedPhpDocNodeTraverserFactory $changedPhpDocNodeTraverserFactory
     ) {
-        $this->emptyPhpDocDetector = $emptyPhpDocDetector;
-        $this->docBlockInliner = $docBlockInliner;
-        $this->removeNodesStartAndEndResolver = $removeNodesStartAndEndResolver;
-        $this->changedPhpDocNodeVisitor = $changedPhpDocNodeVisitor;
-
         $this->changedPhpDocNodeTraverser = $changedPhpDocNodeTraverserFactory->create();
     }
 

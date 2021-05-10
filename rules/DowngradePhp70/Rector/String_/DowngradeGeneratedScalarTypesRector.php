@@ -42,18 +42,12 @@ final class DowngradeGeneratedScalarTypesRector extends AbstractRector
      */
     private $phpRectors = [];
 
-    /**
-     * @var InlineCodeParser
-     */
-    private $inlineCodeParser;
-
     public function __construct(
-        InlineCodeParser $inlineCodeParser,
+        private InlineCodeParser $inlineCodeParser,
         DowngradeScalarTypeDeclarationRector $downgradeScalarTypeDeclarationRector,
         DowngradeVoidTypeDeclarationRector $downgradeVoidTypeDeclarationRector
     ) {
         $this->phpRectors = [$downgradeScalarTypeDeclarationRector, $downgradeVoidTypeDeclarationRector];
-        $this->inlineCodeParser = $inlineCodeParser;
     }
 
     public function getRuleDefinition(): RuleDefinition
