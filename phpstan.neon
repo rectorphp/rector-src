@@ -499,6 +499,7 @@ parameters:
 
         # temporary out of order after rector-src extract
         - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
+<<<<<<< HEAD
 =======
 >>>>>>> 5288d92bc (bump workflow version to PHP 8)
 =======
@@ -506,3 +507,10 @@ parameters:
         # temporary out of order after rector-src extract
         - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
 >>>>>>> 8f4d07170 (skip static error)
+=======
+
+        # bug in PHP 8, fix in dev-main
+        -
+            message: '#Do not call parent method if parent method is empty#'
+            path: packages/BetterPhpDocParser/PhpDoc/DoctrineAnnotationTagValueNode.php
+>>>>>>> 83f18a5ac (fixup! [PHP 8] Use promoted properties)

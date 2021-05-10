@@ -19,31 +19,14 @@ use Symplify\PackageBuilder\Parameter\ParameterProvider;
 final class FileFormatter
 {
     /**
-     * @var EditorConfigParserInterface
-     */
-    private $editorConfigParser;
-
-    /**
-     * @var FileFormatterInterface[]
-     */
-    private $fileFormatters = [];
-
-    /**
-     * @var ParameterProvider
-     */
-    private $parameterProvider;
-
-    /**
      * @param FileFormatterInterface[] $fileFormatters
      */
     public function __construct(
-        EditorConfigParserInterface $editorConfigParser,
-        ParameterProvider $parameterProvider,
-        array $fileFormatters = []
-    ) {
-        $this->editorConfigParser = $editorConfigParser;
-        $this->fileFormatters = $fileFormatters;
-        $this->parameterProvider = $parameterProvider;
+        private EditorConfigParserInterface $editorConfigParser,
+        private ParameterProvider $parameterProvider,
+        private array $fileFormatters = []
+    )
+    {
     }
 
     /**

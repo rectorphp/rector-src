@@ -12,6 +12,7 @@ use Rector\Core\ValueObject\PhpVersion;
 use Rector\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Property\PrivatizeLocalPropertyToPrivatePropertyRector;
@@ -48,6 +49,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->call('configure', [[
             InferParamFromClassMethodReturnRector::INFER_PARAMS_FROM_CLASS_METHOD_RETURNS => $configuration,
         ]]);
+
+    $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
 
     $services->set(PreferThisOrSelfMethodCallRector::class)
         ->call('configure', [[
