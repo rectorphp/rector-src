@@ -21,15 +21,28 @@ use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php80\Rector\Ternary\GetDebugTypeRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
+use Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector;
+use Rector\Transform\ValueObject\StaticCallToFuncCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(UnionTypesRector::class);
+
     $services->set(StrContainsRector::class);
     $services->set(StrStartsWithRector::class);
     $services->set(StrEndsWithRector::class);
+
+    $services->set(StaticCallToFuncCallRector::class)
+        ->call('configure', [
+            StaticCallToFuncCallRector::STATIC_CALLS_TO_FUNCTIONS => ValueObjectInliner::inline([
+                new StaticCallToFuncCall('Nette\Utils\Strings', 'startsWith', 'str_starts_with'),
+                new StaticCallToFuncCall('Nette\Utils\Strings', 'endsWith', 'str_ends_with'),
+                new StaticCallToFuncCall('Nette\Utils\Strings', 'contains', 'str_contains'),
+            ]),
+        ]);
+
     $services->set(StringableForToStringRector::class);
     $services->set(AnnotationToAttributeRector::class);
     $services->set(ClassOnObjectRector::class);
