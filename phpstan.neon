@@ -494,3 +494,6 @@ parameters:
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
+
+        # temporary out of order after rector-src extract
+        - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
