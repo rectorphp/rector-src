@@ -25,8 +25,7 @@ final class FileFormatter
         private EditorConfigParserInterface $editorConfigParser,
         private ParameterProvider $parameterProvider,
         private array $fileFormatters = []
-    )
-    {
+    ) {
     }
 
     /**

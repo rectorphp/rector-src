@@ -29,8 +29,7 @@ final class NodeNameResolver
         private ClassNaming $classNaming,
         private InvalidNameNodeReporter $invalidNameNodeReporter,
         private array $nodeNameResolvers = []
-    )
-    {
+    ) {
     }
 
     /**
