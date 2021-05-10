@@ -36,10 +36,17 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(StaticCallToFuncCallRector::class)
         ->call('configure', [
             StaticCallToFuncCallRector::STATIC_CALLS_TO_FUNCTIONS => ValueObjectInliner::inline([
+<<<<<<< HEAD
                 new StaticCallToFuncCall('Nette\Utils\Strings', 'startsWith', 'str_starts_with'),
                 new StaticCallToFuncCall('Nette\Utils\Strings', 'endsWith', 'str_ends_with'),
                 new StaticCallToFuncCall('Nette\Utils\Strings', 'contains', 'str_contains'),
             ]),
+=======
+                  new StaticCallToFuncCall('Nette\Utils\Strings', 'startsWith', 'str_starts_with'),
+                  new StaticCallToFuncCall('Nette\Utils\Strings', 'endsWith', 'str_ends_with'),
+                  new StaticCallToFuncCall('Nette\Utils\Strings', 'contains', 'str_contains'),
+            ])
+>>>>>>> ba21830ad ([PHP 8.0] Add nette utils stirngs to str_starts_with(), str_ends_with(), str_contains())
         ]);
 
     $services->set(StringableForToStringRector::class);
