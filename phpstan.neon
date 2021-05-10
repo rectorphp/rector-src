@@ -494,6 +494,15 @@ parameters:
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
+<<<<<<< HEAD
+<<<<<<< HEAD
 
         # temporary out of order after rector-src extract
         - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
+=======
+>>>>>>> 5288d92bc (bump workflow version to PHP 8)
+=======
+
+        # temporary out of order after rector-src extract
+        - '#Class like namespace "Rector\\(.*?)" does not follow PSR\-4 configuration in composer\.json#'
+>>>>>>> 8f4d07170 (skip static error)
