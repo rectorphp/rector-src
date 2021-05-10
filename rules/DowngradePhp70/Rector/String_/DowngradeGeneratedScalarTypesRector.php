@@ -118,7 +118,7 @@ CODE_SAMPLE
 
         try {
             $nodes = $this->inlineCodeParser->parse('<?php class SomeClass { ' . $node->value . ' }');
-        } catch (Error $error) {
+        } catch (Error) {
             // nothing we can do
             return null;
         }
