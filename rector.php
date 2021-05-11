@@ -104,6 +104,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         '*/Expected*/*',
     ]);
 
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_74);
+    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_73);
     $parameters->set(Option::ENABLE_CACHE, true);
 };
