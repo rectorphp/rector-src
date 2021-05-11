@@ -20,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
 use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -35,7 +36,7 @@ final class UnionTypesRector extends AbstractRector
         private ParamTagRemover $paramTagRemover,
         private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
         private UnionTypeAnalyzer $unionTypeAnalyzer,
-        private \Rector\NodeTypeResolver\PHPStan\Type\TypeFactory $typeFactory
+        private TypeFactory $typeFactory
     ) {
     }
 
