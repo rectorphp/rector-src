@@ -58,6 +58,7 @@
         "rector/rector-phpstan-rules": "^0.1",
         "symplify/coding-standard": "^9.3",
         "symplify/easy-ci": "^9.3",
+        "symplify/composer-json-manipulator": "^9.3",
         "symplify/easy-coding-standard": "^9.3",
         "symplify/easy-testing": "^9.3",
         "symplify/phpstan-extensions": "^9.3",
