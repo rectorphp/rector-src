@@ -155,7 +155,7 @@ CODE_SAMPLE
             $property->flags = $param->flags;
             $property->type = $param->type;
 
-            if ($param->default) {
+            if ($param->default !== null) {
                 $property->props[0]->default = $param->default;
             }
 
