@@ -36,7 +36,11 @@ final class UnionTypesRector extends AbstractRector
         private ParamTagRemover $paramTagRemover,
         private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
         private UnionTypeAnalyzer $unionTypeAnalyzer,
+<<<<<<< HEAD
         private TypeFactory $typeFactory
+=======
+        private \Rector\NodeTypeResolver\PHPStan\Type\TypeFactory $typeFactory
+>>>>>>> eef3d9475 ([PHP 8] Make union types filter duplicated array types)
     ) {
     }
 
