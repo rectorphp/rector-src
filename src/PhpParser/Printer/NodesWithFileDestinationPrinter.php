@@ -22,6 +22,7 @@ final class NodesWithFileDestinationPrinter
     {
         $nodes = $this->postFileProcessor->traverse($fileWithNodes->getNodes());
         $prettyPrintContent = $this->betterStandardPrinter->prettyPrintFile($nodes);
+        $this->lexer->startLexing($prettyPrintContent);
 
         return $this->resolveLastEmptyLine($prettyPrintContent);
     }
