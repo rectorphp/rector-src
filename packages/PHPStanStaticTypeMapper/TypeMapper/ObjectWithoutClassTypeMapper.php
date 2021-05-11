@@ -18,12 +18,9 @@ use Rector\PHPStanStaticTypeMapper\Contract\PHPStanStaticTypeMapperAwareInterfac
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 
-final class ObjectWithoutClassTypeMapper implements TypeMapperInterface, PHPStanStaticTypeMapperAwareInterface
+final class ObjectWithoutClassTypeMapper implements TypeMapperInterface //, PHPStanStaticTypeMapperAwareInterface
 {
-    /**
-     * @var PHPStanStaticTypeMapper
-     */
-    private $phpStanStaticTypeMapper;
+    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     public function __construct(
         private PhpVersionProvider $phpVersionProvider
@@ -68,7 +65,10 @@ final class ObjectWithoutClassTypeMapper implements TypeMapperInterface, PHPStan
         return new Name('object');
     }
 
-    public function setPHPStanStaticTypeMapper(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
+    /**
+     * @required
+     */
+    public function autowireObjectWithoutClassTypeMapper(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
     {
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }

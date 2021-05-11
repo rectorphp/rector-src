@@ -19,7 +19,7 @@ final class PHPStanStaticTypeMapper
     /**
      * @var TypeMapperInterface[]
      */
-    private $typeMappers = [];
+    private array $typeMappers = [];
 
     /**
      * @param TypeMapperInterface[] $typeMappers

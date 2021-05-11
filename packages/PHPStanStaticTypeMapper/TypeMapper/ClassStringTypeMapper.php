@@ -17,12 +17,9 @@ use Rector\PHPStanStaticTypeMapper\Contract\PHPStanStaticTypeMapperAwareInterfac
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 
-final class ClassStringTypeMapper implements TypeMapperInterface, PHPStanStaticTypeMapperAwareInterface
+final class ClassStringTypeMapper implements TypeMapperInterface //, PHPStanStaticTypeMapperAwareInterface
 {
-    /**
-     * @var PHPStanStaticTypeMapper
-     */
-    private $phpStanStaticTypeMapper;
+    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     /**
      * @return class-string<Type>
@@ -62,7 +59,10 @@ final class ClassStringTypeMapper implements TypeMapperInterface, PHPStanStaticT
         return null;
     }
 
-    public function setPHPStanStaticTypeMapper(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
+    /**
+     * @required
+     */
+    public function autowireClassStringTypeMapper(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
     {
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }

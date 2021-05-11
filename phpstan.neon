@@ -511,3 +511,6 @@ parameters:
         -
             message: '#File processor must require Rector rules in constructor via TypeRectorInterface\[\] \$typeRectors array autowire#'
             path: src/Application/FileProcessor/PhpFileProcessor.php
+
+        - '#Use required typed property over of nullable property#'
+        - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
