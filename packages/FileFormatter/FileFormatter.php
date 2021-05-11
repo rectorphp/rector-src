@@ -7,6 +7,7 @@ namespace Rector\FileFormatter;
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\Application\File;
 use Rector\FileFormatter\Contract\Formatter\FileFormatterInterface;
+use Rector\FileFormatter\EditorConfig\EditorConfigParser;
 use Rector\FileFormatter\Exception\InvalidNewLineStringException;
 use Rector\FileFormatter\Exception\ParseIndentException;
 use Rector\FileFormatter\ValueObject\EditorConfigConfiguration;
@@ -21,7 +22,7 @@ final class FileFormatter
      * @param FileFormatterInterface[] $fileFormatters
      */
     public function __construct(
-        private \Rector\FileFormatter\EditorConfig\EditorConfigParser $editorConfigParser,
+        private EditorConfigParser $editorConfigParser,
         private ParameterProvider $parameterProvider,
         private array $fileFormatters = []
     ) {
