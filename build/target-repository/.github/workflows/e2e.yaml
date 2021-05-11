@@ -15,35 +15,28 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: ['7.4', '8.0']
+                php_version: ['7.1', '7.2', '7.3', '7.4', '8.0']
+                directory:
+                    - 'e2e/attributes'
+                    - 'e2e/dont-execute-code'
+                    - 'e2e/finalize'
+                    - 'e2e/parse-php7-code'
+                    - 'e2e/parse-php8-code'
 
-        name: PHP ${{ matrix.php }} end to end tests
+        name: End to end test - ${{ matrix.directory }}
+
         steps:
             -   uses: actions/checkout@v2
 
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php }}
+                    php-version: ${{ matrix.php_version }}
                     coverage: none
 
-            -   name: Generate Composer autoloaders in fixture directories
-                run: |
-                    for FIXTURE in `find e2e -mindepth 1 -maxdepth 1 -type d`; do
-                      (cd $FIXTURE; composer install --no-progress --ansi)
-                    done
+            -
+                run: composer install --ansi
+                working-directory: ${{ matrix.directory }}
 
-            -   name: Run system tests
-                run: |
-                    HAS_FAILURES=0
-
-                    for FIXTURE in `find e2e -mindepth 1 -maxdepth 1 -type d`; do
-                        echo "-----> Running $FIXTURE <-----"
-                        if (cd $FIXTURE; ../../bin/rector process --dry-run --clear-cache); then
-                            echo "-----> Result: OK <-----"
-                        else
-                            echo "-----> Result: FAILED <-----"
-                            HAS_FAILURES=1
-                        fi
-                    done
-
-                    exit $HAS_FAILURES
+            -
+                run: ../../bin/rector process --dry-run --ansi
+                working-directory: ${{ matrix.directory }}
