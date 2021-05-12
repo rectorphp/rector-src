@@ -13,11 +13,10 @@ use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use Rector\PHPStanStaticTypeMapper\Contract\PHPStanStaticTypeMapperAwareInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 
-final class ClassStringTypeMapper implements TypeMapperInterface //, PHPStanStaticTypeMapperAwareInterface
+final class ClassStringTypeMapper implements TypeMapperInterface
 {
     private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 

@@ -11,7 +11,6 @@ use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
-use Rector\PHPStanStaticTypeMapper\Contract\PHPStanStaticTypeMapperAwareInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 
 final class PHPStanStaticTypeMapper
@@ -26,12 +25,6 @@ final class PHPStanStaticTypeMapper
      */
     public function __construct(array $typeMappers)
     {
-        foreach ($typeMappers as $typeMapper) {
-            if ($typeMapper instanceof PHPStanStaticTypeMapperAwareInterface) {
-                $typeMapper->setPHPStanStaticTypeMapper($this);
-            }
-        }
-
         $this->typeMappers = $typeMappers;
     }
 

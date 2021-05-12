@@ -8,7 +8,7 @@ use Rector\Core\Contract\Rector\RectorInterface;
 
 final class CurrentRectorProvider
 {
-    private ?RectorInterface $currentRector;
+    private ?RectorInterface $currentRector = null;
 
     public function changeCurrentRector(RectorInterface $rector): void
     {

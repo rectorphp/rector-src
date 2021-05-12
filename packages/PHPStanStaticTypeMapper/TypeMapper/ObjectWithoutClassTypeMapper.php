@@ -14,11 +14,10 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\EmptyGenericTypeNode;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\PHPStanStaticTypeMapper\Contract\PHPStanStaticTypeMapperAwareInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 
-final class ObjectWithoutClassTypeMapper implements TypeMapperInterface //, PHPStanStaticTypeMapperAwareInterface
+final class ObjectWithoutClassTypeMapper implements TypeMapperInterface
 {
     private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 

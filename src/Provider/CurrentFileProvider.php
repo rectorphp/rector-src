@@ -8,7 +8,7 @@ use Rector\Core\ValueObject\Application\File;
 
 final class CurrentFileProvider
 {
-    private ?File $file;
+    private ?File $file = null;
 
     public function setFile(File $file): void
     {

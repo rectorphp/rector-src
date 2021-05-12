@@ -73,11 +73,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         AttributeKey::PREVIOUS_STATEMENT,
     ];
 
-    /**
-     * @todo fix!
-     * @var NodeNameResolver
-     */
-    protected $nodeNameResolver;
+    protected NodeNameResolver $nodeNameResolver;
 
     protected NodeTypeResolver $nodeTypeResolver;
 
