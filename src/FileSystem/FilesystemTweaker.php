@@ -39,24 +39,6 @@ final class FilesystemTweaker
     }
 
     /**
-     * @return string[]
-     */
-    private function foundDirectoriesInGlob(string $directory): array
-    {
-        $foundDirectories = [];
-
-        foreach ((array) glob($directory, GLOB_ONLYDIR) as $foundDirectory) {
-            if (! is_string($foundDirectory)) {
-                continue;
-            }
-
-            $foundDirectories[] = $foundDirectory;
-        }
-
-        return $foundDirectories;
-    }
-
-    /**
      * This will turn paths like "src/Symfony/Component/*\/Tests" to existing directory paths
      *
      * @param string[] $paths
@@ -76,6 +58,24 @@ final class FilesystemTweaker
         }
 
         return $absolutePathsFound;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function foundDirectoriesInGlob(string $directory): array
+    {
+        $foundDirectories = [];
+
+        foreach ((array) glob($directory, GLOB_ONLYDIR) as $foundDirectory) {
+            if (! is_string($foundDirectory)) {
+                continue;
+            }
+
+            $foundDirectories[] = $foundDirectory;
+        }
+
+        return $foundDirectories;
     }
 
     /**
