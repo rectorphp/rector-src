@@ -36,10 +36,6 @@ final class DowngradeRectorConfig
         // symfony test are parts of package
         '*/Test/*',
 
-        // missing phpunit test case
-        'packages/Testing/PHPUnit/AbstractRectorTestCase.php',
-        'packages/Testing/PHPUnit/AbstractComposerRectorTestCase.php',
-
         // only for dev
         'packages/Testing/PhpConfigPrinter/*',
 

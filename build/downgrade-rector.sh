@@ -38,6 +38,6 @@ for directory in $directories; do
 done
 
 
-# give time to print all the files, before the next process takes over
-# might avoid bugs like these https://github.com/rectorphp/rector-src/runs/2565478682
+# CONFIRMED: give time to print all the files, before the next process takes over newly printed content
+# avoids bugs like these half of files done, next half waiting https://github.com/rectorphp/rector-src/runs/2565478682
 sleep 20
