@@ -26,7 +26,7 @@ final class FilesystemTweaker
         foreach ($directories as $directory) {
             // is fnmatch for directories
             if (Strings::contains($directory, '*')) {
-                $foundDirectories = $this->foundDirectoriesInGlob($directory);
+                $foundDirectories = $this->findDirectoriesInGlob($directory);
                 $absoluteDirectories = array_merge($absoluteDirectories, $foundDirectories);
             } else {
                 // is classic directory
@@ -63,7 +63,7 @@ final class FilesystemTweaker
     /**
      * @return string[]
      */
-    private function foundDirectoriesInGlob(string $directory): array
+    private function findDirectoriesInGlob(string $directory): array
     {
         $foundDirectories = [];
 
