@@ -14,15 +14,7 @@ $phpStanStubLoader->loadStubs();
 return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
 
-    $skip = array_merge(
-        DowngradeRectorConfig::DEPENDENCY_EXCLUDE_PATHS,
-        [
-            // should be skipped until phpstan is downgraded to avoid conflict like this https://github.com/rectorphp/rector-prefixed/runs/2422176105#step:4:4
-            DowngradeNullableTypeDeclarationRector::class
-        ]
-    );
-    $parameters->set(Option::SKIP, $skip);
-
+    $parameters->set(Option::SKIP, DowngradeRectorConfig::DEPENDENCY_EXCLUDE_PATHS);
     $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, __DIR__ . '/phpstan-for-downgrade.neon');
 
     $containerConfigurator->import(DowngradeSetList::PHP_80);
