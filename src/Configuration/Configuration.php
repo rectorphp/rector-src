@@ -43,10 +43,7 @@ final class Configuration
 
     private bool $showDiffs = true;
 
-    /**
-     * @var BootstrapConfigs
-     */
-    private $bootstrapConfigs;
+    private ?BootstrapConfigs $bootstrapConfigs = null;
 
     public function __construct(ParameterProvider $parameterProvider)
     {

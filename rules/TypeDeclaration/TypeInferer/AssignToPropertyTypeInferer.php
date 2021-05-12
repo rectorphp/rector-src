@@ -95,7 +95,7 @@ final class AssignToPropertyTypeInferer
         }
 
         $shouldAddNullType = $this->nullTypeAssignDetector->detect($classLike, $propertyName);
-        if ($shouldAddNullType === true) {
+        if ($shouldAddNullType) {
             if ($isAssignedInConstructor) {
                 return false;
             }

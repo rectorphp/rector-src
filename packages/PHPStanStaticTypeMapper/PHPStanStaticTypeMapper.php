@@ -16,16 +16,11 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 final class PHPStanStaticTypeMapper
 {
     /**
-     * @var TypeMapperInterface[]
-     */
-    private array $typeMappers = [];
-
-    /**
      * @param TypeMapperInterface[] $typeMappers
      */
-    public function __construct(array $typeMappers)
-    {
-        $this->typeMappers = $typeMappers;
+    public function __construct(
+        private array $typeMappers
+    ) {
     }
 
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
