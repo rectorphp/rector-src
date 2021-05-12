@@ -16,7 +16,7 @@ use Rector\FileFormatter\Exception\ParseIndentException;
 final class Indent
 {
     /**
-     * @var string[]
+     * @var array<string, string>
      */
     public const CHARACTERS = [
         self::SPACE => ' ',
