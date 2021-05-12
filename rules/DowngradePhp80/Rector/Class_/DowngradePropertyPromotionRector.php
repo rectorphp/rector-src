@@ -71,10 +71,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::PROPERTY_PROMOTION)) {
-            return null;
-        }
-
         $promotedParams = $this->resolvePromotedParams($node);
         if ($promotedParams === []) {
             return null;
