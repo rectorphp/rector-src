@@ -30,25 +30,25 @@ It supports all versions of PHP from 5.3 and major open-source projects:
 <br>
 
 <p align="center">
-    <img src="https://github.com/rectorphp/rector/blob/main/docs/images/php.png">
-    <img src="https://github.com/rectorphp/rector/blob/main/docs/images/space.png" width=30>
-    <a href="https://github.com/rectorphp/rector-phpunit"><img src="https://github.com/rectorphp/rector/blob/main/docs/images/phpunit.png"></a>
-    <img src="https://github.com/rectorphp/rector/blob/main/docs/images/space.png" width=30>
-    <a href="https://github.com/rectorphp/rector-symfony"><img src="https://github.com/rectorphp/rector/blob/main/docs/images/symfony.png"></a>
-    <img src="https://github.com/rectorphp/rector/blob/main/docs/images/space.png" width=30>
+    <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/php.png">
+    <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/space.png" width=30>
+    <a href="https://github.com/rectorphp/rector-phpunit"><img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/phpunit.png"></a>
+    <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/space.png" width=30>
+    <a href="https://github.com/rectorphp/rector-symfony"><img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/symfony.png"></a>
+    <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/space.png" width=30>
     <a href="https://github.com/palantirnet/drupal-rector">
-        <img src="https://github.com/rectorphp/rector/blob/main/docs/images/drupal.png" alt="Drupal Rector rules">
+        <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/drupal.png" alt="Drupal Rector rules">
     </a>
     <br>
-    <img src="https://github.com/rectorphp/rector/blob/main/docs/images/space.png" height=15>
+    <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/space.png" height=15>
     <br>
-    <a href="https://github.com/rectorphp/rector-cakephp"><img src="https://github.com/rectorphp/rector/blob/main/docs/images/cakephp.png"></a>
-    <img src="https://github.com/rectorphp/rector/blob/main/docs/images/space.png" width=30>
+    <a href="https://github.com/rectorphp/rector-cakephp"><img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/cakephp.png"></a>
+    <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/space.png" width=30>
     <a href="https://github.com/sabbelasichon/typo3-rector">
-        <img src="https://github.com/rectorphp/rector/blob/main/docs/images/typo3.png">
+        <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/typo3.png">
     </a>
     <br>
-    <img src="https://github.com/rectorphp/rector/blob/main/docs/images/space.png" height=15>
+    <img src="https://github.com/rectorphp/rector-src/blob/main/docs/images/space.png" height=15>
 </p>
 
 ### What Can Rector Do for You?
@@ -64,23 +64,23 @@ It supports all versions of PHP from 5.3 and major open-source projects:
 
 ## Documentation
 
-- [Explore 450+ Rector Rules](/docs/rector_rules_overview.md)
-- [How Does Rector Work?](/docs/how_it_works.md)
+- [Explore 450+ Rector Rules](https://github.com/rectorphp/rector-src/blob/main/docs/rector_rules_overview.md)
+- [How Does Rector Work?](https://github.com/rectorphp/rector-src/blob/main/docs/how_it_works.md)
 - [PHP Parser Nodes](https://github.com/rectorphp/php-parser-nodes-docs/)
 
 ### Advanced
 
-- [Auto Import Names](/docs/auto_import_names.md)
-- [How to Ignore Rule or Paths](/docs/how_to_ignore_rule_or_paths.md)
-- [Static Reflection and Autoload](/docs/static_reflection_and_autoload.md)
-- [How to Configure Rule](/docs/how_to_configure_rules.md)
-- [How to Generate Configuration file](/docs/init_command.md)
+- [Auto Import Names](https://github.com/rectorphp/rector-src/blob/main/docs/auto_import_names.md)
+- [How to Ignore Rule or Paths](https://github.com/rectorphp/rector-src/blob/main/docs/how_to_ignore_rule_or_paths.md)
+- [Static Reflection and Autoload](https://github.com/rectorphp/rector-src/blob/main/docs/static_reflection_and_autoload.md)
+- [How to Configure Rule](https://github.com/rectorphp/rector-src/blob/main/docs/how_to_configure_rules.md)
+- [How to Generate Configuration file](https://github.com/rectorphp/rector-src/blob/main/docs/init_command.md)
 
 ### Contributing
 
-- [How to add Test for Rector Rule](/docs/how_to_add_test_for_rector_rule.md)
-- [How to work with Doc Block and Comments](/docs/how_to_work_with_doc_block_and_comments.md)
-- [How to Create New Rector Rule](/docs/create_own_rule.md)
+- [How to add Test for Rector Rule](https://github.com/rectorphp/rector-src/blob/main/docs/how_to_add_test_for_rector_rule.md)
+- [How to work with Doc Block and Comments](https://github.com/rectorphp/rector-src/blob/main/docs/how_to_work_with_doc_block_and_comments.md)
+- [How to Create New Rector Rule](https://github.com/rectorphp/rector-src/blob/main/docs/create_own_rule.md)
 
 <br>
 
@@ -91,7 +91,7 @@ composer require rector/rector --dev
 ```
 
 - Having conflicts during `composer require`? → Use the [Rector Prefixed](https://github.com/rectorphp/rector-prefixed) with PHP 7.1+ version
-- Using a different PHP version than Rector supports? → Use the [Docker image](/docs/how_to_run_rector_in_docker.md)
+- Using a different PHP version than Rector supports? → Use the [Docker image](https://github.com/rectorphp/rector-src/blob/main/docs/how_to_run_rector_in_docker.md)
 
 <br>
 
