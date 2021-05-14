@@ -26,11 +26,13 @@ After that, you need to register the `symplify/package-builder`'s src to service
 <?php
 // rector.php
 
+use Symplify\PackageBuilder\Strings\StringFormatConverter;
+
 return static function (ContainerConfigurator $containerConfigurator): void {
     // ...
 
 	$services = $containerConfigurator->services();
-	$services->load('Symplify\\PackageBuilder\\', __DIR__ . '/vendor/symplify/package-builder/src');
+	$services->set(StringFormatConverter::class);
 
     // ...
 };
