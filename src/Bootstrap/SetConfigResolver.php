@@ -18,6 +18,7 @@ final class SetConfigResolver
 
     /**
      * @return SmartFileInfo[]
+     * @deprecated Use sets directly via $containerConfigurator->import(...)
      */
     public function resolve(SmartFileInfo $smartFileInfo): array
     {
