@@ -31,6 +31,11 @@ final class FilesFinder
      */
     private const ENDS_WITH_ASTERISK_REGEX = '#^[^*](.*?)\*$#';
 
+    /**
+     * @var SmartFileInfo[][]
+     */
+    private array $fileInfosBySourceAndSuffixes = [];
+
     public function __construct(
         private FilesystemTweaker $filesystemTweaker,
         private FinderSanitizer $finderSanitizer,
@@ -48,34 +53,61 @@ final class FilesFinder
      */
     public function findInDirectoriesAndFiles(array $source, array $suffixes): array
     {
+        $cacheKey = md5(serialize($source) . serialize($suffixes));
+
         if (! $this->configuration->isCacheEnabled() || $this->configuration->shouldClearCache()) {
             $this->cache->clean([
                 Cache::ALL => true,
             ]);
-
             return $this->collectFileInfos($source, $suffixes);
         }
 
-        $cacheKey = md5(serialize($source) . serialize($suffixes));
         $loadCache = $this->cache->load($cacheKey);
 
         if ($loadCache) {
-            return $this->getSmartFileInfosFromStringFiles($loadCache);
+            $stringFiles = unserialize($loadCache);
+            return $this->getSmartFileInfosFromStringFiles($stringFiles);
         }
 
+        $smartFileInfos = $this->collectFileInfos($source, $suffixes);
+        $stringFiles = serialize($this->convertFileInfosToStringFiles($smartFileInfos));
+        $this->cache->save($cacheKey, $stringFiles);
+
+        return $smartFileInfos;
+    }
+
+    /**
+     * @param string[] $source
+     * @param string[] $suffixes
+     * @return SmartFileInfo[]
+     */
+    private function collectFileInfos(array $source, array $suffixes): array
+    {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
         $files = $this->fileSystemFilter->filterFiles($filesAndDirectories);
         $directories = $this->fileSystemFilter->filterDirectories($filesAndDirectories);
 
-        /**
-         * @var string[] $filesInDirectories
-         */
-        $filesInDirectories = $this->findInDirectories($directories, $suffixes, false);
-        $files = array_merge($files, $filesInDirectories);
-        $this->cache->save($cacheKey, $files);
+        $smartFileInfos = [];
+        foreach ($files as $file) {
+            $smartFileInfos[] = new SmartFileInfo($file);
+        }
 
-        return $this->getSmartFileInfosFromStringFiles($files);
+        return array_merge($smartFileInfos, $this->findInDirectories($directories, $suffixes));
+    }
+
+    /**
+     * @param SmartFileInfo[] $smartFileInfos
+     * @return string[]
+     */
+    private function convertFileInfosToStringFiles(array $smartFileInfos): array
+    {
+        $files = [];
+        foreach ($smartFileInfos as $smartFileInfo) {
+            $files[] = $smartFileInfo->getPathname();
+        }
+
+        return $files;
     }
 
     /**
@@ -93,33 +125,11 @@ final class FilesFinder
     }
 
     /**
-     * @param string[] $source
+     * @param string[] $directories
      * @param string[] $suffixes
      * @return SmartFileInfo[]
      */
-    private function collectFileInfos(array $source, array $suffixes): array
-    {
-        $files = $this->fileSystemFilter->filterFiles($source);
-        $directories = $this->fileSystemFilter->filterDirectories($source);
-
-        $smartFileInfos = [];
-        foreach ($files as $file) {
-            $smartFileInfos[] = new SmartFileInfo($file);
-        }
-
-        /**
-         * @var SmartFileInfo[] $smartFileInfosInDirectories
-         */
-        $smartFileInfosInDirectories = $this->findInDirectories($directories, $suffixes);
-        return array_merge($smartFileInfos, $smartFileInfosInDirectories);
-    }
-
-    /**
-     * @param string[] $directories
-     * @param string[] $suffixes
-     * @return string[]|SmartFileInfo[]
-     */
-    private function findInDirectories(array $directories, array $suffixes, bool $isSmartFileInfos = true): array
+    private function findInDirectories(array $directories, array $suffixes): array
     {
         if ($directories === []) {
             return [];
@@ -138,18 +148,7 @@ final class FilesFinder
 
         $this->addFilterWithExcludedPaths($finder);
 
-        $smartFileInfos = $this->finderSanitizer->sanitize($finder);
-
-        if ($isSmartFileInfos) {
-            return $smartFileInfos;
-        }
-
-        $files = [];
-        foreach ($smartFileInfos as $smartFileInfo) {
-            $files[] = $smartFileInfo->getPathname();
-        }
-
-        return $files;
+        return $this->finderSanitizer->sanitize($finder);
     }
 
     /**
