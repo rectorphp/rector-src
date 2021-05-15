@@ -37,6 +37,7 @@ final class DowngradePathsCommand extends Command
             'vendor/phpstan/phpdoc-parser/src',
             'vendor/symfony/error-handler',
             'vendor/symfony/dependency-injection',
+            'vendor/symplify/autowire-array-parameter',
             'vendor/symfony/console',
             'vendor/symfony vendor/psr',
             'vendor/symplify vendor/nikic bin src packages rector.php',
