@@ -1,4 +1,4 @@
-Syntax error found in 9 files
+Syntax error found in 8 files
 
 ------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/packages/Testing/PHPUnit/AbstractRectorTestCase.php:29
@@ -8,14 +8,6 @@ Parse error: rector-prefixed-downgraded-php70/packages/Testing/PHPUnit/AbstractR
     30|     protected \Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector $removedAndAddedFilesCollector;
     31|     protected ?\Symplify\SmartFileSystem\SmartFileInfo $originalTempFileInfo;
 Syntax error in rector-prefixed-downgraded-php70/packages/Testing/PHPUnit/AbstractRectorTestCase.php on line 29
-------------------------------------------------------------
-Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/vendor/nette/bootstrap/src/Bootstrap/Configurator.php:20
-    18| {
-    19|     use SmartObject;
-  > 20|     public const COOKIE_SECRET = 'nette-debug';
-    21|     /** @var callable[]  function (Configurator $sender, DI\Compiler $compiler); Occurs after the compiler is created */
-    22|     public $onCompile;
-Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/vendor/nette/bootstrap/src/Bootstrap/Configurator.php on line 20
 ------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/vendor/symfony/console/Event/ConsoleCommandEvent.php:25
     23|      * The return code for skipped commands, this will also be passed into the terminate event.
@@ -41,14 +33,6 @@ Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/s
     91|         if ($treeNode->getId() === 'token') {
 Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php on line 89
 ------------------------------------------------------------
-Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Type/PHPUnit/Assert/AssertTypeSpecifyingExtensionHelper.php:71
-    69|      * @return \PhpParser\Node\Expr|null
-    70|      */
-  > 71|     private static function createExpression(\PHPStan\Analyser\Scope $scope, string $name, array $args) : ?\PhpParser\Node\Expr
-    72|     {
-    73|         $trimmedName = self::trimName($name);
-Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Type/PHPUnit/Assert/AssertTypeSpecifyingExtensionHelper.php on line 71
-------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/PhpDoc/PHPUnit/MockObjectTypeNodeResolverExtension.php:26
     24|         return 'phpunit-v1';
     25|     }
@@ -56,6 +40,14 @@ Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src
     27|     {
     28|         if (!$typeNode instanceof \PHPStan\PhpDocParser\Ast\Type\UnionTypeNode) {
 Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/PhpDoc/PHPUnit/MockObjectTypeNodeResolverExtension.php on line 26
+------------------------------------------------------------
+Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Type/PHPUnit/Assert/AssertTypeSpecifyingExtensionHelper.php:71
+    69|      * @return \PhpParser\Node\Expr|null
+    70|      */
+  > 71|     private static function createExpression(\PHPStan\Analyser\Scope $scope, string $name, array $args) : ?\PhpParser\Node\Expr
+    72|     {
+    73|         $trimmedName = self::trimName($name);
+Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Type/PHPUnit/Assert/AssertTypeSpecifyingExtensionHelper.php on line 71
 ------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Rules/PHPUnit/ShouldCallParentMethodsRule.php:55
     53|      * @return bool
@@ -72,3 +64,4 @@ Parse error: rector-prefixed-downgraded-php70/vendor/symplify/autowire-array-par
     19|     /**
     20|      * @var ParameterTypeResolver
 Syntax error in rector-prefixed-downgraded-php70/vendor/symplify/autowire-array-parameter/src/Skipper/ParameterSkipper.php on line 18
+sh ./full_build_php70.sh  353.08s user 73.96s system 113% cpu 6:17.11 total
