@@ -240,8 +240,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             return;
         }
 
-        foreach ($file->getErrors() as $error) {
-            $this->symfonyStyle->error($error->getMessage());
+        foreach ($file->getErrors() as $rectorError) {
+            $this->symfonyStyle->error($rectorError->getMessage());
         }
     }
 }
