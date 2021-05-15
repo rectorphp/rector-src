@@ -10,6 +10,8 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 $phpStanStubLoader = new PHPStanStubLoader();
 $phpStanStubLoader->loadStubs();
 
+require_once  __DIR__ . '/../../stubs-rector/PHPUnit/Framework/TestCase.php';
+
 return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::SKIP, DowngradeRectorConfig::DEPENDENCY_EXCLUDE_PATHS);
