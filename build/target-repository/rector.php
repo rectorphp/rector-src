@@ -16,16 +16,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     ]);
 
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
-
-    $parameters->set(Option::SKIP, [
-        // test paths
-        '*/Fixture/*',
-        '*/Fixture*/*',
-        '*/Source/*',
-        '*/Source*/*',
-        '*/Expected/*',
-        '*/Expected*/*',
-    ]);
-
     $parameters->set(Option::ENABLE_CACHE, true);
 };
