@@ -31,11 +31,6 @@ final class FilesFinder
      */
     private const ENDS_WITH_ASTERISK_REGEX = '#^[^*](.*?)\*$#';
 
-    /**
-     * @var SmartFileInfo[][]
-     */
-    private array $fileInfosBySourceAndSuffixes = [];
-
     public function __construct(
         private FilesystemTweaker $filesystemTweaker,
         private FinderSanitizer $finderSanitizer,
