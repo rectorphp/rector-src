@@ -11,6 +11,7 @@ use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Configuration\Configuration;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Contract\Processor\PhpFileProcessorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -42,18 +43,23 @@ final class PhpFileProcessor implements FileProcessorInterface
      */
     private array $notParsedFiles = [];
 
+    /**
+     * @var PhpFileProcessorInterface[]
+     */
+    private array $phpFileProcessors;
+
+    /**
+     * @param PhpFileProcessorInterface[] $phpFileProcessors
+     */
     public function __construct(
         private Configuration $configuration,
-        private FormatPerservingPrinter $formatPerservingPrinter,
-        private FileProcessor $fileProcessor,
-        private RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         private SymfonyStyle $symfonyStyle,
         private PrivatesAccessor $privatesAccessor,
-        private FileDiffFileDecorator $fileDiffFileDecorator,
         private CurrentFileProvider $currentFileProvider,
-        private PostFileProcessor $postFileProcessor,
-        private ErrorFactory $errorFactory
+        private ErrorFactory $errorFactory,
+        array $phpFileProcessors
     ) {
+        $this->phpFileProcessors = $this->sortByPriority($phpFileProcessors);
     }
 
     /**
@@ -68,40 +74,17 @@ final class PhpFileProcessor implements FileProcessorInterface
 
         $this->prepareProgressBar($fileCount);
 
-        // 1. parse files to nodes
-        foreach ($files as $file) {
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $this->fileProcessor->parseFileInfoToLocalCache($file);
-            }, 'parsing');
-        }
+        foreach ($this->phpFileProcessors as $phpFileProcessor) {
+            foreach ($files as $file) {
+                $this->currentFileProvider->setFile($file);
 
-        // 2. change nodes with Rectors
-        $this->refactorNodesWithRectors($files);
-
-        // 3. apply post rectors
-        foreach ($files as $file) {
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
-
-                // this is needed for new tokens added in "afterTraverse()"
-                $file->changeNewStmts($newStmts);
-            }, 'post rectors');
-        }
-
-        // 4. print to file or string
-        foreach ($files as $file) {
-            $this->currentFileProvider->setFile($file);
-
-            // cannot print file with errors, as print would break everything to original nodes
-            if ($file->hasErrors()) {
-                $this->printFileErrors($file);
-                $this->advance($file, 'printing skipped due error');
-                continue;
+                if ($file->hasErrors()) {
+                    $this->printFileErrors($file);
+                    continue;
+                }
+                $this->advance($file, $phpFileProcessor->getPhase());
+                $this->tryCatchWrapper($file, $phpFileProcessor);
             }
-
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $this->printFile($file);
-            }, 'printing');
         }
 
         if ($this->configuration->shouldShowProgressBar()) {
@@ -136,26 +119,8 @@ final class PhpFileProcessor implements FileProcessorInterface
         $this->configureStepCount($fileCount);
     }
 
-    /**
-     * @param File[] $files
-     */
-    private function refactorNodesWithRectors(array $files): void
+    private function tryCatchWrapper(File $file, callable $callback): void
     {
-        foreach ($files as $file) {
-            $this->currentFileProvider->setFile($file);
-
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $this->fileProcessor->refactor($file);
-            }, 'refactoring');
-        }
-    }
-
-    private function tryCatchWrapper(File $file, callable $callback, string $phase): void
-    {
-        $this->currentFileProvider->setFile($file);
-
-        $this->advance($file, $phase);
-
         try {
             if (in_array($file, $this->notParsedFiles, true)) {
                 // we cannot process this file
@@ -230,6 +195,28 @@ final class PhpFileProcessor implements FileProcessorInterface
         } elseif ($this->configuration->shouldShowProgressBar()) {
             $this->symfonyStyle->progressAdvance();
         }
+    }
+
+    /**
+     * @param PhpFileProcessorInterface[] $phpFileProcessors
+     *
+     * @return PhpFileProcessorInterface[]
+     */
+    private function sortByPriority(array $phpFileProcessors): array
+    {
+        $phpFileProcessorsByPriority = [];
+
+        foreach ($phpFileProcessors as $phpFileProcessor) {
+            if (isset($phpFileProcessorsByPriority[$phpFileProcessor->getPriority()])) {
+                throw new ShouldNotHappenException();
+            }
+
+            $phpFileProcessorsByPriority[$phpFileProcessor->getPriority()] = $phpFileProcessor;
+        }
+
+        krsort($phpFileProcessorsByPriority);
+
+        return $phpFileProcessorsByPriority;
     }
 
     private function printFileErrors(File $file): void
