@@ -67,12 +67,7 @@ final class PhpFileProcessor implements FileProcessorInterface
      */
     public function process(array $files): void
     {
-        $fileCount = count($files);
-        if ($fileCount === 0) {
-            return;
-        }
-
-        $this->prepareProgressBar($fileCount);
+        $this->prepareProgressBar(count($files));
 
         foreach ($this->phpFileProcessors as $phpFileProcessor) {
             foreach ($files as $file) {

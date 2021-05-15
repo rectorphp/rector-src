@@ -49,6 +49,11 @@ final class ApplicationFileProcessor
         foreach ($this->fileProcessors as $fileProcessor) {
             $supportedFiles = array_filter($files, fn (File $file): bool => $fileProcessor->supports($file));
 
+            $supportedFileCount = count($supportedFiles);
+            if ($supportedFileCount === 0) {
+                continue;
+            }
+
             $fileProcessor->process($supportedFiles);
         }
 
