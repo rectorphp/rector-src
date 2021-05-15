@@ -49,6 +49,7 @@ jobs:
             # the vendor/phpstan/phpstan/bootstrap.php is statically included by composer, so better add empty file
             -   run: echo "<?php " > vendor/phpstan/phpstan/bootstrap.php
             -   run: rm -rf vendor/phpstan/phpstan/phpstan.phar
+            -   run: rm -rf phpstan-for-rector.neon
 
             # 1. copy files to $NESTED_DIRECTORY directory Exclude the scoped/nested directories to prevent rsync from copying in a loop
             -  run: rsync --exclude rector-build-php70 -av * rector-build-php70 --quiet
@@ -61,7 +62,9 @@ jobs:
             -   run: sh build/downgrade-rector-php70.sh rector-build-php70
 
             # 3. prefix classes
-            -   run: sh build/build-rector-scoped-php70.sh rector-build-php70 rector-prefixed-downgraded-php70
+            -   run: |
+
+                    sh build/build-rector-scoped-php70.sh rector-build-php70 rector-prefixed-downgraded-php70
 
             # 4. lint the code for PHP 7.0 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
             -
