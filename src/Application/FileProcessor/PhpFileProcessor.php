@@ -73,11 +73,12 @@ final class PhpFileProcessor implements FileProcessorInterface
             foreach ($files as $file) {
                 $this->currentFileProvider->setFile($file);
 
+                $this->advance($file, $phpFileProcessor->getPhase());
                 if ($file->hasErrors()) {
                     $this->printFileErrors($file);
                     continue;
                 }
-                $this->advance($file, $phpFileProcessor->getPhase());
+
                 $this->tryCatchWrapper($file, $phpFileProcessor);
             }
         }
