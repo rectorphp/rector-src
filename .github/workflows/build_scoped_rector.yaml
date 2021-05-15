@@ -33,9 +33,6 @@ jobs:
                 env:
                     COMPOSER_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-            # install typo3-rector https://github.com/sabbelasichon/typo3-rector
-            -   run: composer require ssch/typo3-rector --ansi
-
             # install only prod dependencies - do not use ramsey, it uses cache including "dev", we want to avoid it here
             -   run: composer install --no-dev --ansi
 
