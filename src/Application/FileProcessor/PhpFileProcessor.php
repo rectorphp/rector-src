@@ -232,11 +232,11 @@ final class PhpFileProcessor implements FileProcessorInterface
 
     private function printFileErrors(File $file): void
     {
-        if(!$this->symfonyStyle->isVerbose()) {
+        if (! $this->symfonyStyle->isVerbose()) {
             return;
         }
 
-        if(!$file->hasErrors()) {
+        if (! $file->hasErrors()) {
             return;
         }
 

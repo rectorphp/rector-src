@@ -88,6 +88,7 @@
             "stubs/Annotations",
             "stubs/Nette",
             "stubs/MyCLabs",
+            "stubs/PhpCsFixer",
             "rules-tests/Autodiscovery/Rector/Class_/MoveServicesBySuffixToDirectoryRector/Expected",
             "rules-tests/Autodiscovery/Rector/Interface_/MoveInterfacesToContractNamespaceDirectoryRector/Expected",
             "rules-tests/CodingStyle/Rector/Namespace_/ImportFullyQualifiedNamesRector/Source",
