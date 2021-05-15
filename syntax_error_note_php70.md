@@ -1,5 +1,4 @@
-Checked 5154 files in 15.9 seconds
-Syntax error found in 10 files
+Syntax error found in 9 files
 
 ------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/packages/Testing/PHPUnit/AbstractRectorTestCase.php:29
@@ -42,14 +41,6 @@ Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/s
     91|         if ($treeNode->getId() === 'token') {
 Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php on line 89
 ------------------------------------------------------------
-Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/PhpDoc/PHPUnit/MockObjectTypeNodeResolverExtension.php:26
-    24|         return 'phpunit-v1';
-    25|     }
-  > 26|     public function resolve(\PHPStan\PhpDocParser\Ast\Type\TypeNode $typeNode, \PHPStan\Analyser\NameScope $nameScope) : ?\PHPStan\Type\Type
-    27|     {
-    28|         if (!$typeNode instanceof \PHPStan\PhpDocParser\Ast\Type\UnionTypeNode) {
-Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/PhpDoc/PHPUnit/MockObjectTypeNodeResolverExtension.php on line 26
-------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Type/PHPUnit/Assert/AssertTypeSpecifyingExtensionHelper.php:71
     69|      * @return \PhpParser\Node\Expr|null
     70|      */
@@ -57,6 +48,14 @@ Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src
     72|     {
     73|         $trimmedName = self::trimName($name);
 Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Type/PHPUnit/Assert/AssertTypeSpecifyingExtensionHelper.php on line 71
+------------------------------------------------------------
+Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/PhpDoc/PHPUnit/MockObjectTypeNodeResolverExtension.php:26
+    24|         return 'phpunit-v1';
+    25|     }
+  > 26|     public function resolve(\PHPStan\PhpDocParser\Ast\Type\TypeNode $typeNode, \PHPStan\Analyser\NameScope $nameScope) : ?\PHPStan\Type\Type
+    27|     {
+    28|         if (!$typeNode instanceof \PHPStan\PhpDocParser\Ast\Type\UnionTypeNode) {
+Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/PhpDoc/PHPUnit/MockObjectTypeNodeResolverExtension.php on line 26
 ------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-phpunit/src/Rules/PHPUnit/ShouldCallParentMethodsRule.php:55
     53|      * @return bool
@@ -73,11 +72,3 @@ Parse error: rector-prefixed-downgraded-php70/vendor/symplify/autowire-array-par
     19|     /**
     20|      * @var ParameterTypeResolver
 Syntax error in rector-prefixed-downgraded-php70/vendor/symplify/autowire-array-parameter/src/Skipper/ParameterSkipper.php on line 18
-------------------------------------------------------------
-Parse error: rector-prefixed-downgraded-php70/vendor/rector/extension-installer/tests/PluginInstallerTest.php:25
-    23|      * @var string
-    24|      */
-  > 25|     private const FILE_HASH = 'hash';
-    26|     /**
-    27|      * @var PluginInstaller
-Syntax error in rector-prefixed-downgraded-php70/vendor/rector/extension-installer/tests/PluginInstallerTest.php on line 25
