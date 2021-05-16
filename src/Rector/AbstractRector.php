@@ -37,6 +37,7 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\Validation\InfiniteLoopValidator;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\ProjectType;
 use Rector\DowngradePhp80\Rector\NullsafeMethodCall\DowngradeNullsafeToTernaryOperatorRector;
@@ -141,6 +142,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
      */
     private array $nodesToReturn = [];
 
+    private InfiniteLoopValidator $infiniteLoopValidator;
+
     /**
      * @required
      */
@@ -171,7 +174,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         BetterNodeFinder $betterNodeFinder,
         NodeComparator $nodeComparator,
         CurrentFileProvider $currentFileProvider,
-        ChangedNodeAnalyzer $changedNodeAnalyzer
+        ChangedNodeAnalyzer $changedNodeAnalyzer,
+        \Rector\Core\Validation\InfiniteLoopValidator $infiniteLoopValidator
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -200,6 +204,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->nodeComparator = $nodeComparator;
         $this->currentFileProvider = $currentFileProvider;
         $this->changedNodeAnalyzer = $changedNodeAnalyzer;
+        $this->infiniteLoopValidator = $infiniteLoopValidator;
     }
 
     /**
@@ -275,34 +280,36 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
             // is different node type? do not traverse children to avoid looping
             if (get_class($originalNode) !== get_class($node)) {
-                $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE);
-                // special case
-                if ($createdByRule === static::class && static::class !== DowngradeNullsafeToTernaryOperatorRector::class) {
-                    // does it contain the same node type as input?
-                    $hasNestedOriginalNodeType = $this->betterNodeFinder->findInstanceOf(
-                        $node,
-                        get_class($originalNode)
-                    );
-                    if ($hasNestedOriginalNodeType !== []) {
-                        throw new InfiniteLoopTraversingException(static::class);
-                    }
-                }
+                $this->infiniteLoopValidator->process($node, $originalNode, static::class);
 
-                // hacking :)
-                $nodeTraverser = new NodeTraverser();
-                $nodeTraverser->addVisitor(new class(static::class) extends NodeVisitorAbstract {
-                    public function __construct(
-                        private string $rectorClass
-                    ) {
-                    }
-
-                    public function enterNode(Node $node)
-                    {
-                        $node->setAttribute(AttributeKey::CREATED_BY_RULE, $this->rectorClass);
-                        return $node;
-                    }
-                });
-                $nodeTraverser->traverse([$originalNode]);
+//                $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE);
+//                // special case
+//                if ($createdByRule === static::class && static::class !== DowngradeNullsafeToTernaryOperatorRector::class) {
+//                    // does it contain the same node type as input?
+//                    $hasNestedOriginalNodeType = $this->betterNodeFinder->findInstanceOf(
+//                        $node,
+//                        get_class($originalNode)
+//                    );
+//                    if ($hasNestedOriginalNodeType !== []) {
+//                        throw new InfiniteLoopTraversingException(static::class);
+//                    }
+//                }
+//
+//                // hacking :)
+//                $nodeTraverser = new NodeTraverser();
+//                $nodeTraverser->addVisitor(new class(static::class) extends NodeVisitorAbstract {
+//                    public function __construct(
+//                        private string $rectorClass
+//                    ) {
+//                    }
+//
+//                    public function enterNode(Node $node)
+//                    {
+//                        $node->setAttribute(AttributeKey::CREATED_BY_RULE, $this->rectorClass);
+//                        return $node;
+//                    }
+//                });
+//                $nodeTraverser->traverse([$originalNode]);
 
                 // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
                 $originalNodeHash = spl_object_hash($originalNode);

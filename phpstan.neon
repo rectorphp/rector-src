@@ -33,7 +33,7 @@ parameters:
     scanDirectories:
         - stubs
 
-    reportUnmatchedIgnoredErrors: false
+#    reportUnmatchedIgnoredErrors: false
     checkGenericClassInNonGenericObjectType: false
 
     excludes_analyse:
