@@ -62,8 +62,11 @@ final class DowngradePathsCommand extends Command
             $downgradePaths[] = 'vendor/phpstan/phpstan-extracted/vendor/symfony/console/Event/ConsoleCommandEvent.php';
             $downgradePaths[] = 'vendor/phpstan/phpstan-extracted/vendor/symfony/console/Logger/ConsoleLogger.php';
             $downgradePaths[] = 'vendor/phpstan/phpstan-extracted/vendor/symfony/console/Style/SymfonyStyle.php';
+            $downgradePaths[] = 'vendor/phpstan/phpstan-extracted/vendor/symfony/console/EventListener/ErrorListener.php';
+            $downgradePaths[] = 'vendor/phpstan/phpstan-extracted/vendor/symfony/console';
+            $downgradePaths[] = 'vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php';
             $downgradePaths[] = 'vendor/phpstan/phpstan-phpunit/src';
-            $downgradePaths[] = 'vendor/symplify/autowire-array-parameter/src';
+            $downgradePaths[] = 'vendor/symplify/autowire-array-parameter/src/Skipper/ParameterSkipper.php';
             $downgradePaths[] = 'packages/Testing/PHPUnit/AbstractRectorTestCase.php';
         }
 
