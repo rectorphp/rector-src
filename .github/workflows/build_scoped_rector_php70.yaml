@@ -3,9 +3,9 @@
 name: Build Scoped Rector PHP 7.0
 
 on:
-#    push:
-#        branches:
-#            - main
+    push:
+        branches:
+            - php70
 #        tags:
 #            - '*'
     pull_request:
