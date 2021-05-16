@@ -38,10 +38,6 @@ final class DowngradeRectorConfig
         // symfony test are parts of package
         '*/Test/*',
 
-        // missing phpunit test case
-        'packages/Testing/PHPUnit/AbstractRectorTestCase.php',
-        'packages/Testing/PHPUnit/AbstractComposerRectorTestCase.php',
-
         // only for dev
         'packages/Testing/PhpConfigPrinter/*',
 
@@ -52,7 +48,6 @@ final class DowngradeRectorConfig
         // use relative paths, so files are excluded on nested directory too
         'vendor/symfony/http-kernel/HttpKernelBrowser.php',
         'vendor/symfony/http-foundation/Session/*',
-        'vendor/symfony/string/Slugger/AsciiSlugger.php',
         'vendor/symfony/cache/*',
         'nette/caching/src/Bridges/*',
 

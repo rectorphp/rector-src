@@ -67,7 +67,6 @@ final class DowngradePathsCommand extends Command
             $downgradePaths[] = 'vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php';
             $downgradePaths[] = 'vendor/phpstan/phpstan-phpunit/src';
             $downgradePaths[] = 'vendor/symplify/autowire-array-parameter/src/Skipper/ParameterSkipper.php';
-            $downgradePaths[] = 'packages/Testing/PHPUnit/AbstractRectorTestCase.php';
         }
 
         // bash format
