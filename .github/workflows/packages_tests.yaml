@@ -21,26 +21,13 @@ jobs:
             matrix:
                 package_name:
                     - rectorphp/rector-nette
-<<<<<<< HEAD
                     - rectorphp/rector-nette-to-symfony
-=======
-<<<<<<< HEAD
-=======
-                    - rectorphp/rector-nette-to-symfony
->>>>>>> 9c8ff2cde ([CI] test typo3 package too)
->>>>>>> 384b11677 ([TASK] Build rector/rector with typo3-rector included)
                     - rectorphp/rector-symfony
                     - rectorphp/rector-laravel
                     - rectorphp/rector-phpunit
                     - rectorphp/rector-cakephp
                     - rectorphp/rector-doctrine
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
                     - ssch/typo3-rector
->>>>>>> 9c8ff2cde ([CI] test typo3 package too)
-=======
->>>>>>> 153da8c2a ([TASK] Do not prefix Ssch namespace)
 
         steps:
             -

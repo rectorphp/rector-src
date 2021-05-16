@@ -41,8 +41,6 @@ final class DowngradePathsCommand extends Command
             'vendor/symfony vendor/psr',
             'vendor/symplify vendor/nikic bin src packages rector.php',
             'rules',
-            'vendor/helmich/typo3-typoscript-parser/src',
-            'vendor/symfony/var-exporter'
         ], $downgradePaths);
 
         if (file_exists(getcwd() . '/vendor/phpstan/phpstan-extracted/vendor')) {
