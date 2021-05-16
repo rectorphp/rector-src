@@ -35,9 +35,12 @@ jobs:
                     - rectorphp/rector-cakephp
                     - rectorphp/rector-doctrine
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     - ssch/typo3-rector
 >>>>>>> 9c8ff2cde ([CI] test typo3 package too)
+=======
+>>>>>>> 153da8c2a ([TASK] Do not prefix Ssch namespace)
 
         steps:
             -
