@@ -9,7 +9,8 @@ on:
 #        tags:
 #            - '*'
     pull_request:
-        - php70-*
+        branches:
+            - php70
 
 env:
     # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
