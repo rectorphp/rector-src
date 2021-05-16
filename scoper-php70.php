@@ -118,19 +118,6 @@ return [
             return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\#', 'Composer\\');
         },
 
-        // Need this because composer/xdebug-handler conflict require
-        function (string $filePath, string $prefix, string $content): string {
-            if (! Strings::contains($filePath, 'vendor/rector/extension-installer/src')) {
-                return $content;
-            }
-
-            // @see https://regex101.com/r/r3AJFl/1
-            return Strings::replace(
-                $content, '#\)\s{0,}:\s{0,}void#',
-                ")"
-            );
-        },
-
         // fixes https://github.com/rectorphp/rector/issues/6007
         function (string $filePath, string $prefix, string $content): string {
             if (! Strings::contains($filePath, 'vendor/')) {

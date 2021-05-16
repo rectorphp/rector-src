@@ -36,7 +36,10 @@ jobs:
                     COMPOSER_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
             # install only prod dependencies - do not use ramsey, it uses cache including "dev", we want to avoid it here
-            -   run: composer install --no-dev --ansi
+            -   run: |
+                    composer remove composer/xdebug-handler
+                    composer require composer/composer
+                    composer install --no-dev --ansi
 
             -   run: wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose
 

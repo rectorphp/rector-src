@@ -13,6 +13,8 @@ set -u
 rm -rf vendor
 rm -rf composer.lock
 
+composer remove composer/xdebug-handler
+composer require composer/composer
 composer install --no-dev --ansi
 
 wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose

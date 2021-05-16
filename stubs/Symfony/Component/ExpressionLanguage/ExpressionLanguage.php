@@ -11,7 +11,7 @@ if (class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
     return;
 }
 
-final class ExpressionLanguage
+class ExpressionLanguage
 {
 
 }
