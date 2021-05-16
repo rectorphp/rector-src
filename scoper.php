@@ -178,6 +178,11 @@ return [
                 return $content;
             }
 
+            // skip "Ssch\\" namespace
+            if (Strings::contains($content, '$services->load(\'Ssch')) {
+                return $content;
+            }
+
             return Strings::replace($content, '#services\->load\(\'#', 'services->load(\'' . $prefix . '\\');
         },
     ],
