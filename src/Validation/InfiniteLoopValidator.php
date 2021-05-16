@@ -34,7 +34,9 @@ final class InfiniteLoopValidator
         // special case
         if ($createdByRule === $rectorClass) {
             // does it contain the same node type as input?
-            $hasNestedOriginalNodeType = $this->betterNodeFinder->findInstanceOf($node, get_class($originalNode));
+            $originalNodeClass = get_class($originalNode);
+
+            $hasNestedOriginalNodeType = $this->betterNodeFinder->findInstanceOf($node, $originalNodeClass);
             if ($hasNestedOriginalNodeType !== []) {
                 throw new InfiniteLoopTraversingException($rectorClass);
             }
@@ -44,7 +46,7 @@ final class InfiniteLoopValidator
     }
 
     /**
-     * @param class-string<RectorInterface>
+     * @param class-string<RectorInterface> $rectorClass
      */
     private function decorateNode(Node $node, string $rectorClass): void
     {
