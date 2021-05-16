@@ -15,6 +15,7 @@ rm -rf composer.lock
 
 composer remove composer/xdebug-handler
 composer require composer/composer
+composer require composer/xdebug-handler:"2.0.1 as 1.4.6"
 composer install --no-dev --ansi
 
 wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose
