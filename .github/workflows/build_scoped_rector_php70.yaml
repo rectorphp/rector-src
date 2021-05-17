@@ -77,7 +77,7 @@ jobs:
             -   run: |
                     sh build/build-rector-scoped-php70.sh rector-build-php70 rector-prefixed-downgraded-php70
                     bin/rector process rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php -c build/config/config-downgrade-php70.php --ansi
-                    bin/rector process rector-prefixed-downgraded-php70/bootstrap.php -c build/config/config-downgrade-php70.php --ansi
+                    bin/rector process build/target-repository-php70/bootstrap.php -c build/config/config-downgrade-php70.php --ansi
 
             # 4. lint the code for PHP 7.0 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
             -
