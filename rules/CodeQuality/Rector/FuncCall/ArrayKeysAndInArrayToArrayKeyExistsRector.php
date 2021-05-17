@@ -69,7 +69,7 @@ CODE_SAMPLE
         $arrayVariable = $node->args[1]->value;
 
         /** @var Assign|Node|null $previousAssignArraysKeysFuncCall */
-        $previousAssignArraysKeysFuncCall = $this->betterNodeFinder->findFirstPrevious($node, function (Node $node) use (
+        $previousAssignArraysKeysFuncCall = $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $node) use (
             $arrayVariable
         ): bool {
             // breaking out of scope
@@ -78,7 +78,11 @@ CODE_SAMPLE
             }
 
             if (! $node instanceof Assign) {
-                return false;
+                $arrayVariables = $this->betterNodeFinder->find($node, function (Node $n) use ($arrayVariable) {
+                    return $this->nodeComparator->areNodesEqual($arrayVariable, $n);
+                });
+
+                return count($arrayVariables) === 0;
             }
 
             if (! $this->nodeComparator->areNodesEqual($arrayVariable, $node->var)) {
