@@ -1,13 +1,5 @@
-Syntax error found in 2 files
+Syntax error found in 1 file
 
-------------------------------------------------------------
-Parse error: rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php:89
-    87|         return \substr($regex, 1, $endDelimiterPosition - 1);
-    88|     }
-  > 89|     private function getText(\RectorPrefix20210517\Hoa\Compiler\Llk\TreeNode $treeNode) : ?string
-    90|     {
-    91|         if ($treeNode->getId() === 'token') {
-Syntax error in rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php on line 89
 ------------------------------------------------------------
 Parse error: rector-prefixed-downgraded-php70/vendor/symplify/autowire-array-parameter/src/Skipper/ParameterSkipper.php:18
     16|      * @noRector
@@ -16,3 +8,4 @@ Parse error: rector-prefixed-downgraded-php70/vendor/symplify/autowire-array-par
     19|     /**
     20|      * @var ParameterTypeResolver
 Syntax error in rector-prefixed-downgraded-php70/vendor/symplify/autowire-array-parameter/src/Skipper/ParameterSkipper.php on line 18
+sh ./full_build_php70.sh  391.07s user 79.73s system 107% cpu 7:18.16 total
