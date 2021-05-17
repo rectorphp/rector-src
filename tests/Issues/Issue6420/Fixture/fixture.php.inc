@@ -20,6 +20,7 @@ class Fixture
 {
     public function someMethod()
     {
+        \Safe\preg_replace('//', 'foo', 'bar');
     }
 }
 

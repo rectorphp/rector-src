@@ -20,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDocNodeTraverser\ChangedPhpDocNodeTraverserFact
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Symplify\SimplePhpDocParser\PhpDocNodeTraverser;
 
 /**
@@ -62,35 +63,20 @@ final class PhpDocInfoPrinter
      */
     private const TAG_AND_SPACE_REGEX = '#(@.*?) \(#';
 
-    /**
-     * @var int
-     */
-    private $tokenCount;
+    private ?int $tokenCount = null;
 
-    /**
-     * @var int
-     */
-    private $currentTokenPosition;
+    private ?int $currentTokenPosition = null;
 
     /**
      * @var mixed[]
      */
-    private $tokens = [];
+    private array $tokens = [];
 
-    /**
-     * @var PhpDocNode
-     */
-    private $phpDocNode;
+    private ?PhpDocNode $phpDocNode = null;
 
-    /**
-     * @var PhpDocInfo
-     */
-    private $phpDocInfo;
+    private ?PhpDocInfo $phpDocInfo = null;
 
-    /**
-     * @var PhpDocNodeTraverser
-     */
-    private $changedPhpDocNodeTraverser;
+    private PhpDocNodeTraverser $changedPhpDocNodeTraverser;
 
     public function __construct(
         private EmptyPhpDocDetector $emptyPhpDocDetector,
@@ -145,6 +131,15 @@ final class PhpDocInfoPrinter
 
         // hotfix of extra space with callable ()
         return Strings::replace($phpDocString, self::CALLABLE_REGEX, 'callable(');
+    }
+
+    public function getCurrentPhpDocInfo(): PhpDocInfo
+    {
+        if ($this->phpDocInfo === null) {
+            throw new ShouldNotHappenException();
+        }
+
+        return $this->phpDocInfo;
     }
 
     private function printPhpDocNode(PhpDocNode $phpDocNode): string
@@ -258,7 +253,8 @@ final class PhpDocInfoPrinter
         $positionJumpSet = [];
 
         $removedStartAndEnds = $this->removeNodesStartAndEndResolver->resolve(
-            $this->phpDocInfo->getOriginalPhpDocNode(),
+            $this->getCurrentPhpDocInfo()
+                ->getOriginalPhpDocNode(),
             $this->phpDocNode,
             $this->tokens
         );
@@ -312,7 +308,8 @@ final class PhpDocInfoPrinter
 
         $startTokenPosition = $startAndEnd->getStart();
 
-        $tokens = $this->phpDocInfo->getTokens();
+        $tokens = $this->getCurrentPhpDocInfo()
+            ->getTokens();
         if (! isset($tokens[$startTokenPosition - 1])) {
             return;
         }
@@ -333,7 +330,7 @@ final class PhpDocInfoPrinter
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string
     {
-        if ($this->phpDocInfo->isSingleLine()) {
+        if ($this->getCurrentPhpDocInfo()->isSingleLine()) {
             return ' ' . $phpDocChildNode;
         }
 
