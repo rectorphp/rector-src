@@ -57,6 +57,5 @@ mv vendor-backup vendor
 cp -R build/target-repository-php70/. rector-prefixed-downgraded-php70
 cp -R templates rector-prefixed-downgraded-php70/
 bin/rector process rector-prefixed-downgraded-php70/bootstrap.php -c build/config/config-downgrade-php70.php --ansi
-rm -rf vendor
 
 rm -rf rector-prefixed-downgraded-php70

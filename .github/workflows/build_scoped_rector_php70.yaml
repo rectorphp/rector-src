@@ -43,8 +43,8 @@ jobs:
                     composer install --no-dev --ansi
 
                     # early downgrade individual files to be copied to phpstan-extracted
-                    bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php
-                    bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php
+                    bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php --ansi
+                    bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php --ansi
 
             -   run: wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose
 
@@ -76,7 +76,7 @@ jobs:
             # 3. prefix classes and manual downgrade after prefixed for individual IgnoredRegexValidator.php
             -   run: |
                     sh build/build-rector-scoped-php70.sh rector-build-php70 rector-prefixed-downgraded-php70
-                    bin/rector process rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php -c build/config/config-downgrade-php70.php
+                    bin/rector process rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php -c build/config/config-downgrade-php70.php --ansi
 
             # 4. lint the code for PHP 7.0 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
             -
@@ -96,7 +96,6 @@ jobs:
                     cp -R build/target-repository-php70/. rector-prefixed-downgraded-php70
                     cp -R templates rector-prefixed-downgraded-php70/
                     bin/rector process rector-prefixed-downgraded-php70/bootstrap.php -c build/config/config-downgrade-php70.php --ansi
-                    rm -rf vendor
 
             # 6. clone remote repository, so we can push it
             -
