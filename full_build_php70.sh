@@ -18,8 +18,8 @@ composer require composer/composer
 composer require composer/xdebug-handler:"2.0.1 as 1.4.6"
 composer install --no-dev --ansi
 
-bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php
-bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php
+bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php --ansi
+bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php --ansi
 
 wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose
 php box.phar extract vendor/phpstan/phpstan/phpstan.phar vendor/phpstan/phpstan-extracted
@@ -43,7 +43,7 @@ git checkout phpstan-for-rector.neon
 git checkout composer.json
 
 sh build/build-rector-scoped-php70.sh rector-build-php70 rector-prefixed-downgraded-php70
-bin/rector process rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php -c build/config/config-downgrade-php70.php
+bin/rector process rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php -c build/config/config-downgrade-php70.php --ansi
 
 rm -rf php-parallel-lint
 mv vendor vendor-backup
