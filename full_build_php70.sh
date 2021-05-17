@@ -44,6 +44,7 @@ git checkout composer.json
 
 sh build/build-rector-scoped-php70.sh rector-build-php70 rector-prefixed-downgraded-php70
 bin/rector process rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php -c build/config/config-downgrade-php70.php --ansi
+bin/rector process rector-prefixed-downgraded-php70/bootstrap.php -c build/config/config-downgrade-php70.php --ansi
 
 rm -rf php-parallel-lint
 mv vendor vendor-backup
