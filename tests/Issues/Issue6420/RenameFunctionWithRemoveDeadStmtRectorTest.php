@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Renaming\Rector\FuncCall\RenameFunctionWithRemoveDeadStmtRector;
+namespace Rector\Core\Tests\Issues\Issue6420;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
+/**
+ * @see https://github.com/rectorphp/rector/issues/6420
+ */
 final class RenameFunctionWithRemoveDeadStmtRectorTest extends AbstractRectorTestCase
 {
     /**
