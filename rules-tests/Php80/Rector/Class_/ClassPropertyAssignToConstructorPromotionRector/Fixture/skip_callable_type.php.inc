@@ -10,7 +10,7 @@ final class SkipCallableType
     /**
      * @param mixed[] $cache
      */
-    public function __construct(callable $fallback)
+    public function __construct(callable $fallback, private array $cache = [])
     {
         $this->fallback = $fallback;
     }
