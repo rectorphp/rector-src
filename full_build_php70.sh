@@ -46,11 +46,17 @@ sh build/build-rector-scoped-php70.sh rector-build-php70 rector-prefixed-downgra
 bin/rector process rector-prefixed-downgraded-php70/vendor/phpstan/phpstan-extracted/src/Command/IgnoredRegexValidator.php -c build/config/config-downgrade-php70.php
 
 rm -rf php-parallel-lint
-rm -rf vendor
+mv vendor vendor-backup
 
 rm -rf rector-build-php70
 
 /opt/homebrew/opt/php@7.0/bin/php /usr/local/bin/composer create-project php-parallel-lint/php-parallel-lint php-parallel-lint --ansi
-/opt/homebrew/opt/php@7.0/bin/php php-parallel-lint/parallel-lint rector-prefixed-downgraded-php70 --exclude rector-prefixed-downgraded-php70/stubs --exclude rector-prefixed-downgraded-php70/vendor/symfony/error-handler/Resources --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-kernel/Resources --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/polyfill-mbstring/bootstrap80.php --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symplify/smart-file-system/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Session --exclude rector-prefixed-downgraded-php70/vendor/symfony/var-dumper --exclude rector-prefixed-downgraded-php70/vendor/nette/caching --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/src/Rector/LNumber --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Test --exclude rector-prefixed-downgraded-php70/vendor/symplify/simple-php-doc-parser/tests --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/src/Tracy/Bar/panels/info.panel.phtml --exclude rector-prefixed-downgraded-php70/vendor/rector/extension-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/string/Slugger/AsciiSlugger.php
+# /opt/homebrew/opt/php@7.0/bin/php php-parallel-lint/parallel-lint rector-prefixed-downgraded-php70 --exclude rector-prefixed-downgraded-php70/stubs --exclude rector-prefixed-downgraded-php70/vendor/symfony/error-handler/Resources --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-kernel/Resources --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/polyfill-mbstring/bootstrap80.php --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symplify/smart-file-system/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Session --exclude rector-prefixed-downgraded-php70/vendor/symfony/var-dumper --exclude rector-prefixed-downgraded-php70/vendor/nette/caching --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/src/Rector/LNumber --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Test --exclude rector-prefixed-downgraded-php70/vendor/symplify/simple-php-doc-parser/tests --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/src/Tracy/Bar/panels/info.panel.phtml --exclude rector-prefixed-downgraded-php70/vendor/rector/extension-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/string/Slugger/AsciiSlugger.php
+
+mv vendor-backup vendor
+cp -R build/target-repository-php70/. rector-prefixed-downgraded-php70
+cp -R templates rector-prefixed-downgraded-php70/
+bin/rector process rector-prefixed-downgraded-php70/bootstrap.php -c build/config/config-downgrade-php70.php --ansi
+rm -rf vendor
 
 rm -rf rector-prefixed-downgraded-php70
