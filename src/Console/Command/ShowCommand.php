@@ -38,7 +38,7 @@ final class ShowCommand extends Command
 
     private function reportLoadedRectors(): void
     {
-        $rectors = array_filter($this->rectors, function (RectorInterface $rector) {
+        $rectors = array_filter($this->rectors, function (RectorInterface $rector): bool {
             return ! $rector instanceof PostRectorInterface;
         });
 
