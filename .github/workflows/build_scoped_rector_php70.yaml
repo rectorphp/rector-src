@@ -42,10 +42,17 @@ jobs:
                     composer require composer/xdebug-handler:"2.0.1 as 1.4.6"
                     composer install --no-dev --ansi
 
+                    # early downgrade individual files to be copied to phpstan-extracted
+                    bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php
+                    bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php
+
             -   run: wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose
 
-            # extra content of phpstan.phar to vendor/phpstan/phpstan-extracted
-            -   run: php box.phar extract vendor/phpstan/phpstan/phpstan.phar vendor/phpstan/phpstan-extracted
+            # extra content of phpstan.phar to vendor/phpstan/phpstan-extracted and copy downgraded classes early
+            -   run: |
+                    php box.phar extract vendor/phpstan/phpstan/phpstan.phar vendor/phpstan/phpstan-extracted
+                    cp vendor/symfony/console/Event/ConsoleCommandEvent.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/Event/ConsoleCommandEvent.php
+                    cp vendor/symfony/console/EventListener/ErrorListener.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/EventListener/ErrorListener.php
 
             # "composer remove phpstan/phpstan" original phpstan/phpstan is now duplicated, we don't need it now -required by phpstan extensions, cannot be removed like this
 

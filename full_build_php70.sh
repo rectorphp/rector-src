@@ -18,8 +18,15 @@ composer require composer/composer
 composer require composer/xdebug-handler:"2.0.1 as 1.4.6"
 composer install --no-dev --ansi
 
+bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php
+bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php
+
 wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose
 php box.phar extract vendor/phpstan/phpstan/phpstan.phar vendor/phpstan/phpstan-extracted
+
+cp vendor/symfony/console/Event/ConsoleCommandEvent.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/Event/ConsoleCommandEvent.php
+cp vendor/symfony/console/EventListener/ErrorListener.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/EventListener/ErrorListener.php
+
 rm -rf vendor/bin/phpstan vendor/phpstan/phpstan/bootstrap.php
 echo "<?php " > vendor/phpstan/phpstan/bootstrap.php
 rm -rf vendor/phpstan/phpstan/phpstan.phar
