@@ -123,9 +123,10 @@ final class ClassMethodAssignManipulator
             }
         });
 
-        return array_filter($variableAssigns, function (Assign $assign) use ($arrayDestructionCreatedVariables): bool {
-            return ! $this->nodeNameResolver->isNames($assign->var, $arrayDestructionCreatedVariables);
-        });
+        return array_filter(
+            $variableAssigns,
+            fn (Assign $assign): bool => ! $this->nodeNameResolver->isNames($assign->var, $arrayDestructionCreatedVariables)
+        );
     }
 
     /**
@@ -136,9 +137,10 @@ final class ClassMethodAssignManipulator
     {
         $referencedVariables = $this->collectReferenceVariableNames($classMethod);
 
-        return array_filter($variableAssigns, function (Assign $assign) use ($referencedVariables): bool {
-            return ! $this->nodeNameResolver->isNames($assign->var, $referencedVariables);
-        });
+        return array_filter(
+            $variableAssigns,
+            fn (Assign $assign): bool => ! $this->nodeNameResolver->isNames($assign->var, $referencedVariables)
+        );
     }
 
     /**
