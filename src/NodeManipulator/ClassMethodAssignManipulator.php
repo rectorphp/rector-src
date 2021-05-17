@@ -36,7 +36,7 @@ final class ClassMethodAssignManipulator
     /**
      * @var array<string, string[]>
      */
-    private $alreadyAddedClassMethodNames = [];
+    private array $alreadyAddedClassMethodNames = [];
 
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,

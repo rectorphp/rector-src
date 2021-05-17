@@ -78,7 +78,7 @@ CODE_SAMPLE
             }
 
             if (! $node instanceof Assign) {
-                return ! (bool) $this->betterNodeFinder->find($node, function (Node $n) use ($arrayVariable) {
+                return ! (bool) $this->betterNodeFinder->find($node, function (Node $n) use ($arrayVariable): bool {
                     return $this->nodeComparator->areNodesEqual($arrayVariable, $n);
                 });
             }

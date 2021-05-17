@@ -63,16 +63,14 @@ final class PhpDocInfoPrinter
      */
     private const TAG_AND_SPACE_REGEX = '#(@.*?) \(#';
 
-    private ?int $tokenCount = null;
+    private int $tokenCount = 0;
 
-    private ?int $currentTokenPosition = null;
+    private int $currentTokenPosition = 0;
 
     /**
      * @var mixed[]
      */
     private array $tokens = [];
-
-    private ?PhpDocNode $phpDocNode = null;
 
     private ?PhpDocInfo $phpDocInfo = null;
 
@@ -119,7 +117,7 @@ final class PhpDocInfoPrinter
             return (string) $phpDocInfo->getPhpDocNode();
         }
 
-        $this->phpDocNode = $phpDocInfo->getPhpDocNode();
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
         $this->tokens = $phpDocInfo->getTokens();
 
         $this->tokenCount = $phpDocInfo->getTokenCount();
@@ -127,7 +125,7 @@ final class PhpDocInfoPrinter
 
         $this->currentTokenPosition = 0;
 
-        $phpDocString = $this->printPhpDocNode($this->phpDocNode);
+        $phpDocString = $this->printPhpDocNode($phpDocNode);
 
         // hotfix of extra space with callable ()
         return Strings::replace($phpDocString, self::CALLABLE_REGEX, 'callable(');
@@ -237,9 +235,9 @@ final class PhpDocInfoPrinter
 
     private function printEnd(string $output): string
     {
-        $lastTokenPosition = $this->phpDocNode->getAttribute(
-            PhpDocAttributeKey::LAST_PHP_DOC_TOKEN_POSITION
-        ) ?: $this->currentTokenPosition;
+        $lastTokenPosition = $this->getCurrentPhpDocInfo()
+            ->getPhpDocNode()
+            ->getAttribute(PhpDocAttributeKey::LAST_PHP_DOC_TOKEN_POSITION) ?: $this->currentTokenPosition;
         if ($lastTokenPosition === 0) {
             $lastTokenPosition = 1;
         }
@@ -255,7 +253,8 @@ final class PhpDocInfoPrinter
         $removedStartAndEnds = $this->removeNodesStartAndEndResolver->resolve(
             $this->getCurrentPhpDocInfo()
                 ->getOriginalPhpDocNode(),
-            $this->phpDocNode,
+            $this->getCurrentPhpDocInfo()
+                ->getPhpDocNode(),
             $this->tokens
         );
 
