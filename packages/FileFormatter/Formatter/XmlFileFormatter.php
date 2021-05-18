@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\FileFormatter\Formatter;
 
-use PrettyXml\Formatter;
+use Nette\Utils\Strings;
 use Rector\Core\ValueObject\Application\File;
 use Rector\FileFormatter\Contract\Formatter\FileFormatterInterface;
 use Rector\FileFormatter\ValueObject\EditorConfigConfiguration;
@@ -16,30 +16,13 @@ use Rector\FileFormatter\ValueObjectFactory\EditorConfigConfigurationBuilder;
  */
 final class XmlFileFormatter implements FileFormatterInterface
 {
-    /**
-     * @var int
-     */
-    private $depth;
+    private ?int $depth = null;
 
-    /**
-     * @var int
-     */
-    private $indent = 4;
+    private int $indent = 4;
 
-    /**
-     * @var string
-     */
-    private $padChar = ' ';
+    private string $padChar = ' ';
 
-    /**
-     * @var boolean
-     */
-    private $preserveWhitespace = false;
-
-    public function __construct(
-        private Formatter $xmlFormatter
-    ) {
-    }
+    private bool $preserveWhitespace = false;
 
     public function supports(File $file): bool
     {
@@ -50,10 +33,10 @@ final class XmlFileFormatter implements FileFormatterInterface
 
     public function format(File $file, EditorConfigConfiguration $editorConfigConfiguration): void
     {
-        $this->xmlFormatter->setIndentCharacter($editorConfigConfiguration->getIndentStyleCharacter());
-        $this->xmlFormatter->setIndentSize($editorConfigConfiguration->getIndentSize());
+        $this->padChar = $editorConfigConfiguration->getIndentStyleCharacter();
+        $this->indent = $editorConfigConfiguration->getIndentSize();
 
-        $newFileContent = $this->xmlFormatter->format($file->getFileContent());
+        $newFileContent = $this->formatXml($file->getFileContent());
 
         $newFileContent .= $editorConfigConfiguration->getFinalNewline();
 
@@ -69,11 +52,7 @@ final class XmlFileFormatter implements FileFormatterInterface
         return $editorConfigConfigurationBuilder;
     }
 
-    /**
-     * @param string $xml
-     * @return string
-     */
-    private function formatXml($xml)
+    private function formatXml(string $xml): string
     {
         $output = '';
         $this->depth = 0;
@@ -92,20 +71,17 @@ final class XmlFileFormatter implements FileFormatterInterface
     }
 
     /**
-     * @param string $xml
-     * @return array
+     * @return string[]
      */
-    private function getXmlParts($xml)
+    private function getXmlParts(string $xml): array
     {
-        $withNewLines = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", trim($xml));
+        $xmlParts = '#(>)(<)(\/*)#';
+
+        $withNewLines = Strings::replace(trim($xml), $xmlParts, "$1\n$2$3");
         return explode("\n", $withNewLines);
     }
 
-    /**
-     * @param string $part
-     * @return string
-     */
-    private function getOutputForPart($part)
+    private function getOutputForPart(string $part): string
     {
         $output = '';
         $this->runPre($part);
@@ -122,23 +98,17 @@ final class XmlFileFormatter implements FileFormatterInterface
         return $output;
     }
 
-    /**
-     * @param string $part
-     */
-    private function runPre($part)
+    private function runPre(string $part): void
     {
         if ($this->isClosingTag($part)) {
-            $this->depth--;
+            --$this->depth;
         }
     }
 
-    /**
-     * @param string $part
-     */
-    private function runPost($part)
+    private function runPost(string $part): void
     {
         if ($this->isOpeningTag($part)) {
-            $this->depth++;
+            ++$this->depth;
         }
         if ($this->isClosingCdataTag($part)) {
             $this->preserveWhitespace = false;
@@ -148,48 +118,32 @@ final class XmlFileFormatter implements FileFormatterInterface
         }
     }
 
-    /**
-     * @param string $part
-     * @return string
-     */
-    private function getPaddedString($part)
+    private function getPaddedString(string $part): string
     {
         return str_pad($part, strlen($part) + ($this->depth * $this->indent), $this->padChar, STR_PAD_LEFT);
     }
 
-    /**
-     * @param string $part
-     * @return boolean
-     */
-    private function isOpeningTag($part)
+    private function isOpeningTag(string $part): bool
     {
-        return (bool) preg_match('/^<[^\/]*>$/', $part);
+        $isOpeningTag = '#^<[^\/]*>$#';
+
+        return (bool) Strings::match($part, $isOpeningTag);
     }
 
-    /**
-     * @param string $part
-     * @return boolean
-     */
-    private function isClosingTag($part)
+    private function isClosingTag(string $part): bool
     {
-        return (bool) preg_match('/^\s*<\//', $part);
+        $isClosingTag = '#^\s*<\/#';
+
+        return (bool) Strings::match($part, $isClosingTag);
     }
 
-    /**
-     * @param string $part
-     * @return boolean
-     */
-    private function isOpeningCdataTag($part)
+    private function isOpeningCdataTag(string $part): bool
     {
-        return strpos($part, '<![CDATA[') !== false;
+        return Strings::contains($part, '<![CDATA[');
     }
 
-    /**
-     * @param string $part
-     * @return boolean
-     */
-    private function isClosingCdataTag($part)
+    private function isClosingCdataTag(string $part): bool
     {
-        return strpos($part, ']]>') !== false;
+        return Strings::contains($part, ']]>');
     }
 }
