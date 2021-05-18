@@ -118,6 +118,16 @@ return [
             return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\#', 'Composer\\');
         },
 
+        // un-prefix phpstan-extracted Composer\Autoload\ClassLoader
+        function (string $filePath, string $prefix, string $content): string {
+            if (! Strings::contains($filePath, 'vendor/phpstan/phpstan-extracted/')) {
+                return $content;
+            }
+
+            // see https://regex101.com/r/1l9oxm/1
+            return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\Autoload\\\\\ClassLoader#', '\\Composer\\Autoload\\ClassLoader');
+        },
+
         // fixes https://github.com/rectorphp/rector/issues/6007
         function (string $filePath, string $prefix, string $content): string {
             if (! Strings::contains($filePath, 'vendor/')) {
