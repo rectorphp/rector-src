@@ -105,7 +105,20 @@ jobs:
                     token: ${{ secrets.ACCESS_TOKEN }}
 
             # remove remote files, to avoid piling up dead code in remote repository
-            -   run: rm -rf remote-repository-php70/.github rm -rf remote-repository-php70/config remote-repository-php70/src remote-repository-php70/rules remote-repository-php70/packages remote-repository-php70/upgrade remote-repository-php70/vendor
+            -   run: |
+                    rm -rf remote-repository-php70/.docker
+                    rm -rf remote-repository-php70/.github
+                    rm -rf remote-repository-php70/ci
+                    rm -rf remote-repository-php70/config
+                    rm -rf remote-repository-php70/docs
+                    rm -rf remote-repository-php70/src
+                    rm -rf remote-repository-php70/rules
+                    rm -rf remote-repository-php70/stubs
+                    rm -rf remote-repository-php70/tests
+                    rm -rf remote-repository-php70/packages
+                    rm -rf remote-repository-php70/upgrade
+                    rm -rf remote-repository-php70/vendor
+                    rm -rf phpunit.xml
 
             -   run: cp -a rector-prefixed-downgraded-php70/. remote-repository-php70
 
