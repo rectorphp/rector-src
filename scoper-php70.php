@@ -125,7 +125,7 @@ return [
             }
 
             // see https://regex101.com/r/1l9oxm/1
-            return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\Autoload\\\\\ClassLoader#', '\Composer\\Autoload\\ClassLoader');
+            return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\Autoload\\\\\ClassLoader#', 'Composer\\Autoload\\ClassLoader');
         },
 
         // fixes https://github.com/rectorphp/rector/issues/6007
