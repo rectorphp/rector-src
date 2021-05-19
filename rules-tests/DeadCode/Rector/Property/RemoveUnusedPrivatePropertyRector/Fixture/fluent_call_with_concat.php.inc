@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-class FluidCallWithConcat
+class FluentCallWithConcat
 {
 	private static $directory = 'CacheFactory';
 	private $cacheFactory;
@@ -21,7 +21,7 @@ class FluidCallWithConcat
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-class FluidCallWithConcat
+class FluentCallWithConcat
 {
 	private static $directory = 'CacheFactory';
 	private $config;
