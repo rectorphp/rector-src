@@ -30,10 +30,12 @@ jobs:
                     - ssch/typo3-rector
 
         steps:
+            # see https://github.com/actions/checkout#usage
             -
                 uses: "actions/checkout@v2"
                 with:
                     repository: ${{ matrix.package_name }}
+                    ref: "main"
 
             -
                 uses: shivammathur/setup-php@v2
