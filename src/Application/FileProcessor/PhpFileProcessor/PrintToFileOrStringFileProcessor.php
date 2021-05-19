@@ -31,9 +31,9 @@ final class PrintToFileOrStringFileProcessor implements PhpFileProcessorInterfac
             return;
         }
 
-        $newContent = $this->configuration->isDryRun() ? $this->formatPerservingPrinter->printParsedStmstAndTokensToString(
-            $file
-        ) : $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
+        $newContent = $this->configuration->isDryRun()
+            ? $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file)
+            : $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
 
         $file->changeFileContent($newContent);
         $this->fileDiffFileDecorator->decorate([$file]);

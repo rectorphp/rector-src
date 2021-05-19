@@ -147,22 +147,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
     }
 
-    private function printFile(File $file): void
-    {
-        $smartFileInfo = $file->getSmartFileInfo();
-        if ($this->removedAndAddedFilesCollector->isFileRemoved($smartFileInfo)) {
-            // skip, because this file exists no more
-            return;
-        }
-
-        $newContent = $this->configuration->isDryRun()
-            ? $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file)
-            : $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
-
-        $file->changeFileContent($newContent);
-        $this->fileDiffFileDecorator->decorate([$file]);
-    }
-
     /**
      * This prevent CI report flood with 1 file = 1 line in progress bar
      */
