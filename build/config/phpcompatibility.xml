@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHPCompatibility ruleset" xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+    <!--
+    #############################################################################
+    COMMAND LINE ARGUMENTS
+    https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml
+    #############################################################################
+    -->
+
+    <file>./rector-prefixed-downgraded/</file>
+
+    <!-- Exclude PHPDoc structure files. -->
+    <exclude-pattern>*/rector-prefixed-downgraded/stubs/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/error-handler/Resources/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/http-kernel/Resources/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/rector/rector-nette/tests/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/polyfill-mbstring/bootstrap80.php/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/tracy/tracy/examples/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/ssch/typo3-rector/templates/maker/*</exclude-pattern>
+
+    <!-- Only check PHP files. -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Show progress, show the error codes for each message (source). -->
+    <arg value="ps"/>
+
+    <!-- Strip the filepaths down to the relevant bit. -->
+    <arg name="basepath" value="./rector-prefixed-downgraded/"/>
+
+    <!-- Check up to 8 files simultaneously. -->
+    <arg name="parallel" value="8"/>
+
+    <!--
+    #############################################################################
+    SET THE RULESET
+    #############################################################################
+    -->
+
+    <!-- Set minimum PHP version supported to PHP 7.1. -->
+    <config name="testVersion" value="7.1-"/>
+
+    <rule ref="PHPCompatibility"/>
+
+</ruleset>
