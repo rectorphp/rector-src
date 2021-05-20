@@ -1,4 +1,4 @@
-name: Close Pull Request
+name: Auto Closer PR
 
 on:
   pull_request_target:
