@@ -41,11 +41,8 @@ final class DoctrineAnnotationClassToAttributeRector extends AbstractRector
         'CLASS' => 'TARGET_CLASS',
         'FUNCTION' => 'TARGET_FUNCTION',
         'ALL' => 'TARGET_ALL',
-<<<<<<< HEAD
-=======
         // special case
         'ANNOTATION' => 'TARGET_CLASS',
->>>>>>> 2d68f859f ([PHP 8.0] Add DoctrineAnnotationClassToAttributeRector)
     ];
 
     public function __construct(
