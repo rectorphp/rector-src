@@ -9,7 +9,7 @@ use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
-    $services->set(Rector\Transform\Rector\PropertyFetch\ClassPropertyFetchToClassMethodCallRector::class)
+    $services->set(ClassPropertyFetchToClassMethodCallRector::class)
         ->call(
             'configure',
             [
