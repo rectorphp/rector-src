@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Transform\ValueObject\ClassPropertyFetchToClassMethodCall;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -54,7 +53,8 @@ class SomeClass
         $this->somethingElse();
     }
 }
-CODE_SAMPLE,
+CODE_SAMPLE
+,
                     [
                         self::CLASS_PROPERTIES_TO_CLASS_METHOD_CALLS => [
                             new ClassPropertyFetchToClassMethodCall('SomeObject', 'property', 'someMethod'),
@@ -67,7 +67,7 @@ CODE_SAMPLE,
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -79,16 +79,16 @@ CODE_SAMPLE,
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->classPropertiesToClassMethodCalls as $classPropertiesToClassMethodCall) {
-            if (! $this->isObjectType($node->var, $classPropertiesToClassMethodCall->getObjecType())) {
+        foreach ($this->classPropertiesToClassMethodCalls as $classPropertyToClassMethodCall) {
+            if (! $this->isObjectType($node->var, $classPropertyToClassMethodCall->getObjecType())) {
                 continue;
             }
 
-            if (! $this->isName($node->name, $classPropertiesToClassMethodCall->getProperty())) {
+            if (! $this->isName($node->name, $classPropertyToClassMethodCall->getProperty())) {
                 continue;
             }
 
-            return $this->nodeFactory->createMethodCall($node->var, $classPropertiesToClassMethodCall->getMethod());
+            return $this->nodeFactory->createMethodCall($node->var, $classPropertyToClassMethodCall->getMethod());
         }
 
         return null;
