@@ -6,6 +6,6 @@
 -----
 <?php
 
-strstr('abc', 'b') === false;
+strpos('abc', 'b') === false;
 
 ?>

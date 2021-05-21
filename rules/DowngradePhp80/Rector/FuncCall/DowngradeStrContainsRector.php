@@ -24,7 +24,7 @@ final class DowngradeStrContainsRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace str_contains() with strstr() !== false',
+            'Replace str_contains() with strpos() !== false',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -42,7 +42,7 @@ class SomeClass
 {
     public function run()
     {
-        return strstr('abc', 'a') !== false;
+        return strpos('abc', 'a') !== false;
     }
 }
 CODE_SAMPLE
@@ -75,7 +75,7 @@ CODE_SAMPLE
         $haystack = $funcCall->args[0]->value;
         /** @var string $needle */
         $needle = $funcCall->args[1]->value;
-        $funcCall = $this->nodeFactory->createFuncCall('strstr', [$haystack, $needle]);
+        $funcCall = $this->nodeFactory->createFuncCall('strpos', [$haystack, $needle]);
 
         if ($node instanceof BooleanNot) {
             return new Identical($funcCall, $this->nodeFactory->createFalse());

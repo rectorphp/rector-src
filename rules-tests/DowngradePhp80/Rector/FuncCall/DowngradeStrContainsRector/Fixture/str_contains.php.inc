@@ -6,6 +6,6 @@ str_contains('abc', 'b');
 -----
 <?php
 
-strstr('abc', 'b') !== false;
+strpos('abc', 'b') !== false;
 
 ?>
