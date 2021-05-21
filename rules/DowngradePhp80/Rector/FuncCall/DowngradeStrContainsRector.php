@@ -73,7 +73,7 @@ CODE_SAMPLE
 
         $haystack = $funcCall->args[0]->value;
         $needle = $funcCall->args[1]->value;
-        
+
         $funcCall = $this->nodeFactory->createFuncCall('strpos', [$haystack, $needle]);
 
         if ($node instanceof BooleanNot) {
