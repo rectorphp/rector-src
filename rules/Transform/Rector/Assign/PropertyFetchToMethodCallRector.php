@@ -6,11 +6,13 @@ namespace Rector\Transform\Rector\Assign;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Tests\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector\Source\Method;
 use Rector\Transform\ValueObject\PropertyFetchToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -44,6 +46,7 @@ final class PropertyFetchToMethodCallRector extends AbstractRector implements Co
                 new PropertyFetchToMethodCall('SomeObject', 'property', 'getConfig', null, ['someArg']),
             ],
         ];
+
         return new RuleDefinition('Replaces properties assign calls be defined methods.', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
@@ -77,7 +80,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class];
+        return [PropertyFetch::class, Assign::class];
     }
 
     /**
@@ -85,6 +88,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if($node instanceof PropertyFetch) {
+            return $this->processPropertyFetch($node);
+        }
+
         if ($node->var instanceof PropertyFetch) {
             return $this->processSetter($node);
         }
@@ -112,7 +119,7 @@ CODE_SAMPLE
         $propertyFetchNode = $assign->var;
 
         $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetchNode);
-        if (! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
+        if ( ! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
             return null;
         }
 
@@ -133,25 +140,13 @@ CODE_SAMPLE
         /** @var PropertyFetch $propertyFetchNode */
         $propertyFetchNode = $assign->expr;
 
-        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetchNode);
-        if (! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
-            return null;
-        }
+        $propertyFetchNodeToMethodCall = $this->transformPropertyFetchToMethodCall($propertyFetchNode);
 
-        // simple method name
-        if ($propertyToMethodCall->getNewGetMethod() !== '') {
-            $assign->expr = $this->nodeFactory->createMethodCall(
-                $propertyFetchNode->var,
-                $propertyToMethodCall->getNewGetMethod()
-            );
-
-            if ($propertyToMethodCall->getNewGetArguments() !== []) {
-                $args = $this->nodeFactory->createArgs($propertyToMethodCall->getNewGetArguments());
-                $assign->expr->args = $args;
-            }
-
+        if($propertyFetchNodeToMethodCall === null) {
             return $assign;
         }
+
+        $assign->expr = $propertyFetchNodeToMethodCall;
 
         return $assign;
     }
@@ -159,11 +154,11 @@ CODE_SAMPLE
     private function matchPropertyFetchCandidate(PropertyFetch $propertyFetch): ?PropertyFetchToMethodCall
     {
         foreach ($this->propertiesToMethodCalls as $propertyToMethodCall) {
-            if (! $this->isObjectType($propertyFetch->var, $propertyToMethodCall->getOldObjectType())) {
+            if ( ! $this->isObjectType($propertyFetch->var, $propertyToMethodCall->getOldObjectType())) {
                 continue;
             }
 
-            if (! $this->isName($propertyFetch, $propertyToMethodCall->getOldProperty())) {
+            if ( ! $this->isName($propertyFetch, $propertyToMethodCall->getOldProperty())) {
                 continue;
             }
 
@@ -171,5 +166,40 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function processPropertyFetch(PropertyFetch $propertyFetchNode): ?MethodCall
+    {
+        $propertyFetchNodeToMethodCall = $this->transformPropertyFetchToMethodCall($propertyFetchNode);
+
+        if($propertyFetchNodeToMethodCall === null) {
+            return null;
+        }
+
+        return $propertyFetchNodeToMethodCall;
+    }
+
+    private function transformPropertyFetchToMethodCall(PropertyFetch $propertyFetchNode): ?MethodCall
+    {
+        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetchNode);
+        if ( ! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
+            return null;
+        }
+
+        if ($propertyToMethodCall->getNewGetMethod() === '') {
+            return null;
+        }
+
+        $args = [];
+
+        if ($propertyToMethodCall->getNewGetArguments() !== []) {
+            $args = $this->nodeFactory->createArgs($propertyToMethodCall->getNewGetArguments());
+        }
+
+        return $this->nodeFactory->createMethodCall(
+            $propertyFetchNode->var,
+            $propertyToMethodCall->getNewGetMethod(),
+            $args
+        );
     }
 }
