@@ -177,7 +177,7 @@ return [
         },
 
         function (string $filePath, string $prefix, string $content): string {
-            if (! Strings::match($filePath, 'vendor/ssch/typo3-rector/config/config.php')) {
+            if (! Strings::endsWith($filePath, 'vendor/ssch/typo3-rector/config/config.php')) {
                 return $content;
             }
 
