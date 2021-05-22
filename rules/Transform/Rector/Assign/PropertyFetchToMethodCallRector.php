@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\Variable;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Tests\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector\Source\Method;
 use Rector\Transform\ValueObject\PropertyFetchToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -84,11 +83,11 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Assign $node
+     * @param Assign|PropertyFetch $node
      */
     public function refactor(Node $node): ?Node
     {
-        if($node instanceof PropertyFetch) {
+        if ($node instanceof PropertyFetch) {
             return $this->processPropertyFetch($node);
         }
 
@@ -119,7 +118,7 @@ CODE_SAMPLE
         $propertyFetchNode = $assign->var;
 
         $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetchNode);
-        if ( ! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
+        if (! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
             return null;
         }
 
@@ -135,14 +134,14 @@ CODE_SAMPLE
         return $this->nodeFactory->createMethodCall($variable, $propertyToMethodCall->getNewSetMethod(), $args);
     }
 
-    private function processGetter(Assign $assign): ?Node
+    private function processGetter(Assign $assign): Assign
     {
         /** @var PropertyFetch $propertyFetchNode */
         $propertyFetchNode = $assign->expr;
 
         $propertyFetchNodeToMethodCall = $this->transformPropertyFetchToMethodCall($propertyFetchNode);
 
-        if($propertyFetchNodeToMethodCall === null) {
+        if (! $propertyFetchNodeToMethodCall instanceof MethodCall) {
             return $assign;
         }
 
@@ -154,11 +153,11 @@ CODE_SAMPLE
     private function matchPropertyFetchCandidate(PropertyFetch $propertyFetch): ?PropertyFetchToMethodCall
     {
         foreach ($this->propertiesToMethodCalls as $propertyToMethodCall) {
-            if ( ! $this->isObjectType($propertyFetch->var, $propertyToMethodCall->getOldObjectType())) {
+            if (! $this->isObjectType($propertyFetch->var, $propertyToMethodCall->getOldObjectType())) {
                 continue;
             }
 
-            if ( ! $this->isName($propertyFetch, $propertyToMethodCall->getOldProperty())) {
+            if (! $this->isName($propertyFetch, $propertyToMethodCall->getOldProperty())) {
                 continue;
             }
 
@@ -168,21 +167,17 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processPropertyFetch(PropertyFetch $propertyFetchNode): ?MethodCall
+    private function processPropertyFetch(PropertyFetch $propertyFetch): ?MethodCall
     {
-        $propertyFetchNodeToMethodCall = $this->transformPropertyFetchToMethodCall($propertyFetchNode);
-
-        if($propertyFetchNodeToMethodCall === null) {
-            return null;
-        }
+        $propertyFetchNodeToMethodCall = $this->transformPropertyFetchToMethodCall($propertyFetch);
 
         return $propertyFetchNodeToMethodCall;
     }
 
-    private function transformPropertyFetchToMethodCall(PropertyFetch $propertyFetchNode): ?MethodCall
+    private function transformPropertyFetchToMethodCall(PropertyFetch $propertyFetch): ?MethodCall
     {
-        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetchNode);
-        if ( ! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
+        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetch);
+        if (! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
             return null;
         }
 
@@ -197,7 +192,7 @@ CODE_SAMPLE
         }
 
         return $this->nodeFactory->createMethodCall(
-            $propertyFetchNode->var,
+            $propertyFetch->var,
             $propertyToMethodCall->getNewGetMethod(),
             $args
         );
