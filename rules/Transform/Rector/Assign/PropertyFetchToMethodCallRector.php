@@ -13,6 +13,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Transform\ValueObject\PropertyFetchToMethodCall;
+use Symfony\Component\VarDumper\VarDumper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -51,18 +52,6 @@ final class PropertyFetchToMethodCallRector extends AbstractRector implements Co
             ],
         ];
 
-        $thirdConfiguration = [
-            self::PROPERTIES_TO_METHOD_CALLS => [
-                new PropertyFetchToMethodCall(
-                    self::SOME_OBJECT,
-                    PropertyFetchToMethodCall::EQUIVALENT,
-                    PropertyFetchToMethodCall::EQUIVALENT,
-                    null,
-                    [
-                ]),
-            ],
-        ];
-
         return new RuleDefinition('Replaces properties assign calls be defined methods.', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
@@ -87,19 +76,6 @@ $result = $object->getProperty('someArg');
 CODE_SAMPLE
                 ,
                 $secondConfiguration
-            ),
-            new ConfiguredCodeSample(
-                <<<'CODE_SAMPLE'
-$foo = $object->foo;
-$bar = $object->bar;
-CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
-$foo = $object->foo();
-$bar = $object->bar();
-CODE_SAMPLE
-                ,
-                $thirdConfiguration
             ),
         ]);
     }
@@ -152,18 +128,19 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($propertyToMethodCall->getNewSetMethod() === null && ! $propertyToMethodCall->isEquivalent()) {
-            throw new ShouldNotHappenException();
-        }
+        $newMethod = $propertyToMethodCall->getNewSetMethod();
 
         $args = $this->nodeFactory->createArgs([$assign->expr]);
 
         /** @var Variable $variable */
         $variable = $propertyFetchNode->var;
 
-        $newMethod = $propertyToMethodCall->getNewSetMethod();
         if ($propertyToMethodCall->isEquivalent()) {
             $newMethod = $this->getName($propertyFetchNode->name);
+        }
+
+        if ($newMethod === null) {
+            throw new ShouldNotHappenException();
         }
 
         return $this->nodeFactory->createMethodCall($variable, $newMethod, $args);
@@ -192,14 +169,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $propertyToMethodCall->isEquivalent() && ! $this->isName(
-                $propertyFetch,
-                $propertyToMethodCall->getOldProperty()
-            )) {
+            if($propertyToMethodCall->shouldSkip($this->getName($propertyFetch))) {
                 continue;
             }
 
-            continue;
+            return $propertyToMethodCall;
         }
 
         return null;
@@ -217,7 +191,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($propertyToMethodCall->getNewGetMethod() === '') {
+        $newMethod = $propertyToMethodCall->getNewGetMethod();
+        if ($newMethod === '') {
             return null;
         }
 
@@ -227,10 +202,12 @@ CODE_SAMPLE
             $args = $this->nodeFactory->createArgs($propertyToMethodCall->getNewGetArguments());
         }
 
-        $newMethod = $propertyToMethodCall->getNewGetMethod();
-
         if ($propertyToMethodCall->isEquivalent()) {
             $newMethod = $this->getName($propertyFetch->name);
+        }
+
+        if ($newMethod === null) {
+            throw new ShouldNotHappenException();
         }
 
         return $this->nodeFactory->createMethodCall($propertyFetch->var, $newMethod, $args);

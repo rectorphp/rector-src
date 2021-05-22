@@ -55,6 +55,27 @@ final class PropertyFetchToMethodCall
 
     public function isEquivalent(): bool
     {
-        return $this->oldProperty === self::EQUIVALENT && ($this->newGetMethod === self::EQUIVALENT || $this->newSetMethod === self::EQUIVALENT);
+        if($this->oldProperty !== self::EQUIVALENT) {
+            return false;
+        }
+
+        if($this->newGetMethod !== self::EQUIVALENT) {
+            return false;
+        }
+
+        return  $this->newSetMethod === self::EQUIVALENT;
+    }
+
+    public function shouldSkip(?string $propertyName): bool
+    {
+        if($propertyName === null) {
+            return true;
+        }
+
+        if($propertyName === $this->oldProperty) {
+            return false;
+        }
+
+        return !$this->isEquivalent();
     }
 }

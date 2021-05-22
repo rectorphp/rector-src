@@ -22,7 +22,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                         ['parameter']
                     ),
                     new PropertyFetchToMethodCall('Rector\Tests\Transform\Rector\Assign\PropertyFetchToMethodCallRector\Fixture\Fixture3', 'word', 'word', null, []),
-                    new PropertyFetchToMethodCall('Rector\Tests\Transform\Rector\Assign\PropertyFetchToMethodCallRector\Fixture\Fixture3', PropertyFetchToMethodCall::EQUIVALENT, PropertyFetchToMethodCall::EQUIVALENT, null, [])
+                    new PropertyFetchToMethodCall('Rector\Tests\Transform\Rector\Assign\PropertyFetchToMethodCallRector\Fixture\Fixture3', PropertyFetchToMethodCall::EQUIVALENT, PropertyFetchToMethodCall::EQUIVALENT, PropertyFetchToMethodCall::EQUIVALENT, [])
                 ]
             ),
         ]]);
