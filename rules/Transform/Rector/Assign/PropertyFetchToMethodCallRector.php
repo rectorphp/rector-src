@@ -169,9 +169,7 @@ CODE_SAMPLE
 
     private function processPropertyFetch(PropertyFetch $propertyFetch): ?MethodCall
     {
-        $propertyFetchNodeToMethodCall = $this->transformPropertyFetchToMethodCall($propertyFetch);
-
-        return $propertyFetchNodeToMethodCall;
+        return $this->transformPropertyFetchToMethodCall($propertyFetch);
     }
 
     private function transformPropertyFetchToMethodCall(PropertyFetch $propertyFetch): ?MethodCall
