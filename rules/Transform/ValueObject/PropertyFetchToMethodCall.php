@@ -9,6 +9,11 @@ use PHPStan\Type\ObjectType;
 final class PropertyFetchToMethodCall
 {
     /**
+     * @var string
+     */
+    public const EQUIVALENT = 'equivalent';
+
+    /**
      * @param mixed[] $newGetArguments
      */
     public function __construct(
@@ -46,5 +51,10 @@ final class PropertyFetchToMethodCall
     public function getNewGetArguments(): array
     {
         return $this->newGetArguments;
+    }
+
+    public function isEquivalent(): bool
+    {
+        return $this->oldProperty === self::EQUIVALENT && ($this->newGetMethod === self::EQUIVALENT || $this->newSetMethod === self::EQUIVALENT);
     }
 }

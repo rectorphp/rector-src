@@ -46,6 +46,12 @@ final class PropertyFetchToMethodCallRector extends AbstractRector implements Co
             ],
         ];
 
+        $thirdConfiguration = [
+            self::PROPERTIES_TO_METHOD_CALLS => [
+                new PropertyFetchToMethodCall('SomeObject', PropertyFetchToMethodCall::EQUIVALENT, PropertyFetchToMethodCall::EQUIVALENT, null, []),
+            ],
+        ];
+
         return new RuleDefinition('Replaces properties assign calls be defined methods.', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
@@ -70,6 +76,19 @@ $result = $object->getProperty('someArg');
 CODE_SAMPLE
                 ,
                 $secondConfiguration
+            ),
+            new ConfiguredCodeSample(
+                <<<'CODE_SAMPLE'
+$foo = $object->foo;
+$bar = $object->bar;
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+$foo = $object->foo();
+$bar = $object->bar();
+CODE_SAMPLE
+                ,
+                $thirdConfiguration
             ),
         ]);
     }
@@ -122,7 +141,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($propertyToMethodCall->getNewSetMethod() === null) {
+        if ($propertyToMethodCall->getNewSetMethod() === null && !$propertyToMethodCall->isEquivalent()) {
             throw new ShouldNotHappenException();
         }
 
@@ -131,7 +150,12 @@ CODE_SAMPLE
         /** @var Variable $variable */
         $variable = $propertyFetchNode->var;
 
-        return $this->nodeFactory->createMethodCall($variable, $propertyToMethodCall->getNewSetMethod(), $args);
+        $newMethod = $propertyToMethodCall->getNewSetMethod();
+        if($propertyToMethodCall->isEquivalent()) {
+            $newMethod = $this->getName($propertyFetchNode->name);
+        }
+
+        return $this->nodeFactory->createMethodCall($variable, $newMethod, $args);
     }
 
     private function processGetter(Assign $assign): Assign
@@ -157,7 +181,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isName($propertyFetch, $propertyToMethodCall->getOldProperty())) {
+            if (!$propertyToMethodCall->isEquivalent() && ! $this->isName($propertyFetch, $propertyToMethodCall->getOldProperty())) {
                 continue;
             }
 
@@ -167,14 +191,14 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processPropertyFetch(PropertyFetch $propertyFetch): ?MethodCall
+    private function processPropertyFetch(PropertyFetch $propertyFetchNode): ?MethodCall
     {
-        return $this->transformPropertyFetchToMethodCall($propertyFetch);
+        return $this->transformPropertyFetchToMethodCall($propertyFetchNode);
     }
 
-    private function transformPropertyFetchToMethodCall(PropertyFetch $propertyFetch): ?MethodCall
+    private function transformPropertyFetchToMethodCall(PropertyFetch $propertyFetchNode): ?MethodCall
     {
-        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetch);
+        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetchNode);
         if (! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
             return null;
         }
@@ -189,9 +213,15 @@ CODE_SAMPLE
             $args = $this->nodeFactory->createArgs($propertyToMethodCall->getNewGetArguments());
         }
 
+        $newMethod = $propertyToMethodCall->getNewGetMethod();
+
+        if($propertyToMethodCall->isEquivalent()) {
+            $newMethod = $this->getName($propertyFetchNode->name);
+        }
+
         return $this->nodeFactory->createMethodCall(
-            $propertyFetch->var,
-            $propertyToMethodCall->getNewGetMethod(),
+            $propertyFetchNode->var,
+            $newMethod,
             $args
         );
     }
