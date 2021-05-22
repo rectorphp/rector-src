@@ -176,15 +176,6 @@ return [
             return Unprefixer::unprefixQuoted($content, $prefix);
         },
 
-        function (string $filePath, string $prefix, string $content): string {
-            if (! Strings::endsWith($filePath, 'vendor/ssch/typo3-rector/config/config.php')) {
-                return $content;
-            }
-
-            // @see https://3v4l.org/88T2S
-            return str_replace("$prefix\Ssch\\TYPO3Rector\\", "Ssch\\TYPO3Rector\\", $content);
-        },
-
         // scoper missed PSR-4 autodiscovery in Symfony
         function (string $filePath, string $prefix, string $content): string {
             // scoper missed PSR-4 autodiscovery in Symfony
@@ -194,6 +185,10 @@ return [
 
             // skip "Rector\\" namespace
             if (Strings::contains($content, '$services->load(\'Rector')) {
+                return $content;
+            }
+
+            if (Strings::endsWith($filePath, 'vendor/ssch/typo3-rector/config/config.php')) {
                 return $content;
             }
 
