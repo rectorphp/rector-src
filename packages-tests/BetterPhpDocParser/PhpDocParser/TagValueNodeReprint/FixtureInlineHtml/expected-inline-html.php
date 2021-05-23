@@ -12,5 +12,3 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\Fixtu
  * @var string $hello
  */
 ?>
-<h1><?php echo $hello; ?></h1>
-
