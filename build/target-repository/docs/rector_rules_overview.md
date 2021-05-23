@@ -1,10 +1,10 @@
-# 493 Rules Overview
+# 495 Rules Overview
 
 <br>
 
 ## Categories
 
-- [Arguments](#arguments) (4)
+- [Arguments](#arguments) (5)
 
 - [Autodiscovery](#autodiscovery) (4)
 
@@ -18,7 +18,7 @@
 
 - [Composer](#composer) (6)
 
-- [DeadCode](#deadcode) (47)
+- [DeadCode](#deadcode) (46)
 
 - [Defluent](#defluent) (9)
 
@@ -36,7 +36,7 @@
 
 - [DowngradePhp74](#downgradephp74) (11)
 
-- [DowngradePhp80](#downgradephp80) (10)
+- [DowngradePhp80](#downgradephp80) (11)
 
 - [EarlyReturn](#earlyreturn) (11)
 
@@ -76,7 +76,7 @@
 
 - [Php74](#php74) (14)
 
-- [Php80](#php80) (16)
+- [Php80](#php80) (17)
 
 - [Php81](#php81) (2)
 
@@ -204,6 +204,41 @@ return static function (ContainerConfigurator $containerConfigurator): void {
  $someObject = new SomeClass;
 -$someObject->someMethod(SomeClass::OLD_CONSTANT);
 +$someObject->someMethod(false);'
+```
+
+<br>
+
+### FunctionArgumentDefaultValueReplacerRector
+
+Streamline the operator arguments of version_compare function
+
+:wrench: **configure it!**
+
+- class: [`Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector`](../../../rules/Arguments/Rector/FuncCall/FunctionArgumentDefaultValueReplacerRector.php)
+
+```php
+use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
+use Rector\Arguments\ValueObject\FuncCallArgumentDefaultValueReplacer;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
+
+return static function (ContainerConfigurator $containerConfigurator): void {
+    $services = $containerConfigurator->services();
+
+    $services->set(FunctionArgumentDefaultValueReplacerRector::class)
+        ->call('configure', [[
+            FunctionArgumentDefaultValueReplacerRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
+                new FuncCallArgumentDefaultValueReplacer('version_compare', 2, 'gte', 'ge'),
+            ]),
+        ]]);
+};
+```
+
+↓
+
+```diff
+-version_compare(PHP_VERSION, '5.6', 'gte');
++version_compare(PHP_VERSION, '5.6', 'ge');
 ```
 
 <br>
@@ -3551,35 +3586,6 @@ Remove unused parent call with no parent class
 
 <br>
 
-### RemoveSetterOnlyPropertyAndMethodCallRector
-
-Removes method that set values that are never used
-
-- class: [`Rector\DeadCode\Rector\Property\RemoveSetterOnlyPropertyAndMethodCallRector`](../../../rules/DeadCode/Rector/Property/RemoveSetterOnlyPropertyAndMethodCallRector.php)
-
-```diff
- class SomeClass
- {
--    private $name;
--
--    public function setName($name)
--    {
--        $this->name = $name;
--    }
- }
-
- class ActiveOnlySetter
- {
-     public function run()
-     {
-         $someClass = new SomeClass();
--        $someClass->setName('Tom');
-     }
- }
-```
-
-<br>
-
 ### RemoveUnreachableStatementRector
 
 Remove unreachable statements
@@ -4756,11 +4762,23 @@ Downgrade `stream_isatty()` function
      {
 -        $isStream = stream_isatty($stream);
 +        $streamIsatty = function ($stream) {
++            if (\function_exists('stream_isatty')) {
++                return stream_isatty($stream);
++            }
++
++            if (!\is_resource($stream)) {
++                trigger_error('stream_isatty() expects parameter 1 to be resource, '.\gettype($stream).' given', \E_USER_WARNING);
++
++                return false;
++            }
++
 +            if ('\\' === \DIRECTORY_SEPARATOR) {
 +                $stat = @fstat($stream);
-+                return $stat ? 020000 === ($stat['mode'] & 0170000) : false;
++                // Check if formatted mode is S_IFCHR
++                return $stat ? 0020000 === ($stat['mode'] & 0170000) : false;
 +            }
-+            return @posix_isatty($stream);
++
++            return \function_exists('posix_isatty') && @posix_isatty($stream);
 +        };
 +        $isStream = $streamIsatty($stream);
      }
@@ -5281,6 +5299,25 @@ Remove "static" return and param type, add a `"@param` `$this"` and `"@return` `
 +    public function getStatic()
      {
          return new static();
+     }
+ }
+```
+
+<br>
+
+### DowngradeStrContainsRector
+
+Replace `str_contains()` with `strpos()` !== false
+
+- class: [`Rector\DowngradePhp80\Rector\FuncCall\DowngradeStrContainsRector`](../../../rules/DowngradePhp80/Rector/FuncCall/DowngradeStrContainsRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function run()
+     {
+-        return str_contains('abc', 'a');
++        return strpos('abc', 'a') !== false;
      }
  }
 ```
@@ -8056,6 +8093,28 @@ Change simple property init and assign to constructor promotion
      {
 -        $this->someVariable = $someVariable;
      }
+ }
+```
+
+<br>
+
+### DoctrineAnnotationClassToAttributeRector
+
+Refactor Doctrine `@annotation` annotated class to a PHP 8.0 attribute class
+
+- class: [`Rector\Php80\Rector\Class_\DoctrineAnnotationClassToAttributeRector`](../../../rules/Php80/Rector/Class_/DoctrineAnnotationClassToAttributeRector.php)
+
+```diff
+-use Doctrine\Common\Annotations\Annotation\Target;
++use Attribute;
+
+-/**
+- * @Annotation
+- * @Target({"METHOD"})
+- */
++#[Attribute(Attribute::TARGET_METHOD)]
+ class SomeAnnotation
+ {
  }
 ```
 
