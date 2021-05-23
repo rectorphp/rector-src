@@ -4,28 +4,31 @@
 
 <br>
 
-Rector helps you with 2 areas - major code changes and in daily work.
+Rector instantly upgrades and refactors the PHP code of your application.  It can help you 2 major areas:
 
-- Do you want to be constantly on the latest PHP/framework version without effort?
-  → **Rector gets you there with instant upgrade**.
+### 1. Instant Upgrades
 
-<br>
+Rector now supports upgrades from PHP 5.3 to 8.0 and major open-source projects like [Symfony](https://github.com/rectorphp/rector-symfony), [PHPUnit](https://github.com/rectorphp/rector-phpunit), [Nette](https://github.com/rectorphp/rector-nette), [Laravel](https://github.com/rectorphp/rector-laravel), [CakePHP](https://github.com/rectorphp/rector-cakephp), [Doctrine](https://github.com/rectorphp/rector-doctrine) and [Typo3](https://github.com/sabbelasichon/typo3-rector) out of the box. Do you want to **be constantly on the latest PHP/framework version without effort**?
 
-- Do you have code quality you need, but struggle to keep it with new developers in your team? Do you want continuous   code-reviews and delegate boring work?
-  → **Add Rector to you CI and let it fix your code for you. Get [instant feedback](https://tomasvotruba.com/blog/2020/01/13/why-is-first-instant-feedback-crucial-to-developers/) after each commit.**
+Use Rector to handle **instant upgrades** for you.
 
-<br>
+### 2. Automated Refactoring
 
-Rector is a tool that [we develop](https://getrector.org/) and share for free, so anyone can automate their refactoring.
+Do you have code quality you need, but struggle to keep it with new developers in your team? Do you want see smart code-reviews even when every senior developers sleeps?
 
-Don't have time  you want to learn Rector faster, add it to your CI or cleanup your code base? [Hire us](https://getrector.org/contact) to help you.
+Add Rector to your CI and let it **continuously refactor your code** and keep the code quality high.
 
 <br>
 
-## Supported Projects
+## Read a First Book About Rector
 
-Rector **instantly upgrades and refactors the PHP code of your application**.
-It supports all versions of PHP from 5.3 and major open-source projects - [Symfony](https://github.com/rectorphp/rector-symfony), [PHPUnit](https://github.com/rectorphp/rector-phpunit), [Nette](https://github.com/rectorphp/rector-nette), [Laravel](https://github.com/rectorphp/rector-laravel), [CakePHP](https://github.com/rectorphp/rector-cakephp), [Doctrine](https://github.com/rectorphp/rector-doctrine) and [Typo3](https://github.com/sabbelasichon/typo3-rector) out of the box.
+Are you curious, how Rector works internally, how to create your own rules and test them and why Rector was born? In May 2021 we've released the very first book: *Rector - The Power of Automated Refactoring*.
+
+<a href="https://leanpub.com/rector-the-power-of-automated-refactoring">
+<img src="https://github.com/rectorphp/the-power-of-automated-refactoring-feedback/raw/main/images/book_title.png">
+</a>
+
+By [buying a book](https://leanpub.com/rector-the-power-of-automated-refactoring) you directly support maintainers who are working on Rector.
 
 <br>
 
@@ -127,6 +130,14 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, getcwd() . '/phpstan-for-config.neon');
 };
 ```
+
+<br>
+
+## Support
+
+Rector is a tool that [we develop](https://getrector.org/) and share for free, so anyone can automate their refactoring. But not everyone has dozens of hours to understand complexity of abstract-syntax-tree in their own time. **That's why we provide commercial support - to save your time**.
+
+Would you like to apply Rector on your code base but don't have time for the struggle with your project? [Hire us](https://getrector.org/contact) to get there faster.
 
 <br>
 
