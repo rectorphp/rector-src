@@ -94,6 +94,10 @@ final class PhpDocInfoPrinter
             return $this->docBlockInliner->inline($docContent);
         }
 
+        if ($phpDocInfo->getNode() instanceof InlineHTML) {
+            return '<?php'.PHP_EOL. $docContent .PHP_EOL.'?>';
+        }
+
         return $docContent;
     }
 
