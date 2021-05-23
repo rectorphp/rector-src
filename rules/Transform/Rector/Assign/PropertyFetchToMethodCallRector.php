@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Variable;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Transform\ValueObject\PropertyFetchToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -90,7 +89,7 @@ CODE_SAMPLE
             return $this->processSetter($node);
         }
 
-        if($node instanceof PropertyFetch) {
+        if ($node instanceof PropertyFetch) {
             return $this->processGetter($node);
         }
 
@@ -129,9 +128,9 @@ CODE_SAMPLE
         return $this->nodeFactory->createMethodCall($variable, $propertyToMethodCall->getNewSetMethod(), $args);
     }
 
-    private function processGetter(PropertyFetch $propertyFetchNode): ?Node
+    private function processGetter(PropertyFetch $propertyFetch): ?Node
     {
-        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetchNode);
+        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetch);
         if (! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
             return null;
         }
@@ -139,7 +138,7 @@ CODE_SAMPLE
         // simple method name
         if ($propertyToMethodCall->getNewGetMethod() !== '') {
             $methodCall = $this->nodeFactory->createMethodCall(
-                $propertyFetchNode->var,
+                $propertyFetch->var,
                 $propertyToMethodCall->getNewGetMethod()
             );
 
@@ -151,7 +150,7 @@ CODE_SAMPLE
             return $methodCall;
         }
 
-        return $propertyFetchNode;
+        return $propertyFetch;
     }
 
     private function matchPropertyFetchCandidate(PropertyFetch $propertyFetch): ?PropertyFetchToMethodCall
