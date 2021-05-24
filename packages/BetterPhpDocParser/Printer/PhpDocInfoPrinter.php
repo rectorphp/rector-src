@@ -55,7 +55,7 @@ final class PhpDocInfoPrinter
     /**
      * @var string
      */
-    private const NEWLINE_WITH_ASTERISK = PHP_EOL . ' * ';
+    private const NEWLINE_WITH_ASTERISK = "\n" . ' * ';
 
     /**
      * @see https://regex101.com/r/WR3goY/1/
