@@ -27,7 +27,7 @@ final class VerifyRectorServiceExistsCompilerPass implements CompilerPassInterfa
 
             if (!class_exists($class)) {
                 throw new ShouldNotHappenException(
-                    sprintf('Rector rule "%s" not found, please verify that the class exists.', $class)
+                    sprintf('Rector rule "%s" not found, please verify that the class exists and is autoloadable.', $class)
                 );
             }
 
