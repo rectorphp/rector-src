@@ -7,6 +7,7 @@ namespace Rector\Core\DependencyInjection\CompilerPass;
 use Nette\Utils\Strings;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Rector\AbstractRector;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -24,9 +25,15 @@ final class VerifyRectorServiceExistsCompilerPass implements CompilerPassInterfa
                 continue;
             }
 
+            if (!class_exists($class)) {
+                throw new ShouldNotHappenException(
+                    sprintf('Rector rule "%s" not found, please verify that the rule exists.', $class)
+                );
+            }
+
             if (! is_a($class, RectorInterface::class, true)) {
                 throw new ShouldNotHappenException(
-                    sprintf('Rector rule "%s" not found, please verify that the rule exists', $class)
+                    sprintf('Rector rule "%s" should extend "%s" or implement "%s".', $class, AbstractRector::class, RectorInterface::class)
                 );
             }
         }
