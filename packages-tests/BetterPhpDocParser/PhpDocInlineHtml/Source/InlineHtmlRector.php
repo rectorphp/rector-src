@@ -28,9 +28,13 @@ class InlineHtmlRector extends AbstractRector
      */
     public function refactor(Node $inlineHtml): ?Node
     {
-        if ($inlineHtml->getAttribute(AttributeKey::PREVIOUS_NODE) === null) {
+        if (strpos($inlineHtml->value, '<h1>') !== false) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($inlineHtml);
-            $phpDocInfo->addTagValueNode(new VarTagValueNode(new IdentifierTypeNode('string'), '$hello', ''));
+            $phpDocInfo->addTagValueNode(new VarTagValueNode(new IdentifierTypeNode('string'), '$hello1', ''));
+        }
+        if (strpos($inlineHtml->value, '<h2>') !== false) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($inlineHtml);
+            $phpDocInfo->addTagValueNode(new VarTagValueNode(new IdentifierTypeNode('string'), '$hello2', ''));
         }
 
         return null;
