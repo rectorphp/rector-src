@@ -53,7 +53,7 @@ final class PhpDocInfoPrinter
     private const DOCBLOCK_START_REGEX = '#^(\/\/|\/\*\*|\/\*|\#)#';
 
     /**
-     * @var string
+     * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines 
      */
     private const NEWLINE_WITH_ASTERISK = "\n" . ' * ';
 
