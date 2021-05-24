@@ -210,6 +210,10 @@ parameters:
         -
             message: '#Call to function is_string\(\) with float will always evaluate to false#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php
+            
+        -
+            message:  '#Function "class_exists\(\)" cannot be used/left in the code#'
+            path: src/DependencyInjection/CompilerPass/VerifyRectorServiceExistsCompilerPass.php         
 
         # known values from other methods
         -
