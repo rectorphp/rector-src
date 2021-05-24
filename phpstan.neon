@@ -210,7 +210,8 @@ parameters:
         -
             message: '#Call to function is_string\(\) with float will always evaluate to false#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php
-            
+
+        # class_exists is forbidden to enforce static reflection, but at this point it works for us
         -
             message:  '#Function "class_exists\(\)" cannot be used/left in the code#'
             path: src/DependencyInjection/CompilerPass/VerifyRectorServiceExistsCompilerPass.php         
