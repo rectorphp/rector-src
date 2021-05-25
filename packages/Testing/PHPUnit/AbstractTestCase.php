@@ -87,7 +87,7 @@ abstract class AbstractTestCase extends TestCase
       }
 
     protected function assertStringEqualsFileNoMatterEol(string $expectedFilePath, string $actual):void {
-        $expected = str_replace("\r\n", "\n", $expected);
+        $expectedFilePath = str_replace("\r\n", "\n", $expectedFilePath);
         $actual = str_replace("\r\n", "\n", $actual);
 
         $this->assertStringEqualsFile($expectedFilePath, $actual);
