@@ -131,7 +131,8 @@ final class BetterStandardPrinter extends Standard
         // to keep indexes from 0
         $stmts = array_values($stmts);
 
-        return parent::prettyPrintFile($stmts) . PHP_EOL;
+        // Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines 
+        return parent::prettyPrintFile($stmts) . "\n";
     }
 
     public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
