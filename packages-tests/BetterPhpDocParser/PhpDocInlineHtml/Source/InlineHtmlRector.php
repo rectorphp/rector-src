@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\BetterPhpDocParser\PhpDocInlineHtml;
+namespace Rector\Tests\BetterPhpDocParser\PhpDocInlineHtml\Source;
 
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
