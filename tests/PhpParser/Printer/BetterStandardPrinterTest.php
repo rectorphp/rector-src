@@ -40,8 +40,8 @@ final class BetterStandardPrinterTest extends AbstractTestCase
         $classMethod = $methodBuilder->getNode();
 
         $printed = $this->betterStandardPrinter->print($classMethod) . PHP_EOL;
-        $this->assertStringEqualsFile(
-            __DIR__ . '/Source/expected_code_with_non_stmt_placed_nested_comment.php.inc',
+        $this->assertSameStringsNoMatterEol(
+            file_get_contents(__DIR__ . '/Source/expected_code_with_non_stmt_placed_nested_comment.php.inc'),
             $printed
         );
     }
@@ -89,4 +89,12 @@ final class BetterStandardPrinterTest extends AbstractTestCase
         $printed = $this->betterStandardPrinter->print($expression);
         $this->assertSame("yield 'value';", $printed);
     }
+
+    private function assertSameStringsNoMatterEol(string $expected, string $actual)
+    {
+        $expected = preg_replace('/(\r\n|\n\r|\r)/', "\n", $expected);
+        $actual = preg_replace('/(\r\n|\n\r|\r)/', "\n", $actual);
+
+        $this->assertSame($expected, $actual);
+     }
 }
