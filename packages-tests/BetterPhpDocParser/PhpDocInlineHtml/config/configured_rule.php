@@ -10,7 +10,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $parameters = $containerConfigurator->parameters();
 
-    require_once __DIR__.'/../Source/InlineHtmlRector.php';
-
-    $services->set(\Rector\Tests\BetterPhpDocParser\PhpDocInlineHtml\InlineHtmlRector::class);
+    $services->set(\Rector\Tests\BetterPhpDocParser\PhpDocInlineHtml\Source\InlineHtmlRector::class);
 };
