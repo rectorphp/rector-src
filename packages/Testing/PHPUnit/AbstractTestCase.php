@@ -89,9 +89,6 @@ abstract class AbstractTestCase extends TestCase
     protected function assertStringEqualsFileNoMatterEol(string $expectedFilePath, string $actual):void {
         $expected = file_get_contents($expectedFilePath) ?? '';
         
-        $expected = str_replace("\r\n", "\n", $expected);
-        $actual = str_replace("\r\n", "\n", $actual);
-
         $this->assertSameStringsNoMatterEol($expected, $actual);
     }
 }
