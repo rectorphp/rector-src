@@ -52,7 +52,7 @@ final class BetterStandardPrinterTest extends AbstractTestCase
         $string->setAttribute(AttributeKey::COMMENTS, [new Comment('// todo: fix')]);
 
         $printed = $this->betterStandardPrinter->print($string) . PHP_EOL;
-        $this->assertStringEqualsFile(__DIR__ . '/Source/expected_code_with_comment.php.inc', $printed);
+        $this->assertSameStringsNoMatterEol(file_get_contents(__DIR__ . '/Source/expected_code_with_comment.php.inc'), $printed);
     }
 
     /**
