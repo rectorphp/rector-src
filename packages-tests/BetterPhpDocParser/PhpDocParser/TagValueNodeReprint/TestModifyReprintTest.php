@@ -64,7 +64,7 @@ final class TestModifyReprintTest extends AbstractTestCase
         $expectedDocContent = trim($inputFileInfoAndExpected->getExpected());
 
         $printedPhpDocInfo = $this->printPhpDocInfoToString($phpDocInfo);
-        $this->assertSame($expectedDocContent, $printedPhpDocInfo);
+        $this->assertSameStringsNoMatterEol($expectedDocContent, $printedPhpDocInfo);
     }
 
     /**
