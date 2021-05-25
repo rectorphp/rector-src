@@ -77,4 +77,19 @@ abstract class AbstractTestCase extends TestCase
 
         return $configHash;
     }
+    
+    protected function assertSameStringsNoMatterEol(string $expected, string $actual):void
+     {
+         $expected = str_replace("\r\n", "\n", $expected);
+         $actual = str_replace("\r\n", "\n", $actual);
+
+         $this->assertSame($expected, $actual);
+      }
+
+    protected function assertStringEqualsFileNoMatterEol(string $expectedFilePath, string $actual):void {
+        $expected = str_replace("\r\n", "\n", $expected);
+        $actual = str_replace("\r\n", "\n", $actual);
+
+        $this->assertStringEqualsFile($expectedFilePath, $actual);
+    }
 }
