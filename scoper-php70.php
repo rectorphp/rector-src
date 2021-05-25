@@ -188,7 +188,8 @@ return [
                 return $content;
             }
 
-            if (Strings::endsWith($filePath, 'vendor/ssch/typo3-rector/config/config.php')) {
+            // skip "Ssch\\" namespace
+            if (Strings::contains($content, '$services->load(\'Ssch')) {
                 return $content;
             }
 
