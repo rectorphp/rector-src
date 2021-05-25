@@ -130,7 +130,7 @@ final class BetterStandardPrinter extends Standard
     {
         // to keep indexes from 0
         $stmts = array_values($stmts);
-        
+
         return parent::prettyPrintFile($stmts) . PHP_EOL;
     }
 
