@@ -89,12 +89,4 @@ final class BetterStandardPrinterTest extends AbstractTestCase
         $printed = $this->betterStandardPrinter->print($expression);
         $this->assertSame("yield 'value';", $printed);
     }
-
-    private function assertSameStringsNoMatterEol(string $expected, string $actual)
-    {
-        $expected = preg_replace('/(\r\n|\n\r|\r)/', "\n", $expected);
-        $actual = preg_replace('/(\r\n|\n\r|\r)/', "\n", $actual);
-
-        $this->assertSame($expected, $actual);
-     }
 }
