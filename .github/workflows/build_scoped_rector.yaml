@@ -58,7 +58,7 @@ jobs:
             -   run: php-parallel-lint/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/symfony/error-handler/Resources --exclude rector-prefixed-downgraded/vendor/symfony/http-kernel/Resources --exclude rector-prefixed-downgraded/vendor/rector/rector-nette/tests --exclude rector-prefixed-downgraded/vendor/symfony/polyfill-mbstring/bootstrap80.php --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/ssch/typo3-rector/templates/maker
 
             -   run: composer create-project phpcompatibility/php-compatibility phpcompatibility --ansi
-            -   run: cp build/phpcompatibility.xml phpcompatibility.xml
+            -   run: cp build/config/phpcompatibility.xml phpcompatibility.xml
             -   run: phpcompatibility/vendor/bin/phpcs --standard=phpcompatibility.xml
             -   run: rm phpcompatibility.xml
 
