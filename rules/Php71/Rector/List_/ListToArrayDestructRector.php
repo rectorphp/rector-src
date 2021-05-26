@@ -24,7 +24,7 @@ final class ListToArrayDestructRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change List to Array Destruct', [
+        return new RuleDefinition('Change list() to array destruct', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
