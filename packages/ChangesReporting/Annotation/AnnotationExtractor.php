@@ -29,8 +29,8 @@ final class AnnotationExtractor
         $pattern = '#' . preg_quote($annotation, '#') . '\s+(?<content>.*?)$#m';
         $matches = Strings::match($docComment, $pattern);
 
-        if ($matches && $matches['content']) {
-            return trim($matches['content']);
+        if ($matches && isset($matches['content'])) {
+            return rtrim($matches['content']);
         }
         return null;
     }
