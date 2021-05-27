@@ -139,10 +139,6 @@ final class AutoloadIncluder
 // load local php-parser only in prefixed version or development repository
 function should_include_preload(): bool
 {
-    if (file_exists(__DIR__ . '/../vendor/scoper-autoload.php')) {
-        return true;
-    }
-
     if (! file_exists(getcwd() . '/composer.json')) {
         return false;
     }
