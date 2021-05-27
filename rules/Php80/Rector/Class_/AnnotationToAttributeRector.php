@@ -188,15 +188,15 @@ CODE_SAMPLE
     }
 
     private function shouldSkip(
-        PhpDocTagValueNode $tagValue,
+        PhpDocTagValueNode $phpDocTagValueNode,
         PhpDocInfo $phpDocInfo,
         string $annotationToAttributeTag
     ): bool {
         $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass($annotationToAttributeTag);
-        if ($tagValue !== $doctrineAnnotationTagValueNode) {
+        if ($phpDocTagValueNode !== $doctrineAnnotationTagValueNode) {
             return true;
         }
 
-        return ! $tagValue instanceof DoctrineAnnotationTagValueNode;
+        return ! $phpDocTagValueNode instanceof DoctrineAnnotationTagValueNode;
     }
 }
