@@ -63,6 +63,7 @@ jobs:
             # the vendor/phpstan/phpstan/bootstrap.php is statically included by composer, so better add empty file
             -   run: echo "<?php " > vendor/phpstan/phpstan/bootstrap.php
             -   run: echo "require_once __DIR__ . '/vendor/phpstan/phpstan-extracted/preload.php';" >> preload.php
+            -   run: echo "require_once __DIR__ . '/vendor/phpstan/phpstan-extracted/preload.php';" >> preload.php
             -   run: rm -rf vendor/phpstan/phpstan/phpstan.phar
             -   run: rm -rf phpstan-for-rector.neon
 

@@ -39,7 +39,7 @@ if (file_exists($extractedPhpstanAutoload)) {
 
 require_once __DIR__ . '/../src/constants.php';
 
-$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
+$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/phpstan/phpstan-extracted/vendor/scoper-autoload.php');
 
 $autoloadIncluder->autoloadProjectAutoloaderFile();
 $autoloadIncluder->autoloadFromCommandLine();
