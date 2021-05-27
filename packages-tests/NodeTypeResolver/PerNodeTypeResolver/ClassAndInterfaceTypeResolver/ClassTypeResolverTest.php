@@ -48,7 +48,7 @@ final class ClassTypeResolverTest extends AbstractNodeTypeResolverTest
         yield [__DIR__ . '/Source/ClassWithParentTrait.php', 0, new ObjectType(ClassWithParentTrait::class)];
     }
     
-    public function testAnonymousClass(string $file, int $nodePosition, ObjectType $expectedObjectType): void
+    public function testAnonymousClass(): void
     {
         $file = __DIR__ . '/Source/AnonymousClass.php';
         $nodePosition = 0;
