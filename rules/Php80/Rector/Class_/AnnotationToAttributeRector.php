@@ -118,36 +118,44 @@ CODE_SAMPLE
         }
 
         $hasNewAttrGroups = false;
+        $tags = $phpDocInfo->getPhpDocNode()->getTags();
 
-        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-            $tag = $annotationToAttribute->getTag();
+        foreach ($tags as $key => $tag) {
+            foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+                $annotationToAttributeTag = $annotationToAttribute->getTag();
+                if ($phpDocInfo->hasByName($annotationToAttributeTag)) {
+                    // 1. remove php-doc tag
+                    $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToAttributeTag);
 
-            // 1. simple doc tags
-            if ($phpDocInfo->hasByName($tag)) {
+                    // 2. add attributes
+                    $node->attrGroups[$key] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
+
+                    $hasNewAttrGroups = true;
+
+                    continue 2;
+                }
+
+                $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass($annotationToAttributeTag);
+                if ($tag->value !== $doctrineAnnotationTagValueNode) {
+                    continue;
+                }
+
+                if (! $tag->value instanceof DoctrineAnnotationTagValueNode) {
+                    continue;
+                }
+
                 // 1. remove php-doc tag
-                $this->phpDocTagRemover->removeByName($phpDocInfo, $tag);
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $tag->value);
 
                 // 2. add attributes
-                $node->attrGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
+                $node->attrGroups[$key] = $this->phpAttributeGroupFactory->create(
+                    $tag->value,
+                    $annotationToAttribute
+                );
 
                 $hasNewAttrGroups = true;
+                continue 2;
             }
-
-            $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass($tag);
-            if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
-                continue;
-            }
-
-            // 1. remove php-doc tag
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
-
-            // 2. add attributes
-            $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
-                $doctrineAnnotationTagValueNode,
-                $annotationToAttribute
-            );
-
-            $hasNewAttrGroups = true;
         }
 
         if ($hasNewAttrGroups) {

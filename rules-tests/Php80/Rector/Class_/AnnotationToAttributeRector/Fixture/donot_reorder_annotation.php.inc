@@ -40,36 +40,31 @@ class News
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixtureAutoImported;
 
-use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * News
  */
-#[Table(name: 'news')]
-#[Entity(repositoryClass: 'DoctrineFixtureDemo\Repository\NewsRepository')]
+#[\Doctrine\ORM\Mapping\Table(name: 'news')]
+#[\Doctrine\ORM\Mapping\Entity(repositoryClass: 'DoctrineFixtureDemo\Repository\NewsRepository')]
 class News
 {
     /**
      * @var integer
      */
-    #[Column(name: 'id', type: 'bigint', nullable: false)]
-    #[Id]
-    #[GeneratedValue(strategy: 'IDENTITY')]
+    #[\Doctrine\ORM\Mapping\Column(name: 'id', type: 'bigint', nullable: false)]
+    #[\Doctrine\ORM\Mapping\Id]
+    #[\Doctrine\ORM\Mapping\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     /**
      * @var string
      */
-    #[Column(name: 'title', type: 'string', length: 50, nullable: false)]
+    #[\Doctrine\ORM\Mapping\Column(name: 'title', type: 'string', length: 50, nullable: false)]
     private $title;
     /**
      * @var string
      */
-    #[Column(name: 'content', type: 'string', length: 255, nullable: false)]
+    #[\Doctrine\ORM\Mapping\Column(name: 'content', type: 'string', length: 255, nullable: false)]
     private $content;
 }
 
