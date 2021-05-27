@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -118,9 +119,34 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasNewAttrGroups = false;
         $tags = $phpDocInfo->getAllTags();
+        $hasNewAttrGroups = $this->processApplyAttrGroups($tags, $phpDocInfo, $node);
 
+        if ($hasNewAttrGroups) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array<string, AnnotationToAttribute[]> $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $annotationsToAttributes = $configuration[self::ANNOTATION_TO_ATTRIBUTE] ?? [];
+        Assert::allIsInstanceOf($annotationsToAttributes, AnnotationToAttribute::class);
+
+        $this->annotationsToAttributes = $annotationsToAttributes;
+    }
+
+    /**
+     * @param array<PhpDocTagNode> $tags
+     * @param Class_|Property|ClassMethod|Function_|Closure|ArrowFunction $node
+     */
+    private function processApplyAttrGroups(array $tags, PhpDocInfo $phpDocInfo, Node $node): bool
+    {
+        $hasNewAttrGroups = false;
         foreach ($tags as $key => $tag) {
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
                 $annotationToAttributeTag = $annotationToAttribute->getTag();
@@ -158,30 +184,14 @@ CODE_SAMPLE
             }
         }
 
-        if ($hasNewAttrGroups) {
-            return $node;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param array<string, AnnotationToAttribute[]> $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        $annotationsToAttributes = $configuration[self::ANNOTATION_TO_ATTRIBUTE] ?? [];
-        Assert::allIsInstanceOf($annotationsToAttributes, AnnotationToAttribute::class);
-
-        $this->annotationsToAttributes = $annotationsToAttributes;
+        return $hasNewAttrGroups;
     }
 
     private function shouldSkip(
         PhpDocTagValueNode $tagValue,
         PhpDocInfo $phpDocInfo,
         string $annotationToAttributeTag
-    ): bool
-    {
+    ): bool {
         $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass($annotationToAttributeTag);
         if ($tagValue !== $doctrineAnnotationTagValueNode) {
             return true;
