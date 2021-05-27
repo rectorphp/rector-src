@@ -50,13 +50,13 @@ trait MovingFilesTrait
             $expectedFilePathWithContent = $expectedAddedFileWithContents[$key];
 
             $this->assertSame(
-                $expectedFilePathWithContent->getFilePath(),
-                $addedFilePathWithContent->getFilePath()
+                realpath($expectedFilePathWithContent->getFilePath()),
+                realpath($addedFilePathWithContent->getFilePath())
             );
 
             $this->assertSame(
-                $expectedFilePathWithContent->getFileContent(),
-                $addedFilePathWithContent->getFileContent()
+                $this->normalizeNewlines($expectedFilePathWithContent->getFileContent()),
+                $this->normalizeNewlines($addedFilePathWithContent->getFileContent())
             );
         }
     }
@@ -77,5 +77,9 @@ trait MovingFilesTrait
         }
 
         return $addedFilePathsWithContents;
+    }
+
+    private function normalizeNewlines(string $content): string {
+        return str_replace(DIRECTORY_SEPARATOR, "\n", $content);
     }
 }
