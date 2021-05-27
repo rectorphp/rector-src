@@ -59,6 +59,7 @@ final class ClassTypeResolverTest extends AbstractNodeTypeResolverTest
         $this->assertInstanceOf(TypeWithClassName::class, $resolvedType);
 
         /** @var TypeWithClassName $resolvedType */
+        // anonymous classes contain a hash, which is different between platforms
         $this->assertStringStartsWith('AnonymousClass', $resolvedType->getClassName());
     }
 }
