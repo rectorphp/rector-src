@@ -118,7 +118,7 @@ CODE_SAMPLE
         }
 
         $hasNewAttrGroups = false;
-        $tags = $phpDocInfo->getPhpDocNode()->getTags();
+        $tags = $phpDocInfo->getAllTags();
 
         foreach ($tags as $key => $tag) {
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
