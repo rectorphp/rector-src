@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -128,19 +129,16 @@ CODE_SAMPLE
                     $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToAttributeTag);
 
                     // 2. add attributes
-                    $node->attrGroups[$key] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
+                    $node->attrGroups[$key] = $this->phpAttributeGroupFactory->createFromSimpleTag(
+                        $annotationToAttribute
+                    );
 
                     $hasNewAttrGroups = true;
 
                     continue 2;
                 }
 
-                $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass($annotationToAttributeTag);
-                if ($tag->value !== $doctrineAnnotationTagValueNode) {
-                    continue;
-                }
-
-                if (! $tag->value instanceof DoctrineAnnotationTagValueNode) {
+                if ($this->shouldSkip($tag->value, $phpDocInfo, $annotationToAttributeTag)) {
                     continue;
                 }
 
@@ -148,8 +146,10 @@ CODE_SAMPLE
                 $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $tag->value);
 
                 // 2. add attributes
+                /** @var DoctrineAnnotationTagValueNode $tagValue */
+                $tagValue = $tag->value;
                 $node->attrGroups[$key] = $this->phpAttributeGroupFactory->create(
-                    $tag->value,
+                    $tagValue,
                     $annotationToAttribute
                 );
 
@@ -174,5 +174,19 @@ CODE_SAMPLE
         Assert::allIsInstanceOf($annotationsToAttributes, AnnotationToAttribute::class);
 
         $this->annotationsToAttributes = $annotationsToAttributes;
+    }
+
+    private function shouldSkip(
+        PhpDocTagValueNode $tagValue,
+        PhpDocInfo $phpDocInfo,
+        string $annotationToAttributeTag
+    ): bool
+    {
+        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass($annotationToAttributeTag);
+        if ($tagValue !== $doctrineAnnotationTagValueNode) {
+            return true;
+        }
+
+        return ! $tagValue instanceof DoctrineAnnotationTagValueNode;
     }
 }

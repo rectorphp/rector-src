@@ -483,7 +483,8 @@ final class PhpDocInfo
         $this->isSingleLine = false;
     }
 
-    public function getNode(): \PhpParser\Node {
+    public function getNode(): \PhpParser\Node
+    {
         return $this->node;
     }
 
