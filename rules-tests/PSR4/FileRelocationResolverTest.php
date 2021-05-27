@@ -34,6 +34,9 @@ final class FileRelocationResolverTest extends AbstractTestCase
             $newClass
         );
 
+        // we expect a path containing the dir-separator of the current platform
+        $expectedNewFileLocation = str_replace("/", DIRECTORY_SEPARATOR, $expectedNewFileLocation);
+
         $this->assertSame($expectedNewFileLocation, $newFileLocation);
     }
 

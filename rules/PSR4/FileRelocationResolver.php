@@ -161,8 +161,8 @@ final class FileRelocationResolver
     ): string {
         // A. first "dir has changed" dummy detection
         $relativeFilePathParts = Strings::split(
-            $oldSmartFileInfo->getRelativeFilePath(),
-            '#' . DIRECTORY_SEPARATOR . '#'
+            $this->normalizeDirectorySeparator($oldSmartFileInfo->getRelativeFilePath()),
+            '#' . preg_quote(DIRECTORY_SEPARATOR, '#') . '#'
         );
 
         foreach ($relativeFilePathParts as $key => $relativeFilePathPart) {
@@ -177,5 +177,9 @@ final class FileRelocationResolver
         }
 
         return implode(DIRECTORY_SEPARATOR, $relativeFilePathParts);
+    }
+
+    private function normalizeDirectorySeparator(string $path):string {
+        return str_replace('/', DIRECTORY_SEPARATOR, $path);
     }
 }
