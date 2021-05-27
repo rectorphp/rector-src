@@ -162,7 +162,7 @@ final class FileRelocationResolver
         // A. first "dir has changed" dummy detection
         $relativeFilePathParts = Strings::split(
             $oldSmartFileInfo->getRelativeFilePath(),
-            '#' . DIRECTORY_SEPARATOR . '#'
+            '#' . preg_quote(DIRECTORY_SEPARATOR, '#') . '#'
         );
 
         foreach ($relativeFilePathParts as $key => $relativeFilePathPart) {
