@@ -7,11 +7,14 @@ namespace Rector\Tests\PSR4;
 use Iterator;
 use Rector\PSR4\FileRelocationResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\PlatformAgnosticAssertions;
 use Rector\Tests\PSR4\Source\SomeFile;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FileRelocationResolverTest extends AbstractTestCase
 {
+    use PlatformAgnosticAssertions;
+
     private FileRelocationResolver $fileRelocationResolver;
 
     protected function setUp(): void
