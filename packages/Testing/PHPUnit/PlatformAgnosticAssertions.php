@@ -3,7 +3,7 @@
 namespace Rector\Testing\PHPUnit;
 
 /**
- * Relaxes phpunit assertions to be forgiving about platform issues, like directory-separators or newlines
+ * Relaxes phpunit assertions to be forgiving about platform issues, like directory-separators or newlines.
  */
 trait PlatformAgnosticAssertions {
     /**
@@ -19,6 +19,9 @@ trait PlatformAgnosticAssertions {
     {
         $expected = str_replace("\r\n", "\n", $expected);
         $actual = str_replace("\r\n", "\n", $actual);
+
+        $expected = str_replace(DIRECTORY_SEPARATOR, "/", $expected);
+        $actual = str_replace(DIRECTORY_SEPARATOR, "/", $actual);
 
         parent::assertSame($expected, $actual, $message);
     }
