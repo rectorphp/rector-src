@@ -7,11 +7,14 @@ namespace Rector\Tests\Autodiscovery\Rector\Class_\MoveValueObjectsToValueObject
 use Iterator;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
+use Rector\Testing\PHPUnit\PlatformAgnosticAssertions;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class MoveValueObjectsToValueObjectDirectoryRectorTest extends AbstractRectorTestCase
 {
+    use PlatformAgnosticAssertions;
+
     /**
      * @dataProvider provideData()
      */
