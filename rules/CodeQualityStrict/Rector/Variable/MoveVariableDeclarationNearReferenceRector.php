@@ -33,6 +33,7 @@ use Rector\NodeNestingScope\NodeFinder\ScopeAwareNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use ReflectionFunction;
 
 /**
  * @see \Rector\Tests\CodeQualityStrict\Rector\Variable\MoveVariableDeclarationNearReferenceRector\MoveVariableDeclarationNearReferenceRectorTest
@@ -295,6 +296,15 @@ CODE_SAMPLE
             $funcName = $this->getName($n);
             if ($funcName === null) {
                 return false;
+            }
+
+            if (! function_exists($funcName)) {
+                return true;
+            }
+
+            $r = new ReflectionFunction($funcName);
+            if (! $r->isInternal()) {
+                return true;
             }
 
             return ! $this->pureFunctionDetector->detect($n);
