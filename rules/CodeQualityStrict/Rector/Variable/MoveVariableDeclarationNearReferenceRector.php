@@ -31,9 +31,9 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeNestingScope\NodeFinder\ScopeAwareNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use ReflectionFunction;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use ReflectionFunction;
 
 /**
  * @see \Rector\Tests\CodeQualityStrict\Rector\Variable\MoveVariableDeclarationNearReferenceRector\MoveVariableDeclarationNearReferenceRectorTest
