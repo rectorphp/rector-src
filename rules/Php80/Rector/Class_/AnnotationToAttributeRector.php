@@ -147,7 +147,7 @@ CODE_SAMPLE
     private function processApplyAttrGroups(array $tags, PhpDocInfo $phpDocInfo, Node $node): bool
     {
         $hasNewAttrGroups = false;
-        foreach ($tags as $key => $tag) {
+        foreach ($tags as $tag) {
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
                 $annotationToAttributeTag = $annotationToAttribute->getTag();
                 if ($phpDocInfo->hasByName($annotationToAttributeTag)) {
@@ -155,7 +155,7 @@ CODE_SAMPLE
                     $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToAttributeTag);
 
                     // 2. add attributes
-                    $node->attrGroups[$key] = $this->phpAttributeGroupFactory->createFromSimpleTag(
+                    $node->attrGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag(
                         $annotationToAttribute
                     );
 
@@ -174,7 +174,7 @@ CODE_SAMPLE
                 // 2. add attributes
                 /** @var DoctrineAnnotationTagValueNode $tagValue */
                 $tagValue = $tag->value;
-                $node->attrGroups[$key] = $this->phpAttributeGroupFactory->create(
+                $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
                     $tagValue,
                     $annotationToAttribute
                 );
