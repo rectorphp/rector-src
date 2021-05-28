@@ -324,6 +324,7 @@ parameters:
             message: '#Instead of "ReflectionFunction" class/interface use "PHPStan\\Reflection\\FunctionReflection"#'
             paths:
                 - packages/ReadWrite/Guard/VariableToConstantGuard.php
+                - rules/CodeQualityStrict/Rector/Variable/MoveVariableDeclarationNearReferenceRector.php # 305
 
         -
             message: '#Argument and options "debug" got confused#'
@@ -451,6 +452,7 @@ parameters:
             paths:
                  - src/functions/node_helper.php
                  - packages/ReadWrite/Guard/VariableToConstantGuard.php
+                 - rules/CodeQualityStrict/Rector/Variable/MoveVariableDeclarationNearReferenceRector.php #301
 
         # upgrade to PHP 7.4 wip
         - '#This property type might be inlined to PHP\. Do you have confidence it is correct\? Put it here#'
