@@ -305,7 +305,7 @@ CODE_SAMPLE
             }
 
             $function = $this->reflectionProvider->getFunction($functionName, null);
-            if (! $function->isInternal()) {
+            if (! $function->isInternal()->yes()) {
                 return true;
             }
 
