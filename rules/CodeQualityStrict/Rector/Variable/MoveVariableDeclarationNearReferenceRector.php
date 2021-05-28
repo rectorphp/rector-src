@@ -26,6 +26,7 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
+use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
@@ -305,7 +306,7 @@ CODE_SAMPLE
             }
 
             $function = $this->reflectionProvider->getFunction($functionName, null);
-            if (! $function->isInternal()->yes()) {
+            if (! $function instanceof NativeFunctionReflection) {
                 return true;
             }
 
