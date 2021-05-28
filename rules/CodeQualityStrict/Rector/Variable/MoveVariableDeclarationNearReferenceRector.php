@@ -26,12 +26,12 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeNestingScope\NodeFinder\ScopeAwareNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use ReflectionFunction;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -42,7 +42,8 @@ final class MoveVariableDeclarationNearReferenceRector extends AbstractRector
 {
     public function __construct(
         private ScopeAwareNodeFinder $scopeAwareNodeFinder,
-        private PureFunctionDetector $pureFunctionDetector
+        private PureFunctionDetector $pureFunctionDetector,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -298,12 +299,13 @@ CODE_SAMPLE
                 return false;
             }
 
-            if (! function_exists($funcName)) {
+            $functionName = new Name($funcName);
+            if (! $this->reflectionProvider->hasFunction($functionName, null)) {
                 return true;
             }
 
-            $r = new ReflectionFunction($funcName);
-            if (! $r->isInternal()) {
+            $function = $this->reflectionProvider->getFunction($functionName, null);
+            if (! $function->isInternal()) {
                 return true;
             }
 
