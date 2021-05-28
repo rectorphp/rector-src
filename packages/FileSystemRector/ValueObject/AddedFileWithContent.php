@@ -18,6 +18,7 @@ final class AddedFileWithContent implements AddedFileInterface
         }
     }
 
+<<<<<<< HEAD
     public function getRealPath(): string
     {
         $realpath = realpath($this->filePath);
@@ -26,6 +27,14 @@ final class AddedFileWithContent implements AddedFileInterface
         }
 
         return $realpath;
+=======
+    /**
+     * @return false|string
+     */
+    public function getRealPath()
+    {
+        return realpath($this->filePath);
+>>>>>>> d5ea8a664 (apply PlatformAgnosticAssertions on MoveValueObjectsToValueObjectDirectoryRectorTest)
     }
 
     public function getFilePath(): string
