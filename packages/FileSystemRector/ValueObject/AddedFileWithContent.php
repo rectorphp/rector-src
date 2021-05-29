@@ -19,11 +19,17 @@ final class AddedFileWithContent implements AddedFileInterface
     }
 
     /**
-     * @return false|string
+     * @return string
      */
     public function getRealPath()
     {
-        return realpath($this->filePath);
+        $realpath = realpath($this->filePath);
+
+        if ($realpath === false) {
+            throw ShouldNotHappenException();
+        }
+
+        return $realpath;
     }
 
     public function getFilePath(): string
