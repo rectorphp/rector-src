@@ -26,7 +26,7 @@ final class AddedFileWithContent implements AddedFileInterface
         $realpath = realpath($this->filePath);
 
         if ($realpath === false) {
-            throw ShouldNotHappenException();
+            throw new ShouldNotHappenException();
         }
 
         return $realpath;
