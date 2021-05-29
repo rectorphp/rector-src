@@ -14,6 +14,9 @@ trait PlatformAgnosticAssertions {
      * Used on objects, it asserts that two variables reference
      * the same object.
      *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     *
      * @psalm-template ExpectedType
      * @psalm-param ExpectedType $expected
      * @psalm-assert =ExpectedType $actual
