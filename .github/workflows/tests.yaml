@@ -9,7 +9,7 @@ env:
 
 jobs:
     tests:
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
         timeout-minutes: 30
 
         strategy:
@@ -20,6 +20,7 @@ jobs:
                     - tests
                     - rules-tests
                     - packages-tests
+                os: ['windows-latest', 'ubuntu-latest']
 
         name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
         steps:
