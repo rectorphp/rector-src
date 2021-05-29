@@ -29,12 +29,22 @@ final class AddedFileWithContent implements AddedFileInterface
         return $realpath;
 =======
     /**
-     * @return false|string
+     * @return string
      */
     public function getRealPath()
     {
+<<<<<<< HEAD
         return realpath($this->filePath);
 >>>>>>> d5ea8a664 (apply PlatformAgnosticAssertions on MoveValueObjectsToValueObjectDirectoryRectorTest)
+=======
+        $realpath = realpath($this->filePath);
+
+        if ($realpath === false) {
+            throw new ShouldNotHappenException();
+        }
+
+        return $realpath;
+>>>>>>> c169f9af3 (eleminate false-return type from AddedFileWithContent::getRealPath())
     }
 
     public function getFilePath(): string
