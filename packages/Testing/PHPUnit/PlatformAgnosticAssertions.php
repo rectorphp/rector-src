@@ -17,11 +17,15 @@ trait PlatformAgnosticAssertions {
      */
     public static function assertSame($expected, $actual, string $message = ''): void
     {
-        $expected = str_replace("\r\n", "\n", $expected);
-        $actual = str_replace("\r\n", "\n", $actual);
+        if (is_string($expected)) {
+            $expected = str_replace("\r\n", "\n", $expected);
+            $expected = str_replace(DIRECTORY_SEPARATOR, "/", $expected);
+        }
 
-        $expected = str_replace(DIRECTORY_SEPARATOR, "/", $expected);
-        $actual = str_replace(DIRECTORY_SEPARATOR, "/", $actual);
+        if (is_string($actual)) {
+            $actual = str_replace("\r\n", "\n", $actual);
+            $actual = str_replace(DIRECTORY_SEPARATOR, "/", $actual);
+        }
 
         parent::assertSame($expected, $actual, $message);
     }
