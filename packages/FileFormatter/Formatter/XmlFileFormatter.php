@@ -151,11 +151,11 @@ final class XmlFileFormatter implements FileFormatterInterface
 
     private function isOpeningCdataTag(string $part): bool
     {
-        return Strings::contains($part, '<![CDATA[');
+        return \str_contains($part, '<![CDATA[');
     }
 
     private function isClosingCdataTag(string $part): bool
     {
-        return Strings::contains($part, ']]>');
+        return \str_contains($part, ']]>');
     }
 }

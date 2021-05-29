@@ -123,6 +123,6 @@ final class Indent implements Stringable
 
     private function startsWithSpace(): bool
     {
-        return Strings::startsWith($this->string, ' ');
+        return \str_starts_with($this->string, ' ');
     }
 }

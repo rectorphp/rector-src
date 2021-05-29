@@ -59,23 +59,6 @@ final class BreakingVariableRenameGuard
         // is the suffix? → also accepted
         $expectedNameCamelCase = ucfirst($expectedName);
         if (\str_ends_with($currentName, $expectedNameCamelCase)) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> e3f94e081 (fixup! [ci-review] Rector Rectify)
-=======
-        $expectedNameCamelCase = ucfirst($expectedName);
-        if (\str_ends_with($currentName, $expectedNameCamelCase)) {
->>>>>>> 612d115d3 (fixup! [ci-review] Rector Rectify)
-=======
->>>>>>> 0521fe4f1 (fixup! [ci-review] Rector Rectify)
-=======
->>>>>>> 596b5494f (fixup! [ci-review] Rector Rectify)
-=======
->>>>>>> 6191af0fb (fixup! [ci-review] Rector Rectify)
-=======
->>>>>>> 510fe2b2f (fixup! [ci-review] Rector Rectify)
             return true;
         }
 
@@ -113,37 +96,8 @@ final class BreakingVariableRenameGuard
         Param $param
     ): bool {
         // is the suffix? → also accepted
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (Strings::endsWith($currentName, ucfirst($expectedName))) {
-=======
         $expectedNameCamelCase = ucfirst($expectedName);
         if (\str_ends_with($currentName, $expectedNameCamelCase)) {
->>>>>>> e3f94e081 (fixup! [ci-review] Rector Rectify)
-=======
-        $expectedNameCamelCase = ucfirst($expectedName);
-        if (\str_ends_with($currentName, $expectedNameCamelCase)) {
->>>>>>> 612d115d3 (fixup! [ci-review] Rector Rectify)
-=======
-        $expectedNameCamelCase = ucfirst($expectedName);
-        if (\str_ends_with($currentName, $expectedNameCamelCase)) {
->>>>>>> 0521fe4f1 (fixup! [ci-review] Rector Rectify)
-=======
-        $expectedNameCamelCase = ucfirst($expectedName);
-        if (\str_ends_with($currentName, $expectedNameCamelCase)) {
->>>>>>> 596b5494f (fixup! [ci-review] Rector Rectify)
-=======
-        $expectedNameCamelCase = ucfirst($expectedName);
-        if (\str_ends_with($currentName, $expectedNameCamelCase)) {
->>>>>>> 6191af0fb (fixup! [ci-review] Rector Rectify)
-=======
-        $expectedNameCamelCase = ucfirst($expectedName);
-        if (\str_ends_with($currentName, $expectedNameCamelCase)) {
->>>>>>> 510fe2b2f (fixup! [ci-review] Rector Rectify)
             return true;
         }
 
