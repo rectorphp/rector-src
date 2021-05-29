@@ -13,8 +13,6 @@ use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class MoveValueObjectsToValueObjectDirectoryRectorTest extends AbstractRectorTestCase
 {
-    use PlatformAgnosticAssertions;
-
     /**
      * @dataProvider provideData()
      */
