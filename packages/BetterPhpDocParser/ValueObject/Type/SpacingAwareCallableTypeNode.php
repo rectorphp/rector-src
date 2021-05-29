@@ -9,8 +9,9 @@ use PHPStan\PhpDocParser\Ast\NodeAttributes;
 use PHPStan\PhpDocParser\Ast\Type\CallableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use Stringable;
 
-final class SpacingAwareCallableTypeNode extends CallableTypeNode
+final class SpacingAwareCallableTypeNode extends CallableTypeNode implements Stringable
 {
     use NodeAttributes;
 

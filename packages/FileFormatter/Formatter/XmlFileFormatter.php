@@ -77,7 +77,7 @@ final class XmlFileFormatter implements FileFormatterInterface
 
         $parts = $this->getXmlParts($xml);
 
-        if (strpos($parts[0], '<?xml') === 0) {
+        if (str_starts_with($parts[0], '<?xml')) {
             $output = array_shift($parts) . PHP_EOL;
         }
 
