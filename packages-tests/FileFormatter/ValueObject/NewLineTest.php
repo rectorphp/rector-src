@@ -6,13 +6,12 @@ use Iterator;
 use PHPUnit\Framework\TestCase;
 use Rector\FileFormatter\Exception\InvalidNewLineStringException;
 use Rector\FileFormatter\ValueObject\NewLine;
+use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\PHPUnit\PlatformAgnosticAssertions;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class NewLineTest extends TestCase
+final class NewLineTest extends AbstractTestCase
 {
-    use PlatformAgnosticAssertions;
-
     /**
      * @dataProvider extractFromFiles
      */
