@@ -7,6 +7,7 @@ namespace Rector\DowngradePhp80\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -46,20 +47,45 @@ final class DowngradeStrStartsWithRector extends AbstractRector
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof FuncCall && $this->isName($node, 'str_starts_with')) {
-            return $this->createStrncmpFuncCall($node);
+            return $this->createIdentical($node);
+        }
+
+        if ($node instanceof BooleanNot) {
+            $negatedCall = $node->expr;
+            if ($negatedCall instanceof FuncCall && $this->isName($negatedCall, 'str_starts_with')) {
+                return $this->createNotIdenticalStrncmpFuncCall($negatedCall);
+            }
         }
 
         return null;
     }
 
-    private function createStrncmpFuncCall(FuncCall $funcCall): Identical
+    private function createIdentical(FuncCall $funcCall): Identical
     {
-        $newArgs = $funcCall->args;
-        $strlenFuncCall = new FuncCall(new Name('strlen'), [$funcCall->args[1]]);
-
-        $newArgs[] = new Arg($strlenFuncCall);
-        $strncmpFuncCall = new FuncCall(new Name('strncmp'), $newArgs);
+        $strlenFuncCall = $this->createStrlenFuncCall($funcCall);
+        $strncmpFuncCall = $this->createStrncmpFuncCall($funcCall, $strlenFuncCall);
 
         return new Identical($strncmpFuncCall, new LNumber(0));
+    }
+
+    private function createNotIdenticalStrncmpFuncCall(FuncCall $funcCall): NotIdentical
+    {
+        $strlenFuncCall = $this->createStrlenFuncCall($funcCall);
+        $strncmpFuncCall = $this->createStrncmpFuncCall($funcCall, $strlenFuncCall);
+
+        return new NotIdentical($strncmpFuncCall, new LNumber(0));
+    }
+
+    private function createStrlenFuncCall(FuncCall $funcCall): FuncCall
+    {
+        return new FuncCall(new Name('strlen'), [$funcCall->args[1]]);
+    }
+
+    private function createStrncmpFuncCall(FuncCall $funcCall, FuncCall $strlenFuncCall): FuncCall
+    {
+        $newArgs = $funcCall->args;
+        $newArgs[] = new Arg($strlenFuncCall);
+
+        return new FuncCall(new Name('strncmp'), $newArgs);
     }
 }

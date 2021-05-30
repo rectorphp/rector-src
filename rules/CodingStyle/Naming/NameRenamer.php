@@ -105,9 +105,26 @@ final class NameRenamer
         if ($param->type === null) {
             return;
         }
+
+        if ($param->type instanceof Node\UnionType) {
+            dump('__');
+            foreach ($param->type->types as $unionedType) {
+                if (! $this->nodeNameResolver->areNamesEqual($unionedType, $usedNameNode)) {
+                    continue;
+                }
+
+                dump('__');
+
+                $param->type = new Name($lastName);
+
+                die;
+            }
+        }
+
         if (! $this->nodeNameResolver->areNamesEqual($param->type, $usedNameNode)) {
             return;
         }
+
         $param->type = new Name($lastName);
     }
 

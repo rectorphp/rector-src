@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
@@ -146,7 +147,7 @@ CODE_SAMPLE
 
     /**
      * @param Return_[] $returns
-     * @return array<Name|NullableType|UnionType>
+     * @return array<Identifier|Name|NullableType|PhpParserUnionType>
      */
     private function collectStrictReturnTypes(array $returns): array
     {
@@ -221,7 +222,7 @@ CODE_SAMPLE
 
     private function refactorSingleReturnType(
         Return_ $return,
-        Name | NullableType | PhpParserUnionType $returnedStrictTypeNode,
+        Identifier | Name | NullableType | PhpParserUnionType $returnedStrictTypeNode,
         ClassMethod | Function_ | Closure $functionLike
     ): FunctionLike {
         $resolvedType = $this->nodeTypeResolver->resolve($return);

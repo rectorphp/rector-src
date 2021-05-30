@@ -476,9 +476,9 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     protected function removeNodeFromStatements(
         Class_ | ClassMethod | Function_ $nodeWithStatements,
-        Node $nodeToRemove
+        Node $toBeRemovedNode
     ): void {
-        $this->nodeRemover->removeNodeFromStatements($nodeWithStatements, $nodeToRemove);
+        $this->nodeRemover->removeNodeFromStatements($nodeWithStatements, $toBeRemovedNode);
     }
 
     /**

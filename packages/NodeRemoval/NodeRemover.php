@@ -41,10 +41,10 @@ final class NodeRemover
 
     public function removeNodeFromStatements(
         Class_ | ClassMethod | Function_ $nodeWithStatements,
-        Node $nodeToRemove
+        Node $toBeRemovedNode
     ): void {
         foreach ((array) $nodeWithStatements->stmts as $key => $stmt) {
-            if ($nodeToRemove !== $stmt) {
+            if ($toBeRemovedNode !== $stmt) {
                 continue;
             }
 
