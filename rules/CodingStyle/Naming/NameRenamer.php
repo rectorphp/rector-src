@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\TraitUse;
+use PhpParser\Node\UnionType;
 use Rector\CodingStyle\ValueObject\NameAndParent;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -59,6 +60,10 @@ final class NameRenamer
 
             if ($parentNode instanceof StaticCall) {
                 $this->renameStaticCall($lastName, $parentNode);
+            }
+
+            if ($parentNode instanceof UnionType) {
+                $this->renameUnionType($lastName, $parentNode, $usedName);
             }
         }
     }
@@ -106,26 +111,26 @@ final class NameRenamer
             return;
         }
 
-        if ($param->type instanceof Node\UnionType) {
-            dump('__');
-            foreach ($param->type->types as $unionedType) {
-                if (! $this->nodeNameResolver->areNamesEqual($unionedType, $usedNameNode)) {
-                    continue;
-                }
-
-                dump('__');
-
-                $param->type = new Name($lastName);
-
-                die;
-            }
-        }
-
         if (! $this->nodeNameResolver->areNamesEqual($param->type, $usedNameNode)) {
             return;
         }
 
         $param->type = new Name($lastName);
+    }
+
+    private function renameUnionType(string $lastName, UnionType $unionType, Node $usedNameNode): void
+    {
+        foreach ($unionType->types as $key => $unionedType) {
+            if (! $this->nodeNameResolver->areNamesEqual($unionedType, $usedNameNode)) {
+                continue;
+            }
+
+            if (! $unionedType instanceof Name) {
+                continue;
+            }
+
+            $unionType->types[$key] = new Name($lastName);
+        }
     }
 
     /**
