@@ -7,8 +7,8 @@ namespace Rector\DowngradePhp80\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\UnaryMinus;
@@ -36,7 +36,7 @@ final class DowngradeStrEndsWithRector extends AbstractRector
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -55,7 +55,7 @@ final class DowngradeStrEndsWithRector extends AbstractRector
         if ($node instanceof BooleanNot) {
             $funcCall = $node->expr;
             if ($funcCall instanceof FuncCall && $this->isName($funcCall->name, 'str_ends_with')) {
-                return new BinaryOp\NotIdentical($this->createSubstrCompareFuncCall($funcCall), new LNumber(0));
+                return new NotIdentical($this->createSubstrCompareFuncCall($funcCall), new LNumber(0));
             }
         }
 
