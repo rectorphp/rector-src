@@ -39,11 +39,10 @@ final class NodeRemover
         $this->rectorChangeCollector->notifyNodeFileInfo($node);
     }
 
-    /**
-     * @param Class_|ClassMethod|Function_ $nodeWithStatements
-     */
-    public function removeNodeFromStatements(Node $nodeWithStatements, Node $nodeToRemove): void
-    {
+    public function removeNodeFromStatements(
+        Class_ | ClassMethod | Function_ $nodeWithStatements,
+        Node $nodeToRemove
+    ): void {
         foreach ((array) $nodeWithStatements->stmts as $key => $stmt) {
             if ($nodeToRemove !== $stmt) {
                 continue;

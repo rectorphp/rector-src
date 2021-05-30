@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper;
 
-use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
@@ -36,11 +35,10 @@ final class PHPStanStaticTypeMapper
         throw new NotImplementedYetException(__METHOD__ . ' for ' . get_class($type));
     }
 
-    /**
-     * @return Name|NullableType|PhpParserUnionType|null
-     */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        ?string $kind = null
+    ): Name | NullableType | PhpParserUnionType | null {
         foreach ($this->typeMappers as $typeMapper) {
             if (! is_a($type, $typeMapper->getNodeClass(), true)) {
                 continue;

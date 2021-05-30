@@ -42,4 +42,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(DowngradeClassOnObjectToGetClassRector::class);
     $services->set(DowngradeNullsafeToTernaryOperatorRector::class);
     $services->set(DowngradeTrailingCommasInParamUseRector::class);
+    $services->set(\Rector\DowngradePhp80\Rector\FuncCall\DowngradeStrStartsWithRector::class);
 };

@@ -131,10 +131,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
-    private function isSkipped(Node $node): bool
+    private function isSkipped(ClassMethod | Function_ | Closure $node): bool
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::SCALAR_TYPES)) {
             return true;
@@ -212,10 +209,7 @@ CODE_SAMPLE
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType);
     }
 
-    /**
-     * @return Name|NullableType|PhpParserUnionType|null
-     */
-    private function resolveFuncCallReturnNode(FuncCall $funcCall): ?Node
+    private function resolveFuncCallReturnNode(FuncCall $funcCall): Name | NullableType | PhpParserUnionType | null
     {
         $returnType = $this->reflectionTypeResolver->resolveFuncCallReturnType($funcCall);
         if (! $returnType instanceof Type) {
@@ -225,14 +219,10 @@ CODE_SAMPLE
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType);
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $functionLike
-     * @param Name|NullableType|PhpParserUnionType $returnedStrictTypeNode
-     */
     private function refactorSingleReturnType(
         Return_ $return,
-        Node $returnedStrictTypeNode,
-        FunctionLike $functionLike
+        Name | NullableType | PhpParserUnionType $returnedStrictTypeNode,
+        ClassMethod | Function_ | Closure $functionLike
     ): FunctionLike {
         $resolvedType = $this->nodeTypeResolver->resolve($return);
 
