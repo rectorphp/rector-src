@@ -49,10 +49,10 @@ trait MovingFilesTrait
         foreach ($addedFilePathsWithContents as $key => $addedFilePathWithContent) {
             $expectedFilePathWithContent = $expectedAddedFileWithContents[$key];
 
-            $this->assertSame(
-                $expectedFilePathWithContent->getFilePath(),
-                $addedFilePathWithContent->getFilePath()
-            );
+            [, $expectedFilePathWithContentFilePath] = explode('_temp_fixture_easy_testing', $expectedFilePathWithContent->getFilePath());
+            [, $addedFilePathWithContentFilePath] = explode('_temp_fixture_easy_testing', $addedFilePathWithContent->getFilePath());
+
+            $this->assertSame($expectedFilePathWithContentFilePath, $addedFilePathWithContentFilePath);
 
             $this->assertSame(
                 $expectedFilePathWithContent->getFileContent(),
