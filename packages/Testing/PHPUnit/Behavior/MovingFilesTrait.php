@@ -49,6 +49,11 @@ trait MovingFilesTrait
         foreach ($addedFilePathsWithContents as $key => $addedFilePathWithContent) {
             $expectedFilePathWithContent = $expectedAddedFileWithContents[$key];
 
+            /**
+             * use relative path against _temp_fixture_easy_testing
+             * to make work in all OSs, for example:
+             * In MacOS, the realpath() of sys_get_temp_dir() pointed to /private/var/* which symlinked of /var/*
+             */
             [, $expectedFilePathWithContentFilePath] = explode('_temp_fixture_easy_testing', $expectedFilePathWithContent->getFilePath());
             [, $addedFilePathWithContentFilePath] = explode('_temp_fixture_easy_testing', $addedFilePathWithContent->getFilePath());
 
