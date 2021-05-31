@@ -20,6 +20,12 @@
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/ssch/typo3-rector/templates/maker/*</exclude-pattern>
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/ssch/typo3-rector/stubs/*</exclude-pattern>
 
+
+    <rule name="PHPCompatibility.Keywords.ForbiddenNamesAsDeclared.stringFound">
+        <!-- namespace String token is allowed, not sure how to exclude that for T_NAMESPACE only, so is now global -->
+        <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/string</exclude-pattern>
+    </rule>
+
     <!-- Only check PHP files. -->
     <arg name="extensions" value="php"/>
 
