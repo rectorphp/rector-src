@@ -26,6 +26,16 @@
         <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/string</exclude-pattern>
     </rule>
 
+    <rule name="PHPCompatibility.Keywords.ForbiddenNamesAsDeclared.resourceFound">
+        <!-- namespace Resource token is allowed, not sure how to exclude that for T_NAMESPACE only, so is now global -->
+        <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/config/Resource</exclude-pattern>
+    </rule>
+
+    <rule name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection">
+        <!-- trusted source -->
+        <exclude-pattern>*/rector-prefixed-downgraded/vendor/nette/utils/src/Utils/Callback.php</exclude-pattern>
+    </rule>
+
     <!-- Only check PHP files. -->
     <arg name="extensions" value="php"/>
 
