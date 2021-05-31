@@ -31,5 +31,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     // cache
     $parameters->set(Option::ENABLE_CACHE, false);
-    $parameters->set(Option::CACHE_DIR, sys_get_temp_dir() . '/rector_cached_files');
+    $parameters->set(Option::CACHE_DIR, realpath(sys_get_temp_dir()) . '/rector_cached_files');
 };

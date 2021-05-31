@@ -13,7 +13,7 @@ final class SkipMethodCallPropertyCall
             $robotLoader->addDirectory($directory);
         }
 
-        $robotLoader->setTempDirectory(sys_get_temp_dir() . '/_rector_finder');
+        $robotLoader->setTempDirectory(realpath(sys_get_temp_dir()) . '/_rector_finder');
         $robotLoader->acceptFiles = [$name];
         $robotLoader->rebuild();
     }

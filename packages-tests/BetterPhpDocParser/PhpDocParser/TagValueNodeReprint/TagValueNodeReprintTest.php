@@ -111,7 +111,7 @@ final class TagValueNodeReprintTest extends AbstractTestCase
 
     private function createFixtureFileInfo(TrioContent $trioContent, SmartFileInfo $fixturefileInfo): SmartFileInfo
     {
-        $temporaryFileName = sys_get_temp_dir() . '/rector/tests/' . $fixturefileInfo->getRelativePathname();
+        $temporaryFileName = realpath(sys_get_temp_dir()) . '/rector/tests/' . $fixturefileInfo->getRelativePathname();
         $firstValue = $trioContent->getFirstValue();
 
         $smartFileSystem = new SmartFileSystem();

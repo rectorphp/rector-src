@@ -92,7 +92,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function getFixtureTempDirectory(): string
     {
-        return sys_get_temp_dir() . '/_temp_fixture_easy_testing';
+        return realpath(sys_get_temp_dir()) . '/_temp_fixture_easy_testing';
     }
 
     private function doTestFileMatchesExpectedContent(

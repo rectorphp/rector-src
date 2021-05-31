@@ -57,13 +57,13 @@ final class RectorKernel extends Kernel
         }
 
         // manually configured, so it can be replaced in phar
-        return sys_get_temp_dir() . '/rector/cache';
+        return realpath(sys_get_temp_dir()) . '/rector/cache';
     }
 
     public function getLogDir(): string
     {
         // manually configured, so it can be replaced in phar
-        return sys_get_temp_dir() . '/rector/log';
+        return realpath(sys_get_temp_dir()) . '/rector/log';
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader): void
