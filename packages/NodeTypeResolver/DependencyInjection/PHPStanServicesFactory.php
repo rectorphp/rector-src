@@ -38,7 +38,9 @@ final class PHPStanServicesFactory
 
         $existingAdditionalConfigFiles = array_filter($additionalConfigFiles, 'file_exists');
 
-        $this->container = $containerFactory->create(realpath(sys_get_temp_dir()), $existingAdditionalConfigFiles, []);
+        /** @var string $tempDir */
+        $tempDir = realpath(sys_get_temp_dir());
+        $this->container = $containerFactory->create($tempDir, $existingAdditionalConfigFiles, []);
     }
 
     /**
