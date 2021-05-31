@@ -12,7 +12,10 @@
 
     <!-- Exclude PHPDoc structure files. -->
     <exclude-pattern>*/rector-prefixed-downgraded/stubs/*</exclude-pattern>
-    <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/error-handler/Resources/*</exclude-pattern>
+    <!-- these are never used, only required by symfony/http-kernel, but not really needed -->
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/error-handler/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/var-dumper/*</exclude-pattern>
+
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/http-kernel/Resources/*</exclude-pattern>
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/rector/rector-nette/tests/*</exclude-pattern>
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/polyfill-mbstring/bootstrap80.php/*</exclude-pattern>
