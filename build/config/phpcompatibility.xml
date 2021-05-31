@@ -18,7 +18,7 @@
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/symfony/polyfill-mbstring/bootstrap80.php/*</exclude-pattern>
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/tracy/tracy/examples/*</exclude-pattern>
     <exclude-pattern>*/rector-prefixed-downgraded/vendor/ssch/typo3-rector/templates/maker/*</exclude-pattern>
-    <exclude-pattern>*/rector-prefixed-downgraded/vendor/ssch/typo3-rector/stub/*</exclude-pattern>
+    <exclude-pattern>*/rector-prefixed-downgraded/vendor/ssch/typo3-rector/stubs/*</exclude-pattern>
 
     <!-- Only check PHP files. -->
     <arg name="extensions" value="php"/>
