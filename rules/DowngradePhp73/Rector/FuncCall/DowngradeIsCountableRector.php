@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp73\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -35,15 +39,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
-        return [\PhpParser\Node\Expr\FuncCall::class];
+        return [FuncCall::class];
     }
 
     /**
-     * @param \PhpParser\Node\Expr\FuncCall $node
+     * @param FuncCall $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -52,10 +56,8 @@ CODE_SAMPLE
         }
 
         $isArrayFuncCall = $this->nodeFactory->createFuncCall('is_array', $node->args);
-        $instanceofCountable = new Node\Expr\Instanceof_($node->args[0]->value, new Node\Name\FullyQualified(
-            'Countable'
-        ));
+        $instanceof = new Instanceof_($node->args[0]->value, new FullyQualified('Countable'));
 
-        return new Node\Expr\BinaryOp\BooleanOr($isArrayFuncCall, $instanceofCountable);
+        return new BooleanOr($isArrayFuncCall, $instanceof);
     }
 }
