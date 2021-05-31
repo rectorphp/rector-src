@@ -142,9 +142,13 @@ CODE_SAMPLE
         $oldTokens = $file->getOldTokens();
 
         foreach ($oldTokens[$startToken] as $token) {
-            if (is_string($token) && str_contains($token, '_')) {
-                return true;
+            if (! is_string($token)) {
+                continue;
             }
+            if (! str_contains($token, '_')) {
+                continue;
+            }
+            return true;
         }
 
         if ($numericValueAsString < $this->limitValue) {
