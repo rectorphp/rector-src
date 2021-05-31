@@ -38,6 +38,7 @@
         <!-- trusted source -->
         <exclude-pattern>*/rector-prefixed-downgraded/vendor/nette/utils/src/Utils/Callback.php</exclude-pattern>
         <exclude-pattern>*/rector-prefixed-downgraded/vendor/tracy/tracy/src/Tracy/Logger/FireLogger.php</exclude-pattern>
+        <exclude-pattern>*/rector-prefixed-downgraded/vendor/idiosyncratic/editorconfig/src/Section.php</exclude-pattern>
     </rule>
 
     <!-- Only check PHP files. -->
