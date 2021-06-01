@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -83,24 +84,24 @@ CODE_SAMPLE
      * @param MethodCall|StaticCall $node
      * @param Arg[] $args
      */
-    private function applyRemoveNamedArgument(Node $node, array $args): void
+    private function applyRemoveNamedArgument(Node $node, array $args): ?Node
     {
         $caller = $node instanceof StaticCall
             ? $this->nodeRepository->findClassMethodByStaticCall($node)
             : $this->nodeRepository->findClassMethodByMethodCall($node);
 
         if (! $caller instanceof ClassMethod) {
-            return;
+            return null;
         }
 
-        $this->processRemoveNamedArgument($caller, $node, $args);
+        return $this->processRemoveNamedArgument($caller, $node, $args);
     }
 
     /**
      * @param MethodCall|StaticCall $node
      * @param Arg[] $args
      */
-    private function processRemoveNamedArgument(ClassMethod $classMethod, Node $node, array $args): void
+    private function processRemoveNamedArgument(ClassMethod $classMethod, Node $node, array $args): Node
     {
         $params = $classMethod->params;
         /** @var Arg[] $newArgs */
@@ -127,15 +128,27 @@ CODE_SAMPLE
             }
         }
 
+        $this->replacePreviousArgs($node, $params, $keyParam, $newArgs);
+        return $node;
+    }
+
+    /**
+     * @param MethodCall|StaticCall $node
+     * @param Param[] $params
+     * @param Arg[] $newArgs
+     */
+    private function replacePreviousArgs(Node $node, array $params, int $keyParam, array $newArgs): void
+    {
         for ($i = $keyParam - 1; $i >= 0; --$i) {
             if (! isset($newArgs[$i])) {
                 $newArgs[$i] = new Arg($params[$i]->default ?? $this->nodeFactory->createNull());
             }
         }
 
-        print_node($newArgs);
-
-        $node->args = $newArgs;
+        $countNewArgs = count($newArgs);
+        for ($i = 0; $i < $countNewArgs; ++$i) {
+            $node->args[$i] = $newArgs[$i];
+        }
     }
 
     /**
