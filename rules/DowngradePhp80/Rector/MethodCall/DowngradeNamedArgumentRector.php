@@ -6,9 +6,10 @@ namespace Rector\DowngradePhp80\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,7 +24,7 @@ final class DowngradeNamedArgumentRector extends AbstractRector
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, FuncCall::class];
+        return [MethodCall::class, StaticCall::class];
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -75,7 +76,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|FuncCall $node
+     * @param MethodCall|StaticCall $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -84,7 +85,32 @@ CODE_SAMPLE
             return null;
         }
 
+        $this->applyRemoveNamedArgument($node, $args);
         return $node;
+    }
+
+    /**
+     * @param MethodCall|StaticCall $node
+     * @param Arg[] $args
+     */
+    private function applyRemoveNamedArgument(Node $node, array $args): void
+    {
+        $caller = $node instanceof StaticCall
+            ? $this->nodeRepository->findClassMethodByStaticCall($node)
+            : $this->nodeRepository->findClassMethodByMethodCall($node);
+
+        if (! $caller instanceof ClassMethod) {
+            return;
+        }
+
+        $totalParams = count($caller->params);
+        $totalArgs   = count($args);
+
+        foreach ($args as $key => $arg) {
+            if (! $arg->name instanceof Identifier) {
+                continue;
+            }
+        }
     }
 
     /**
