@@ -107,11 +107,7 @@ CODE_SAMPLE
             $paramName = $this->getName($param);
 
             foreach ($args as $keyArg => $arg) {
-                if (! $arg->name instanceof Identifier) {
-                    continue;
-                }
-
-                /** @var string $argName */
+                /** @var string|null $argName */
                 $argName = $this->getName($arg);
 
                 if ($paramName !== $argName) {
