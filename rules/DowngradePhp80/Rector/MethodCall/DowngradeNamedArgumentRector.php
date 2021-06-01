@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -77,6 +79,29 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $args = $node->args;
+        if ($this->shouldSkip($args)) {
+            return null;
+        }
+
         return $node;
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function shouldSkip(array $args): bool
+    {
+        if ($args === []) {
+            return true;
+        }
+
+        foreach ($args as $arg) {
+            if ($arg->name instanceof Identifier) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
