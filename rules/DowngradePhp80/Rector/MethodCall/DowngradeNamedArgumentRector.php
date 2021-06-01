@@ -105,6 +105,7 @@ CODE_SAMPLE
         $params = $classMethod->params;
         /** @var Arg[] $newArgs */
         $newArgs = [];
+        $keyParam = 0;
 
         foreach ($params as $keyParam => $param) {
             /** @var string $paramName */
@@ -128,7 +129,7 @@ CODE_SAMPLE
 
         for ($i = $keyParam - 1; $i >= 0; --$i) {
             if (! isset($newArgs[$i])) {
-                $newArgs[$i] = new Arg($params[$i]->default);
+                $newArgs[$i] = new Arg($params[$i]->default ?? $this->nodeFactory->createNull());
             }
         }
 
