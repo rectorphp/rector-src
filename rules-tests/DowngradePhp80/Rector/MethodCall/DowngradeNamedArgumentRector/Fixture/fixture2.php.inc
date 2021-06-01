@@ -15,7 +15,7 @@ class Fixture extends Foo
 {
     public function __construct(string $name = null, array $attributes = [])
     {
-        parent::__construct(a: [[$name ?? 0 => $attributes]]);
+        parent::__construct(b: [[$name ?? 0 => $attributes]]);
     }
 }
 
@@ -38,7 +38,7 @@ class Fixture extends Foo
 {
     public function __construct(string $name = null, array $attributes = [])
     {
-        parent::__construct([[$name ?? 0 => $attributes]]);
+        parent::__construct(null, [[$name ?? 0 => $attributes]]);
     }
 }
 
