@@ -210,17 +210,11 @@ CODE_SAMPLE
      */
     private function addReturnType(FunctionLike $functionLike, Node $inferredReturnNode): void
     {
+        if ($this->isExternalVoid($functionLike, $inferredReturnNode)) {
+            return;
+        }
+
         if ($functionLike->returnType === null) {
-            $classLike = $functionLike->getAttribute(AttributeKey::CLASS_NODE);
-            if ($classLike instanceof Class_ && $classLike->extends instanceof FullyQualified) {
-                $className   = (string) $this->getName($classLike->extends);
-                $parentFound = (bool) $this->nodeRepository->findClass($className);
-
-                if (! $parentFound && $this->getName($inferredReturnNode) === 'void') {
-                    return;
-                }
-            }
-
             $functionLike->returnType = $inferredReturnNode;
             return;
         }
@@ -235,6 +229,23 @@ CODE_SAMPLE
             // type override with correct one
             $functionLike->returnType = $inferredReturnNode;
         }
+    }
+
+    /**
+     * @param ClassMethod|Function_ $functionLike
+     * @param Name|NullableType|PhpParserUnionType $inferredReturnNode
+     */
+    private function isExternalVoid(FunctionLike $functionLike, Node $inferredReturnNode): bool
+    {
+        $classLike = $functionLike->getAttribute(AttributeKey::CLASS_NODE);
+        if ($classLike instanceof Class_ && $classLike->extends instanceof FullyQualified) {
+            $className   = (string) $this->getName($classLike->extends);
+            $parentFound = (bool) $this->nodeRepository->findClass($className);
+
+            return ! $parentFound && $this->isName($inferredReturnNode, 'void');
+        }
+
+        return false;
     }
 
     private function isNullableTypeSubType(Type $currentType, Type $inferedType): bool
