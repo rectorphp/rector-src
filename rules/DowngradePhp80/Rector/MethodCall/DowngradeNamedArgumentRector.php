@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp80\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
@@ -101,7 +102,7 @@ CODE_SAMPLE
      * @param MethodCall|StaticCall $node
      * @param Arg[] $args
      */
-    private function processRemoveNamedArgument(ClassMethod $classMethod, Node $node, array $args): Node
+    private function processRemoveNamedArgument(ClassMethod $classMethod, Node $node, array $args): Expr
     {
         $params = $classMethod->params;
         /** @var Arg[] $newArgs */
