@@ -100,11 +100,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->extends instanceof FullyQualified) {
-            $parentFound = (bool) $this->nodeRepository->findClass($this->getName($node->extends));
-            if (! $parentFound) {
-                return null;
-            }
+        if ($this->hasExtendExternal($node)) {
+            return null;
         }
 
         $hasChanged = false;
@@ -126,6 +123,22 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * @param Class_|Interface_ $node
+     */
+    private function hasExtendExternal(Node $node): bool
+    {
+        if ($node->extends instanceof FullyQualified) {
+            $className   = (string) $this->getName($node->extends);
+            $parentFound = (bool) $this->nodeRepository->findClass($className);
+            if (! $parentFound) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
