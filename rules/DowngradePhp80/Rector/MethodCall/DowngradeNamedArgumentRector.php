@@ -103,12 +103,21 @@ CODE_SAMPLE
             return;
         }
 
-        $totalParams = count($caller->params);
-        $totalArgs   = count($args);
+        $params = $caller->params;
+        foreach ($params as $keyParam => $param) {
+            /** @var string $name */
+            $paramName = $this->getName($param);
 
-        foreach ($args as $key => $arg) {
-            if (! $arg->name instanceof Identifier) {
-                continue;
+            foreach ($args as $keyArg => $arg) {
+                if (! $arg->name instanceof Identifier) {
+                    continue;
+                }
+
+                /** @var string $argName */
+                $argName = $this->getName($arg);
+                if ($keyParam === $keyArg && $paramName === $argName) {
+                    $arg->name = null;
+                }
             }
         }
     }
