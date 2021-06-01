@@ -249,7 +249,7 @@ CODE_SAMPLE
         $className = (string) $this->getName($classLike->extends);
         $parentFound = (bool) $this->nodeRepository->findClass($className);
 
-        return ! $parentFound && $this->isName($inferredReturnNode, 'void');
+        return $functionLike->returnType === null && ! $parentFound && $this->isName($inferredReturnNode, 'void');
     }
 
     private function isNullableTypeSubType(Type $currentType, Type $inferedType): bool
