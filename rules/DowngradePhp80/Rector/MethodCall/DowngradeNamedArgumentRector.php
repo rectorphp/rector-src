@@ -193,8 +193,8 @@ CODE_SAMPLE
     private function replacePreviousArgs(Node $node, array $params, int $keyParam, array $newArgs): void
     {
         for ($i = $keyParam - 1; $i >= 0; --$i) {
-            if (! isset($newArgs[$i])) {
-                $newArgs[$i] = new Arg($params[$i]->default ?? $this->nodeFactory->createNull());
+            if (! isset($newArgs[$i]) && $params[$i]->default instanceof Expr) {
+                $newArgs[$i] = new Arg($params[$i]->default);
             }
         }
 
