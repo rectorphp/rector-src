@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclaration
 
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
-final class SkipFromExternal extends PhpFileLoader
+final class SkipFromExternalVoid extends PhpFileLoader
 {
     public function import(
         $resource,

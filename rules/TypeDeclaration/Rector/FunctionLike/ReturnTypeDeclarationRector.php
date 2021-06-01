@@ -30,6 +30,7 @@ use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VendorLocker\VendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
@@ -210,6 +211,16 @@ CODE_SAMPLE
     private function addReturnType(FunctionLike $functionLike, Node $inferredReturnNode): void
     {
         if ($functionLike->returnType === null) {
+            $classLike = $functionLike->getAttribute(AttributeKey::CLASS_NODE);
+            if ($classLike instanceof Class_ && $classLike->extends instanceof FullyQualified) {
+                $className   = (string) $this->getName($classLike->extends);
+                $parentFound = (bool) $this->nodeRepository->findClass($className);
+
+                if (! $parentFound && $this->getName($inferredReturnNode) === 'void') {
+                    return;
+                }
+            }
+
             $functionLike->returnType = $inferredReturnNode;
             return;
         }
