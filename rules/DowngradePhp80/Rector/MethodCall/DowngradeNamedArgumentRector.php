@@ -34,39 +34,29 @@ final class DowngradeNamedArgumentRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class Foo
+class SomeClass
 {
-    public function __construct(
-        public ?array $a = null,
-        public ?array $b = null
-    ) {
-    }
-}
-
-class SomeClass extends Foo
-{
-    public function __construct(string $name = null, array $attributes = [])
+    private function execute(?array $a = null, ?array $b = null)
     {
-        parent::__construct(b: [[$name ?? 0 => $attributes]]);
+    }
+
+    public function run(string $name = null, array $attributes = [])
+    {
+        $this->execute(a: [[$name ?? 0 => $attributes]]);
     }
 }
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class Foo
+class SomeClass
 {
-    public function __construct(
-        public ?array $a = null,
-        public ?array $b = null
-    ) {
-    }
-}
-
-class SomeClass extends Foo
-{
-    public function __construct(string $name = null, array $attributes = [])
+    private function execute(?array $a = null, ?array $b = null)
     {
-        parent::__construct(null, [[$name ?? 0 => $attributes]]);
+    }
+
+    public function run(string $name = null, array $attributes = [])
+    {
+        $this->execute([[$name ?? 0 => $attributes]]);
     }
 }
 CODE_SAMPLE

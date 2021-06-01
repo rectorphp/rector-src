@@ -2,20 +2,15 @@
 
 namespace Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeNamedArgumentRector\Fixture;
 
-class Foo
+class Fixture
 {
-    public function __construct(
-        public ?array $a = null,
-        public ?array $b = null
-    ) {
-    }
-}
-
-class Fixture extends Foo
-{
-    public function __construct(string $name = null, array $attributes = [])
+    private function execute(?array $a = null, ?array $b = null)
     {
-        parent::__construct(a: [[$name ?? 0 => $attributes]]);
+    }
+
+    public function run(string $name = null, array $attributes = [])
+    {
+        $this->execute(a: [[$name ?? 0 => $attributes]]);
     }
 }
 
@@ -25,20 +20,15 @@ class Fixture extends Foo
 
 namespace Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeNamedArgumentRector\Fixture;
 
-class Foo
+class Fixture
 {
-    public function __construct(
-        public ?array $a = null,
-        public ?array $b = null
-    ) {
-    }
-}
-
-class Fixture extends Foo
-{
-    public function __construct(string $name = null, array $attributes = [])
+    private function execute(?array $a = null, ?array $b = null)
     {
-        parent::__construct([[$name ?? 0 => $attributes]]);
+    }
+
+    public function run(string $name = null, array $attributes = [])
+    {
+        $this->execute([[$name ?? 0 => $attributes]]);
     }
 }
 
