@@ -2,14 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeNamedArgumentRector\Fixture;
 
-class Foo
-{
-    public function __construct(
-        public ?array $a = null,
-        public ?array $b = null
-    ) {
-    }
-}
+use Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeNamedArgumentRector\Source\Foo;
 
 class SkipNoNamedArg extends Foo
 {
