@@ -238,14 +238,18 @@ CODE_SAMPLE
     private function isExternalVoid(FunctionLike $functionLike, Node $inferredReturnNode): bool
     {
         $classLike = $functionLike->getAttribute(AttributeKey::CLASS_NODE);
-        if ($classLike instanceof Class_ && $classLike->extends instanceof FullyQualified) {
-            $className = (string) $this->getName($classLike->extends);
-            $parentFound = (bool) $this->nodeRepository->findClass($className);
-
-            return ! $parentFound && $this->isName($inferredReturnNode, 'void');
+        if (! $classLike instanceof Class_) {
+            return false;
         }
 
-        return false;
+        if (! $classLike->extends instanceof FullyQualified) {
+            return false;
+        }
+
+        $className = (string) $this->getName($classLike->extends);
+        $parentFound = (bool) $this->nodeRepository->findClass($className);
+
+        return ! $parentFound && $this->isName($inferredReturnNode, 'void');
     }
 
     private function isNullableTypeSubType(Type $currentType, Type $inferedType): bool
