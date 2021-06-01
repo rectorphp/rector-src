@@ -11,16 +11,28 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Parser;
+use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * @see \Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeNamedArgumentRector\DowngradeNamedArgumentRectorTest
  */
 final class DowngradeNamedArgumentRector extends AbstractRector
 {
+    public function __construct(
+        private ReflectionProvider $reflectionProvider,
+        private SmartFileSystem $smartFileSystem,
+        private Parser $parser
+    ) {
+    }
+
     /**
      * @return array<class-string<Node>>
      */
@@ -87,15 +99,50 @@ CODE_SAMPLE
      */
     private function applyRemoveNamedArgument(Node $node, array $args): ?Node
     {
-        $caller = $node instanceof StaticCall
-            ? $this->nodeRepository->findClassMethodByStaticCall($node)
-            : $this->nodeRepository->findClassMethodByMethodCall($node);
-
+        $caller = $this->getCaller($node);
         if (! $caller instanceof ClassMethod) {
             return null;
         }
 
         return $this->processRemoveNamedArgument($caller, $node, $args);
+    }
+
+    /**
+     * @param MethodCall|StaticCall $node
+     */
+    private function getCaller(Node $node): ?Node
+    {
+        $caller = $node instanceof StaticCall
+            ? $this->nodeRepository->findClassMethodByStaticCall($node)
+            : $this->nodeRepository->findClassMethodByMethodCall($node);
+
+        if ($caller instanceof ClassMethod) {
+            return $caller;
+        }
+
+        $type = $node instanceof StaticCall
+            ? $this->nodeTypeResolver->resolve($node->class)
+            : $this->nodeTypeResolver->resolve($node->var);
+
+        if (! $type instanceof ObjectType) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($type->getClassName());
+        $fileName = $classReflection->getFileName();
+        $stmts = $this->parser->parse($this->smartFileSystem->readFile($fileName));
+        $classLikes = $this->betterNodeFinder->findInstanceOf($stmts, ClassLike::class);
+
+        foreach ($classLikes as $classLike) {
+            $caller = $classLike->getMethod($this->getName($node->name));
+            if (! $caller instanceof ClassMethod) {
+                continue;
+            }
+
+            return $caller;
+        }
+
+        return null;
     }
 
     /**
