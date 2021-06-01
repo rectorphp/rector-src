@@ -115,7 +115,12 @@ CODE_SAMPLE
 
                 /** @var string $argName */
                 $argName = $this->getName($arg);
-                if ($keyParam === $keyArg && $paramName === $argName) {
+
+                if ($paramName !== $argName) {
+                    continue;
+                }
+
+                if ($keyParam === $keyArg) {
                     $arg->name = null;
                 }
             }
