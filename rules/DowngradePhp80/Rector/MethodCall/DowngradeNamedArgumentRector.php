@@ -110,17 +110,29 @@ CODE_SAMPLE
             /** @var string $paramName */
             $paramName = $this->getName($param);
 
-            foreach ($args as $keyArg => $arg) {
+            foreach ($args as $arg) {
                 /** @var string|null $argName */
                 $argName = $this->getName($arg);
 
-                if ($paramName !== $argName) {
-                    continue;
+                if ($paramName === $argName) {
+                    $newArgs[$keyParam] = new Arg(
+                        $arg->value,
+                        $arg->byRef,
+                        $arg->unpack,
+                        $arg->getAttributes(),
+                        null
+                    );
                 }
-
-                $newArgs[$keyParam] = new Arg($arg->value, $arg->byRef, $arg->unpack, $arg->getAttributes(), null);
             }
         }
+
+        for ($i = $keyParam - 1; $i >= 0; --$i) {
+            if (! isset($newArgs[$i])) {
+                $newArgs[$i] = new Arg($params[$i]->default);
+            }
+        }
+
+        print_node($newArgs);
 
         $node->args = $newArgs;
     }
