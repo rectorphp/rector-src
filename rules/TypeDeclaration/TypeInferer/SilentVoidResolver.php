@@ -44,8 +44,10 @@ final class SilentVoidResolver
         if ($this->betterNodeFinder->hasInstancesOf((array) $functionLike->stmts, [Yield_::class])) {
             return false;
         }
-
-        if ($classLike->extends instanceof FullyQualified || $classLike->getTraitUses() !== []) {
+        if ($classLike->extends instanceof FullyQualified) {
+            return false;
+        }
+        if ($classLike->getTraitUses() !== []) {
             return false;
         }
 
