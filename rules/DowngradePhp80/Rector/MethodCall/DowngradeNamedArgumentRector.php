@@ -93,9 +93,17 @@ CODE_SAMPLE
             return;
         }
 
-        $params = $caller->params;
+        $this->processRemoveNamedArgument($caller, $args);
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function processRemoveNamedArgument(ClassMethod $classMethod, array $args): void
+    {
+        $params = $classMethod->params;
         foreach ($params as $keyParam => $param) {
-            /** @var string $name */
+            /** @var string $paramName */
             $paramName = $this->getName($param);
 
             foreach ($args as $keyArg => $arg) {
