@@ -21,6 +21,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @changelog https://www.php.net/manual/en/migration72.new-features.php#migration72.new-features.param-type-widening
@@ -97,6 +98,13 @@ CODE_SAMPLE
 
         if ($this->isEmptyClassReflection($scope)) {
             return null;
+        }
+
+        if ($node->extends instanceof FullyQualified) {
+            $parentFound = (bool) $this->nodeRepository->findClass($this->getName($node->extends));
+            if (! $parentFound) {
+                return null;
+            }
         }
 
         $hasChanged = false;
