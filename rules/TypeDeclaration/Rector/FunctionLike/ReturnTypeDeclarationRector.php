@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -30,7 +31,6 @@ use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VendorLocker\VendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
@@ -239,7 +239,7 @@ CODE_SAMPLE
     {
         $classLike = $functionLike->getAttribute(AttributeKey::CLASS_NODE);
         if ($classLike instanceof Class_ && $classLike->extends instanceof FullyQualified) {
-            $className   = (string) $this->getName($classLike->extends);
+            $className = (string) $this->getName($classLike->extends);
             $parentFound = (bool) $this->nodeRepository->findClass($className);
 
             return ! $parentFound && $this->isName($inferredReturnNode, 'void');
