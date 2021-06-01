@@ -93,15 +93,19 @@ CODE_SAMPLE
             return;
         }
 
-        $this->processRemoveNamedArgument($caller, $args);
+        $this->processRemoveNamedArgument($caller, $node, $args);
     }
 
     /**
+     * @param MethodCall|StaticCall $node
      * @param Arg[] $args
      */
-    private function processRemoveNamedArgument(ClassMethod $classMethod, array $args): void
+    private function processRemoveNamedArgument(ClassMethod $classMethod, Node $node, array $args): void
     {
         $params = $classMethod->params;
+        /** @var Arg[] $newArgs */
+        $newArgs = [];
+
         foreach ($params as $keyParam => $param) {
             /** @var string $paramName */
             $paramName = $this->getName($param);
@@ -114,11 +118,11 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($keyParam === $keyArg) {
-                    $arg->name = null;
-                }
+                $newArgs[$keyParam] = new Arg($arg->value, $arg->byRef, $arg->unpack, $arg->getAttributes(), null);
             }
         }
+
+        $node->args = $newArgs;
     }
 
     /**
