@@ -130,11 +130,16 @@ CODE_SAMPLE
 
         $classReflection = $this->reflectionProvider->getClass($type->getClassName());
         $fileName = $classReflection->getFileName();
+        if (! is_string($fileName)) {
+            return null;
+        }
+
         $stmts = $this->parser->parse($this->smartFileSystem->readFile($fileName));
-        $classLikes = $this->betterNodeFinder->findInstanceOf($stmts, ClassLike::class);
+        /** @var ClassLike[] $classLikes */
+        $classLikes = $this->betterNodeFinder->findInstanceOf((array) $stmts, ClassLike::class);
 
         foreach ($classLikes as $classLike) {
-            $caller = $classLike->getMethod($this->getName($node->name));
+            $caller = $classLike->getMethod((string) $this->getName($node->name));
             if (! $caller instanceof ClassMethod) {
                 continue;
             }
