@@ -14,7 +14,7 @@ Rector itself already ships with three FileProcessors. Whereas the most importan
 
 But another nice one is the ComposerFileProcessor. The ComposerFileProcessor lets you manipulate composer.json files in your project.
 Let´s say you want to define a custom configuration where you want to update the version constraint of some packages.
-All you have to do is using the ReplacePackageAndVersionComposerRector:
+All you have to do is using the ChangePackageVersionComposerRector:
 
 ```php
 <?php
@@ -46,7 +46,11 @@ There are some more rules related to manipulate your composer.json files. Let´s
 declare(strict_types=1);
 
 use Rector\Composer\Rector\AddPackageToRequireComposerRector;
-use Rector\Composer\Rector\AddPackageToRequireDevComposerRector;use Rector\Composer\Rector\RemovePackageComposerRector;use Rector\Composer\ValueObject\PackageAndVersion;
+use Rector\Composer\Rector\AddPackageToRequireDevComposerRector;
+use Rector\Composer\Rector\RemovePackageComposerRector;
+use Rector\Composer\Rector\ReplacePackageAndVersionComposerRector;
+use Rector\Composer\ValueObject\PackageAndVersion;
+use Rector\Composer\ValueObject\ReplacePackageAndVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -76,6 +80,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->call('configure', [[
             // we use constant for keys to save you from typos
             RemovePackageComposerRector::PACKAGE_NAMES  => ['symfony/console']
+        ]]);
+
+        // Replace a package in the composer.json
+    $services->set(ReplacePackageAndVersionComposerRector::class)
+        ->call('configure', [[
+            // we use constant for keys to save you from typos
+             ReplacePackageAndVersionComposerRector::REPLACE_PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([
+                new ReplacePackageAndVersion('vendor1/package2', 'vendor2/package1', '^3.0'),
+            ]),
         ]]);
 };
 ```
