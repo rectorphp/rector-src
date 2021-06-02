@@ -499,5 +499,5 @@ parameters:
             path: src/DependencyInjection/Loader/ConfigurableCallValuesCollectingPhpFileLoader.php #39
 
         -
-            message: '#Method parameters must be compatible with its parent'
+            message: '#Method parameters must be compatible with its parent#'
             path: src/DependencyInjection/Loader/ConfigurableCallValuesCollectingPhpFileLoader.php #39
