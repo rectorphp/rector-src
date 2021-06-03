@@ -5,7 +5,6 @@
     bootstrap="tests/bootstrap.php"
     colors="true"
     executionOrder="defects"
-    verbose="true"
 >
     <testsuites>
         <testsuite name="main">
