@@ -10,6 +10,7 @@
         "php": "^8.0",
         "ext-dom": "*",
         "ext-json": "*",
+        "atrapalo/phpunit-memory-and-time-usage-listener": "^1.0",
         "composer/semver": "^3.2",
         "composer/xdebug-handler": "^2.0",
         "danielstjules/stringy": "^3.1",
