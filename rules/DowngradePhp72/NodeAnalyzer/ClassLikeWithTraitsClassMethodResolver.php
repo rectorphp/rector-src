@@ -23,8 +23,8 @@ final class ClassLikeWithTraitsClassMethodResolver
     public function resolve(array $ancestors): array
     {
         $classMethods = [];
-        foreach ($ancestors as $ancestorClassReflection) {
-            $ancestorClassLike = $this->nodeRepository->findClassLike($ancestorClassReflection->getName());
+        foreach ($ancestors as $ancestor) {
+            $ancestorClassLike = $this->nodeRepository->findClassLike($ancestor->getName());
             if (! $ancestorClassLike instanceof ClassLike) {
                 continue;
             }
