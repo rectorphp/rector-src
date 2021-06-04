@@ -149,7 +149,11 @@ CODE_SAMPLE
     /**
      * The topmost class is the source of truth, so we go only down to avoid up/down collission
      */
-    private function refactorClassMethod(ClassMethod $classMethod, Scope $scope, ClassReflection $classReflection): ?ClassMethod
+    private function refactorClassMethod(
+        ClassMethod $classMethod,
+        Scope $scope,
+        ClassReflection $classReflection
+    ): ?ClassMethod
     {
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
@@ -191,7 +195,8 @@ CODE_SAMPLE
         $originalParam = $param->getAttribute(AttributeKey::ORIGINAL_NODE);
         if ($originalParam instanceof Param && $originalParam->type === null) {
             return;
-        } elseif ($param->type === null) {
+        }
+        if ($param->type === null) {
             return;
         }
 
