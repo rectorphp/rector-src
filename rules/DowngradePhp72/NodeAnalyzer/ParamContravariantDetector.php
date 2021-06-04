@@ -6,17 +6,9 @@ namespace Rector\DowngradePhp72\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ClassReflection;
-use Rector\NodeCollector\NodeCollector\NodeRepository;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ParamContravariantDetector
 {
-    public function __construct(
-        private NodeNameResolver $nodeNameResolver,
-        private NodeRepository $nodeRepository
-    ) {
-    }
-
     /**
      * @param ClassReflection[] $ancestors
      */
