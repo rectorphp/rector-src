@@ -17,7 +17,7 @@ final class ClassLikeWithTraitsClassMethodResolver
     }
 
     /**
-     * @param ClassReflection $ancestors
+     * @param ClassReflection[] $ancestors
      * @return ClassMethod[]
      */
     public function resolve(array $ancestors): array
