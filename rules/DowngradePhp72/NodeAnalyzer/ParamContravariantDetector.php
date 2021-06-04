@@ -17,14 +17,16 @@ final class ParamContravariantDetector
     ) {
     }
 
-    public function hasParentMethod(ClassMethod $classMethod, ClassReflection $classReflection): bool
+    /**
+     * @param ClassReflection[] $ancestors
+     */
+    public function hasParentMethod(ClassReflection $classReflection, array $ancestors, ?string $classMethodName): bool
     {
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+        foreach ($ancestors as $ancestorClassReflection) {
             if ($classReflection === $ancestorClassReflection) {
                 continue;
             }
 
-            $classMethodName = $this->nodeNameResolver->getName($classMethod);
             if ($ancestorClassReflection->hasMethod($classMethodName)) {
                 return true;
             }
@@ -33,13 +35,11 @@ final class ParamContravariantDetector
         return false;
     }
 
-    public function hasChildMethod(ClassMethod $classMethod, ClassReflection $classReflection): bool
+    public function hasChildMethod(ClassReflection $classReflection, ?string $classMethodName): bool
     {
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-
         $classLikes = $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
         foreach ($classLikes as $classLike) {
-            $currentClassMethod = $classLike->getMethod($methodName);
+            $currentClassMethod = $classLike->getMethod($classMethodName);
             if ($currentClassMethod !== null) {
                 return true;
             }

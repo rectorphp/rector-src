@@ -112,8 +112,10 @@ CODE_SAMPLE
         $hasChanged = false;
         $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($node);
 
+        /** @var ClassReflection[] $ancestors */
+        $ancestors = $classReflection->getAncestors();
         foreach ($classMethods as $classMethod) {
-            if ($this->skipClassMethod($classMethod, $classReflection)) {
+            if ($this->skipClassMethod($classMethod, $classReflection, $ancestors)) {
                 continue;
             }
 
@@ -205,7 +207,10 @@ CODE_SAMPLE
         $param->type = null;
     }
 
-    private function skipClassMethod(ClassMethod $classMethod, ClassReflection $classReflection): bool
+    /**
+     * @param ClassReflection[] $ancestors
+     */
+    private function skipClassMethod(ClassMethod $classMethod, ClassReflection $classReflection, array $ancestors): bool
     {
         if ($classMethod->isMagic()) {
             return true;
@@ -215,11 +220,12 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->paramContravariantDetector->hasChildMethod($classMethod, $classReflection)) {
+        $classMethodName = $this->nodeNameResolver->getName($classMethod);
+        if ($this->paramContravariantDetector->hasChildMethod($classReflection, $classMethodName)) {
             return false;
         }
 
-        return ! $this->paramContravariantDetector->hasParentMethod($classMethod, $classReflection);
+        return ! $this->paramContravariantDetector->hasParentMethod($classReflection, $ancestors, $classMethodName);
     }
 
     private function isEmptyClassReflection(ClassReflection $classReflection): bool
