@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Analyser\Scope;
@@ -114,8 +115,9 @@ CODE_SAMPLE
 
         /** @var ClassReflection[] $ancestors */
         $ancestors = $classReflection->getAncestors();
+        $classLikes = $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
         foreach ($classMethods as $classMethod) {
-            if ($this->skipClassMethod($classMethod, $classReflection, $ancestors)) {
+            if ($this->skipClassMethod($classMethod, $classReflection, $ancestors, $classLikes)) {
                 continue;
             }
 
@@ -204,8 +206,9 @@ CODE_SAMPLE
 
     /**
      * @param ClassReflection[] $ancestors
+     * @param ClassLike[] $classLikes
      */
-    private function skipClassMethod(ClassMethod $classMethod, ClassReflection $classReflection, array $ancestors): bool
+    private function skipClassMethod(ClassMethod $classMethod, ClassReflection $classReflection, array $ancestors, array $classLikes): bool
     {
         if ($classMethod->isMagic()) {
             return true;
@@ -217,7 +220,7 @@ CODE_SAMPLE
 
         /** @var string $classMethodName */
         $classMethodName = $this->nodeNameResolver->getName($classMethod);
-        if ($this->paramContravariantDetector->hasChildMethod($classReflection, $classMethodName)) {
+        if ($this->paramContravariantDetector->hasChildMethod($classLikes, $classMethodName)) {
             return false;
         }
 

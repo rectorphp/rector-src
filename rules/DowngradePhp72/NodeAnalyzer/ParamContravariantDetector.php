@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp72\NodeAnalyzer;
 
+use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ClassReflection;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -35,9 +36,11 @@ final class ParamContravariantDetector
         return false;
     }
 
-    public function hasChildMethod(ClassReflection $classReflection, string $classMethodName): bool
+    /**
+     * @param ClassLike[] $classLikes
+     */
+    public function hasChildMethod(array $classLikes, string $classMethodName): bool
     {
-        $classLikes = $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
         foreach ($classLikes as $classLike) {
             $currentClassMethod = $classLike->getMethod($classMethodName);
             if ($currentClassMethod !== null) {
