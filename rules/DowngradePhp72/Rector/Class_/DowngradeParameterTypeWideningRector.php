@@ -215,6 +215,7 @@ CODE_SAMPLE
             return true;
         }
 
+        /** @var string $classMethodName */
         $classMethodName = $this->nodeNameResolver->getName($classMethod);
         if ($this->paramContravariantDetector->hasChildMethod($classReflection, $classMethodName)) {
             return false;
