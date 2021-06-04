@@ -47,10 +47,6 @@ final class SilentVoidResolver
             return false;
         }
 
-        if ($classLike->extends instanceof FullyQualified) {
-            return false;
-        }
-
         $extends = $classLike instanceof Interface_
             ? $classLike->extends
             : [$classLike->extends];
