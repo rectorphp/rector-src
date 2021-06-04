@@ -49,7 +49,9 @@ final class SilentVoidResolver
             return false;
         }
 
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($classLike->extends)) {
+        /** @var FullyQualified[]|FullyQualified|null $extends */
+        $extends = $classLike->extends;
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends)) {
             return false;
         }
 

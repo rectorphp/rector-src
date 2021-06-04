@@ -108,7 +108,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($node->extends)) {
+        /** @var FullyQualified[]|FullyQualified|null $extends */
+        $extends = $node->extends;
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends)) {
             return null;
         }
 
