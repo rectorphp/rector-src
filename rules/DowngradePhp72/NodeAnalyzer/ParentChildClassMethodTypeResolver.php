@@ -80,11 +80,8 @@ final class ParentChildClassMethodTypeResolver
     {
         $typesByClassName = [];
 
+        /** @var ClassReflection $currentClassReflection */
         $currentClassReflection = $scope->getClassReflection();
-        if (! $currentClassReflection instanceof ClassReflection) {
-            return [];
-        }
-
         foreach ($currentClassReflection->getInterfaces() as $interfaceClassReflection) {
             if (! $interfaceClassReflection->hasMethod($methodName)) {
                 continue;

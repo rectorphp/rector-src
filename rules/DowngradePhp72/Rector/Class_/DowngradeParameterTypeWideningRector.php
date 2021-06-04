@@ -96,7 +96,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isEmptyClassReflection($scope)) {
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        if ($this->isEmptyClassReflection($classReflection)) {
             return null;
         }
 
@@ -113,7 +118,7 @@ CODE_SAMPLE
             }
 
             // refactor here
-            if ($this->refactorClassMethod($classMethod, $scope) !== null) {
+            if ($this->refactorClassMethod($classMethod, $scope, $classReflection) !== null) {
                 $hasChanged = true;
             }
         }
@@ -144,13 +149,8 @@ CODE_SAMPLE
     /**
      * The topmost class is the source of truth, so we go only down to avoid up/down collission
      */
-    private function refactorClassMethod(ClassMethod $classMethod, Scope $scope): ?ClassMethod
+    private function refactorClassMethod(ClassMethod $classMethod, Scope $scope, ClassReflection $classReflection): ?ClassMethod
     {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
@@ -220,13 +220,8 @@ CODE_SAMPLE
         return ! $this->paramContravariantDetector->hasParentMethod($classMethod, $classScope);
     }
 
-    private function isEmptyClassReflection(Scope $scope): bool
+    private function isEmptyClassReflection(ClassReflection $classReflection): bool
     {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
         if ($classReflection->isInterface()) {
             return false;
         }
