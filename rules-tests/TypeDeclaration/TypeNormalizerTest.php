@@ -48,4 +48,9 @@ final class TypeNormalizerTest extends AbstractTestCase
         $evenMoreNestedArrayType = new ArrayType(new MixedType(), $moreNestedArrayType);
         yield [$evenMoreNestedArrayType, 'int[][][]|string[][][]'];
     }
+
+    protected function tearDown(): void
+    {
+        unset($this->typeNormalizer);
+    }
 }
