@@ -151,11 +151,7 @@ CODE_SAMPLE
     /**
      * The topmost class is the source of truth, so we go only down to avoid up/down collission
      */
-    private function refactorClassMethod(
-        ClassMethod $classMethod,
-        ClassReflection $classReflection
-    ): ?ClassMethod
-    {
+    private function refactorClassMethod(ClassMethod $classMethod, ClassReflection $classReflection): ?ClassMethod {
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
@@ -219,7 +215,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $classMethodName = (string) $this->nodeNameResolver->getName($classMethod);
+        $classMethodName = $this->nodeNameResolver->getName($classMethod);
         if ($this->paramContravariantDetector->hasChildMethod($classReflection, $classMethodName)) {
             return false;
         }
