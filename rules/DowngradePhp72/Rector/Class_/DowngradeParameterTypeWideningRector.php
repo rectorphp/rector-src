@@ -108,10 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $extends = $node instanceof Interface_
-            ? $node->extends
-            : [$node->extends];
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends)) {
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($node->extends)) {
             return null;
         }
 
