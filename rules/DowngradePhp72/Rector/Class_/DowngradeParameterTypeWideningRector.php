@@ -166,8 +166,7 @@ CODE_SAMPLE
             $parameterTypesByParentClassLikes = $this->parentChildClassMethodTypeResolver->resolve(
                 $classReflection,
                 $methodName,
-                $position,
-                $scope
+                $position
             );
 
             $uniqueTypes = $this->typeFactory->uniquateTypes($parameterTypesByParentClassLikes);

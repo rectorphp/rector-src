@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp72\NodeAnalyzer;
 
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
@@ -27,15 +26,14 @@ final class ParentChildClassMethodTypeResolver
     public function resolve(
         ClassReflection $classReflection,
         string $methodName,
-        int $paramPosition,
-        Scope $scope
+        int $paramPosition
     ): array {
         $parameterTypesByClassName = [];
 
         // include types of class scope in case of trait
         if ($classReflection->isTrait()) {
             $parameterTypesByInterfaceName = $this->resolveInterfaceTypeByClassName(
-                $scope,
+                $classReflection,
                 $methodName,
                 $paramPosition
             );
@@ -76,13 +74,11 @@ final class ParentChildClassMethodTypeResolver
     /**
      * @return array<class-string, Type>
      */
-    private function resolveInterfaceTypeByClassName(Scope $scope, string $methodName, int $position): array
+    private function resolveInterfaceTypeByClassName(ClassReflection $classReflection, string $methodName, int $position): array
     {
         $typesByClassName = [];
 
-        /** @var ClassReflection $currentClassReflection */
-        $currentClassReflection = $scope->getClassReflection();
-        foreach ($currentClassReflection->getInterfaces() as $interfaceClassReflection) {
+        foreach ($classReflection->getInterfaces() as $interfaceClassReflection) {
             if (! $interfaceClassReflection->hasMethod($methodName)) {
                 continue;
             }
