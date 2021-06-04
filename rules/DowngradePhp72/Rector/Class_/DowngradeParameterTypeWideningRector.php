@@ -116,13 +116,14 @@ CODE_SAMPLE
         /** @var ClassReflection[] $ancestors */
         $ancestors = $classReflection->getAncestors();
         $classLikes = $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
+        $interfaces = $classReflection->getInterfaces();
         foreach ($classMethods as $classMethod) {
             if ($this->skipClassMethod($classMethod, $classReflection, $ancestors, $classLikes)) {
                 continue;
             }
 
             // refactor here
-            if ($this->refactorClassMethod($classMethod, $classReflection, $ancestors) !== null) {
+            if ($this->refactorClassMethod($classMethod, $classReflection, $ancestors, $interfaces) !== null) {
                 $hasChanged = true;
             }
         }
@@ -153,8 +154,9 @@ CODE_SAMPLE
     /**
      * The topmost class is the source of truth, so we go only down to avoid up/down collission
      * @param ClassReflection[] $ancestors
+     * @param ClassReflection[] $interfaces
      */
-    private function refactorClassMethod(ClassMethod $classMethod, ClassReflection $classReflection, array $ancestors): ?ClassMethod {
+    private function refactorClassMethod(ClassMethod $classMethod, ClassReflection $classReflection, array $ancestors, array $interfaces): ?ClassMethod {
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
@@ -171,7 +173,8 @@ CODE_SAMPLE
                 $classReflection,
                 $methodName,
                 $position,
-                $ancestors
+                $ancestors,
+                $interfaces
             );
 
             $uniqueTypes = $this->typeFactory->uniquateTypes($parameterTypesByParentClassLikes);

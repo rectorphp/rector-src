@@ -23,19 +23,21 @@ final class ParentChildClassMethodTypeResolver
     /**
      * @return array<class-string, Type>
      * @param ClassReflection[] $ancestors
+     * @param ClassReflection[] $interfaces
      */
     public function resolve(
         ClassReflection $classReflection,
         string $methodName,
         int $paramPosition,
-        array $ancestors
+        array $ancestors,
+        array $interfaces
     ): array {
         $parameterTypesByClassName = [];
 
         // include types of class scope in case of trait
         if ($classReflection->isTrait()) {
             $parameterTypesByInterfaceName = $this->resolveInterfaceTypeByClassName(
-                $classReflection,
+                $interfaces,
                 $methodName,
                 $paramPosition
             );
@@ -74,13 +76,14 @@ final class ParentChildClassMethodTypeResolver
     }
 
     /**
+     * @param ClassReflection[] $interfaces
      * @return array<class-string, Type>
      */
-    private function resolveInterfaceTypeByClassName(ClassReflection $classReflection, string $methodName, int $position): array
+    private function resolveInterfaceTypeByClassName(array $interfaces, string $methodName, int $position): array
     {
         $typesByClassName = [];
 
-        foreach ($classReflection->getInterfaces() as $interfaceClassReflection) {
+        foreach ($interfaces as $interfaceClassReflection) {
             if (! $interfaceClassReflection->hasMethod($methodName)) {
                 continue;
             }
