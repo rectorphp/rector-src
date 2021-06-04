@@ -44,23 +44,24 @@ final class ParentChildClassMethodTypeResolver
             $parameterTypesByClassName = array_merge($parameterTypesByClassName, $parameterTypesByInterfaceName);
         }
 
-        foreach ($ancestors as $ancestorClassReflection) {
-            if (! $ancestorClassReflection->hasMethod($methodName)) {
+        foreach ($ancestors as $ancestor) {
+            $ancestorHasMethod = $ancestor->hasMethod($methodName);
+            if (! $ancestorHasMethod) {
                 continue;
             }
 
             $parameterType = $this->nativeTypeClassTreeResolver->resolveParameterReflectionType(
-                $ancestorClassReflection,
+                $ancestor,
                 $methodName,
                 $paramPosition
             );
 
-            $parameterTypesByClassName[$ancestorClassReflection->getName()] = $parameterType;
+            $parameterTypesByClassName[$ancestor->getName()] = $parameterType;
 
             // collect other children
-            if ($ancestorClassReflection->isInterface() || $ancestorClassReflection->isClass()) {
+            if ($ancestor->isInterface() || $ancestor->isClass()) {
                 $interfaceParameterTypesByClassName = $this->collectInterfaceImplenters(
-                    $ancestorClassReflection,
+                    $ancestor,
                     $methodName,
                     $paramPosition
                 );
@@ -83,18 +84,19 @@ final class ParentChildClassMethodTypeResolver
     {
         $typesByClassName = [];
 
-        foreach ($interfaces as $interfaceClassReflection) {
-            if (! $interfaceClassReflection->hasMethod($methodName)) {
+        foreach ($interfaces as $interface) {
+            $interfaceHasMethod = $interface->hasMethod($methodName);
+            if (! $interfaceHasMethod) {
                 continue;
             }
 
             $parameterType = $this->nativeTypeClassTreeResolver->resolveParameterReflectionType(
-                $interfaceClassReflection,
+                $interface,
                 $methodName,
                 $position
             );
 
-            $typesByClassName[$interfaceClassReflection->getName()] = $parameterType;
+            $typesByClassName[$interface->getName()] = $parameterType;
         }
 
         return $typesByClassName;
