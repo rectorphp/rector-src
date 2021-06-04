@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ExternalFullyQualifiedAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\ClassLikeWithTraitsClassMethodResolver;
 use Rector\DowngradePhp72\NodeAnalyzer\ParamContravariantDetector;
@@ -37,7 +38,8 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector
         private ParentChildClassMethodTypeResolver $parentChildClassMethodTypeResolver,
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private ParamContravariantDetector $paramContravariantDetector,
-        private TypeFactory $typeFactory
+        private TypeFactory $typeFactory,
+        private ExternalFullyQualifiedAnalyzer $externalFullyQualifiedAnalyzer
     ) {
     }
 
@@ -106,7 +108,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasExtendExternal($node)) {
+        $extends = $node instanceof Interface_
+            ? $node->extends
+            : [$node->extends];
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends)) {
             return null;
         }
 
@@ -133,22 +138,6 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    /**
-     * @param Class_|Interface_ $node
-     */
-    private function hasExtendExternal(Node $node): bool
-    {
-        if ($node->extends instanceof FullyQualified) {
-            $className = (string) $this->getName($node->extends);
-            $parentFound = (bool) $this->nodeRepository->findClass($className);
-            if (! $parentFound) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
