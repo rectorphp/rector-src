@@ -122,7 +122,7 @@ CODE_SAMPLE
             }
 
             // refactor here
-            if ($this->refactorClassMethod($classMethod, $classReflection) !== null) {
+            if ($this->refactorClassMethod($classMethod, $classReflection, $ancestors) !== null) {
                 $hasChanged = true;
             }
         }
@@ -152,8 +152,9 @@ CODE_SAMPLE
 
     /**
      * The topmost class is the source of truth, so we go only down to avoid up/down collission
+     * @param ClassReflection[] $ancestors
      */
-    private function refactorClassMethod(ClassMethod $classMethod, ClassReflection $classReflection): ?ClassMethod {
+    private function refactorClassMethod(ClassMethod $classMethod, ClassReflection $classReflection, array $ancestors): ?ClassMethod {
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
@@ -169,7 +170,8 @@ CODE_SAMPLE
             $parameterTypesByParentClassLikes = $this->parentChildClassMethodTypeResolver->resolve(
                 $classReflection,
                 $methodName,
-                $position
+                $position,
+                $ancestors
             );
 
             $uniqueTypes = $this->typeFactory->uniquateTypes($parameterTypesByParentClassLikes);

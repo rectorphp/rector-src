@@ -22,11 +22,13 @@ final class ParentChildClassMethodTypeResolver
 
     /**
      * @return array<class-string, Type>
+     * @param ClassReflection[] $ancestors
      */
     public function resolve(
         ClassReflection $classReflection,
         string $methodName,
-        int $paramPosition
+        int $paramPosition,
+        array $ancestors
     ): array {
         $parameterTypesByClassName = [];
 
@@ -40,7 +42,7 @@ final class ParentChildClassMethodTypeResolver
             $parameterTypesByClassName = array_merge($parameterTypesByClassName, $parameterTypesByInterfaceName);
         }
 
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+        foreach ($ancestors as $ancestorClassReflection) {
             if (! $ancestorClassReflection->hasMethod($methodName)) {
                 continue;
             }
