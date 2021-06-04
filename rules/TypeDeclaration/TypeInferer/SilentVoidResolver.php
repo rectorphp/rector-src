@@ -47,10 +47,7 @@ final class SilentVoidResolver
             return false;
         }
 
-        $extends = $classLike instanceof Interface_
-            ? $classLike->extends
-            : [$classLike->extends];
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends)) {
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($classLike->extends)) {
             return false;
         }
 

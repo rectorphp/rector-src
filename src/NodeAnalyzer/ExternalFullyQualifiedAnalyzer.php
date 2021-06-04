@@ -19,20 +19,24 @@ final class ExternalFullyQualifiedAnalyzer
     }
 
     /**
-     * @param FullyQualified[]|mixed[] $traits
+     * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
      */
-    public function hasExternalClassOrInterface(array $fullyQualifiedClassLikes): bool
+    public function hasExternalClassOrInterface($fullyQualifiedClassLikes): bool
     {
         if ($fullyQualifiedClassLikes === []) {
             return false;
         }
 
-        foreach ($fullyQualifiedClassLikes as $classLike) {
-            if (! $classLike instanceof FullyQualified) {
-                return false;
-            }
+        if ($fullyQualifiedClassLikes === null) {
+            return false;
+        }
 
-            /** @var string $traitName */
+        if ($fullyQualifiedClassLikes instanceof FullyQualified) {
+            $fullyQualifiedClassLikes = [$fullyQualifiedClassLikes];
+        }
+
+        foreach ($fullyQualifiedClassLikes as $classLike) {
+            /** @var string $className */
             $className = $this->nodeNameResolver->getName($classLike);
             $isClassFound     = (bool) $this->nodeRepository->findClass($className);
             $isInterfaceFound = (bool) $this->nodeRepository->findInterface($className);
