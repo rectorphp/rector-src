@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\TraitUse;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
-use PhpParser\Node\Stmt\TraitUse;
 
 final class ExternalFullyQualifiedAnalyzer
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private NodeRepository $nodeRepository
-    )
-    {
+    ) {
     }
 
     /**
@@ -35,13 +34,15 @@ final class ExternalFullyQualifiedAnalyzer
             $fullyQualifiedClassLikes = [$fullyQualifiedClassLikes];
         }
 
-        foreach ($fullyQualifiedClassLikes as $classLike) {
+        foreach ($fullyQualifiedClassLikes as $fullyQualifiedClassLike) {
             /** @var string $className */
-            $className = $this->nodeNameResolver->getName($classLike);
-            $isClassFound     = (bool) $this->nodeRepository->findClass($className);
+            $className = $this->nodeNameResolver->getName($fullyQualifiedClassLike);
+            $isClassFound = (bool) $this->nodeRepository->findClass($className);
             $isInterfaceFound = (bool) $this->nodeRepository->findInterface($className);
-
-            if ($isClassFound || $isInterfaceFound) {
+            if ($isClassFound) {
+                continue;
+            }
+            if ($isInterfaceFound) {
                 continue;
             }
 
