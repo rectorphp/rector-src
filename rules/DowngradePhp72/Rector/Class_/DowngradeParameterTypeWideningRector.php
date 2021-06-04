@@ -120,7 +120,7 @@ CODE_SAMPLE
             }
 
             // refactor here
-            if ($this->refactorClassMethod($classMethod, $scope, $classReflection) !== null) {
+            if ($this->refactorClassMethod($classMethod, $classReflection) !== null) {
                 $hasChanged = true;
             }
         }
@@ -153,7 +153,6 @@ CODE_SAMPLE
      */
     private function refactorClassMethod(
         ClassMethod $classMethod,
-        Scope $scope,
         ClassReflection $classReflection
     ): ?ClassMethod
     {
