@@ -7,6 +7,7 @@ namespace Rector\Core\NodeAnalyzer;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
+use PhpParser\Node\Stmt\TraitUse;
 
 final class ExternalFullyQualifiedAnalyzer
 {
@@ -47,25 +48,29 @@ final class ExternalFullyQualifiedAnalyzer
     }
 
     /**
-     * @param FullyQualified[]|mixed[] $fullyQualifiedTraits
+     * @param TraitUse[] $traitUses
      */
-    public function hasExternalTrait(array $fullyQualifiedTraits): bool
+    public function hasExternalTrait(array $traitUses): bool
     {
-        if ($fullyQualifiedTraits === []) {
+        if ($traitUses === []) {
             return false;
         }
 
-        foreach ($fullyQualifiedTraits as $trait) {
-            if (! $trait instanceof FullyQualified) {
-                return false;
-            }
+        foreach ($traitUses as $traitUse) {
+            $traits = $traitUse->traits;
 
-            /** @var string $traitName */
-            $traitName = $this->nodeNameResolver->getName($trait);
-            $isTraitFound = (bool) $this->nodeRepository->findTrait($traitName);
+            foreach ($traits as $trait) {
+                if (! $trait instanceof FullyQualified) {
+                    return false;
+                }
 
-            if (! $isTraitFound) {
-                return true;
+                /** @var string $traitName */
+                $traitName = $this->nodeNameResolver->getName($trait);
+                $isTraitFound = (bool) $this->nodeRepository->findTrait($traitName);
+
+                if (! $isTraitFound) {
+                    return true;
+                }
             }
         }
 
