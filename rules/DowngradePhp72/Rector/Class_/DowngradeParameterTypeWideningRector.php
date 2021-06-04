@@ -189,10 +189,8 @@ CODE_SAMPLE
     {
         // It already has no type => nothing to do - check original param, as it could have been removed by this rule
         $originalParam = $param->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if ($originalParam instanceof Param) {
-            if ($originalParam->type === null) {
-                return;
-            }
+        if ($originalParam instanceof Param && $originalParam->type === null) {
+            return;
         } elseif ($param->type === null) {
             return;
         }
