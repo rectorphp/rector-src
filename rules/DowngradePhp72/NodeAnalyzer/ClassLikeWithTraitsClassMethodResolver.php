@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp72\NodeAnalyzer;
 
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ClassLikeWithTraitsClassMethodResolver
 {
