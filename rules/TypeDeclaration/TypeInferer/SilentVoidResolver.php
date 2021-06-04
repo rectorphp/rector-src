@@ -17,13 +17,15 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
+use Rector\Core\NodeAnalyzer\ExternalFullyQualifiedAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class SilentVoidResolver
 {
     public function __construct(
-        private BetterNodeFinder $betterNodeFinder
+        private BetterNodeFinder $betterNodeFinder,
+        private ExternalFullyQualifiedAnalyzer $externalFullyQualifiedAnalyzer
     ) {
     }
 
@@ -44,10 +46,19 @@ final class SilentVoidResolver
         if ($this->betterNodeFinder->hasInstancesOf((array) $functionLike->stmts, [Yield_::class])) {
             return false;
         }
+
         if ($classLike->extends instanceof FullyQualified) {
             return false;
         }
-        if ($classLike->getTraitUses() !== []) {
+
+        $extends = $classLike instanceof Interface_
+            ? $classLike->extends
+            : [$classLike->extends];
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends)) {
+            return false;
+        }
+
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalTrait($classLike->getTraitUses())) {
             return false;
         }
 
