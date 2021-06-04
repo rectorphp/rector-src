@@ -155,4 +155,16 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         return $file->getFileContent();
     }
+
+    protected function tearDown(): void
+    {
+        unset(
+            $this->applicationFileProcessor,
+            $this->parameterProvider,
+            $this->dynamicSourceLocatorProvider,
+            $this->removedAndAddedFilesCollector,
+            $this->originalTempFileInfo,
+        );
+        gc_collect_cycles();
+    }
 }
