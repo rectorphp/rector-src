@@ -113,7 +113,7 @@ CODE_SAMPLE
         $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($node);
 
         foreach ($classMethods as $classMethod) {
-            if ($this->skipClassMethod($classMethod, $scope)) {
+            if ($this->skipClassMethod($classMethod, $classReflection)) {
                 continue;
             }
 
@@ -202,7 +202,7 @@ CODE_SAMPLE
         $param->type = null;
     }
 
-    private function skipClassMethod(ClassMethod $classMethod, Scope $classScope): bool
+    private function skipClassMethod(ClassMethod $classMethod, ClassReflection $classReflection): bool
     {
         if ($classMethod->isMagic()) {
             return true;
@@ -212,11 +212,11 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->paramContravariantDetector->hasChildMethod($classMethod, $classScope)) {
+        if ($this->paramContravariantDetector->hasChildMethod($classMethod, $classReflection)) {
             return false;
         }
 
-        return ! $this->paramContravariantDetector->hasParentMethod($classMethod, $classScope);
+        return ! $this->paramContravariantDetector->hasParentMethod($classMethod, $classReflection);
     }
 
     private function isEmptyClassReflection(ClassReflection $classReflection): bool
