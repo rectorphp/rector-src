@@ -170,7 +170,7 @@ CODE_SAMPLE
             );
 
             $uniqueTypes = $this->typeFactory->uniquateTypes($parameterTypesByParentClassLikes);
-            if (count($uniqueTypes) <= 1) {
+            if (! isset($uniqueTypes[1])) {
                 continue;
             }
 
