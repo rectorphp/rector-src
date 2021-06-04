@@ -111,10 +111,10 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($node);
-
         /** @var ClassReflection[] $ancestors */
         $ancestors = $classReflection->getAncestors();
+        $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($ancestors);
+
         $classLikes = $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
         $interfaces = $classReflection->getInterfaces();
         foreach ($classMethods as $classMethod) {

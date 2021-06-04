@@ -21,23 +21,13 @@ final class ClassLikeWithTraitsClassMethodResolver
     }
 
     /**
-     * @param Class_|Interface_ $classLike
+     * @param ClassReflection $ancestors
      * @return ClassMethod[]
      */
-    public function resolve(ClassLike $classLike): array
+    public function resolve(array $ancestors): array
     {
-        $scope = $classLike->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return [];
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return [];
-        }
-
         $classMethods = [];
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+        foreach ($ancestors as $ancestorClassReflection) {
             $ancestorClassLike = $this->nodeRepository->findClassLike($ancestorClassReflection->getName());
             if (! $ancestorClassLike instanceof ClassLike) {
                 continue;
