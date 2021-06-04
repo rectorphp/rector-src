@@ -136,7 +136,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
 
     /**
      * Useful for attributes
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getValuesWithExplicitSilentAndWithoutQuotes(): array
     {
@@ -179,6 +179,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
 
     /**
      * @param mixed[] $values
+     * @return array<int|string, mixed>
      */
     protected function removeQuotesFromArray(array $values): array
     {
