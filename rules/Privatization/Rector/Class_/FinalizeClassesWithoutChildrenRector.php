@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasEntityOrEmbeddableAttrGroup($node)) {
+        if ($this->hasEntityOrEmbeddableAttr($node)) {
             return null;
         }
 
@@ -108,7 +108,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasEntityOrEmbeddableAttrGroup(Class_ $class): bool
+    private function hasEntityOrEmbeddableAttr(Class_ $class): bool
     {
         foreach ($class->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attribute) {
