@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Rector\Privatization\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @see \Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector\FinalizeClassesWithoutChildrenRectorTest
