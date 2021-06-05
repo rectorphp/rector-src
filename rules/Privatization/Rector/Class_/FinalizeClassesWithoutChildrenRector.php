@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FinalizeClassesWithoutChildrenRector extends AbstractRector
 {
     /**
-     * @var string
+     * @var string[]
      */
     private const DOCTRINE_ORM_MAPPING_ANNOTATION = [
         'Doctrine\ORM\Mapping\Entity',
@@ -116,7 +116,6 @@ CODE_SAMPLE
                     continue;
                 }
 
-                /** @var string */
                 $className = $this->nodeNameResolver->getName($attribute->name);
                 if (in_array($className, self::DOCTRINE_ORM_MAPPING_ANNOTATION, true)) {
                     return true;
