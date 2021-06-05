@@ -22,6 +22,7 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\FileFormatter\ValueObject\EditorConfigConfiguration;
 use Symplify\SimplePhpDocParser\PhpDocNodeTraverser;
 
 /**
@@ -54,11 +55,6 @@ final class PhpDocInfoPrinter
     private const DOCBLOCK_START_REGEX = '#^(\/\/|\/\*\*|\/\*|\#)#';
 
     /**
-     * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines
-     */
-    private const NEWLINE_WITH_ASTERISK = "\n" . ' * ';
-
-    /**
      * @see https://regex101.com/r/WR3goY/1/
      * @var string
      */
@@ -82,7 +78,8 @@ final class PhpDocInfoPrinter
         private DocBlockInliner $docBlockInliner,
         private RemoveNodesStartAndEndResolver $removeNodesStartAndEndResolver,
         private ChangedPhpDocNodeVisitor $changedPhpDocNodeVisitor,
-        ChangedPhpDocNodeTraverserFactory $changedPhpDocNodeTraverserFactory
+        ChangedPhpDocNodeTraverserFactory $changedPhpDocNodeTraverserFactory,
+        private EditorConfigConfiguration $editorConfigConfiguration
     ) {
         $this->changedPhpDocNodeTraverser = $changedPhpDocNodeTraverserFactory->create();
     }
@@ -95,7 +92,7 @@ final class PhpDocInfoPrinter
         }
 
         if ($phpDocInfo->getNode() instanceof InlineHTML) {
-            return '<?php' . PHP_EOL . $docContent . PHP_EOL . '?>';
+            return '<?php' . $this->editorConfigConfiguration->getNewLine() . $docContent . $this->editorConfigConfiguration->getNewLine() . '?>';
         }
 
         return $docContent;
@@ -120,7 +117,7 @@ final class PhpDocInfoPrinter
             }
 
             if ($phpDocInfo->getNode() instanceof InlineHTML) {
-                return '<?php' . PHP_EOL . $phpDocInfo->getPhpDocNode() . PHP_EOL . '?>';
+                return '<?php' . $this->editorConfigConfiguration->getNewLine() . $phpDocInfo->getPhpDocNode() . $this->editorConfigConfiguration->getNewLine() . '?>';
             }
 
             return (string) $phpDocInfo->getPhpDocNode();
@@ -209,7 +206,7 @@ final class PhpDocInfoPrinter
 
                 // remove extra space between tags
                 $printedNode = Strings::replace($printedNode, self::TAG_AND_SPACE_REGEX, '$1(');
-                return self::NEWLINE_WITH_ASTERISK . $printedNode;
+                return $this->getNewlineWithAserisk() . $printedNode;
             }
         }
 
@@ -276,10 +273,12 @@ final class PhpDocInfoPrinter
             --$from;
         }
 
+        $eol = $this->editorConfigConfiguration->getNewLine();
+
         // skip extra empty lines above if this is the last one
         if ($shouldSkipEmptyLinesAbove &&
-            \str_contains($this->tokens[$from][0], PHP_EOL) &&
-            \str_contains($this->tokens[$from + 1][0], PHP_EOL)
+            \str_contains($this->tokens[$from][0], $eol) &&
+            \str_contains($this->tokens[$from + 1][0], $eol)
         ) {
             ++$from;
         }
@@ -342,6 +341,10 @@ final class PhpDocInfoPrinter
             return ' ' . $phpDocChildNode;
         }
 
-        return self::NEWLINE_WITH_ASTERISK . $phpDocChildNode;
+        return $this->getNewlineWithAserisk() . $phpDocChildNode;
+    }
+
+    private function getNewlineWithAserisk():string {
+        return $this->editorConfigConfiguration->getNewLine(). ' * ';
     }
 }
