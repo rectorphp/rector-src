@@ -10,12 +10,21 @@ use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @see \Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector\FinalizeClassesWithoutChildrenRectorTest
  */
 final class FinalizeClassesWithoutChildrenRector extends AbstractRector
 {
+    /**
+     * @var string
+     */
+    private const DOCTRINE_ORM_MAPPING_ANNOTATION = [
+        'Doctrine\ORM\Mapping\Entity',
+        'Doctrine\ORM\Mapping\Embeddable',
+    ];
+
     public function __construct(
         private ClassAnalyzer $classAnalyzer
     ) {
@@ -82,7 +91,7 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if ($phpDocInfo->hasByAnnotationClasses(['Doctrine\ORM\Mapping\Entity', 'Doctrine\ORM\Mapping\Embeddable'])) {
+        if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_ORM_MAPPING_ANNOTATION)) {
             return null;
         }
 
@@ -90,8 +99,31 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->hasEntityAttrGroup($node)) {
+            return null;
+        }
+
         $this->visibilityManipulator->makeFinal($node);
 
         return $node;
+    }
+
+    private function hasEntityAttrGroup(Class_ $class): bool
+    {
+        foreach ($class->attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attribute) {
+                if (! $attribute->name instanceof FullyQualified) {
+                    continue;
+                }
+
+                /** @var string */
+                $className = $this->nodeNameResolver->getName($attribute->name);
+                if (in_array($className, self::DOCTRINE_ORM_MAPPING_ANNOTATION, true)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
