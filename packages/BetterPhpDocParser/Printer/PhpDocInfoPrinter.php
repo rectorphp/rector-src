@@ -22,7 +22,9 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\FileFormatter\EditorConfig\EditorConfigParser;
 use Rector\FileFormatter\ValueObject\EditorConfigConfiguration;
+use Rector\FileFormatter\ValueObjectFactory\EditorConfigConfigurationBuilder;
 use Symplify\SimplePhpDocParser\PhpDocNodeTraverser;
 
 /**
@@ -72,6 +74,7 @@ final class PhpDocInfoPrinter
     private ?PhpDocInfo $phpDocInfo = null;
 
     private PhpDocNodeTraverser $changedPhpDocNodeTraverser;
+    private EditorConfigConfiguration $editorConfigConfiguration;
 
     public function __construct(
         private EmptyPhpDocDetector $emptyPhpDocDetector,
@@ -79,9 +82,11 @@ final class PhpDocInfoPrinter
         private RemoveNodesStartAndEndResolver $removeNodesStartAndEndResolver,
         private ChangedPhpDocNodeVisitor $changedPhpDocNodeVisitor,
         ChangedPhpDocNodeTraverserFactory $changedPhpDocNodeTraverserFactory,
-        private EditorConfigConfiguration $editorConfigConfiguration
+        EditorConfigParser $editorConfigParser
     ) {
         $this->changedPhpDocNodeTraverser = $changedPhpDocNodeTraverserFactory->create();
+        // XXX needs work
+        $this->editorConfigConfiguration = $editorConfigParser->extractConfigurationForFile(new File("composer.json"), new EditorConfigConfigurationBuilder());
     }
 
     public function printNew(PhpDocInfo $phpDocInfo): string
