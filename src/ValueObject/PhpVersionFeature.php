@@ -156,11 +156,6 @@ final class PhpVersionFeature
     /**
      * @var int
      */
-    public const CLASS_ON_OBJECT = PhpVersion::PHP_80;
-
-    /**
-     * @var int
-     */
     public const STATIC_RETURN_TYPE = PhpVersion::PHP_80;
 
     /**
