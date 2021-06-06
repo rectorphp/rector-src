@@ -30,5 +30,3 @@ final class NameAndParent
         return $this->parentNode;
     }
 }
-
-?>
