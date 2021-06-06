@@ -17,7 +17,7 @@ final class AssignAndRootExpr extends AbstractRootExpr implements RootExprAwareI
     public function __construct(
         Expr $assignExpr,
         Expr $rootExpr,
-        private ?Variable $silentVariable = null,
+        private ?Variable $variable = null,
         bool $isFirstCallFactory = false
     ) {
         $this->assignExpr = $assignExpr;
@@ -37,22 +37,22 @@ final class AssignAndRootExpr extends AbstractRootExpr implements RootExprAwareI
 
     public function getSilentVariable(): ?Variable
     {
-        return $this->silentVariable;
+        return $this->variable;
     }
 
     public function getReturnSilentVariable(): Return_
     {
-        if (! $this->silentVariable instanceof Variable) {
+        if (! $this->variable instanceof Variable) {
             throw new ShouldNotHappenException();
         }
 
-        return new Return_($this->silentVariable);
+        return new Return_($this->variable);
     }
 
     public function getCallerExpr(): Expr
     {
-        if ($this->silentVariable !== null) {
-            return $this->silentVariable;
+        if ($this->variable !== null) {
+            return $this->variable;
         }
 
         return $this->assignExpr;

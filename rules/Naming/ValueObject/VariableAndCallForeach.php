@@ -17,12 +17,11 @@ use PhpParser\Node\Stmt\Function_;
 final class VariableAndCallForeach
 {
     /**
-     * @param FuncCall|StaticCall|MethodCall $call
      * @param ClassMethod|Function_|Closure $functionLike
      */
     public function __construct(
         private Variable $variable,
-        private Expr $call,
+        private Expr $expr,
         private string $variableName,
         private FunctionLike $functionLike
     ) {
@@ -33,12 +32,9 @@ final class VariableAndCallForeach
         return $this->variable;
     }
 
-    /**
-     * @return FuncCall|StaticCall|MethodCall
-     */
-    public function getCall(): Expr
+    public function getCall(): FuncCall | StaticCall | MethodCall
     {
-        return $this->call;
+        return $this->expr;
     }
 
     public function getVariableName(): string
@@ -46,10 +42,7 @@ final class VariableAndCallForeach
         return $this->variableName;
     }
 
-    /**
-     * @return ClassMethod|Function_|Closure
-     */
-    public function getFunctionLike(): FunctionLike
+    public function getFunctionLike(): Closure | ClassMethod | Function_
     {
         return $this->functionLike;
     }

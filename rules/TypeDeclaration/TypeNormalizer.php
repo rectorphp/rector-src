@@ -43,7 +43,7 @@ final class TypeNormalizer
             foreach ($unionType->getTypes() as $unionedType) {
                 if ($unionedType instanceof ConstantStringType) {
                     $stringType = new StringType();
-                    $nonConstantValueTypes[get_class($stringType)] = $stringType;
+                    $nonConstantValueTypes[$stringType::class] = $stringType;
                 } elseif ($unionedType instanceof ObjectType) {
                     $nonConstantValueTypes[] = $unionedType;
                 } else {
@@ -145,7 +145,7 @@ final class TypeNormalizer
     /**
      * @param NestedArrayType[] $collectedNestedArrayTypes
      */
-    private function createUnionedTypesFromArrayTypes(array $collectedNestedArrayTypes): Type
+    private function createUnionedTypesFromArrayTypes(array $collectedNestedArrayTypes): UnionType | ArrayType
     {
         $unionedTypes = [];
         foreach ($collectedNestedArrayTypes as $collectedNestedArrayType) {

@@ -121,7 +121,11 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|Closure $node
      */
-    private function processSingleUnionType(Node $node, UnionType $unionType, NullableType $nullableType): FunctionLike
+    private function processSingleUnionType(
+        Node $node,
+        UnionType $unionType,
+        NullableType $nullableType
+    ): Closure | ClassMethod | Function_
     {
         $types = $unionType->getTypes();
         $returnType = $types[0] instanceof ObjectType && $types[1] instanceof NullType

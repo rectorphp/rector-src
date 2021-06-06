@@ -13,7 +13,7 @@ final class AddParamTypeDeclaration
         private string $className,
         private string $methodName,
         private int $position,
-        private Type $paramType
+        private Type $type
     ) {
     }
 
@@ -34,6 +34,6 @@ final class AddParamTypeDeclaration
 
     public function getParamType(): Type
     {
-        return $this->paramType;
+        return $this->type;
     }
 }

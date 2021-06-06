@@ -12,7 +12,7 @@ final class AddReturnTypeDeclaration
     public function __construct(
         private string $class,
         private string $method,
-        private Type $returnType
+        private Type $type
     ) {
     }
 
@@ -28,7 +28,7 @@ final class AddReturnTypeDeclaration
 
     public function getReturnType(): Type
     {
-        return $this->returnType;
+        return $this->type;
     }
 
     public function getObjectType(): ObjectType
