@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -153,8 +154,17 @@ CODE_SAMPLE
             $desiredPropertyNames[$key] = $desiredPropertyName;
         }
 
+        $this->renameParamVarName($classLike, $constructClassMethod->params, $desiredPropertyNames);
+    }
+
+    /**
+     * @param Param[] $params
+     * @param string[] $desiredPropertyNames
+     */
+    private function renameParamVarName(ClassLike $classLike, array $params, array $desiredPropertyNames): void
+    {
         $keys = array_keys($desiredPropertyNames);
-        foreach ($constructClassMethod->params as $key => $param) {
+        foreach ($params as $key => $param) {
             if (in_array($key, $keys, true)) {
                 $currentName = $this->getName($param);
                 $desiredPropertyName = $desiredPropertyNames[$key];
