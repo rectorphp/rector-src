@@ -41,7 +41,9 @@ final class PlainValueParser
     /**
      * @return bool|int|mixed|string
      */
-    public function parseValue(BetterTokenIterator $tokenIterator)
+    public function parseValue(
+        BetterTokenIterator $tokenIterator
+    ): string | array | ConstExprFalseNode | ConstExprTrueNode | ConstExprIntegerNode | DoctrineAnnotationTagValueNode
     {
         $currentTokenValue = $tokenIterator->currentTokenValue();
 
