@@ -134,7 +134,8 @@ CODE_SAMPLE
             return;
         }
 
-        foreach ($constructClassMethod->params as $param) {
+        $desiredPropertyNames = [];
+        foreach ($constructClassMethod->params as $key => $param) {
             if ($param->flags === 0) {
                 continue;
             }
@@ -145,10 +146,21 @@ CODE_SAMPLE
                 continue;
             }
 
-            $currentName = $this->getName($param);
-            $this->propertyFetchRenamer->renamePropertyFetchesInClass($classLike, $currentName, $desiredPropertyName);
+            if (in_array($desiredPropertyName, $desiredPropertyNames, true)) {
+                return;
+            }
 
-            $param->var->name = $desiredPropertyName;
+            $desiredPropertyNames[$key] = $desiredPropertyName;
+        }
+
+        $keys = array_keys($desiredPropertyNames);
+        foreach ($constructClassMethod->params as $key => $param) {
+            if (in_array($key, $keys, true)) {
+                $currentName = $this->getName($param);
+                $desiredPropertyName = $desiredPropertyNames[$key];
+                $this->propertyFetchRenamer->renamePropertyFetchesInClass($classLike, $currentName, $desiredPropertyName);
+                $param->var->name = $desiredPropertyName;
+            }
         }
     }
 }
