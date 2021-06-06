@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -125,8 +124,7 @@ CODE_SAMPLE
         Node $node,
         UnionType $unionType,
         NullableType $nullableType
-    ): Closure | ClassMethod | Function_
-    {
+    ): Closure | ClassMethod | Function_ {
         $types = $unionType->getTypes();
         $returnType = $types[0] instanceof ObjectType && $types[1] instanceof NullType
             ? new NullableType(new FullyQualified($types[0]->getClassName()))
@@ -228,7 +226,7 @@ CODE_SAMPLE
         Return_ $return,
         Identifier | Name | NullableType | PhpParserUnionType $returnedStrictTypeNode,
         ClassMethod | Function_ | Closure $functionLike
-    ): FunctionLike {
+    ): Closure | ClassMethod | Function_ {
         $resolvedType = $this->nodeTypeResolver->resolve($return);
 
         if ($resolvedType instanceof UnionType) {

@@ -7,9 +7,6 @@ namespace Rector\Naming\ValueObject;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -34,7 +31,7 @@ final class VariableAndCallAssign
         return $this->variable;
     }
 
-    public function getCall(): FuncCall | StaticCall | MethodCall
+    public function getCall(): Expr
     {
         return $this->expr;
     }
