@@ -246,7 +246,8 @@ CODE_SAMPLE
 
         /** @var FullyQualified|null $extends */
         $extends = $classLike->extends;
-        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait($extends, $classLike->getTraitUses());
+        $traitUses = $classLike->getTraitUses();
+        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait($extends, $traitUses);
         return $functionLike->returnType === null && $hasExternalClassOrInterfaceOrTrait && $this->isName($inferredReturnNode, 'void');
     }
 
