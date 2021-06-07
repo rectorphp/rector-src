@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -156,6 +157,13 @@ CODE_SAMPLE
 
             if (in_array($desiredPropertyName, $desiredPropertyNames, true)) {
                 return;
+            }
+
+            if ($this->nodeTypeResolver->isObjectTypes($param->type, [
+                new ObjectType('PhpParser\Node'),
+                new ObjectType('PHPStan\Type\Type'),
+            ])) {
+                continue;
             }
 
             $desiredPropertyNames[$key] = $desiredPropertyName;
