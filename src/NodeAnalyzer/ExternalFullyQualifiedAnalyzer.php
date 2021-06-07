@@ -21,7 +21,7 @@ final class ExternalFullyQualifiedAnalyzer
      * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
      * @param TraitUse[] $traitUses
      */
-    public function hasExternalClassOrInterfaceOrTrait($fullyQualifiedClassLikes, array $traitUses)
+    public function hasExternalClassOrInterfaceOrTrait($fullyQualifiedClassLikes, array $traitUses): bool
     {
         $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($fullyQualifiedClassLikes);
         if ($hasExternalClassOrInterface) {
