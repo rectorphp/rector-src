@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\TraitUse;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
@@ -19,7 +18,7 @@ final class ExternalFullyQualifiedAnalyzer
     }
 
     /**
-     * @param Name|FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
+     * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
      */
     public function hasExternalClassOrInterface($fullyQualifiedClassLikes): bool
     {
@@ -31,7 +30,7 @@ final class ExternalFullyQualifiedAnalyzer
             return false;
         }
 
-        if ($fullyQualifiedClassLikes instanceof Name) {
+        if ($fullyQualifiedClassLikes instanceof FullyQualified) {
             $fullyQualifiedClassLikes = [$fullyQualifiedClassLikes];
         }
 

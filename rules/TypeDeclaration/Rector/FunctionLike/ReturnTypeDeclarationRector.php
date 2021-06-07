@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -243,9 +244,9 @@ CODE_SAMPLE
             return false;
         }
 
-        $hasExternalClassOrInterface = $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface(
-            $classLike->extends
-        );
+        /** @var FullyQualified|null $extends */
+        $extends = $classLike->extends;
+        $hasExternalClassOrInterface = $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends);
         $hasExternalTrait = $this->externalFullyQualifiedAnalyzer->hasExternalTrait($classLike->getTraitUses());
         if ($hasExternalClassOrInterface) {
             return $functionLike->returnType === null && $this->isName($inferredReturnNode, 'void');
