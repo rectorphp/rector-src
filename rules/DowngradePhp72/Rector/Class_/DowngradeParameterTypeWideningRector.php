@@ -114,6 +114,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalTrait($node->getTraitUses())) {
+            return null;
+        }
+
         $hasChanged = false;
         /** @var ClassReflection[] $ancestors */
         $ancestors = $classReflection->getAncestors();
