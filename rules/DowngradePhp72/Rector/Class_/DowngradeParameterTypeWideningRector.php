@@ -110,11 +110,7 @@ CODE_SAMPLE
 
         /** @var FullyQualified[]|FullyQualified|null $extends */
         $extends = $node->extends;
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends)) {
-            return null;
-        }
-
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalTrait($node->getTraitUses())) {
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait($extends, $node->getTraitUses())) {
             return null;
         }
 

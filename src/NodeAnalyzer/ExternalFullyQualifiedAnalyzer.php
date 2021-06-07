@@ -19,8 +19,22 @@ final class ExternalFullyQualifiedAnalyzer
 
     /**
      * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
+     * @param TraitUse[] $traitUses
      */
-    public function hasExternalClassOrInterface($fullyQualifiedClassLikes): bool
+    public function hasExternalClassOrInterfaceOrTrait($fullyQualifiedClassLikes, array $traitUses)
+    {
+        $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($fullyQualifiedClassLikes);
+        if ($hasExternalClassOrInterface) {
+            return true;
+        }
+
+        return $this->hasExternalTrait($traitUses);
+    }
+
+    /**
+     * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
+     */
+    private function hasExternalClassOrInterface($fullyQualifiedClassLikes): bool
     {
         if ($fullyQualifiedClassLikes === []) {
             return false;
@@ -55,7 +69,7 @@ final class ExternalFullyQualifiedAnalyzer
     /**
      * @param TraitUse[] $traitUses
      */
-    public function hasExternalTrait(array $traitUses): bool
+    private function hasExternalTrait(array $traitUses): bool
     {
         if ($traitUses === []) {
             return false;

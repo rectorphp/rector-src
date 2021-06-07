@@ -246,16 +246,8 @@ CODE_SAMPLE
 
         /** @var FullyQualified|null $extends */
         $extends = $classLike->extends;
-        $hasExternalClassOrInterface = $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterface($extends);
-        $hasExternalTrait = $this->externalFullyQualifiedAnalyzer->hasExternalTrait($classLike->getTraitUses());
-        if ($hasExternalClassOrInterface) {
-            return $functionLike->returnType === null && $this->isName($inferredReturnNode, 'void');
-        }
-        if ($hasExternalTrait) {
-            return $functionLike->returnType === null && $this->isName($inferredReturnNode, 'void');
-        }
-
-        return false;
+        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait($extends, $classLike->getTraitUses());
+        return $functionLike->returnType === null && $hasExternalClassOrInterfaceOrTrait && $this->isName($inferredReturnNode, 'void');
     }
 
     private function isNullableTypeSubType(Type $currentType, Type $inferedType): bool
