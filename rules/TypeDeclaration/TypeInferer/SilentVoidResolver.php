@@ -51,9 +51,12 @@ final class SilentVoidResolver
 
         /** @var FullyQualified[]|FullyQualified|null $extends */
         $extends = $classLike->extends;
+        /** @var FullyQualified[] $implements */
+        $implements = $classLike->implements;
         $traitUses = $classLike->getTraitUses();
         if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait(
             $extends,
+            $implements,
             $traitUses
         )) {
             return false;

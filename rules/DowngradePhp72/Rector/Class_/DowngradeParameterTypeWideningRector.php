@@ -108,13 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var FullyQualified[]|FullyQualified|null $extends */
-        $extends = $node->extends;
-        $traitUses = $node->getTraitUses();
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait(
-            $extends,
-            $traitUses
-        )) {
+        if ($this->hasExternalFullyQualified($node)) {
             return null;
         }
 
@@ -141,6 +135,24 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * @param Class_|Interface_ $node
+     */
+    private function hasExternalFullyQualified(Node $node): bool
+    {
+        /** @var FullyQualified[]|FullyQualified|null $extends */
+        $extends = $node->extends;
+        /** @var FullyQualified[] $implements */
+        $implements = $node instanceof Class_ ? $node->implements : [];
+        $traitUses = $node->getTraitUses();
+
+        return $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait(
+            $extends,
+            $implements,
+            $traitUses
+        );
     }
 
     /**

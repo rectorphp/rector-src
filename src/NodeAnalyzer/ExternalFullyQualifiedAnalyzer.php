@@ -19,11 +19,12 @@ final class ExternalFullyQualifiedAnalyzer
 
     /**
      * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
+     * @param FullyQualified[] $implements
      * @param TraitUse[] $traitUses
      */
-    public function hasExternalClassOrInterfaceOrTrait($fullyQualifiedClassLikes, array $traitUses): bool
+    public function hasExternalClassOrInterfaceOrTrait($fullyQualifiedClassLikes, array $implements, array $traitUses): bool
     {
-        $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($fullyQualifiedClassLikes);
+        $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($fullyQualifiedClassLikes, $implements);
         if ($hasExternalClassOrInterface) {
             return true;
         }
@@ -33,8 +34,9 @@ final class ExternalFullyQualifiedAnalyzer
 
     /**
      * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
+     * @param FullyQualified[] $implements
      */
-    private function hasExternalClassOrInterface($fullyQualifiedClassLikes): bool
+    private function hasExternalClassOrInterface($fullyQualifiedClassLikes, array $implements): bool
     {
         if ($fullyQualifiedClassLikes === []) {
             return false;
@@ -48,6 +50,7 @@ final class ExternalFullyQualifiedAnalyzer
             $fullyQualifiedClassLikes = [$fullyQualifiedClassLikes];
         }
 
+        $fullyQualifiedClassLikes = array_merge($fullyQualifiedClassLikes, $implements);
         foreach ($fullyQualifiedClassLikes as $fullyQualifiedClassLike) {
             /** @var string $className */
             $className = $this->nodeNameResolver->getName($fullyQualifiedClassLike);
