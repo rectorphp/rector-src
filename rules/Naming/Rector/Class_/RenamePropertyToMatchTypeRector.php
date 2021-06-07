@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Rector\Class_;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -154,16 +155,22 @@ CODE_SAMPLE
             $desiredPropertyNames[$key] = $desiredPropertyName;
         }
 
-        $this->renameParamVarName($classLike, $constructClassMethod->params, $desiredPropertyNames);
+        $this->renameParamVarName($classLike, $constructClassMethod, $desiredPropertyNames);
     }
 
     /**
-     * @param Param[] $params
      * @param string[] $desiredPropertyNames
      */
-    private function renameParamVarName(ClassLike $classLike, array $params, array $desiredPropertyNames): void
+    private function renameParamVarName(
+        ClassLike $classLike,
+        ClassMethod $constructClassMethod,
+        array $desiredPropertyNames
+    ): void
     {
         $keys = array_keys($desiredPropertyNames);
+        $params = $constructClassMethod->params;
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
+
         foreach ($params as $key => $param) {
             if (in_array($key, $keys, true)) {
                 $currentName = $this->getName($param);
@@ -173,6 +180,13 @@ CODE_SAMPLE
                     $currentName,
                     $desiredPropertyName
                 );
+
+                $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($param->var->name);
+                if ($paramTagValueNode instanceof ParamTagValueNode) {
+                    $paramTagValueNode->parameterName = '$' . $desiredPropertyName;
+                    $constructClassMethod->setDocComment(new Doc($phpDocInfo->getPhpDocNode()->__toString()));
+                }
+
                 $param->var->name = $desiredPropertyName;
             }
         }
