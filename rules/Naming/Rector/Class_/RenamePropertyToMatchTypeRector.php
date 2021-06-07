@@ -159,9 +159,9 @@ CODE_SAMPLE
                 return;
             }
 
-            /** @var Node $type */
+            /** @var Node|null $type */
             $type = $param->type;
-            if ($this->nodeTypeResolver->isObjectTypes($type, [
+            if ($type instanceof Node && $this->nodeTypeResolver->isObjectTypes($type, [
                 new ObjectType('PhpParser\Node'),
                 new ObjectType('PHPStan\Type\Type'),
             ])) {
