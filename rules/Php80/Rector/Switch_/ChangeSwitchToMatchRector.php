@@ -148,7 +148,7 @@ CODE_SAMPLE
 
             // avoid double default values
             $hasDefault = $this->hasDefaultMatchArm($match);
-            if ($hasDefault === false) {
+            if (! $hasDefault) {
                 /** @var Match_ $expr */
                 $expr = $assign->expr;
                 $expr->arms[] = new MatchArm(null, $prevInitializedAssign->expr);
