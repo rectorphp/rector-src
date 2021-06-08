@@ -2,27 +2,21 @@
 
 namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\FixturePhp80;
 
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 
 final class RenameParamDoc
 {
     /**
-     * @param FuncCall|StaticCall|MethodCall $call
+     * @param ClassAnalyzer $analyzer
      */
     public function __construct(
-        private Expr $call
+        private ClassAnalyzer $analyzer
     ) {
     }
 
-    /**
-     * @return FuncCall|StaticCall|MethodCall
-     */
-    public function getCall(): Expr
+    public function getAnalyzer(): ClassAnalyzer
     {
-        return $this->call;
+        return $this->analyzer;
     }
 }
 
@@ -32,27 +26,21 @@ final class RenameParamDoc
 
 namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\FixturePhp80;
 
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 
 final class RenameParamDoc
 {
     /**
-     * @param FuncCall|StaticCall|MethodCall $expr
+     * @param ClassAnalyzer $classAnalyzer
      */
     public function __construct(
-        private Expr $expr
+        private ClassAnalyzer $classAnalyzer
     ) {
     }
 
-    /**
-     * @return FuncCall|StaticCall|MethodCall
-     */
-    public function getCall(): Expr
+    public function getAnalyzer(): ClassAnalyzer
     {
-        return $this->expr;
+        return $this->classAnalyzer;
     }
 }
 
