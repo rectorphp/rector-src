@@ -182,6 +182,7 @@ CODE_SAMPLE
         return $type instanceof FullyQualified && $this->nodeTypeResolver->isObjectTypes($type, [
             new ObjectType('PhpParser\Node'),
             new ObjectType('PHPStan\Type\Type'),
+            new ObjectType('Ergebnis\Json\Printer\PrinterInterface'),
         ]);
     }
 
