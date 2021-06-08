@@ -63,9 +63,6 @@ final class UnionTypeCommonTypeNarrower
         return null;
     }
 
-    /**
-     * @return GenericClassStringType|UnionType
-     */
     public function narrowToGenericClassStringType(UnionType $unionType): UnionType | GenericClassStringType
     {
         $availableTypes = [];
