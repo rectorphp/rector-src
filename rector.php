@@ -102,7 +102,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ClassOnObjectRector::class,
         // PhpVersionFeature::STATIC_RETURN_TYPE
         ReturnTypeDeclarationRector::class,
-        UnionTypesRector::class,
         ParamTypeDeclarationRector::class,
         RenamePropertyToMatchTypeRector::class,
 
