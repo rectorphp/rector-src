@@ -320,26 +320,32 @@ final class PhpDocInfo
 
             /** @var PhpDocTagNode $children */
             $children = $this->phpDocNode->children[$key];
-            $value = $children->value;
-            $type = $value->type;
-
-            $newChildrenTypes = [];
-            if ($type instanceof BracketsAwareUnionTypeNode) {
-                $brackedTypes = $type->types;
-                foreach ($brackedTypes as $brackedType) {
-                    if ($brackedType instanceof GenericTypeNode) {
-                        $newChildrenTypes[] = $brackedType;
-                    }
-                }
-            }
-
-            if ($newChildrenTypes === []) {
-                unset($this->phpDocNode->children[$key]);
-            } else {
-                $this->phpDocNode->children[$key]->value->type = new BracketsAwareUnionTypeNode($newChildrenTypes);
-            }
+            $this->cleanChildrenValueType($children, $key);
 
             $this->markAsChanged();
+        }
+    }
+
+    private function cleanChildrenValueType(PhpDocTagNode $children, int $key): void
+    {
+        /** @var PhpDocTagValueNode $value */
+        $value = $children->value;
+        $type = $value->type;
+
+        $newChildrenTypes = [];
+        if ($type instanceof BracketsAwareUnionTypeNode) {
+            $brackedTypes = $type->types;
+            foreach ($brackedTypes as $brackedType) {
+                if ($brackedType instanceof GenericTypeNode) {
+                    $newChildrenTypes[] = $brackedType;
+                }
+            }
+        }
+
+        if ($newChildrenTypes === []) {
+            unset($this->phpDocNode->children[$key]);
+        } else {
+            $this->phpDocNode->children[$key]->value->type = new BracketsAwareUnionTypeNode($newChildrenTypes);
         }
     }
 
