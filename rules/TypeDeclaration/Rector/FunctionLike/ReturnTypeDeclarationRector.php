@@ -244,16 +244,7 @@ CODE_SAMPLE
             return false;
         }
 
-        /** @var FullyQualified|null $extends */
-        $extends = $classLike->extends;
-        /** @var FullyQualified[] $implements */
-        $implements = $classLike->implements;
-        $traitUses = $classLike->getTraitUses();
-        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalClassOrInterfaceOrTrait(
-            $extends,
-            $implements,
-            $traitUses
-        );
+        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds($classLike);
         return $functionLike->returnType === null && $hasExternalClassOrInterfaceOrTrait && $this->isName(
             $inferredReturnNode,
             'void'

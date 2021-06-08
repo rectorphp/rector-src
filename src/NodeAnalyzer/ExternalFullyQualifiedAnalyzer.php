@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUse;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -17,14 +20,20 @@ final class ExternalFullyQualifiedAnalyzer
     ) {
     }
 
-    /**
-     * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
-     * @param FullyQualified[] $implements
-     * @param TraitUse[] $traitUses
-     */
-    public function hasExternalClassOrInterfaceOrTrait($fullyQualifiedClassLikes, array $implements, array $traitUses): bool
+    public function hasExternalFullyQualifieds(ClassLike $classLike): bool
     {
-        $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($fullyQualifiedClassLikes, $implements);
+        /** @var FullyQualified|FullyQualified[]|null $extends */
+        $extends = $classLike instanceof Trait_ ? [] : ($classLike->extends ?? []);
+
+        /** @var FullyQualified[] $implements */
+        $implements = $classLike instanceof Class_ ? $classLike->implements : [];
+
+        /** @var TraitUse[] $traitUses */
+        $traitUses = $classLike->getTraitUses();
+
+        $allFullyQualifieds = array_merge($extends, $implements, $traitUses);
+
+        $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($allFullyQualifieds);
         if ($hasExternalClassOrInterface) {
             return true;
         }
@@ -33,24 +42,14 @@ final class ExternalFullyQualifiedAnalyzer
     }
 
     /**
-     * @param FullyQualified|FullyQualified[]|null $fullyQualifiedClassLikes
-     * @param FullyQualified[] $implements
+     * @param FullyQualified[] $fullyQualifiedClassLikes
      */
-    private function hasExternalClassOrInterface($fullyQualifiedClassLikes, array $implements): bool
+    private function hasExternalClassOrInterface(array $fullyQualifiedClassLikes): bool
     {
         if ($fullyQualifiedClassLikes === []) {
             return false;
         }
 
-        if ($fullyQualifiedClassLikes === null) {
-            return false;
-        }
-
-        if ($fullyQualifiedClassLikes instanceof FullyQualified) {
-            $fullyQualifiedClassLikes = [$fullyQualifiedClassLikes];
-        }
-
-        $fullyQualifiedClassLikes = array_merge($fullyQualifiedClassLikes, $implements);
         foreach ($fullyQualifiedClassLikes as $fullyQualifiedClassLike) {
             /** @var string $className */
             $className = $this->nodeNameResolver->getName($fullyQualifiedClassLike);
