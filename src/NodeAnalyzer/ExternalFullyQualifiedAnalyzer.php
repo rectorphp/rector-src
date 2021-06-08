@@ -7,6 +7,7 @@ namespace Rector\Core\NodeAnalyzer;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUse;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
@@ -22,8 +23,13 @@ final class ExternalFullyQualifiedAnalyzer
 
     public function hasExternalFullyQualifieds(ClassLike $classLike): bool
     {
-        /** @var FullyQualified|FullyQualified[] $extends */
-        $extends = $classLike instanceof Trait_ ? [] : ($classLike->extends ?? []);
+        if ($classLike instanceof Trait_) {
+            $extends = [];
+        } else {
+            /** @var Class_|Interface_ $classLike */
+            $extends = $classLike->extends ?? [];
+        }
+
         /** @var FullyQualified[] $extends */
         $extends = $extends instanceof FullyQualified
             ? [$extends]
@@ -32,16 +38,14 @@ final class ExternalFullyQualifiedAnalyzer
         /** @var FullyQualified[] $implements */
         $implements = $classLike instanceof Class_ ? $classLike->implements : [];
 
-        /** @var TraitUse[] $traitUses */
-        $traitUses = $classLike->getTraitUses();
-
-        $allFullyQualifieds = array_merge($extends, $implements, $traitUses);
-
-        $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($allFullyQualifieds);
+        $parentClassesAndInterfaces = array_merge($extends, $implements);
+        $hasExternalClassOrInterface = $this->hasExternalClassOrInterface($parentClassesAndInterfaces);
         if ($hasExternalClassOrInterface) {
             return true;
         }
 
+        /** @var TraitUse[] $traitUses */
+        $traitUses = $classLike->getTraitUses();
         return $this->hasExternalTrait($traitUses);
     }
 
