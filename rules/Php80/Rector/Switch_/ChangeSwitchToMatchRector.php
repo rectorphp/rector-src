@@ -206,9 +206,9 @@ CODE_SAMPLE
 
         $this->removeNode($nextNode);
 
-        $throwExpr = new Throw_($nextNode->expr);
+        $throw = new Throw_($nextNode->expr);
 
-        $condAndExprs[] = new CondAndExpr([], $throwExpr, MatchKind::RETURN);
+        $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN);
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
     }
 }
