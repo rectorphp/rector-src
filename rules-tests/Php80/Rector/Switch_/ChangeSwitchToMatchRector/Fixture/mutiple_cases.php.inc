@@ -26,7 +26,7 @@ final class MultipleCases
 {
     public function run($value)
     {
-       return match ($value) {
+        return match ($value) {
             'v1', 'v2' => 100,
             default => 1000,
         };
