@@ -60,7 +60,7 @@ final class SwitchAnalyzer
 
     private function hasBreakOrReturnOrEmpty(Case_ $case): bool
     {
-        if ((array) $case->stmts === []) {
+        if ($case->stmts === []) {
             return true;
         }
 

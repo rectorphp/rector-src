@@ -172,15 +172,4 @@ CODE_SAMPLE
 
         return null;
     }
-
-    private function hasDefaultMatchArm(Match_ $match): bool
-    {
-        foreach ($match->arms as $matchArm) {
-            if ($matchArm->conds === null) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

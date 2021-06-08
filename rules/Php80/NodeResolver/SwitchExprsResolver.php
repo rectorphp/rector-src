@@ -31,7 +31,7 @@ final class SwitchExprsResolver
             }
 
             // prepend to previous one
-            if ((array) $case->stmts === []) {
+            if ($case->stmts === []) {
                 $previousCondExpr = $case->cond;
                 continue;
             }
@@ -76,7 +76,7 @@ final class SwitchExprsResolver
     private function isValidCase(Case_ $case): bool
     {
         // prepend to previous one
-        if (count($case->stmts) === 0) {
+        if ($case->stmts === []) {
             return true;
         }
 
