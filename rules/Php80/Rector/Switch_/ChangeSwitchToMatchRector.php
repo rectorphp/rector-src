@@ -188,7 +188,7 @@ CODE_SAMPLE
         }
 
         $returnedExpr = $nextNode->expr;
-        if ($returnedExpr === null) {
+        if (! $returnedExpr instanceof Expr) {
             return $match;
         }
 

@@ -84,7 +84,10 @@ final class MatchSwitchAnalyzer
     public function hasDefaultValue(Match_ $match): bool
     {
         foreach ($match->arms as $matchArm) {
-            if ($matchArm->conds === null || $matchArm->conds === []) {
+            if ($matchArm->conds === null) {
+                return true;
+            }
+            if ($matchArm->conds === []) {
                 return true;
             }
         }
