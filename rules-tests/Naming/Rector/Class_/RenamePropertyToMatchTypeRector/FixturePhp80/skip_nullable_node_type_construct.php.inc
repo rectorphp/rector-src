@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Rector\Naming\ValueObject;
+namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\FixturePhp80;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
