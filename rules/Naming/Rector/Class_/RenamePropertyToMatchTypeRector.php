@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Naming\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -28,6 +30,7 @@ use Rector\Naming\ValueObjectFactory\ParamRenameFactory;
 use Rector\Naming\ValueObjectFactory\PropertyRenameFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @see \Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\RenamePropertyToMatchTypeRectorTest
@@ -159,9 +162,12 @@ CODE_SAMPLE
                 return;
             }
 
-            /** @var Node|null $type */
             $type = $param->type;
-            if ($type instanceof Node && $this->nodeTypeResolver->isObjectTypes($type, [
+            if ($type instanceof NullableType) {
+                $type = $type->type;
+            }
+
+            if ($type instanceof FullyQualified && $this->nodeTypeResolver->isObjectTypes($type, [
                 new ObjectType('PhpParser\Node'),
                 new ObjectType('PHPStan\Type\Type'),
             ])) {
