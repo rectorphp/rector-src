@@ -326,29 +326,6 @@ final class PhpDocInfo
         }
     }
 
-    private function cleanChildrenValueType(PhpDocTagNode $children, int $key): void
-    {
-        /** @var PhpDocTagValueNode $value */
-        $value = $children->value;
-        $type = $value->type;
-
-        $newChildrenTypes = [];
-        if ($type instanceof BracketsAwareUnionTypeNode) {
-            $brackedTypes = $type->types;
-            foreach ($brackedTypes as $brackedType) {
-                if ($brackedType instanceof GenericTypeNode) {
-                    $newChildrenTypes[] = $brackedType;
-                }
-            }
-        }
-
-        if ($newChildrenTypes === []) {
-            unset($this->phpDocNode->children[$key]);
-        } else {
-            $this->phpDocNode->children[$key]->value->type = new BracketsAwareUnionTypeNode($newChildrenTypes);
-        }
-    }
-
     /**
      * @return array<string, Type>
      */
@@ -514,6 +491,29 @@ final class PhpDocInfo
     public function getNode(): \PhpParser\Node
     {
         return $this->node;
+    }
+
+    private function cleanChildrenValueType(PhpDocTagNode $phpDocTagNode, int $key): void
+    {
+        /** @var PhpDocTagValueNode $value */
+        $value = $phpDocTagNode->value;
+        $type = $value->type;
+
+        $newChildrenTypes = [];
+        if ($type instanceof BracketsAwareUnionTypeNode) {
+            $brackedTypes = $type->types;
+            foreach ($brackedTypes as $brackedType) {
+                if ($brackedType instanceof GenericTypeNode) {
+                    $newChildrenTypes[] = $brackedType;
+                }
+            }
+        }
+
+        if ($newChildrenTypes === []) {
+            unset($this->phpDocNode->children[$key]);
+        } else {
+            $this->phpDocNode->children[$key]->value->type = new BracketsAwareUnionTypeNode($newChildrenTypes);
+        }
     }
 
     private function getTypeOrMixed(?PhpDocTagValueNode $phpDocTagValueNode): Type
