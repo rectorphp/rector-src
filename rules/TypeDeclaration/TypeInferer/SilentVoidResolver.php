@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\TypeInferer;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -49,9 +48,7 @@ final class SilentVoidResolver
             return false;
         }
 
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds(
-            $classLike
-        )) {
+        if ($this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds($classLike)) {
             return false;
         }
 
