@@ -8,7 +8,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUse;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -23,11 +22,10 @@ final class ExternalFullyQualifiedAnalyzer
 
     public function hasExternalFullyQualifieds(ClassLike $classLike): bool
     {
-        if ($classLike instanceof Trait_) {
-            $extends = [];
-        } else {
-            /** @var Class_|Interface_ $classLike */
+        if ($classLike instanceof Class_ || $classLike instanceof Interface_) {
             $extends = $classLike->extends ?? [];
+        } else {
+            $extends = [];
         }
 
         /** @var FullyQualified[] $extends */
