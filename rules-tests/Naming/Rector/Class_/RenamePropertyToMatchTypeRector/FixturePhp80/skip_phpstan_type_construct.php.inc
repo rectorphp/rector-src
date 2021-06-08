@@ -6,7 +6,7 @@ namespace Rector\Naming\ValueObject;
 
 use PHPStan\Type\Type;
 
-final class AddReturnTypeDeclaration
+final class SkipPHPStanTypeConstruct
 {
     public function __construct(
         private Type $returnType

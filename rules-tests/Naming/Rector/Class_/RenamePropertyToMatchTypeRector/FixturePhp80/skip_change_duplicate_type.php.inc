@@ -6,7 +6,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 
-final class NameAndParent
+final class SkipChangeDuplicateType
 {
     /**
      * @param Name|Identifier $nameNode

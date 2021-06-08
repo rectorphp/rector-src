@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 
-final class VariableAndCallAssign
+final class SkipNullableNodeTypeConstruct
 {
     /**
      * @param FuncCall|StaticCall|MethodCall|null $call
