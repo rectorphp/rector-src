@@ -22,7 +22,7 @@ final class ExternalFullyQualifiedAnalyzer
 
     public function hasExternalFullyQualifieds(ClassLike $classLike): bool
     {
-        /** @var FullyQualified|FullyQualified[]|null $extends */
+        /** @var FullyQualified|FullyQualified[] $extends */
         $extends = $classLike instanceof Trait_ ? [] : ($classLike->extends ?? []);
 
         /** @var FullyQualified[] $implements */
