@@ -79,6 +79,11 @@ final class PhpDocInfo
         $this->markAsChanged();
     }
 
+    public function setPhpDocNode(PhpDocNode $phpDocNode): void
+    {
+        $this->phpDocNode = $phpDocNode;
+    }
+
     public function getPhpDocNode(): PhpDocNode
     {
         return $this->phpDocNode;
