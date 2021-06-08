@@ -39,7 +39,7 @@ final class PlainValueParser
     }
 
     /**
-     * @return bool|int|mixed|string
+     * @return mixed[]
      */
     public function parseValue(
         BetterTokenIterator $tokenIterator
