@@ -6,6 +6,7 @@ namespace Rector\Php80\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 
@@ -57,7 +58,7 @@ final class SwitchAnalyzer
         return false;
     }
 
-    private function hasBreakOrReturn(Node\Stmt\Case_ $case): bool
+    private function hasBreakOrReturn(Case_ $case): bool
     {
         foreach ($case->stmts as $caseStmt) {
             if ($caseStmt instanceof Break_) {
