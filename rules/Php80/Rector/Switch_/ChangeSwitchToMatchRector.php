@@ -19,6 +19,7 @@ use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
+use Rector\Php80\ValueObject\MatchKind;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -104,7 +105,7 @@ CODE_SAMPLE
 
         $isReturn = false;
         foreach ($condAndExprs as $condAndExpr) {
-            if ($condAndExpr->getKind() === CondAndExpr::TYPE_RETURN) {
+            if ($condAndExpr->getKind() === MatchKind::RETURN) {
                 $isReturn = true;
                 break;
             }
