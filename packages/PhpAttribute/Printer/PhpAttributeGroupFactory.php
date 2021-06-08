@@ -99,6 +99,7 @@ final class PhpAttributeGroupFactory
 
     /**
      * @param mixed $value
+     * @return array<mixed>
      */
     private function normalizeNodeValue($value): bool | float | int | string | array | Expr
     {
