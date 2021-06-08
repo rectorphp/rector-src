@@ -99,7 +99,7 @@ CODE_SAMPLE
     /**
      * @param PostInc|PostDec $node
      */
-    private function processPrePost(Node $node): Expr
+    private function processPrePost(Node $node): PreInc | PreDec
     {
         if ($node instanceof PostInc) {
             return new PreInc($node->var);

@@ -153,7 +153,7 @@ CODE_SAMPLE
     /**
      * @return Identical|Greater
      */
-    private function resolveCount(bool $isNegated, FuncCall $funcCall): BinaryOp
+    private function resolveCount(bool $isNegated, FuncCall $funcCall): Identical | Greater
     {
         $lNumber = new LNumber(0);
 
@@ -187,7 +187,7 @@ CODE_SAMPLE
     /**
      * @return Identical|NotIdentical
      */
-    private function resolveString(bool $isNegated, Expr $expr): BinaryOp
+    private function resolveString(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
         $string = new String_('');
 
@@ -202,7 +202,7 @@ CODE_SAMPLE
     /**
      * @return Identical|NotIdentical
      */
-    private function resolveInteger(bool $isNegated, Expr $expr): BinaryOp
+    private function resolveInteger(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
         $lNumber = new LNumber(0);
 
@@ -213,7 +213,7 @@ CODE_SAMPLE
         return new NotIdentical($expr, $lNumber);
     }
 
-    private function resolveFloat(bool $isNegated, Expr $expr): BinaryOp
+    private function resolveFloat(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
         $dNumber = new DNumber(0.0);
 
@@ -227,7 +227,7 @@ CODE_SAMPLE
     /**
      * @return Identical|NotIdentical
      */
-    private function resolveNullable(bool $isNegated, Expr $expr): BinaryOp
+    private function resolveNullable(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
         $constFetch = $this->nodeFactory->createNull();
 

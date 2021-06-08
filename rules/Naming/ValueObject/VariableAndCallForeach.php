@@ -36,7 +36,7 @@ final class VariableAndCallForeach
     /**
      * @return FuncCall|StaticCall|MethodCall
      */
-    public function getCall(): Expr
+    public function getCall(): FuncCall | MethodCall | StaticCall
     {
         return $this->call;
     }
@@ -49,7 +49,7 @@ final class VariableAndCallForeach
     /**
      * @return ClassMethod|Function_|Closure
      */
-    public function getFunctionLike(): FunctionLike
+    public function getFunctionLike(): Closure | ClassMethod | Function_
     {
         return $this->functionLike;
     }
