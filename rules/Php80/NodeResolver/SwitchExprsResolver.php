@@ -57,10 +57,8 @@ final class SwitchExprsResolver
 
     private function isValidCase(Case_ $case): bool
     {
-        if (count($case->stmts) === 2) {
-            if ($case->stmts[1] instanceof Break_) {
-                return true;
-            }
+        if (count($case->stmts) === 2 && $case->stmts[1] instanceof Break_) {
+            return true;
         }
 
         // default throws stmts
