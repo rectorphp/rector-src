@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ActionInjectionToConstructorInjectionRector extends AbstractRector
 {
     public function __construct(
-        private ServiceMapProvider $applicationServiceMapProvider,
+        private ServiceMapProvider $serviceMapProvider,
         private VariablesToPropertyFetchCollection $variablesToPropertyFetchCollection
     ) {
     }
@@ -124,7 +124,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $serviceMap = $this->applicationServiceMapProvider->provide();
+        $serviceMap = $this->serviceMapProvider->provide();
 
         return $serviceMap->hasService($paramStaticType->getClassName());
     }

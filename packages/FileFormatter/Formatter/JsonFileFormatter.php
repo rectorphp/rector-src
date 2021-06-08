@@ -17,7 +17,7 @@ use Rector\FileFormatter\ValueObjectFactory\EditorConfigConfigurationBuilder;
 final class JsonFileFormatter implements FileFormatterInterface
 {
     public function __construct(
-        private PrinterInterface $jsonPrinter
+        private PrinterInterface $printer
     ) {
     }
 
@@ -30,7 +30,7 @@ final class JsonFileFormatter implements FileFormatterInterface
 
     public function format(File $file, EditorConfigConfiguration $editorConfigConfiguration): void
     {
-        $newFileContent = $this->jsonPrinter->print(
+        $newFileContent = $this->printer->print(
             $file->getFileContent(),
             $editorConfigConfiguration->getIndent(),
             $editorConfigConfiguration->getNewLine()
