@@ -172,7 +172,6 @@ CODE_SAMPLE
 
     /**
      * @param Namespace_|FileWithoutNamespace $node
-     * @return Namespace_|Class_
      */
     private function resolveNodeToPrint(Node $node, Class_ $class): Namespace_ | Class_
     {

@@ -92,9 +92,6 @@ CODE_SAMPLE
         return ! $parent instanceof Concat;
     }
 
-    /**
-     * @return Concat|String_
-     */
     private function joinConcatIfStrings(Concat $node): Concat | String_
     {
         $concat = clone $node;

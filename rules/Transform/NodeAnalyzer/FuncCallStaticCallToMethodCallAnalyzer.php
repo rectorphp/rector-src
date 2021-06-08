@@ -33,14 +33,12 @@ final class FuncCallStaticCallToMethodCallAnalyzer
 
     /**
      * @param ClassMethod|Function_ $functionLike
-     * @return MethodCall|PropertyFetch|Variable
      */
     public function matchTypeProvidingExpr(
         Class_ $class,
         FunctionLike $functionLike,
         ObjectType $objectType
-    ): MethodCall | PropertyFetch | Variable
-    {
+    ): MethodCall | PropertyFetch | Variable {
         $expr = $this->typeProvidingExprFromClassResolver->resolveTypeProvidingExprFromClass(
             $class,
             $functionLike,

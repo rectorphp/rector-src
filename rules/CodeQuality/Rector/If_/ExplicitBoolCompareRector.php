@@ -150,9 +150,6 @@ CODE_SAMPLE
         return null;
     }
 
-    /**
-     * @return Identical|Greater
-     */
     private function resolveCount(bool $isNegated, FuncCall $funcCall): Identical | Greater
     {
         $lNumber = new LNumber(0);
@@ -184,9 +181,6 @@ CODE_SAMPLE
         return new NotIdentical($expr, $array);
     }
 
-    /**
-     * @return Identical|NotIdentical
-     */
     private function resolveString(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
         $string = new String_('');
@@ -199,9 +193,6 @@ CODE_SAMPLE
         return new NotIdentical($expr, $string);
     }
 
-    /**
-     * @return Identical|NotIdentical
-     */
     private function resolveInteger(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
         $lNumber = new LNumber(0);
@@ -224,9 +215,6 @@ CODE_SAMPLE
         return new NotIdentical($expr, $dNumber);
     }
 
-    /**
-     * @return Identical|NotIdentical
-     */
     private function resolveNullable(bool $isNegated, Expr $expr): Identical | NotIdentical
     {
         $constFetch = $this->nodeFactory->createNull();

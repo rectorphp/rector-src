@@ -223,9 +223,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return PropertyFetch|MethodCall
-     */
     private function refactorEmptyFuncCallArgs(
         ArgumentFuncCallToMethodCall $argumentFuncCallToMethodCall,
         PropertyFetch $propertyFetch

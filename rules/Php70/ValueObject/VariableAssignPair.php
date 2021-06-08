@@ -25,17 +25,11 @@ final class VariableAssignPair
     ) {
     }
 
-    /**
-     * @return Variable|ArrayDimFetch|PropertyFetch|StaticPropertyFetch
-     */
     public function getVariable(): ArrayDimFetch | PropertyFetch | StaticPropertyFetch | Variable
     {
         return $this->variable;
     }
 
-    /**
-     * @return Assign|AssignOp|AssignRef
-     */
     public function getAssign(): Assign | AssignOp | AssignRef
     {
         return $this->assign;

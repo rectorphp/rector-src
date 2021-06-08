@@ -19,9 +19,6 @@ final class NameAndParent
     ) {
     }
 
-    /**
-     * @return Name|Identifier
-     */
     public function getNameNode(): Identifier | Name
     {
         return $this->nameNode;
