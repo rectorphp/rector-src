@@ -507,3 +507,13 @@ parameters:
         -
             message: '#Access to an undefined property PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode\:\:\$value#'
             path: packages/BetterPhpDocParser/PhpDocInfo/PhpDocInfo.php #348
+
+        -   # need to be cleaned up on next phpstan-rules release for allow ::class usage
+            # ref https://github.com/symplify/symplify/pull/3277
+            message: '#Use non\-dynamic property on static calls or class const fetches#'
+            path: src/NodeAnalyzer/PropertyFetchAnalyzer.php #171
+
+        -   # need to be cleaned up on next phpstan-rules release for allow ::class usage
+            # ref https://github.com/symplify/symplify/pull/3277
+            message: '#Use explicit names over dynamic ones#'
+            path: src/NodeAnalyzer/PropertyFetchAnalyzer.php #171

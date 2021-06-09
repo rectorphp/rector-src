@@ -21,6 +21,7 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -59,7 +60,8 @@ final class TypedPropertyRector extends AbstractRector implements ConfigurableRe
         private VendorLockResolver $vendorLockResolver,
         private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private VarTagRemover $varTagRemover,
-        private ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -241,67 +243,11 @@ CODE_SAMPLE
             return;
         }
 
-        if ($this->isFilledByConstruct($property)) {
+        if ($this->propertyFetchAnalyzer->isFilledByConstruct($property)) {
             return;
         }
 
         $onlyProperty->default = $this->nodeFactory->createNull();
-    }
-
-    private function isFilledByConstruct(Property $property): bool
-    {
-        $class = $property->getAttribute(AttributeKey::CLASS_NODE);
-        if (! $class instanceof Class_) {
-            return false;
-        }
-
-        $classMethod = $class->getMethod(MethodName::CONSTRUCT);
-        if (! $classMethod instanceof ClassMethod) {
-            return false;
-        }
-
-        $params = $classMethod->params;
-        if ($params === []) {
-            return false;
-        }
-
-        $stmts = $classMethod->stmts;
-        if ($stmts === []) {
-            return false;
-        }
-
-        /** @var string $propertyName */
-        $propertyName = $this->getName($property->props[0]->name);
-        $kindPropertyFetch = $property->isStatic()
-            ? StaticPropertyFetch::class
-            : PropertyFetch::class;
-
-        foreach ($params as $param) {
-            $paramVariable = $param->var;
-            $isAssignWithParamVarName = $this->betterNodeFinder->findFirst($stmts, function (Node $node) use (
-                $propertyName,
-                $paramVariable,
-                $kindPropertyFetch
-            ): bool {
-                if (! $node instanceof Assign) {
-                    return false;
-                }
-
-                return is_a($node->var, $kindPropertyFetch, true) && $this->isName(
-                    $node->var,
-                    $propertyName
-                ) && $this->nodeComparator->areNodesEqual(
-                    $node->expr,
-                    $paramVariable
-                );
-            });
-
-            if ($isAssignWithParamVarName !== null) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function shouldSkipProperty(Property $property): bool
