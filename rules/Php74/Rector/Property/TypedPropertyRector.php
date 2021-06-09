@@ -6,6 +6,7 @@ namespace Rector\Php74\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
@@ -281,7 +282,7 @@ CODE_SAMPLE
                     return false;
                 }
 
-                return $this->isName($node->var, $propertyName) && $this->nodeComparator->areNodesEqual(
+                return $node->var instanceof PropertyFetch && $this->isName($node->var, $propertyName) && $this->nodeComparator->areNodesEqual(
                     $node->expr,
                     $paramVariable
                 );
