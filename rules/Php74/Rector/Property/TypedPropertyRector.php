@@ -7,6 +7,7 @@ namespace Rector\Php74\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
@@ -271,18 +272,22 @@ CODE_SAMPLE
 
         /** @var string $propertyName */
         $propertyName = $this->getName($property->props[0]->name);
+        $kindPropertyFetch = $property->isStatic()
+            ? StaticPropertyFetch::class
+            : PropertyFetch::class;
 
         foreach ($params as $param) {
             $paramVariable = $param->var;
             $isAssignWithParamVarName = $this->betterNodeFinder->findFirst($stmts, function (Node $node) use (
                 $propertyName,
-                $paramVariable
+                $paramVariable,
+                $kindPropertyFetch
             ): bool {
                 if (! $node instanceof Assign) {
                     return false;
                 }
 
-                return $node->var instanceof PropertyFetch && $this->isName($node->var, $propertyName) && $this->nodeComparator->areNodesEqual(
+                return is_a($node->var, $kindPropertyFetch, true) && $this->isName($node->var, $propertyName) && $this->nodeComparator->areNodesEqual(
                     $node->expr,
                     $paramVariable
                 );
