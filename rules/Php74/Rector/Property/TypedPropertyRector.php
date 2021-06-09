@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php74\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Reflection\ReflectionProvider;
@@ -17,8 +20,10 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
@@ -234,7 +239,60 @@ CODE_SAMPLE
             return;
         }
 
+        if ($this->isFilledByConstruct($property)) {
+            return;
+        }
+
         $onlyProperty->default = $this->nodeFactory->createNull();
+    }
+
+    private function isFilledByConstruct(Property $property): bool
+    {
+        $class = $property->getAttribute(AttributeKey::CLASS_NODE);
+        if (! $class instanceof Class_) {
+            return false;
+        }
+
+        $construct = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $construct instanceof ClassMethod) {
+            return false;
+        }
+
+        $params = $construct->params;
+        if ($params === []) {
+            return false;
+        }
+
+        $stmts = $construct->stmts;
+        if ($stmts === []) {
+            return false;
+        }
+
+        /** @var string $propertyName */
+        $propertyName = $this->getName($property->props[0]->name);
+
+        foreach ($params as $param) {
+            $paramVariable = $param->var;
+            $isAssignWithParamVarName = $this->betterNodeFinder->findFirst($stmts, function (Node $node) use (
+                $propertyName,
+                $paramVariable
+            ): bool {
+                if (! $node instanceof Assign) {
+                    return false;
+                }
+
+                return $this->isName($node->var, $propertyName) && $this->nodeComparator->areNodesEqual(
+                    $node->expr,
+                    $paramVariable
+                );
+            });
+
+            if ($isAssignWithParamVarName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function shouldSkipProperty(Property $property): bool

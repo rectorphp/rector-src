@@ -2,14 +2,14 @@
 
 namespace Rector\Php74\Tests\Rector\Property\TypedPropertyRector\Fixture;
 
-final class DemoFile
+final class DoNotAddDefaultValueFilledByConstruct
 {
     private $result;
-    
+
     public function __construct(?array $result) {
         $this->result = $result;
     }
-    
+
     public function getResult(): ?array
     {
         return $this->result;
@@ -21,14 +21,14 @@ final class DemoFile
 
 namespace Rector\Php74\Tests\Rector\Property\TypedPropertyRector\Fixture;
 
-final class DemoFile
+final class DoNotAddDefaultValueFilledByConstruct
 {
     private ?array $result;
-    
+
     public function __construct(?array $result) {
         $this->result = $result;
     }
-    
+
     public function getResult(): ?array
     {
         return $this->result;
