@@ -243,7 +243,7 @@ CODE_SAMPLE
             return;
         }
 
-        if ($this->propertyFetchAnalyzer->isFilledByConstruct($property)) {
+        if ($this->propertyFetchAnalyzer->isFilledByConstructParam($property)) {
             return;
         }
 

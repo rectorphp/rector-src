@@ -119,7 +119,7 @@ final class PropertyFetchAnalyzer
         return $this->isLocalPropertyFetch($node->var);
     }
 
-    public function isFilledByConstruct(Property $property): bool
+    public function isFilledByConstructParam(Property $property): bool
     {
         $class = $property->getAttribute(AttributeKey::CLASS_NODE);
         if (! $class instanceof Class_) {
