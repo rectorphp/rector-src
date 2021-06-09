@@ -255,17 +255,17 @@ CODE_SAMPLE
             return false;
         }
 
-        $construct = $class->getMethod(MethodName::CONSTRUCT);
-        if (! $construct instanceof ClassMethod) {
+        $classMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $classMethod instanceof ClassMethod) {
             return false;
         }
 
-        $params = $construct->params;
+        $params = $classMethod->params;
         if ($params === []) {
             return false;
         }
 
-        $stmts = $construct->stmts;
+        $stmts = $classMethod->stmts;
         if ($stmts === []) {
             return false;
         }
@@ -287,13 +287,16 @@ CODE_SAMPLE
                     return false;
                 }
 
-                return is_a($node->var, $kindPropertyFetch, true) && $this->isName($node->var, $propertyName) && $this->nodeComparator->areNodesEqual(
+                return is_a($node->var, $kindPropertyFetch, true) && $this->isName(
+                    $node->var,
+                    $propertyName
+                ) && $this->nodeComparator->areNodesEqual(
                     $node->expr,
                     $paramVariable
                 );
             });
 
-            if ($isAssignWithParamVarName) {
+            if ($isAssignWithParamVarName !== null) {
                 return true;
             }
         }
