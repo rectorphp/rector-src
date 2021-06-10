@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp80\Rector\ClassConstFetch;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -60,6 +61,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if (! $this->isName($node->name, 'class')) {
+            return null;
+        }
+
+        if (! $node->class instanceof Expr) {
             return null;
         }
 
