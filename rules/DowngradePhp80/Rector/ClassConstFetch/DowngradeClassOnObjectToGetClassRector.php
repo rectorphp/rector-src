@@ -8,9 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
-use PhpParser\Node\Param;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -65,7 +66,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->class instanceof Variable) {
+        if (! $node->class instanceof Variable && ! $node->class instanceof PropertyFetch && ! $node->class instanceof StaticPropertyFetch) {
             return null;
         }
 
