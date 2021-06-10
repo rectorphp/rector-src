@@ -8,7 +8,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use ReflectionMethod;
 
 final class PhpAttributeGroupFactoryTest extends AbstractTestCase
 {
@@ -36,15 +35,11 @@ final class PhpAttributeGroupFactoryTest extends AbstractTestCase
 
     public function testCreateArgsFromItems(): void
     {
-        $reflectionMethod = new ReflectionMethod($this->phpAttributeGroupFactory, 'createArgsFromItems');
-        $reflectionMethod->setAccessible(true);
-
-        $args = $reflectionMethod->invokeArgs($this->phpAttributeGroupFactory, [[
+        $args = $this->phpAttributeGroupFactory->createArgsFromItems([
             'path' => '/path',
             'name' => 'action',
-        ]]);
+        ]);
 
-        $this->assertIsArray($args);
         $this->assertCount(2, $args);
         $this->assertContainsOnlyInstancesOf(Arg::class, $args);
     }
