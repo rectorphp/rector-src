@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Php72\NodeFactory;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
@@ -16,28 +18,41 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
+use PhpParser\Parser;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\VoidType;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class AnonymousFunctionFactory
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/jkLLlM/2
+     */
+    private const DIM_FETCH_REGEX = '#(\\$|\\\\|\\x0)(?<number>\d+)#';
+
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private BetterNodeFinder $betterNodeFinder,
         private NodeFactory $nodeFactory,
         private StaticTypeMapper $staticTypeMapper,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private Parser $parser
     ) {
     }
 
@@ -99,6 +114,46 @@ final class AnonymousFunctionFactory
         if ($expr instanceof Variable && ! $this->nodeNameResolver->isName($expr, 'this')) {
             $anonymousFunction->uses[] = new ClosureUse($expr);
         }
+
+        return $anonymousFunction;
+    }
+
+    public function createAnonymousFunctionFromString(Expr $expr): ?Closure
+    {
+        if (! $expr instanceof String_) {
+            // not supported yet
+            throw new ShouldNotHappenException();
+        }
+
+        $phpCode = '<?php ' . $expr->value . ';';
+        $contentNodes = (array) $this->parser->parse($phpCode);
+
+        $anonymousFunction = new Closure();
+
+        $firstNode = $contentNodes[0] ?? null;
+        if (! $firstNode instanceof Expression) {
+            return null;
+        }
+
+        $stmt = $firstNode->expr;
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmt, function (Node $node): Node {
+            if (! $node instanceof String_) {
+                return $node;
+            }
+
+            $match = Strings::match($node->value, self::DIM_FETCH_REGEX);
+            if (! $match) {
+                return $node;
+            }
+
+            $matchesVariable = new Variable('matches');
+
+            return new ArrayDimFetch($matchesVariable, new LNumber((int) $match['number']));
+        });
+
+        $anonymousFunction->stmts[] = new Return_($stmt);
+        $anonymousFunction->params[] = new Param(new Variable('matches'));
 
         return $anonymousFunction;
     }
