@@ -39,7 +39,8 @@ final class PHPUnitTypeDeclarationDecorator
             return;
         }
 
-        $returnType = (string) $reflectionMethod->getReturnType();
+        $returnType = $reflectionMethod->getReturnType()
+            ->getName();
         $classMethod->returnType = new Identifier($returnType);
     }
 }

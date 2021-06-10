@@ -164,7 +164,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $requiredType = (string) $reflectionType;
+        $requiredType = $reflectionType->getName();
 
         return $this->classToInstantiateByType[$requiredType] ?? null;
     }
