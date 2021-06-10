@@ -65,11 +65,15 @@ CODE_SAMPLE
         if (! $this->isName($node->name, 'class')) {
             return null;
         }
-
-        if (! $node->class instanceof Variable && ! $node->class instanceof PropertyFetch && ! $node->class instanceof StaticPropertyFetch) {
-            return null;
+        if ($node->class instanceof Variable) {
+            return new FuncCall(new Name('get_class'), [new Arg($node->class)]);
         }
-
-        return new FuncCall(new Name('get_class'), [new Arg($node->class)]);
+        if ($node->class instanceof PropertyFetch) {
+            return new FuncCall(new Name('get_class'), [new Arg($node->class)]);
+        }
+        if ($node->class instanceof StaticPropertyFetch) {
+            return new FuncCall(new Name('get_class'), [new Arg($node->class)]);
+        }
+        return null;
     }
 }
