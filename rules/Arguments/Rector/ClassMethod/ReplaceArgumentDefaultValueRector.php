@@ -8,10 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
-<<<<<<< HEAD
 use Rector\Arguments\ArgumentDefaultValueReplacer;
-=======
->>>>>>> 73f0155b6 (update value objects too)
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
