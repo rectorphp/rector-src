@@ -24,7 +24,10 @@ class PhpAttributeGroupFactoryTest extends AbstractTestCase
     {
         $attributeGroup = $this->phpAttributeGroupFactory->createFromClassWithItems(
             'Symfony\Component\Routing\Annotation\Route',
-            ['path' => '/path', 'name' => 'action']
+            [
+                'path' => '/path',
+                'name' => 'action',
+            ]
         );
 
         self::assertInstanceOf(AttributeGroup::class, $attributeGroup);
@@ -34,7 +37,10 @@ class PhpAttributeGroupFactoryTest extends AbstractTestCase
     {
         $method = new \ReflectionMethod($this->phpAttributeGroupFactory, 'createArgsFromItems');
         $method->setAccessible(true);
-        $args = $method->invokeArgs($this->phpAttributeGroupFactory, [['path' => '/path', 'name' => 'action']]);
+        $args = $method->invokeArgs($this->phpAttributeGroupFactory, [[
+            'path' => '/path',
+            'name' => 'action',
+        ]]);
 
         self::assertIsArray($args);
         self::assertCount(2, $args);

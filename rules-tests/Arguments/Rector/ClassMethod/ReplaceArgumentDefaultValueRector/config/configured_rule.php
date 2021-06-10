@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use Rector\Arguments\Rector\ClassMethod\ArgumentDefaultValueReplacerRector;
+use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
 use Rector\Arguments\ValueObject\ArgumentDefaultValueReplacer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
-    $services->set(ArgumentDefaultValueReplacerRector::class)
+    $services->set(ReplaceArgumentDefaultValueRector::class)
         ->call('configure', [[
-            ArgumentDefaultValueReplacerRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
+            ReplaceArgumentDefaultValueRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
 
                 new ArgumentDefaultValueReplacer(
                     'Symfony\Component\DependencyInjection\Definition',

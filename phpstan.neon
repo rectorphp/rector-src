@@ -422,13 +422,10 @@ parameters:
         # doc typo in php-parser
         - '#Parameter \#2 \$args of class PhpParser\\Node\\Expr\\FuncCall constructor expects array<PhpParser\\Node\\Arg\>, array<int, PhpParser\\Node\\Arg\|null\> given#'
 
-        - '#Class with base "(.*?)" name is already used in "Symplify\\(.*?)", "Rector\\(.*?)"\. Use unique name to make classes easy to recognize#'
-
         # php-parser bug
         - '#Parameter \#1 \$type of method PhpParser\\Builder\\FunctionLike\:\:setReturnType\(\) expects PhpParser\\Node\\Name\|PhpParser\\Node\\NullableType\|string, PhpParser\\Node\\Name\|PhpParser\\Node\\NullableType\|PhpParser\\Node\\UnionType given#'
 
         - '#Method Rector\\Core\\Tests\\DependencyInjection\\ConfigurableRectorImportConfigCallsMergeTest\:\:provideData\(\) return type has no value type specified in iterable type Iterator#'
-        - '#Class with base "PhpVersion" name is already used in "PHPStan\\Php\\PhpVersion", "Rector\\Core\\ValueObject\\PhpVersion"\. Use unique name to make classes easy to recognize#'
 
         -
             message: '#Use separate function calls with readable variable names#'
@@ -445,8 +442,6 @@ parameters:
             message: '#Use value object over return of values#'
             paths:
                  - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
-
-        - '#Class with base "PhpVersionFactory" name is already used in "PHPStan\\Php\\PhpVersionFactory", "Rector\\Core\\Util\\PhpVersionFactory"\. Use unique name to make classes easy to recognize#'
 
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code#'

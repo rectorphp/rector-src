@@ -16,9 +16,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Arguments\Rector\ClassMethod\ArgumentDefaultValueReplacerRector\ArgumentDefaultValueReplacerRectorTest
+ * @see \Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\ReplaceArgumentDefaultValueRectorTest
  */
-final class ArgumentDefaultValueReplacerRector extends AbstractRector implements ConfigurableRectorInterface
+final class ReplaceArgumentDefaultValueRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
      * @var string

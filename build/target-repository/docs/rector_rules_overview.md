@@ -181,7 +181,7 @@ Replaces defined map of arguments in defined methods and their calls.
 - class: [`Rector\Arguments\Rector\ClassMethod\ArgumentDefaultValueReplacerRector`](../rules/Arguments/Rector/ClassMethod/ArgumentDefaultValueReplacerRector.php)
 
 ```php
-use Rector\Arguments\Rector\ClassMethod\ArgumentDefaultValueReplacerRector;
+use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
 use Rector\Arguments\ValueObject\ArgumentDefaultValueReplacer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
@@ -189,9 +189,9 @@ use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
-    $services->set(ArgumentDefaultValueReplacerRector::class)
+    $services->set(ReplaceArgumentDefaultValueRector::class)
         ->call('configure', [[
-            ArgumentDefaultValueReplacerRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
+            ReplaceArgumentDefaultValueRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
                 new ArgumentDefaultValueReplacer('SomeExampleClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
             ]),
         ]]);
