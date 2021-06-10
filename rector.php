@@ -12,6 +12,7 @@ use Rector\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php74\Rector\MethodCall\ChangeReflectionTypeToStringToGetNameRector;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Property\PrivatizeLocalPropertyToPrivatePropertyRector;
@@ -77,6 +78,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::SKIP, [
         // buggy in refactoring
         AddSeeTestAnnotationRector::class,
+        // buggy in check ReflectionNamedType
+        ChangeReflectionTypeToStringToGetNameRector::class,
 
         StringClassNameToClassConstantRector::class,
         // some classes in config might not exist without dev dependencies
