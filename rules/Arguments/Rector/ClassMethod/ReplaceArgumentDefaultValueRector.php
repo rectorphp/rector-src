@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Arguments\ValueObject\ArgumentDefaultValueReplacer;
+use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -26,7 +26,7 @@ final class ReplaceArgumentDefaultValueRector extends AbstractRector implements 
     public const REPLACED_ARGUMENTS = 'replaced_arguments';
 
     /**
-     * @var ArgumentDefaultValueReplacer[]
+     * @var ReplaceArgumentDefaultValue[]
      */
     private array $replacedArguments = [];
 
@@ -53,7 +53,7 @@ CODE_SAMPLE
                     ,
                     [
                         self::REPLACED_ARGUMENTS => [
-                            new ArgumentDefaultValueReplacer(
+                            new ReplaceArgumentDefaultValue(
                                 'SomeExampleClass',
                                 'someMethod',
                                 0,
@@ -99,12 +99,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, ArgumentDefaultValueReplacer[]> $configuration
+     * @param array<string, ReplaceArgumentDefaultValue[]> $configuration
      */
     public function configure(array $configuration): void
     {
         $replacedArguments = $configuration[self::REPLACED_ARGUMENTS] ?? [];
-        Assert::allIsInstanceOf($replacedArguments, ArgumentDefaultValueReplacer::class);
+        Assert::allIsInstanceOf($replacedArguments, ReplaceArgumentDefaultValue::class);
         $this->replacedArguments = $replacedArguments;
     }
 }

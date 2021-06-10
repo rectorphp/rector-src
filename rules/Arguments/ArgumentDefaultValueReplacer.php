@@ -12,7 +12,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Arguments\Contract\ArgumentDefaultValueReplacerInterface;
+use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 
@@ -29,7 +29,7 @@ final class ArgumentDefaultValueReplacer
      */
     public function processReplaces(
         Node $node,
-        ArgumentDefaultValueReplacerInterface $argumentDefaultValueReplacer
+        ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer
     ): ?Node {
         if ($node instanceof ClassMethod) {
             if (! isset($node->params[$argumentDefaultValueReplacer->getPosition()])) {
@@ -45,7 +45,7 @@ final class ArgumentDefaultValueReplacer
     /**
      * @param MethodCall|StaticCall|FuncCall $expr
      */
-    private function processArgs(Expr $expr, ArgumentDefaultValueReplacerInterface $argumentDefaultValueReplacer): void
+    private function processArgs(Expr $expr, ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer): void
     {
         $position = $argumentDefaultValueReplacer->getPosition();
 
@@ -86,7 +86,7 @@ final class ArgumentDefaultValueReplacer
      */
     private function processArrayReplacement(
         array $argumentNodes,
-        ArgumentDefaultValueReplacerInterface $argumentDefaultValueReplacer
+        ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer
     ): ?array {
         $argumentValues = $this->resolveArgumentValuesToBeforeRecipe($argumentNodes, $argumentDefaultValueReplacer);
         if ($argumentValues !== $argumentDefaultValueReplacer->getValueBefore()) {
@@ -114,7 +114,7 @@ final class ArgumentDefaultValueReplacer
      */
     private function resolveArgumentValuesToBeforeRecipe(
         array $argumentNodes,
-        ArgumentDefaultValueReplacerInterface $argumentDefaultValueReplacer
+        ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer
     ): array {
         $argumentValues = [];
 

@@ -182,7 +182,7 @@ Replaces defined map of arguments in defined methods and their calls.
 
 ```php
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
-use Rector\Arguments\ValueObject\ArgumentDefaultValueReplacer;
+use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -192,7 +192,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ReplaceArgumentDefaultValueRector::class)
         ->call('configure', [[
             ReplaceArgumentDefaultValueRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
-                new ArgumentDefaultValueReplacer('SomeExampleClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
+                new ReplaceArgumentDefaultValue('SomeExampleClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
             ]),
         ]]);
 };
@@ -218,7 +218,7 @@ Streamline the operator arguments of version_compare function
 
 ```php
 use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
-use Rector\Arguments\ValueObject\FuncCallArgumentDefaultValueReplacer;
+use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -228,7 +228,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(FunctionArgumentDefaultValueReplacerRector::class)
         ->call('configure', [[
             FunctionArgumentDefaultValueReplacerRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
-                new FuncCallArgumentDefaultValueReplacer('version_compare', 2, 'gte', 'ge'),
+                new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge'),
             ]),
         ]]);
 };
