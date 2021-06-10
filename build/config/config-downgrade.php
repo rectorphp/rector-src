@@ -22,10 +22,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::SKIP, DowngradeRectorConfig::DEPENDENCY_EXCLUDE_PATHS);
     $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, __DIR__ . '/phpstan-for-downgrade.neon');
 
-    //$containerConfigurator->import(DowngradeSetList::PHP_80);
-    //$containerConfigurator->import(DowngradeSetList::PHP_74);
-    //$containerConfigurator->import(DowngradeSetList::PHP_73);
-    //$containerConfigurator->import(DowngradeSetList::PHP_72);
+    $containerConfigurator->import(DowngradeSetList::PHP_80);
+    $containerConfigurator->import(DowngradeSetList::PHP_74);
+    $containerConfigurator->import(DowngradeSetList::PHP_73);
+    $containerConfigurator->import(DowngradeSetList::PHP_72);
 
     $services = $containerConfigurator->services();
     $services->set(DowngradeAttributeToAnnotationRector::class)
@@ -34,8 +34,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new DowngradeAttributeToAnnotation('Symfony\Contracts\Service\Attribute\Required', 'required'),
             ]),
         ]]);
-
-    $services->set(DowngradeClassOnObjectToGetClassRector::class);
 };
 
 /**
