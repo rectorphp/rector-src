@@ -12,7 +12,7 @@ use Rector\ReadWrite\NodeFinder\NodeUsageFinder;
 final class PropertyFetchReadNodeAnalyzer implements ReadNodeAnalyzerInterface
 {
     public function __construct(
-        private ReadExprAnalyzer $readExprAnalyzer,
+        private JustReadExprAnalyzer $readExprAnalyzer,
         private NodeUsageFinder $nodeUsageFinder
     ) {
     }

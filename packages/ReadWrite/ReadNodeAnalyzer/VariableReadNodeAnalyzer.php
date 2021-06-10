@@ -15,7 +15,7 @@ final class VariableReadNodeAnalyzer implements ReadNodeAnalyzerInterface
     public function __construct(
         private ParentScopeFinder $parentScopeFinder,
         private NodeUsageFinder $nodeUsageFinder,
-        private ReadExprAnalyzer $readExprAnalyzer
+        private JustReadExprAnalyzer $readExprAnalyzer
     ) {
     }
 

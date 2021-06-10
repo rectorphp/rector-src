@@ -20,7 +20,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use function Rector\Php80\NodeResolver\count;
 use Rector\Php80\ValueObject\PropertyPromotionCandidate;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
@@ -49,7 +48,8 @@ final class PromotedPropertyCandidateResolver
 
         $propertyPromotionCandidates = [];
         foreach ($class->getProperties() as $property) {
-            if (count($property->props) !== 1) {
+            $propertyCount = count($property->props);
+            if ($propertyCount !== 1) {
                 continue;
             }
 

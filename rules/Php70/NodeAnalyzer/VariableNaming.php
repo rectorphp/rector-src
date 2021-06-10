@@ -81,7 +81,17 @@ final class VariableNaming
         return $valueName;
     }
 
-    public function resolveFromNodeAndType(Node $node, Type $type): ?string
+    public function resolveFromFuncCallFirstArgumentWithSuffix(
+        FuncCall $funcCall,
+        string $suffix,
+        string $fallbackName,
+        ?Scope $scope
+    ): string {
+        $bareName = $this->resolveBareFuncCallArgumentName($funcCall, $fallbackName, $suffix);
+        return $this->createCountedValueName($bareName, $scope);
+    }
+
+    private function resolveFromNodeAndType(Node $node, Type $type): ?string
     {
         $variableName = $this->resolveBareFromNode($node);
         if ($variableName === null) {
@@ -96,16 +106,6 @@ final class VariableNaming
 
         $stringy = new Stringy($variableName);
         return (string) $stringy->camelize();
-    }
-
-    public function resolveFromFuncCallFirstArgumentWithSuffix(
-        FuncCall $funcCall,
-        string $suffix,
-        string $fallbackName,
-        ?Scope $scope
-    ): string {
-        $bareName = $this->resolveBareFuncCallArgumentName($funcCall, $fallbackName, $suffix);
-        return $this->createCountedValueName($bareName, $scope);
     }
 
     private function resolveFromNode(Node $node): ?string

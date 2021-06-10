@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Arguments\ArgumentDefaultValueReplacer;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -31,7 +32,7 @@ final class ReplaceArgumentDefaultValueRector extends AbstractRector implements 
     private array $replacedArguments = [];
 
     public function __construct(
-        private \Rector\Arguments\ArgumentDefaultValueReplacer $argumentDefaultValueReplacer
+        private ArgumentDefaultValueReplacer $argumentDefaultValueReplacer
     ) {
     }
 
