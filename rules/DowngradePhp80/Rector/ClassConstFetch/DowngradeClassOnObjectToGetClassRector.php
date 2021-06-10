@@ -21,6 +21,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeClassOnObjectToGetClassRector extends AbstractRector
 {
+    /**
+     * @var string
+     */
+    private const GET_CLASS = 'get_class';
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change $object::class to get_class($object)', [
@@ -66,13 +71,13 @@ CODE_SAMPLE
             return null;
         }
         if ($node->class instanceof Variable) {
-            return new FuncCall(new Name('get_class'), [new Arg($node->class)]);
+            return new FuncCall(new Name(self::GET_CLASS), [new Arg($node->class)]);
         }
         if ($node->class instanceof PropertyFetch) {
-            return new FuncCall(new Name('get_class'), [new Arg($node->class)]);
+            return new FuncCall(new Name(self::GET_CLASS), [new Arg($node->class)]);
         }
         if ($node->class instanceof StaticPropertyFetch) {
-            return new FuncCall(new Name('get_class'), [new Arg($node->class)]);
+            return new FuncCall(new Name(self::GET_CLASS), [new Arg($node->class)]);
         }
         return null;
     }
