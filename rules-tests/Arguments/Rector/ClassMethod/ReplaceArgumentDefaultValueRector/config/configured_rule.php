@@ -3,7 +3,15 @@
 declare(strict_types=1);
 
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
+<<<<<<< HEAD
+<<<<<<< HEAD:rules-tests/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector/config/configured_rule.php
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+=======
+use Rector\Arguments\ValueObject\ArgumentDefaultValueReplacer;
+>>>>>>> 5a187769d (rename ArgumentDefaultValueReplacerRector to ReplaceArgumentDefaultValueRector):rules-tests/Arguments/Rector/ClassMethod/ArgumentDefaultValueReplacerRector/config/configured_rule.php
+=======
+use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+>>>>>>> 73f0155b6 (update value objects too)
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 

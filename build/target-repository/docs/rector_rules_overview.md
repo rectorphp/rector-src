@@ -182,7 +182,15 @@ Replaces defined map of arguments in defined methods and their calls.
 
 ```php
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
+<<<<<<< HEAD
+<<<<<<< HEAD
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+=======
+use Rector\Arguments\ValueObject\ArgumentDefaultValueReplacer;
+>>>>>>> 5a187769d (rename ArgumentDefaultValueReplacerRector to ReplaceArgumentDefaultValueRector)
+=======
+use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+>>>>>>> 73f0155b6 (update value objects too)
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -192,7 +200,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ReplaceArgumentDefaultValueRector::class)
         ->call('configure', [[
             ReplaceArgumentDefaultValueRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
+<<<<<<< HEAD
+<<<<<<< HEAD
                 new ReplaceArgumentDefaultValue('SomeExampleClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
+=======
+                new ArgumentDefaultValueReplacer('SomeExampleClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
+>>>>>>> 5a187769d (rename ArgumentDefaultValueReplacerRector to ReplaceArgumentDefaultValueRector)
+=======
+                new ReplaceArgumentDefaultValue('SomeExampleClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
+>>>>>>> 73f0155b6 (update value objects too)
             ]),
         ]]);
 };

@@ -29,7 +29,11 @@ final class ArgumentDefaultValueReplacer
      */
     public function processReplaces(
         Node $node,
+<<<<<<< HEAD
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
+=======
+        ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer
+>>>>>>> 73f0155b6 (update value objects too)
     ): ?Node {
         if ($node instanceof ClassMethod) {
             if (! isset($node->params[$replaceArgumentDefaultValue->getPosition()])) {
@@ -45,7 +49,11 @@ final class ArgumentDefaultValueReplacer
     /**
      * @param MethodCall|StaticCall|FuncCall $expr
      */
+<<<<<<< HEAD
     private function processArgs(Expr $expr, ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue): void
+=======
+    private function processArgs(Expr $expr, ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer): void
+>>>>>>> 73f0155b6 (update value objects too)
     {
         $position = $replaceArgumentDefaultValue->getPosition();
 
@@ -86,7 +94,11 @@ final class ArgumentDefaultValueReplacer
      */
     private function processArrayReplacement(
         array $argumentNodes,
+<<<<<<< HEAD
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
+=======
+        ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer
+>>>>>>> 73f0155b6 (update value objects too)
     ): ?array {
         $argumentValues = $this->resolveArgumentValuesToBeforeRecipe($argumentNodes, $replaceArgumentDefaultValue);
         if ($argumentValues !== $replaceArgumentDefaultValue->getValueBefore()) {
@@ -114,7 +126,11 @@ final class ArgumentDefaultValueReplacer
      */
     private function resolveArgumentValuesToBeforeRecipe(
         array $argumentNodes,
+<<<<<<< HEAD
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
+=======
+        ReplaceArgumentDefaultValueInterface $argumentDefaultValueReplacer
+>>>>>>> 73f0155b6 (update value objects too)
     ): array {
         $argumentValues = [];
 
