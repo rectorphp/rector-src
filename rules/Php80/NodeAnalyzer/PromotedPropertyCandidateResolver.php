@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php80\NodeResolver;
+namespace Rector\Php80\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
@@ -20,10 +20,11 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use function Rector\Php80\NodeResolver\count;
 use Rector\Php80\ValueObject\PropertyPromotionCandidate;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
-final class PromotedPropertyResolver
+final class PromotedPropertyCandidateResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
