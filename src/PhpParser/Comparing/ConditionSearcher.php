@@ -14,8 +14,10 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class ConditionSearcher
 {
-    public function __construct(private BetterNodeFinder $betterNodeFinder, private NodeComparator $nodeComparator)
-    {
+    public function __construct(
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeComparator $nodeComparator
+    ) {
     }
 
     public function searchIfAndElseForVariableRedeclaration(Assign $assign, If_ $if): bool
@@ -73,15 +75,11 @@ final class ConditionSearcher
                 continue;
             }
 
-            $isFoundInExpr = (bool) $this->betterNodeFinder->findFirst($statementElse->expr->expr, function (Node $node) use ($varNode): bool {
-                return $this->nodeComparator->areNodesEqual($varNode, $node);
-            });
-
-            if ($isFoundInExpr) {
-                return false;
-            }
-
-            return true;
+            $isFoundInExpr = (bool) $this->betterNodeFinder->findFirst(
+                $statementElse->expr->expr,
+                fn (Node $node): bool => $this->nodeComparator->areNodesEqual($varNode, $node)
+            );
+            return ! $isFoundInExpr;
         }
 
         return false;
