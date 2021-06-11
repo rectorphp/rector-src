@@ -7,6 +7,7 @@ namespace Rector\Core\PhpParser\Comparing;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -22,75 +23,75 @@ final class ConditionSearcher
 
     public function searchIfAndElseForVariableRedeclaration(Assign $assign, If_ $if): bool
     {
+        $elseNode = $if->else;
+
+        if (! $elseNode instanceof Else_) {
+            return false;
+        }
+
         /** @var Variable $varNode */
         $varNode = $assign->var;
 
-        // search if for redeclaration of variable
-        foreach ($if->stmts as $statementIf) {
-            if (! $statementIf instanceof Expression) {
-                continue;
+        if (!$this->searchForVariableRedeclaration($varNode, $if->stmts)) {
+            return false;
+        }
+
+        if (!$this->searchForVariableRedeclaration($varNode, $elseNode->stmts)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function searchForVariableRedeclaration(Variable $varNode, array $stmts): bool
+    {
+        foreach ($stmts as $stmt) {
+            if ($this->checkIfVariableUsedInExpression($varNode, $stmt)) {
+                return false;
             }
 
-            if (! $statementIf->expr instanceof Assign) {
-                continue;
+            if ($this->checkForVariableRedeclaration($varNode, $stmt)) {
+                return true;
             }
-
-            $assignVar = $statementIf->expr->var;
-            if (! $assignVar instanceof Variable) {
-                continue;
-            }
-
-            if ($varNode->name !== $assignVar->name) {
-                continue;
-            }
-
-            $elseNode = $if->else;
-            if (! $elseNode instanceof Else_) {
-                continue;
-            }
-
-            // search else for redeclaration of variable
-            if (! $this->searchElseForVariableRedeclaration($assign, $elseNode)) {
-                continue;
-            }
-
-            return true;
         }
 
         return false;
     }
 
-    private function searchElseForVariableRedeclaration(Assign $assign, Else_ $else): bool
+    private function checkIfVariableUsedInExpression(Variable $varNode, Stmt $stmt): bool
     {
-        foreach ($else->stmts as $statementElse) {
-            if (! $statementElse instanceof Expression) {
-                continue;
-            }
-
-            if (! $statementElse->expr instanceof Assign) {
-                continue;
-            }
-
-            /** @var Variable $varElse */
-            $varElse = $statementElse->expr->var;
-            /** @var Variable $varNode */
-            $varNode = $assign->var;
-            if ($varNode->name !== $varElse->name) {
-                continue;
-            }
-
-            $isFoundInExpr = (bool) $this->betterNodeFinder->findFirst(
-                $statementElse->expr->expr,
-                fn (Node $node): bool => $this->nodeComparator->areNodesEqual($varNode, $node)
-            );
-
-            if ($isFoundInExpr) {
-                continue;
-            }
-
-            return true;
+        if (! $stmt instanceof Expression) {
+            return false;
         }
 
-        return false;
+        return (bool) $this->betterNodeFinder->findFirst(
+            $stmt->expr instanceof Assign ? $stmt->expr->expr : $stmt->expr,
+            fn (Node $node): bool => $this->nodeComparator->areNodesEqual($varNode, $node)
+        );
+    }
+
+    private function checkForVariableRedeclaration(Variable $varNode, Stmt $stmt): bool
+    {
+        if (! $stmt instanceof Expression) {
+            return false;
+        }
+
+        if (! $stmt->expr instanceof Assign) {
+            return false;
+        }
+
+        $assignVar = $stmt->expr->var;
+        if (! $assignVar instanceof Variable) {
+            return false;
+        }
+
+        if ($varNode->name !== $assignVar->name) {
+            return false;
+        }
+
+        return true;
     }
 }
