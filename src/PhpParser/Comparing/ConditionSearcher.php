@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Comparing;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class ConditionSearcher
 {
+    public function __construct(private BetterNodeFinder $betterNodeFinder, private NodeComparator $nodeComparator)
+    {
+    }
+
     public function searchIfAndElseForVariableRedeclaration(Assign $assign, If_ $if): bool
     {
         /** @var Variable $varNode */
@@ -65,6 +71,14 @@ final class ConditionSearcher
             $varNode = $assign->var;
             if ($varNode->name !== $varElse->name) {
                 continue;
+            }
+
+            $isFoundInExpr = (bool) $this->betterNodeFinder->findFirst($statementElse->expr->expr, function (Node $node) use ($varNode): bool {
+                return $this->nodeComparator->areNodesEqual($varNode, $node);
+            });
+
+            if ($isFoundInExpr) {
+                return false;
             }
 
             return true;
