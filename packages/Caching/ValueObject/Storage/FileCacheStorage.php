@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Caching\ValueObject\Storage;
 
 use Nette\Utils\Random;
+use Nette\Utils\Strings;
 use Rector\Caching\ValueObject\CacheFilePaths;
 use Rector\Caching\ValueObject\CacheItem;
 use Symplify\EasyCodingStandard\Caching\Exception\CachingException;
@@ -16,20 +17,10 @@ use Symplify\SmartFileSystem\SmartFileSystem;
  */
 final class FileCacheStorage
 {
-    /**
-     * @var string
-     */
-    private $directory;
-
-    /**
-     * @var SmartFileSystem
-     */
-    private $smartFileSystem;
-
-    public function __construct(string $directory, SmartFileSystem $smartFileSystem)
-    {
-        $this->directory = $directory;
-        $this->smartFileSystem = $smartFileSystem;
+    public function __construct(
+        private string $directory,
+        private SmartFileSystem $smartFileSystem
+    ) {
     }
 
     /**
@@ -107,8 +98,8 @@ final class FileCacheStorage
     private function getCacheFilePaths(string $key): CacheFilePaths
     {
         $keyHash = sha1($key);
-        $firstDirectory = sprintf('%s/%s', $this->directory, substr($keyHash, 0, 2));
-        $secondDirectory = sprintf('%s/%s', $firstDirectory, substr($keyHash, 2, 2));
+        $firstDirectory = sprintf('%s/%s', $this->directory, Strings::substring($keyHash, 0, 2));
+        $secondDirectory = sprintf('%s/%s', $firstDirectory, Strings::substring($keyHash, 2, 2));
         $filePath = sprintf('%s/%s.php', $secondDirectory, $keyHash);
 
         return new CacheFilePaths($firstDirectory, $secondDirectory, $filePath);
