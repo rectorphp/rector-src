@@ -50,7 +50,11 @@ final class ConditionSearcher
             }
 
             // search else for redeclaration of variable
-            return $this->searchElseForVariableRedeclaration($assign, $elseNode);
+            if (! $this->searchElseForVariableRedeclaration($assign, $elseNode)) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
@@ -79,7 +83,12 @@ final class ConditionSearcher
                 $statementElse->expr->expr,
                 fn (Node $node): bool => $this->nodeComparator->areNodesEqual($varNode, $node)
             );
-            return ! $isFoundInExpr;
+
+            if ($isFoundInExpr) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
