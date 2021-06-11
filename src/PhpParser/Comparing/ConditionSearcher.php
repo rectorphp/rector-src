@@ -36,6 +36,12 @@ final class ConditionSearcher
             return false;
         }
 
+        foreach ($if->elseifs as $elseifNode) {
+            if (!$this->searchForVariableRedeclaration($varNode, $elseifNode->stmts)) {
+                return false;
+            }
+        }
+
         if (!$this->searchForVariableRedeclaration($varNode, $elseNode->stmts)) {
             return false;
         }
