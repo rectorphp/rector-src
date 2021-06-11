@@ -32,17 +32,17 @@ final class ConditionSearcher
         /** @var Variable $varNode */
         $varNode = $assign->var;
 
-        if (!$this->searchForVariableRedeclaration($varNode, $if->stmts)) {
+        if (! $this->searchForVariableRedeclaration($varNode, $if->stmts)) {
             return false;
         }
 
         foreach ($if->elseifs as $elseifNode) {
-            if (!$this->searchForVariableRedeclaration($varNode, $elseifNode->stmts)) {
+            if (! $this->searchForVariableRedeclaration($varNode, $elseifNode->stmts)) {
                 return false;
             }
         }
 
-        if (!$this->searchForVariableRedeclaration($varNode, $elseNode->stmts)) {
+        if (! $this->searchForVariableRedeclaration($varNode, $elseNode->stmts)) {
             return false;
         }
 
@@ -72,12 +72,10 @@ final class ConditionSearcher
         if ($stmt instanceof Expression) {
             if ($stmt->expr instanceof Assign) {
                 $node = $stmt->expr->expr;
-            }
-            else {
+            } else {
                 $node = $stmt->expr;
             }
-        }
-        else {
+        } else {
             $node = $stmt;
         }
 
