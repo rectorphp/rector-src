@@ -1,7 +1,7 @@
 <?php
 namespace Rector\DeadCode\Tests\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-class SkipUsedInIfElseStmt {
+class SkipUsedInIfElseStmtAssignExpr {
     public function bar(bool $flag): void {
         $text = 'a';
         if ($flag) {
