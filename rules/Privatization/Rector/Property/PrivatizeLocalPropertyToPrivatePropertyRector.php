@@ -158,11 +158,15 @@ CODE_SAMPLE
             return true;
         }
 
+<<<<<<< HEAD
         if ($classLike->isAbstract()) {
             return true;
         }
 
         return $this->isOpenSourceProjectType();
+=======
+        return $classLike->isAbstract();
+>>>>>>> f44e91ca7 (remove ProjectType open source to make rector easier to use)
     }
 
     private function shouldSkipProperty(Property $property): bool
