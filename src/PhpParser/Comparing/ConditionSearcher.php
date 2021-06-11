@@ -63,13 +63,21 @@ final class ConditionSearcher
 
     private function checkIfVariableUsedInExpression(Variable $varNode, Stmt $stmt): bool
     {
-        if (! $stmt instanceof Expression) {
-            return false;
+        if ($stmt instanceof Expression) {
+            if ($stmt->expr instanceof Assign) {
+                $node = $stmt->expr->expr;
+            }
+            else {
+                $node = $stmt->expr;
+            }
+        }
+        else {
+            $node = $stmt;
         }
 
         return (bool) $this->betterNodeFinder->findFirst(
-            $stmt->expr instanceof Assign ? $stmt->expr->expr : $stmt->expr,
-            fn (Node $node): bool => $this->nodeComparator->areNodesEqual($varNode, $node)
+            $node,
+            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($varNode, $subNode)
         );
     }
 
