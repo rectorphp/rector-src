@@ -108,7 +108,7 @@ CODE_SAMPLE
         }
 
         if ($if->cond === $instanceof) {
-            return $if->stmts;
+            $this->addNodesBeforeNode($if->stmts, $if);
         }
 
         $this->removeNode($if);
