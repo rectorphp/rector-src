@@ -24,7 +24,7 @@ final class ArrayDimFetchRenamer
     }
 
     /**
-     * @see VariableRenamer::renameVariableInFunctionLike
+     * @see VariableRenamer::renameVariableInFunctionLike()
      */
     public function renameToVariable(
         ClassMethod $classMethod,
