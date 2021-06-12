@@ -500,3 +500,7 @@ parameters:
 
         # cache hacking
         - '#"@var_export\(new \\Symplify\\EasyCodingStandard\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
+
+        -
+            message: '#Class "Doctrine\\DBAL\\Platforms\\MySqlPlatform" used in annotation is missing#'
+            path: rules/TypeDeclaration/TypeInferer/PropertyTypeInferer/DoctrineColumnPropertyTypeInferer.php
