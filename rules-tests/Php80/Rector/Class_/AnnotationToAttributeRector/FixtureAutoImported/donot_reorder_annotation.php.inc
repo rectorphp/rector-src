@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * News
  *
- * @ORM\Table(name="news")
  * @ORM\Entity(repositoryClass="DoctrineFixtureDemo\Repository\NewsRepository")
  */
 class News
@@ -17,7 +16,6 @@ class News
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
     /**
@@ -44,13 +42,11 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * News
  */
-#[Table(name: 'news')]
 #[Entity(repositoryClass: 'DoctrineFixtureDemo\Repository\NewsRepository')]
 class News
 {
@@ -59,7 +55,6 @@ class News
      */
     #[Column(name: 'id', type: 'bigint', nullable: false)]
     #[Id]
-    #[GeneratedValue(strategy: 'IDENTITY')]
     private $id;
     /**
      * @var string

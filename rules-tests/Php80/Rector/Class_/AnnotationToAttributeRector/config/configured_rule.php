@@ -19,17 +19,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
 
                 // symfony/validation
-                new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Email',),
                 new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Range',),
-                new AnnotationToAttribute('Symfony\Component\Validator\Constraints\NotBlank',),
-                new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice',),
+                new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
 
-                new AnnotationToAttribute('Doctrine\ORM\Mapping\Table'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Id'),
-                new AnnotationToAttribute('Doctrine\ORM\Mapping\GeneratedValue'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
-                new AnnotationToAttribute('Doctrine\ORM\Mapping\ChangeTrackingPolicy'),
                 new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),
                 new AnnotationToAttribute('ApiPlatform\Core\Annotation\ApiResource'),
             ]),
