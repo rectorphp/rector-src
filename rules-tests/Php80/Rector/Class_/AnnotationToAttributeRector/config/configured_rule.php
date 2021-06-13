@@ -24,10 +24,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Id'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
-                new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),
                 new AnnotationToAttribute('ApiPlatform\Core\Annotation\ApiResource'),
             ]),
         ]]);
-
-    $services->set(AddLiteralSeparatorToNumberRector::class);
 };
