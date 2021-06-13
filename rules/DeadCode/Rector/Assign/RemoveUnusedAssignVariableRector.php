@@ -119,7 +119,7 @@ CODE_SAMPLE
         }
 
         $parentIf = $this->betterNodeFinder->findParentType($assign, If_::class);
-        if ($parentIf === null) {
+        if (! $parentIf instanceof If_) {
             return (bool) $this->nextVariableUsageNodeFinder->find($assign);
         }
         if (! $parentIf->else instanceof Else_) {
