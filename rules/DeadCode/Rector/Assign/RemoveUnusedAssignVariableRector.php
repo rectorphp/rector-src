@@ -124,9 +124,10 @@ CODE_SAMPLE
             return $nextUsedVariable !== null;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstNext($parentIf, function (Node $node) use ($variable): bool {
-            return $this->nodeComparator->areNodesEqual($node, $variable);
-        });
+        return (bool) $this->betterNodeFinder->findFirstNext(
+            $parentIf,
+            fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $variable)
+        );
     }
 
     private function isVariableTypeInScope(Assign $assign): bool
