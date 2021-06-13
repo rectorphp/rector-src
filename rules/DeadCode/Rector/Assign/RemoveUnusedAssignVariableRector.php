@@ -120,8 +120,7 @@ CODE_SAMPLE
 
         $parentIf = $this->betterNodeFinder->findParentType($assign, If_::class);
         if (! $parentIf || ! $parentIf->else instanceof Else_) {
-            $nextUsedVariable = $this->nextVariableUsageNodeFinder->find($assign);
-            return $nextUsedVariable !== null;
+            return (bool) $this->nextVariableUsageNodeFinder->find($assign);
         }
 
         return (bool) $this->betterNodeFinder->findFirstNext(
