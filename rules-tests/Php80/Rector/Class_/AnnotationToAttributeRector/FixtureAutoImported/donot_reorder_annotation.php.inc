@@ -4,11 +4,6 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixtureAu
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * News
- *
- * @ORM\Entity(repositoryClass="DoctrineFixtureDemo\Repository\NewsRepository")
- */
 class News
 {
     /**
@@ -38,16 +33,10 @@ class News
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixtureAutoImported;
 
-use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * News
- */
-#[Entity(repositoryClass: 'DoctrineFixtureDemo\Repository\NewsRepository')]
 class News
 {
     /**

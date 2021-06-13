@@ -4,11 +4,6 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixtureAu
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * News
- *
- * @ORM\Entity(repositoryClass="DoctrineFixtureDemo\Repository\NewsRepository")
- */
 class News
 {
     /**
@@ -40,10 +35,6 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixtureAu
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * News
- */
-#[\Doctrine\ORM\Mapping\Entity(repositoryClass: 'DoctrineFixtureDemo\Repository\NewsRepository')]
 class News
 {
     /**
