@@ -20,7 +20,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
 
                 // symfony/validation
-                new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Range',),
                 new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
 
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Id'),

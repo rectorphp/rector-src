@@ -7,7 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SymfonyRoute
 {
     /**
-     * @Route("/path", name="action")
+     * @Route("/path", name=EntityColumnAndAssertChoice::class)
      */
     public function action()
     {
@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SymfonyRoute
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/path', name: 'action')]
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/path', name: EntityColumnAndAssertChoice::class)]
     public function action()
     {
     }
