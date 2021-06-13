@@ -23,7 +23,7 @@ class IfNoStmtWithElse
 {
     public function run($condition)
     {
-        if (! $condition) {
+        if (!$condition) {
             echo "something";
         }
     }
