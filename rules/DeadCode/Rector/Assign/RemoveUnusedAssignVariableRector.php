@@ -7,6 +7,8 @@ namespace Rector\DeadCode\Rector\Assign;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeFinder\NextVariableUsageNodeFinder;
@@ -101,12 +103,13 @@ CODE_SAMPLE
 
     private function shouldSkipAssign(Assign $assign): bool
     {
-        if (! $assign->var instanceof Variable) {
+        $variable = $assign->var;
+        if (! $variable instanceof Variable) {
             return true;
         }
 
         // unable to resolve name
-        $variableName = $this->getName($assign->var);
+        $variableName = $this->getName($variable);
         if ($variableName === null) {
             return true;
         }
@@ -115,8 +118,15 @@ CODE_SAMPLE
             return true;
         }
 
-        $nextUsedVariable = $this->nextVariableUsageNodeFinder->find($assign);
-        return $nextUsedVariable !== null;
+        $parentIf = $this->betterNodeFinder->findParentType($assign, If_::class);
+        if (! $parentIf || ! $parentIf->else instanceof Else_) {
+            $nextUsedVariable = $this->nextVariableUsageNodeFinder->find($assign);
+            return $nextUsedVariable !== null;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirstNext($parentIf, function (Node $node) use ($variable): bool {
+            return $this->nodeComparator->areNodesEqual($node, $variable);
+        });
     }
 
     private function isVariableTypeInScope(Assign $assign): bool
