@@ -74,12 +74,17 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // skip methods with no bodies (e.g interface methods)
+        if ($node->stmts === null) {
+            return null;
+        }
+
         $this->reset();
 
         $hasChanged = false;
         $newStmts = [];
 
-        foreach ((array) $node->stmts as $key => $stmt) {
+        foreach ($node->stmts as $key => $stmt) {
             $currentStmtVariableName = $this->resolveCurrentStmtVariableName($stmt);
 
             if ($this->shouldAddEmptyLine($currentStmtVariableName, $node, $key)) {

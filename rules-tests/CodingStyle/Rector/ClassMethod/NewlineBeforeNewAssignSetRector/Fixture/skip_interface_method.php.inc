@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector\Fixture;
 
-interface SkipInterFaceMethod
+interface SkipInterfaceMethod
 {
     public function run(): void;
 }
