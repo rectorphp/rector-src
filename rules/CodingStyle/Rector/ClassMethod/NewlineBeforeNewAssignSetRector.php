@@ -77,21 +77,23 @@ CODE_SAMPLE
         $this->reset();
 
         $hasChanged = false;
+        $newStmts = [];
 
         foreach ((array) $node->stmts as $key => $stmt) {
             $currentStmtVariableName = $this->resolveCurrentStmtVariableName($stmt);
 
             if ($this->shouldAddEmptyLine($currentStmtVariableName, $node, $key)) {
                 $hasChanged = true;
-                // insert newline before
-                $stmts = (array) $node->stmts;
-                array_splice($stmts, $key, 0, [new Nop()]);
-                $node->stmts = $stmts;
+                // insert newline before stmt
+                $newStmts[] = new Nop();
             }
+            $newStmts[] = $stmt;
 
             $this->previousPreviousStmtVariableName = $this->previousStmtVariableName;
             $this->previousStmtVariableName = $currentStmtVariableName;
         }
+
+        $node->stmts = $newStmts;
 
         return $hasChanged ? $node : null;
     }
