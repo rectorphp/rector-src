@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Entity;
+namespace Rector\Php80\Tests\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,35 +13,34 @@ use Doctrine\ORM\Mapping as ORM;
  *     }
  * )
  */
-namespace Rector\Php80\Tests\Rector\Class_\AnnotationToAttributeRector\Fixture;
-
 class Foo
 {
     /**
      * @ORM\Column(type="string")
      */
     private string $name;
-    
     /**
      * @ORM\Column(type="string")
      */
-    private string $name2;    
+    private string $name2;
 }
+
 ?>
 -----
 <?php
 
 namespace Rector\Php80\Tests\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
-+#[\Doctrine\ORM\Mapping\Entity]
-+#[\Doctrine\ORM\Mapping\Table(name: 'foos')]
-+#[\Doctrine\ORM\Mapping\UniqueContraint(name: "name_unique", columns: ["name", "name2"])]
-+class Foo
-+{
-+    #[\Doctrine\ORM\Mapping\Column(type: 'string')]
-+    private string $name;
-+    #[\Doctrine\ORM\Mapping\Column(type: 'string')]
-+    private string $name2;
- }
+use Doctrine\ORM\Mapping as ORM;
+
+#[\Doctrine\ORM\Mapping\Entity]
+#[\Doctrine\ORM\Mapping\Table(name: 'foos', uniqueConstraints: ['(name="name_unique", columns={"name", "name2"})', '}'])]
+class Foo
+{
+    #[\Doctrine\ORM\Mapping\Column(type: 'string')]
+    private string $name;
+    #[\Doctrine\ORM\Mapping\Column(type: 'string')]
+    private string $name2;
+}
 
 ?>
