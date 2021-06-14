@@ -131,7 +131,7 @@ CODE_SAMPLE
         }
 
         // this is already empty line before
-        return ! $this->isPreceededByEmptyLine($node, $key);
+        return ! $this->isPrecededByEmptyLine($node, $key);
     }
 
     /**
@@ -171,7 +171,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|Closure $node
      */
-    private function isPreceededByEmptyLine(Node $node, int $key): bool
+    private function isPrecededByEmptyLine(Node $node, int $key): bool
     {
         if ($node->stmts === null) {
             return false;
