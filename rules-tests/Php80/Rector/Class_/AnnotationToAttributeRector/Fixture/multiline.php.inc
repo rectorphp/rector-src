@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     }
  * )
  */
-class Foo
+class Multiline
 {
     /**
      * @ORM\Column(type="string")
@@ -35,7 +35,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[\Doctrine\ORM\Mapping\Entity]
 #[\Doctrine\ORM\Mapping\Table(name: 'foos', uniqueConstraints: ['(name="name_unique", columns={"name", "name2"})'])]
-class Foo
+class Multiline
 {
     #[\Doctrine\ORM\Mapping\Column(type: 'string')]
     private string $name;
