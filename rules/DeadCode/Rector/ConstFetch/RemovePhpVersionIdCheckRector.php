@@ -61,6 +61,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! $this->isName($node, 'PHP_VERSION_ID')) {
+            return null;
+        }
+
         return $node;
     }
 }
