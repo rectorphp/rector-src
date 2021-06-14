@@ -13,7 +13,7 @@ class StringConverter
         } elseif ($data instanceof EncodedString) {
         }
         
-        // this comment will be lost :-(
+        // this comment should be kept
         elseif (is_string($data) ) {
             return $data;
         }
@@ -40,7 +40,7 @@ class StringConverter
         if ($data instanceof EncodedString) {
         }
         
-        // this comment will be lost :-(
+        // this comment should be kept
         elseif (is_string($data) ) {
             return $data;
         }
