@@ -114,10 +114,6 @@ CODE_SAMPLE
         }
 
         if ($if->else !== null) {
-            if ($if->stmts !== []) {
-                return;
-            }
-
             $if->cond = $this->conditionInverter->createInvertedCondition($if->cond);
             $if->stmts = $if->else->stmts;
             $if->else = null;
