@@ -34,7 +34,7 @@ namespace Rector\Php80\Tests\Rector\Class_\AnnotationToAttributeRector\Fixture;
 use Doctrine\ORM\Mapping as ORM;
 
 #[\Doctrine\ORM\Mapping\Entity]
-#[\Doctrine\ORM\Mapping\Table(name: 'foos', uniqueConstraints: ['(name="name_unique", columns={"name", "name2"})', '}'])]
+#[\Doctrine\ORM\Mapping\Table(name: 'foos', uniqueConstraints: ['(name="name_unique", columns={"name", "name2"})'])]
 class Foo
 {
     #[\Doctrine\ORM\Mapping\Column(type: 'string')]
