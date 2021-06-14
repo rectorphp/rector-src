@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Encode/Decode strings and arrays from one charset to another charset
- */
 namespace Rector\EarlyReturn\Tests\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
 class StringConverter
@@ -35,13 +32,4 @@ class StringConverter
         return $data;
     }
 }
-?>
------
-<?php
-
-namespace Rector\EarlyReturn\Tests\Rector\If_\RemoveAlwaysElseRector\Fixture;
-
-// what is expected code?
-// should remain the same? delete part bellow ----- (included)
-
 ?>
