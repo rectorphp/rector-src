@@ -24,7 +24,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value)
+    public function run()
     {
         if (PHP_VERSION_ID < 80000) {
             return;
@@ -37,7 +37,7 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value)
+    public function run()
     {
         echo 'do something';
     }
