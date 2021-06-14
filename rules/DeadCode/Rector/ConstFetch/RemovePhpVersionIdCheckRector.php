@@ -18,7 +18,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove unneded PHP_VERSION_ID check against constraint in composer.json or rector\'s Option::PHP_VERSION_FEATURES config',
+            "Remove unneded PHP_VERSION_ID check against constraint in composer.json or rector's Option::PHP_VERSION_FEATURES config",
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -56,6 +56,9 @@ CODE_SAMPLE
         return [ConstFetch::class];
     }
 
+    /**
+     * @param ConstFetch $node
+     */
     public function refactor(Node $node): ?Node
     {
         return $node;
