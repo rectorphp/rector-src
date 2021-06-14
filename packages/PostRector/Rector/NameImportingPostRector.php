@@ -103,11 +103,10 @@ CODE_SAMPLE
         if (substr_count($name->toCodeString(), '\\') <= 1) {
             return $this->nameImporter->importName($name, $currentUses);
         }
-
-        if (! $this->classNameImportSkipper->isFoundInUse(
-            $name,
-            $currentUses
-        ) || $this->classNameImportSkipper->isAlreadyImported($name, $currentUses)) {
+        if (! $this->classNameImportSkipper->isFoundInUse($name, $currentUses)) {
+            return $this->nameImporter->importName($name, $currentUses);
+        }
+        if ($this->classNameImportSkipper->isAlreadyImported($name, $currentUses)) {
             return $this->nameImporter->importName($name, $currentUses);
         }
 
