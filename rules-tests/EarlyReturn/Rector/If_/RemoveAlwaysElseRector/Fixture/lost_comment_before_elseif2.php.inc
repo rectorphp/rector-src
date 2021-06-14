@@ -22,4 +22,31 @@ class StringConverter
     }
 }
 
+-----
+<?php
+
+namespace Rector\EarlyReturn\Tests\Rector\If_\RemoveAlwaysElseRector\Fixture;
+
+class StringConverter
+{
+    public function convert($data)
+    {
+        if (is_array($data)) {
+
+            return $res;
+        
+        }
+        
+        if ($data instanceof EncodedString) {
+        }
+        
+        // this comment will be lost :-(
+        elseif (is_string($data) ) {
+            return $data;
+        }
+
+        return $data;
+    }
+}
+
 ?>
