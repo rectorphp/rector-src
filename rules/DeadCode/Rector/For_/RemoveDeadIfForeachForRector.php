@@ -113,11 +113,11 @@ CODE_SAMPLE
             return;
         }
 
-        if ($if->stmts !== [] && $if->else !== null) {
-            return;
-        }
+        if ($if->else !== null) {
+            if ($if->stmts !== []) {
+                return;
+            }
 
-        if ($if->stmts === [] && $if->else !== null) {
             $if->cond = $this->conditionInverter->createInvertedCondition($if->cond);
             $if->stmts = $if->else->stmts;
             $if->else = null;
