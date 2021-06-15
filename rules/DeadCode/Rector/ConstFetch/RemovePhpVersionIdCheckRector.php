@@ -107,13 +107,13 @@ CODE_SAMPLE
         // ensure cast to (string) first to allow string like "8.0" value to be converted to the int value
         $this->phpVersionConstraint = $this->phpVersionFactory->createIntVersion((string) $phpVersionConstraint);
 
-        $if     = $this->betterNodeFinder->findParentType($node, If_::class);
+        $if = $this->betterNodeFinder->findParentType($node, If_::class);
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-        if ($if->cond !== $parent || ! $parent instanceof BinaryOp) {
+        if ($this->shouldSkip($node, $if, $parent)) {
             return null;
         }
 
+        /** @var If_ $if */
         if ($parent instanceof Smaller && $parent->left === $node) {
             return $this->processSmallerLeft($node, $parent, $if);
         }
@@ -130,11 +130,22 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($parent->right !== $node) {
-            return null;
+        return $this->processGreaterOrEqualRight($node, $parent, $if);
+    }
+
+    private function shouldSkip(ConstFetch $constFetch, ?If_ $if, ?Node $parent): bool
+    {
+        $if = $this->betterNodeFinder->findParentType($constFetch, If_::class);
+        if (! $if instanceof If_) {
+            return true;
         }
 
-        return $this->processGreaterOrEqualRight($node, $parent, $if);
+        $parent = $constFetch->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parent instanceof BinaryOp) {
+            return true;
+        }
+
+        return $if->cond !== $parent;
     }
 
     private function processSmallerLeft(ConstFetch $constFetch, Smaller $smaller, If_ $if): ?ConstFetch
@@ -168,7 +179,6 @@ CODE_SAMPLE
 
     private function processGreaterOrEqualLeft(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual, If_ $if): ?ConstFetch
     {
-
         $value = $greaterOrEqual->right;
         if (! $value instanceof LNumber) {
             return null;
@@ -184,6 +194,10 @@ CODE_SAMPLE
 
     private function processGreaterOrEqualRight(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual, If_ $if): ?ConstFetch
     {
+        if ($greaterOrEqual->right !== $constFetch) {
+            return null;
+        }
+
         $value = $greaterOrEqual->left;
         if (! $value instanceof LNumber) {
             return null;
