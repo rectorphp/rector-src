@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\If_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -104,10 +105,6 @@ $exampleConfiguration
         // ensure cast to (string) first to allow string like "8.0" value to be converted to the int value
         $this->phpVersionConstraint = $this->phpVersionFactory->createIntVersion((string) $phpVersionConstraint);
 
-        if ($this->phpVersionConstraint > PHP_VERSION_ID) {
-            return null;
-        }
-
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Smaller) {
             return $this->processSmaller($node, $parent);
@@ -120,10 +117,22 @@ $exampleConfiguration
         return null;
     }
 
-    private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ConstFetch
+    private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
     {
         $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof If_ && $parent->cond === $smaller && $smaller->left === $constFetch) {
+        if (! $parent instanceof If_ || $parent->cond !== $smaller) {
+            return null;
+        }
+
+        $value  = $smaller->left === $constFetch
+            ? $smaller->right
+            : $smaller->left;
+
+        if (! $value instanceof LNumber) {
+            return null;
+        }
+
+        if ($this->phpVersionConstraint <= $value->value) {
             $this->removeNode($parent);
         }
 
@@ -133,7 +142,19 @@ $exampleConfiguration
     private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ConstFetch
     {
         $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof If_ && $parent->cond === $greaterOrEqual && $greaterOrEqual->left = $constFetch) {
+        if (! $parent instanceof If_ || $parent->cond !== $greaterOrEqual) {
+            return null;
+        }
+
+        $value  = $greaterOrEqual->left === $constFetch
+            ? $greaterOrEqual->right
+            : $greaterOrEqual->left;
+
+        if (! $value instanceof LNumber) {
+            return null;
+        }
+
+        if ($this->phpVersionConstraint <= $value->value) {
             $this->addNodesBeforeNode($parent->stmts, $parent);
             $this->removeNode($parent);
         }
