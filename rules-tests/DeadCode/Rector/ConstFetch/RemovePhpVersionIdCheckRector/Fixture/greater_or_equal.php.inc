@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\Fixture;
 
-class HigherOrEqual
+class GreaterOrEqual
 {
     public function run()
     {
@@ -18,7 +18,7 @@ class HigherOrEqual
 
 namespace Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\Fixture;
 
-class HigherOrEqual
+class GreaterOrEqual
 {
     public function run()
     {

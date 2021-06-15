@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ConstFetch;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Stmt\If_;
@@ -103,9 +104,17 @@ $exampleConfiguration
         // ensure cast to (string) first to allow string like "8.0" value to be converted to the int value
         $this->phpVersionConstraint = $this->phpVersionFactory->createIntVersion((string) $phpVersionConstraint);
 
+        if ($this->phpVersionConstraint > PHP_VERSION_ID) {
+            return null;
+        }
+
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Smaller) {
             return $this->processSmaller($node, $parent);
+        }
+
+        if ($parent instanceof GreaterOrEqual) {
+            return $this->processGreaterOrEqual($node, $parent);
         }
 
         return null;
@@ -113,12 +122,19 @@ $exampleConfiguration
 
     private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
     {
-        if ($this->phpVersionConstraint > PHP_VERSION_ID) {
-            return null;
-        }
-
         $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof If_ && $parent->cond === $smaller) {
+            $this->removeNode($parent);
+        }
+
+        return $constFetch;
+    }
+
+    private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ?ConstFetch
+    {
+        $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof If_ && $parent->cond === $greaterOrEqual) {
+            $this->addNodesBeforeNode($parent->stmts, $parent);
             $this->removeNode($parent);
         }
 
