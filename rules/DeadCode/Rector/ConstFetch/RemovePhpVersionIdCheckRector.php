@@ -115,8 +115,12 @@ CODE_SAMPLE
             return $this->processSmallerRight($node, $parent);
         }
 
-        if ($parent instanceof GreaterOrEqual) {
-            return $this->processGreaterOrEqual($node, $parent);
+        if ($parent instanceof GreaterOrEqual && $parent->left === $node) {
+            return $this->processGreaterOrEqualLeft($node, $parent);
+        }
+
+        if ($parent instanceof GreaterOrEqual && $parent->right === $node) {
+            return $this->processGreaterOrEqualRight($node, $parent);
         }
 
         return null;
@@ -150,6 +154,7 @@ CODE_SAMPLE
         if (! $parent instanceof If_) {
             return null;
         }
+
         if ($parent->cond !== $smaller) {
             return null;
         }
@@ -167,7 +172,7 @@ CODE_SAMPLE
         return $constFetch;
     }
 
-    private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ?ConstFetch
+    private function processGreaterOrEqualLeft(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ?ConstFetch
     {
         $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof If_) {
@@ -177,9 +182,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $value = $greaterOrEqual->left === $constFetch
-            ? $greaterOrEqual->right
-            : $greaterOrEqual->left;
+        $value = $greaterOrEqual->right;
 
         if (! $value instanceof LNumber) {
             return null;
@@ -187,6 +190,29 @@ CODE_SAMPLE
 
         if ($this->phpVersionConstraint <= $value->value) {
             $this->addNodesBeforeNode($parent->stmts, $parent);
+            $this->removeNode($parent);
+        }
+
+        return $constFetch;
+    }
+
+    private function processGreaterOrEqualRight(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ?ConstFetch
+    {
+        $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parent instanceof If_) {
+            return null;
+        }
+        if ($parent->cond !== $greaterOrEqual) {
+            return null;
+        }
+
+        $value = $greaterOrEqual->left;
+
+        if (! $value instanceof LNumber) {
+            return null;
+        }
+
+        if ($this->phpVersionConstraint <= $value->value) {
             $this->removeNode($parent);
         }
 
