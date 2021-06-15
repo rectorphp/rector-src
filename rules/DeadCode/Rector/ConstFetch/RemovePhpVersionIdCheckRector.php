@@ -107,8 +107,12 @@ CODE_SAMPLE
         $this->phpVersionConstraint = $this->phpVersionFactory->createIntVersion((string) $phpVersionConstraint);
 
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Smaller) {
-            return $this->processSmaller($node, $parent);
+        if ($parent instanceof Smaller && $parent->left === $node) {
+            return $this->processSmallerLeft($node, $parent);
+        }
+
+        if ($parent instanceof Smaller && $parent->right === $node) {
+            return $this->processSmallerRight($node, $parent);
         }
 
         if ($parent instanceof GreaterOrEqual) {
@@ -118,7 +122,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
+    private function processSmallerLeft(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
     {
         $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof If_) {
@@ -128,15 +132,35 @@ CODE_SAMPLE
             return null;
         }
 
-        $value = $smaller->left === $constFetch
-            ? $smaller->right
-            : $smaller->left;
-
+        $value = $smaller->right;
         if (! $value instanceof LNumber) {
             return null;
         }
 
         if ($this->phpVersionConstraint <= $value->value) {
+            $this->removeNode($parent);
+        }
+
+        return $constFetch;
+    }
+
+    private function processSmallerRight(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
+    {
+        $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parent instanceof If_) {
+            return null;
+        }
+        if ($parent->cond !== $smaller) {
+            return null;
+        }
+
+        $value = $smaller->left;
+        if (! $value instanceof LNumber) {
+            return null;
+        }
+
+        if ($this->phpVersionConstraint <= $value->value) {
+            $this->addNodesBeforeNode($parent->stmts, $parent);
             $this->removeNode($parent);
         }
 
