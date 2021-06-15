@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ConstFetch;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
@@ -126,11 +127,15 @@ CODE_SAMPLE
             return $this->processGreaterOrEqualLeft($node, $parent, $if);
         }
 
-        if (! $parent instanceof GreaterOrEqual) {
-            return null;
+        if ($parent instanceof GreaterOrEqual && $parent->right == $node) {
+            return $this->processGreaterOrEqualRight($node, $parent, $if);
         }
 
-        return $this->processGreaterOrEqualRight($node, $parent, $if);
+        if ($parent instanceof Greater && $parent->left === $node) {
+            return $this->processGreaterLeft($node, $parent, $if);
+        }
+
+        return null;
     }
 
     private function shouldSkip(ConstFetch $constFetch, ?If_ $if, ?Node $node): bool
@@ -155,7 +160,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->phpVersionConstraint <= $value->value) {
+        if ($this->phpVersionConstraint >= $value->value) {
             $this->removeNode($if);
         }
 
@@ -169,7 +174,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->phpVersionConstraint <= $value->value) {
+        if ($this->phpVersionConstraint >= $value->value) {
             $this->addNodesBeforeNode($if->stmts, $if);
             $this->removeNode($if);
         }
@@ -188,7 +193,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->phpVersionConstraint <= $value->value) {
+        if ($this->phpVersionConstraint >= $value->value) {
             $this->addNodesBeforeNode($if->stmts, $if);
             $this->removeNode($if);
         }
@@ -202,16 +207,27 @@ CODE_SAMPLE
         If_ $if
     ): ?ConstFetch
     {
-        if ($greaterOrEqual->right !== $constFetch) {
-            return null;
-        }
-
         $value = $greaterOrEqual->left;
         if (! $value instanceof LNumber) {
             return null;
         }
 
-        if ($this->phpVersionConstraint <= $value->value) {
+        if ($this->phpVersionConstraint >= $value->value) {
+            $this->removeNode($if);
+        }
+
+        return $constFetch;
+    }
+
+    private function processGreaterLeft(ConstFetch $constFetch, Greater $greater, If_ $if): ?ConstFetch
+    {
+        $value = $greater->right;
+        if (! $value instanceof LNumber) {
+            return null;
+        }
+
+        if ($this->phpVersionConstraint >= $value->value) {
+            $this->addNodesBeforeNode($if->stmts, $if);
             $this->removeNode($if);
         }
 
