@@ -9,6 +9,7 @@ final class MultipleCases
         switch ($value) {
             case 'v1':
             case 'v2':
+            case 'v3':
                 return 100;
             default:
                 return 1000;
@@ -27,7 +28,7 @@ final class MultipleCases
     public function run($value)
     {
         return match ($value) {
-            'v1', 'v2' => 100,
+            'v1', 'v2', 'v3' => 100,
             default => 1000,
         };
     }
