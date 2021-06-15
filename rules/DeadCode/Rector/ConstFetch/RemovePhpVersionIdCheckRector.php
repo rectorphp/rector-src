@@ -30,8 +30,9 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector implements Conf
 
     private string | int | null $phpVersionConstraint;
 
-    public function __construct(private PhpVersionFactory $phpVersionFactory)
-    {
+    public function __construct(
+        private PhpVersionFactory $phpVersionFactory
+    ) {
     }
 
     /**
@@ -74,7 +75,7 @@ class SomeClass
 }
 CODE_SAMPLE
 ,
-$exampleConfiguration
+                    $exampleConfiguration
                 ),
             ],
         );
@@ -120,11 +121,14 @@ $exampleConfiguration
     private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
     {
         $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof If_ || $parent->cond !== $smaller) {
+        if (! $parent instanceof If_) {
+            return null;
+        }
+        if ($parent->cond !== $smaller) {
             return null;
         }
 
-        $value  = $smaller->left === $constFetch
+        $value = $smaller->left === $constFetch
             ? $smaller->right
             : $smaller->left;
 
@@ -142,11 +146,14 @@ $exampleConfiguration
     private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ?ConstFetch
     {
         $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof If_ || $parent->cond !== $greaterOrEqual) {
+        if (! $parent instanceof If_) {
+            return null;
+        }
+        if ($parent->cond !== $greaterOrEqual) {
             return null;
         }
 
-        $value  = $greaterOrEqual->left === $constFetch
+        $value = $greaterOrEqual->left === $constFetch
             ? $greaterOrEqual->right
             : $greaterOrEqual->left;
 
