@@ -2,13 +2,15 @@
 
 namespace Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\Fixture;
 
-class HigherLeft
+class GreaterRight
 {
     public function run()
     {
-        if (PHP_VERSION_ID > 80000) {
-            echo 'do something';
+        if (80000 > PHP_VERSION_ID) {
+            return;
         }
+
+        echo 'do something';
     }
 }
 
@@ -18,7 +20,7 @@ class HigherLeft
 
 namespace Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\Fixture;
 
-class HigherLeft
+class GreaterRight
 {
     public function run()
     {

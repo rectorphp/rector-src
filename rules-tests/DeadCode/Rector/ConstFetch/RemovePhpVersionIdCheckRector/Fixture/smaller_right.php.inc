@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\Fixture;
 
-class LowerRight
+class SmallerRight
 {
     public function run()
     {
@@ -18,7 +18,7 @@ class LowerRight
 
 namespace Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\Fixture;
 
-class LowerRight
+class SmallerRight
 {
     public function run()
     {
