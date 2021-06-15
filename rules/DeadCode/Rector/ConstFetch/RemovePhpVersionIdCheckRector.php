@@ -139,7 +139,7 @@ $exampleConfiguration
         return $constFetch;
     }
 
-    private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ConstFetch
+    private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ?ConstFetch
     {
         $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof If_ || $parent->cond !== $greaterOrEqual) {
