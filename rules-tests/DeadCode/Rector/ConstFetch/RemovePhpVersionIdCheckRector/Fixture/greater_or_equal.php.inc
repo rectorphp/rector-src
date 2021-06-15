@@ -10,6 +10,13 @@ class GreaterOrEqual
             echo 'do something';
         }
     }
+
+    public function run2()
+    {
+        if (80000 <= PHP_VERSION_ID) {
+            echo 'do something';
+        }
+    }
 }
 
 ?>
@@ -21,6 +28,11 @@ namespace Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\
 class GreaterOrEqual
 {
     public function run()
+    {
+        echo 'do something';
+    }
+
+    public function run2()
     {
         echo 'do something';
     }
