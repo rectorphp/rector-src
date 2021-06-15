@@ -26,7 +26,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector implements Conf
      */
     public const PHP_VERSION_CONSTRAINT = 'phpVersionConstraint';
 
-    private int $phpVersionConstraint;
+    private string | int $phpVersionConstraint;
 
     public function __construct(private PhpVersionFactory $phpVersionFactory)
     {
@@ -98,12 +98,10 @@ $exampleConfiguration
         /**
          * $this->phpVersionProvider->provide() fallback is here as $currentFileProvider must be accessed after initialization
          */
-        if (! isset($this->phpVersionConstraint)) {
-            $this->phpVersionConstraint = $this->phpVersionProvider->provide();
-        }
+        $phpVersionConstraint = $this->phpVersionConstraint ?? $this->phpVersionProvider->provide();
 
         // ensure cast to (string) first to allow string like "8.0" value to be converted to the int value
-        $this->phpVersionConstraint = $this->phpVersionFactory->createIntVersion((string) $this->phpVersionConstraint);
+        $this->phpVersionConstraint = $this->phpVersionFactory->createIntVersion((string) $phpVersionConstraint);
 
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Smaller) {
