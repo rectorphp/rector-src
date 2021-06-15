@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\PhpVersionFactory;
+use Rector\Core\ValueObject\PhpVersion;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,28 +21,29 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector implements Conf
     /**
      * @var string
      */
-    public const PHP_VERSION_CONSTRAINT = '8.0';
+    public const PHP_VERSION_CONSTRAINT = 'phpVersionConstraint';
+
+    public int $phpVersionConstraint;
+
+    public function __construct(private PhpVersionFactory $phpVersionFactory)
+    {
+    }
 
     /**
-     * @var array<string, string>
-     */
-    private const EXAMPLE_CONFIGURATION = [
-        self::PHP_VERSION_CONSTRAINT => '8.0',
-    ];
-
-    public array | int $phpVersionConstraint;
-
-    /**
-     * @param array<string, ArgumentAdder[]> $configuration
+     * @param array<string, int|string> $configuration
      */
     public function configure(array $configuration): void
     {
         $phpVersionConstraint = $configuration[self::PHP_VERSION_CONSTRAINT] ?? $this->phpVersionProvider->provide();
-        $this->phpVersionConstraint = $phpVersionConstraint;
+        // ensure cast to (string) first to allow string like "8.0" value to be converted to the int value
+        $this->phpVersionConstraint = $this->phpVersionFactory->createIntVersion((string) $phpVersionConstraint);
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
+        $exampleConfiguration = [
+            self::PHP_VERSION_CONSTRAINT => PhpVersion::PHP_80,
+        ];
         return new RuleDefinition(
             'Remove unneded PHP_VERSION_ID check',
             [
@@ -68,7 +71,7 @@ class SomeClass
 }
 CODE_SAMPLE
 ,
-                    self::EXAMPLE_CONFIGURATION
+$exampleConfiguration
                 ),
             ],
         );
