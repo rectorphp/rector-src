@@ -118,12 +118,13 @@ CODE_SAMPLE
         if ($parent instanceof GreaterOrEqual && $parent->left === $node) {
             return $this->processGreaterOrEqualLeft($node, $parent);
         }
-
-        if ($parent instanceof GreaterOrEqual && $parent->right === $node) {
-            return $this->processGreaterOrEqualRight($node, $parent);
+        if (! $parent instanceof GreaterOrEqual) {
+            return null;
         }
-
-        return null;
+        if ($parent->right !== $node) {
+            return null;
+        }
+        return $this->processGreaterOrEqualRight($node, $parent);
     }
 
     private function processSmallerLeft(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
