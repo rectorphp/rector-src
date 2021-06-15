@@ -27,7 +27,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector implements Conf
      */
     public const PHP_VERSION_CONSTRAINT = 'phpVersionConstraint';
 
-    private string | int $phpVersionConstraint;
+    private string | int | null $phpVersionConstraint;
 
     public function __construct(private PhpVersionFactory $phpVersionFactory)
     {
@@ -120,7 +120,7 @@ $exampleConfiguration
         return null;
     }
 
-    private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
+    private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ConstFetch
     {
         $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof If_ && $parent->cond === $smaller) {
@@ -130,7 +130,7 @@ $exampleConfiguration
         return $constFetch;
     }
 
-    private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ?ConstFetch
+    private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ConstFetch
     {
         $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof If_ && $parent->cond === $greaterOrEqual) {
