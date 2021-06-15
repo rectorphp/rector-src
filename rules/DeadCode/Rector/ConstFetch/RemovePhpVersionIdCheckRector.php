@@ -107,6 +107,10 @@ $exampleConfiguration
 
     private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
     {
+        if ($this->phpVersionConstraint > PHP_VERSION_ID) {
+            return null;
+        }
+
         $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof If_ && $parent->cond === $smaller) {
             $this->removeNode($parent);
