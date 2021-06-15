@@ -96,9 +96,9 @@ $exampleConfiguration
         }
 
         /**
-         * $this->phpVersionProvider->provide() fallback is here as $currentFileProvider be accessed after initialization
+         * $this->phpVersionProvider->provide() fallback is here as $currentFileProvider must be accessed after initialization
          */
-        if (! isset($this->phpVersionConstraint) || $this->phpVersionConstraint === 0) {
+        if (! isset($this->phpVersionConstraint)) {
             $this->phpVersionConstraint = $this->phpVersionProvider->provide();
         }
 
