@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ConstFetch;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Stmt\If_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\PhpVersionFactory;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -23,7 +26,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector implements Conf
      */
     public const PHP_VERSION_CONSTRAINT = 'phpVersionConstraint';
 
-    public int $phpVersionConstraint;
+    private int $phpVersionConstraint;
 
     public function __construct(private PhpVersionFactory $phpVersionFactory)
     {
@@ -94,6 +97,21 @@ $exampleConfiguration
             return null;
         }
 
-        return $node;
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Smaller) {
+            return $this->processSmaller($node, $parent);
+        }
+
+        return null;
+    }
+
+    private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ?ConstFetch
+    {
+        $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof If_ && $parent->cond === $smaller) {
+            $this->removeNode($parent);
+        }
+
+        return $constFetch;
     }
 }
