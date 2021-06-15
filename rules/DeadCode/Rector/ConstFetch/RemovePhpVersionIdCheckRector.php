@@ -123,8 +123,8 @@ CODE_SAMPLE
             return $this->processGreaterOrEqual($node, $parent, $if);
         }
 
-        if ($parent instanceof Greater && $parent->left === $node) {
-            return $this->processGreaterLeft($node, $parent, $if);
+        if ($parent instanceof Greater) {
+            return $this->processGreater($node, $parent, $if);
         }
 
         return null;
@@ -237,6 +237,19 @@ CODE_SAMPLE
         return $constFetch;
     }
 
+    private function processGreater(ConstFetch $constFetch, Greater $greater, If_ $if): ?ConstFetch
+    {
+        if ($greater->left === $constFetch) {
+            return $this->processGreaterLeft($constFetch, $greater, $if);
+        }
+
+        if ($greater->right === $constFetch) {
+            return $this->processGreaterRight($constFetch, $greater, $if);
+        }
+
+        return null;
+    }
+
     private function processGreaterLeft(ConstFetch $constFetch, Greater $greater, If_ $if): ?ConstFetch
     {
         $value = $greater->right;
@@ -246,6 +259,20 @@ CODE_SAMPLE
 
         if ($this->phpVersionConstraint >= $value->value) {
             $this->addNodesBeforeNode($if->stmts, $if);
+            $this->removeNode($if);
+        }
+
+        return $constFetch;
+    }
+
+    private function processGreaterRight(ConstFetch $constFetch, Greater $greater, If_ $if): ?ConstFetch
+    {
+        $value = $greater->left;
+        if (! $value instanceof LNumber) {
+            return null;
+        }
+
+        if ($this->phpVersionConstraint >= $value->value) {
             $this->removeNode($if);
         }
 
