@@ -133,19 +133,19 @@ CODE_SAMPLE
         return $this->processGreaterOrEqualRight($node, $parent, $if);
     }
 
-    private function shouldSkip(ConstFetch $constFetch, ?If_ $if, ?Node $parent): bool
+    private function shouldSkip(ConstFetch $constFetch, ?If_ $if, ?Node $node): bool
     {
         $if = $this->betterNodeFinder->findParentType($constFetch, If_::class);
         if (! $if instanceof If_) {
             return true;
         }
 
-        $parent = $constFetch->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof BinaryOp) {
+        $node = $constFetch->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $node instanceof BinaryOp) {
             return true;
         }
 
-        return $if->cond !== $parent;
+        return $if->cond !== $node;
     }
 
     private function processSmallerLeft(ConstFetch $constFetch, Smaller $smaller, If_ $if): ?ConstFetch
@@ -177,7 +177,11 @@ CODE_SAMPLE
         return $constFetch;
     }
 
-    private function processGreaterOrEqualLeft(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual, If_ $if): ?ConstFetch
+    private function processGreaterOrEqualLeft(
+        ConstFetch $constFetch,
+        GreaterOrEqual $greaterOrEqual,
+        If_ $if
+    ): ?ConstFetch
     {
         $value = $greaterOrEqual->right;
         if (! $value instanceof LNumber) {
@@ -192,7 +196,11 @@ CODE_SAMPLE
         return $constFetch;
     }
 
-    private function processGreaterOrEqualRight(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual, If_ $if): ?ConstFetch
+    private function processGreaterOrEqualRight(
+        ConstFetch $constFetch,
+        GreaterOrEqual $greaterOrEqual,
+        If_ $if
+    ): ?ConstFetch
     {
         if ($greaterOrEqual->right !== $constFetch) {
             return null;
