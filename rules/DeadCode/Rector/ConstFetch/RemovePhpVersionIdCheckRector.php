@@ -115,20 +115,12 @@ CODE_SAMPLE
         }
 
         /** @var If_ $if */
-        if ($parent instanceof Smaller && $parent->left === $node) {
-            return $this->processSmallerLeft($node, $parent, $if);
+        if ($parent instanceof Smaller) {
+            return $this->processSmaller($node, $parent, $if);
         }
 
-        if ($parent instanceof Smaller && $parent->right === $node) {
-            return $this->processSmallerRight($node, $parent, $if);
-        }
-
-        if ($parent instanceof GreaterOrEqual && $parent->left === $node) {
-            return $this->processGreaterOrEqualLeft($node, $parent, $if);
-        }
-
-        if ($parent instanceof GreaterOrEqual && $parent->right == $node) {
-            return $this->processGreaterOrEqualRight($node, $parent, $if);
+        if ($parent instanceof GreaterOrEqual) {
+            return $this->processGreaterOrEqual($node, $parent, $if);
         }
 
         if ($parent instanceof Greater && $parent->left === $node) {
@@ -151,6 +143,32 @@ CODE_SAMPLE
         }
 
         return $if->cond !== $node;
+    }
+
+    private function processSmaller(ConstFetch $constFetch, Smaller $smaller, If_ $if): ?ConstFetch
+    {
+        if ($smaller->left === $constFetch) {
+            return $this->processSmallerLeft($constFetch, $smaller, $if);
+        }
+
+        if ($smaller->right === $constFetch) {
+            return $this->processSmallerRight($constFetch, $smaller, $if);
+        }
+
+        return null;
+    }
+
+    private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual, If_ $if): ?ConstFetch
+    {
+        if ($greaterOrEqual->left === $constFetch) {
+            return $this->processGreaterOrEqualLeft($constFetch, $greaterOrEqual, $if);
+        }
+
+        if ($greaterOrEqual->right === $constFetch) {
+            return $this->processGreaterOrEqualRight($constFetch, $greaterOrEqual, $if);
+        }
+
+        return null;
     }
 
     private function processSmallerLeft(ConstFetch $constFetch, Smaller $smaller, If_ $if): ?ConstFetch
