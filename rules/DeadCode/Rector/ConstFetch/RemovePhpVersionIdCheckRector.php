@@ -123,7 +123,7 @@ $exampleConfiguration
     private function processSmaller(ConstFetch $constFetch, Smaller $smaller): ConstFetch
     {
         $parent = $smaller->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof If_ && $parent->cond === $smaller) {
+        if ($parent instanceof If_ && $parent->cond === $smaller && $smaller->left === $constFetch) {
             $this->removeNode($parent);
         }
 
@@ -133,7 +133,7 @@ $exampleConfiguration
     private function processGreaterOrEqual(ConstFetch $constFetch, GreaterOrEqual $greaterOrEqual): ConstFetch
     {
         $parent = $greaterOrEqual->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof If_ && $parent->cond === $greaterOrEqual) {
+        if ($parent instanceof If_ && $parent->cond === $greaterOrEqual && $greaterOrEqual->left = $constFetch) {
             $this->addNodesBeforeNode($parent->stmts, $parent);
             $this->removeNode($parent);
         }
