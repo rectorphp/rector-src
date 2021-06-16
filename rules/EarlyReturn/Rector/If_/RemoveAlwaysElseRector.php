@@ -77,7 +77,6 @@ CODE_SAMPLE
         }
 
         if ($node->elseifs !== []) {
-            $originalNode = clone $node;
             $if = new If_($node->cond);
             $if->stmts = $node->stmts;
 
