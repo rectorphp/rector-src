@@ -7,6 +7,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 #[Entity]
 #[Table]
+namespace Rector\Php80\Tests\Rector\Class_\AnnotationToAttributeRector\Fixture;
+
 final class DemoFile
 {
     /**
@@ -15,4 +17,5 @@ final class DemoFile
     #[Column('position', type: 'integer')]
     protected int $position = 0;
 }
+?>
 ?>
