@@ -2,10 +2,11 @@
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
-#[Entity(SortableRepository::class)]
+#[Entity]
+#[Table]
 final class DemoFile
 {
     /**
