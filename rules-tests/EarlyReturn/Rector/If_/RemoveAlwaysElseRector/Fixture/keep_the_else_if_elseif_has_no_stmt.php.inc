@@ -2,7 +2,7 @@
 
 namespace Rector\EarlyReturn\Tests\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-class LostCommentBeforeElseif3
+class KeepTheElseIfElseifHasNoStmt
 {
     public function convert($data)
     {
@@ -27,7 +27,7 @@ class LostCommentBeforeElseif3
 
 namespace Rector\EarlyReturn\Tests\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-class LostCommentBeforeElseif3
+class KeepTheElseIfElseifHasNoStmt
 {
     public function convert($data)
     {
@@ -40,8 +40,9 @@ class LostCommentBeforeElseif3
         }
         // a comment 3
         elseif (is_string($data)) {
+        } else {
+            return $data;
         }
-        return $data;
     }
 }
 
