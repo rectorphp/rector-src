@@ -15,8 +15,9 @@ class LostCommentBeforeElseif3
         }
         // a comment 3
         elseif (is_string($data)) {
+        } else {
+            return $data;
         }
-        return $data;
     }
 }
 
