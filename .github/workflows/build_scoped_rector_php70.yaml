@@ -39,6 +39,7 @@ jobs:
 
             # install only prod dependencies - do not use ramsey, it uses cache including "dev", we want to avoid it here
             -   run: |
+                    composer install
                     composer remove symplify/easy-coding-standard
                     composer remove symplify/coding-standard
                     composer remove composer/xdebug-handler
