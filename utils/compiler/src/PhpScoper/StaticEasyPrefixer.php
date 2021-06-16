@@ -38,12 +38,6 @@ final class StaticEasyPrefixer
 
         // for configuring sets with ValueObjectInliner
         'Symplify\SymfonyPhpConfig\*',
-
-        // for file system locate/read/write use in rector rules
-        'Symplify\SmartFileSystem\*',
-
-        // doctrine annotations to autocomplete
-        'Doctrine\ORM\Mapping\*',
     ];
 
     /**
