@@ -18,4 +18,3 @@ final class DemoFile
     protected int $position = 0;
 }
 ?>
-?>
