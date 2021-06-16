@@ -22,17 +22,22 @@ final class SwitchExprsResolver
      */
     public function resolve(Switch_ $switch): array
     {
-        $condAndExpr = [];
+        $condAndExpr          = [];
+        $collectionEmptyCasesCond = [];
 
-        $previousCondExpr = null;
-        foreach ($switch->cases as $case) {
+        foreach ($switch->cases as $key => $case) {
             if (! $this->isValidCase($case)) {
                 return [];
             }
 
-            // prepend to previous one
             if ($case->stmts === []) {
-                $previousCondExpr = $case->cond;
+                $collectionEmptyCasesCond[$key] = $case->cond;
+            }
+        }
+
+        $lastKeyPassed = 0;
+        foreach ($switch->cases as $key => $case) {
+            if ($case->stmts === []) {
                 continue;
             }
 
@@ -42,12 +47,24 @@ final class SwitchExprsResolver
             }
 
             $condExprs = [];
-            if ($previousCondExpr instanceof Expr) {
-                $condExprs[] = $previousCondExpr;
-                $previousCondExpr = null;
-            }
 
             if ($case->cond !== null) {
+                $emptyCasesCond = [];
+
+                foreach ($collectionEmptyCasesCond as $i => $collectionEmptyCaseCond) {
+                    if ($i > $key) {
+                        break;
+                    }
+
+                    if (in_array($lastKeyPassed, array_keys($collectionEmptyCasesCond), true)) {
+                        continue;
+                    }
+
+                    $emptyCasesCond[$i] = $collectionEmptyCaseCond;
+                    $lastKeyPassed = $i;
+                }
+
+                $condExprs = $emptyCasesCond;
                 $condExprs[] = $case->cond;
             }
 
