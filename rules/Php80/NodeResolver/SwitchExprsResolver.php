@@ -56,12 +56,8 @@ final class SwitchExprsResolver
                         break;
                     }
 
-                    if (in_array($lastKeyPassed, array_keys($collectionEmptyCasesCond), true)) {
-                        continue;
-                    }
-
                     $emptyCasesCond[$i] = $collectionEmptyCaseCond;
-                    $lastKeyPassed = $i;
+                    unset($collectionEmptyCasesCond[$i]);
                 }
 
                 $condExprs = $emptyCasesCond;
