@@ -39,6 +39,7 @@ jobs:
 
             # install only prod dependencies - do not use ramsey, it uses cache including "dev", we want to avoid it here
             -   run: |
+                    composer remove friendsofphp/php-cs-fixer
                     composer remove composer/xdebug-handler
                     composer require composer/composer
                     composer require composer/xdebug-handler:"2.0.1 as 1.4.6"
