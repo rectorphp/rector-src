@@ -8,9 +8,13 @@ class ElseIf_
     {
         if ($cond1) {
             return 'foo';
-        } elseif ($cond2) {
+        }
+        // a comment
+        elseif ($cond2) {
             bar();
-        } elseif ($cond3) {
+        }
+        // a comment 2
+        elseif ($cond3) {
             baz();
         } else {
             foo();
@@ -31,9 +35,12 @@ class ElseIf_
         if ($cond1) {
             return 'foo';
         }
+        // a comment
         if ($cond2) {
             bar();
-        } elseif ($cond3) {
+        }
+        // a comment 2
+        elseif ($cond3) {
             baz();
         } else {
             foo();

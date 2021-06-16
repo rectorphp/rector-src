@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -21,6 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysElseRector extends AbstractRector
 {
+    public function __construct(
+        private CommentsMerger $commentsMerger
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -77,16 +83,32 @@ CODE_SAMPLE
         }
 
         if ($node->elseifs !== []) {
+            $originalNode = clone $node;
             $if = new If_($node->cond);
             $if->stmts = $node->stmts;
 
             $this->addNodeBeforeNode($if, $node);
+            $this->mirrorComments($if, $node);
 
             /** @var ElseIf_ $firstElseIf */
             $firstElseIf = array_shift($node->elseifs);
             $node->cond = $firstElseIf->cond;
             $node->stmts = $firstElseIf->stmts;
             $this->mirrorComments($node, $firstElseIf);
+
+            $statements = [];
+            foreach ($node->elseifs as $key => $elseif) {
+                if ($this->doesLastStatementBreakFlow($elseif) && $elseif->stmts !== []) {
+                    continue;
+                }
+
+                $statements[] = $elseif;
+                unset($node->elseifs[$key]);
+            }
+
+            if ($statements !== []) {
+                $this->addNodesAfterNode($statements, $node);
+            }
 
             return $node;
         }
@@ -100,9 +122,12 @@ CODE_SAMPLE
         return null;
     }
 
-    private function doesLastStatementBreakFlow(If_ $if): bool
+    /**
+     * @param If_|ElseIf_ $node
+     */
+    private function doesLastStatementBreakFlow(Node $node): bool
     {
-        $lastStmt = end($if->stmts);
+        $lastStmt = end($node->stmts);
 
         return ! ($lastStmt instanceof Return_
             || $lastStmt instanceof Throw_
