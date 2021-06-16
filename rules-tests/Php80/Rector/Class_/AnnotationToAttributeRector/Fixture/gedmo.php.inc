@@ -1,4 +1,5 @@
 <?php
+namespace Rector\Php80\Tests\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -7,8 +8,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 #[Entity]
 #[Table]
-namespace Rector\Php80\Tests\Rector\Class_\AnnotationToAttributeRector\Fixture;
-
 final class DemoFile
 {
     /**
