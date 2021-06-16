@@ -89,16 +89,7 @@ CODE_SAMPLE
             $node->stmts = $firstElseIf->stmts;
             $this->mirrorComments($node, $firstElseIf);
 
-            $statements = [];
-            foreach ($node->elseifs as $key => $elseif) {
-                if ($this->doesLastStatementBreakFlow($elseif) && $elseif->stmts !== []) {
-                    continue;
-                }
-
-                $statements[] = $elseif;
-                unset($node->elseifs[$key]);
-            }
-
+            $statements = $this->getStatementsElseIfs($node);
             if ($statements !== []) {
                 $this->addNodesAfterNode($statements, $node);
             }
@@ -113,6 +104,24 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * @return ElseIf_[]
+     */
+    private function getStatementsElseIfs(If_ $if): array
+    {
+        $statements = [];
+        foreach ($if->elseifs as $key => $elseif) {
+            if ($this->doesLastStatementBreakFlow($elseif) && $elseif->stmts !== []) {
+                continue;
+            }
+
+            $statements[] = $elseif;
+            unset($if->elseifs[$key]);
+        }
+
+        return $statements;
     }
 
     /**
