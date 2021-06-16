@@ -30,12 +30,11 @@ final class SwitchExprsResolver
                 return [];
             }
 
-            if ($case->stmts === []) {
+            if ($case->stmts === [] && $case->cond instanceof Expr) {
                 $collectionEmptyCasesCond[$key] = $case->cond;
             }
         }
 
-        $lastKeyPassed = 0;
         foreach ($switch->cases as $key => $case) {
             if ($case->stmts === []) {
                 continue;
