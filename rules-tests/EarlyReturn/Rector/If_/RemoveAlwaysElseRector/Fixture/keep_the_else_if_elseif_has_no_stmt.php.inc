@@ -40,7 +40,8 @@ class KeepTheElseIfElseifHasNoStmt
         }
         // a comment 3
         elseif (is_string($data)) {
-        } else {
+        }
+        else {
             return $data;
         }
     }

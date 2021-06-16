@@ -7,6 +7,7 @@ namespace Rector\EarlyReturn\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Stmt\Continue_;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -77,6 +78,7 @@ CODE_SAMPLE
         }
 
         if ($node->elseifs !== []) {
+            $originalNode = clone $node;
             $if = new If_($node->cond);
             $if->stmts = $node->stmts;
 
@@ -92,6 +94,11 @@ CODE_SAMPLE
             $statements = $this->getStatementsElseIfs($node);
             if ($statements !== []) {
                 $this->addNodesAfterNode($statements, $node);
+            }
+
+            if ($originalNode->else instanceof Else_) {
+                $node->else = null;
+                $this->addNodeAfterNode($originalNode->else, $node);
             }
 
             return $node;
