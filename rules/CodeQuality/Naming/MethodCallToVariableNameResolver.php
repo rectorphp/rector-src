@@ -100,6 +100,10 @@ final class MethodCallToVariableNameResolver
 
     private function getFallbackVarName(string $methodCallVarName, string $methodCallName): string
     {
+        $lastBackslashPos = strrpos($methodCallVarName, '\\');
+        if ($lastBackslashPos !== false) {
+            $methodCallVarName = substr($methodCallVarName, $lastBackslashPos + 1);
+        }
         return $methodCallVarName . ucfirst($methodCallName);
     }
 
