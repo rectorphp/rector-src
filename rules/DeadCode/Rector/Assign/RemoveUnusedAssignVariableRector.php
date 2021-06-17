@@ -177,11 +177,8 @@ CODE_SAMPLE
 
     private function isInCompact(Assign $assign): bool
     {
+        /** @var Variable $variable */
         $variable = $assign->var;
-
-        if (! $variable instanceof Variable) {
-            return false;
-        }
 
         return (bool) $this->betterNodeFinder->findFirstNext($variable, function (Node $node) use ($variable): bool {
             if ($node instanceof FuncCall) {
