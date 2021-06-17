@@ -480,3 +480,11 @@ parameters:
             path: packages/BetterPhpDocParser/PhpDocInfo/PhpDocInfo.php #348
 
         - '#"@var_export\(new \\Rector\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
+
+        -
+            message: '#Class with base "UnionTypeMapper" name is already used in "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\UnionTypeMapper", "Rector\\StaticTypeMapper\\PhpDocParser\\UnionTypeMapper"\. Use unique name to make classes easy to recognize#'
+            path: packages/StaticTypeMapper/PhpDocParser/UnionTypeMapper.php #17
+
+        -
+            message: '#Class with base "StaticTypeMapper" name is already used in "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\StaticTypeMapper", "Rector\\StaticTypeMapper\\StaticTypeMapper"\. Use unique name to make classes easy to recognize#'
+            path: packages/StaticTypeMapper/StaticTypeMapper.php #31
