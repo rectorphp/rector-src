@@ -85,13 +85,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         SplitStringClassConstantToClassConstFetchRector::class,
 
         // to be enabled when all rules for php 8 syntax applied
-<<<<<<< HEAD
-        RenamePropertyToMatchTypeRector::class,
-=======
-        // PhpVersionFeature::STATIC_RETURN_TYPE
-        ReturnTypeDeclarationRector::class,
->>>>>>> 758985813 ([Php 8] Enable RenamePropertyToMatchTypeRector)
-
         RemoveUnreachableStatementRector::class => [
             __DIR__ . '/rules/Php70/Rector/FuncCall/MultiDirnameRector.php',
         ],

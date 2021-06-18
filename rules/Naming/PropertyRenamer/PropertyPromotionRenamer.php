@@ -43,6 +43,9 @@ final class PropertyPromotionRenamer
             return;
         }
 
+        // resolve possible and existing param names
+        $blockingParamNames = $this->resolveBlockingParamNames($constructClassMethod);
+
         foreach ($constructClassMethod->params as $param) {
             if ($param->flags === 0) {
                 continue;
@@ -51,6 +54,10 @@ final class PropertyPromotionRenamer
             // promoted property
             $desiredPropertyName = $this->matchParamTypeExpectedNameResolver->resolve($param);
             if ($desiredPropertyName === null) {
+                continue;
+            }
+
+            if (in_array($desiredPropertyName, $blockingParamNames, true)) {
                 continue;
             }
 
@@ -114,5 +121,41 @@ final class PropertyPromotionRenamer
         $expectedNameLowercased = strtolower($desiredPropertyName);
 
         return str_ends_with($currentNameLowercased, $expectedNameLowercased);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveBlockingParamNames(ClassMethod $classMethod): array
+    {
+        $futureParamNames = [];
+        foreach ($classMethod->params as $param) {
+            $futureParamName = $this->matchParamTypeExpectedNameResolver->resolve($param);
+            if ($futureParamName === null) {
+                continue;
+            }
+
+            $futureParamNames[] = $futureParamName;
+        }
+
+        // remove null values
+        $futureParamNames = array_filter($futureParamNames);
+        if ($futureParamNames === []) {
+            return [];
+        }
+
+        // resolve duplicated names
+        $blockingParamNames = [];
+
+        $valuesToCount = array_count_values($futureParamNames);
+        foreach ($valuesToCount as $value => $count) {
+            if ($count < 2) {
+                continue;
+            }
+
+            $blockingParamNames[] = $value;
+        }
+
+        return $blockingParamNames;
     }
 }
