@@ -143,12 +143,6 @@ final class RemoveExtraParametersRector extends AbstractRector
      */
     private function hasVariadicParameters($functionReflection, array $parameterAcceptors): bool
     {
-        /**
-         * PHPStan\\Reflection\\FunctionReflection\
-         * |PHPStan\\Reflection\\Php\\PhpMethodReflection,
-         *
-         * PHPStan\\Reflection\\FunctionReflection\|PHPStan\\Reflection\\MethodReflection given#'
-         */
         foreach ($parameterAcceptors as $parameterAcceptor) {
             // can be any number of arguments → nothing to limit here
             if ($parameterAcceptor->isVariadic()) {
