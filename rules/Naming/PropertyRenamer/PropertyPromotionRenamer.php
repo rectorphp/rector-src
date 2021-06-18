@@ -43,8 +43,7 @@ final class PropertyPromotionRenamer
             return;
         }
 
-        $desiredPropertyNames = [];
-        foreach ($constructClassMethod->params as $key => $param) {
+        foreach ($constructClassMethod->params as $param) {
             if ($param->flags === 0) {
                 continue;
             }
@@ -55,46 +54,35 @@ final class PropertyPromotionRenamer
                 continue;
             }
 
-            if (in_array($desiredPropertyName, $desiredPropertyNames, true)) {
-                return;
-            }
-
-            $desiredPropertyNames[$key] = $desiredPropertyName;
-        }
-
-        $this->renameParamVarName($classLike, $constructClassMethod, $desiredPropertyNames);
-    }
-
-    /**
-     * @param string[] $desiredPropertyNames
-     */
-    private function renameParamVarName(
-        ClassLike $classLike,
-        ClassMethod $constructClassMethod,
-        array $desiredPropertyNames
-    ): void {
-        $keys = array_keys($desiredPropertyNames);
-        $params = $constructClassMethod->params;
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
-
-        foreach ($params as $key => $param) {
-            if (! in_array($key, $keys, true)) {
+            $currentParamName = $this->nodeNameResolver->getName($param);
+            if ($this->isNameSuffixed($currentParamName, $desiredPropertyName)) {
                 continue;
             }
 
-            $currentParamName = $this->nodeNameResolver->getName($param);
-            $desiredPropertyName = $desiredPropertyNames[$key];
-            $this->propertyFetchRenamer->renamePropertyFetchesInClass(
-                $classLike,
-                $currentParamName,
-                $desiredPropertyName
-            );
-
-            /** @var string $paramVarName */
-            $paramVarName = $param->var->name;
-            $this->renameParamDoc($phpDocInfo, $param, $paramVarName, $desiredPropertyName);
-            $param->var->name = $desiredPropertyName;
+            $this->renameParamVarName($classLike, $constructClassMethod, $desiredPropertyName, $param);
         }
+    }
+
+    private function renameParamVarName(
+        ClassLike $classLike,
+        ClassMethod $classMethod,
+        string $desiredPropertyName,
+        Param $param
+    ): void {
+        $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+
+        $currentParamName = $this->nodeNameResolver->getName($param);
+
+        $this->propertyFetchRenamer->renamePropertyFetchesInClass(
+            $classLike,
+            $currentParamName,
+            $desiredPropertyName
+        );
+
+        /** @var string $paramVarName */
+        $paramVarName = $param->var->name;
+        $this->renameParamDoc($classMethodPhpDocInfo, $param, $paramVarName, $desiredPropertyName);
+        $param->var->name = $desiredPropertyName;
     }
 
     private function renameParamDoc(
@@ -104,7 +92,6 @@ final class PropertyPromotionRenamer
         string $desiredPropertyName
     ): void {
         $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($paramVarName);
-
         if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return;
         }
@@ -115,5 +102,17 @@ final class PropertyPromotionRenamer
         }
 
         $this->paramRenamer->rename($paramRename);
+    }
+
+    /**
+     * Sometimes the bare type is not enough.
+     * This allows prefixing type in variable names, e.g. "Type $firstType"
+     */
+    private function isNameSuffixed(string $currentParamName, string $desiredPropertyName): bool
+    {
+        $currentNameLowercased = strtolower($currentParamName);
+        $expectedNameLowercased = strtolower($desiredPropertyName);
+
+        return str_ends_with($currentNameLowercased, $expectedNameLowercased);
     }
 }
