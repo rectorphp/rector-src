@@ -158,8 +158,7 @@ CODE_SAMPLE
         ClassMethod $classMethod,
         Node $node,
         array $args
-    ): MethodCall | StaticCall
-    {
+    ): MethodCall | StaticCall {
         $params = $classMethod->params;
         /** @var Arg[] $newArgs */
         $newArgs = [];

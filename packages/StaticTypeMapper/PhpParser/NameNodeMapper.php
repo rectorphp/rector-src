@@ -88,8 +88,7 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
 
     private function createScalarType(
         string $name
-    ): ArrayType | IntegerType | FloatType | StringType | ConstantBooleanType | BooleanType | MixedType
-    {
+    ): ArrayType | IntegerType | FloatType | StringType | ConstantBooleanType | BooleanType | MixedType {
         if ($name === 'array') {
             return new ArrayType(new MixedType(), new MixedType());
         }

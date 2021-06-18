@@ -43,8 +43,7 @@ final class PlainValueParser
      */
     public function parseValue(
         BetterTokenIterator $tokenIterator
-    ): string | array | ConstExprFalseNode | ConstExprTrueNode | ConstExprIntegerNode | DoctrineAnnotationTagValueNode
-    {
+    ): string | array | ConstExprFalseNode | ConstExprTrueNode | ConstExprIntegerNode | DoctrineAnnotationTagValueNode {
         $currentTokenValue = $tokenIterator->currentTokenValue();
 
         // temporary hackaround multi-line doctrine annotations
