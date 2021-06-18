@@ -14,13 +14,13 @@ use PhpParser\Parser;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptor;
+use PHPStan\Reflection\Php\PhpFunctionReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\Type\UnionTypeMethodReflection;
 use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Reflection\Php\PhpFunctionReflection;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
@@ -144,7 +144,6 @@ final class RemoveExtraParametersRector extends AbstractRector
     private function hasVariadicParameters($functionReflection, array $parameterAcceptors): bool
     {
         /**
-         *
          * PHPStan\\Reflection\\FunctionReflection\
          * |PHPStan\\Reflection\\Php\\PhpMethodReflection,
          *
