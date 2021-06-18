@@ -33,8 +33,7 @@ final class ObjectTypeSpecifier
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
         ObjectType $objectType
-    ): ObjectType | AliasedObjectType | ShortenedObjectType | FullyQualifiedObjectType | MixedType
-    {
+    ): ObjectType | AliasedObjectType | ShortenedObjectType | FullyQualifiedObjectType | MixedType {
         /** @var Use_[]|null $uses */
         $uses = $node->getAttribute(AttributeKey::USE_NODES);
         if ($uses === null) {
