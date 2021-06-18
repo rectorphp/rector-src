@@ -2,7 +2,7 @@
 
 namespace Rector\Php71\Tests\Rector\FuncCall\RemoveExtraParametersRector\Fixture;
 
-final class DemoFile
+final class SkipFuncGetAllOnFuncCall
 {
     public function run()
     {
