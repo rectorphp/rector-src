@@ -15,7 +15,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
-class VariadicAnalyzer
+final class VariadicAnalyzer
 {
     public function __construct(
         private Parser $parser,
