@@ -138,11 +138,18 @@ final class RemoveExtraParametersRector extends AbstractRector
     }
 
     /**
-     * @param PhpMethodReflection|PhpFunctionReflection $reflection
+     * @param MethodReflection|FunctionReflection $functionReflection
      * @param ParametersAcceptor[] $parameterAcceptors
      */
     private function hasVariadicParameters($functionReflection, array $parameterAcceptors): bool
     {
+        /**
+         *
+         * PHPStan\\Reflection\\FunctionReflection\
+         * |PHPStan\\Reflection\\Php\\PhpMethodReflection,
+         *
+         * PHPStan\\Reflection\\FunctionReflection\|PHPStan\\Reflection\\MethodReflection given#'
+         */
         foreach ($parameterAcceptors as $parameterAcceptor) {
             // can be any number of arguments → nothing to limit here
             if ($parameterAcceptor->isVariadic()) {
@@ -154,7 +161,8 @@ final class RemoveExtraParametersRector extends AbstractRector
             $pathsFunctionName = explode('\\', $functionReflection->getName());
             $functionName = array_pop($pathsFunctionName);
 
-            $fileName = $functionReflection->getFileName();
+            $fileName = (string) $functionReflection->getFileName();
+            /** @var Node[] $contentNodes */
             $contentNodes = $this->parser->parse($this->smartFileSystem->readFile($fileName));
 
             /** @var Function_ $function */
