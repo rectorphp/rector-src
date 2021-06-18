@@ -9,19 +9,15 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Function_;
-use PhpParser\Parser;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ParametersAcceptor;
-use PHPStan\Reflection\Php\PhpFunctionReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\Type\UnionTypeMethodReflection;
 use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
+use Rector\Core\PHPStan\Reflection\VariadicAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * @changelog https://www.reddit.com/r/PHP/comments/a1ie7g/is_there_a_linter_for_argumentcounterror_for_php/
@@ -33,8 +29,7 @@ final class RemoveExtraParametersRector extends AbstractRector
 {
     public function __construct(
         private CallReflectionResolver $callReflectionResolver,
-        private SmartFileSystem $smartFileSystem,
-        private Parser $parser
+        private VariadicAnalyzer $variadicAnalyzer
     ) {
     }
 
@@ -121,7 +116,7 @@ final class RemoveExtraParametersRector extends AbstractRector
             return true;
         }
 
-        return $this->hasVariadicParameters($functionReflection, $functionReflection->getVariants());
+        return $this->variadicAnalyzer->hasVariadicParameters($functionReflection);
     }
 
     /**
@@ -135,51 +130,5 @@ final class RemoveExtraParametersRector extends AbstractRector
         }
 
         return (int) max($parameterCounts);
-    }
-
-    /**
-     * @param ParametersAcceptor[] $parameterAcceptors
-     */
-    private function hasVariadicParameters(
-        MethodReflection | FunctionReflection $functionReflection,
-        array $parameterAcceptors
-    ): bool
-    {
-        foreach ($parameterAcceptors as $parameterAcceptor) {
-            // can be any number of arguments → nothing to limit here
-            if ($parameterAcceptor->isVariadic()) {
-                return true;
-            }
-        }
-
-        if ($functionReflection instanceof PhpFunctionReflection) {
-            $pathsFunctionName = explode('\\', $functionReflection->getName());
-            $functionName = array_pop($pathsFunctionName);
-
-            $fileName = (string) $functionReflection->getFileName();
-            /** @var Node[] $contentNodes */
-            $contentNodes = $this->parser->parse($this->smartFileSystem->readFile($fileName));
-
-            /** @var Function_ $function */
-            $function = $this->betterNodeFinder->findFirst($contentNodes, function (Node $node) use (
-                $functionName
-            ): bool {
-                if (! $node instanceof Function_) {
-                    return false;
-                }
-
-                return $this->isName($node, $functionName);
-            });
-
-            return (bool) $this->betterNodeFinder->findFirst($function->stmts, function (Node $node): bool {
-                if (! $node instanceof FuncCall) {
-                    return false;
-                }
-
-                return $this->isNames($node, ['func_get_args', 'func_num_args', 'func_get_arg']);
-            });
-        }
-
-        return false;
     }
 }
