@@ -25,7 +25,7 @@ class VariadicAnalyzer
     ) {
     }
 
-    public function hasVariadicParameters(MethodReflection | FunctionReflection $functionReflection)
+    public function hasVariadicParameters(MethodReflection | FunctionReflection $functionReflection): bool
     {
         $variants = $functionReflection->getVariants();
 
