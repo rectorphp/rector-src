@@ -138,10 +138,12 @@ final class RemoveExtraParametersRector extends AbstractRector
     }
 
     /**
-     * @param MethodReflection|FunctionReflection $functionReflection
      * @param ParametersAcceptor[] $parameterAcceptors
      */
-    private function hasVariadicParameters($functionReflection, array $parameterAcceptors): bool
+    private function hasVariadicParameters(
+        MethodReflection | FunctionReflection $functionReflection,
+        array $parameterAcceptors
+    ): bool
     {
         foreach ($parameterAcceptors as $parameterAcceptor) {
             // can be any number of arguments → nothing to limit here
@@ -159,7 +161,9 @@ final class RemoveExtraParametersRector extends AbstractRector
             $contentNodes = $this->parser->parse($this->smartFileSystem->readFile($fileName));
 
             /** @var Function_ $function */
-            $function = $this->betterNodeFinder->findFirst($contentNodes, function (Node $node) use ($functionName) {
+            $function = $this->betterNodeFinder->findFirst($contentNodes, function (Node $node) use (
+                $functionName
+            ): bool {
                 if (! $node instanceof Function_) {
                     return false;
                 }
@@ -167,7 +171,7 @@ final class RemoveExtraParametersRector extends AbstractRector
                 return $this->isName($node, $functionName);
             });
 
-            return (bool) $this->betterNodeFinder->findFirst($function->stmts, function (Node $node) {
+            return (bool) $this->betterNodeFinder->findFirst($function->stmts, function (Node $node): bool {
                 if (! $node instanceof FuncCall) {
                     return false;
                 }
