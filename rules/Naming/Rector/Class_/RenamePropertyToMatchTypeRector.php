@@ -161,28 +161,10 @@ CODE_SAMPLE
                 return;
             }
 
-            if ($this->isNodeOrType($param)) {
-                continue;
-            }
-
             $desiredPropertyNames[$key] = $desiredPropertyName;
         }
 
         $this->renameParamVarName($classLike, $constructClassMethod, $desiredPropertyNames);
-    }
-
-    private function isNodeOrType(Param $param): bool
-    {
-        $type = $param->type;
-        if ($type instanceof NullableType) {
-            $type = $type->type;
-        }
-
-        return $type instanceof FullyQualified && $this->nodeTypeResolver->isObjectTypes($type, [
-            new ObjectType('PhpParser\Node'),
-            new ObjectType('PHPStan\Type\Type'),
-            new ObjectType('Ergebnis\Json\Printer\PrinterInterface'),
-        ]);
     }
 
     /**
