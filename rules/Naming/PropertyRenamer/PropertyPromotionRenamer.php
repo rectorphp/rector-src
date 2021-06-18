@@ -124,7 +124,7 @@ final class PropertyPromotionRenamer
     }
 
     /**
-     * @return string[]
+     * @return int[]|string[]
      */
     private function resolveBlockingParamNames(ClassMethod $classMethod): array
     {
