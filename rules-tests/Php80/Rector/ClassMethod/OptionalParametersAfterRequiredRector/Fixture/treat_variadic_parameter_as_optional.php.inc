@@ -9,5 +9,3 @@ final class Cart
         return $cart;
     }
 }
-
-$cart = Cart::create('trial', new Product('A'), new Product('B'));
