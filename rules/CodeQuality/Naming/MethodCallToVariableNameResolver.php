@@ -98,10 +98,16 @@ final class MethodCallToVariableNameResolver
         return $argumentName . ucfirst($variableName);
     }
 
+    private function isNamespacedFunctionName(string $functionName): bool
+    {
+        return str_contains($functionName, '\\');
+    }
+
     private function getFallbackVarName(string $methodCallVarName, string $methodCallName): string
     {
-        $explodeBackslash = explode('\\', $methodCallVarName);
-        $methodCallVarName = array_pop($explodeBackslash);
+        if ($this->isNamespacedFunctionName($methodCallVarName)) {
+            $methodCallVarName = Strings::after($methodCallVarName, '\\', -1);
+        }
 
         return $methodCallVarName . ucfirst($methodCallName);
     }
