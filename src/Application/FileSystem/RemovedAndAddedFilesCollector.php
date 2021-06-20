@@ -40,9 +40,9 @@ final class RemovedAndAddedFilesCollector
             return false;
         }
 
-        $smartFileInfoPathName = $smartFileInfo->getPathname();
+        $pathname = $smartFileInfo->getPathname();
         foreach ($this->removedFileInfos as $removedFileInfo) {
-            if ($removedFileInfo->getPathname() !== $smartFileInfoPathName) {
+            if ($removedFileInfo->getPathname() !== $pathname) {
                 continue;
             }
 
