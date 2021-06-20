@@ -58,6 +58,7 @@ jobs:
             # extra content of phpstan.phar to vendor/phpstan/phpstan-extracted and copy downgraded classes early
             -   run: |
                     php box.phar extract vendor/phpstan/phpstan/phpstan.phar vendor/phpstan/phpstan-extracted
+                    mv vendor/phpstan/phpstan-extracted/vendor/scoper-autoload.php vendor/phpstan/phpstan-extracted/vendor/phpstan-autoload.php
                     cp vendor/symfony/console/Event/ConsoleCommandEvent.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/Event/ConsoleCommandEvent.php
                     cp vendor/symfony/console/EventListener/ErrorListener.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/EventListener/ErrorListener.php
 

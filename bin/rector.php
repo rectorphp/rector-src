@@ -39,7 +39,8 @@ if (file_exists($extractedPhpstanAutoload)) {
 
 require_once __DIR__ . '/../src/constants.php';
 
-$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/phpstan/phpstan-extracted/vendor/scoper-autoload.php');
+$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/phpstan/phpstan-extracted/vendor/phpstan-autoload.php');
+$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
 
 $autoloadIncluder->autoloadProjectAutoloaderFile();
 $autoloadIncluder->autoloadFromCommandLine();
@@ -139,6 +140,10 @@ final class AutoloadIncluder
 // load local php-parser only in prefixed version or development repository
 function should_include_preload(): bool
 {
+    if (file_exists(__DIR__ . '/../vendor/scoper-autoload.php')) {
+        return true;
+    }
+
     if (! file_exists(getcwd() . '/composer.json')) {
         return false;
     }
