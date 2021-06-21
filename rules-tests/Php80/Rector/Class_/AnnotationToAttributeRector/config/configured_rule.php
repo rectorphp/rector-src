@@ -17,6 +17,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
                 new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
                 new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
+                new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\Security'),
 
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Id'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
