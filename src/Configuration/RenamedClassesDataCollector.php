@@ -13,6 +13,11 @@ final class RenamedClassesDataCollector
      */
     private array $oldToNewClasses = [];
 
+    public function addOldToNewClass(string $oldClass, string $newClass): void
+    {
+        $this->oldToNewClasses[$oldClass] = $newClass;
+    }
+
     /**
      * @param array<string, string> $oldToNewClasses
      */
