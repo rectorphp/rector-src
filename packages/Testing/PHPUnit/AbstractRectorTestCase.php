@@ -13,9 +13,9 @@ use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
-use Rector\Core\Configuration\Configuration;
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\Configuration;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
@@ -69,9 +69,9 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $bootstrapFilesIncluder = $this->getService(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
 
-        /** @var Configuration $configuration */
-        $configuration = $this->getService(Configuration::class);
-        $configuration->setIsDryRun(true);
+//        /** @var Configuration $configuration */
+//        $configuration = $this->getService(Configuration::class);
+//        $configuration->setIsDryRun(true);
     }
 
     /**

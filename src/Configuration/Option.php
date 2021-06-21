@@ -31,16 +31,23 @@ final class Option
     /**
      * @var string
      */
+<<<<<<< HEAD
     public const DRY_RUN_SHORT = 'n';
+=======
+    public const OUTPUT_FORMAT = 'output-format';
+>>>>>>> 710ebd95e (unprefix options, already in class name)
 
     /**
      * @var string
      */
+<<<<<<< HEAD
     public const OUTPUT_FORMAT = 'output-format';
 
     /**
      * @var string
      */
+=======
+>>>>>>> 710ebd95e (unprefix options, already in class name)
     public const NO_PROGRESS_BAR = 'no-progress-bar';
 
     /**
@@ -74,7 +81,11 @@ final class Option
     public const CLEAR_CACHE = 'clear-cache';
 
     /**
+<<<<<<< HEAD
      * @deprecated Cache is enabled by default
+=======
+     * @deprecated Cache of changed files is now enabled by default
+>>>>>>> 8a154b63e (cleanup)
      * @var string
      */
     public const ENABLE_CACHE = 'enable_cache';
@@ -152,10 +163,23 @@ final class Option
     /**
      * @var string
      */
+<<<<<<< HEAD
     public const AUTOLOAD_FILE_SHORT = 'a';
+=======
+    public const OUTPUT_FORMAT_SHORT = 'o';
+>>>>>>> 710ebd95e (unprefix options, already in class name)
 
     /**
      * @var string
      */
+<<<<<<< HEAD
     public const OUTPUT_FORMAT_SHORT = 'o';
+=======
+    public const DRY_RUN_SHORT = 'n';
+
+    /**
+     * @var string
+     */
+    public const AUTOLOAD_FILE_SHORT = 'a';
+>>>>>>> 710ebd95e (unprefix options, already in class name)
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Application\ApplicationFileProcessor;
 
 use Rector\Core\Application\ApplicationFileProcessor;
-use Rector\Core\Configuration\Configuration;
+use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Core\ValueObjectFactory\ProcessResultFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -23,10 +23,6 @@ final class ApplicationFileProcessorTest extends AbstractTestCase
     {
         $this->bootFromConfigFileInfos([new SmartFileInfo(__DIR__ . '/config/configured_rule.php')]);
 
-        /** @var Configuration $configuration */
-        $configuration = $this->getService(Configuration::class);
-        $configuration->setIsDryRun(true);
-
         $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
         $this->fileFactory = $this->getService(FileFactory::class);
         $this->processResultFactory = $this->getService(ProcessResultFactory::class);
@@ -37,7 +33,8 @@ final class ApplicationFileProcessorTest extends AbstractTestCase
         $files = $this->fileFactory->createFromPaths([__DIR__ . '/Fixture']);
         $this->assertCount(2, $files);
 
-        $this->applicationFileProcessor->run($files);
+        $configuration = new Configuration(isDryRun: true);
+        $this->applicationFileProcessor->run($files, $configuration);
 
         $processResult = $this->processResultFactory->create($files);
         $this->assertCount(1, $processResult->getFileDiffs());

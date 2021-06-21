@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObjectFactory\Application;
 
+<<<<<<< HEAD
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Configuration\Configuration;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
+=======
+>>>>>>> 926e95019 (cleanup)
 use Rector\Core\FileSystem\FilesFinder;
 use Rector\Core\ValueObject\Application\File;
 
@@ -15,14 +18,15 @@ use Rector\Core\ValueObject\Application\File;
  */
 final class FileFactory
 {
-    /**
-     * @param FileProcessorInterface[] $fileProcessors
-     */
     public function __construct(
+<<<<<<< HEAD
         private FilesFinder $filesFinder,
         private Configuration $configuration,
         private ChangedFilesDetector $changedFilesDetector,
         private array $fileProcessors
+=======
+        private FilesFinder $filesFinder
+>>>>>>> 926e95019 (cleanup)
     ) {
     }
 
@@ -32,12 +36,16 @@ final class FileFactory
      */
     public function createFromPaths(array $paths): array
     {
+<<<<<<< HEAD
         if ($this->configuration->shouldClearCache()) {
             $this->changedFilesDetector->clear();
         }
 
         $supportedFileExtensions = $this->resolveSupportedFileExtensions();
         $fileInfos = $this->filesFinder->findInDirectoriesAndFiles($paths, $supportedFileExtensions);
+=======
+        $fileInfos = $this->filesFinder->findInDirectoriesAndFiles($paths);
+>>>>>>> 926e95019 (cleanup)
 
         $files = [];
         foreach ($fileInfos as $fileInfo) {
@@ -45,22 +53,5 @@ final class FileFactory
         }
 
         return $files;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function resolveSupportedFileExtensions(): array
-    {
-        $supportedFileExtensions = [];
-
-        foreach ($this->fileProcessors as $fileProcessor) {
-            $supportedFileExtensions = array_merge(
-                $supportedFileExtensions,
-                $fileProcessor->getSupportedFileExtensions()
-            );
-        }
-
-        return array_unique($supportedFileExtensions);
     }
 }

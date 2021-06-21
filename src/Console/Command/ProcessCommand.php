@@ -10,13 +10,14 @@ use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
-use Rector\Core\Configuration\Configuration;
+use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Reporting\MissingRectorRulesReporter;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Core\ValueObjectFactory\ProcessResultFactory;
@@ -33,7 +34,6 @@ final class ProcessCommand extends Command
     public function __construct(
         private AdditionalAutoloader $additionalAutoloader,
         private ChangedFilesDetector $changedFilesDetector,
-        private Configuration $configuration,
         private OutputFormatterCollector $outputFormatterCollector,
         private MissingRectorRulesReporter $missingRectorRulesReporter,
         private ApplicationFileProcessor $applicationFileProcessor,
@@ -41,7 +41,8 @@ final class ProcessCommand extends Command
         private BootstrapFilesIncluder $bootstrapFilesIncluder,
         private ProcessResultFactory $processResultFactory,
         private NodeScopeResolver $nodeScopeResolver,
-        private DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator
+        private DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
+        private ConfigurationFactory $configurationFactory
     ) {
         parent::__construct();
     }
@@ -95,6 +96,13 @@ final class ProcessCommand extends Command
             'Hide diffs of changed files. Useful e.g. for nicer CI output.'
         );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        $this->addOption(Option::CACHE_DEBUG, null, InputOption::VALUE_NONE, 'Debug changed file cache');
+>>>>>>> 710ebd95e (unprefix options, already in class name)
+=======
+>>>>>>> 8a154b63e (cleanup)
         $this->addOption(Option::CLEAR_CACHE, null, InputOption::VALUE_NONE, 'Clear unchaged files cache');
     }
 
@@ -105,26 +113,25 @@ final class ProcessCommand extends Command
             return $exitCode;
         }
 
-        $this->configuration->resolveFromInput($input);
-        $this->configuration->validateConfigParameters();
+        $configuration = $this->configurationFactory->createFromInput($input);
 
         // register autoloaded and included files
         $this->bootstrapFilesIncluder->includeBootstrapFiles();
 
         $this->additionalAutoloader->autoloadInput($input);
-        $this->additionalAutoloader->autoloadPaths();
+        $this->additionalAutoloader->autoloadPaths($configuration);
 
-        $paths = $this->configuration->getPaths();
+        $paths = $configuration->getPaths();
 
         // 0. add files and directories to static locator
-        $this->dynamicSourceLocatorDecorator->addPaths($paths);
+        $this->dynamicSourceLocatorDecorator->addPaths($paths, $configuration);
 
         $files = $this->fileFactory->createFromPaths($paths);
 
         // PHPStan has to know about all files!
         $this->configurePHPStanNodeScopeResolver($files);
 
-        $this->applicationFileProcessor->run($files);
+        $this->applicationFileProcessor->run($files, $configuration);
 
         // report diffs and errors
         $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
@@ -133,12 +140,12 @@ final class ProcessCommand extends Command
 
         // here should be value obect factory
         $processResult = $this->processResultFactory->create($files);
-        $outputFormatter->report($processResult);
+        $outputFormatter->report($processResult, $configuration);
 
         // invalidate affected files
         $this->invalidateCacheChangedFiles($processResult);
 
-        return $this->resolveReturnCode($processResult);
+        return $this->resolveReturnCode($processResult, $configuration);
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -171,7 +178,7 @@ final class ProcessCommand extends Command
         }
     }
 
-    private function resolveReturnCode(ProcessResult $processResult): int
+    private function resolveReturnCode(ProcessResult $processResult, Configuration $configuration): int
     {
         // some errors were found → fail
         if ($processResult->getErrors() !== []) {
@@ -179,7 +186,7 @@ final class ProcessCommand extends Command
         }
 
         // inverse error code for CI dry-run
-        if (! $this->configuration->isDryRun()) {
+        if (! $configuration->isDryRun()) {
             return ShellCode::SUCCESS;
         }
 
