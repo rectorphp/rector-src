@@ -23,4 +23,9 @@ final class CacheKey
      * @var string
      */
     public const DEPENDENT_FILES_KEY = 'dependency_files_key';
+
+    /**
+     * @var string
+     */
+    public const SOURCE_FILES_KEY = 'source_files_key';
 }
