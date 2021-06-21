@@ -95,7 +95,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $identifierTypeNode;
         }
 
-        $this->useNodesToAddCollector->addUseImport($phpParserNode, $fullyQualifiedObjectType);
+        $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
 
         $newNode = new IdentifierTypeNode($fullyQualifiedObjectType->getShortName());
         if ($newNode->name !== $identifierTypeNode->name) {
