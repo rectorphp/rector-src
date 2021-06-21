@@ -49,7 +49,8 @@ final class FilesFinder
      */
     public function findInDirectoriesAndFiles(array $source, array $suffixes): array
     {
-        $key = md5(serialize($source) . serialize($suffixes)) . '_files';
+        $key = serialize($source) . serialize($suffixes);
+        $key = md5($key) . '_files';
 
         if (! $this->configuration->isCacheEnabled() || $this->configuration->shouldClearCache()) {
             $this->cache->clear();
