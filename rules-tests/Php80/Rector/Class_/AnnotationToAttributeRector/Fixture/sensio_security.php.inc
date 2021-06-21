@@ -24,7 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class SensioSecurity
 {
-    #[\Sensio\Bundle\FrameworkExtraBundle\Configuration\Security("is_granted('ROLE_USER')")]
+    #[\Sensio\Bundle\FrameworkExtraBundle\Configuration\Security('is_granted(\'ROLE_USER\')')]
     public function action()
     {
     }
