@@ -119,14 +119,6 @@ final class NodeRepository
     }
 
     /**
-     * @return array<string, MethodCall[]|StaticCall[]>
-     */
-    public function findMethodCallsOnClass(string $className): array
-    {
-        return $this->callsByTypeAndMethod[$className] ?? [];
-    }
-
-    /**
      * @return StaticCall[]
      */
     public function findStaticCallsByClassMethod(ClassMethod $classMethod): array
@@ -135,6 +127,9 @@ final class NodeRepository
         return array_filter($calls, fn (Node $node): bool => $node instanceof StaticCall);
     }
 
+    /**
+     * @deprecated
+     */
     public function findClassMethodByStaticCall(StaticCall $staticCall): ?ClassMethod
     {
         $method = $this->nodeNameResolver->getName($staticCall->name);

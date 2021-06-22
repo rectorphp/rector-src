@@ -144,6 +144,9 @@ CODE_SAMPLE
             ? $this->nodeRepository->findClassMethodByStaticCall($node)
             : $this->nodeRepository->findClassMethodByMethodCall($node);
 
+        dump($caller);
+        die;
+
         if ($caller instanceof ClassMethod) {
             return $caller;
         }
