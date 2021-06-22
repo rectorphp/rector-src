@@ -5,7 +5,7 @@
  *     routePrefix="/demo/"
  * )
  */
-final class NonNamespacedAnnotation
+final class NonNamespacedClassWithAnnotation
 {
 }
 ?>
@@ -13,7 +13,7 @@ final class NonNamespacedAnnotation
 <?php
 
 #[\ApiPlatform\Core\Annotation\ApiResource(routePrefix: '/demo/')]
-final class NonNamespacedAnnotation
+final class NonNamespacedClassWithAnnotation
 {
 }
 ?>
