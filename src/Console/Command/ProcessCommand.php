@@ -96,13 +96,6 @@ final class ProcessCommand extends Command
             'Hide diffs of changed files. Useful e.g. for nicer CI output.'
         );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        $this->addOption(Option::CACHE_DEBUG, null, InputOption::VALUE_NONE, 'Debug changed file cache');
->>>>>>> 710ebd95e (unprefix options, already in class name)
-=======
->>>>>>> 8a154b63e (cleanup)
         $this->addOption(Option::CLEAR_CACHE, null, InputOption::VALUE_NONE, 'Clear unchaged files cache');
     }
 
@@ -119,14 +112,14 @@ final class ProcessCommand extends Command
         $this->bootstrapFilesIncluder->includeBootstrapFiles();
 
         $this->additionalAutoloader->autoloadInput($input);
-        $this->additionalAutoloader->autoloadPaths($configuration);
+        $this->additionalAutoloader->autoloadPaths();
 
         $paths = $configuration->getPaths();
 
         // 0. add files and directories to static locator
-        $this->dynamicSourceLocatorDecorator->addPaths($paths, $configuration);
+        $this->dynamicSourceLocatorDecorator->addPaths($paths);
 
-        $files = $this->fileFactory->createFromPaths($paths);
+        $files = $this->fileFactory->createFromPaths($paths, $configuration);
 
         // PHPStan has to know about all files!
         $this->configurePHPStanNodeScopeResolver($files);

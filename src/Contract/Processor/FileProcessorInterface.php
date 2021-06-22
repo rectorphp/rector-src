@@ -9,10 +9,14 @@ use Rector\Core\ValueObject\Configuration;
 
 interface FileProcessorInterface
 {
-    public function supports(File $file, Configuration $configuration): bool;
+    // @todo wait for implementers to adapt with 2nd parameters of Configuration $configuration
+    // public function supports(File $file, Configuration $configuration): bool;
+
+
+    // public function process(array $files, Configuration $configuration): void;
 
     /**
-     * @param File[] $files
+     * @return string[]
      */
-    public function process(array $files, Configuration $configuration): void;
+    public function getSupportedFileExtensions(): array;
 }

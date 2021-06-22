@@ -7,7 +7,6 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 use Iterator;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PHPUnit\TextUI\CliArguments\Configuration;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -128,8 +127,6 @@ final class TagValueNodeReprintTest extends AbstractTestCase
      */
     private function parseFileAndGetFirstNodeOfType(SmartFileInfo $smartFileInfo, string $nodeType): Node
     {
-        $configuration = new Configuration();
-
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($smartFileInfo);
 
         $node = $this->betterNodeFinder->findFirstInstanceOf($nodes, $nodeType);

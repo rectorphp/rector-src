@@ -24,42 +24,34 @@ final class ConfigurationFactory
         $isDryRun = (bool) $input->getOption(Option::DRY_RUN);
         $shouldClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
 
-        $showProgressBar = $this->canShowProgressBar($input);
+        $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
+        $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);
+
         $showDiffs = ! (bool) $input->getOption(Option::NO_DIFFS);
 
-        $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
+        $paths = $this->resolvePaths($input);
 
-        $commandLinePaths = (array) $input->getArgument(Option::SOURCE);
-
-        // manual command line value has priority
-        if ($commandLinePaths !== []) {
-            $paths = $this->correctBashSpacePaths($commandLinePaths);
-        }
-
-        //$isCacheEnabled = (bool) $this->parameterProvider->provideParameter(Option::ENABLE_CACHE);
-        $fileExtensions = (array) $this->parameterProvider->provideParameter(Option::FILE_EXTENSIONS);
-        $paths = (array) $this->parameterProvider->provideParameter(Option::PATHS);
+        $fileExtensions = $this->parameterProvider->provideArrayParameter(Option::FILE_EXTENSIONS);
 
         return new Configuration(
-            isDryRun: $isDryRun,
-            shouldClearCache: $shouldClearCache,
-            isCacheEnabled: true,
-            outputFormat: $outputFormat,
-            showProgressBar: $showProgressBar,
-            showDiffs: $showDiffs,
-            fileExtensions: $fileExtensions,
+            $isDryRun,
+            $showProgressBar,
+            $shouldClearCache,
+            $outputFormat,
+            $fileExtensions,
+            $paths,
+            $showDiffs
         );
     }
 
-    private function canShowProgressBar(InputInterface $input): bool
+    private function shouldShowProgressBar(InputInterface $input, string $outputFormat): bool
     {
         $noProgressBar = (bool) $input->getOption(Option::NO_PROGRESS_BAR);
         if ($noProgressBar) {
             return false;
         }
 
-        $optionOutputFormat = $input->getOption(Option::OUTPUT_FORMAT);
-        return $optionOutputFormat === ConsoleOutputFormatter::NAME;
+        return $outputFormat === ConsoleOutputFormatter::NAME;
     }
 
     /**
@@ -76,5 +68,21 @@ final class ConfigurationFactory
         }
 
         return $commandLinePaths;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolvePaths(InputInterface $input): array
+    {
+        $commandLinePaths = (array) $input->getArgument(Option::SOURCE);
+
+        // command line has priority
+        if ($commandLinePaths !== []) {
+            return $this->correctBashSpacePaths($commandLinePaths);
+        }
+
+        // fallback to parameter
+        return $this->parameterProvider->provideArrayParameter(Option::PATHS);
     }
 }

@@ -30,7 +30,7 @@ final class ApplicationFileProcessorTest extends AbstractTestCase
 
     public function test(): void
     {
-        $files = $this->fileFactory->createFromPaths([__DIR__ . '/Fixture']);
+        $files = $this->fileFactory->createFromPaths([__DIR__ . '/Fixture'], new Configuration());
         $this->assertCount(2, $files);
 
         $configuration = new Configuration(isDryRun: true);

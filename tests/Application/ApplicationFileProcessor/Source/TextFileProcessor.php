@@ -45,4 +45,12 @@ final class TextFileProcessor implements FileProcessorInterface
         $smartFileInfo = $file->getSmartFileInfo();
         return $smartFileInfo->getSuffix() === 'txt';
     }
+
+    /**
+     * @return string[]
+     */
+    public function getSupportedFileExtensions(): array
+    {
+        return ['txt'];
+    }
 }

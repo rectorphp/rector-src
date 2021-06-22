@@ -6,7 +6,6 @@ namespace Rector\Core\Autoloading;
 
 use Rector\Core\Configuration\Option;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
-use Rector\Core\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\FileSystemGuard;
@@ -39,17 +38,9 @@ final class AdditionalAutoloader
         require_once $autoloadFile;
     }
 
-    public function autoloadPaths(Configuration $configuration): void
+    public function autoloadPaths(): void
     {
         $autoloadPaths = $this->parameterProvider->provideArrayParameter(Option::AUTOLOAD_PATHS);
-<<<<<<< HEAD
         $this->dynamicSourceLocatorDecorator->addPaths($autoloadPaths);
-=======
-        if ($autoloadPaths === []) {
-            return;
-        }
-
-        $this->dynamicSourceLocatorDecorator->addPaths($autoloadPaths, $configuration);
->>>>>>> 8a154b63e (cleanup)
     }
 }

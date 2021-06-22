@@ -50,6 +50,14 @@ final class ComposerFileProcessor implements FileProcessorInterface
         return $smartFileInfo->getBasename() === 'composer.json';
     }
 
+    /**
+     * @return string[]
+     */
+    public function getSupportedFileExtensions(): array
+    {
+        return ['json'];
+    }
+
     private function processFile(File $file): void
     {
         // to avoid modification of file

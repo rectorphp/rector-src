@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\StaticReflection;
 
 use Rector\Core\FileSystem\PhpFilesFinder;
-use Rector\Core\ValueObject\Configuration;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Symplify\SmartFileSystem\FileSystemFilter;
 
@@ -25,7 +24,7 @@ final class DynamicSourceLocatorDecorator
     /**
      * @param string[] $paths
      */
-    public function addPaths(array $paths, Configuration $configuration): void
+    public function addPaths(array $paths): void
     {
         if ($paths === []) {
             return;
@@ -36,7 +35,7 @@ final class DynamicSourceLocatorDecorator
 
         $directories = $this->fileSystemFilter->filterDirectories($paths);
         foreach ($directories as $directory) {
-            $filesInfosInDirectory = $this->phpFilesFinder->findInPaths([$directory], $configuration);
+            $filesInfosInDirectory = $this->phpFilesFinder->findInPaths([$directory]);
 
             $filesInDirectory = [];
             foreach ($filesInfosInDirectory as $fileInfoInDirectory) {

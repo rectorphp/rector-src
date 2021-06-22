@@ -41,13 +41,21 @@ final class NonPhpFileProcessor implements FileProcessorInterface
         // @see https://3v4l.org/FM3vY#focus=8.0.7 vs https://3v4l.org/JZW7b#focus=8.0.7
         $pathname = $smartFileInfo->getPathname();
         // bug in path extension
-        foreach (StaticNonPhpFileSuffixes::SUFFIXES as $fileExtension) {
+        foreach ($this->getSupportedFileExtensions() as $fileExtension) {
             if (\str_ends_with($pathname, '.' . $fileExtension)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSupportedFileExtensions(): array
+    {
+        return StaticNonPhpFileSuffixes::SUFFIXES;
     }
 
     private function processFile(File $file): void

@@ -32,7 +32,6 @@ final class ApplicationFileProcessor
     public function run(array $files, Configuration $configuration): void
     {
         $this->processFiles($files, $configuration);
-
         $this->fileFormatter->format($files);
 
         $this->fileDiffFileDecorator->decorate($files);

@@ -9,7 +9,6 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Parser\Parser;
 use Rector\Core\ValueObject\Application\File;
-use Rector\Core\ValueObject\Configuration;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -38,10 +37,6 @@ final class TestingParser
         $nodes = $this->parser->parseFileInfo($smartFileInfo);
 
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
-<<<<<<< HEAD
-=======
-        $configuration = new Configuration();
->>>>>>> 8a154b63e (cleanup)
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
     }
 

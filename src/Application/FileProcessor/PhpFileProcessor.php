@@ -114,6 +114,14 @@ final class PhpFileProcessor implements FileProcessorInterface
         return $smartFileInfo->hasSuffixes($configuration->getFileExtensions());
     }
 
+    /**
+     * @return string[]
+     */
+    public function getSupportedFileExtensions(): array
+    {
+        return ['php'];
+    }
+
     private function prepareProgressBar(int $fileCount, Configuration $configuration): void
     {
         if ($this->symfonyStyle->isVerbose()) {

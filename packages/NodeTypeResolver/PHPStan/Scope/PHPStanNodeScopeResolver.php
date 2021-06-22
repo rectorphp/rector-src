@@ -90,15 +90,7 @@ final class PHPStanNodeScopeResolver
         /** @var MutatingScope $scope */
         $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);
 
-<<<<<<< HEAD
         $this->resolveAndSaveDependentFiles($nodes, $scope, $smartFileInfo);
-=======
-<<<<<<< HEAD
-        $this->changedFilesDetector->addFileWithDependencies($smartFileInfo, $this->dependentFiles);
-=======
-        $this->resolveAndSaveDependentFiles($nodes, $scope, $smartFileInfo);
->>>>>>> 8a154b63e (cleanup)
->>>>>>> 926e95019 (cleanup)
 
         return $nodes;
     }
@@ -130,30 +122,7 @@ final class PHPStanNodeScopeResolver
         return $scope->enterClass($classReflection);
     }
 
-<<<<<<< HEAD
     private function resolveClassName(Class_ | Interface_ $classLike): string
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    private function resolveDependentFiles(Node $node, MutatingScope $mutatingScope): void
-    {
-        try {
-            $dependentFiles = $this->dependencyResolver->resolveDependencies($node, $mutatingScope);
-            foreach ($dependentFiles as $dependentFile) {
-                $this->dependentFiles[] = $dependentFile;
-            }
-        } catch (AnalysedCodeException) {
-            // @ignoreException
-        }
-    }
-
->>>>>>> 926e95019 (cleanup)
-    private function resolveClassName(Class_ | Interface_ | Trait_ $classLike): string
-=======
-    private function resolveClassName(Class_ | Interface_ $classLike): string
->>>>>>> 8a154b63e (cleanup)
->>>>>>> c83c3ef40 (unprefix options, already in class name)
     {
         if (property_exists($classLike, 'namespacedName')) {
             return (string) $classLike->namespacedName;
@@ -165,32 +134,19 @@ final class PHPStanNodeScopeResolver
 
         return $classLike->name->toString();
     }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 926e95019 (cleanup)
 
     /**
      * @param Stmt[] $stmts
      */
     private function resolveAndSaveDependentFiles(
         array $stmts,
-<<<<<<< HEAD
         MutatingScope $mutatingScope,
-=======
-        MutatingScope $scope,
->>>>>>> 926e95019 (cleanup)
         SmartFileInfo $smartFileInfo
     ): void {
         $dependentFiles = [];
         foreach ($stmts as $stmt) {
             try {
-<<<<<<< HEAD
                 $nodeDependentFiles = $this->dependencyResolver->resolveDependencies($stmt, $mutatingScope);
-=======
-                $nodeDependentFiles = $this->dependencyResolver->resolveDependencies($stmt, $scope);
->>>>>>> 926e95019 (cleanup)
                 $dependentFiles = array_merge($dependentFiles, $nodeDependentFiles);
             } catch (AnalysedCodeException) {
                 // @ignoreException
@@ -199,8 +155,4 @@ final class PHPStanNodeScopeResolver
 
         $this->changedFilesDetector->addFileWithDependencies($smartFileInfo, $dependentFiles);
     }
-<<<<<<< HEAD
-=======
->>>>>>> 8a154b63e (cleanup)
->>>>>>> 926e95019 (cleanup)
 }
