@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -24,7 +25,6 @@ use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
-use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 
 /**
  * @changelog https://wiki.php.net/rfc/attributes_v2
@@ -183,9 +183,13 @@ CODE_SAMPLE
         return $hasNewAttrGroups;
     }
 
-    private function isFoundGenericTag(PhpDocInfo $phpDocInfo, PhpDocTagValueNode $phpDocTagValueNode, string $annotationToAttributeTag): bool
+    private function isFoundGenericTag(
+        PhpDocInfo $phpDocInfo,
+        PhpDocTagValueNode $phpDocTagValueNode,
+        string $annotationToAttributeTag
+    ): bool
     {
-        if (!$phpDocInfo->hasByName($annotationToAttributeTag)) {
+        if (! $phpDocInfo->hasByName($annotationToAttributeTag)) {
             return false;
         }
         return $phpDocTagValueNode instanceof GenericTagValueNode;
