@@ -6,6 +6,8 @@ namespace Rector\Core\ValueObject;
 
 use JetBrains\PhpStorm\Immutable;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
+use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
+use Symplify\SmartFileSystem\SmartFileInfo;
 
 #[Immutable]
 final class Configuration
@@ -22,6 +24,7 @@ final class Configuration
         private array $fileExtensions = ['php'],
         private array $paths = [],
         private bool $showDiffs = true,
+        private ?BootstrapConfigs $bootstrapConfigs = null,
     ) {
     }
 
@@ -64,5 +67,19 @@ final class Configuration
     public function shouldShowDiffs(): bool
     {
         return $this->showDiffs;
+    }
+
+    public function getMainConfigFilePath(): ?string
+    {
+        if ($this->bootstrapConfigs === null) {
+            return null;
+        }
+
+        $mainConfigFileInfo = $this->bootstrapConfigs->getMainConfigFileInfo();
+        if (! $mainConfigFileInfo instanceof SmartFileInfo) {
+            return null;
+        }
+
+        return $mainConfigFileInfo->getRelativeFilePathFromCwd();
     }
 }
