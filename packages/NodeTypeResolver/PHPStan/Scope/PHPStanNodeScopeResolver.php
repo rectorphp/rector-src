@@ -145,13 +145,13 @@ final class PHPStanNodeScopeResolver
      */
     private function resolveAndSaveDependentFiles(
         array $stmts,
-        MutatingScope $scope,
+        MutatingScope $mutatingScope,
         SmartFileInfo $smartFileInfo
     ): void {
         $dependentFiles = [];
         foreach ($stmts as $stmt) {
             try {
-                $nodeDependentFiles = $this->dependencyResolver->resolveDependencies($stmt, $scope);
+                $nodeDependentFiles = $this->dependencyResolver->resolveDependencies($stmt, $mutatingScope);
                 $dependentFiles = array_merge($dependentFiles, $nodeDependentFiles);
             } catch (AnalysedCodeException) {
                 // @ignoreException
