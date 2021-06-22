@@ -1,12 +1,12 @@
 <?php
 
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
+
 /**
  * @ApiPlatform\Core\Annotation\ApiResource(
  *     routePrefix="/demo/",
  * )
  */
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
-
 final class DemoFile
 {
 }
