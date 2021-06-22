@@ -19,7 +19,7 @@ final class ConfigurationFactory
     /**
      * Needs to run in the start of the life cycle, since the rest of workflow uses it.
      */
-    public function createFromInput(\Symfony\Component\Console\Input\InputInterface $input): Configuration
+    public function createFromInput(InputInterface $input): Configuration
     {
         $isDryRun = (bool) $input->getOption(Option::DRY_RUN);
         $shouldClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);

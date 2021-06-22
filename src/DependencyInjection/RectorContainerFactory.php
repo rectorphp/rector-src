@@ -53,10 +53,6 @@ final class RectorContainerFactory
             $changedFilesDetector->setFirstResolvedConfigFileInfo($mainConfigFileInfo);
         }
 
-//        /** @var Configuration $configuration */
-//        $configuration = $container->get(Configuration::class);
-//        $configuration->setBootstrapConfigs($bootstrapConfigs);
-
         return $container;
     }
 

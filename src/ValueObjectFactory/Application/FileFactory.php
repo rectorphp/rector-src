@@ -29,7 +29,7 @@ final class FileFactory
      * @param string[] $paths
      * @return File[]
      */
-    public function createFromPaths(array $paths, \Rector\Core\ValueObject\Configuration $configuration): array
+    public function createFromPaths(array $paths, Configuration $configuration): array
     {
         if ($configuration->shouldClearCache()) {
             $this->changedFilesDetector->clear();

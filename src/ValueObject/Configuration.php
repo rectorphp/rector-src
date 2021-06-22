@@ -69,15 +69,6 @@ final class Configuration
         return $this->showDiffs;
     }
 
-    /**
-     * @deprecated
-     * Immutable
-     */
-    public function setBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): void
-    {
-        $this->bootstrapConfigs = $bootstrapConfigs;
-    }
-
     public function getMainConfigFilePath(): ?string
     {
         if ($this->bootstrapConfigs === null) {
