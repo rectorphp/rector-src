@@ -71,7 +71,7 @@ final class ConfigurationFactory
     }
 
     /**
-     * @return string[]
+     * @return string[]|mixed[]
      */
     private function resolvePaths(InputInterface $input): array
     {
