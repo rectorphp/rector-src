@@ -149,7 +149,7 @@ CODE_SAMPLE
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
                 $annotationToAttributeTag = $annotationToAttribute->getTag();
 
-                if ($phpDocInfo->hasByName($annotationToAttributeTag) && $tag->value instanceof GenericTagValueNode) {
+                if ($this->isFoundGenericTag($phpDocInfo, $tag->value, $annotationToAttributeTag)) {
                     // 1. remove php-doc tag
                     $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToAttributeTag);
 
@@ -182,6 +182,14 @@ CODE_SAMPLE
         }
 
         return $hasNewAttrGroups;
+    }
+
+    private function isFoundGenericTag(PhpDocInfo $phpDocInfo, PhpDocTagValueNode $phpDocTagValueNode, string $annotationToAttributeTag): bool
+    {
+        if (!$phpDocInfo->hasByName($annotationToAttributeTag)) {
+            return false;
+        }
+        return $phpDocTagValueNode instanceof GenericTagValueNode;
     }
 
     private function shouldSkip(
