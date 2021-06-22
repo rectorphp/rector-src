@@ -19,11 +19,13 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
+use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 
 /**
  * @changelog https://wiki.php.net/rfc/attributes_v2
@@ -144,10 +146,12 @@ CODE_SAMPLE
     private function processApplyAttrGroups(array $tags, PhpDocInfo $phpDocInfo, Node $node): bool
     {
         $hasNewAttrGroups = false;
+
         foreach ($tags as $tag) {
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
                 $annotationToAttributeTag = $annotationToAttribute->getTag();
-                if ($phpDocInfo->hasByName($annotationToAttributeTag)) {
+
+                if ($phpDocInfo->hasByName($annotationToAttributeTag) && $tag->value instanceof GenericTagValueNode) {
                     // 1. remove php-doc tag
                     $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToAttributeTag);
 
