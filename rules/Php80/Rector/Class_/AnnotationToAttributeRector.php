@@ -148,7 +148,6 @@ CODE_SAMPLE
         foreach ($tags as $tag) {
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
                 $annotationToAttributeTag = $annotationToAttribute->getTag();
-
                 if ($this->isFoundGenericTag($phpDocInfo, $tag->value, $annotationToAttributeTag)) {
                     // 1. remove php-doc tag
                     $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToAttributeTag);
