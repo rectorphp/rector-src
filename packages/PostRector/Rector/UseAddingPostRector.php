@@ -77,9 +77,7 @@ final class UseAddingPostRector extends AbstractPostRector
             $nodes = $firstNode->stmts;
         }
 
-        foreach ($oldToNewClasses as $oldClass => $newClass) {
-            $removedShortUses[] = $oldClass;
-        }
+        $removedShortUses = array_merge($removedShortUses, $this->renamedClassesDataCollector->getOldClasses());
 
         // B. no namespace? add in the top
         // first clean
