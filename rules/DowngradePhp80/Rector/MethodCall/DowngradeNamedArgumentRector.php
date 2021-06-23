@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -12,6 +13,7 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Parser;
@@ -121,9 +123,9 @@ CODE_SAMPLE
                 ? $this->nodeRepository->findClassMethodByStaticCall($node)
                 : $this->nodeRepository->findClassMethodByMethodCall($node);
         } else {
-            $className = $node->class->toString();
+            $className = (string) $this->getName($node->class);
 
-            if (in_array($className, ['self', 'static'])) {
+            if (in_array($className, ['self', 'static'], true)) {
                 $className = (string) $node->getAttribute(AttributeKey::CLASS_NAME);
             }
 
@@ -132,7 +134,8 @@ CODE_SAMPLE
             }
 
             $classReflection = $this->reflectionProvider->getClass($className);
-            return $this->getCallerFromClassReflection($node, $classReflection);
+            $className = Strings::after($className, '\\', -1);
+            return $this->getCallerNodeFromClassReflection($node, $classReflection, $className);
         }
 
         if ($caller instanceof ClassMethod) {
@@ -148,10 +151,17 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($type->getClassName());
-        return $this->getCallerFromClassReflection($node, $classReflection);
+        return $this->getCallerNodeFromClassReflection($node, $classReflection);
     }
 
-    private function getCallerFromClassReflection(Node $node, ClassReflection $classReflection): ?Node
+    /**
+     * @param MethodCall|StaticCall|New_ $node
+     */
+    private function getCallerNodeFromClassReflection(
+        Node $node,
+        ClassReflection $classReflection,
+        ?string $className = null
+    ): ?Node
     {
         $fileName = $classReflection->getFileName();
         if (! is_string($fileName)) {
@@ -159,13 +169,28 @@ CODE_SAMPLE
         }
 
         $stmts = $this->parser->parse($this->smartFileSystem->readFile($fileName));
+        if ($node instanceof New_) {
+            /** @var string $className */
+            $class = $this->betterNodeFinder->findFirst((array) $stmts, function (Node $node) use ($className): bool {
+                if (! $node instanceof Class_) {
+                    return false;
+                }
+
+                return $this->isName($node, $className);
+            });
+
+            if (! $class instanceof Class_) {
+                return null;
+            }
+
+            return $class->getMethod(MethodName::CONSTRUCT);
+        }
+
         /** @var ClassLike[] $classLikes */
         $classLikes = $this->betterNodeFinder->findInstanceOf((array) $stmts, ClassLike::class);
 
         foreach ($classLikes as $classLike) {
-            $caller = $node instanceof New_
-                ? $classLike->getMethod(MethodName::CONSTRUCT)
-                : $classLike->getMethod((string) $this->getName($node->name));
+            $caller = $classLike->getMethod((string) $this->getName($node->name));
             if (! $caller instanceof ClassMethod) {
                 continue;
             }
@@ -177,7 +202,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|StaticCall $node
+     * @param MethodCall|StaticCall|New_ $node
      * @param Arg[] $args
      */
     private function processRemoveNamedArgument(
@@ -215,7 +240,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|StaticCall $node
+     * @param MethodCall|StaticCall|New_ $node
      * @param Param[] $params
      * @param Arg[] $newArgs
      */
