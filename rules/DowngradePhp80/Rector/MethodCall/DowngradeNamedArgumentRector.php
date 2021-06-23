@@ -16,7 +16,6 @@ use PhpParser\Node\Name;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
@@ -214,10 +213,6 @@ CODE_SAMPLE
     {
         if ($type === null) {
             return null;
-        }
-
-        if ($type instanceof NullType) {
-            return new ConstFetch(new Name('null'));
         }
 
         return new ConstFetch(new Name($type->describe(VerbosityLevel::value())));
