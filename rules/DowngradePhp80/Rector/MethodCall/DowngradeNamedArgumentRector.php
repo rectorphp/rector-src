@@ -172,7 +172,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            // @todo convert type to value
             $defaultValue = $this->mapPHPStanTypeToExpr($parameterReflection->getDefaultValue());
             if (! $defaultValue instanceof Expr) {
                 continue;
