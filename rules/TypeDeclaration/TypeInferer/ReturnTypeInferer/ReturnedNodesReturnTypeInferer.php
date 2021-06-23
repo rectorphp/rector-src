@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Class_;
@@ -20,7 +19,9 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
-use Rector\NodeCollector\NodeCollector\NodeRepository;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
+use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
+use Rector\Core\Reflection\FunctionLikeReflectionParser;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -37,7 +38,9 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private TypeFactory $typeFactory,
         private SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
-        private NodeRepository $nodeRepository
+        private CallReflectionResolver $callReflectionResolver,
+        private FunctionLikeReflectionParser $functionLikeReflectionParser,
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -131,19 +134,25 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
         return $classLike->isAbstract();
     }
 
-    private function inferFromReturnedMethodCall(Return_ $return, FunctionLike $originalFunctionLike): Type
+    private function inferFromReturnedMethodCall(Return_ $return, FunctionLike $functionLike): Type
     {
         if (! $return->expr instanceof MethodCall) {
             return new MixedType();
         }
 
-        $classMethod = $this->nodeRepository->findClassMethodByMethodCall($return->expr);
-        if (! $classMethod instanceof ClassMethod) {
+        $callReflection = $this->callReflectionResolver->resolveCall($return->expr);
+        if ($callReflection === null) {
             return new MixedType();
         }
 
-        // avoid infinite looping over self call
-        if ($classMethod === $originalFunctionLike) {
+        $classMethod = $this->functionLikeReflectionParser->parseMethodReflection($callReflection);
+        if ($classMethod === null) {
+            return new MixedType();
+        }
+
+        $classMethodCacheKey = $this->betterStandardPrinter->print($classMethod);
+        $functionLikeCacheKey = $this->betterStandardPrinter->print($functionLike);
+        if ($classMethodCacheKey === $functionLikeCacheKey) {
             return new MixedType();
         }
 
