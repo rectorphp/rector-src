@@ -13,13 +13,12 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Param;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
-use Rector\Core\Exception\NotImplementedYetException;
+use PHPStan\Type\VerbosityLevel;
 use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\CallTypeAnalyzer;
@@ -221,6 +220,6 @@ CODE_SAMPLE
             return new ConstFetch(new Name('null'));
         }
 
-        throw new NotImplementedYetException();
+        return new ConstFetch(new Name($type->describe(VerbosityLevel::value())));
     }
 }
