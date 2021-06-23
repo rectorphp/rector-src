@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Class_;
@@ -15,6 +16,8 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Php\PhpFunctionReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
@@ -134,7 +137,7 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
         return $classLike->isAbstract();
     }
 
-    private function inferFromReturnedMethodCall(Return_ $return, FunctionLike $functionLike): Type
+    private function inferFromReturnedMethodCall(Return_ $return, FunctionLike $originalFunctionLike): Type
     {
         if (! $return->expr instanceof MethodCall) {
             return new MixedType();
@@ -145,18 +148,15 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
             return new MixedType();
         }
 
-        $classMethod = $this->functionLikeReflectionParser->parseMethodReflection($callReflection);
-        if ($classMethod === null) {
-            return new MixedType();
+        if ($callReflection instanceof MethodReflection) {
+            return $this->resolveClassMethod($callReflection, $originalFunctionLike);
         }
 
-        $classMethodCacheKey = $this->betterStandardPrinter->print($classMethod);
-        $functionLikeCacheKey = $this->betterStandardPrinter->print($functionLike);
-        if ($classMethodCacheKey === $functionLikeCacheKey) {
-            return new MixedType();
+        if ($callReflection instanceof PhpFunctionReflection) {
+            return $this->resolveFunction($callReflection, $originalFunctionLike);
         }
 
-        return $this->inferFunctionLike($classMethod);
+        return new MixedType();
     }
 
     private function isArrayTypeMixed(Type $type): bool
@@ -176,12 +176,47 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
     {
         if ($resolvedType instanceof MixedType || $this->isArrayTypeMixed($resolvedType)) {
             $correctedType = $this->inferFromReturnedMethodCall($return, $functionLike);
+
             // override only if has some extra value
-            if (! $correctedType instanceof MixedType) {
+            if (! $correctedType instanceof MixedType && ! $correctedType instanceof VoidType) {
                 return $correctedType;
             }
         }
 
         return $resolvedType;
+    }
+
+    private function resolveClassMethod(MethodReflection $methodReflection, FunctionLike $originalFunctionLike): Type
+    {
+        $classMethod = $this->functionLikeReflectionParser->parseMethodReflection($methodReflection);
+        if (! $classMethod instanceof ClassMethod) {
+            return new MixedType();
+        }
+
+        $classMethodCacheKey = $this->betterStandardPrinter->print($classMethod);
+        $functionLikeCacheKey = $this->betterStandardPrinter->print($originalFunctionLike);
+
+        if ($classMethodCacheKey === $functionLikeCacheKey) {
+            return new MixedType();
+        }
+
+        return $this->inferFunctionLike($classMethod);
+    }
+
+    private function resolveFunction(PhpFunctionReflection $phpFunctionReflection, FunctionLike $functionLike): Type
+    {
+        $function = $this->functionLikeReflectionParser->parseFunctionReflection($phpFunctionReflection);
+        if (! $function instanceof Function_) {
+            return new MixedType();
+        }
+
+        $classMethodCacheKey = $this->betterStandardPrinter->print($function);
+        $functionLikeCacheKey = $this->betterStandardPrinter->print($functionLike);
+
+        if ($classMethodCacheKey === $functionLikeCacheKey) {
+            return new MixedType();
+        }
+
+        return $this->inferFunctionLike($function);
     }
 }

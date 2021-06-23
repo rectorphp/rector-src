@@ -8,8 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
+use Rector\Core\PHPStan\Reflection\ClassMethodReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Php80\NodeResolver\ArgumentSorter;
@@ -29,7 +31,8 @@ final class OptionalParametersAfterRequiredRector extends AbstractRector
         private RequireOptionalParamResolver $requireOptionalParamResolver,
         private ArgumentSorter $argumentSorter,
         private MethodReflectionClassMethodResolver $methodReflectionClassMethodResolver,
-        private CallReflectionResolver $callReflectionResolver
+        private CallReflectionResolver $callReflectionResolver,
+        private ClassMethodReflectionResolver $classMethodReflectionResolver
     ) {
     }
 
@@ -89,12 +92,25 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedOrderParams = $this->requireOptionalParamResolver->resolve($classMethod);
-        if ($classMethod->params === $expectedOrderParams) {
+        $classMethodReflection = $this->classMethodReflectionResolver->resolve($classMethod);
+        if (! $classMethodReflection instanceof MethodReflection) {
             return null;
         }
 
-        $classMethod->params = $expectedOrderParams;
+        $parametersAcceptor = $classMethodReflection->getVariants()[0];
+
+        $expectedOrderParameterReflections = $this->requireOptionalParamResolver->resolveFromReflection(
+            $classMethodReflection
+        );
+        if ($parametersAcceptor->getParameters() === $expectedOrderParameterReflections) {
+            return null;
+        }
+
+        $newParams = $this->argumentSorter->sortArgsByExpectedParamOrder(
+            $classMethod->params,
+            $expectedOrderParameterReflections
+        );
+        $classMethod->params = $newParams;
 
         return $classMethod;
     }
@@ -118,8 +134,17 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedOrderedParams = $this->requireOptionalParamResolver->resolve($classMethod);
-        if ($expectedOrderedParams === $classMethod->getParams()) {
+        $classMethodReflection = $this->classMethodReflectionResolver->resolve($classMethod);
+        if (! $classMethodReflection instanceof MethodReflection) {
+            return null;
+        }
+
+        $parametersAcceptor = $classMethodReflection->getVariants()[0];
+
+        $expectedOrderedParameterReflections = $this->requireOptionalParamResolver->resolveFromReflection(
+            $classMethodReflection
+        );
+        if ($expectedOrderedParameterReflections === $parametersAcceptor->getParameters()) {
             return null;
         }
 
@@ -127,7 +152,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $newArgs = $this->argumentSorter->sortArgsByExpectedParamOrder($new->args, $expectedOrderedParams);
+        $newArgs = $this->argumentSorter->sortArgsByExpectedParamOrder(
+            $new->args,
+            $expectedOrderedParameterReflections
+        );
         if ($new->args === $newArgs) {
             return null;
         }
@@ -161,6 +189,7 @@ CODE_SAMPLE
             $methodCall->args,
             $expectedOrderedParameterReflections
         );
+
         if ($methodCall->args === $newArgs) {
             return null;
         }
