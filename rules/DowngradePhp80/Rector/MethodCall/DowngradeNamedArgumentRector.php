@@ -113,6 +113,23 @@ CODE_SAMPLE
         return $this->processRemoveNamedArgument($caller, $node, $args);
     }
 
+    private function getClassMethodOfNew(New_ $new): ?ClassMethod
+    {
+        $className = (string) $this->getName($new->class);
+
+        if (in_array($className, ['self', 'static'], true)) {
+            $className = (string) $new->getAttribute(AttributeKey::CLASS_NAME);
+        }
+
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+        $className = Strings::after($className, '\\', -1);
+        return $this->getCallerNodeFromClassReflection($new, $classReflection, $className);
+    }
+
     /**
      * @param MethodCall|StaticCall|New_ $node
      */
@@ -123,19 +140,7 @@ CODE_SAMPLE
                 ? $this->nodeRepository->findClassMethodByStaticCall($node)
                 : $this->nodeRepository->findClassMethodByMethodCall($node);
         } else {
-            $className = (string) $this->getName($node->class);
-
-            if (in_array($className, ['self', 'static'], true)) {
-                $className = (string) $node->getAttribute(AttributeKey::CLASS_NAME);
-            }
-
-            if (! $this->reflectionProvider->hasClass($className)) {
-                return null;
-            }
-
-            $classReflection = $this->reflectionProvider->getClass($className);
-            $className = Strings::after($className, '\\', -1);
-            return $this->getCallerNodeFromClassReflection($node, $classReflection, $className);
+            return $this->getClassMethodOfNew($node);
         }
 
         if ($caller instanceof ClassMethod) {
@@ -161,8 +166,7 @@ CODE_SAMPLE
         Node $node,
         ClassReflection $classReflection,
         ?string $className = null
-    ): ?Node
-    {
+    ): ?Node {
         $fileName = $classReflection->getFileName();
         if (! is_string($fileName)) {
             return null;

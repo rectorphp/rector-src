@@ -495,9 +495,5 @@ parameters:
         - '#Call to an undefined method Rector\\Core\\Contract\\Processor\\FileProcessorInterface\:\:(.*?)\(\)#'
 
         -
-            message: '#Class cognitive complexity is 36, keep it under 30#'
+            message: '#Class cognitive complexity is 35, keep it under 30#'
             path: rules/DowngradePhp80/Rector/MethodCall/DowngradeNamedArgumentRector.php #33
-
-        -
-            message: '#Cognitive complexity for "Rector\\DowngradePhp80\\Rector\\MethodCall\\DowngradeNamedArgumentRector\:\:getCaller\(\)" is 10, keep it under 9#'
-            path: rules/DowngradePhp80/Rector/MethodCall/DowngradeNamedArgumentRector.php #119
