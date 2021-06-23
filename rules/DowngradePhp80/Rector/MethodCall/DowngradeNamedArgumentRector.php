@@ -12,18 +12,18 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Parser;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\SmartFileSystem\SmartFileSystem;
-use PHPStan\Reflection\ClassReflection;
 
 /**
  * @see \Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeNamedArgumentRector\DowngradeNamedArgumentRectorTest
@@ -122,6 +122,11 @@ CODE_SAMPLE
                 : $this->nodeRepository->findClassMethodByMethodCall($node);
         } else {
             $className = $node->class->toString();
+
+            if (in_array($className, ['self', 'static'])) {
+                $className = (string) $node->getAttribute(AttributeKey::CLASS_NAME);
+            }
+
             if (! $this->reflectionProvider->hasClass($className)) {
                 return null;
             }
