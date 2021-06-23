@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Parser;
 use PHPStan\Reflection\ClassReflection;
@@ -23,6 +22,7 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\TypeDeclaration\NodeTypeAnalyzer\CallTypeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\SmartFileSystem\SmartFileSystem;
@@ -35,7 +35,8 @@ final class DowngradeNamedArgumentRector extends AbstractRector
     public function __construct(
         private ReflectionProvider $reflectionProvider,
         private SmartFileSystem $smartFileSystem,
-        private Parser $parser
+        private Parser $parser,
+        private CallTypeAnalyzer $callTypeAnalyzer
     ) {
     }
 
@@ -147,10 +148,7 @@ CODE_SAMPLE
             return $caller;
         }
 
-        $type = $node instanceof StaticCall
-            ? $this->nodeTypeResolver->resolve($node->class)
-            : $this->nodeTypeResolver->resolve($node->var);
-
+        $type = $this->callTypeAnalyzer->resolveCallerType($node);
         if (! $type instanceof ObjectType) {
             return null;
         }
@@ -190,19 +188,13 @@ CODE_SAMPLE
             return $class->getMethod(MethodName::CONSTRUCT);
         }
 
-        /** @var ClassLike[] $classLikes */
-        $classLikes = $this->betterNodeFinder->findInstanceOf((array) $stmts, ClassLike::class);
-
-        foreach ($classLikes as $classLike) {
-            $caller = $classLike->getMethod((string) $this->getName($node->name));
-            if (! $caller instanceof ClassMethod) {
-                continue;
+        return $this->betterNodeFinder->findFirst((array) $stmts, function (Node $n) use ($node): bool {
+            if (! $n instanceof ClassMethod) {
+                return false;
             }
 
-            return $caller;
-        }
-
-        return null;
+            return $this->isName($n, (string) $this->getName($node->name));
+        });
     }
 
     /**

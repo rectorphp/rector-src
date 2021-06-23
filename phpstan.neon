@@ -493,7 +493,3 @@ parameters:
 
         # temporary interface update
         - '#Call to an undefined method Rector\\Core\\Contract\\Processor\\FileProcessorInterface\:\:(.*?)\(\)#'
-
-        -
-            message: '#Class cognitive complexity is 33, keep it under 30#'
-            path: rules/DowngradePhp80/Rector/MethodCall/DowngradeNamedArgumentRector.php #33
