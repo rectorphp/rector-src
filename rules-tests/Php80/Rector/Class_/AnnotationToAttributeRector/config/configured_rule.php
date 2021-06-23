@@ -24,7 +24,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Id'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
-                new AnnotationToAttribute('ApiPlatform\Core\Annotation\ApiResource'),
             ]),
         ]]);
 };
