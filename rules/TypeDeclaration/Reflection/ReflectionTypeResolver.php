@@ -31,20 +31,20 @@ final class ReflectionTypeResolver
     ) {
     }
 
-    public function resolveMethodCallReturnType(MethodCall $methodCall): ?Type
-    {
-        $objectType = $this->nodeTypeResolver->resolve($methodCall->var);
-        if (! $objectType instanceof TypeWithClassName) {
-            return null;
-        }
-
-        $methodName = $this->nodeNameResolver->getName($methodCall->name);
-        if ($methodName === null) {
-            return null;
-        }
-
-        return $this->resolveNativeReturnTypeFromClassAndMethod($objectType->getClassName(), $methodName, $methodCall);
-    }
+//    public function resolveMethodCallReturnType(MethodCall $methodCall): ?Type
+//    {
+//        $objectType = $this->nodeTypeResolver->resolve($methodCall->var);
+//        if (! $objectType instanceof TypeWithClassName) {
+//            return null;
+//        }
+//
+//        $methodName = $this->nodeNameResolver->getName($methodCall->name);
+//        if ($methodName === null) {
+//            return null;
+//        }
+//
+//        return $this->resolveNativeReturnTypeFromClassAndMethod($objectType->getClassName(), $methodName, $methodCall);
+//    }
 
     public function resolveStaticCallReturnType(StaticCall $staticCall): ?Type
     {
