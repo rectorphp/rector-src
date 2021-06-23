@@ -104,7 +104,7 @@ CODE_SAMPLE
     {
         if ($node instanceof New_) {
             $methodReflection = $this->callReflectionResolver->resolveConstructor($node);
-            if ($methodReflection === null) {
+            if (! $methodReflection instanceof MethodReflection) {
                 return null;
             }
 
