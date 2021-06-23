@@ -114,7 +114,7 @@ CODE_SAMPLE
         return $this->processRemoveNamedArgument($caller, $node, $args);
     }
 
-    private function getClassMethodOfNew(New_ $new): ?ClassMethod
+    private function getClassMethodOfNew(New_ $new): ?Node
     {
         $className = (string) $this->getName($new->class);
 
