@@ -135,13 +135,13 @@ CODE_SAMPLE
      */
     private function getCaller(Node $node): ?Node
     {
-        if (! $node instanceof New_) {
-            $caller = $node instanceof StaticCall
-                ? $this->nodeRepository->findClassMethodByStaticCall($node)
-                : $this->nodeRepository->findClassMethodByMethodCall($node);
-        } else {
+        if ($node instanceof New_) {
             return $this->getClassMethodOfNew($node);
         }
+
+        $caller = $node instanceof StaticCall
+            ? $this->nodeRepository->findClassMethodByStaticCall($node)
+            : $this->nodeRepository->findClassMethodByMethodCall($node);
 
         if ($caller instanceof ClassMethod) {
             return $caller;
