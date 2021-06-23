@@ -6,11 +6,12 @@ namespace Rector\Php80\NodeResolver;
 
 use PhpParser\Node\Arg;
 use PhpParser\Node\Param;
+use PHPStan\Reflection\ParameterReflection;
 
 final class ArgumentSorter
 {
     /**
-     * @param array<int, Param> $expectedOrderedParams
+     * @param array<int, Param|ParameterReflection> $expectedOrderedParams
      * @param Arg[] $args
      * @return Arg[]
      */
