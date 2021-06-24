@@ -319,36 +319,9 @@ final class NodeRepository
         return $this->parsedNodeCollector->findClass($name);
     }
 
-    /**
-     * Do not modify node in another file, that could result in unexpected outcome
-     * @deprecated Use reflection instead
-     */
-    public function findClassMethodByMethodCall(MethodCall $methodCall): ?ClassMethod
-    {
-        $className = $this->resolveCallerClassName($methodCall);
-        if ($className === null) {
-            return null;
-        }
-
-        $methodName = $this->nodeNameResolver->getName($methodCall->name);
-        if ($methodName === null) {
-            return null;
-        }
-
-        return $this->findClassMethod($className, $methodName);
-    }
-
     public function findClassConstByClassConstFetch(ClassConstFetch $classConstFetch): ?ClassConst
     {
         return $this->parsedNodeCollector->findClassConstByClassConstFetch($classConstFetch);
-    }
-
-    /**
-     * @return Attribute[]
-     */
-    public function findAttributes(string $class): array
-    {
-        return $this->attributes[$class] ?? [];
     }
 
     /**
