@@ -58,10 +58,6 @@ final class ParentClassMethodTypeOverrideGuard
 
     public function isReturnTypeChangeAllowed(ClassMethod $classMethod): bool
     {
-        if ($classMethod->returnType !== null) {
-            return false;
-        }
-
         // make sure return type is not protected by parent contract
         $parentClassMethodReflection = $this->getParentClassMethod($classMethod);
 
