@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -63,15 +65,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
-        return [\PhpParser\Node\Stmt\ClassMethod::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param \PhpParser\Node\Stmt\ClassMethod $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -84,17 +86,17 @@ CODE_SAMPLE
         }
 
         $class = $node->getAttribute(AttributeKey::CLASS_NODE);
-        if (! $class instanceof Node\Stmt\Class_) {
+        if (! $class instanceof Class_) {
             return null;
         }
 
         foreach ($node->getParams() as $param) {
-            if (! $param->flags) {
+            if ($param->flags === 0) {
                 continue;
             }
 
             // only private local scope; removing public property might be dangerous
-            if ($param->flags !== Node\Stmt\Class_::MODIFIER_PRIVATE) {
+            if ($param->flags !== Class_::MODIFIER_PRIVATE) {
                 continue;
             }
 
