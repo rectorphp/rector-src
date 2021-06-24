@@ -6,7 +6,6 @@ namespace Rector\NodeCollector\NodeCollector;
 
 use Nette\Utils\Arrays;
 use PhpParser\Node;
-use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -19,7 +18,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
@@ -52,11 +50,6 @@ final class NodeRepository
     private array $classMethodsByType = [];
 
     /**
-     * @var array<string, Function_>
-     */
-    private array $functionsByName = [];
-
-    /**
      * @var array<class-string, array<array<MethodCall|StaticCall>>>
      */
     private array $callsByTypeAndMethod = [];
@@ -68,6 +61,13 @@ final class NodeRepository
      */
     private array $arrayCallablesByTypeAndMethod = [];
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d8a682c1 (remove attribute)
+=======
+>>>>>>> ba2b732fb (fixup! remove attribute)
     public function __construct(
         private ArrayCallableMethodReferenceAnalyzer $arrayCallableMethodReferenceAnalyzer,
         private ParsedPropertyFetchNodeCollector $parsedPropertyFetchNodeCollector,
@@ -95,20 +95,13 @@ final class NodeRepository
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
             $this->addCall($node);
         }
-
-        if ($node instanceof Function_) {
-            $functionName = $this->nodeNameResolver->getName($node);
-            $this->functionsByName[$functionName] = $node;
-        }
+<<<<<<< HEAD
 
         if ($node instanceof Attribute) {
             $this->nodeNameResolver->getName($node->name);
         }
-    }
-
-    public function findFunction(string $name): ?Function_
-    {
-        return $this->functionsByName[$name] ?? null;
+=======
+>>>>>>> 3d8a682c1 (remove attribute)
     }
 
     /**
