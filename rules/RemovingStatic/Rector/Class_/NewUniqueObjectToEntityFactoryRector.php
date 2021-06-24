@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\RemovingStatic\StaticTypesInClassResolver;
@@ -47,11 +46,6 @@ final class NewUniqueObjectToEntityFactoryRector extends AbstractRector implemen
      * @var ObjectType[]
      */
     private array $serviceObjectTypes = [];
-
-    /**
-     * @var string[]
-     */
-    private array $classesUsingTypes = [];
 
     public function __construct(
         private PropertyNaming $propertyNaming,
@@ -128,11 +122,8 @@ CODE_SAMPLE
         $this->matchedObjectTypes = [];
 
         // collect classes with new to factory in all classes
-        $classesUsingTypes = $this->resolveClassesUsingTypes();
 
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (
-            $classesUsingTypes
-        ): ?MethodCall {
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node): ?MethodCall {
             if (! $node instanceof New_) {
                 return null;
             }
@@ -142,7 +133,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! in_array($class, $classesUsingTypes, true)) {
+            if (! $this->isClassMatching($class)) {
                 return null;
             }
 
@@ -176,37 +167,14 @@ CODE_SAMPLE
         }
     }
 
-    /**
-     * @return string[]
-     */
-    private function resolveClassesUsingTypes(): array
+    private function isClassMatching(string $class): bool
     {
-        if ($this->classesUsingTypes !== []) {
-            return $this->classesUsingTypes;
-        }
-
-        // temporary
-        $classes = $this->nodeRepository->getClasses();
-        if ($classes === []) {
-            return [];
-        }
-
-        foreach ($classes as $class) {
-            $hasTypes = (bool) $this->staticTypesInClassResolver->collectStaticCallTypeInClass(
-                $class,
-                $this->serviceObjectTypes
-            );
-            if ($hasTypes) {
-                $name = $this->getName($class);
-                if ($name === null) {
-                    throw new ShouldNotHappenException();
-                }
-                $this->classesUsingTypes[] = $name;
+        foreach ($this->serviceObjectTypes as $serviceObjectType) {
+            if ($serviceObjectType->isSuperTypeOf(new ObjectType($class))->yes()) {
+                return true;
             }
         }
 
-        $this->classesUsingTypes = array_unique($this->classesUsingTypes);
-
-        return $this->classesUsingTypes;
+        return false;
     }
 }

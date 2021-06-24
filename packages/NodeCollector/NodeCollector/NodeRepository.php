@@ -33,7 +33,6 @@ use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use ReflectionMethod;
 
 /**
@@ -64,7 +63,6 @@ final class NodeRepository
         private ParsedPropertyFetchNodeCollector $parsedPropertyFetchNodeCollector,
         private NodeNameResolver $nodeNameResolver,
         private ParsedNodeCollector $parsedNodeCollector,
-        private TypeUnwrapper $typeUnwrapper,
         private ReflectionProvider $reflectionProvider,
         private NodeTypeResolver $nodeTypeResolver
     ) {
@@ -212,24 +210,6 @@ final class NodeRepository
     }
 
     /**
-     * @return Class_[]
-     */
-    public function findClassesBySuffix(string $suffix): array
-    {
-        $classNodes = [];
-
-        foreach ($this->parsedNodeCollector->getClasses() as $className => $classNode) {
-            if (! \str_ends_with($className, $suffix)) {
-                continue;
-            }
-
-            $classNodes[] = $classNode;
-        }
-
-        return $classNodes;
-    }
-
-    /**
      * @return Trait_[]
      */
     public function findUsedTraitsInClass(ClassLike $classLike): array
@@ -312,41 +292,9 @@ final class NodeRepository
         return $class->getProperty($propertyName);
     }
 
-    /**
-     * @return Class_[]
-     */
-    public function getClasses(): array
-    {
-        return $this->parsedNodeCollector->getClasses();
-    }
-
     public function findTrait(string $name): ?Trait_
     {
         return $this->parsedNodeCollector->findTrait($name);
-    }
-
-    public function findByShortName(string $shortName): ?Class_
-    {
-        return $this->parsedNodeCollector->findByShortName($shortName);
-    }
-
-    /**
-     * @return StaticCall[]
-     */
-    public function getStaticCalls(): array
-    {
-        return $this->parsedNodeCollector->getStaticCalls();
-    }
-
-    public function resolveCallerClassName(MethodCall $methodCall): ?string
-    {
-        $callerType = $this->nodeTypeResolver->getStaticType($methodCall->var);
-        $callerObjectType = $this->typeUnwrapper->unwrapFirstObjectTypeFromUnionType($callerType);
-        if (! $callerObjectType instanceof TypeWithClassName) {
-            return null;
-        }
-
-        return $callerObjectType->getClassName();
     }
 
     public function findClassLike(string $classLikeName): ?ClassLike
