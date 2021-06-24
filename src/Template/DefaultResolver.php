@@ -13,11 +13,6 @@ final class DefaultResolver implements TemplateResolverInterface
      */
     public const TYPE = 'default';
 
-    public function __toString(): string
-    {
-        return self::TYPE;
-    }
-
     public function provide(): string
     {
         return __DIR__ . '/../../templates/rector.php.dist';
@@ -25,6 +20,11 @@ final class DefaultResolver implements TemplateResolverInterface
 
     public function supports(string $type): bool
     {
-        return $type === self::TYPE || $type === '';
+        return $type === self::TYPE;
+    }
+
+    public function getType(): string
+    {
+        return self::TYPE;
     }
 }

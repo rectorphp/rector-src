@@ -78,12 +78,6 @@ final class InitCommand extends Command
         }
 
         if ($rectorTemplateFilePath === null) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            throw new TemplateTypeNotFoundException($templateType, $this->templateResolvers);
-=======
-=======
->>>>>>> bf3ceea0f (fixup! cleanup)
             $templateResolverTypes = [];
             foreach ($this->templateResolvers as $templateResolver) {
                 if (method_exists($templateResolver, 'getType')) {
@@ -92,12 +86,8 @@ final class InitCommand extends Command
                     $templateResolverTypes[] = (string) $templateResolver;
                 }
             }
-<<<<<<< HEAD
 
             throw new TemplateTypeNotFoundException($templateType, $templateResolverTypes);
->>>>>>> 6cf9698a0 (fixup! fixup! cleanup)
-=======
->>>>>>> bf3ceea0f (fixup! cleanup)
         }
 
         return $rectorTemplateFilePath;
