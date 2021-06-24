@@ -61,13 +61,6 @@ final class NodeRepository
      */
     private array $arrayCallablesByTypeAndMethod = [];
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> 3d8a682c1 (remove attribute)
-=======
->>>>>>> ba2b732fb (fixup! remove attribute)
     public function __construct(
         private ArrayCallableMethodReferenceAnalyzer $arrayCallableMethodReferenceAnalyzer,
         private ParsedPropertyFetchNodeCollector $parsedPropertyFetchNodeCollector,
@@ -95,22 +88,6 @@ final class NodeRepository
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
             $this->addCall($node);
         }
-<<<<<<< HEAD
-
-        if ($node instanceof Attribute) {
-            $this->nodeNameResolver->getName($node->name);
-        }
-=======
->>>>>>> 3d8a682c1 (remove attribute)
-    }
-
-    /**
-     * @return StaticCall[]
-     */
-    public function findStaticCallsByClassMethod(ClassMethod $classMethod): array
-    {
-        $calls = $this->findCallsByClassMethod($classMethod);
-        return array_filter($calls, fn (Node $node): bool => $node instanceof StaticCall);
     }
 
     public function findClassMethod(string $className, string $methodName): ?ClassMethod

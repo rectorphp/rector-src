@@ -92,7 +92,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // 2. direct tatic calls
+        // 2. direct static calls
         if ($this->isClassMethodUsedInLocalStaticCall($class, $classMethodName)) {
             return null;
         }
