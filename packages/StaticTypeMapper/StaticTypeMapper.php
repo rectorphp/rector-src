@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
@@ -81,7 +82,7 @@ final class StaticTypeMapper
     {
         if ($node instanceof Param) {
             $classMethod = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($classMethod instanceof Node\Stmt\ClassMethod) {
+            if ($classMethod instanceof ClassMethod) {
                 // param does not hany any clue about template map, but class method has
                 $node = $classMethod;
             }
