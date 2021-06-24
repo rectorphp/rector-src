@@ -487,8 +487,16 @@ parameters:
             path: packages/StaticTypeMapper/PhpDocParser/UnionTypeMapper.php #17
 
         -
-            message: '#Class with base "StaticTypeMapper" name is already used in "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\StaticTypeMapper", "Rector\\StaticTypeMapper\\StaticTypeMapper"\. Use unique name to make classes easy to recognize#'
+            message: '#Class with base "UnionTypeMapper" name is already used in "Rector\\StaticTypeMapper\\PhpDocParser\\UnionTypeMapper", "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\UnionTypeMapper"\. Use unique name to make classes easy to recognize#'
+            path: packages/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php #17
+
+        -
+            message: '#Class with base "StaticTypeMapper" name is already used in "Rector\\StaticTypeMapper\\StaticTypeMapper", "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\StaticTypeMapper"\. Use unique name to make classes easy to recognize#'
             path: packages/StaticTypeMapper/StaticTypeMapper.php #31
+
+        -
+            message: '#Class with base "StaticTypeMapper" name is already used in "Rector\\StaticTypeMapper\\StaticTypeMapper", "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\StaticTypeMapper"\. Use unique name to make classes easy to recognize#'
+            path: packages/PHPStanStaticTypeMapper/TypeMapper/StaticTypeMapper.php #21
 
         # false positive
         - '#Attribute class JetBrains\\PhpStorm\\Immutable does not exist#'
