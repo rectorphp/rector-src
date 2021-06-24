@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
@@ -29,11 +28,6 @@ use ReflectionMethod;
  */
 final class NodeRepository
 {
-    /**
-     * @var array<class-string, ClassMethod[]>
-     */
-    private array $classMethodsByType = [];
-
     public function __construct(
         private ParsedPropertyFetchNodeCollector $parsedPropertyFetchNodeCollector,
         private NodeNameResolver $nodeNameResolver,

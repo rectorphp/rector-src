@@ -117,8 +117,6 @@ CODE_SAMPLE
         $nativeReflectionClass = $classReflection->getNativeReflection();
 
         $nativeReflectionMethod = $nativeReflectionClass->getMethod($arrayCallable->getMethod());
-        $this->privatizeClassMethod($nativeReflectionMethod);
-
         if ($nativeReflectionMethod->getNumberOfParameters() === 0) {
             return new MethodCall(new Variable('this'), $arrayCallable->getMethod());
         }

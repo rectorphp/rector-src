@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Rector\Core\Template;
 
 use Rector\Core\Contract\Template\TemplateResolverInterface;
-use Stringable;
 
-final class DefaultResolver implements TemplateResolverInterface, Stringable
+final class DefaultResolver implements TemplateResolverInterface
 {
     /**
      * @var string
      */
-    private const TYPE = 'default';
+    public const TYPE = 'default';
 
     public function __toString(): string
     {
