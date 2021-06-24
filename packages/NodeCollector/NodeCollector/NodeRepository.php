@@ -29,7 +29,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeUtils;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -125,30 +124,6 @@ final class NodeRepository
     {
         $calls = $this->findCallsByClassMethod($classMethod);
         return array_filter($calls, fn (Node $node): bool => $node instanceof StaticCall);
-    }
-
-    /**
-     * @deprecated Using external file node modification might result in unexpected output. Use reflection to read-only data instead
-     * @see \Rector\Core\PHPStan\Reflection\CallReflectionResolver::resolveCall()
-     */
-    public function findClassMethodByStaticCall(StaticCall $staticCall): ?ClassMethod
-    {
-        $method = $this->nodeNameResolver->getName($staticCall->name);
-        if ($method === null) {
-            return null;
-        }
-
-        $objectType = $this->nodeTypeResolver->resolve($staticCall->class);
-        $classes = TypeUtils::getDirectClassNames($objectType);
-
-        foreach ($classes as $class) {
-            $possibleClassMethod = $this->findClassMethod($class, $method);
-            if ($possibleClassMethod !== null) {
-                return $possibleClassMethod;
-            }
-        }
-
-        return null;
     }
 
     public function findClassMethod(string $className, string $methodName): ?ClassMethod
