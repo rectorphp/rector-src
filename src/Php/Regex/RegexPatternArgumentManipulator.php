@@ -6,6 +6,7 @@ namespace Rector\Core\Php\Regex;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -177,7 +178,7 @@ final class RegexPatternArgumentManipulator
     private function matchClassConstFetchStringValue(ClassConstFetch $classConstFetch): array
     {
         $classConst = $this->localConstantFinder->match($classConstFetch);
-        if ($classConst === null) {
+        if (! $classConst instanceof Const_) {
             return [];
         }
 
