@@ -75,7 +75,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $isDefinedPreviousCall = (bool) $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $node) use ($functionName) {
+        $isDefinedPreviousCall = (bool) $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $node) use (
+            $functionName
+        ): bool {
             if (! $node instanceof Function_) {
                 return false;
             }
