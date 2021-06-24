@@ -68,11 +68,6 @@ final class NodeRepository
      */
     private array $arrayCallablesByTypeAndMethod = [];
 
-    /**
-     * @var array<string, Attribute[]>
-     */
-    private array $attributes = [];
-
     public function __construct(
         private ArrayCallableMethodReferenceAnalyzer $arrayCallableMethodReferenceAnalyzer,
         private ParsedPropertyFetchNodeCollector $parsedPropertyFetchNodeCollector,
@@ -107,8 +102,7 @@ final class NodeRepository
         }
 
         if ($node instanceof Attribute) {
-            $attributeClass = $this->nodeNameResolver->getName($node->name);
-            $this->attributes[$attributeClass][] = $node;
+            $this->nodeNameResolver->getName($node->name);
         }
     }
 
@@ -208,6 +202,11 @@ final class NodeRepository
     }
 
     /**
+     * @deprecated Collecting all nodes it not safe for paralel run and static reflection
+     *
+     * Use reflection instead,
+     * @see \Rector\Core\PHPStan\Reflection\CallReflectionResolver::resolveCall()
+     *
      * @return MethodCall[]|StaticCall[]|ArrayCallable[]
      */
     public function findCallsByClassMethod(ClassMethod $classMethod): array
