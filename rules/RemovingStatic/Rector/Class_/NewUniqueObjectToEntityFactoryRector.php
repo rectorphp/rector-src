@@ -14,7 +14,6 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\PropertyNaming;
-use Rector\RemovingStatic\StaticTypesInClassResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,7 +26,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NewUniqueObjectToEntityFactoryRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @api
      * @var string
      */
     public const TYPES_TO_SERVICES = 'types_to_services';
@@ -49,7 +47,6 @@ final class NewUniqueObjectToEntityFactoryRector extends AbstractRector implemen
 
     public function __construct(
         private PropertyNaming $propertyNaming,
-        private StaticTypesInClassResolver $staticTypesInClassResolver
     ) {
     }
 
@@ -170,7 +167,7 @@ CODE_SAMPLE
     private function isClassMatching(string $class): bool
     {
         foreach ($this->serviceObjectTypes as $serviceObjectType) {
-            if ($serviceObjectType->isSuperTypeOf(new ObjectType($class))->yes()) {
+            if ($serviceObjectType->isInstanceOf($class)->yes()) {
                 return true;
             }
         }
