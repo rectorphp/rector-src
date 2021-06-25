@@ -83,7 +83,13 @@ CODE_SAMPLE
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         // is already set
-        if (! $phpDocInfo->getVarType() instanceof MixedType) {
+        if (! $phpDocInfo->getVarType('@var') instanceof MixedType) {
+            return null;
+        }
+        if (! $phpDocInfo->getVarType('@phpstan-var') instanceof MixedType) {
+            return null;
+        }
+        if (! $phpDocInfo->getVarType('@psalm-var') instanceof MixedType) {
             return null;
         }
 
