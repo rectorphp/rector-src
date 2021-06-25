@@ -104,11 +104,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isImpureFunction($node->expr)) {
-            return $node->expr;
-        }
-
-        if ($node->expr instanceof MethodCall || $node->expr instanceof StaticCall) {
+        if ($node->expr instanceof MethodCall || $node->expr instanceof StaticCall || $this->isImpureFunction(
+            $node->expr
+        )) {
             // keep the expr, can have side effect
             return $node->expr;
         }
