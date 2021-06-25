@@ -4,7 +4,6 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRe
 
 class Rocket {}
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
 
 class Product
 {
