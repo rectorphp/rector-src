@@ -6,12 +6,12 @@ class IfInClosure
 {
     public function run()
     {
-        Text::make(___('Type'), function () {
-            if ($this->_fieldType_ === 'wire' && $this->users->getRole() === 'correct-role') {
-                return ___('Found');
+        function (Car $car) {
+            if ($car->hasWheels && $car->hasFuel) {
+                return true;
             }
-            return Arr::get(Purses::getOptions(), $this->_fieldType_) ?? $this->_fieldType_;
-        });
+            return false;
+        };
     }
 }
 
@@ -25,15 +25,15 @@ class IfInClosure
 {
     public function run()
     {
-        Text::make(___('Type'), function () {
-            if ($this->_fieldType_ !== 'wire') {
-                return Arr::get(Purses::getOptions(), $this->_fieldType_) ?? $this->_fieldType_;
+        function (Car $car) {
+            if (!$car->hasWheels) {
+                return false;
             }
-            if ($this->users->getRole() !== 'correct-role') {
-                return Arr::get(Purses::getOptions(), $this->_fieldType_) ?? $this->_fieldType_;
+            if (!$car->hasFuel) {
+                return false;
             }
-            return ___('Found');
-        });
+            return true;
+        };
     }
 }
 
