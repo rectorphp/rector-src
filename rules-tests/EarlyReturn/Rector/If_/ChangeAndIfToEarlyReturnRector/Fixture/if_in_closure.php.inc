@@ -6,8 +6,8 @@ class IfInClosure
 {
     public function run()
     {
-        function (Car $car) {
-            if ($car->hasWheels && $car->hasFuel) {
+        function ($a, $b) {
+            if ($a && $b) {
                 return true;
             }
             return false;
@@ -25,11 +25,11 @@ class IfInClosure
 {
     public function run()
     {
-        function (Car $car) {
-            if (!$car->hasWheels) {
+        function ($a, $b) {
+            if (!$a) {
                 return false;
             }
-            if (!$car->hasFuel) {
+            if (!$b) {
                 return false;
             }
             return true;
