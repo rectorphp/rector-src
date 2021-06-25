@@ -83,14 +83,11 @@ CODE_SAMPLE
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         // is already set
-        if (! $phpDocInfo->getVarType('@var') instanceof MixedType) {
-            return null;
-        }
-        if (! $phpDocInfo->getVarType('@phpstan-var') instanceof MixedType) {
-            return null;
-        }
-        if (! $phpDocInfo->getVarType('@psalm-var') instanceof MixedType) {
-            return null;
+        foreach(['@var', '@phpstan-var', '@psalm-var'] as $tagName) {
+            $varType = $phpDocInfo->getVarType($tagName);
+            if (!$varType  instanceof MixedType) {
+                return null;
+            }
         }
 
         $type = $this->propertyTypeInferer->inferProperty($node);
