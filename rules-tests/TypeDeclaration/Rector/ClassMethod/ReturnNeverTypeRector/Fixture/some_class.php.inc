@@ -18,7 +18,10 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\
 
 final class SomeClass
 {
-    public function run(): never
+    /**
+     * @return never
+     */
+    public function run()
     {
         throw new InvalidException();
     }

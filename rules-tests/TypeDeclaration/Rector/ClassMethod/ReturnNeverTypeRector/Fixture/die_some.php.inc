@@ -19,7 +19,10 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\
 
 final class DieSome
 {
-    public function run(): never
+    /**
+     * @return never
+     */
+    public function run()
     {
         echo 100;
         die;

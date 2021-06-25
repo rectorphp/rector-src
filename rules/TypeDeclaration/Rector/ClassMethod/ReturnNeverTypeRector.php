@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -15,27 +14,26 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PHPStan\Type\NeverType;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Defluent\ConflictGuard\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://wiki.php.net/rfc/noreturn_type
- *
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\ReturnNeverTypeRectorTest
  */
 final class ReturnNeverTypeRector extends AbstractRector
 {
     public function __construct(
-        private ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add "never" type for methods that never return anything', [
+        return new RuleDefinition('Add "never" return-type for methods that never return anything', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
@@ -51,7 +49,10 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function run(): never
+    /**
+     * @return never
+     */
+    public function run()
     {
         throw new InvalidException();
     }
@@ -74,10 +75,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEVER_TYPE)) {
-            return null;
-        }
-
         $returns = $this->betterNodeFinder->findInstanceOf($node, Return_::class);
         if ($returns !== []) {
             return null;
@@ -100,7 +97,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->returnType = new Name('never');
+        if ($node->returnType && $this->isName($node->returnType, 'never')) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new NeverType());
 
         return $node;
     }
