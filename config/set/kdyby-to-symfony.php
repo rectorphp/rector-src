@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Core\ValueObject\Visibility;
-use Rector\NetteToSymfony\Rector\MethodCall\WrapTransParameterNameRector;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
