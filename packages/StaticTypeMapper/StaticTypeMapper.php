@@ -47,6 +47,8 @@ final class StaticTypeMapper
     }
 
     /**
+     * @param 'property'|'return'|null $kind
+     *
      * @return Name|NullableType|PhpParserUnionType|null
      */
     public function mapPHPStanTypeToPhpParserNode(Type $phpStanType, ?string $kind = null): ?Node
