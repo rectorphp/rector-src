@@ -32,7 +32,7 @@ final class PHPStanStaticTypeMapper
                 continue;
             }
 
-            return $typeMapper->mapToPHPStanPhpDocTypeNode($type);
+            return $typeMapper->mapToPHPStanPhpDocTypeNode($type, $kind);
         }
 
         throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
