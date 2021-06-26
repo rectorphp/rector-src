@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 
 final class PHPStanStaticTypeMapper
 {
@@ -23,7 +24,7 @@ final class PHPStanStaticTypeMapper
     }
 
     /**
-     * @param 'property'|'return'|null $kind
+     * @param TypeKind::*|null $kind
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
     {
@@ -39,7 +40,7 @@ final class PHPStanStaticTypeMapper
     }
 
     /**
-     * @param 'property'|'param'|null $kind
+     * @param TypeKind::*|null $kind
      */
     public function mapToPhpParserNode(Type $type, ?string $kind = null): Name | NullableType | UnionType | null
     {
