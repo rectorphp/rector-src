@@ -24,8 +24,11 @@ final class NeverTypeMapper implements TypeMapperInterface
     /**
      * @param NeverType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
     {
+        if ($kind === 'return') {
+            return new IdentifierTypeNode('never');
+        }
         return new IdentifierTypeNode('mixed');
     }
 
