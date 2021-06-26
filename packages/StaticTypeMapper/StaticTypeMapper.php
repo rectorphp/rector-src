@@ -41,13 +41,16 @@ final class StaticTypeMapper
     ) {
     }
 
-    public function mapPHPStanTypeToPHPStanPhpDocTypeNode(Type $phpStanType): TypeNode
+    /**
+     * @param 'property'|'return'|null $kind
+     */
+    public function mapPHPStanTypeToPHPStanPhpDocTypeNode(Type $phpStanType, ?string $kind = null): TypeNode
     {
-        return $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($phpStanType);
+        return $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($phpStanType, $kind);
     }
 
     /**
-     * @param 'property'|'return'|null $kind
+     * @param 'property'|'param'|null $kind
      *
      * @return Name|NullableType|PhpParserUnionType|null
      */
