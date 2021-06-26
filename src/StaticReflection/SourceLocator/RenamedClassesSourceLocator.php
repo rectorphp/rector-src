@@ -8,20 +8,21 @@ use PHPStan\BetterReflection\Identifier\Identifier;
 use PHPStan\BetterReflection\Identifier\IdentifierType;
 use PHPStan\BetterReflection\Reflection\Reflection;
 use PHPStan\BetterReflection\Reflection\ReflectionClass;
+use PHPStan\BetterReflection\Reflector\ClassReflector;
 use PHPStan\BetterReflection\Reflector\Reflector;
+use PHPStan\BetterReflection\SourceLocator\Located\LocatedSource;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
+use Symplify\Astral\ValueObject\NodeBuilder\ClassBuilder;
 
 /**
  * Inspired from \PHPStan\BetterReflection\SourceLocator\Type\StringSourceLocator
  */
 final class RenamedClassesSourceLocator implements SourceLocator
 {
-    private RenamedClassesDataCollector $renamedClassesDataCollector;
-
-    public function __construct(RenamedClassesDataCollector $renamedClassesDataCollector)
-    {
-        $this->renamedClassesDataCollector = $renamedClassesDataCollector;
+    public function __construct(
+        private RenamedClassesDataCollector $renamedClassesDataCollector,
+    ) {
     }
 
     public function locateIdentifier(Reflector $reflector, Identifier $identifier): ?Reflection
@@ -31,7 +32,8 @@ final class RenamedClassesSourceLocator implements SourceLocator
                 continue;
             }
 
-            return ReflectionClass::createFromName($newClass);
+            // inspired at https://github.com/phpstan/phpstan-src/blob/a9dd9af959fb0c1e0a09d4850f78e05e8dff3d91/src/Reflection/BetterReflection/BetterReflectionProvider.php#L220-L225
+            return $this->createFakeReflectionClassFromClassName($oldClass);
         }
 
         return null;
@@ -40,5 +42,15 @@ final class RenamedClassesSourceLocator implements SourceLocator
     public function locateIdentifiersByType(Reflector $reflector, IdentifierType $identifierType): array
     {
         return [];
+    }
+
+    private function createFakeReflectionClassFromClassName(string $oldClass): ReflectionClass
+    {
+        $classBuilder = new ClassBuilder($oldClass);
+        $class = $classBuilder->getNode();
+        $fakeLocatedSource = new LocatedSource('virtual', null);
+
+        $classReflector = new ClassReflector($this);
+        return ReflectionClass::createFromNode($classReflector, $class, $fakeLocatedSource);
     }
 }

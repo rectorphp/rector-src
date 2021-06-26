@@ -51,7 +51,7 @@ final class PHPStanNodeScopeResolver
         private ScopeFactory $scopeFactory,
         private TraitNodeScopeCollector $traitNodeScopeCollector,
         private PrivatesAccessor $privatesAccessor,
-        private RenamedClassesSourceLocator $renamedClassSourceLocator,
+        private RenamedClassesSourceLocator $renamedClassesSourceLocator,
     ) {
     }
 
@@ -175,12 +175,12 @@ final class PHPStanNodeScopeResolver
     ): void {
         // 1. get PHPStan locator
         /** @var ClassReflector $classReflector */
-        $classReflector = $this->privatesAccessor->getPrivateProperty($this->nodeScopeResolver, 'classReflector');
+        $classReflector = $this->privatesAccessor->getPrivateProperty($nodeScopeResolver, 'classReflector');
         /** @var SourceLocator $sourceLocator */
         $sourceLocator = $this->privatesAccessor->getPrivateProperty($classReflector, 'sourceLocator');
 
         // 2. get Rector locator
-        $extendedSourceLocator = new AggregateSourceLocator([$sourceLocator, $this->renamedClassSourceLocator]);
-        $this->privatesAccessor->setPrivateProperty($classReflector, 'sourceLocator', $extendedSourceLocator);
+        $aggregateSourceLocator = new AggregateSourceLocator([$sourceLocator, $this->renamedClassesSourceLocator]);
+        $this->privatesAccessor->setPrivateProperty($classReflector, 'sourceLocator', $aggregateSourceLocator);
     }
 }
