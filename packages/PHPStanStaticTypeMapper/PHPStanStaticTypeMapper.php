@@ -12,7 +12,7 @@ use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 
-final class PHPStanStaticTypeMapper
+final class PHPStanStaticTypeMapper implements TypeMapperInterface
 {
     /**
      * @param TypeMapperInterface[] $typeMappers
@@ -22,7 +22,7 @@ final class PHPStanStaticTypeMapper
     ) {
     }
 
-    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
     {
         foreach ($this->typeMappers as $typeMapper) {
             if (! is_a($type, $typeMapper->getNodeClass(), true)) {
@@ -46,5 +46,10 @@ final class PHPStanStaticTypeMapper
         }
 
         throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
+    }
+
+    public function getNodeClass(): string
+    {
+        throw new NotImplementedYetException(__METHOD__ );
     }
 }
