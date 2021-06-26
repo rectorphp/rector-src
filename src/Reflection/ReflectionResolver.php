@@ -64,7 +64,7 @@ final class ReflectionResolver
         }
 
         foreach ($classes as $class) {
-            $methodReflection = $this->resolveNativeClassMethodReflection($class, $methodName);
+            $methodReflection = $this->resolveMethodReflection($class, $methodName);
             if ($methodReflection instanceof MethodReflection) {
                 return $methodReflection;
             }
