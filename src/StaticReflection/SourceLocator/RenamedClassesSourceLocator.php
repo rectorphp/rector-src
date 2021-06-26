@@ -10,15 +10,16 @@ use PHPStan\BetterReflection\Reflection\Reflection;
 use PHPStan\BetterReflection\Reflection\ReflectionClass;
 use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 
 /**
  * Inspired from \PHPStan\BetterReflection\SourceLocator\Type\StringSourceLocator
  */
 final class RenamedClassesSourceLocator implements SourceLocator
 {
-    private \Rector\Core\Configuration\RenamedClassesDataCollector $renamedClassesDataCollector;
+    private RenamedClassesDataCollector $renamedClassesDataCollector;
 
-    public function __construct(\Rector\Core\Configuration\RenamedClassesDataCollector $renamedClassesDataCollector)
+    public function __construct(RenamedClassesDataCollector $renamedClassesDataCollector)
     {
         $this->renamedClassesDataCollector = $renamedClassesDataCollector;
     }
