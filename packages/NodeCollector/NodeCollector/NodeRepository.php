@@ -34,25 +34,12 @@ final class NodeRepository
 
     public function hasClassChildren(Class_ $desiredClass): bool
     {
-        $desiredClassName = $desiredClass->getAttribute(AttributeKey::CLASS_NAME);
+        $desiredClassName = $this->nodeNameResolver->getName($desiredClass);
         if ($desiredClassName === null) {
             return false;
         }
 
-        foreach ($this->parsedNodeCollector->getClasses() as $classNode) {
-            $currentClassName = $classNode->getAttribute(AttributeKey::CLASS_NAME);
-            if ($currentClassName === null) {
-                continue;
-            }
-
-            if (! $this->isChildOrEqualClassLike($desiredClassName, $currentClassName)) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
+        return $this->findChildrenOfClass($desiredClassName) !== [];
     }
 
     /**
@@ -85,6 +72,7 @@ final class NodeRepository
     }
 
     /**
+     * @param class-string $class
      * @return Class_[]
      */
     public function findChildrenOfClass(string $class): array
@@ -103,17 +91,24 @@ final class NodeRepository
         return $childrenClasses;
     }
 
+    /**
+     * @param class-string $class
+     */
     public function findInterface(string $class): ?Interface_
     {
         return $this->parsedNodeCollector->findInterface($class);
     }
 
+    /**
+     * @param class-string $name
+     */
     public function findClass(string $name): ?Class_
     {
         return $this->parsedNodeCollector->findClass($name);
     }
 
     /**
+     * @deprecated
      * @param PropertyFetch|StaticPropertyFetch $expr
      */
     public function findPropertyByPropertyFetch(Expr $expr): ?Property
@@ -171,6 +166,7 @@ final class NodeRepository
         if (! $currentClassReflection->isSubclassOf($desiredClassReflection->getName())) {
             return false;
         }
+
         return $currentClassName !== $desiredClass;
     }
 
