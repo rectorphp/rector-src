@@ -7,6 +7,7 @@ namespace Rector\Core\Reflection;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -14,6 +15,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeUtils;
 use PHPStan\Type\TypeWithClassName;
@@ -166,4 +168,40 @@ final class ReflectionResolver
         $funcCallNameType = $scope->getType($funcCall->name);
         return $this->typeToCallReflectionResolverRegistry->resolve($funcCallNameType, $scope);
     }
+
+    public function resolvePropertyReflectionFromPropertyFetch(PropertyFetch $propertyFetch): ?PhpPropertyReflection
+    {
+        $fetcheeType = $this->nodeTypeResolver->resolve($propertyFetch->var);
+        if (! $fetcheeType instanceof TypeWithClassName) {
+            return null;
+        }
+
+        if (! $this->reflectionProvider->hasClass($fetcheeType->getClassName())) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($fetcheeType->getClassName());
+
+        $propertyName = $this->nodeNameResolver->getName($propertyFetch->name);
+        if ($propertyName === null) {
+            return null;
+        }
+
+        if (! $classReflection->hasProperty($propertyName)) {
+            return null;
+        }
+
+        $scope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
+        if ($scope instanceof Scope) {
+            $propertyRelfection = $classReflection->getProperty($propertyName, $scope);
+            if ($propertyRelfection instanceof PhpPropertyReflection) {
+                return $propertyRelfection;
+            }
+
+            return null;
+        }
+
+        return $classReflection->getNativeProperty($propertyName);
+    }
+
 }
