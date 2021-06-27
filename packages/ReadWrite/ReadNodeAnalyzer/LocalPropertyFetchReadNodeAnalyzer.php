@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\ReadWrite\ReadNodeAnalyzer;
 
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -17,7 +16,6 @@ final class LocalPropertyFetchReadNodeAnalyzer implements ReadNodeAnalyzerInterf
 {
     public function __construct(
         private JustReadExprAnalyzer $justReadExprAnalyzer,
-        private ReflectionProvider $reflectionProvider,
         private PropertyFetchFinder $propertyFetchFinder,
         private NodeNameResolver $nodeNameResolver
     ) {
