@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
@@ -152,23 +151,6 @@ final class ReflectionResolver
         return $this->resolveMethodReflection($newClassType->getClassName(), MethodName::CONSTRUCT, $scope);
     }
 
-    private function resolveFunctionReflectionFromFuncCall(FuncCall $funcCall): FunctionReflection | MethodReflection | null
-    {
-        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
-
-        if ($funcCall->name instanceof Name) {
-            if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
-                return $this->reflectionProvider->getFunction($funcCall->name, $scope);
-            }
-
-            return null;
-        }
-
-        // fallback to callable
-        $funcCallNameType = $scope->getType($funcCall->name);
-        return $this->typeToCallReflectionResolverRegistry->resolve($funcCallNameType, $scope);
-    }
-
     public function resolvePropertyReflectionFromPropertyFetch(PropertyFetch $propertyFetch): ?PhpPropertyReflection
     {
         $fetcheeType = $this->nodeTypeResolver->resolve($propertyFetch->var);
@@ -204,4 +186,21 @@ final class ReflectionResolver
         return $classReflection->getNativeProperty($propertyName);
     }
 
+    private function resolveFunctionReflectionFromFuncCall(
+        FuncCall $funcCall
+    ): FunctionReflection | MethodReflection | null {
+        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+
+        if ($funcCall->name instanceof Name) {
+            if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
+                return $this->reflectionProvider->getFunction($funcCall->name, $scope);
+            }
+
+            return null;
+        }
+
+        // fallback to callable
+        $funcCallNameType = $scope->getType($funcCall->name);
+        return $this->typeToCallReflectionResolverRegistry->resolve($funcCallNameType, $scope);
+    }
 }

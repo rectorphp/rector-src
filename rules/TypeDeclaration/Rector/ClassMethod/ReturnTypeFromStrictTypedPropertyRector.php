@@ -6,15 +6,11 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\UnionType;
 use PHPStan\Type\MixedType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -26,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictTypedPropertyRector extends AbstractRector
 {
     public function __construct(
-        private TypeFactory $typeFactory
+        private TypeFactory $typeFactory,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -83,14 +80,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $propertyTypeNodes = $this->resolveReturnPropertyTypeNodes($node);
-        if ($propertyTypeNodes === []) {
+        $propertyTypes = $this->resolveReturnPropertyType($node);
+        if ($propertyTypes === []) {
             return null;
-        }
-
-        $propertyTypes = [];
-        foreach ($propertyTypeNodes as $propertyTypeNode) {
-            $propertyTypes[] = $this->staticTypeMapper->mapPhpParserNodePHPStanType($propertyTypeNode);
         }
 
         // add type to return type
@@ -110,14 +102,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<Identifier|Name|NullableType|UnionType>
+     * @return \PHPStan\Type\Type[]
      */
-    private function resolveReturnPropertyTypeNodes(ClassMethod $classMethod): array
+    private function resolveReturnPropertyType(ClassMethod $classMethod): array
     {
         /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstanceOf($classMethod, Return_::class);
 
         $propertyTypes = [];
+
         foreach ($returns as $return) {
             if ($return->expr === null) {
                 return [];
@@ -127,16 +120,18 @@ CODE_SAMPLE
                 return [];
             }
 
-            $property = $this->nodeRepository->findPropertyByPropertyFetch($return->expr);
-            if (! $property instanceof Property) {
+            $propertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch(
+                $return->expr
+            );
+            if ($propertyReflection === null) {
                 return [];
             }
 
-            if ($property->type === null) {
+            if ($propertyReflection->getNativeType() instanceof MixedType) {
                 return [];
             }
 
-            $propertyTypes[] = $property->type;
+            $propertyTypes[] = $propertyReflection->getNativeType();
         }
 
         return $propertyTypes;
