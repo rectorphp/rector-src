@@ -24,6 +24,10 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
+/**
+ * @deprecated Use
+ * @see ReflectionProvider instead
+ */
 final class CallReflectionResolver
 {
     public function __construct(
@@ -34,26 +38,6 @@ final class CallReflectionResolver
     ) {
     }
 
-    public function resolveConstructor(New_ $new): ?MethodReflection
-    {
-        $scope = $new->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
-        $classType = $this->nodeTypeResolver->resolve($new->class);
-
-        if ($classType instanceof UnionType) {
-            return $this->matchConstructorMethodInUnionType($classType, $scope);
-        }
-
-        if (! $classType->hasMethod(MethodName::CONSTRUCT)->yes()) {
-            return null;
-        }
-
-        return $classType->getMethod(MethodName::CONSTRUCT, $scope);
-    }
-
     public function resolveCall(FuncCall | MethodCall | StaticCall $call): MethodReflection | FunctionReflection | null
     {
         if ($call instanceof FuncCall) {
@@ -61,32 +45,6 @@ final class CallReflectionResolver
         }
 
         return $this->resolveMethodCall($call);
-    }
-
-    public function resolveParametersAcceptor(
-        FunctionReflection | MethodReflection | null $reflection
-    ): ?ParametersAcceptor {
-        if ($reflection === null) {
-            return null;
-        }
-
-        return $reflection->getVariants()[0];
-    }
-
-    private function matchConstructorMethodInUnionType(UnionType $unionType, Scope $scope): ?MethodReflection
-    {
-        foreach ($unionType->getTypes() as $unionedType) {
-            if (! $unionedType instanceof TypeWithClassName) {
-                continue;
-            }
-            if (! $unionedType->hasMethod(MethodName::CONSTRUCT)->yes()) {
-                continue;
-            }
-
-            return $unionedType->getMethod(MethodName::CONSTRUCT, $scope);
-        }
-
-        return null;
     }
 
     private function resolveFunctionCall(FuncCall $funcCall): FunctionReflection | MethodReflection | null

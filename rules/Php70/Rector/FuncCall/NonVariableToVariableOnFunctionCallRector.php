@@ -107,18 +107,18 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
     }
 
     /**
-     * @param FuncCall|MethodCall|StaticCall $node
-     *
      * @return Expr[]
      */
-    private function getNonVariableArguments(Node $node): array
+    private function getNonVariableArguments(FuncCall|MethodCall|StaticCall $call): array
     {
         $arguments = [];
 
-        $parametersAcceptor = $this->callReflectionResolver->resolveParametersAcceptor(
-            $this->callReflectionResolver->resolveCall($node),
-        );
+        $functionLikeReflection = $this->callReflectionResolver->resolveCall($call);
+        if ($functionLikeReflection === null) {
+            return [];
+        }
 
+        $parametersAcceptor = $functionLikeReflection->getVariants()[0] ?? null;
         if (! $parametersAcceptor instanceof ParametersAcceptor) {
             return [];
         }
@@ -126,7 +126,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
         /** @var ParameterReflection $parameterReflection */
         foreach ($parametersAcceptor->getParameters() as $key => $parameterReflection) {
             // omitted optional parameter
-            if (! isset($node->args[$key])) {
+            if (! isset($call->args[$key])) {
                 continue;
             }
 
@@ -134,7 +134,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
                 continue;
             }
 
-            $argument = $node->args[$key]->value;
+            $argument = $call->args[$key]->value;
 
             if ($this->isVariableLikeNode($argument)) {
                 continue;
