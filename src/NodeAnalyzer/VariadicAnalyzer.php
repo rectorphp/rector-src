@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Stmt\Function_;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpFunctionReflection;
@@ -39,7 +40,7 @@ final class VariadicAnalyzer
 
         if ($functionLikeReflection instanceof PhpFunctionReflection) {
             $function = $this->astResolver->resolveFunctionFromFunctionReflection($functionLikeReflection);
-            if ($function === null) {
+            if (! $function instanceof Function_) {
                 return false;
             }
 
@@ -57,9 +58,9 @@ final class VariadicAnalyzer
 
     private function hasVariadicVariant(MethodReflection | FunctionReflection $functionLikeReflection): bool
     {
-        foreach ($functionLikeReflection->getVariants() as $variant) {
+        foreach ($functionLikeReflection->getVariants() as $parametersAcceptor) {
             // can be any number of arguments → nothing to limit here
-            if ($variant->isVariadic()) {
+            if ($parametersAcceptor->isVariadic()) {
                 return true;
             }
         }
