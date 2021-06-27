@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -102,7 +104,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return \PHPStan\Type\Type[]
+     * @return Type[]
      */
     private function resolveReturnPropertyType(ClassMethod $classMethod): array
     {
@@ -123,7 +125,7 @@ CODE_SAMPLE
             $propertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch(
                 $return->expr
             );
-            if ($propertyReflection === null) {
+            if (! $propertyReflection instanceof PhpPropertyReflection) {
                 return [];
             }
 
