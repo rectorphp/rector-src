@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\NodeCollector\NodeCollector;
 
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\TypeWithClassName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 /**
  * This service contains all the parsed nodes. E.g. all the functions, method call, classes, static calls etc. It's
@@ -28,7 +22,6 @@ final class NodeRepository
         private NodeNameResolver $nodeNameResolver,
         private ParsedNodeCollector $parsedNodeCollector,
         private ReflectionProvider $reflectionProvider,
-        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -105,33 +98,6 @@ final class NodeRepository
     public function findClass(string $name): ?Class_
     {
         return $this->parsedNodeCollector->findClass($name);
-    }
-
-    /**
-     * @deprecated
-     * @param PropertyFetch|StaticPropertyFetch $expr
-     */
-    public function findPropertyByPropertyFetch(Expr $expr): ?Property
-    {
-        $propertyCaller = $expr instanceof StaticPropertyFetch ? $expr->class : $expr->var;
-
-        $propertyCallerType = $this->nodeTypeResolver->getStaticType($propertyCaller);
-        if (! $propertyCallerType instanceof TypeWithClassName) {
-            return null;
-        }
-
-        $className = $this->nodeTypeResolver->getFullyQualifiedClassName($propertyCallerType);
-        $class = $this->findClass($className);
-        if (! $class instanceof Class_) {
-            return null;
-        }
-
-        $propertyName = $this->nodeNameResolver->getName($expr->name);
-        if ($propertyName === null) {
-            return null;
-        }
-
-        return $class->getProperty($propertyName);
     }
 
     public function findTrait(string $name): ?Trait_

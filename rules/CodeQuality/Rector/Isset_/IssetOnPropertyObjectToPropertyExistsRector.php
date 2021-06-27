@@ -12,22 +12,13 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Scalar\String_;
-<<<<<<< HEAD
-use PHPStan\Reflection\Php\PhpPropertyReflection;
-=======
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassReflection;
->>>>>>> 81588f40e (cleanup NodeeEpository)
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
-<<<<<<< HEAD
 use Rector\Core\Reflection\ReflectionResolver;
-=======
-use Rector\NodeTypeResolver\Node\AttributeKey;
->>>>>>> 81588f40e (cleanup NodeeEpository)
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -95,14 +86,11 @@ CODE_SAMPLE
                 continue;
             }
 
-<<<<<<< HEAD
             // has property PHP 7.4 type?
             if ($this->hasPropertyTypeDeclaration($issetVar)) {
                 continue;
             }
 
-=======
->>>>>>> 81588f40e (cleanup NodeeEpository)
             $propertyFetchName = $this->getName($issetVar->name);
             if ($propertyFetchName === null) {
                 continue;
@@ -124,11 +112,6 @@ CODE_SAMPLE
                         $issetVar
                     );
                 } else {
-                    // has property PHP 7.4 type?
-                    if ($this->hasPropertyTypeDeclaration($issetVar, $classReflection)) {
-                        continue;
-                    }
-
                     $newNodes[] = $this->createNotIdenticalToNull($issetVar);
                 }
             } else {
@@ -159,7 +142,6 @@ CODE_SAMPLE
         return new NotIdentical($expr, $this->nodeFactory->createNull());
     }
 
-<<<<<<< HEAD
     private function hasPropertyTypeDeclaration(PropertyFetch $propertyFetch): bool
     {
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($propertyFetch);
@@ -168,21 +150,5 @@ CODE_SAMPLE
         }
 
         return ! $phpPropertyReflection->getNativeType() instanceof MixedType;
-=======
-    private function hasPropertyTypeDeclaration(PropertyFetch $propertyFetch, ClassReflection $classReflection): bool
-    {
-        $scope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
-        $propertyFetchName = $this->nodeNameResolver->getName($propertyFetch->name);
-        if ($propertyFetchName === null) {
-            return false;
-        }
-
-        $propertyReflection = $classReflection->getProperty($propertyFetchName, $scope);
-        return ! $propertyReflection->getReadableType() instanceof MixedType;
->>>>>>> 81588f40e (cleanup NodeeEpository)
     }
 }
