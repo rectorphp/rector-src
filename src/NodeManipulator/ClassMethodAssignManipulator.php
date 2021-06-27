@@ -22,12 +22,10 @@ use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -46,7 +44,6 @@ final class ClassMethodAssignManipulator
         private NodeFactory $nodeFactory,
         private NodeNameResolver $nodeNameResolver,
         private VariableManipulator $variableManipulator,
-        private CallReflectionResolver $callReflectionResolver,
         private NodeComparator $nodeComparator,
         private ReflectionResolver $reflectionResolver
     ) {
@@ -297,7 +294,7 @@ final class ClassMethodAssignManipulator
             return false;
         }
 
-        $methodReflection = $this->callReflectionResolver->resolveCall($node);
+        $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromMethodCall($node);
         if (! $methodReflection instanceof MethodReflection) {
             return false;
         }
@@ -353,11 +350,11 @@ final class ClassMethodAssignManipulator
     private function isParameterReferencedInMethodReflection(New_ $new, int $argumentPosition): bool
     {
         $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($new);
-        if ($methodReflection === null) {
+        if (! $methodReflection instanceof MethodReflection) {
             return false;
         }
 
-        $parametersAcceptor = $methodReflection->getVariants()[0]?? null;
+        $parametersAcceptor = $methodReflection->getVariants()[0] ?? null;
         if (! $parametersAcceptor instanceof ParametersAcceptor) {
             return false;
         }

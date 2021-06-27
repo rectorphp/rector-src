@@ -22,8 +22,8 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\MixedType;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Naming\Naming\VariableNaming;
 use Rector\NodeNestingScope\ParentScopeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -39,9 +39,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
 {
     public function __construct(
-        private CallReflectionResolver $callReflectionResolver,
         private VariableNaming $variableNaming,
-        private ParentScopeFinder $parentScopeFinder
+        private ParentScopeFinder $parentScopeFinder,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -113,7 +113,8 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
     {
         $arguments = [];
 
-        $functionLikeReflection = $this->callReflectionResolver->resolveCall($call);
+        $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($call);
+
         if ($functionLikeReflection === null) {
             return [];
         }

@@ -18,7 +18,6 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,7 +29,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeNamedArgumentRector extends AbstractRector
 {
     public function __construct(
-        private CallReflectionResolver $callReflectionResolver,
         private ReflectionResolver $reflectionResolver
     ) {
     }
@@ -102,7 +100,6 @@ CODE_SAMPLE
     {
         if ($node instanceof New_) {
             $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($node);
-            //$methodReflection = $this->callReflectionResolver->resolveConstructor($node);
             if (! $methodReflection instanceof MethodReflection) {
                 return null;
             }

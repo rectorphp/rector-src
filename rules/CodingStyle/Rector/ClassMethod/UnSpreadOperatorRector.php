@@ -13,7 +13,6 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpFunctionReflection;
 use Rector\CodingStyle\NodeAnalyzer\SpreadVariablesCollector;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -103,7 +102,7 @@ CODE_SAMPLE
     private function processUnspreadOperatorMethodCallArgs(MethodCall $methodCall): ?MethodCall
     {
         $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromMethodCall($methodCall);
-        if ($methodReflection === null) {
+        if (! $methodReflection instanceof MethodReflection) {
             return null;
         }
 
