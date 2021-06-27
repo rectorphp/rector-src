@@ -47,10 +47,8 @@ final class ReflectionResolver
             if ($classReflection->hasMethod($methodName)) {
                 return $classReflection->getMethod($methodName, $scope);
             }
-        } else {
-            if ($classReflection->hasNativeMethod($methodName)) {
-                return $classReflection->getNativeMethod($methodName);
-            }
+        } elseif ($classReflection->hasNativeMethod($methodName)) {
+            return $classReflection->getNativeMethod($methodName);
         }
 
         return null;
