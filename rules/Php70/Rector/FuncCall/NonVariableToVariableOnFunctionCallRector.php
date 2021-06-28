@@ -21,9 +21,12 @@ use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParameterReflection;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use PHPStan\Reflection\ParametersAcceptor;
 >>>>>>> 63c381fa7 (cleanup stuff)
+=======
+>>>>>>> 99ae1e939 ([ci-review] Rector Rectify)
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\MixedType;
 use Rector\Core\Rector\AbstractRector;
@@ -125,11 +128,14 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
 
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         if (! $parametersAcceptor instanceof ParametersAcceptor) {
             return [];
         }
 >>>>>>> 63c381fa7 (cleanup stuff)
+=======
+>>>>>>> 99ae1e939 ([ci-review] Rector Rectify)
 
         /** @var ParameterReflection $parameterReflection */
         foreach ($parametersAcceptor->getParameters() as $key => $parameterReflection) {
