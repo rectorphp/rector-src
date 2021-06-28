@@ -21,6 +21,7 @@ use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\MixedType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -119,7 +120,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
             return [];
         }
 
-        $parametersAcceptor = $functionLikeReflection->getVariants()[0] ?? null;
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
         if (! $parametersAcceptor instanceof ParametersAcceptor) {
             return [];
         }
