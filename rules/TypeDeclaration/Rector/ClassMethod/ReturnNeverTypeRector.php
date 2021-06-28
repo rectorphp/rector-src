@@ -79,29 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $returns = $this->betterNodeFinder->findInstanceOf($node, Return_::class);
-        if ($returns !== []) {
-            return null;
-        }
-
-        $notNeverNodes = $this->betterNodeFinder->findInstancesOf($node, [Yield_::class]);
-        if ($notNeverNodes !== []) {
-            return null;
-        }
-
-        $neverNodes = $this->betterNodeFinder->findInstancesOf($node, [Node\Expr\Throw_::class, Throw_::class]);
-        $hasNeverFuncCall = $this->resolveHasNeverFuncCall($node);
-        if ($neverNodes === [] && ! $hasNeverFuncCall) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod && ! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed(
-            $node
-        )) {
-            return null;
-        }
-
-        if ($node->returnType && $this->isName($node->returnType, 'never')) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -116,6 +94,38 @@ CODE_SAMPLE
 
 
         return $node;
+    }
+
+    /**
+     * @param ClassMethod|Function_ $node
+     */
+    private function shouldSkip($node):bool {
+        $returns = $this->betterNodeFinder->findInstanceOf($node, Return_::class);
+        if ($returns !== []) {
+            return true;
+        }
+
+        $notNeverNodes = $this->betterNodeFinder->findInstancesOf($node, [Yield_::class]);
+        if ($notNeverNodes !== []) {
+            return true;
+        }
+
+        $neverNodes = $this->betterNodeFinder->findInstancesOf($node, [Node\Expr\Throw_::class, Throw_::class]);
+        $hasNeverFuncCall = $this->resolveHasNeverFuncCall($node);
+        if ($neverNodes === [] && ! $hasNeverFuncCall) {
+            return true;
+        }
+
+        if ($node instanceof ClassMethod && ! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed(
+                $node
+            )) {
+            return true;
+        }
+
+        if ($node->returnType && $this->isName($node->returnType, 'never')) {
+            return true;
+        }
+        return false;
     }
 
     /**
