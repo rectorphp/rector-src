@@ -92,7 +92,6 @@ CODE_SAMPLE
             $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new NeverType());
         }
 
-
         return $node;
     }
 
