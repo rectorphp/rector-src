@@ -7,6 +7,7 @@ namespace Rector\Php74\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -151,6 +152,10 @@ CODE_SAMPLE
             $ancestors = $classReflection->getAncestors();
             $propertyName = $this->getName($node);
 
+            $kindPropertyFetch = $node->isStatic()
+                ? StaticPropertyFetch::class
+                : PropertyFetch::class;
+
             foreach ($ancestors as $ancestor) {
                 $fileName = $ancestor->getFileName();
                 $fileContent = $this->smartFileSystem->readFile($fileName);
@@ -164,7 +169,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $isFilled = (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $n) use ($propertyName) {
+                $isFilled = (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $n) use ($propertyName, $kindPropertyFetch) {
                     if (! $n instanceof ClassMethod) {
                         return false;
                     }
@@ -174,13 +179,14 @@ CODE_SAMPLE
                     }
 
                     return (bool) $this->betterNodeFinder->findFirst((array) $n->stmts, function (Node $n2) use (
-                        $propertyName
+                        $propertyName,
+                        $kindPropertyFetch
                     ) {
                         if (! $n2 instanceof Assign) {
                             return false;
                         }
 
-                        return $n2->var instanceof PropertyFetch && $this->getName($n2->var, $propertyName);
+                        return is_a($n2->var, $kindPropertyFetch, true) && $this->getName($n2->var, $propertyName);
                     });
                 });
 
