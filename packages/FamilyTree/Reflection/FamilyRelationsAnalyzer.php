@@ -24,6 +24,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -86,7 +87,13 @@ final class FamilyRelationsAnalyzer
             ? StaticPropertyFetch::class
             : PropertyFetch::class;
 
+        $className = $node->getAttribute(AttributeKey::CLASS_NAME);
         foreach ($ancestors as $ancestor) {
+            $ancestorName = $ancestor->getName();
+            if ($ancestorName === $className) {
+                continue;
+            }
+
             $fileName = (string) $ancestor->getFileName();
             $fileContent = $this->smartFileSystem->readFile($fileName);
             $nodes = $this->parser->parse($fileContent);
