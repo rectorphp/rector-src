@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ArrayThisCallToThisMethodCallRector extends AbstractRector
 {
     public function __construct(
-        private ArrayCallableMethodMatcher $arrayCallableMethodReferenceAnalyzer,
+        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
         private ReflectionProvider $reflectionProvider
     ) {
     }
@@ -85,7 +85,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $arrayCallable = $this->arrayCallableMethodReferenceAnalyzer->match($node);
+        $arrayCallable = $this->arrayCallableMethodMatcher->match($node);
         if (! $arrayCallable instanceof ArrayCallable) {
             return null;
         }

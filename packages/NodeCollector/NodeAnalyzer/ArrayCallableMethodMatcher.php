@@ -12,7 +12,11 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -22,7 +26,9 @@ final class ArrayCallableMethodMatcher
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private ValueResolver $valueResolver,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -46,16 +52,19 @@ final class ArrayCallableMethodMatcher
 
         // $this, self, static, FQN
         $firstItemValue = $array->items[0]->value;
-        if (! $this->isThisVariable($firstItemValue)) {
-            return null;
-        }
-
         $secondItemValue = $array->items[1]->value;
+
         if (! $secondItemValue instanceof String_) {
             return null;
         }
 
-        $calleeType = $this->nodeTypeResolver->resolve($firstItemValue);
+        // static ::class reference?
+        if ($firstItemValue instanceof ClassConstFetch) {
+            $calleeType = $this->resolveClassConstFetchType($firstItemValue);
+        } else {
+            $calleeType = $this->nodeTypeResolver->resolve($firstItemValue);
+        }
+
         if (! $calleeType instanceof TypeWithClassName) {
             return null;
         }
@@ -120,5 +129,24 @@ final class ArrayCallableMethodMatcher
         }
 
         return $this->nodeNameResolver->isNames($parentParentNode, $functionNames);
+    }
+
+    private function resolveClassConstFetchType(ClassConstFetch $classConstFetch): MixedType | ObjectType
+    {
+        $classConstantReference = $this->valueResolver->getValue($classConstFetch);
+        if ($classConstantReference === 'static') {
+            $classConstantReference = $classConstFetch->getAttribute(AttributeKey::CLASS_NAME);
+        }
+
+        if ($classConstantReference === null) {
+            return new MixedType();
+        }
+
+        if (! $this->reflectionProvider->hasClass($classConstantReference)) {
+            return new MixedType();
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($classConstantReference);
+        return new ObjectType($classConstantReference, null, $classReflection);
     }
 }

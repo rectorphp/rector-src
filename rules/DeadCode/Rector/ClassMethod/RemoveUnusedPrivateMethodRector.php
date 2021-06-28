@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedPrivateMethodRector extends AbstractRector
 {
     public function __construct(
-        private ArrayCallableMethodMatcher $arrayCallableMethodReferenceAnalyzer
+        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher
     ) {
     }
 
@@ -198,8 +198,9 @@ CODE_SAMPLE
     {
         /** @var Array_[] $arrays */
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
+
         foreach ($arrays as $array) {
-            $arrayCallable = $this->arrayCallableMethodReferenceAnalyzer->match($array);
+            $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
             if (! $arrayCallable instanceof ArrayCallable) {
                 continue;
             }
