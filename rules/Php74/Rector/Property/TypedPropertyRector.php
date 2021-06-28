@@ -145,14 +145,12 @@ CODE_SAMPLE
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $varType instanceof UnionType && $scope instanceof Scope) {
-            [$varType, $propertyTypeNode] = $this->familyRelationsAnalyzer->getPossibleUnionPropertyType(
-                $node,
-                $varType,
-                $scope,
-                $propertyTypeNode
-            );
-        }
+        [$varType, $propertyTypeNode] = $this->familyRelationsAnalyzer->getPossibleUnionPropertyType(
+            $node,
+            $varType,
+            $scope,
+            $propertyTypeNode
+        );
 
         $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varType);
         $this->removeDefaultValueForDoctrineCollection($node, $varType);
