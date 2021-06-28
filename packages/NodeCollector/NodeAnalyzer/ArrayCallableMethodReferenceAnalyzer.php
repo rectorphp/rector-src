@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace Rector\NodeCollector\NodeAnalyzer;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Type\TypeWithClassName;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class ArrayCallableMethodReferenceAnalyzer
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -39,21 +45,33 @@ final class ArrayCallableMethodReferenceAnalyzer
         }
 
         // $this, self, static, FQN
-        if (! $this->isThisVariable($array->items[0]->value)) {
+        $firstItemValue = $array->items[0]->value;
+        if (! $this->isThisVariable($firstItemValue)) {
             return null;
         }
 
-        if (! $array->items[1]->value instanceof String_) {
+        $secondItemValue = $array->items[1]->value;
+        if (! $secondItemValue instanceof String_) {
             return null;
         }
 
-        /** @var String_ $string */
-        $string = $array->items[1]->value;
+        $calleeType = $this->nodeTypeResolver->resolve($firstItemValue);
+        if (! $calleeType instanceof TypeWithClassName) {
+            return null;
+        }
 
-        $methodName = $string->value;
-        $className = $array->getAttribute(AttributeKey::CLASS_NAME);
+        $className = $calleeType->getClassName();
 
-        if ($className === null) {
+        // ...
+
+        $methodName = $secondItemValue->value;
+//        $className = $array->getAttribute(AttributeKey::CLASS_NAME);
+//        if ($className === null) {
+//            return null;
+//        }
+
+        // required static calls, are not array callable per-se
+        if ($this->isCallbackAtFunctionNames($array, ['register_shutdown_function', 'forward_static_call'])) {
             return null;
         }
 
@@ -63,7 +81,11 @@ final class ArrayCallableMethodReferenceAnalyzer
     private function isThisVariable(Expr $expr): bool
     {
         // $this
-        if ($expr instanceof Variable && $this->nodeNameResolver->isName($expr, 'this')) {
+        if ($expr instanceof Variable) {
+            return true;
+        }
+
+        if ($expr instanceof PropertyFetch) {
             return true;
         }
 
@@ -88,5 +110,23 @@ final class ArrayCallableMethodReferenceAnalyzer
         }
 
         return false;
+    }
+
+    /**
+     * @param string[] $functionNames
+     */
+    private function isCallbackAtFunctionNames(Array_ $array, array $functionNames): bool
+    {
+        $parentNode = $array->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Arg) {
+            return false;
+        }
+
+        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentParentNode instanceof FuncCall) {
+            return false;
+        }
+
+        return $this->nodeNameResolver->isNames($parentParentNode, $functionNames);
     }
 }
