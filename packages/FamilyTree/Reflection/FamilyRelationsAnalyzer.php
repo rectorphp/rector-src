@@ -25,6 +25,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php74\ValueObject\PropertyType;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -66,16 +67,19 @@ final class FamilyRelationsAnalyzer
 
     /**
      * @param Name|NullableType|PhpParserUnionType|null $propertyTypeNode
-     * @return array<mixed>
      */
     public function getPossibleUnionPropertyType(
         Property $node,
         Type $varType,
-        Scope $scope,
+        ?Scope $scope,
         ?Node $propertyTypeNode
-    ): array {
+    ): PropertyType {
         if ($varType instanceof UnionType) {
-            return [$varType, $propertyTypeNode];
+            return new PropertyType($varType, $propertyTypeNode);
+        }
+
+        if (! $scope instanceof Scope) {
+            return new PropertyType($varType, $propertyTypeNode);
         }
 
         /** @var ClassReflection $classReflection */
@@ -114,11 +118,11 @@ final class FamilyRelationsAnalyzer
                     TypeKind::KIND_PROPERTY
                 );
 
-                return [$varType, $propertyTypeNode];
+                return new PropertyType($varType, $propertyTypeNode);
             }
         }
 
-        return [$varType, $propertyTypeNode];
+        return new PropertyType($varType, $propertyTypeNode);
     }
 
     /**

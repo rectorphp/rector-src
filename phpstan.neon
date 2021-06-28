@@ -130,7 +130,6 @@ parameters:
             message: '#Use value object over return of values#'
             paths:
                 - rules/Php70/EregToPcreTransformer.php
-                - packages/FamilyTree/Reflection/FamilyRelationsAnalyzer.php
 
         -
             message: '#Nested foreach with empty statement is not allowed#'
@@ -353,7 +352,6 @@ parameters:
             message: '#Array destruct is not allowed\. Use value object to pass data instead#'
             paths:
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
-                - rules/Php74/Rector/Property/TypedPropertyRector.php
 
         -
             message: '#Use value object over return of values#'

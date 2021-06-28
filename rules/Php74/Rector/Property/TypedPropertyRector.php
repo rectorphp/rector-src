@@ -9,7 +9,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as PhpParserUnionType;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\MixedType;
@@ -141,12 +140,14 @@ CODE_SAMPLE
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        [$varType, $propertyTypeNode] = $this->familyRelationsAnalyzer->getPossibleUnionPropertyType(
+        $propertyType = $this->familyRelationsAnalyzer->getPossibleUnionPropertyType(
             $node,
             $varType,
             $scope,
             $propertyTypeNode
         );
+        $varType = $propertyType->getVarType();
+        $propertyTypeNode = $propertyType->getPropertyTypeNode();
 
         $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varType);
         $this->removeDefaultValueForDoctrineCollection($node, $varType);
