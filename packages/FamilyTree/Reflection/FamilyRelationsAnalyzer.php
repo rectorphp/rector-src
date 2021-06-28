@@ -67,7 +67,7 @@ final class FamilyRelationsAnalyzer
      * @param Name|NullableType|PhpParserUnionType|null $propertyTypeNode
      * @return array<mixed>
      */
-    public function resolvePossibleUnionPropertyType(
+    public function getPossibleUnionPropertyType(
         Property $node,
         Type $varType,
         Scope $scope,
