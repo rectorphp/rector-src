@@ -22,10 +22,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 
 final class ImproveVoid
 {
-    /**
-     * @return never
-     */
-    public function run(): void
+    public function run(): never
     {
         throw new ShouldNotHappenException();
     }
