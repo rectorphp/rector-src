@@ -8,7 +8,7 @@ use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class ReturnNeverTypeRectorTest extends AbstractRectorTestCase
+final class PHP72Test extends AbstractRectorTestCase
 {
     /**
      * @requires PHP 7.2
