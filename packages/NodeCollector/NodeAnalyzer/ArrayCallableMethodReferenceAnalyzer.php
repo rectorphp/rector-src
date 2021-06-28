@@ -61,21 +61,13 @@ final class ArrayCallableMethodReferenceAnalyzer
         }
 
         $className = $calleeType->getClassName();
-
-        // ...
-
         $methodName = $secondItemValue->value;
-//        $className = $array->getAttribute(AttributeKey::CLASS_NAME);
-//        if ($className === null) {
-//            return null;
-//        }
 
-        // required static calls, are not array callable per-se
         if ($this->isCallbackAtFunctionNames($array, ['register_shutdown_function', 'forward_static_call'])) {
             return null;
         }
 
-        return new ArrayCallable($className, $methodName);
+        return new ArrayCallable($firstItemValue, $className, $methodName);
     }
 
     private function isThisVariable(Expr $expr): bool

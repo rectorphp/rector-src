@@ -6,14 +6,11 @@ namespace Rector\CodeQuality\Rector\Array_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodReferenceAnalyzer;
+use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php72\NodeFactory\AnonymousFunctionFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -97,39 +94,9 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $arrayCallable = $this->arrayCallableMethodReferenceAnalyzer->match($node);
-        if ($arrayCallable === null) {
+        if (! $arrayCallable instanceof ArrayCallable) {
             return null;
         }
-
-        /** @var Array_ $node */
-        $objectVariable = $node->items[0]->value;
-
-//        if ($this->shouldSkipArray($node)) {
-//            return null;
-//        }
-
-//        $firstArrayItem = $node->items[0];
-//        if (! $firstArrayItem instanceof ArrayItem) {
-//            return null;
-//        }
-
-//        $objectVariable = $firstArrayItem->value;
-//        if (! $objectVariable instanceof Variable && ! $objectVariable instanceof PropertyFetch) {
-//            return null;
-//        }
-//
-//        $secondArrayItem = $node->items[1];
-//        if (! $secondArrayItem instanceof ArrayItem) {
-//            return null;
-//        }
-
-//        $methodName = $secondArrayItem->value;
-//        if (! $methodName instanceof String_) {
-//            return null;
-//        }
-
-//        dump($arrayCallable->getClass());
-//        dump($arrayCallable->getMethod());
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
@@ -139,13 +106,13 @@ CODE_SAMPLE
             $scope
         );
 
-//        if ($phpMethodReflection === null) {
-//
-//        $phpMethodReflection = $this->callableClassMethodMatcher->match($objectVariable, $methodName);
         if (! $phpMethodReflection instanceof PhpMethodReflection) {
             return null;
         }
 
-        return $this->anonymousFunctionFactory->createFromPhpMethodReflection($phpMethodReflection, $objectVariable);
+        return $this->anonymousFunctionFactory->createFromPhpMethodReflection(
+            $phpMethodReflection,
+            $arrayCallable->getCallerExpr()
+        );
     }
 }
