@@ -34,6 +34,7 @@ use Rector\VendorLocker\VendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\SmartFileSystem\SmartFileSystem;
+use PHPStan\Reflection\ClassReflection;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -148,6 +149,7 @@ CODE_SAMPLE
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $varType instanceof UnionType && $scope instanceof Scope) {
+            /** @var ClassReflection $classReflection */
             $classReflection = $scope->getClassReflection();
             $ancestors = $classReflection->getAncestors();
             $propertyName = $this->getName($node);
@@ -157,19 +159,15 @@ CODE_SAMPLE
                 : PropertyFetch::class;
 
             foreach ($ancestors as $ancestor) {
-                $fileName = $ancestor->getFileName();
+                $fileName = (string) $ancestor->getFileName();
                 $fileContent = $this->smartFileSystem->readFile($fileName);
                 $nodes = $this->parser->parse($fileContent);
-
-                if ($nodes === null) {
-                    continue;
-                }
 
                 if (is_a($ancestor->getName(), 'PHPUnit\Framework\TestCase', true)) {
                     continue;
                 }
 
-                $isFilled = (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $n) use ($propertyName, $kindPropertyFetch) {
+                $isFilled = (bool) $this->betterNodeFinder->findFirst((array) $nodes, function (Node $n) use ($propertyName, $kindPropertyFetch) {
                     if (! $n instanceof ClassMethod) {
                         return false;
                     }
@@ -186,7 +184,7 @@ CODE_SAMPLE
                             return false;
                         }
 
-                        return is_a($n2->var, $kindPropertyFetch, true) && $this->getName($n2->var, $propertyName);
+                        return is_a($n2->var, $kindPropertyFetch, true) && $this->isName($n2->var, $propertyName);
                     });
                 });
 
