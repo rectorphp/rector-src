@@ -141,7 +141,7 @@ final class FamilyRelationsAnalyzer
                 return false;
             }
 
-            if ($this->nodeNameResolver->isNames($n->name, ['autowire', 'setUp', '__construct'])) {
+            if ($this->nodeNameResolver->isNames($n->name, ['autowire', 'setUp'])) {
                 return false;
             }
 
