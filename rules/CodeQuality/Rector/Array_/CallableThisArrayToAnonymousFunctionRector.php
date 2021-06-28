@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\Array_;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodReferenceAnalyzer;
+use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php72\NodeFactory\AnonymousFunctionFactory;
@@ -28,7 +28,7 @@ final class CallableThisArrayToAnonymousFunctionRector extends AbstractRector
     public function __construct(
         private AnonymousFunctionFactory $anonymousFunctionFactory,
         private ReflectionResolver $reflectionResolver,
-        private ArrayCallableMethodReferenceAnalyzer $arrayCallableMethodReferenceAnalyzer
+        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher
     ) {
     }
 
@@ -93,7 +93,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $arrayCallable = $this->arrayCallableMethodReferenceAnalyzer->match($node);
+        $arrayCallable = $this->arrayCallableMethodMatcher->match($node);
         if (! $arrayCallable instanceof ArrayCallable) {
             return null;
         }

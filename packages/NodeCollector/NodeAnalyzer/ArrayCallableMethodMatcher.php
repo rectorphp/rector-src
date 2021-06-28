@@ -18,7 +18,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class ArrayCallableMethodReferenceAnalyzer
+final class ArrayCallableMethodMatcher
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,

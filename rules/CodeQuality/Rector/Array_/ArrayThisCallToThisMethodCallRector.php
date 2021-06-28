@@ -15,7 +15,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodReferenceAnalyzer;
+use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ArrayThisCallToThisMethodCallRector extends AbstractRector
 {
     public function __construct(
-        private ArrayCallableMethodReferenceAnalyzer $arrayCallableMethodReferenceAnalyzer,
+        private ArrayCallableMethodMatcher $arrayCallableMethodReferenceAnalyzer,
         private ReflectionProvider $reflectionProvider
     ) {
     }
