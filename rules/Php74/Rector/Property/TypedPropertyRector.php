@@ -35,6 +35,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\SmartFileSystem\SmartFileSystem;
 use PHPStan\Reflection\ClassReflection;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -65,7 +66,8 @@ final class TypedPropertyRector extends AbstractRector implements ConfigurableRe
         private ReflectionProvider $reflectionProvider,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private Parser $parser,
-        private SmartFileSystem $smartFileSystem
+        private SmartFileSystem $smartFileSystem,
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
 
@@ -149,54 +151,7 @@ CODE_SAMPLE
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $varType instanceof UnionType && $scope instanceof Scope) {
-            /** @var ClassReflection $classReflection */
-            $classReflection = $scope->getClassReflection();
-            $ancestors = $classReflection->getAncestors();
-            $propertyName = $this->getName($node);
-
-            $kindPropertyFetch = $node->isStatic()
-                ? StaticPropertyFetch::class
-                : PropertyFetch::class;
-
-            foreach ($ancestors as $ancestor) {
-                $fileName = (string) $ancestor->getFileName();
-                $fileContent = $this->smartFileSystem->readFile($fileName);
-                $nodes = $this->parser->parse($fileContent);
-
-                if (is_a($ancestor->getName(), 'PHPUnit\Framework\TestCase', true)) {
-                    continue;
-                }
-
-                $isFilled = (bool) $this->betterNodeFinder->findFirst((array) $nodes, function (Node $n) use ($propertyName, $kindPropertyFetch) {
-                    if (! $n instanceof ClassMethod) {
-                        return false;
-                    }
-
-                    if ($this->isNames($n->name, ['autowire', 'setUp', '__construct'])) {
-                        return false;
-                    }
-
-                    return (bool) $this->betterNodeFinder->findFirst((array) $n->stmts, function (Node $n2) use (
-                        $propertyName,
-                        $kindPropertyFetch
-                    ) {
-                        if (! $n2 instanceof Assign) {
-                            return false;
-                        }
-
-                        return is_a($n2->var, $kindPropertyFetch, true) && $this->isName($n2->var, $propertyName);
-                    });
-                });
-
-                if ($isFilled) {
-                    $varType = new UnionType([$varType, new NullType()]);
-                    $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                        $varType,
-                        TypeKind::KIND_PROPERTY
-                    );
-                    break;
-                }
-            }
+            [$varType, $propertyTypeNode] = $this->familyRelationsAnalyzer->resolvePossibleUnionPropertyType($node, $varType, $scope, $propertyTypeNode);
         }
 
         $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varType);
