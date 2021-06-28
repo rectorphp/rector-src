@@ -128,8 +128,7 @@ parameters:
         # symfony/console
         -
             message: '#Use value object over return of values#'
-            paths:
-                - rules/Php70/EregToPcreTransformer.php
+            path: 'rules/Php70/EregToPcreTransformer.php'
 
         -
             message: '#Nested foreach with empty statement is not allowed#'
