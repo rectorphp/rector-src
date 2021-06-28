@@ -169,7 +169,7 @@ CODE_SAMPLE
                         return false;
                     }
 
-                    if ($this->isNames($n->name, ['autowire', 'setUp'])) {
+                    if ($this->isNames($n->name, ['autowire', 'setUp', '__construct'])) {
                         return false;
                     }
 
