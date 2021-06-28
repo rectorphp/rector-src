@@ -104,9 +104,9 @@ CODE_SAMPLE
             return null;
         }
 
-        // never supported natively?
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEVER_TYPE)) {
-            return null;
+            // never-type supported natively
+            $node->returnType = new Name('never');
         } else {
             // static anlysis based never type
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
