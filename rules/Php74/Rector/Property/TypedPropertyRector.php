@@ -9,10 +9,11 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as PhpParserUnionType;
+use PhpParser\Parser;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\MixedType;
@@ -24,7 +25,6 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
-use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
@@ -32,11 +32,7 @@ use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\Php\PhpMethodReflection;
-use PhpParser\Parser;
 use Symplify\SmartFileSystem\SmartFileSystem;
-use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -152,13 +148,13 @@ CODE_SAMPLE
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $varType instanceof UnionType && $scope instanceof Scope) {
             $classReflection = $scope->getClassReflection();
-            $ancestors       = $classReflection->getAncestors();
-            $propertyName    = $this->getName($node);
+            $ancestors = $classReflection->getAncestors();
+            $propertyName = $this->getName($node);
 
             foreach ($ancestors as $ancestor) {
-                $fileName      = $ancestor->getFileName();
-                $fileContent   = $this->smartFileSystem->readFile($fileName);
-                $nodes         = $this->parser->parse($fileContent);
+                $fileName = $ancestor->getFileName();
+                $fileContent = $this->smartFileSystem->readFile($fileName);
+                $nodes = $this->parser->parse($fileContent);
 
                 if ($nodes === null) {
                     continue;
@@ -177,7 +173,9 @@ CODE_SAMPLE
                         return false;
                     }
 
-                    return (bool) $this->betterNodeFinder->findFirst((array) $n->stmts, function (Node $n2) use ($propertyName) {
+                    return (bool) $this->betterNodeFinder->findFirst((array) $n->stmts, function (Node $n2) use (
+                        $propertyName
+                    ) {
                         if (! $n2 instanceof Assign) {
                             return false;
                         }
@@ -187,12 +185,7 @@ CODE_SAMPLE
                 });
 
                 if ($isFilled) {
-                    $varType = new UnionType(
-                        [
-                            $varType,
-                            new NullType()
-                        ]
-                    );
+                    $varType = new UnionType([$varType, new NullType()]);
                     $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                         $varType,
                         TypeKind::KIND_PROPERTY
