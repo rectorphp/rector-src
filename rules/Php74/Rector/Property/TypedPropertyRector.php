@@ -9,7 +9,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as PhpParserUnionType;
-use PhpParser\Parser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\TemplateType;
@@ -30,7 +29,6 @@ use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -60,8 +58,6 @@ final class TypedPropertyRector extends AbstractRector implements ConfigurableRe
         private VarTagRemover $varTagRemover,
         private ReflectionProvider $reflectionProvider,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private Parser $parser,
-        private SmartFileSystem $smartFileSystem,
         private FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
