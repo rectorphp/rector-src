@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Rector\Php74\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Reflection\ReflectionProvider;
@@ -20,12 +24,19 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\NodeCollector\NodeCollector\NodeRepository;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\Php\PhpMethodReflection;
+use PhpParser\Parser;
+use Symplify\SmartFileSystem\SmartFileSystem;
+use PhpParser\Node\Name\FullyQualified;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -54,7 +65,9 @@ final class TypedPropertyRector extends AbstractRector implements ConfigurableRe
         private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private VarTagRemover $varTagRemover,
         private ReflectionProvider $reflectionProvider,
-        private PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private Parser $parser,
+        private SmartFileSystem $smartFileSystem
     ) {
     }
 
@@ -134,6 +147,59 @@ CODE_SAMPLE
 
         if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node)) {
             return null;
+        }
+
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $varType instanceof UnionType && $scope instanceof Scope) {
+            $classReflection = $scope->getClassReflection();
+            $ancestors       = $classReflection->getAncestors();
+            $propertyName    = $this->getName($node);
+
+            foreach ($ancestors as $ancestor) {
+                $fileName      = $ancestor->getFileName();
+                $fileContent   = $this->smartFileSystem->readFile($fileName);
+                $nodes         = $this->parser->parse($fileContent);
+
+                if ($nodes === null) {
+                    continue;
+                }
+
+                if (is_a($ancestor->getName(), 'PHPUnit\Framework\TestCase', true)) {
+                    continue;
+                }
+
+                $isFilled = (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $n) use ($propertyName) {
+                    if (! $n instanceof ClassMethod) {
+                        return false;
+                    }
+
+                    if ($this->isNames($n->name, ['autowire', 'setUp'])) {
+                        return false;
+                    }
+
+                    return (bool) $this->betterNodeFinder->findFirst((array) $n->stmts, function (Node $n2) use ($propertyName) {
+                        if (! $n2 instanceof Assign) {
+                            return false;
+                        }
+
+                        return $n2->var instanceof PropertyFetch && $this->getName($n2->var, $propertyName);
+                    });
+                });
+
+                if ($isFilled) {
+                    $varType = new UnionType(
+                        [
+                            $varType,
+                            new NullType()
+                        ]
+                    );
+                    $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                        $varType,
+                        TypeKind::KIND_PROPERTY
+                    );
+                    break;
+                }
+            }
         }
 
         $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varType);
