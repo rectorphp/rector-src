@@ -98,7 +98,10 @@ final class FamilyRelationsAnalyzer
                 continue;
             }
 
-            $fileName = (string) $ancestor->getFileName();
+            $fileName = $ancestor->getFileName();
+            if ($fileName === false) {
+                continue;
+            }
             $fileContent = $this->smartFileSystem->readFile($fileName);
             $nodes = $this->parser->parse($fileContent);
 
