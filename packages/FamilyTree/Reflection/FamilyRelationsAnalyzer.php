@@ -69,7 +69,7 @@ final class FamilyRelationsAnalyzer
      * @param Name|NullableType|PhpParserUnionType|null $propertyTypeNode
      */
     public function getPossibleUnionPropertyType(
-        Property $node,
+        Property $property,
         Type $varType,
         ?Scope $scope,
         ?Node $propertyTypeNode
@@ -85,13 +85,13 @@ final class FamilyRelationsAnalyzer
         /** @var ClassReflection $classReflection */
         $classReflection = $scope->getClassReflection();
         $ancestors = $classReflection->getAncestors();
-        $propertyName = $this->nodeNameResolver->getName($node);
+        $propertyName = $this->nodeNameResolver->getName($property);
 
-        $kindPropertyFetch = $node->isStatic()
+        $kindPropertyFetch = $property->isStatic()
             ? StaticPropertyFetch::class
             : PropertyFetch::class;
 
-        $className = $node->getAttribute(AttributeKey::CLASS_NAME);
+        $className = $property->getAttribute(AttributeKey::CLASS_NAME);
         foreach ($ancestors as $ancestor) {
             $ancestorName = $ancestor->getName();
             if ($ancestorName === $className) {
@@ -130,10 +130,10 @@ final class FamilyRelationsAnalyzer
      */
     private function isFilled(array $nodes, string $propertyName, string $kindPropertyFetch): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst((array) $nodes, function (Node $n) use (
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $n) use (
             $propertyName,
             $kindPropertyFetch
-        ) {
+        ): bool {
             if (! $n instanceof ClassMethod) {
                 return false;
             }
@@ -145,7 +145,7 @@ final class FamilyRelationsAnalyzer
             return (bool) $this->betterNodeFinder->findFirst((array) $n->stmts, function (Node $n2) use (
                 $propertyName,
                 $kindPropertyFetch
-            ) {
+            ): bool {
                 if (! $n2 instanceof Assign) {
                     return false;
                 }
