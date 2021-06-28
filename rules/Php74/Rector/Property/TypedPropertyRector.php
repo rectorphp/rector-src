@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace Rector\Php74\Rector\Property;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PhpParser\Parser;
@@ -26,6 +22,7 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
@@ -34,8 +31,6 @@ use Rector\VendorLocker\VendorLockResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\SmartFileSystem\SmartFileSystem;
-use PHPStan\Reflection\ClassReflection;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -151,7 +146,12 @@ CODE_SAMPLE
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $varType instanceof UnionType && $scope instanceof Scope) {
-            [$varType, $propertyTypeNode] = $this->familyRelationsAnalyzer->resolvePossibleUnionPropertyType($node, $varType, $scope, $propertyTypeNode);
+            [$varType, $propertyTypeNode] = $this->familyRelationsAnalyzer->resolvePossibleUnionPropertyType(
+                $node,
+                $varType,
+                $scope,
+                $propertyTypeNode
+            );
         }
 
         $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varType);

@@ -72,8 +72,7 @@ final class FamilyRelationsAnalyzer
         Type $varType,
         Scope $scope,
         ?Node $propertyTypeNode
-    ): array
-    {
+    ): array {
         if ($varType instanceof UnionType) {
             return [$varType, $propertyTypeNode];
         }
