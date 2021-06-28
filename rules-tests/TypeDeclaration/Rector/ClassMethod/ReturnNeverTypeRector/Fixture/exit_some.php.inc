@@ -19,10 +19,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\
 
 final class ExitSome
 {
-    /**
-     * @return never
-     */
-    public function run()
+    public function run(): never
     {
         echo 100;
         exit;
