@@ -83,7 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEVER_TYPE)) {
+        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEVER_TYPE)) {
             // never-type supported natively
             $node->returnType = new Name('never');
         } else {
