@@ -93,13 +93,18 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasClosureInsideWithParam(ClassMethod | Function_ | Closure $functionLike, Variable $variableParam): bool
+    private function hasClosureInsideWithParam(
+        ClassMethod | Function_ | Closure $functionLike,
+        Variable $variable
+    ): bool
     {
         if ($functionLike->stmts === null) {
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use ($variableParam) {
+        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use (
+            $variable
+        ): bool {
             if (! $node instanceof Closure) {
                 return false;
             }
@@ -113,7 +118,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->nodeComparator->areNodesEqual($assign->var, $variableParam);
+            return $this->nodeComparator->areNodesEqual($assign->var, $variable);
         });
     }
 
