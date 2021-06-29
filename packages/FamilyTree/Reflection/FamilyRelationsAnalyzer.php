@@ -112,7 +112,7 @@ final class FamilyRelationsAnalyzer
                 continue;
             }
 
-            if ($this->isFilled($nodes, $propertyName, $kindPropertyFetch)) {
+            if ($this->isPropertyWritten($nodes, $propertyName, $kindPropertyFetch)) {
                 $varType = new UnionType([$varType, new NullType()]);
                 $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                     $varType,
@@ -129,7 +129,7 @@ final class FamilyRelationsAnalyzer
     /**
      * @param Stmt[] $nodes
      */
-    private function isFilled(array $nodes, string $propertyName, string $kindPropertyFetch): bool
+    private function isPropertyWritten(array $nodes, string $propertyName, string $kindPropertyFetch): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $n) use (
             $propertyName,
