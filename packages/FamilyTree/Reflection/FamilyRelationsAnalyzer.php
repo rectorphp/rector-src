@@ -131,31 +131,36 @@ final class FamilyRelationsAnalyzer
      */
     private function isPropertyWritten(array $nodes, string $propertyName, string $kindPropertyFetch): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $n) use (
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use (
             $propertyName,
             $kindPropertyFetch
         ): bool {
-            if (! $n instanceof ClassMethod) {
+            if (! $node instanceof ClassMethod) {
                 return false;
             }
 
-            if ($this->nodeNameResolver->isNames($n->name, ['autowire', 'setUp'])) {
+            if ($this->nodeNameResolver->isNames($node->name, ['autowire', 'setUp'])) {
                 return false;
             }
 
-            return (bool) $this->betterNodeFinder->findFirst((array) $n->stmts, function (Node $n2) use (
-                $propertyName,
-                $kindPropertyFetch
-            ): bool {
-                if (! $n2 instanceof Assign) {
-                    return false;
-                }
+            return $this->isPropertyAssignedInClassMethod($node, $propertyName, $kindPropertyFetch);
+        });
+    }
 
-                return $kindPropertyFetch === $n2->var::class && $this->nodeNameResolver->isName(
-                    $n2->var,
-                    $propertyName
-                );
-            });
+    private function isPropertyAssignedInClassMethod(ClassMethod $classMethod, string $propertyName, string $kindPropertyFetch): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node) use (
+            $propertyName,
+            $kindPropertyFetch
+        ): bool {
+            if (! $node instanceof Assign) {
+                return false;
+            }
+
+            return $kindPropertyFetch === $node->var::class && $this->nodeNameResolver->isName(
+                $node->var,
+                $propertyName
+            );
         });
     }
 }
