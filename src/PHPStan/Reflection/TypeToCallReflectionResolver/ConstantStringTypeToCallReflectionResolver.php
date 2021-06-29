@@ -6,13 +6,14 @@ namespace Rector\Core\PHPStan\Reflection\TypeToCallReflectionResolver;
 
 use Nette\Utils\Strings;
 use PhpParser\Node\Name;
-use PHPStan\Reflection\ClassMemberAccessAnswerer;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Type;
 use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverInterface;
+use Rector\Core\Reflection\ReflectionResolver;
 
 /**
  * @see https://github.com/phpstan/phpstan-src/blob/b1fd47bda2a7a7d25091197b125c0adf82af6757/src/Type/Constant/ConstantStringType.php#L147
@@ -29,7 +30,8 @@ final class ConstantStringTypeToCallReflectionResolver implements TypeToCallRefl
     private const STATIC_METHOD_REGEX = '#^(?<class>[a-zA-Z_\\x7f-\\xff\\\\][a-zA-Z0-9_\\x7f-\\xff\\\\]*)::(?<method>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\\z#';
 
     public function __construct(
-        private ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -42,7 +44,7 @@ final class ConstantStringTypeToCallReflectionResolver implements TypeToCallRefl
      * @param ConstantStringType $type
      * @return FunctionReflection|MethodReflection|null
      */
-    public function resolve(Type $type, ClassMemberAccessAnswerer $classMemberAccessAnswerer)
+    public function resolve(Type $type, Scope $scope)
     {
         $value = $type->getValue();
 
@@ -58,15 +60,6 @@ final class ConstantStringTypeToCallReflectionResolver implements TypeToCallRefl
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($matches['class'])) {
-            return null;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($matches['class']);
-        if (! $classReflection->hasMethod($matches['method'])) {
-            return null;
-        }
-
-        return $classReflection->getMethod($matches['method'], $classMemberAccessAnswerer);
+        return $this->reflectionResolver->resolveMethodReflection($matches['class'], $matches['method'], $scope);
     }
 }
