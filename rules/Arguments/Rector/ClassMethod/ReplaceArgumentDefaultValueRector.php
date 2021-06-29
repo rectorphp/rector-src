@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Rector\Arguments\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\ArgumentDefaultValueReplacer;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
@@ -58,8 +62,8 @@ CODE_SAMPLE
                                 'SomeExampleClass',
                                 'someMethod',
                                 0,
-                                'SomeClass::OLD_CONSTANT',
-                                false
+                                new ClassConstFetch(new FullyQualified('SomeClass'), 'OLD_CONSTANT'),
+                                new ConstFetch(new Name('false'))
                             ),
                         ],
                     ]

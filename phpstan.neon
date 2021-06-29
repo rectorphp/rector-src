@@ -529,3 +529,8 @@ parameters:
             message: '#Do not use @method tag in class docblock#'
             paths:
                 - rules/*/Enum/*
+
+        # expression as parameters
+        -
+            message: '#new <class\> is limited to 3 "new <class\>\(new <class\>\)\)" nesting to each other\. You have \d+ nesting#'
+            path: rules/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector.php
