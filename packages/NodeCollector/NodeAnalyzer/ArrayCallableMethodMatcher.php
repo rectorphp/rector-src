@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace Rector\NodeCollector\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
@@ -77,40 +74,6 @@ final class ArrayCallableMethodMatcher
         }
 
         return new ArrayCallable($firstItemValue, $className, $methodName);
-    }
-
-    private function isThisVariable(Expr $expr): bool
-    {
-        // $this
-        if ($expr instanceof Variable) {
-            return true;
-        }
-
-        if ($expr instanceof PropertyFetch) {
-            return true;
-        }
-
-        if ($expr instanceof ClassConstFetch) {
-            if (! $this->nodeNameResolver->isName($expr->name, 'class')) {
-                return false;
-            }
-
-            // self::class, static::class
-            if ($this->nodeNameResolver->isNames($expr->class, ['self', 'static'])) {
-                return true;
-            }
-
-            /** @var string|null $className */
-            $className = $expr->getAttribute(AttributeKey::CLASS_NAME);
-
-            if ($className === null) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($expr->class, $className);
-        }
-
-        return false;
     }
 
     /**
