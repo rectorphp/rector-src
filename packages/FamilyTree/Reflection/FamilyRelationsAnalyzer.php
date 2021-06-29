@@ -157,7 +157,11 @@ final class FamilyRelationsAnalyzer
         string $kindPropertyFetch
     ): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node) use (
+        if ($classMethod->stmts === null) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst($classMethod->stmts, function (Node $node) use (
             $propertyName,
             $kindPropertyFetch
         ): bool {
