@@ -84,7 +84,7 @@ CODE_SAMPLE
         }
 
         $param = $this->createVariadicParam($variableName);
-        if ($this->hasClosureInsideWithParam($node, $param)) {
+        if ($this->hasClosureInsideWithParam($node)) {
             return null;
         }
 
@@ -92,13 +92,13 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasClosureInsideWithParam(ClassMethod | Function_ | Closure $functionLike, Param $param): bool
+    private function hasClosureInsideWithParam(ClassMethod | Function_ | Closure $functionLike): bool
     {
         if ($functionLike->stmts === null) {
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use ($param) {
+        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) {
             if (! $node instanceof Closure) {
                 return false;
             }
