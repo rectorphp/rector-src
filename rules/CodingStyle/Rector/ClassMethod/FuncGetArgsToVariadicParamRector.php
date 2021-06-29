@@ -84,7 +84,8 @@ CODE_SAMPLE
         }
 
         $param = $this->createVariadicParam($variableName);
-        if ($this->hasClosureInsideWithParam($node)) {
+        $variableParam = $param->var;
+        if ($variableParam instanceof Variable && $this->hasClosureInsideWithParam($node, $variableParam)) {
             return null;
         }
 
@@ -92,13 +93,13 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasClosureInsideWithParam(ClassMethod | Function_ | Closure $functionLike): bool
+    private function hasClosureInsideWithParam(ClassMethod | Function_ | Closure $functionLike, Variable $variableParam): bool
     {
         if ($functionLike->stmts === null) {
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) {
+        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use ($variableParam) {
             if (! $node instanceof Closure) {
                 return false;
             }
@@ -107,7 +108,12 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->matchFuncGetArgsVariableAssign($node) instanceof Assign;
+            $assign = $this->matchFuncGetArgsVariableAssign($node);
+            if (! $assign instanceof Assign) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($assign->var, $variableParam);
         });
     }
 
