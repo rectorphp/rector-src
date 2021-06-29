@@ -15,7 +15,7 @@ function run()
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector\Fixture;
 
-function run(...$args)
+function run()
 {
     function (...$args) {
     };
