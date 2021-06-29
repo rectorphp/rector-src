@@ -85,7 +85,7 @@ CODE_SAMPLE
 
         $param = $this->createVariadicParam($variableName);
         $variableParam = $param->var;
-        if ($variableParam instanceof Variable && $this->hasClosureInsideWithParam($node, $variableParam)) {
+        if ($variableParam instanceof Variable && $this->hasClosureInsideWithVariableParam($node, $variableParam)) {
             return null;
         }
 
@@ -93,7 +93,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasClosureInsideWithParam(
+    private function hasClosureInsideWithVariableParam(
         ClassMethod | Function_ | Closure $functionLike,
         Variable $variable
     ): bool
