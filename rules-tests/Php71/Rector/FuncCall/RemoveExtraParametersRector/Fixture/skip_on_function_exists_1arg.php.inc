@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php71\Rector\FuncCall\RemoveExtraParametersRector\Fixture;
 
-final class OnFunctionExistsArg
+final class SkipOnFunctionExists1Arg
 {
     public static function streamSupports(string $function, $resource): bool
     {
