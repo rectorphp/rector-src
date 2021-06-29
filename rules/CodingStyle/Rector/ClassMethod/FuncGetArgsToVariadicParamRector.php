@@ -85,7 +85,7 @@ CODE_SAMPLE
 
         $param = $this->createVariadicParam($variableName);
         if ($this->hasClosureInsideWithParam($node, $param)) {
-          //  return null;
+            return null;
         }
 
         $node->params[] = $param;
@@ -103,11 +103,11 @@ CODE_SAMPLE
                 return false;
             }
 
-            if ($node->params === []) {
+            if ($node->params !== []) {
                 return false;
             }
 
-            return $this->nodeComparator->areNodesEqual($node->params[0], $param);
+            return $this->matchFuncGetArgsVariableAssign($node) instanceof Assign;
         });
     }
 
