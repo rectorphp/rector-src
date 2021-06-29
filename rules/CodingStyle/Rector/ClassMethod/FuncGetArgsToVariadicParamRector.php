@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
@@ -49,11 +50,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -87,7 +88,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function matchFuncGetArgsVariableAssign(ClassMethod | Function_ $functionLike): ?Assign
+    private function matchFuncGetArgsVariableAssign(ClassMethod | Function_ | Closure $functionLike): ?Assign
     {
         /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->stmts, Assign::class);
