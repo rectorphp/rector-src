@@ -6,7 +6,6 @@ namespace Rector\Arguments;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -22,7 +21,7 @@ final class ArgumentDefaultValueReplacer
     }
 
     public function processReplaces(
-        MethodCall | StaticCall | ClassMethod | Expr\FuncCall $node,
+        MethodCall | StaticCall | ClassMethod | FuncCall $node,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
     ): ?Node {
         if ($node instanceof ClassMethod) {
