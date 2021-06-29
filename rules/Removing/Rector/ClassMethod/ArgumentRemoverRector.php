@@ -96,10 +96,7 @@ CODE_SAMPLE
         $this->removedArguments = $removedArguments;
     }
 
-    /**
-     * @param ClassMethod|StaticCall|MethodCall $node
-     */
-    private function processPosition(Node $node, ArgumentRemover $argumentRemover): void
+    private function processPosition(ClassMethod | StaticCall | MethodCall $node, ArgumentRemover $argumentRemover): void
     {
         if ($argumentRemover->getValue() === null) {
             if ($node instanceof MethodCall || $node instanceof StaticCall) {
@@ -131,10 +128,7 @@ CODE_SAMPLE
         }
     }
 
-    /**
-     * @param ClassMethod|StaticCall|MethodCall $node
-     */
-    private function removeByName(Node $node, int $position, string $name): void
+    private function removeByName(ClassMethod | StaticCall | MethodCall $node, int $position, string $name): void
     {
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
             if (isset($node->args[$position]) && $this->isName($node->args[$position], $name)) {
