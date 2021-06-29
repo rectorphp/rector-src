@@ -13,7 +13,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Type;
 use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverInterface;
-use Rector\Core\Reflection\ReflectionResolver;
 
 /**
  * @see https://github.com/phpstan/phpstan-src/blob/b1fd47bda2a7a7d25091197b125c0adf82af6757/src/Type/Constant/ConstantStringType.php#L147
@@ -27,11 +26,20 @@ final class ConstantStringTypeToCallReflectionResolver implements TypeToCallRefl
      *
      * @var string
      */
-    private const STATIC_METHOD_REGEX = '#^(?<class>[a-zA-Z_\\x7f-\\xff\\\\][a-zA-Z0-9_\\x7f-\\xff\\\\]*)::(?<method>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\\z#';
+    private const STATIC_METHOD_REGEX = '#^(?<' . self::CLASS_KEY . '>[a-zA-Z_\\x7f-\\xff\\\\][a-zA-Z0-9_\\x7f-\\xff\\\\]*)::(?<' . self::METHOD_KEY . '>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\\z#';
+
+    /**
+     * @var string
+     */
+    private const CLASS_KEY = 'class';
+
+    /**
+     * @var string
+     */
+    private const METHOD_KEY = 'method';
 
     public function __construct(
         private ReflectionProvider $reflectionProvider,
-        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -60,6 +68,18 @@ final class ConstantStringTypeToCallReflectionResolver implements TypeToCallRefl
             return null;
         }
 
-        return $this->reflectionResolver->resolveMethodReflection($matches['class'], $matches['method'], $scope);
+        $class = $matches[self::CLASS_KEY];
+        if (! $this->reflectionProvider->hasClass($class)) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($class);
+
+        $method = $matches[self::METHOD_KEY];
+        if (! $classReflection->hasMethod($method)) {
+            return null;
+        }
+
+        return $classReflection->getMethod($method, $scope);
     }
 }
