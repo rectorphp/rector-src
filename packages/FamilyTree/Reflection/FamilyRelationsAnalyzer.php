@@ -143,7 +143,7 @@ final class FamilyRelationsAnalyzer
                 return false;
             }
 
-            if ($this->nodeNameResolver->isNames($node->name, ['autowire'])) {
+            if ($this->nodeNameResolver->isName($node->name, 'autowire')) {
                 return false;
             }
 
