@@ -195,6 +195,9 @@ final class ReflectionResolver
         FuncCall $funcCall
     ): FunctionReflection | MethodReflection | null {
         $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
 
         if ($funcCall->name instanceof Name) {
             if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
