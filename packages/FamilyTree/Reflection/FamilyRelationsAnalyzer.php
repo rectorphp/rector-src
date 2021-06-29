@@ -22,9 +22,9 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\FamilyTree\ValueObject\PropertyType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Php74\ValueObject\PropertyType;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -62,13 +62,6 @@ final class FamilyRelationsAnalyzer
         }
 
         return $childrenClassReflections;
-    }
-
-    private function getKindPropertyFetch(Property $property): string
-    {
-        return $property->isStatic()
-            ? StaticPropertyFetch::class
-            : PropertyFetch::class;
     }
 
     /**
@@ -130,6 +123,13 @@ final class FamilyRelationsAnalyzer
         return new PropertyType($varType, $propertyTypeNode);
     }
 
+    private function getKindPropertyFetch(Property $property): string
+    {
+        return $property->isStatic()
+            ? StaticPropertyFetch::class
+            : PropertyFetch::class;
+    }
+
     /**
      * @param Stmt[] $nodes
      */
@@ -151,7 +151,11 @@ final class FamilyRelationsAnalyzer
         });
     }
 
-    private function isPropertyAssignedInClassMethod(ClassMethod $classMethod, string $propertyName, string $kindPropertyFetch): bool
+    private function isPropertyAssignedInClassMethod(
+        ClassMethod $classMethod,
+        string $propertyName,
+        string $kindPropertyFetch
+    ): bool
     {
         return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node) use (
             $propertyName,

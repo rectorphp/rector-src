@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php74\ValueObject;
+namespace Rector\FamilyTree\ValueObject;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
