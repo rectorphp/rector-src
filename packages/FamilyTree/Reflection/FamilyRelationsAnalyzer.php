@@ -108,7 +108,11 @@ final class FamilyRelationsAnalyzer
                 continue;
             }
 
-            if ($this->isFilled((array) $nodes, $propertyName, $kindPropertyFetch)) {
+            if ($nodes === null) {
+                continue;
+            }
+
+            if ($this->isFilled($nodes, $propertyName, $kindPropertyFetch)) {
                 $varType = new UnionType([$varType, new NullType()]);
                 $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                     $varType,
