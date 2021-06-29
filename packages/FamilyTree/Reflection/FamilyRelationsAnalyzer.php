@@ -19,7 +19,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\NullType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -105,12 +104,7 @@ final class FamilyRelationsAnalyzer
             $fileContent = $this->smartFileSystem->readFile($fileName);
             $nodes = $this->parser->parse($fileContent);
 
-            $objectType = new ObjectType($ancestor->getName());
-            $parentType = new ObjectType('PHPUnit\Framework\TestCase');
-            $isPHPUnitTest = $parentType->isSuperTypeOf($objectType)
-                ->yes();
-
-            if ($isPHPUnitTest) {
+            if ($ancestor->isSubclassOf('PHPUnit\Framework\TestCase')) {
                 continue;
             }
 
