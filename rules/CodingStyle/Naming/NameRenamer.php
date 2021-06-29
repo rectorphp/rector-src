@@ -131,8 +131,11 @@ final class NameRenamer
         }
     }
 
-    private function renameClassMethod(string $lastName, ClassMethod $classMethod, Name | Identifier $usedNameNode): void
-    {
+    private function renameClassMethod(
+        string $lastName,
+        ClassMethod $classMethod,
+        Name | Identifier $usedNameNode
+    ): void {
         if ($classMethod->returnType === null) {
             return;
         }

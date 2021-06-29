@@ -28,8 +28,7 @@ final class NamingConventionAnalyzer
         FuncCall | StaticCall | MethodCall $expr,
         string $currentName,
         string $expectedName
-    ): bool
-    {
+    ): bool {
         // skip "$call = $method->call();" based conventions
         $callName = $this->nodeNameResolver->getName($expr->name);
         if ($currentName === $callName) {

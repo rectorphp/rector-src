@@ -41,8 +41,7 @@ final class ArgumentDefaultValueReplacer
     private function processArgs(
         MethodCall | StaticCall | FuncCall $expr,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
-    ): void
-    {
+    ): void {
         $position = $replaceArgumentDefaultValue->getPosition();
 
         $argValue = $this->valueResolver->getValue($expr->args[$position]->value);

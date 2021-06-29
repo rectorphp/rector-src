@@ -153,8 +153,9 @@ CODE_SAMPLE
         return ! $this->valueResolver->isNull($allowableTagsParam);
     }
 
-    private function createArrayFromString(Array_ | Variable | PropertyFetch | ConstFetch | ClassConstFetch $expr): Concat
-    {
+    private function createArrayFromString(
+        Array_ | Variable | PropertyFetch | ConstFetch | ClassConstFetch $expr
+    ): Concat {
         $args = [new Arg(new String_('><')), new Arg($expr)];
         $implodeFuncCall = new FuncCall(new Name('implode'), $args);
 
@@ -164,8 +165,7 @@ CODE_SAMPLE
 
     private function createIsArrayTernaryFromExpression(
         Variable | PropertyFetch | ConstFetch | ClassConstFetch $expr
-    ): Ternary
-    {
+    ): Ternary {
         $isArrayFuncCall = new FuncCall(new Name('is_array'), [new Arg($expr)]);
         $nullNotIdentical = new NotIdentical($expr, $this->nodeFactory->createNull());
         $booleanAnd = new BooleanAnd($nullNotIdentical, $isArrayFuncCall);

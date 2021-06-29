@@ -96,8 +96,10 @@ CODE_SAMPLE
         $this->removedArguments = $removedArguments;
     }
 
-    private function processPosition(ClassMethod | StaticCall | MethodCall $node, ArgumentRemover $argumentRemover): void
-    {
+    private function processPosition(
+        ClassMethod | StaticCall | MethodCall $node,
+        ArgumentRemover $argumentRemover
+    ): void {
         if ($argumentRemover->getValue() === null) {
             if ($node instanceof MethodCall || $node instanceof StaticCall) {
                 $this->nodeRemover->removeArg($node, $argumentRemover->getPosition());

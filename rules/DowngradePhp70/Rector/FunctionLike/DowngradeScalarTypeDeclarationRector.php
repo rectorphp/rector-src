@@ -113,7 +113,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveRecastAssign(Param $param, Function_ | ClassMethod $functionLike): ?Expression
+    private function resolveRecastAssign(Param $param, Function_ | ClassMethod | Closure $functionLike): ?Expression
     {
         if ($functionLike->stmts === null) {
             return null;

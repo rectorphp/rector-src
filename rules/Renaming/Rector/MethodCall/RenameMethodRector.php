@@ -132,8 +132,7 @@ CODE_SAMPLE
     private function skipClassMethod(
         MethodCall | StaticCall | ClassMethod $node,
         MethodCallRenameInterface $methodCallRename
-    ): bool
-    {
+    ): bool {
         if (! $node instanceof ClassMethod) {
             return false;
         }

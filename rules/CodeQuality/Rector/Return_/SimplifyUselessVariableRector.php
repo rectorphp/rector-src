@@ -164,8 +164,7 @@ CODE_SAMPLE
     private function isPreviousExpressionVisuallySimilar(
         Expression $previousExpression,
         AssignOp | Assign $previousNode
-    ): bool
-    {
+    ): bool {
         $prePreviousExpression = $previousExpression->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
         if (! $prePreviousExpression instanceof Expression) {
             return false;

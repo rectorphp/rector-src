@@ -186,8 +186,7 @@ CODE_SAMPLE
     private function isUsedInAssignExpr(
         FuncCall | MethodCall | New_ | NullsafeMethodCall | StaticCall $expr,
         Assign $assign
-    ): bool
-    {
+    ): bool {
         foreach ($expr->args as $arg) {
             $variable = $arg->value;
             if (! $variable instanceof Variable) {

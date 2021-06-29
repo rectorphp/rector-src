@@ -104,8 +104,7 @@ final class ReturnTypeAlreadyAddedChecker
     private function isUnionCoType(
         Identifier | Name | NullableType | PhpParserUnionType $returnTypeNode,
         Type $type
-    ): bool
-    {
+    ): bool {
         if (! $type instanceof UnionType) {
             return false;
         }

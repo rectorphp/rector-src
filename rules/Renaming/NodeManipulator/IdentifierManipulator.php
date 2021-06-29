@@ -57,8 +57,7 @@ final class IdentifierManipulator
 
     private function resolveOldMethodName(
         ClassConstFetch | MethodCall | PropertyFetch | StaticCall | ClassMethod $node
-    ): ?string
-    {
+    ): ?string {
         if ($node instanceof StaticCall || $node instanceof MethodCall) {
             return $this->nodeNameResolver->getName($node->name);
         }

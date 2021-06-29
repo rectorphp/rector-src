@@ -29,8 +29,11 @@ final class ChildParamPopulator
     /**
      * Add typehint to all children
      */
-    public function populateChildClassMethod(ClassMethod | Function_ $functionLike, int $position, Type $paramType): void
-    {
+    public function populateChildClassMethod(
+        ClassMethod | Function_ $functionLike,
+        int $position,
+        Type $paramType
+    ): void {
         if (! $functionLike instanceof ClassMethod) {
             return;
         }

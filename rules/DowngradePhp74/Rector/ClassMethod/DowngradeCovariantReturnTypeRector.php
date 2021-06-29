@@ -135,8 +135,7 @@ CODE_SAMPLE
     private function resolveDifferentAncestorReturnType(
         ClassMethod $classMethod,
         UnionType | NullableType | Name | Identifier $returnTypeNode
-    ): Type
-    {
+    ): Type {
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             // possibly trait

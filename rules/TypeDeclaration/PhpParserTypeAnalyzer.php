@@ -21,8 +21,7 @@ final class PhpParserTypeAnalyzer
     public function isCovariantSubtypeOf(
         Name | NullableType | UnionType | Identifier $possibleSubtype,
         Name | NullableType | UnionType | Identifier $possibleParentType
-    ): bool
-    {
+    ): bool {
         // skip until PHP 8 is out
         if ($this->isUnionType($possibleSubtype, $possibleParentType)) {
             return false;
