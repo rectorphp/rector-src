@@ -4,9 +4,12 @@ namespace Rector\Tests\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParam
 
 function run()
 {
-    function () {
+    $x = function () {
         $args = \func_get_args();
+        echo $args[0];
     };
+
+    $x('a');
 }
 
 ?>
@@ -17,8 +20,11 @@ namespace Rector\Tests\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParam
 
 function run()
 {
-    function (...$args) {
+    $x = function (...$args) {
+        echo $args[0];
     };
+
+    $x('a');
 }
 
 ?>

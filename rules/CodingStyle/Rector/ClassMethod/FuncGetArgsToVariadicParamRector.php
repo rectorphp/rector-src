@@ -83,9 +83,32 @@ CODE_SAMPLE
             $assign->expr = new Variable('args');
         }
 
-        $node->params[] = $this->createVariadicParam($variableName);
+        $param = $this->createVariadicParam($variableName);
+        if ($this->hasClosureInsideWithParam($node, $param)) {
+          //  return null;
+        }
 
+        $node->params[] = $param;
         return $node;
+    }
+
+    private function hasClosureInsideWithParam(ClassMethod | Function_ | Closure $functionLike, Param $param): bool
+    {
+        if ($functionLike->stmts === null) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use ($param) {
+            if (! $node instanceof Closure) {
+                return false;
+            }
+
+            if ($node->params === []) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($node->params[0], $param);
+        });
     }
 
     private function matchFuncGetArgsVariableAssign(ClassMethod | Function_ | Closure $functionLike): ?Assign
