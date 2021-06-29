@@ -64,6 +64,13 @@ final class FamilyRelationsAnalyzer
         return $childrenClassReflections;
     }
 
+    private function getKindPropertyFetch(Property $property): string
+    {
+        return $property->isStatic()
+            ? StaticPropertyFetch::class
+            : PropertyFetch::class;
+    }
+
     /**
      * @param Name|NullableType|PhpParserUnionType|null $propertyTypeNode
      */
@@ -85,10 +92,7 @@ final class FamilyRelationsAnalyzer
         $classReflection = $scope->getClassReflection();
         $ancestors = $classReflection->getAncestors();
         $propertyName = $this->nodeNameResolver->getName($property);
-
-        $kindPropertyFetch = $property->isStatic()
-            ? StaticPropertyFetch::class
-            : PropertyFetch::class;
+        $kindPropertyFetch = $this->getKindPropertyFetch($property);
 
         $className = $property->getAttribute(AttributeKey::CLASS_NAME);
         foreach ($ancestors as $ancestor) {
@@ -101,26 +105,26 @@ final class FamilyRelationsAnalyzer
             if ($fileName === false) {
                 continue;
             }
+
             $fileContent = $this->smartFileSystem->readFile($fileName);
             $nodes = $this->parser->parse($fileContent);
-
             if ($ancestor->isSubclassOf('PHPUnit\Framework\TestCase')) {
                 continue;
             }
-
             if ($nodes === null) {
                 continue;
             }
-
-            if ($this->isPropertyWritten($nodes, $propertyName, $kindPropertyFetch)) {
-                $varType = new UnionType([$varType, new NullType()]);
-                $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                    $varType,
-                    TypeKind::KIND_PROPERTY
-                );
-
-                return new PropertyType($varType, $propertyTypeNode);
+            if (! $this->isPropertyWritten($nodes, $propertyName, $kindPropertyFetch)) {
+                continue;
             }
+
+            $varType = new UnionType([$varType, new NullType()]);
+            $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                $varType,
+                TypeKind::KIND_PROPERTY
+            );
+
+            return new PropertyType($varType, $propertyTypeNode);
         }
 
         return new PropertyType($varType, $propertyTypeNode);
