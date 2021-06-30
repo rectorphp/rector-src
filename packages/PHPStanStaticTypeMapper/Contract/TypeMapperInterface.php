@@ -24,11 +24,6 @@ interface TypeMapperInterface
 
     /**
      * @param T $type
-     */
-    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode;
-
-    /**
-     * @param T $type
      * @param TypeKind::*|null $kind
      *
      * @return Name|NullableType|UnionType|null
