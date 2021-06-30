@@ -29,7 +29,9 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericA
 final class NestedUnwrap
 {
     /**
-     * @ArrayWrapper()
+     * @ArrayWrapper({
+     *     @GenericAnnotation("yes")
+     * })
      */
     #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation('yes')]
     public function action()

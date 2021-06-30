@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -116,10 +115,17 @@ CODE_SAMPLE
             return null;
         }
 
-        $tags = $phpDocInfo->getAllTags();
+        $originalAttrGroupsCount = count($node->attrGroups);
 
-        $hasNewAttrGroups = $this->processApplyAttrGroups($tags, $phpDocInfo, $node);
-        if ($hasNewAttrGroups) {
+        // 1. generic tags
+        $this->processGenericTags($phpDocInfo, $node);
+        // 2. Doctrine annotation classes
+        $this->processDoctrineAnnotationClasses($phpDocInfo, $node);
+
+        $currentAttrGroupsCount = count($node->attrGroups);
+
+        // something has changed
+        if ($originalAttrGroupsCount !== $currentAttrGroupsCount) {
             return $node;
         }
 
@@ -137,63 +143,6 @@ CODE_SAMPLE
         $this->annotationsToAttributes = $annotationsToAttributes;
     }
 
-    /**
-     * @param array<PhpDocTagNode> $tags
-     */
-    private function processApplyAttrGroups(
-        array $tags,
-        PhpDocInfo $phpDocInfo,
-        Class_ | Property | ClassMethod | Function_ | Closure | ArrowFunction $node
-    ): bool {
-        $hasNewAttrGroups = false;
-
-        // 1. generic tags
-        foreach ($tags as $tag) {
-            foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-                //$annotationToAttributeTag = $annotationToAttribute->getTag();
-                $desiredTag = $annotationToAttribute->getTag();
-                // not a basic one
-                if (str_contains($desiredTag, '\\')) {
-                    continue;
-                }
-
-                if (! $this->isFoundGenericTag($phpDocInfo, $tag->value, $desiredTag)) {
-                    continue;
-                }
-
-                // 1. remove php-doc tag
-                $this->phpDocTagRemover->removeByName($phpDocInfo, $desiredTag);
-
-                // 2. add attributes
-                $node->attrGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
-
-                $hasNewAttrGroups = true;
-                continue 2;
-            }
-        }
-
-        // 2. Doctrine annotation classes
-        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-            $doctrineAnnotationTagValueNodes = $phpDocInfo->findByAnnotationClass($annotationToAttribute->getTag());
-
-            foreach ($doctrineAnnotationTagValueNodes as $doctrineAnnotationTagValueNode) {
-                // 1. remove php-doc tag
-                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
-
-                // 2. add attributes
-                $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
-                    $doctrineAnnotationTagValueNode,
-                    $annotationToAttribute
-                );
-
-                $hasNewAttrGroups = true;
-                continue 2;
-            }
-        }
-
-        return $hasNewAttrGroups;
-    }
-
     private function isFoundGenericTag(
         PhpDocInfo $phpDocInfo,
         PhpDocTagValueNode $phpDocTagValueNode,
@@ -204,5 +153,52 @@ CODE_SAMPLE
         }
 
         return $phpDocTagValueNode instanceof GenericTagValueNode;
+    }
+
+    private function processGenericTags(
+        PhpDocInfo $phpDocInfo,
+        ClassMethod | Function_ | Closure | ArrowFunction | Property | Class_ $node
+    ): void {
+        foreach ($phpDocInfo->getAllTags() as $phpDocTagNode) {
+            foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+                $desiredTag = $annotationToAttribute->getTag();
+
+                // not a basic one
+                if (str_contains($desiredTag, '\\')) {
+                    continue;
+                }
+
+                if (! $this->isFoundGenericTag($phpDocInfo, $phpDocTagNode->value, $desiredTag)) {
+                    continue;
+                }
+
+                // 1. remove php-doc tag
+                $this->phpDocTagRemover->removeByName($phpDocInfo, $desiredTag);
+
+                // 2. add attributes
+                $node->attrGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
+            }
+        }
+    }
+
+    private function processDoctrineAnnotationClasses(
+        PhpDocInfo $phpDocInfo,
+        ClassMethod | Function_ | Closure | ArrowFunction | Property | Class_ $node
+    ): void {
+        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+            $doctrineAnnotationTagValueNodes = $phpDocInfo->findByAnnotationClass($annotationToAttribute->getTag());
+
+            foreach ($doctrineAnnotationTagValueNodes as $doctrineAnnotationTagValueNode) {
+
+                // 1. remove php-doc tag
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
+
+                // 2. add attributes
+                $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
+                    $doctrineAnnotationTagValueNode,
+                    $annotationToAttribute
+                );
+            }
+        }
     }
 }
