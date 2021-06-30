@@ -134,10 +134,7 @@ CODE_SAMPLE
         $this->addedArguments = $addedArguments;
     }
 
-    /**
-     * @param MethodCall|StaticCall|ClassMethod $node
-     */
-    private function isObjectTypeMatch(Node $node, ObjectType $objectType): bool
+    private function isObjectTypeMatch(MethodCall | StaticCall | ClassMethod $node, ObjectType $objectType): bool
     {
         if ($node instanceof MethodCall) {
             return $this->isObjectType($node->var, $objectType);
@@ -186,11 +183,10 @@ CODE_SAMPLE
         }
     }
 
-    /**
-     * @param ClassMethod|MethodCall|StaticCall $node
-     */
-    private function shouldSkipParameter(Node $node, ArgumentAdder $argumentAdder): bool
-    {
+    private function shouldSkipParameter(
+        ClassMethod | MethodCall | StaticCall $node,
+        ArgumentAdder $argumentAdder
+    ): bool {
         $position = $argumentAdder->getPosition();
         $argumentName = $argumentAdder->getArgumentName();
 

@@ -35,7 +35,7 @@ final class FloatTypeMapper implements TypeMapperInterface
     /**
      * @param FloatType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
     {
         return new IdentifierTypeNode('float');
     }

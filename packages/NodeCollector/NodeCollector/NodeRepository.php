@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\NodeCollector\NodeCollector;
 
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\TypeWithClassName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 /**
  * This service contains all the parsed nodes. E.g. all the functions, method call, classes, static calls etc. It's
@@ -25,71 +19,24 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 final class NodeRepository
 {
     public function __construct(
-        private ParsedPropertyFetchNodeCollector $parsedPropertyFetchNodeCollector,
         private NodeNameResolver $nodeNameResolver,
         private ParsedNodeCollector $parsedNodeCollector,
         private ReflectionProvider $reflectionProvider,
-        private NodeTypeResolver $nodeTypeResolver
     ) {
-    }
-
-    /**
-     * @return PropertyFetch[]
-     */
-    public function findPropertyFetchesByProperty(Property $property): array
-    {
-        /** @var string|null $className */
-        $className = $property->getAttribute(AttributeKey::CLASS_NAME);
-        if ($className === null) {
-            return [];
-        }
-
-        $propertyName = $this->nodeNameResolver->getName($property);
-        return $this->parsedPropertyFetchNodeCollector->findPropertyFetchesByTypeAndName($className, $propertyName);
-    }
-
-    /**
-     * @return PropertyFetch[]
-     */
-    public function findPropertyFetchesByPropertyFetch(PropertyFetch $propertyFetch): array
-    {
-        $propertyFetcheeType = $this->nodeTypeResolver->getStaticType($propertyFetch->var);
-        if (! $propertyFetcheeType instanceof TypeWithClassName) {
-            return [];
-        }
-
-        $className = $this->nodeTypeResolver->getFullyQualifiedClassName($propertyFetcheeType);
-
-        /** @var string $propertyName */
-        $propertyName = $this->nodeNameResolver->getName($propertyFetch);
-
-        return $this->parsedPropertyFetchNodeCollector->findPropertyFetchesByTypeAndName($className, $propertyName);
     }
 
     public function hasClassChildren(Class_ $desiredClass): bool
     {
-        $desiredClassName = $desiredClass->getAttribute(AttributeKey::CLASS_NAME);
+        $desiredClassName = $this->nodeNameResolver->getName($desiredClass);
         if ($desiredClassName === null) {
             return false;
         }
 
-        foreach ($this->parsedNodeCollector->getClasses() as $classNode) {
-            $currentClassName = $classNode->getAttribute(AttributeKey::CLASS_NAME);
-            if ($currentClassName === null) {
-                continue;
-            }
-
-            if (! $this->isChildOrEqualClassLike($desiredClassName, $currentClassName)) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
+        return $this->findChildrenOfClass($desiredClassName) !== [];
     }
 
     /**
+     * @deprecated Use ReflectionProvider instead to resolve all the traits
      * @return Trait_[]
      */
     public function findUsedTraitsInClass(ClassLike $classLike): array
@@ -118,6 +65,7 @@ final class NodeRepository
     }
 
     /**
+     * @param class-string $class
      * @return Class_[]
      */
     public function findChildrenOfClass(string $class): array
@@ -136,42 +84,25 @@ final class NodeRepository
         return $childrenClasses;
     }
 
+    /**
+     * @param class-string $class
+     */
     public function findInterface(string $class): ?Interface_
     {
         return $this->parsedNodeCollector->findInterface($class);
     }
 
+    /**
+     * @param class-string $name
+     */
     public function findClass(string $name): ?Class_
     {
         return $this->parsedNodeCollector->findClass($name);
     }
 
     /**
-     * @param PropertyFetch|StaticPropertyFetch $expr
+     * @param class-string $name
      */
-    public function findPropertyByPropertyFetch(Expr $expr): ?Property
-    {
-        $propertyCaller = $expr instanceof StaticPropertyFetch ? $expr->class : $expr->var;
-
-        $propertyCallerType = $this->nodeTypeResolver->getStaticType($propertyCaller);
-        if (! $propertyCallerType instanceof TypeWithClassName) {
-            return null;
-        }
-
-        $className = $this->nodeTypeResolver->getFullyQualifiedClassName($propertyCallerType);
-        $class = $this->findClass($className);
-        if (! $class instanceof Class_) {
-            return null;
-        }
-
-        $propertyName = $this->nodeNameResolver->getName($expr->name);
-        if ($propertyName === null) {
-            return null;
-        }
-
-        return $class->getProperty($propertyName);
-    }
-
     public function findTrait(string $name): ?Trait_
     {
         return $this->parsedNodeCollector->findTrait($name);
@@ -204,6 +135,7 @@ final class NodeRepository
         if (! $currentClassReflection->isSubclassOf($desiredClassReflection->getName())) {
             return false;
         }
+
         return $currentClassName !== $desiredClass;
     }
 

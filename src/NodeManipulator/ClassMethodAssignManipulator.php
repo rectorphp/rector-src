@@ -21,12 +21,12 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptor;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
@@ -44,8 +44,8 @@ final class ClassMethodAssignManipulator
         private NodeFactory $nodeFactory,
         private NodeNameResolver $nodeNameResolver,
         private VariableManipulator $variableManipulator,
-        private CallReflectionResolver $callReflectionResolver,
-        private NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -294,16 +294,13 @@ final class ClassMethodAssignManipulator
             return false;
         }
 
-        $methodReflection = $this->callReflectionResolver->resolveCall($node);
+        $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromMethodCall($node);
         if (! $methodReflection instanceof MethodReflection) {
             return false;
         }
 
         $variableName = $this->nodeNameResolver->getName($variable);
-        $parametersAcceptor = $this->callReflectionResolver->resolveParametersAcceptor($methodReflection);
-        if (! $parametersAcceptor instanceof ParametersAcceptor) {
-            return false;
-        }
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
 
         /** @var ParameterReflection $parameterReflection */
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
@@ -348,12 +345,12 @@ final class ClassMethodAssignManipulator
 
     private function isParameterReferencedInMethodReflection(New_ $new, int $argumentPosition): bool
     {
-        $methodReflection = $this->callReflectionResolver->resolveConstructor($new);
-        $parametersAcceptor = $this->callReflectionResolver->resolveParametersAcceptor($methodReflection);
-
-        if (! $parametersAcceptor instanceof ParametersAcceptor) {
+        $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($new);
+        if (! $methodReflection instanceof MethodReflection) {
             return false;
         }
+
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
 
         /** @var ParameterReflection $parameterReflection */
         foreach ($parametersAcceptor->getParameters() as $parameterPosition => $parameterReflection) {

@@ -6,8 +6,8 @@ namespace Rector\TypeDeclaration\TypeInferer;
 
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
@@ -48,7 +48,9 @@ final class SilentVoidResolver
             return false;
         }
 
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds($classLike)) {
+        if ($classLike instanceof Class_ && $this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds(
+            $classLike
+        )) {
             return false;
         }
 
@@ -63,10 +65,7 @@ final class SilentVoidResolver
         return true;
     }
 
-    /**
-     * @param ClassMethod|Closure|Function_ $functionLike
-     */
-    public function hasSilentVoid(FunctionLike $functionLike): bool
+    public function hasSilentVoid(ClassMethod | Closure | Function_ $functionLike): bool
     {
         if ($this->hasStmtsAlwaysReturn((array) $functionLike->stmts)) {
             return false;
@@ -146,9 +145,8 @@ final class SilentVoidResolver
 
     /**
      * @see https://phpstan.org/writing-php-code/phpdoc-types#bottom-type
-     * @param ClassMethod|Closure|Function_ $functionLike
      */
-    private function hasNeverType(FunctionLike $functionLike): bool
+    private function hasNeverType(ClassMethod | Closure | Function_ $functionLike): bool
     {
         return $this->betterNodeFinder->hasInstancesOf($functionLike, [Throw_::class]);
     }

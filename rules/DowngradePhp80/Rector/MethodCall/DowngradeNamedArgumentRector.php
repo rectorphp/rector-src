@@ -16,10 +16,11 @@ use PhpParser\Node\Name;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,7 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeNamedArgumentRector extends AbstractRector
 {
     public function __construct(
-        private CallReflectionResolver $callReflectionResolver,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -99,7 +100,7 @@ CODE_SAMPLE
     private function removeNamedArguments(MethodCall | StaticCall | New_ $node, array $args): ?Node
     {
         if ($node instanceof New_) {
-            $methodReflection = $this->callReflectionResolver->resolveConstructor($node);
+            $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($node);
             if (! $methodReflection instanceof MethodReflection) {
                 return null;
             }
@@ -107,28 +108,27 @@ CODE_SAMPLE
             return $this->processRemoveNamedArgument($methodReflection, $node, $args);
         }
 
-        $callerReflection = $this->callReflectionResolver->resolveCall($node);
-        if ($callerReflection === null) {
+        $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
+        if ($functionLikeReflection === null) {
             return null;
         }
 
-        return $this->processRemoveNamedArgument($callerReflection, $node, $args);
+        return $this->processRemoveNamedArgument($functionLikeReflection, $node, $args);
     }
 
     /**
-     * @param MethodCall|StaticCall|New_ $node
      * @param Arg[] $args
      */
     private function processRemoveNamedArgument(
         MethodReflection | FunctionReflection $reflection,
-        Node $node,
+        MethodCall | StaticCall | New_ $node,
         array $args
     ): MethodCall | StaticCall | New_ {
         /** @var Arg[] $newArgs */
         $newArgs = [];
         $keyParam = 0;
 
-        $parametersAcceptor = $reflection->getVariants()[0];
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($reflection->getVariants());
         $parameterReflections = $parametersAcceptor->getParameters();
 
         foreach ($parameterReflections as $keyParam => $parameterReflection) {

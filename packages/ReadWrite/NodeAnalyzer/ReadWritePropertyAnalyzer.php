@@ -20,7 +20,6 @@ use Rector\Core\NodeManipulator\AssignManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
-use Webmozart\Assert\Assert;
 
 final class ReadWritePropertyAnalyzer
 {
@@ -32,13 +31,8 @@ final class ReadWritePropertyAnalyzer
     ) {
     }
 
-    /**
-     * @param PropertyFetch|StaticPropertyFetch $node
-     */
-    public function isRead(Node $node): bool
+    public function isRead(PropertyFetch | StaticPropertyFetch $node): bool
     {
-        Assert::isAnyOf($node, [PropertyFetch::class, StaticPropertyFetch::class]);
-
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof Node) {
             throw new ShouldNotHappenException();

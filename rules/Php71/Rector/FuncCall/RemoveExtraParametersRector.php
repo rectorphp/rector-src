@@ -13,9 +13,9 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\Type\UnionTypeMethodReflection;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
-use Rector\Core\PHPStan\Reflection\VariadicAnalyzer;
+use Rector\Core\NodeAnalyzer\VariadicAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -28,8 +28,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveExtraParametersRector extends AbstractRector
 {
     public function __construct(
-        private CallReflectionResolver $callReflectionResolver,
-        private VariadicAnalyzer $variadicAnalyzer
+        private VariadicAnalyzer $variadicAnalyzer,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -58,7 +58,7 @@ final class RemoveExtraParametersRector extends AbstractRector
         }
 
         // unreliable count of arguments
-        $functionLikeReflection = $this->callReflectionResolver->resolveCall($node);
+        $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
         if ($functionLikeReflection instanceof UnionTypeMethodReflection) {
             return null;
         }
@@ -88,44 +88,30 @@ final class RemoveExtraParametersRector extends AbstractRector
         return $node;
     }
 
-    /**
-     * @param FuncCall|MethodCall|StaticCall $node
-     */
-    private function shouldSkip(Node $node): bool
+    private function shouldSkip(FuncCall | MethodCall | StaticCall $call): bool
     {
-        if ($node->args === []) {
+        if ($call->args === []) {
             return true;
         }
 
-        if ($node instanceof StaticCall) {
-            if (! $node->class instanceof Name) {
+        if ($call instanceof StaticCall) {
+            if (! $call->class instanceof Name) {
                 return true;
             }
 
-            if ($this->isName($node->class, 'parent')) {
+            if ($this->isName($call->class, 'parent')) {
                 return true;
             }
         }
 
-        $functionReflection = $this->callReflectionResolver->resolveCall($node);
-        if ($functionReflection === null) {
-            return true;
-        }
-
-        if ($functionReflection->getVariants() === []) {
-            return true;
-        }
-
-        return $this->variadicAnalyzer->hasVariadicParameters($functionReflection);
+        return $this->variadicAnalyzer->hasVariadicParameters($call);
     }
 
-    /**
-     * @param MethodReflection|FunctionReflection $reflection
-     */
-    private function resolveMaximumAllowedParameterCount(object $reflection): int
-    {
+    private function resolveMaximumAllowedParameterCount(
+        MethodReflection | FunctionReflection $functionLikeReflection
+    ): int {
         $parameterCounts = [0];
-        foreach ($reflection->getVariants() as $parametersAcceptor) {
+        foreach ($functionLikeReflection->getVariants() as $parametersAcceptor) {
             $parameterCounts[] = count($parametersAcceptor->getParameters());
         }
 

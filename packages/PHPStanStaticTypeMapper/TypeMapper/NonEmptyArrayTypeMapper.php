@@ -29,7 +29,7 @@ final class NonEmptyArrayTypeMapper implements TypeMapperInterface
     /**
      * @param NonEmptyArrayType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
     {
         return new SpacingAwareArrayTypeNode(new IdentifierTypeNode('mixed'));
     }

@@ -9,12 +9,10 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Type\TypeWithClassName;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
-use Rector\Core\PHPStan\Reflection\ClassMethodReflectionResolver;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Core\ValueObject\MethodName;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeResolver\ArgumentSorter;
 use Rector\Php80\NodeResolver\RequireOptionalParamResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,8 +28,6 @@ final class OptionalParametersAfterRequiredRector extends AbstractRector
     public function __construct(
         private RequireOptionalParamResolver $requireOptionalParamResolver,
         private ArgumentSorter $argumentSorter,
-        private CallReflectionResolver $callReflectionResolver,
-        private ClassMethodReflectionResolver $classMethodReflectionResolver,
         private ReflectionResolver $reflectionResolver
     ) {
     }
@@ -92,24 +88,26 @@ CODE_SAMPLE
             return null;
         }
 
-        $classMethodReflection = $this->classMethodReflectionResolver->resolve($classMethod);
+        $classMethod->getAttribute(AttributeKey::CLASS_NAME);
+        $classMethodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($classMethod);
+
         if (! $classMethodReflection instanceof MethodReflection) {
             return null;
         }
 
-        $parametersAcceptor = $classMethodReflection->getVariants()[0];
-
-        $expectedOrderParameterReflections = $this->requireOptionalParamResolver->resolveFromReflection(
-            $classMethodReflection
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent(
+            $classMethodReflection,
+            $classMethod->params
         );
-        if ($parametersAcceptor->getParameters() === $expectedOrderParameterReflections) {
+        if ($expectedArgOrParamOrder === null) {
             return null;
         }
 
         $newParams = $this->argumentSorter->sortArgsByExpectedParamOrder(
             $classMethod->params,
-            $expectedOrderParameterReflections
+            $expectedArgOrParamOrder
         );
+
         $classMethod->params = $newParams;
 
         return $classMethod;
@@ -121,70 +119,36 @@ CODE_SAMPLE
             return null;
         }
 
-        $newClassType = $this->nodeTypeResolver->resolve($new->class);
-        if (! $newClassType instanceof TypeWithClassName) {
-            return null;
-        }
-
-        $methodReflection = $this->reflectionResolver->resolveMethodReflection(
-            $newClassType->getClassName(),
-            MethodName::CONSTRUCT
-        );
+        $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($new);
         if (! $methodReflection instanceof MethodReflection) {
             return null;
         }
 
-        $parametersAcceptor = $methodReflection->getVariants()[0];
-
-        $expectedOrderedParameterReflections = $this->requireOptionalParamResolver->resolveFromReflection(
-            $methodReflection
-        );
-        if ($expectedOrderedParameterReflections === $parametersAcceptor->getParameters()) {
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $new->args);
+        if ($expectedArgOrParamOrder === null) {
             return null;
         }
 
-        $parametersAcceptor = $methodReflection->getVariants()[0];
-
-        if (count($new->args) !== count($parametersAcceptor->getParameters())) {
-            return null;
-        }
-
-        $newArgs = $this->argumentSorter->sortArgsByExpectedParamOrder(
-            $new->args,
-            $expectedOrderedParameterReflections
-        );
-        if ($new->args === $newArgs) {
-            return null;
-        }
-
-        $new->args = $newArgs;
+        $new->args = $this->argumentSorter->sortArgsByExpectedParamOrder($new->args, $expectedArgOrParamOrder);
 
         return $new;
     }
 
     private function refactorMethodCall(MethodCall $methodCall): ?MethodCall
     {
-        $callReflection = $this->callReflectionResolver->resolveCall($methodCall);
-        if ($callReflection === null) {
+        $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($methodCall);
+        if (! $methodReflection instanceof MethodReflection) {
             return null;
         }
 
-        $parametersAcceptor = $callReflection->getVariants()[0];
-
-        $expectedOrderedParameterReflections = $this->requireOptionalParamResolver->resolveFromReflection(
-            $callReflection
-        );
-        if ($expectedOrderedParameterReflections === $parametersAcceptor->getParameters()) {
-            return null;
-        }
-
-        if (count($methodCall->args) !== count($parametersAcceptor->getParameters())) {
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $methodCall->args);
+        if ($expectedArgOrParamOrder === null) {
             return null;
         }
 
         $newArgs = $this->argumentSorter->sortArgsByExpectedParamOrder(
             $methodCall->args,
-            $expectedOrderedParameterReflections
+            $expectedArgOrParamOrder
         );
 
         if ($methodCall->args === $newArgs) {
@@ -194,5 +158,42 @@ CODE_SAMPLE
         $methodCall->args = $newArgs;
 
         return $methodCall;
+    }
+
+    /**
+     * @param array<Node\Arg|Node\Param> $argsOrParams
+     * @return int[]|null
+     */
+    private function resolveExpectedArgParamOrderIfDifferent(
+        MethodReflection $methodReflection,
+        array $argsOrParams
+    ): ?array {
+        $classReflection = $methodReflection->getDeclaringClass();
+        $fileName = $classReflection->getFileName();
+
+        // probably internal class
+        if ($fileName === false) {
+            return null;
+        }
+
+        if (str_contains($fileName, '/vendor/')) {
+            return null;
+        }
+
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+
+        $expectedParameterReflections = $this->requireOptionalParamResolver->resolveFromReflection(
+            $methodReflection
+        );
+
+        if (count($argsOrParams) !== count($parametersAcceptor->getParameters())) {
+            return null;
+        }
+
+        if ($expectedParameterReflections === $parametersAcceptor->getParameters()) {
+            return null;
+        }
+
+        return array_keys($expectedParameterReflections);
     }
 }

@@ -5,13 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeCollector\NodeCollector;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassConst;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -27,22 +21,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class ParsedNodeCollector
 {
-    /**
-     * @var array<class-string<Node>>
-     */
-    private const COLLECTABLE_NODE_TYPES = [
-        Class_::class,
-        Interface_::class,
-        ClassConst::class,
-        ClassConstFetch::class,
-        Trait_::class,
-        ClassMethod::class,
-        // simply collected
-        MethodCall::class,
-        // for array callable - [$this, 'someCall']
-        Array_::class,
-    ];
-
     /**
      * @var Class_[]
      */
@@ -95,18 +73,6 @@ final class ParsedNodeCollector
         return $this->traits[$name] ?? null;
     }
 
-    public function isCollectableNode(Node $node): bool
-    {
-        foreach (self::COLLECTABLE_NODE_TYPES as $collectableNodeType) {
-            /** @var class-string<Node> $collectableNodeType */
-            if (is_a($node, $collectableNodeType, true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function collect(Node $node): void
     {
         if ($node instanceof Class_) {
@@ -116,7 +82,6 @@ final class ParsedNodeCollector
 
         if ($node instanceof Interface_ || $node instanceof Trait_) {
             $this->collectInterfaceOrTrait($node);
-            return;
         }
     }
 
@@ -134,10 +99,7 @@ final class ParsedNodeCollector
         $this->classes[$className] = $class;
     }
 
-    /**
-     * @param Interface_|Trait_ $classLike
-     */
-    private function collectInterfaceOrTrait(ClassLike $classLike): void
+    private function collectInterfaceOrTrait(Interface_ | Trait_ $classLike): void
     {
         $name = $this->nodeNameResolver->getName($classLike);
         if ($name === null) {

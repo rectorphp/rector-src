@@ -13,6 +13,7 @@ use PHPStan\Type\VoidType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 
 /**
  * @implements TypeMapperInterface<VoidType>
@@ -40,7 +41,7 @@ final class VoidTypeMapper implements TypeMapperInterface
     /**
      * @param VoidType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
     {
         return new IdentifierTypeNode(self::VOID);
     }
@@ -54,7 +55,7 @@ final class VoidTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        if (in_array($kind, ['param', 'property'], true)) {
+        if (in_array($kind, [TypeKind::KIND_PARAM, TypeKind::KIND_PROPERTY], true)) {
             return null;
         }
 

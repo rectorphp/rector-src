@@ -8,9 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Type\ObjectType;
-use Rector\CodingStyle\ValueObject\PreferenceSelfThis;
+use Rector\CodingStyle\Enum\PreferenceSelfThis;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Exception\Configuration\InvalidConfigurationException;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -33,7 +32,7 @@ final class PreferThisOrSelfMethodCallRector extends AbstractRector implements C
     private const SELF = 'self';
 
     /**
-     * @var array<class-string, string>
+     * @var array<class-string, PreferenceSelfThis>
      */
     private array $typeToPreference = [];
 
@@ -63,7 +62,7 @@ CODE_SAMPLE
                 ,
                 [
                     self::TYPE_TO_PREFERENCE => [
-                        'PHPUnit\Framework\TestCase' => PreferenceSelfThis::PREFER_SELF,
+                        'PHPUnit\Framework\TestCase' => PreferenceSelfThis::PREFER_SELF(),
                     ],
                 ]
             ),
@@ -88,7 +87,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($preference === PreferenceSelfThis::PREFER_SELF) {
+            /** @var PreferenceSelfThis $preference */
+            if ($preference->equals(PreferenceSelfThis::PREFER_SELF())) {
                 return $this->processToSelf($node);
             }
 
@@ -99,24 +99,17 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, array<class-string, string>> $configuration
+     * @param array<string, array<class-string, PreferenceSelfThis>> $configuration
      */
     public function configure(array $configuration): void
     {
         $typeToPreference = $configuration[self::TYPE_TO_PREFERENCE] ?? [];
-        Assert::allString($typeToPreference);
-
-        foreach ($typeToPreference as $singleTypeToPreference) {
-            $this->ensurePreferenceIsValid($singleTypeToPreference);
-        }
+        Assert::allIsAOf($typeToPreference, PreferenceSelfThis::class);
 
         $this->typeToPreference = $typeToPreference;
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function processToSelf(Node $node): ?StaticCall
+    private function processToSelf(MethodCall | StaticCall $node): ?StaticCall
     {
         if ($node instanceof StaticCall && ! $this->isNames($node->class, [self::SELF, 'static'])) {
             return null;
@@ -134,10 +127,7 @@ CODE_SAMPLE
         return $this->nodeFactory->createStaticCall(self::SELF, $name, $node->args);
     }
 
-    /**
-     * @param MethodCall|StaticCall $node
-     */
-    private function processToThis(Node $node): ?MethodCall
+    private function processToThis(MethodCall | StaticCall $node): ?MethodCall
     {
         if ($node instanceof MethodCall) {
             return null;
@@ -153,19 +143,5 @@ CODE_SAMPLE
         }
 
         return $this->nodeFactory->createMethodCall('this', $name, $node->args);
-    }
-
-    private function ensurePreferenceIsValid(string $preference): void
-    {
-        if (in_array($preference, PreferenceSelfThis::ALLOWED_VALUES, true)) {
-            return;
-        }
-
-        throw new InvalidConfigurationException(sprintf(
-            'Preference configuration "%s" for "%s" is not valid. Use one of "%s"',
-            $preference,
-            self::class,
-            implode('", "', PreferenceSelfThis::ALLOWED_VALUES)
-        ));
     }
 }

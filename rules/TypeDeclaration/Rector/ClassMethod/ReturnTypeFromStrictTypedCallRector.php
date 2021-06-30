@@ -21,9 +21,8 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PHPStan\Reflection\CallReflectionResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -36,7 +35,7 @@ final class ReturnTypeFromStrictTypedCallRector extends AbstractRector
 {
     public function __construct(
         private TypeNodeUnwrapper $typeNodeUnwrapper,
-        private CallReflectionResolver $callReflectionResolver
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -117,11 +116,8 @@ CODE_SAMPLE
         return null;
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
     private function processSingleUnionType(
-        Node $node,
+        ClassMethod | Function_ | Closure $node,
         UnionType $unionType,
         NullableType $nullableType
     ): Closure | ClassMethod | Function_ {
@@ -180,7 +176,7 @@ CODE_SAMPLE
 
     private function resolveMethodCallReturnNode(MethodCall | StaticCall | FuncCall $call): ?Node
     {
-        $methodReflection = $this->callReflectionResolver->resolveCall($call);
+        $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($call);
         if ($methodReflection === null) {
             return null;
         }
@@ -203,7 +199,7 @@ CODE_SAMPLE
 
         if ($resolvedType instanceof UnionType) {
             if (! $returnedStrictTypeNode instanceof NullableType) {
-                throw new ShouldNotHappenException();
+                return $functionLike;
             }
 
             return $this->processSingleUnionType($functionLike, $resolvedType, $returnedStrictTypeNode);

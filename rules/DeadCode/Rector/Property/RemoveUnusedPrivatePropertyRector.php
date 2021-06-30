@@ -23,7 +23,7 @@ final class RemoveUnusedPrivatePropertyRector extends AbstractRector
 {
     public function __construct(
         private PropertyManipulator $propertyManipulator,
-        private ComplexNodeRemover $complexNodeRemover
+        private ComplexNodeRemover $complexNodeRemover,
     ) {
     }
 

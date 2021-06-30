@@ -35,7 +35,7 @@ final class ClassStringTypeMapper implements TypeMapperInterface
     /**
      * @param ClassStringType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
     {
         $attributeAwareIdentifierTypeNode = new IdentifierTypeNode('class-string');
 
