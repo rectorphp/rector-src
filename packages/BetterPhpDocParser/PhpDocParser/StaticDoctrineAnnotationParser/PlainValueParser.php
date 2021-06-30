@@ -132,11 +132,12 @@ final class PlainValueParser
         if (strtolower($currentTokenValue) === 'true') {
             return new ConstExprTrueNode();
         }
-
-        if (is_numeric($currentTokenValue) && (string) (int) $currentTokenValue === $currentTokenValue) {
-            return new ConstExprIntegerNode($currentTokenValue);
+        if (! is_numeric($currentTokenValue)) {
+            return null;
         }
-
-        return null;
+        if ((string) (int) $currentTokenValue !== $currentTokenValue) {
+            return null;
+        }
+        return new ConstExprIntegerNode($currentTokenValue);
     }
 }
