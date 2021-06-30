@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
-use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -147,34 +146,45 @@ CODE_SAMPLE
         Class_ | Property | ClassMethod | Function_ | Closure | ArrowFunction $node
     ): bool {
         $hasNewAttrGroups = false;
+
+        // 1. generic tags
         foreach ($tags as $tag) {
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-                $annotationToAttributeTag = $annotationToAttribute->getTag();
-                if ($this->isFoundGenericTag($phpDocInfo, $tag->value, $annotationToAttributeTag)) {
-                    // 1. remove php-doc tag
-                    $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToAttributeTag);
-
-                    // 2. add attributes
-                    $node->attrGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag(
-                        $annotationToAttribute
-                    );
-
-                    $hasNewAttrGroups = true;
-                    continue 2;
+                //$annotationToAttributeTag = $annotationToAttribute->getTag();
+                $desiredTag = $annotationToAttribute->getTag();
+                // not a basic one
+                if (str_contains($desiredTag, '\\')) {
+                    continue;
                 }
 
-                if ($this->shouldSkip($tag->value, $phpDocInfo, $annotationToAttributeTag)) {
+                if (! $this->isFoundGenericTag($phpDocInfo, $tag->value, $desiredTag)) {
                     continue;
                 }
 
                 // 1. remove php-doc tag
-                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $tag->value);
+                $this->phpDocTagRemover->removeByName($phpDocInfo, $desiredTag);
 
                 // 2. add attributes
-                /** @var DoctrineAnnotationTagValueNode $tagValue */
-                $tagValue = $tag->value;
+                $node->attrGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
 
-                $node->attrGroups[] = $this->phpAttributeGroupFactory->create($tagValue, $annotationToAttribute);
+                $hasNewAttrGroups = true;
+                continue 2;
+            }
+        }
+
+        // 2. Doctrine annotation classes
+        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+            $doctrineAnnotationTagValueNodes = $phpDocInfo->findByAnnotationClass($annotationToAttribute->getTag());
+
+            foreach ($doctrineAnnotationTagValueNodes as $doctrineAnnotationTagValueNode) {
+                // 1. remove php-doc tag
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
+
+                // 2. add attributes
+                $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
+                    $doctrineAnnotationTagValueNode,
+                    $annotationToAttribute
+                );
 
                 $hasNewAttrGroups = true;
                 continue 2;
@@ -192,19 +202,7 @@ CODE_SAMPLE
         if (! $phpDocInfo->hasByName($annotationToAttributeTag)) {
             return false;
         }
+
         return $phpDocTagValueNode instanceof GenericTagValueNode;
-    }
-
-    private function shouldSkip(
-        PhpDocTagValueNode $phpDocTagValueNode,
-        PhpDocInfo $phpDocInfo,
-        string $annotationToAttributeTag
-    ): bool {
-        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass($annotationToAttributeTag);
-        if ($phpDocTagValueNode !== $doctrineAnnotationTagValueNode) {
-            return true;
-        }
-
-        return ! $phpDocTagValueNode instanceof DoctrineAnnotationTagValueNode;
     }
 }

@@ -529,3 +529,6 @@ parameters:
             message: '#Do not use @method tag in class docblock#'
             paths:
                 - rules/*/Enum/*
+
+        # class-string miss match
+        - '#Parameter \#1 \$classes of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<PHPStan\\PhpDocParser\\Ast\\Node\>\:\:getByAnnotationClasses\(\) expects array<class\-string\>, array<int, string\> given#'
