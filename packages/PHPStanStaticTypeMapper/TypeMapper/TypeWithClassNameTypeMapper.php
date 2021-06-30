@@ -11,6 +11,9 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 
+/**
+ * @implements TypeMapperInterface<TypeWithClassName>
+ */
 final class TypeWithClassNameTypeMapper implements TypeMapperInterface
 {
     public function __construct(

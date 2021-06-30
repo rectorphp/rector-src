@@ -11,6 +11,9 @@ use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 
+/**
+ * @implements TypeMapperInterface<NeverType>
+ */
 final class NeverTypeMapper implements TypeMapperInterface
 {
     /**
