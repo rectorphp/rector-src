@@ -43,7 +43,7 @@ final class ClassMethodAssignManipulator
         private VariableManipulator $variableManipulator,
         private NodeComparator $nodeComparator,
         private ReflectionResolver $reflectionResolver,
-        private \Rector\Core\NodeManipulator\ArrayDestructVariableFilter $arrayDestructVariableFilter
+        private ArrayDestructVariableFilter $arrayDestructVariableFilter
     ) {
     }
 
