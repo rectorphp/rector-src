@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\Identical\StrEndsWithRector\Fixture;
 
-class SubstrNotPrefix
+class SubstrNotPrefixOtherWay
 {
     public function run()
     {
-        $isNotMatch = substr($haystack, -strlen($needle)) !== $needle;
+        $isNotMatch = $needle !== substr($haystack, -strlen($needle));
     }
 }
 
@@ -17,7 +17,7 @@ class SubstrNotPrefix
 
 namespace Rector\Tests\Php80\Rector\Identical\StrEndsWithRector\Fixture;
 
-class SubstrNotPrefix
+class SubstrNotPrefixOtherWay
 {
     public function run()
     {
