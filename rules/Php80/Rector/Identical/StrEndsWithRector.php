@@ -101,7 +101,6 @@ CODE_SAMPLE
         }
 
         $isPositive = $binaryOp instanceof Identical;
-
         return $this->buildReturnNode($haystack, $needle, $isPositive);
     }
 
