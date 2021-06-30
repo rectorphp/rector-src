@@ -13,7 +13,6 @@ class SubstrCompareNot
 }
 
 ?>
-
 -----
 <?php
 
