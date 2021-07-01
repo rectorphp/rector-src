@@ -11,12 +11,14 @@ use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use PhpParser\Node\NullableType;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class ParamAnalyzer
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -57,6 +59,7 @@ final class ParamAnalyzer
             return false;
         }
 
-        return $param->type instanceof NullableType;
+        $type = $this->nodeTypeResolver->resolve($param->var);
+        return $type instanceof NullableType;
     }
 }
