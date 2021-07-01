@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FinalizeClassesWithoutChildrenRector extends AbstractRector
 {
     /**
-     * @var class-string[]
+     * @var string[]
      */
     private const DOCTRINE_ORM_MAPPING_ANNOTATION = [
         'Doctrine\ORM\Mapping\Entity',
