@@ -59,6 +59,10 @@ final class ParamAnalyzer
             return false;
         }
 
+        if ($param->type instanceof NullableType) {
+            return true;
+        }
+
         $type = $this->nodeTypeResolver->resolve($param->var);
         return $type instanceof NullableType;
     }

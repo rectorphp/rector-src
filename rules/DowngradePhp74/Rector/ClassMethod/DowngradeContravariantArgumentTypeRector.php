@@ -111,7 +111,11 @@ CODE_SAMPLE
 
     private function isNullableParam(Param $param, FunctionLike $functionLike): bool
     {
-        if ($this->paramAnalyzer->isNullable($param)) {
+        if ($param->variadic) {
+            return false;
+        }
+
+        if ($param->type === null) {
             return false;
         }
 
