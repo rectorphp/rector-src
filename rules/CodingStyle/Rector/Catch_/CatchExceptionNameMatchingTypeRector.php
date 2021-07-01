@@ -168,6 +168,7 @@ CODE_SAMPLE
             return;
         }
 
+        /** @var Variable[] $variables */
         $variables = $this->betterNodeFinder->find($nextNode, function (Node $node) use ($oldVariableName): bool {
             if (! $node instanceof Variable) {
                 return false;
@@ -176,7 +177,6 @@ CODE_SAMPLE
             return $this->nodeNameResolver->isName($node, $oldVariableName);
         });
 
-        /** @var Variable[] $variables */
         $processRenameVariables = $this->processRenameVariable($variables, $oldVariableName, $newVariableName);
         if (! $processRenameVariables) {
             return;
@@ -193,17 +193,14 @@ CODE_SAMPLE
     private function processRenameVariable(array $variables, string $oldVariableName, string $newVariableName): bool
     {
         foreach ($variables as $variable) {
-            if ($variable instanceof Variable) {
-                $parent = $variable->getAttribute(AttributeKey::PARENT_NODE);
-                if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual(
-                    $parent->var,
-                    $variable
-                ) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
-                    return false;
-                }
-
-                $variable->name = $newVariableName;
+            $parent = $variable->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual(
+                $parent->var,
+                $variable
+            ) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+                return false;
             }
+            $variable->name = $newVariableName;
         }
 
         return true;
