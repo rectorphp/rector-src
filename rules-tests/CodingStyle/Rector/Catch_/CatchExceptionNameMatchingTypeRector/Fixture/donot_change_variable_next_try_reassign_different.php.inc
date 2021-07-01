@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Fixture;
 
-class DonotChangeVariableNextTryReassign
+class DonotChangeVariableNextTryReassignDifferent
 {
     public function run()
     {
@@ -23,7 +23,7 @@ class DonotChangeVariableNextTryReassign
 
 namespace Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Fixture;
 
-class DonotChangeVariableNextTryReassign
+class DonotChangeVariableNextTryReassignDifferent
 {
     public function run()
     {
