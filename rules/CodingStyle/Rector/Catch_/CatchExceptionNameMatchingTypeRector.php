@@ -166,20 +166,15 @@ CODE_SAMPLE
                 return false;
             }
 
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parent instanceof Assign) {
-                return $this->nodeNameResolver->isName($node, $oldVariableName);
-            }
-            if (! $this->nodeComparator->areNodesEqual($parent->var, $node)) {
-                return $this->nodeNameResolver->isName($node, $oldVariableName);
-            }
-            if (! $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
-                return $this->nodeNameResolver->isName($node, $oldVariableName);
-            }
-            return false;
+            return $this->nodeNameResolver->isName($node, $oldVariableName);
         });
 
         if ($variable instanceof Variable) {
+            $parent = $variable->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual($parent->var, $variable) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+                return;
+            }
+
             $variable->name = $newVariableName;
         }
 
