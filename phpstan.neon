@@ -536,3 +536,8 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:resolveNestedDoctrineTagValueNodes\(\)" is 11, keep it under 9#'
         - '#expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
+        - '#Parameter \#1 \$desiredType of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>\:\:findByType\(\) expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
+        - '#Method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:findByType\(\) should return array<TNode of PHPStan\\PhpDocParser\\Ast\\Node\> but returns array<int, class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>\|TNode of PHPStan\\PhpDocParser\\Ast\\Node\>#'
+        - '#expects array<class\-string\>, array<int, string\> given#'
+        - '#Parameter \#2 \$desiredType of method Rector\\BetterPhpDocParser\\PhpDocNodeFinder\\PhpDocNodeByTypeFinder<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>\:\:findByType\(\) expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
+        - '#expects PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocNode, class\-string given#'

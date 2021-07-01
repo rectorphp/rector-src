@@ -250,15 +250,22 @@ final class PhpDocInfo
      */
     public function hasByAnnotationClass(string $class): bool
     {
-        return $this->findByAnnotationClass($class) !== [];
+        return $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass($this->phpDocNode, $class) !== [];
     }
 
     /**
-     * @param string[] $annotationsClasses
+     * @param class-string[] $classes
      */
-    public function hasByAnnotationClasses(array $annotationsClasses): bool
+    public function hasByAnnotationClasses(array $classes): bool
     {
-        return $this->getByAnnotationClasses($annotationsClasses) !== null;
+        foreach ($classes as $class) {
+            $foundTags = $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass($this->phpDocNode, $class);
+            if ($foundTags !== []) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -266,7 +273,11 @@ final class PhpDocInfo
      */
     public function findOneByAnnotationClass(string $desiredClass): ?DoctrineAnnotationTagValueNode
     {
-        $foundTagValueNodes = $this->findByAnnotationClass($desiredClass);
+        $foundTagValueNodes = $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass(
+            $this->phpDocNode,
+            $desiredClass
+        );
+
         return $foundTagValueNodes[0] ?? null;
     }
 
@@ -286,6 +297,8 @@ final class PhpDocInfo
      */
     public function removeByType(string $type): void
     {
+        // @todo use traverser here too
+
         foreach ($this->phpDocNode->children as $key => $phpDocChildNode) {
             if (is_a($phpDocChildNode, $type, true)) {
                 unset($this->phpDocNode->children[$key]);

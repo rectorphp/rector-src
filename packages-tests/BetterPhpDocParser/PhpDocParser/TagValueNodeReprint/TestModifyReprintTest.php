@@ -58,6 +58,7 @@ final class TestModifyReprintTest extends AbstractTestCase
         $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(
             'Symfony\Component\Routing\Annotation\Route'
         );
+
         // this will extended tokens of first node
         $doctrineAnnotationTagValueNode->changeValue('methods', new CurlyListNode(['"GET"', '"HEAD"']));
 

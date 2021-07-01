@@ -18,10 +18,12 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php80\PhpDocNodeVisitor\AnnotationToAttributePhpDocNodeVisitor;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SimplePhpDocParser\PhpDocNodeTraverser;
 use Webmozart\Assert\Assert;
 
 /**
@@ -43,7 +45,8 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
 
     public function __construct(
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
-        private PhpDocTagRemover $phpDocTagRemover
+        private PhpDocTagRemover $phpDocTagRemover,
+        private AnnotationToAttributePhpDocNodeVisitor $annotationToAttributePhpDocNodeVisitor
     ) {
     }
 
@@ -185,20 +188,28 @@ CODE_SAMPLE
         PhpDocInfo $phpDocInfo,
         ClassMethod | Function_ | Closure | ArrowFunction | Property | Class_ $node
     ): void {
-        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-            $doctrineAnnotationTagValueNodes = $phpDocInfo->findByAnnotationClass($annotationToAttribute->getTag());
+        if ($phpDocInfo->getPhpDocNode()->children === []) {
+            return;
+        }
 
-            foreach ($doctrineAnnotationTagValueNodes as $doctrineAnnotationTagValueNode) {
+        $phpDocNodeTraverser = new PhpDocNodeTraverser();
+        $this->annotationToAttributePhpDocNodeVisitor->configureAnnotationsToAttributes($this->annotationsToAttributes);
+        $phpDocNodeTraverser->addPhpDocNodeVisitor($this->annotationToAttributePhpDocNodeVisitor);
+        $phpDocNodeTraverser->traverse($phpDocInfo->getPhpDocNode());
 
-                // 1. remove php-doc tag
-                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
+        $doctrineTagAndAnnotationToAttributes = $this->annotationToAttributePhpDocNodeVisitor->provideFound();
 
-                // 2. add attributes
-                $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
-                    $doctrineAnnotationTagValueNode,
-                    $annotationToAttribute
-                );
-            }
+        foreach ($doctrineTagAndAnnotationToAttributes as $doctrineTagAndAnnotationToAttribute) {
+            $doctrineAnnotationTagValueNode = $doctrineTagAndAnnotationToAttribute->getDoctrineAnnotationTagValueNode();
+
+            // 1. remove php-doc tag
+            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
+
+            // 2. add attributes
+            $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
+                $doctrineAnnotationTagValueNode,
+                $doctrineTagAndAnnotationToAttribute->getAnnotationToAttribute()
+            );
         }
     }
 }

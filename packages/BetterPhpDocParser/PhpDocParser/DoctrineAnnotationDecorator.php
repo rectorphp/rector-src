@@ -65,7 +65,6 @@ final class DoctrineAnnotationDecorator
             }
 
             $genericTagValueNode = $phpDocChildNode->value;
-
             while (isset($phpDocNode->children[$key])) {
                 ++$key;
 

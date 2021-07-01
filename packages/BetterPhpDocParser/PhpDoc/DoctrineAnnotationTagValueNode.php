@@ -20,14 +20,12 @@ final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode imple
         array $values = [],
         ?string $silentKey = null
     ) {
-        $this->hasChanged = true;
-
         parent::__construct($values, $originalContent, $silentKey);
     }
 
     public function __toString(): string
     {
-        if (! $this->hasChanged) {
+        if (! $this->hasChanged()) {
             if ($this->originalContent === null) {
                 return '';
             }
@@ -55,7 +53,7 @@ final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode imple
             return true;
         }
 
-        // the name is not fully qualified in the original name, look for resolvd class attirubte
+        // the name is not fully qualified in the original name, look for resolved class attribute
         $resolvedClass = $this->identifierTypeNode->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS);
         return $resolvedClass === $className;
     }
