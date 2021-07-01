@@ -11,6 +11,7 @@ class DonotChangeExceptionVariableAfterTryReassign
         }
 
         $typoException = 'test';
+        $this->verify($typoException);
     }
 }
 
@@ -29,6 +30,7 @@ class DonotChangeExceptionVariableAfterTryReassign
         }
 
         $typoException = 'test';
+        $this->verify($typoException);
     }
 }
 
