@@ -6,9 +6,12 @@ namespace Rector\CodingStyle\Rector\Catch_;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\TryCatch;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -140,5 +143,42 @@ CODE_SAMPLE
 
             $node->name = $newVariableName;
         });
+
+        /** @var TryCatch $tryCatch */
+        $tryCatch = $catch->getAttribute(AttributeKey::PARENT_NODE);
+
+        $this->replaceNextUsageVariable($tryCatch, $oldVariableName, $newVariableName);
+    }
+
+    private function replaceNextUsageVariable(?Node $node, string $oldVariableName, string $newVariableName): void
+    {
+        if (! $node instanceof Node) {
+            return;
+        }
+
+        $next = $node->getAttribute(AttributeKey::NEXT_NODE);
+        if (! $next instanceof Node) {
+            return;
+        }
+
+        $variable = $this->betterNodeFinder->findFirst($next, function (Node $node) use ($oldVariableName) {
+            if (! $node instanceof Variable) {
+                return false;
+            }
+
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual($parent->var, $node) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($node, $oldVariableName);
+        });
+
+        if ($variable instanceof Variable) {
+            $variable->name = $newVariableName;
+        }
+
+        $node = $node->getAttribute(AttributeKey::NEXT_NODE);
+        $this->replaceNextUsageVariable($node, $oldVariableName, $newVariableName);
     }
 }
