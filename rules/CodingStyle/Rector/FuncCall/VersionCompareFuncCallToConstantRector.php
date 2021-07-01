@@ -112,8 +112,10 @@ CODE_SAMPLE
 
         $left = $this->getNewNodeForArg($node->args[0]->value);
         $right = $this->getNewNodeForArg($node->args[1]->value);
-
-        if ($left === null || $right === null) {
+        if ($left === null) {
+            return null;
+        }
+        if ($right === null) {
             return null;
         }
 
