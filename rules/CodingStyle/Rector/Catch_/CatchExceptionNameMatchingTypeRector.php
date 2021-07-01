@@ -146,25 +146,30 @@ CODE_SAMPLE
 
         /** @var TryCatch $tryCatch */
         $tryCatch = $catch->getAttribute(AttributeKey::PARENT_NODE);
+        $next = $tryCatch->getAttribute(AttributeKey::NEXT_NODE);
 
-        $this->replaceNextUsageVariable($tryCatch, $oldVariableName, $newVariableName);
+        $this->replaceNextUsageVariable($tryCatch, $next, $oldVariableName, $newVariableName);
     }
 
-    private function replaceNextUsageVariable(?Node $node, string $oldVariableName, string $newVariableName): void
+    private function replaceNextUsageVariable(
+        Node $currentNode,
+        ?Node $nextNode,
+        string $oldVariableName,
+        string $newVariableName
+    ): void
     {
-        if (! $node instanceof Node) {
+        if (! $nextNode instanceof Node) {
+            $parent = $currentNode->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parent instanceof Node) {
+                return;
+            }
+            $nextNode = $parent->getAttribute(AttributeKey::NEXT_NODE);
+            $this->replaceNextUsageVariable($parent, $nextNode, $oldVariableName, $newVariableName);
+
             return;
         }
 
-        $next = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $next instanceof Node) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            $this->replaceNextUsageVariable($parent, $oldVariableName, $newVariableName);
-
-            return;
-        }
-
-        $variables = $this->betterNodeFinder->find($next, function (Node $node) use ($oldVariableName): bool {
+        $variables = $this->betterNodeFinder->find($nextNode, function (Node $node) use ($oldVariableName): bool {
             if (! $node instanceof Variable) {
                 return false;
             }
@@ -175,7 +180,13 @@ CODE_SAMPLE
         foreach ($variables as $variable) {
             if ($variable instanceof Variable) {
                 $parent = $variable->getAttribute(AttributeKey::PARENT_NODE);
-                if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual($parent->var, $variable) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+                if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual(
+                    $parent->var,
+                    $variable
+                ) && $this->nodeNameResolver->isName(
+                    $parent->var,
+                    $oldVariableName
+                )) {
                     return;
                 }
 
@@ -183,7 +194,8 @@ CODE_SAMPLE
             }
         }
 
-        $node = $node->getAttribute(AttributeKey::NEXT_NODE);
-        $this->replaceNextUsageVariable($node, $oldVariableName, $newVariableName);
+        $currentNode = $nextNode;
+        $nextNode = $nextNode->getAttribute(AttributeKey::NEXT_NODE);
+        $this->replaceNextUsageVariable($currentNode, $nextNode, $oldVariableName, $newVariableName);
     }
 }
