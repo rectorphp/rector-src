@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\Core\Rector\AbstractRector;
@@ -159,7 +160,7 @@ CODE_SAMPLE
     ): void {
         if (! $nextNode instanceof Node) {
             $parent = $currentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parent instanceof Node) {
+            if (! $parent instanceof Node || $parent instanceof FunctionLike) {
                 return;
             }
             $nextNode = $parent->getAttribute(AttributeKey::NEXT_NODE);
