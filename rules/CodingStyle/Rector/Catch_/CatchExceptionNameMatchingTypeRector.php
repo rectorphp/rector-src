@@ -160,7 +160,10 @@ CODE_SAMPLE
     ): void {
         if (! $nextNode instanceof Node) {
             $parent = $currentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parent instanceof Node || $parent instanceof FunctionLike) {
+            if (! $parent instanceof Node) {
+                return;
+            }
+            if ($parent instanceof FunctionLike) {
                 return;
             }
             $nextNode = $parent->getAttribute(AttributeKey::NEXT_NODE);
