@@ -62,7 +62,7 @@ final class UselessIfCondBeforeForeachDetector
             return true;
         }
 
-        return $this->isNullableFromParam($previousParam);
+        return $this->isNullableParam($previousParam);
     }
 
     private function fromPreviousParam(Expr $expr): ?Param
@@ -80,7 +80,7 @@ final class UselessIfCondBeforeForeachDetector
         });
     }
 
-    public function isNullableFromParam(Param $param): bool
+    public function isNullableParam(Param $param): bool
     {
         $type = $this->nodeTypeResolver->resolve($param->var);
         return $type instanceof NullableType;
