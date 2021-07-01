@@ -8,7 +8,7 @@ final class NotPassArg
     {
     }
 
-    public function execute(array $data)
+    public function execute()
     {
         $this->run();
     }
@@ -26,7 +26,7 @@ final class NotPassArg
     {
     }
 
-    public function execute(array $data)
+    public function execute()
     {
         $this->run();
     }
