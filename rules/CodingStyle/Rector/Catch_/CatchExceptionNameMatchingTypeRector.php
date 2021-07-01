@@ -158,10 +158,13 @@ CODE_SAMPLE
 
         $next = $node->getAttribute(AttributeKey::NEXT_NODE);
         if (! $next instanceof Node) {
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            $this->replaceNextUsageVariable($parent, $oldVariableName, $newVariableName);
+
             return;
         }
 
-        $variable = $this->betterNodeFinder->findFirst($next, function (Node $node) use ($oldVariableName): bool {
+        $variables = $this->betterNodeFinder->find($next, function (Node $node) use ($oldVariableName): bool {
             if (! $node instanceof Variable) {
                 return false;
             }
@@ -169,13 +172,15 @@ CODE_SAMPLE
             return $this->nodeNameResolver->isName($node, $oldVariableName);
         });
 
-        if ($variable instanceof Variable) {
-            $parent = $variable->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual($parent->var, $variable) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
-                return;
-            }
+        foreach ($variables as $variable) {
+            if ($variable instanceof Variable) {
+                $parent = $variable->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual($parent->var, $variable) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+                    return;
+                }
 
-            $variable->name = $newVariableName;
+                $variable->name = $newVariableName;
+            }
         }
 
         $node = $node->getAttribute(AttributeKey::NEXT_NODE);
