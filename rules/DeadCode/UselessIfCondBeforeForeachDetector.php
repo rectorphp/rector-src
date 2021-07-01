@@ -4,22 +4,28 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Empty_;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\NullableType;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\If_;
-use PHPStan\Type\MixedType;
+use PHPStan\Type\ArrayType;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class UselessIfCondBeforeForeachDetector
 {
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
-        private NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -47,8 +53,37 @@ final class UselessIfCondBeforeForeachDetector
 
         // is array though?
         $arrayType = $this->nodeTypeResolver->resolve($empty->expr);
+        if (! $arrayType instanceof ArrayType) {
+            return false;
+        }
 
-        return ! $arrayType instanceof MixedType;
+        $previousParam = $this->fromPreviousParam($foreachExpr);
+        if (! $previousParam instanceof Param) {
+            return true;
+        }
+
+        return $this->isNullableFromParam($previousParam);
+    }
+
+    private function fromPreviousParam(Expr $expr): ?Param
+    {
+        return $this->betterNodeFinder->findFirstPreviousOfNode($expr, function (Node $node) use ($expr) {
+            if (! $node instanceof Param) {
+                return false;
+            }
+
+            if (! $node->var instanceof Variable) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($node->var, $expr);
+        });
+    }
+
+    public function isNullableFromParam(Param $param): bool
+    {
+        $type = $this->nodeTypeResolver->resolve($param->var);
+        return $type instanceof NullableType;
     }
 
     /**
