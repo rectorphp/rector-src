@@ -14,7 +14,6 @@ use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -32,8 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeContravariantArgumentTypeRector extends AbstractRector
 {
     public function __construct(
-        private PhpDocTypeChanger $phpDocTypeChanger,
-        private ParamAnalyzer $paramAnalyzer
+        private PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
