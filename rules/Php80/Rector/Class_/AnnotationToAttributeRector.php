@@ -205,6 +205,27 @@ CODE_SAMPLE
                 $doctrineAnnotationTagValueNode,
                 $doctrineTagAndAnnotationToAttribute->getAnnotationToAttribute()
             );
+<<<<<<< HEAD
+=======
+        }
+
+        // @todo old approach - to be deprecated
+
+        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+            $doctrineAnnotationTagValueNodes = $phpDocInfo->findByAnnotationClass($annotationToAttribute->getTag());
+
+            foreach ($doctrineAnnotationTagValueNodes as $doctrineAnnotationTagValueNode) {
+
+                // 1. remove php-doc tag
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
+
+                // 2. add attributes
+                $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
+                    $doctrineAnnotationTagValueNode,
+                    $annotationToAttribute
+                );
+            }
+>>>>>>> 6c7e795f4 (add bridge between node traveser and foreach)
         }
     }
 }
