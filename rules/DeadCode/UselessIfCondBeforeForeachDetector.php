@@ -16,6 +16,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\ArrayType;
+use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -25,7 +26,8 @@ final class UselessIfCondBeforeForeachDetector
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
         private NodeComparator $nodeComparator,
-        private BetterNodeFinder $betterNodeFinder
+        private BetterNodeFinder $betterNodeFinder,
+        private ParamAnalyzer $paramAnalyzer
     ) {
     }
 
@@ -62,13 +64,7 @@ final class UselessIfCondBeforeForeachDetector
             return true;
         }
 
-        return $this->isNullableParam($previousParam);
-    }
-
-    public function isNullableParam(Param $param): bool
-    {
-        $type = $this->nodeTypeResolver->resolve($param->var);
-        return $type instanceof NullableType;
+        return $this->paramAnalyzer->isNullable($previousParam);
     }
 
     /**

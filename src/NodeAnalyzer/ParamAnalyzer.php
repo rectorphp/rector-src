@@ -10,6 +10,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use PhpParser\Node\NullableType;
 
 final class ParamAnalyzer
 {
@@ -44,5 +45,18 @@ final class ParamAnalyzer
         }
 
         return false;
+    }
+
+    public function isNullable(Param $param): bool
+    {
+        if ($param->variadic) {
+            return false;
+        }
+
+        if ($param->type === null) {
+            return false;
+        }
+
+        return $param->type instanceof NullableType;
     }
 }
