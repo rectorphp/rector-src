@@ -161,17 +161,22 @@ CODE_SAMPLE
             return;
         }
 
-        $variable = $this->betterNodeFinder->findFirst($next, function (Node $node) use ($oldVariableName) {
+        $variable = $this->betterNodeFinder->findFirst($next, function (Node $node) use ($oldVariableName): bool {
             if (! $node instanceof Variable) {
                 return false;
             }
 
             $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual($parent->var, $node) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
-                return false;
+            if (! $parent instanceof Assign) {
+                return $this->nodeNameResolver->isName($node, $oldVariableName);
             }
-
-            return $this->nodeNameResolver->isName($node, $oldVariableName);
+            if (! $this->nodeComparator->areNodesEqual($parent->var, $node)) {
+                return $this->nodeNameResolver->isName($node, $oldVariableName);
+            }
+            if (! $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+                return $this->nodeNameResolver->isName($node, $oldVariableName);
+            }
+            return false;
         });
 
         if ($variable instanceof Variable) {
