@@ -156,8 +156,7 @@ CODE_SAMPLE
         ?Node $nextNode,
         string $oldVariableName,
         string $newVariableName
-    ): void
-    {
+    ): void {
         if (! $nextNode instanceof Node) {
             $parent = $currentNode->getAttribute(AttributeKey::PARENT_NODE);
             if (! $parent instanceof Node) {
@@ -177,25 +176,36 @@ CODE_SAMPLE
             return $this->nodeNameResolver->isName($node, $oldVariableName);
         });
 
+        /** @var Variable[] $variables */
+        $processRenameVariables = $this->processRenameVariable($variables, $oldVariableName, $newVariableName);
+        if (! $processRenameVariables) {
+            return;
+        }
+
+        $currentNode = $nextNode;
+        $nextNode = $nextNode->getAttribute(AttributeKey::NEXT_NODE);
+        $this->replaceNextUsageVariable($currentNode, $nextNode, $oldVariableName, $newVariableName);
+    }
+
+    /**
+     * @param Variable[] $variables
+     */
+    private function processRenameVariable(array $variables, string $oldVariableName, string $newVariableName): bool
+    {
         foreach ($variables as $variable) {
             if ($variable instanceof Variable) {
                 $parent = $variable->getAttribute(AttributeKey::PARENT_NODE);
                 if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual(
                     $parent->var,
                     $variable
-                ) && $this->nodeNameResolver->isName(
-                    $parent->var,
-                    $oldVariableName
-                )) {
-                    return;
+                ) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+                    return false;
                 }
 
                 $variable->name = $newVariableName;
             }
         }
 
-        $currentNode = $nextNode;
-        $nextNode = $nextNode->getAttribute(AttributeKey::NEXT_NODE);
-        $this->replaceNextUsageVariable($currentNode, $nextNode, $oldVariableName, $newVariableName);
+        return true;
     }
 }
