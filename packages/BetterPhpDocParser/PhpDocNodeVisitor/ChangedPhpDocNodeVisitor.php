@@ -27,11 +27,13 @@ final class ChangedPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return $node;
             }
         }
-
-        if ($node instanceof AbstractValuesAwareNode && $node->hasChanged()) {
-            $this->hasChanged = true;
+        if (! $node instanceof AbstractValuesAwareNode) {
+            return null;
         }
-
+        if (! $node->hasChanged()) {
+            return null;
+        }
+        $this->hasChanged = true;
         return null;
     }
 
