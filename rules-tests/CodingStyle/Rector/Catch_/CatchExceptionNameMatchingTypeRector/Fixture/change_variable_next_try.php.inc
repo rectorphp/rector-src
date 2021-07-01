@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Fixture;
 
-class ChangeExceptionVariableAfterTry
+class ChangeVariableNextTry
 {
     public function run()
     {
@@ -21,7 +21,7 @@ class ChangeExceptionVariableAfterTry
 
 namespace Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Fixture;
 
-class ChangeExceptionVariableAfterTry
+class ChangeVariableNextTry
 {
     public function run()
     {

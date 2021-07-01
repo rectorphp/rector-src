@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Fixture;
 
-class DonotChangeExceptionVariableAfterTryReassign
+class ChangeVariableNextTryReassignSameVariable
 {
     public function run()
     {
@@ -10,10 +10,7 @@ class DonotChangeExceptionVariableAfterTryReassign
         } catch (SomeException $typoException) {
         }
 
-        $this->verify($typoException);
-
-        $typoException = 'test';
-        $this->verify($typoException);
+        $typoException = $typoException;
     }
 }
 
@@ -23,7 +20,7 @@ class DonotChangeExceptionVariableAfterTryReassign
 
 namespace Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\Fixture;
 
-class DonotChangeExceptionVariableAfterTryReassign
+class ChangeVariableNextTryReassignSameVariable
 {
     public function run()
     {
@@ -31,10 +28,7 @@ class DonotChangeExceptionVariableAfterTryReassign
         } catch (SomeException $someException) {
         }
 
-        $this->verify($someException);
-
-        $typoException = 'test';
-        $this->verify($typoException);
+        $someException = $someException;
     }
 }
 

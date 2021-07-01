@@ -201,7 +201,9 @@ CODE_SAMPLE
             if ($parent instanceof Assign && $this->nodeComparator->areNodesEqual(
                 $parent->var,
                 $variable
-            ) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)) {
+            ) && $this->nodeNameResolver->isName($parent->var, $oldVariableName)
+            && ! $this->nodeComparator->areNodesEqual($parent->expr, $variable)
+            ) {
                 return false;
             }
             $variable->name = $newVariableName;
