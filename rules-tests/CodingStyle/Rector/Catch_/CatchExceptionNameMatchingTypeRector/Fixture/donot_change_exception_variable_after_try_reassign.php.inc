@@ -10,6 +10,8 @@ class DonotChangeExceptionVariableAfterTryReassign
         } catch (SomeException $typoException) {
         }
 
+        $this->verify($typoException);
+
         $typoException = 'test';
         $this->verify($typoException);
     }
@@ -28,6 +30,8 @@ class DonotChangeExceptionVariableAfterTryReassign
         try {
         } catch (SomeException $someException) {
         }
+
+        $this->verify($someException);
 
         $typoException = 'test';
         $this->verify($typoException);
