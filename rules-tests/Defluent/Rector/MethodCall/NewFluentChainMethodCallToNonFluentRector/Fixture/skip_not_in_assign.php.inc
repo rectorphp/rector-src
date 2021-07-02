@@ -5,7 +5,7 @@ namespace Rector\Tests\Defluent\Rector\MethodCall\NewFluentChainMethodCallToNonF
 use Rector\Tests\Defluent\Rector\MethodCall\NewFluentChainMethodCallToNonFluentRector\Source\FluentInterfaceClass;
 use stdClass;
 
-class SkipUseArgFromPrevVariable
+class SkipNotInAssign
 {
     public function someFunction2()
     {

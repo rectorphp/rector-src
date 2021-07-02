@@ -75,6 +75,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $parent instanceof Node\Expr\Assign) {
+            return null;
+        }
+
         if ($this->fluentMethodCallSkipper->shouldSkipRootMethodCall($node)) {
             return null;
         }
