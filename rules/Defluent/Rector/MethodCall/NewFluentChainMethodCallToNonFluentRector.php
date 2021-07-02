@@ -65,6 +65,28 @@ CODE_SAMPLE
         return [MethodCall::class];
     }
 
+    private function isFoundInPrevious(Node\Stmt $stmt, ?Node $previous): bool
+    {
+        if (! $previous instanceof Node) {
+            return false;
+        }
+
+        $isFoundInPreviousAssign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode($stmt, function (Node $node) use ($previous) {
+            if (! $node instanceof Assign) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($node->var, $previous);
+        });
+
+        if ($isFoundInPreviousAssign) {
+            return true;
+        }
+
+        $previous = $previous->getAttribute(AttributeKey::PREVIOUS_NODE);
+        return $this->isFoundInPrevious($stmt, $previous);
+    }
+
     /**
      * @param MethodCall $node
      */
@@ -77,6 +99,13 @@ CODE_SAMPLE
         }
 
         if (! $parent instanceof Assign) {
+            return null;
+        }
+
+        $statement   = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        $previous    = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+
+        if ($this->isFoundInPrevious($statement, $previous)) {
             return null;
         }
 
