@@ -6,6 +6,7 @@ namespace Rector\Defluent\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
@@ -75,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $parent instanceof Node\Expr\Assign) {
+        if (! $parent instanceof Assign) {
             return null;
         }
 
