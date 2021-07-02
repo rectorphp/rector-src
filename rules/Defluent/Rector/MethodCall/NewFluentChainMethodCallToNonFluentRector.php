@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Defluent\Matcher\AssignAndRootExprAndNodesToAddMatcher;
@@ -65,28 +66,6 @@ CODE_SAMPLE
         return [MethodCall::class];
     }
 
-    private function isFoundInPrevious(Node\Stmt $stmt, ?Node $previous): bool
-    {
-        if (! $previous instanceof Node) {
-            return false;
-        }
-
-        $isFoundInPreviousAssign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode($stmt, function (Node $node) use ($previous) {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->var, $previous);
-        });
-
-        if ($isFoundInPreviousAssign) {
-            return true;
-        }
-
-        $previous = $previous->getAttribute(AttributeKey::PREVIOUS_NODE);
-        return $this->isFoundInPrevious($stmt, $previous);
-    }
-
     /**
      * @param MethodCall $node
      */
@@ -102,8 +81,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $statement   = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        $previous    = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+        $statement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        $previous = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
         if ($this->isFoundInPrevious($statement, $previous)) {
             return null;
@@ -125,5 +104,29 @@ CODE_SAMPLE
         $this->addNodesAfterNode($assignAndRootExprAndNodesToAdd->getNodesToAdd(), $node);
 
         return null;
+    }
+
+    private function isFoundInPrevious(Stmt $stmt, ?Node $previous): bool
+    {
+        if (! $previous instanceof Node) {
+            return false;
+        }
+
+        $isFoundInPreviousAssign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode($stmt, function (Node $node) use (
+            $previous
+        ): bool {
+            if (! $node instanceof Assign) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($node->var, $previous);
+        });
+
+        if ($isFoundInPreviousAssign) {
+            return true;
+        }
+
+        $previous = $previous->getAttribute(AttributeKey::PREVIOUS_NODE);
+        return $this->isFoundInPrevious($stmt, $previous);
     }
 }
