@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DependencyInjection\Collector\VariablesToPropertyFetchCollection;
+use Rector\DependencyInjection\NodeAnalyzer\ControllerClassMethodAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,7 +20,7 @@ final class ReplaceVariableByPropertyFetchRector extends AbstractRector
 {
     public function __construct(
         private VariablesToPropertyFetchCollection $variablesToPropertyFetchCollection,
-        private \Rector\DependencyInjection\NodeAnalyzer\ControllerClassMethodAnalyzer $controllerClassMethodAnalyzer
+        private ControllerClassMethodAnalyzer $controllerClassMethodAnalyzer
     ) {
     }
 
