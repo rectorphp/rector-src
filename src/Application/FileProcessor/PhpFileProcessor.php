@@ -62,9 +62,8 @@ final class PhpFileProcessor implements FileProcessorInterface
         // 4. print to file or string
         $this->currentFileProvider->setFile($file);
 
-        // cannot print file with errors, as print would break everything to original nodes
         if ($file->hasErrors()) {
-            $this->printFileErrors($file);
+            // cannot print file with errors, as print would b
             $this->notifyPhase($file, ApplicationPhase::PRINT_SKIP());
             return;
         }
@@ -161,12 +160,5 @@ final class PhpFileProcessor implements FileProcessorInterface
         $relativeFilePath = $smartFileInfo->getRelativeFilePathFromDirectory(getcwd());
         $message = sprintf('[%s] %s', $applicationPhase, $relativeFilePath);
         $this->symfonyStyle->writeln($message);
-    }
-
-    private function printFileErrors(File $file): void
-    {
-        foreach ($file->getErrors() as $rectorError) {
-            $this->symfonyStyle->error($rectorError->getMessage());
-        }
     }
 }
