@@ -536,6 +536,8 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:resolveNestedDoctrineTagValueNodes\(\)" is 11, keep it under 9#'
         - '#expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
+        # weird generics
+        - '#Method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:getByType\(\) should return array<TNode of PHPStan\\PhpDocParser\\Ast\\Node\> but returns array<PHPStan\\PhpDocParser\\Ast\\Node\>#'
 
         # should be allowed, as continue check - fix in symplify
         -
