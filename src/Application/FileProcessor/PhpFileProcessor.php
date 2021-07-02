@@ -49,7 +49,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         }, ApplicationPhase::PARSING());
 
         // 2. change nodes with Rectors
-        $this->refactorNodesWithRectors([$file]);
+        $this->refactorNodesWithRectors($file);
 
         // 3. apply post rectors
         $this->tryCatchWrapper($file, function (File $file): void {
@@ -87,18 +87,13 @@ final class PhpFileProcessor implements FileProcessorInterface
         return ['php'];
     }
 
-    /**
-     * @param File[] $files
-     */
-    private function refactorNodesWithRectors(array $files): void
+    private function refactorNodesWithRectors(File $file): void
     {
-        foreach ($files as $file) {
-            $this->currentFileProvider->setFile($file);
+        $this->currentFileProvider->setFile($file);
 
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $this->fileProcessor->refactor($file);
-            }, ApplicationPhase::REFACTORING());
-        }
+        $this->tryCatchWrapper($file, function (File $file): void {
+            $this->fileProcessor->refactor($file);
+        }, ApplicationPhase::REFACTORING());
     }
 
     private function tryCatchWrapper(File $file, callable $callback, ApplicationPhase $applicationPhase): void
