@@ -10,7 +10,7 @@ class SkipUseArgFromPrevVariable
     public function someFunction2()
     {
         $different = new stdClass;
-        (new FluentInterfaceClass())->someFunction($different)->otherFunction();
+        (new FluentInterfaceClass())->someFunction2($different)->otherFunction();
     }
 }
 
