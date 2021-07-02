@@ -10,6 +10,7 @@ use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Enum\ApplicationPhase;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -18,25 +19,11 @@ use Rector\Core\ValueObject\Application\RectorError;
 use Rector\Core\ValueObject\Configuration;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
 {
-    /**
-     * Why 4? One for each cycle, so user sees some activity all the time:
-     *
-     * 1) parsing files
-     * 2) main rectoring
-     * 3) post-rectoring (removing files, importing names)
-     * 4) printing
-     *
-     * @var int
-     */
-    private const PROGRESS_BAR_STEP_MULTIPLIER = 4;
-
     /**
      * @var File[]
      */
@@ -47,7 +34,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         private FileProcessor $fileProcessor,
         private RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         private SymfonyStyle $symfonyStyle,
-        private PrivatesAccessor $privatesAccessor,
         private FileDiffFileDecorator $fileDiffFileDecorator,
         private CurrentFileProvider $currentFileProvider,
         private PostFileProcessor $postFileProcessor,
@@ -65,17 +51,15 @@ final class PhpFileProcessor implements FileProcessorInterface
             return;
         }
 
-        $this->prepareProgressBar($fileCount, $configuration);
-
         // 1. parse files to nodes
         foreach ($files as $file) {
             $this->tryCatchWrapper($file, function (File $file): void {
                 $this->fileProcessor->parseFileInfoToLocalCache($file);
-            }, 'parsing', $configuration);
+            }, ApplicationPhase::PARSING());
         }
 
         // 2. change nodes with Rectors
-        $this->refactorNodesWithRectors($files, $configuration);
+        $this->refactorNodesWithRectors($files);
 
         // 3. apply post rectors
         foreach ($files as $file) {
@@ -84,7 +68,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
                 // this is needed for new tokens added in "afterTraverse()"
                 $file->changeNewStmts($newStmts);
-            }, 'post rectors', $configuration);
+            }, ApplicationPhase::POST_RECTORS());
         }
 
         // 4. print to file or string
@@ -94,17 +78,13 @@ final class PhpFileProcessor implements FileProcessorInterface
             // cannot print file with errors, as print would break everything to original nodes
             if ($file->hasErrors()) {
                 $this->printFileErrors($file);
-                $this->advance($file, 'printing skipped due error', $configuration);
+                $this->advance($file, ApplicationPhase::PRINT_SKIP());
                 continue;
             }
 
             $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
                 $this->printFile($file, $configuration);
-            }, 'printing', $configuration);
-        }
-
-        if ($configuration->shouldShowProgressBar()) {
-            $this->symfonyStyle->newLine(2);
+            }, ApplicationPhase::PRINT());
         }
     }
 
@@ -122,38 +102,24 @@ final class PhpFileProcessor implements FileProcessorInterface
         return ['php'];
     }
 
-    private function prepareProgressBar(int $fileCount, Configuration $configuration): void
-    {
-        if ($this->symfonyStyle->isVerbose()) {
-            return;
-        }
-
-        if (! $configuration->shouldShowProgressBar()) {
-            return;
-        }
-
-        $this->configureStepCount($fileCount);
-    }
-
     /**
      * @param File[] $files
      */
-    private function refactorNodesWithRectors(array $files, Configuration $configuration): void
+    private function refactorNodesWithRectors(array $files): void
     {
         foreach ($files as $file) {
             $this->currentFileProvider->setFile($file);
 
             $this->tryCatchWrapper($file, function (File $file): void {
                 $this->fileProcessor->refactor($file);
-            }, 'refactoring', $configuration);
+            }, ApplicationPhase::REFACTORING());
         }
     }
 
-    private function tryCatchWrapper(File $file, callable $callback, string $phase, Configuration $configuration): void
+    private function tryCatchWrapper(File $file, callable $callback, ApplicationPhase $applicationPhase): void
     {
         $this->currentFileProvider->setFile($file);
-
-        $this->advance($file, $phase, $configuration);
+        $this->advance($file, $applicationPhase);
 
         try {
             if (in_array($file, $this->notParsedFiles, true)) {
@@ -199,36 +165,16 @@ final class PhpFileProcessor implements FileProcessorInterface
         $this->fileDiffFileDecorator->decorate([$file]);
     }
 
-    /**
-     * This prevent CI report flood with 1 file = 1 line in progress bar
-     */
-    private function configureStepCount(int $fileCount): void
+    private function advance(File $file, ApplicationPhase $applicationPhase): void
     {
-        $this->symfonyStyle->progressStart($fileCount * self::PROGRESS_BAR_STEP_MULTIPLIER);
-
-        $progressBar = $this->privatesAccessor->getPrivateProperty($this->symfonyStyle, 'progressBar');
-        if (! $progressBar instanceof ProgressBar) {
-            throw new ShouldNotHappenException();
-        }
-
-        if ($progressBar->getMaxSteps() < 40) {
+        if (! $this->symfonyStyle->isVerbose()) {
             return;
         }
 
-        $redrawFrequency = (int) ($progressBar->getMaxSteps() / 20);
-        $progressBar->setRedrawFrequency($redrawFrequency);
-    }
-
-    private function advance(File $file, string $phase, Configuration $configuration): void
-    {
-        if ($this->symfonyStyle->isVerbose()) {
-            $smartFileInfo = $file->getSmartFileInfo();
-            $relativeFilePath = $smartFileInfo->getRelativeFilePathFromDirectory(getcwd());
-            $message = sprintf('[%s] %s', $phase, $relativeFilePath);
-            $this->symfonyStyle->writeln($message);
-        } elseif ($configuration->shouldShowProgressBar()) {
-            $this->symfonyStyle->progressAdvance();
-        }
+        $smartFileInfo = $file->getSmartFileInfo();
+        $relativeFilePath = $smartFileInfo->getRelativeFilePathFromDirectory(getcwd());
+        $message = sprintf('[%s] %s', $applicationPhase, $relativeFilePath);
+        $this->symfonyStyle->writeln($message);
     }
 
     private function printFileErrors(File $file): void
