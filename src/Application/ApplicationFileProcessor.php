@@ -45,8 +45,10 @@ final class ApplicationFileProcessor
      */
     private function processFiles(array $files, Configuration $configuration): void
     {
-        $fileCount = count($files);
-        $this->prepareProgressBar($fileCount, $configuration);
+        if ($configuration->shouldShowDiffs()) {
+            $fileCount = count($files);
+            $this->symfonyStyle->progressStart($fileCount);
+        }
 
         foreach ($files as $file) {
             foreach ($this->fileProcessors as $fileProcessor) {
@@ -54,11 +56,13 @@ final class ApplicationFileProcessor
                     continue;
                 }
 
-                $fileProcessor->process([$file], $configuration);
+                $fileProcessor->process($file, $configuration);
             }
 
             // progress bar +1
-            $this->symfonyStyle->progressAdvance();
+            if ($configuration->shouldShowProgressBar()) {
+                $this->symfonyStyle->progressAdvance();
+            }
         }
 
         $this->removedAndAddedFilesProcessor->run($configuration);
@@ -88,18 +92,5 @@ final class ApplicationFileProcessor
 
         $this->smartFileSystem->dumpFile($smartFileInfo->getPathname(), $file->getFileContent());
         $this->smartFileSystem->chmod($smartFileInfo->getRealPath(), $smartFileInfo->getPerms());
-    }
-
-    private function prepareProgressBar(int $fileCount, Configuration $configuration): void
-    {
-        if ($this->symfonyStyle->isVerbose()) {
-            return;
-        }
-
-        if (! $configuration->shouldShowProgressBar()) {
-            return;
-        }
-
-        $this->symfonyStyle->progressStart($fileCount);
     }
 }

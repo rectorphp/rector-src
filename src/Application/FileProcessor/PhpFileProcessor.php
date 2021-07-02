@@ -41,51 +41,37 @@ final class PhpFileProcessor implements FileProcessorInterface
     ) {
     }
 
-    /**
-     * @param File[] $files
-     */
-    public function process(array $files, Configuration $configuration): void
+    public function process(File $file, Configuration $configuration): void
     {
-        $fileCount = count($files);
-        if ($fileCount === 0) {
+        // 1. parse files to nodes
+        $this->tryCatchWrapper($file, function (File $file): void {
+            $this->fileProcessor->parseFileInfoToLocalCache($file);
+        }, ApplicationPhase::PARSING());
+
+        // 2. change nodes with Rectors
+        $this->refactorNodesWithRectors([$file]);
+
+        // 3. apply post rectors
+        $this->tryCatchWrapper($file, function (File $file): void {
+            $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
+
+            // this is needed for new tokens added in "afterTraverse()"
+            $file->changeNewStmts($newStmts);
+        }, ApplicationPhase::POST_RECTORS());
+
+        // 4. print to file or string
+        $this->currentFileProvider->setFile($file);
+
+        // cannot print file with errors, as print would break everything to original nodes
+        if ($file->hasErrors()) {
+            $this->printFileErrors($file);
+            $this->notifyPhase($file, ApplicationPhase::PRINT_SKIP());
             return;
         }
 
-        // 1. parse files to nodes
-        foreach ($files as $file) {
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $this->fileProcessor->parseFileInfoToLocalCache($file);
-            }, ApplicationPhase::PARSING());
-        }
-
-        // 2. change nodes with Rectors
-        $this->refactorNodesWithRectors($files);
-
-        // 3. apply post rectors
-        foreach ($files as $file) {
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
-
-                // this is needed for new tokens added in "afterTraverse()"
-                $file->changeNewStmts($newStmts);
-            }, ApplicationPhase::POST_RECTORS());
-        }
-
-        // 4. print to file or string
-        foreach ($files as $file) {
-            $this->currentFileProvider->setFile($file);
-
-            // cannot print file with errors, as print would break everything to original nodes
-            if ($file->hasErrors()) {
-                $this->printFileErrors($file);
-                $this->advance($file, ApplicationPhase::PRINT_SKIP());
-                continue;
-            }
-
-            $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
-                $this->printFile($file, $configuration);
-            }, ApplicationPhase::PRINT());
-        }
+        $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
+            $this->printFile($file, $configuration);
+        }, ApplicationPhase::PRINT());
     }
 
     public function supports(File $file, Configuration $configuration): bool
@@ -119,7 +105,7 @@ final class PhpFileProcessor implements FileProcessorInterface
     private function tryCatchWrapper(File $file, callable $callback, ApplicationPhase $applicationPhase): void
     {
         $this->currentFileProvider->setFile($file);
-        $this->advance($file, $applicationPhase);
+        $this->notifyPhase($file, $applicationPhase);
 
         try {
             if (in_array($file, $this->notParsedFiles, true)) {
@@ -165,7 +151,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         $this->fileDiffFileDecorator->decorate([$file]);
     }
 
-    private function advance(File $file, ApplicationPhase $applicationPhase): void
+    private function notifyPhase(File $file, ApplicationPhase $applicationPhase): void
     {
         if (! $this->symfonyStyle->isVerbose()) {
             return;
