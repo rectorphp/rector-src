@@ -9,8 +9,8 @@ class SkipNotInAssign
 {
     public function someFunction2()
     {
-        $different = new stdClass;
-        (new FluentInterfaceClass())->someFunction2($different)->otherFunction();
+        $stdClass = new stdClass;
+        (new FluentInterfaceClass())->someFunction2($stdClass)->otherFunction();
     }
 }
 
