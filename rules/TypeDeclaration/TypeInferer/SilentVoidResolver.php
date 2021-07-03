@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
-use Rector\Core\NodeAnalyzer\ExternalFullyQualifiedAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -25,7 +24,6 @@ final class SilentVoidResolver
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
-        private ExternalFullyQualifiedAnalyzer $externalFullyQualifiedAnalyzer
     ) {
     }
 
@@ -48,9 +46,9 @@ final class SilentVoidResolver
             return false;
         }
 
-        if ($classLike instanceof Class_ && $this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds(
+        if ($classLike instanceof Class_ /* && $this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds(
             $classLike
-        )) {
+        )*/) {
             return false;
         }
 

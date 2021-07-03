@@ -15,7 +15,6 @@ use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\Core\NodeAnalyzer\ExternalFullyQualifiedAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -48,7 +47,6 @@ final class ReturnTypeDeclarationRector extends AbstractRector
         private VendorLockResolver $vendorLockResolver,
         private PhpParserTypeAnalyzer $phpParserTypeAnalyzer,
         private ObjectTypeComparator $objectTypeComparator,
-        private ExternalFullyQualifiedAnalyzer $externalFullyQualifiedAnalyzer
     ) {
     }
 
@@ -230,11 +228,11 @@ CODE_SAMPLE
             return false;
         }
 
-        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds(
-            $classLike
-        );
+//        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds(
+//            $classLike
+//        );
 
-        return $functionLike->returnType === null && $hasExternalClassOrInterfaceOrTrait && $this->isName(
+        return $functionLike->returnType === null /*&& $hasExternalClassOrInterfaceOrTrait */ && $this->isName(
             $inferredReturnNode,
             'void'
         );

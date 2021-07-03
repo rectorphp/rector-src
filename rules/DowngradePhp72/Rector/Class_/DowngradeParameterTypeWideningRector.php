@@ -6,14 +6,11 @@ namespace Rector\DowngradePhp72\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeAnalyzer\ExternalFullyQualifiedAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\ClassLikeWithTraitsClassMethodResolver;
 use Rector\DowngradePhp72\NodeAnalyzer\ParamContravariantDetector;
@@ -26,6 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @changelog https://www.php.net/manual/en/migration72.new-features.php#migration72.new-features.param-type-widening
+ *
  * @see https://3v4l.org/fOgSE
  *
  * @see \Rector\Tests\DowngradePhp72\Rector\Class_\DowngradeParameterTypeWideningRector\DowngradeParameterTypeWideningRectorTest
@@ -37,8 +35,7 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector
         private ParentChildClassMethodTypeResolver $parentChildClassMethodTypeResolver,
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private ParamContravariantDetector $paramContravariantDetector,
-        private TypeFactory $typeFactory,
-        private ExternalFullyQualifiedAnalyzer $externalFullyQualifiedAnalyzer
+        private TypeFactory $typeFactory
     ) {
     }
 
@@ -85,11 +82,12 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Class_::class, Interface_::class];
+        // @todo move to class method, with more precise scope - we dont change the class at all
+        return [ClassMethod::class];
     }
 
     /**
-     * @param Class_|Interface_ $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -107,46 +105,36 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds($node)) {
+//        $hasChanged = false;
+
+        /** @var ClassReflection[] $ancestors */
+        $ancestors = $classReflection->getAncestors();
+
+//        $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($ancestors);
+
+        // @todo move to static reflection
+        $classLikes = []; // $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
+
+        $interfaceClassReflections = $classReflection->getInterfaces();
+//        foreach ($classMethods as $classMethod) {
+        if ($this->skipClassMethod($node, $classReflection, $ancestors, $classLikes)) {
             return null;
         }
 
-        $hasChanged = false;
-        /** @var ClassReflection[] $ancestors */
-        $ancestors = $classReflection->getAncestors();
-        $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($ancestors);
-
-        $classLikes = $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
-        $interfaces = $classReflection->getInterfaces();
-        foreach ($classMethods as $classMethod) {
-            if ($this->skipClassMethod($classMethod, $classReflection, $ancestors, $classLikes)) {
-                continue;
-            }
-
-            // refactor here
-            $changedClassMethod = $this->refactorClassMethod($classMethod, $classReflection, $ancestors, $interfaces);
-            if ($changedClassMethod !== null) {
-                $hasChanged = true;
-            }
-        }
-
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
+        // refactor here
+        return $this->refactorClassMethod($node, $classReflection, $ancestors, $interfaceClassReflections);
     }
 
     /**
      * The topmost class is the source of truth, so we go only down to avoid up/down collission
-     * @param ClassReflection[] $ancestors
-     * @param ClassReflection[] $interfaces
+     * @param ClassReflection[] $ancestorClassReflections
+     * @param ClassReflection[] $interfaceClassReflections
      */
     private function refactorClassMethod(
         ClassMethod $classMethod,
         ClassReflection $classReflection,
-        array $ancestors,
-        array $interfaces
+        array $ancestorClassReflections,
+        array $interfaceClassReflections
     ): ?ClassMethod {
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
@@ -164,8 +152,8 @@ CODE_SAMPLE
                 $classReflection,
                 $methodName,
                 $position,
-                $ancestors,
-                $interfaces
+                $ancestorClassReflections,
+                $interfaceClassReflections
             );
 
             $uniqueTypes = $this->typeFactory->uniquateTypes($parameterTypesByParentClassLikes);
@@ -201,13 +189,13 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassReflection[] $ancestors
+     * @param ClassReflection[] $ancestorClassReflections
      * @param ClassLike[] $classLikes
      */
     private function skipClassMethod(
         ClassMethod $classMethod,
         ClassReflection $classReflection,
-        array $ancestors,
+        array $ancestorClassReflections,
         array $classLikes
     ): bool {
         if ($classMethod->isMagic()) {
@@ -224,7 +212,11 @@ CODE_SAMPLE
             return false;
         }
 
-        return ! $this->paramContravariantDetector->hasParentMethod($classReflection, $ancestors, $classMethodName);
+        return ! $this->paramContravariantDetector->hasParentMethod(
+            $classReflection,
+            $ancestorClassReflections,
+            $classMethodName
+        );
     }
 
     private function isEmptyClassReflection(ClassReflection $classReflection): bool
