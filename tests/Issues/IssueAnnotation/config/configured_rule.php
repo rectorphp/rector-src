@@ -19,10 +19,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->call('configure', [[
             DowngradeAttributeToAnnotationRector::ATTRIBUTE_TO_ANNOTATION => ValueObjectInliner::inline([
                 new DowngradeAttributeToAnnotation('Attribute', 'annotation'),
-                // Symfony
-                new DowngradeAttributeToAnnotation('Symfony\Contracts\Service\Attribute\Required', 'required'),
-                // Nette
-                new DowngradeAttributeToAnnotation('Nette\DI\Attributes\Inject', 'inject'),
             ]),
         ]]);
     $services->set(DowngradeNamedArgumentRector::class);

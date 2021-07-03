@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture\Attribute;
+namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture\Annotation;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
@@ -26,7 +26,7 @@ class AutoconfigureTag extends Autoconfigure
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture\Attribute;
+namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture\Annotation;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
