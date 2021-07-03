@@ -55,7 +55,7 @@ final class ParentChildClassMethodTypeResolver
                 $paramPosition
             );
 
-            if ($parameterType === null) {
+            if (! $parameterType instanceof Type) {
                 continue;
             }
 
@@ -100,7 +100,7 @@ final class ParentChildClassMethodTypeResolver
             );
 
             // parameter does not exist
-            if ($parameterType === null) {
+            if (! $parameterType instanceof Type) {
                 continue;
             }
 
@@ -144,7 +144,7 @@ final class ParentChildClassMethodTypeResolver
                 $paramPosition
             );
 
-            if ($parameterType === null) {
+            if (! $parameterType instanceof Type) {
                 continue;
             }
 
