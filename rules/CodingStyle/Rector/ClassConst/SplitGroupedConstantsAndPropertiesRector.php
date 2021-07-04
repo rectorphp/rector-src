@@ -68,7 +68,7 @@ CODE_SAMPLE
 
     /**
      * @param ClassConst|Property $node
-     * @return Node|Node[]|null
+     * @return Node[]|null
      */
     public function refactor(Node $node): ?array
     {
