@@ -70,6 +70,8 @@ final class NativeTypeClassTreeResolver
             return new MixedType();
         }
 
+        die;
+
         return $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
     }
 }

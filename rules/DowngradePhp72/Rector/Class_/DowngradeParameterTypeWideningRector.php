@@ -6,10 +6,8 @@ namespace Rector\DowngradePhp72\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -85,11 +83,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Class_::class, Interface_::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param Class_|Interface_ $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -107,7 +105,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds($node)) {
+        if ($this->externalFullyQualifiedAnalyzer->hasVendorLocatedDependency($node)) {
             return null;
         }
 

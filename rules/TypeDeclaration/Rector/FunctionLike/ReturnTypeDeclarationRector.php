@@ -230,14 +230,12 @@ CODE_SAMPLE
             return false;
         }
 
-        $hasExternalClassOrInterfaceOrTrait = $this->externalFullyQualifiedAnalyzer->hasExternalFullyQualifieds(
-            $classLike
-        );
+        $hasVendorLocatedDependency = $this->externalFullyQualifiedAnalyzer->hasVendorLocatedDependency($classLike);
+        if ($hasVendorLocatedDependency === false) {
+            return false;
+        }
 
-        return $functionLike->returnType === null && $hasExternalClassOrInterfaceOrTrait && $this->isName(
-            $inferredReturnNode,
-            'void'
-        );
+        return $functionLike->returnType === null && $this->isName($inferredReturnNode, 'void');
     }
 
     private function isNullableTypeSubType(Type $currentType, Type $inferedType): bool
