@@ -38,7 +38,7 @@ final class StaticTypeMapper
         private NameScopeFactory $nameScopeFactory,
         private PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
         private PhpDocTypeMapper $phpDocTypeMapper,
-        private PhpParserNodeMapper $phpParserNodeMapper
+        private PhpParserNodeMapper $phpParserNodeMapper,
     ) {
     }
 

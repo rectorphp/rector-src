@@ -4,47 +4,34 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Reflection;
 
+use PhpParser\BuilderHelpers;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
-use PHPStan\Type\Constant\ConstantFloatType;
-use PHPStan\Type\Constant\ConstantIntegerType;
-use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ConstantType;
-use PHPStan\Type\NullType;
+use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class DefaultParameterValueResolver
 {
-    public function __construct(
-        private StaticTypeMapper $staticTypeMapper
-    ) {
-    }
-
-    public function resolveFromParameterReflection(ParameterReflection $parameterReflection): \PhpParser\Node | null
+    public function resolveFromParameterReflection(ParameterReflection $parameterReflection): Expr | null
     {
         $defaultValue = $parameterReflection->getDefaultValue();
         if ($defaultValue === null) {
             return null;
         }
 
-        return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($defaultValue);
-//
-//        if (! $defaultValue instanceof ConstantType) {
-//            throw new ShouldNotHappenException();
-//        }
-//
-//        if ($defaultValue instanceof ConstantArrayType) {
-//            return $defaultValue->getAllArrays();
-//        }
-//
-//        /** @var ConstantStringType|ConstantIntegerType|ConstantFloatType|ConstantBooleanType|NullType $defaultValue */
-//        return $defaultValue->getValue();
+        if (! $defaultValue instanceof ConstantType) {
+            throw new ShouldNotHappenException();
+        }
+
+        return $this->resolveValueFromType($defaultValue);
     }
 
     public function resolveFromFunctionLikeAndPosition(
@@ -62,5 +49,40 @@ final class DefaultParameterValueResolver
         }
 
         return $this->resolveFromParameterReflection($parameterReflection);
+    }
+
+    private function resolveValueFromType(ConstantType $constantType): ConstFetch | Expr
+    {
+        if ($constantType instanceof ConstantBooleanType) {
+            return $this->resolveConstantBooleanType($constantType);
+        }
+
+        if ($constantType instanceof ConstantArrayType) {
+            $values = [];
+            foreach ($constantType->getValueTypes() as $valueType) {
+                if (! $valueType instanceof ConstantType) {
+                    throw new ShouldNotHappenException();
+                }
+
+                $values[] = $this->resolveValueFromType($valueType);
+            }
+
+            return BuilderHelpers::normalizeValue($values);
+        }
+
+        return BuilderHelpers::normalizeValue($constantType->getValue());
+    }
+
+    private function resolveConstantBooleanType(ConstantBooleanType $constantType): ConstFetch
+    {
+        if ($constantType->getValue() === false) {
+            $name = new Name('false');
+        } elseif ($constantType->getValue() === true) {
+            $name = new Name('true');
+        } else {
+            throw new NotImplementedYetException();
+        }
+
+        return new ConstFetch($name);
     }
 }

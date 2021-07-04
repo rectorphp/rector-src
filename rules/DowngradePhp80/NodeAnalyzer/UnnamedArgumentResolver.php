@@ -9,8 +9,8 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\DeadCode\Comparator\Parameter\ParameterDefaultsComparator;
 use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -18,7 +18,6 @@ final class UnnamedArgumentResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private ParameterDefaultsComparator $parameterDefaultsComparator,
         private ValueResolver $valueResolver,
         private DefaultParameterValueResolver $defaultParameterValueResolver
     ) {
@@ -39,7 +38,6 @@ final class UnnamedArgumentResolver
         }
 
         $unnamedArgs = [];
-
         foreach ($parametersAcceptor->getParameters() as $paramPosition => $parameterReflection) {
             foreach ($currentArgs as $currentArg) {
                 if ($this->shouldSkipParam($currentArg, $parameterReflection)) {
@@ -56,24 +54,14 @@ final class UnnamedArgumentResolver
             }
         }
 
-        $highestParameterPosition = max(array_keys($unnamedArgs));
-
-        // fill parameter default values
-        for ($i = 0; $i < $highestParameterPosition; ++$i) {
-            if (isset($unnamedArgs[$i])) {
-                continue;
-            }
-
-            $defaultValue = $this->defaultParameterValueResolver->resolveFromFunctionLikeAndPosition(
-                $functionLikeReflection,
-                $i
-            );
-            dump($defaultValue);
-            die;
+        $setArgumentPositoins = array_keys($unnamedArgs);
+        $highestParameterPosition = max($setArgumentPositoins);
+        if (! is_int($highestParameterPosition)) {
+            throw new ShouldNotHappenException();
         }
 
-        dump($highestParameterPosition);
-        die;
+        $unnamedArgs = $this->fillArgValues($highestParameterPosition, $unnamedArgs, $functionLikeReflection);
+        ksort($unnamedArgs);
 
         return $unnamedArgs;
     }
@@ -98,5 +86,36 @@ final class UnnamedArgumentResolver
 
         // default value is set already, let's skip it
         return $this->valueResolver->isValue($arg->value, $defaultValue);
+    }
+
+    /**
+     * @param Arg[] $unnamedArgs
+     * @return Arg[]
+     */
+    private function fillArgValues(
+        int $highestParameterPosition,
+        array $unnamedArgs,
+        MethodReflection | FunctionReflection $functionLikeReflection
+    ): array {
+        // fill parameter default values
+        for ($i = 0; $i < $highestParameterPosition; ++$i) {
+            // the argument is already set, no need to override it
+            if (isset($unnamedArgs[$i])) {
+                continue;
+            }
+
+            $defaultExpr = $this->defaultParameterValueResolver->resolveFromFunctionLikeAndPosition(
+                $functionLikeReflection,
+                $i
+            );
+
+            if ($defaultExpr === null) {
+                continue;
+            }
+
+            $unnamedArgs[$i] = new Arg($defaultExpr);
+        }
+
+        return $unnamedArgs;
     }
 }

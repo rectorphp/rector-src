@@ -13,6 +13,7 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -33,10 +34,8 @@ final class ClosureTypeMapper implements TypeMapperInterface
     /**
      * @param ClosureType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): TypeNode {
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind = null): TypeNode
+    {
         $identifierTypeNode = new IdentifierTypeNode($type->getClassName());
 
         $returnDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type->getReturnType());
@@ -47,11 +46,9 @@ final class ClosureTypeMapper implements TypeMapperInterface
     /**
      * @param ClosureType $type
      */
-    public function mapToPhpParserNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): ?Node {
-        if ($typeKind === 'property') {
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind = null): ?Node
+    {
+        if ($typeKind instanceof TypeKind && $typeKind->equals(TypeKind::PROPERTY())) {
             return null;
         }
 

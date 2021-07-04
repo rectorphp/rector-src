@@ -18,14 +18,13 @@ final class RectorConfiguration
 
 namespace Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeNamedArgumentRector\Fixture;
 
-use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\ValueObject\Configuration;
 
 final class RectorConfiguration
 {
     public function run(array $fileExtensions)
     {
-        return new Configuration(true, true, false, ConsoleOutputFormatter::NAME, $fileExtensions);
+        return new Configuration(true, true, false, 'console', $fileExtensions);
     }
 }
 

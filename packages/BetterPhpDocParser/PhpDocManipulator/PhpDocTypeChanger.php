@@ -72,7 +72,7 @@ final class PhpDocTypeChanger
         // override existing type
         $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $newType,
-            TypeKind::KIND_RETURN
+            TypeKind::RETURN()
         );
         $currentReturnTagValueNode = $phpDocInfo->getReturnTagValue();
 
