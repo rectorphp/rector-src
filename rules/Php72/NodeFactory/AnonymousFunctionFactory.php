@@ -60,14 +60,12 @@ final class AnonymousFunctionFactory
     /**
      * @param Param[] $params
      * @param Stmt[] $stmts
-     * @param Identifier|Name|NullableType|UnionType|null $returnTypeNode
      */
     public function create(
         array $params,
         array $stmts,
         Identifier | Name | NullableType | UnionType | null $returnTypeNode
-    ): Closure
-    {
+    ): Closure {
         $useVariables = $this->createUseVariablesFromParams($stmts, $params);
 
         $anonymousFunctionNode = new Closure();

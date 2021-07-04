@@ -163,14 +163,10 @@ CODE_SAMPLE
         $this->classLikeTypeOnly = $configuration[self::CLASS_LIKE_TYPE_ONLY] ?? false;
     }
 
-    /**
-     * @param Name|NullableType|PhpParserUnionType|null $node
-     */
     private function isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn(
         Name | NullableType | PhpParserUnionType | null $node,
         Property $property
-    ): bool
-    {
+    ): bool {
         if (! $node instanceof Node) {
             return true;
         }
