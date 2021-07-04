@@ -13,7 +13,7 @@ final class TraitNodeScopeCollector
      */
     private array $scopeByTraitNodeHash = [];
 
-    public function addForTraitAndNode(string $traitName, Scope $scope): void
+    public function addForTrait(string $traitName, Scope $scope): void
     {
         // probably set from another class
         if (isset($this->scopeByTraitNodeHash[$traitName])) {
