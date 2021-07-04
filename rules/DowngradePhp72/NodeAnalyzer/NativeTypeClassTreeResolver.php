@@ -42,6 +42,10 @@ final class NativeTypeClassTreeResolver
             $phpstanParameterReflection = $parametersAcceptor->getParameters()[$position] ?? null;
         }
 
+        if (! $phpstanParameterReflection instanceof ParameterReflection) {
+            return null;
+        }
+
         $reflectionMethod = $nativeReflectionClass->getMethod($methodName);
         $parameterReflection = $reflectionMethod->getParameters()[$position] ?? null;
         if (! $parameterReflection instanceof \ReflectionParameter) {

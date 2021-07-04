@@ -230,8 +230,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $hasVendorLocatedDependency = $this->externalFullyQualifiedAnalyzer->hasVendorLocatedDependency($classLike);
-        if ($hasVendorLocatedDependency === false) {
+        if (! $this->externalFullyQualifiedAnalyzer->hasVendorLocatedDependency($classLike)) {
             return false;
         }
 

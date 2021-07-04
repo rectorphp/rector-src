@@ -74,7 +74,8 @@ final class PHPStanNodeScopeResolver
                 /** @var ClassReflection $classReflection */
                 $classReflection = $scope->getTraitReflection();
                 $traitName = $classReflection->getName();
-                $this->traitNodeScopeCollector->addForTraitAndNode($traitName, $node, $scope);
+
+                $this->traitNodeScopeCollector->addForTraitAndNode($traitName, $scope);
 
                 return;
             }

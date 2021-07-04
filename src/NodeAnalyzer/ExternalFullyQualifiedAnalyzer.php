@@ -6,6 +6,7 @@ namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExternalFullyQualifiedAnalyzer
@@ -21,7 +22,7 @@ final class ExternalFullyQualifiedAnalyzer
         }
 
         $classReflection = $scope->getClassReflection();
-        if ($classReflection === null) {
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 

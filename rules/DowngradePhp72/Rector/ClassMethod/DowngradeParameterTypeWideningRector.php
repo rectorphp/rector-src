@@ -8,16 +8,17 @@ use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeAnalyzer\ExternalFullyQualifiedAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\ClassLikeWithTraitsClassMethodResolver;
 use Rector\DowngradePhp72\NodeAnalyzer\ParamContravariantDetector;
 use Rector\DowngradePhp72\NodeAnalyzer\ParentChildClassMethodTypeResolver;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Collector\TraitNodeScopeCollector;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,7 +37,7 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private ParamContravariantDetector $paramContravariantDetector,
         private TypeFactory $typeFactory,
-        private ExternalFullyQualifiedAnalyzer $externalFullyQualifiedAnalyzer
+        private TraitNodeScopeCollector $traitNodeScopeCollector
     ) {
     }
 
@@ -91,7 +92,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        $scope = $this->resolveScope($node);
         if (! $scope instanceof Scope) {
             return null;
         }
@@ -105,24 +106,26 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->externalFullyQualifiedAnalyzer->hasVendorLocatedDependency($node)) {
-            return null;
-        }
-
         $hasChanged = false;
         /** @var ClassReflection[] $ancestors */
         $ancestors = $classReflection->getAncestors();
         $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($ancestors);
 
         $classLikes = $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
-        $interfaces = $classReflection->getInterfaces();
+
+        $interfaceClassReflections = $classReflection->getInterfaces();
         foreach ($classMethods as $classMethod) {
             if ($this->skipClassMethod($classMethod, $classReflection, $ancestors, $classLikes)) {
                 continue;
             }
 
             // refactor here
-            $changedClassMethod = $this->refactorClassMethod($classMethod, $classReflection, $ancestors, $interfaces);
+            $changedClassMethod = $this->refactorClassMethod(
+                $classMethod,
+                $classReflection,
+                $ancestors,
+                $interfaceClassReflections
+            );
             if ($changedClassMethod !== null) {
                 $hasChanged = true;
             }
@@ -232,5 +235,22 @@ CODE_SAMPLE
         }
 
         return count($classReflection->getAncestors()) === 1;
+    }
+
+    private function resolveScope(ClassMethod $classMethod): ?Scope
+    {
+        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+        if ($scope instanceof Scope) {
+            return $scope;
+        }
+
+        // fallback to a trait method
+        $classLike = $classMethod->getAttribute(AttributeKey::CLASS_NODE);
+        if ($classLike instanceof Trait_) {
+            $traitName = $this->getName($classLike);
+            return $this->traitNodeScopeCollector->getScopeForTrait($traitName);
+        }
+
+        return null;
     }
 }
