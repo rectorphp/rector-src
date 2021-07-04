@@ -37,8 +37,10 @@ final class IntersectionTypeMapper implements TypeMapperInterface
     /**
      * @param IntersectionType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         $intersectionTypesNodes = [];
 
         foreach ($type->getTypes() as $intersectionedType) {
@@ -53,8 +55,10 @@ final class IntersectionTypeMapper implements TypeMapperInterface
     /**
      * @param IntersectionType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
         // intersection types in PHP are not yet supported
         return null;
     }

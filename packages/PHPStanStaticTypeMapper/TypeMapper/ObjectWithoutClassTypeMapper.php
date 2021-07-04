@@ -41,8 +41,10 @@ final class ObjectWithoutClassTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectWithoutClassType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         if ($type instanceof TemplateObjectWithoutClassType) {
             $attributeAwareIdentifierTypeNode = new IdentifierTypeNode($type->getName());
             return new EmptyGenericTypeNode($attributeAwareIdentifierTypeNode);
@@ -54,8 +56,10 @@ final class ObjectWithoutClassTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectWithoutClassType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
         $subtractedType = $type->getSubtractedType();
         if ($subtractedType !== null) {
             return $this->phpStanStaticTypeMapper->mapToPhpParserNode($subtractedType);

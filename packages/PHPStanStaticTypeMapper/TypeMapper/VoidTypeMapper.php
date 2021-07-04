@@ -41,7 +41,7 @@ final class VoidTypeMapper implements TypeMapperInterface
     /**
      * @param VoidType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind = null): TypeNode
     {
         return new IdentifierTypeNode(self::VOID);
     }
@@ -49,13 +49,17 @@ final class VoidTypeMapper implements TypeMapperInterface
     /**
      * @param VoidType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind = null): ?Node
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::VOID_TYPE)) {
             return null;
         }
 
-        if (in_array($kind, [TypeKind::KIND_PARAM, TypeKind::KIND_PROPERTY], true)) {
+        if ($typeKind instanceof TypeKind && in_array(
+            $typeKind->getValue(),
+            [TypeKind::PARAM(), TypeKind::PROPERTY()],
+            true
+        )) {
             return null;
         }
 

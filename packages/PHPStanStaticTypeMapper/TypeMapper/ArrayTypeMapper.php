@@ -69,8 +69,10 @@ final class ArrayTypeMapper implements TypeMapperInterface
     /**
      * @param ArrayType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         $itemType = $type->getItemType();
 
         if ($itemType instanceof UnionType && ! $type instanceof ConstantArrayType) {
@@ -98,8 +100,10 @@ final class ArrayTypeMapper implements TypeMapperInterface
     /**
      * @param ArrayType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
         return new Name('array');
     }
 

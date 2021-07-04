@@ -41,7 +41,7 @@ final class CallableTypeMapper implements TypeMapperInterface
     /**
      * @param CallableType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind = null): TypeNode
     {
         $returnTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type->getReturnType());
 
@@ -51,9 +51,9 @@ final class CallableTypeMapper implements TypeMapperInterface
     /**
      * @param CallableType|ClosureType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind = null): ?Node
     {
-        if ($kind === TypeKind::KIND_PROPERTY) {
+        if ($typeKind instanceof TypeKind && $typeKind->equals(TypeKind::PROPERTY())) {
             return null;
         }
 

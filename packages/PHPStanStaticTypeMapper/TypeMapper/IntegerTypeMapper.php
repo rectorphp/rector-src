@@ -35,16 +35,20 @@ final class IntegerTypeMapper implements TypeMapperInterface
     /**
      * @param IntegerType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         return new IdentifierTypeNode('int');
     }
 
     /**
      * @param IntegerType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::SCALAR_TYPES)) {
             return null;
         }

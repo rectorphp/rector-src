@@ -35,8 +35,10 @@ final class ClassStringTypeMapper implements TypeMapperInterface
     /**
      * @param ClassStringType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         $attributeAwareIdentifierTypeNode = new IdentifierTypeNode('class-string');
 
         if ($type instanceof GenericClassStringType) {
@@ -57,8 +59,10 @@ final class ClassStringTypeMapper implements TypeMapperInterface
     /**
      * @param ClassStringType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
         return null;
     }
 

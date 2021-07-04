@@ -33,8 +33,10 @@ final class ClosureTypeMapper implements TypeMapperInterface
     /**
      * @param ClosureType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         $identifierTypeNode = new IdentifierTypeNode($type->getClassName());
 
         $returnDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type->getReturnType());
@@ -45,9 +47,11 @@ final class ClosureTypeMapper implements TypeMapperInterface
     /**
      * @param ClosureType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
-        if ($kind === 'property') {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
+        if ($typeKind === 'property') {
             return null;
         }
 

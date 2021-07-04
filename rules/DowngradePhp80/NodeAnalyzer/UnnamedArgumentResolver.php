@@ -11,6 +11,7 @@ use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\DeadCode\Comparator\Parameter\ParameterDefaultsComparator;
+use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class UnnamedArgumentResolver
@@ -18,7 +19,8 @@ final class UnnamedArgumentResolver
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private ParameterDefaultsComparator $parameterDefaultsComparator,
-        private ValueResolver $valueResolver
+        private ValueResolver $valueResolver,
+        private DefaultParameterValueResolver $defaultParameterValueResolver
     ) {
     }
 
@@ -30,8 +32,7 @@ final class UnnamedArgumentResolver
     public function resolveFromReflection(
         FunctionReflection | MethodReflection $functionLikeReflection,
         array $currentArgs
-    )
-    {
+    ) {
         $parametersAcceptor = $functionLikeReflection->getVariants()[0] ?? null;
         if (! $parametersAcceptor instanceof ParametersAcceptor) {
             return [];
@@ -55,6 +56,25 @@ final class UnnamedArgumentResolver
             }
         }
 
+        $highestParameterPosition = max(array_keys($unnamedArgs));
+
+        // fill parameter default values
+        for ($i = 0; $i < $highestParameterPosition; ++$i) {
+            if (isset($unnamedArgs[$i])) {
+                continue;
+            }
+
+            $defaultValue = $this->defaultParameterValueResolver->resolveFromFunctionLikeAndPosition(
+                $functionLikeReflection,
+                $i
+            );
+            dump($defaultValue);
+            die;
+        }
+
+        dump($highestParameterPosition);
+        die;
+
         return $unnamedArgs;
     }
 
@@ -74,11 +94,9 @@ final class UnnamedArgumentResolver
             return false;
         }
 
-        $parameterDefaultValue = $this->parameterDefaultsComparator->resolveParameterReflectionDefaultValue(
-            $parameterReflection
-        );
+        $defaultValue = $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection);
 
         // default value is set already, let's skip it
-        return $this->valueResolver->isValue($arg->value, $parameterDefaultValue);
+        return $this->valueResolver->isValue($arg->value, $defaultValue);
     }
 }

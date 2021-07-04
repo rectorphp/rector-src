@@ -41,8 +41,10 @@ final class ObjectTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         if ($type instanceof ShortenedObjectType) {
             return new IdentifierTypeNode($type->getClassName());
         }
@@ -61,8 +63,10 @@ final class ObjectTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
         if ($type instanceof SelfObjectType) {
             return new Name('self');
         }

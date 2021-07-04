@@ -123,17 +123,14 @@ CODE_SAMPLE
             if (count($types) === 2 && $types[0] instanceof TemplateType) {
                 $node->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                     $types[0]->getBound(),
-                    TypeKind::KIND_PROPERTY
+                    TypeKind::PROPERTY()
                 );
 
                 return $node;
             }
         }
 
-        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-            $varType,
-            TypeKind::KIND_PROPERTY
-        );
+        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($varType, TypeKind::PROPERTY());
 
         if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node)) {
             return null;

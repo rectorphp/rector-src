@@ -67,8 +67,10 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param UnionType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, ?string $kind = null): TypeNode
-    {
+    public function mapToPHPStanPhpDocTypeNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): TypeNode {
         $unionTypesNodes = [];
         $skipIterable = $this->shouldSkipIterable($type);
 
@@ -87,8 +89,10 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param UnionType $type
      */
-    public function mapToPhpParserNode(Type $type, ?string $kind = null): ?Node
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
+    ): ?Node {
         $arrayNode = $this->matchArrayTypes($type);
         if ($arrayNode !== null) {
             return $arrayNode;
