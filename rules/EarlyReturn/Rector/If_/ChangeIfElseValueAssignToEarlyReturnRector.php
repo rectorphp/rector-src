@@ -79,7 +79,7 @@ CODE_SAMPLE
      * @param If_ $node
      * @return Stmt[]|Node|null
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?array
     {
         $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
         if (! $nextNode instanceof Return_) {

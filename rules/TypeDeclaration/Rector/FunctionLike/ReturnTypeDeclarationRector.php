@@ -215,18 +215,6 @@ CODE_SAMPLE
         }
     }
 
-    private function isExternalVoid(
-        ClassMethod | Function_ $functionLike,
-        Name | NullableType | PhpParserUnionType $inferredReturnNode
-    ): bool {
-        $classLike = $functionLike->getAttribute(AttributeKey::CLASS_NODE);
-        if (! $classLike instanceof Class_) {
-            return false;
-        }
-
-        return $functionLike->returnType === null && $this->isName($inferredReturnNode, 'void');
-    }
-
     private function isNullableTypeSubType(Type $currentType, Type $inferedType): bool
     {
         if (! $currentType instanceof UnionType) {
