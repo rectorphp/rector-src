@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
@@ -24,14 +25,13 @@ final class UnnamedArgumentResolver
     }
 
     /**
-     * @param FunctionReflection|MethodReflection $functionLikeReflection
      * @param Arg[] $currentArgs
      * @return Arg[]
      */
     public function resolveFromReflection(
         FunctionReflection | MethodReflection $functionLikeReflection,
         array $currentArgs
-    ) {
+    ): array {
         $parametersAcceptor = $functionLikeReflection->getVariants()[0] ?? null;
         if (! $parametersAcceptor instanceof ParametersAcceptor) {
             return [];
@@ -109,7 +109,7 @@ final class UnnamedArgumentResolver
                 $i
             );
 
-            if ($defaultExpr === null) {
+            if (! $defaultExpr instanceof Expr) {
                 continue;
             }
 

@@ -16,6 +16,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -41,10 +42,8 @@ final class ObjectTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): TypeNode {
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
+    {
         if ($type instanceof ShortenedObjectType) {
             return new IdentifierTypeNode($type->getClassName());
         }
@@ -54,7 +53,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
         }
 
         if ($type instanceof GenericObjectType) {
-            return $this->mapGenericObjectType($type);
+            return $this->mapGenericObjectType($type, $typeKind);
         }
 
         return new IdentifierTypeNode('\\' . $type->getClassName());
@@ -63,10 +62,8 @@ final class ObjectTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectType $type
      */
-    public function mapToPhpParserNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): ?Node {
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
+    {
         if ($type instanceof SelfObjectType) {
             return new Name('self');
         }
@@ -107,7 +104,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }
 
-    private function mapGenericObjectType(GenericObjectType $genericObjectType): TypeNode
+    private function mapGenericObjectType(GenericObjectType $genericObjectType, TypeKind $typeKind): TypeNode
     {
         $name = $this->resolveGenericObjectTypeName($genericObjectType);
         $identifierTypeNode = new IdentifierTypeNode($name);
@@ -119,7 +116,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
                 continue;
             }
 
-            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType);
+            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType, $typeKind);
             $genericTypeNodes[] = $typeNode;
         }
 

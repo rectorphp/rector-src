@@ -101,42 +101,12 @@ CODE_SAMPLE
         if ($functionLikeReflection === null) {
             return null;
         }
-
-//        if ($node instanceof New_) {
-//            $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromNew($node);
-//            if (! $methodReflection instanceof MethodReflection) {
-//                return null;
-//            }
-//
 //
         $unnamedArgs = $this->unnamedArgumentResolver->resolveFromReflection($functionLikeReflection, $args);
         $node->args = $unnamedArgs;
 
         return $node;
-//        return $this->processRemoveNamedArgument($functionLikeReflection, $node, $args);
-//        }
-//
-//        $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-//        if ($functionLikeReflection === null) {
-//            return null;
-//        }
-//
-//        return $this->processRemoveNamedArgument($functionLikeReflection, $node, $args);
     }
-
-//    /**
-//     * @param Arg[] $args
-//     */
-//    private function processRemoveNamedArgument(
-//        MethodReflection | FunctionReflection $functionLikeReflection,
-//        MethodCall | StaticCall | New_ $node,
-//        array $args
-//    ): MethodCall | StaticCall | New_ {
-//        $unnamedArgs = $this->unnamedArgumentResolver->resolveFromReflection($functionLikeReflection, $args);
-//        $node->args = $unnamedArgs;
-//
-//        return $node;
-//    }
 
     /**
      * @param Arg[] $args

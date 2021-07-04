@@ -73,11 +73,11 @@ final class DefaultParameterValueResolver
         return BuilderHelpers::normalizeValue($constantType->getValue());
     }
 
-    private function resolveConstantBooleanType(ConstantBooleanType $constantType): ConstFetch
+    private function resolveConstantBooleanType(ConstantBooleanType $constantBooleanType): ConstFetch
     {
-        if ($constantType->getValue() === false) {
+        if ($constantBooleanType->getValue() === false) {
             $name = new Name('false');
-        } elseif ($constantType->getValue() === true) {
+        } elseif ($constantBooleanType->getValue() === true) {
             $name = new Name('true');
         } else {
             throw new NotImplementedYetException();

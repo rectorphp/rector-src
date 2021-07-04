@@ -25,11 +25,11 @@ interface TypeMapperInterface
     /**
      * @param T $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind = null): TypeNode;
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode;
 
     /**
      * @param T $type
      * @return Name|NullableType|UnionType|null
      */
-    public function mapToPhpParserNode(Type $type, TypeKind $typeTypeKind = null): ?Node;
+    public function mapToPhpParserNode(Type $type, TypeKind $typeTypeKind): ?Node;
 }

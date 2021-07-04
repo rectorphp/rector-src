@@ -10,6 +10,7 @@ use MyCLabs\Enum\Enum;
  * @method static TypeKind PROPERTY()
  * @method static TypeKind RETURN()
  * @method static TypeKind PARAM()
+ * @method static TypeKind ANY()
  */
 final class TypeKind extends Enum
 {
@@ -27,4 +28,9 @@ final class TypeKind extends Enum
      * @var string
      */
     private const PARAM = 'param';
+
+    /**
+     * @var string
+     */
+    private const ANY = 'any';
 }

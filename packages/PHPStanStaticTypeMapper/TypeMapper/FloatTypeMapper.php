@@ -13,6 +13,7 @@ use PHPStan\Type\Type;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 
 /**
  * @implements TypeMapperInterface<FloatType>
@@ -35,20 +36,16 @@ final class FloatTypeMapper implements TypeMapperInterface
     /**
      * @param FloatType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): TypeNode {
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
+    {
         return new IdentifierTypeNode('float');
     }
 
     /**
      * @param FloatType $type
      */
-    public function mapToPhpParserNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): ?Node {
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
+    {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::SCALAR_TYPES)) {
             return null;
         }

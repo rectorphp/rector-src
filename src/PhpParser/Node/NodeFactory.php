@@ -57,6 +57,7 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\Astral\ValueObject\NodeBuilder\MethodBuilder;
@@ -206,7 +207,7 @@ final class NodeFactory
         $paramBuilder = new ParamBuilder($name);
 
         if ($type !== null) {
-            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type);
+            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM());
             if ($typeNode !== null) {
                 $paramBuilder->setType($typeNode);
             }
@@ -366,7 +367,7 @@ final class NodeFactory
         $return = new Return_($propertyFetch);
         $methodBuilder->addStmt($return);
 
-        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type);
+        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN());
         if ($typeNode !== null) {
             $methodBuilder->setReturnType($typeNode);
         }
@@ -509,7 +510,8 @@ final class NodeFactory
         $paramBuilder = new ParamBuilder($propertyMetadata->getName());
         $propertyType = $propertyMetadata->getType();
         if ($propertyType !== null) {
-            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType);
+            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::PROPERTY());
+
             if ($typeNode !== null) {
                 $paramBuilder->setType($typeNode);
             }
@@ -648,7 +650,7 @@ final class NodeFactory
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
-            $phpParserType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type);
+            $phpParserType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY());
 
             if ($phpParserType !== null) {
                 $property->type = $phpParserType;
@@ -724,7 +726,8 @@ final class NodeFactory
     {
         $param = new Param($variable);
 
-        $phpParserTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type);
+        $phpParserTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM());
+
         $param->type = $phpParserTypeNode;
         return $param;
     }

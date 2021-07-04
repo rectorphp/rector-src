@@ -16,6 +16,7 @@ use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -41,10 +42,8 @@ final class ObjectWithoutClassTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectWithoutClassType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): TypeNode {
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
+    {
         if ($type instanceof TemplateObjectWithoutClassType) {
             $attributeAwareIdentifierTypeNode = new IdentifierTypeNode($type->getName());
             return new EmptyGenericTypeNode($attributeAwareIdentifierTypeNode);
@@ -56,13 +55,11 @@ final class ObjectWithoutClassTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectWithoutClassType $type
      */
-    public function mapToPhpParserNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): ?Node {
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
+    {
         $subtractedType = $type->getSubtractedType();
         if ($subtractedType !== null) {
-            return $this->phpStanStaticTypeMapper->mapToPhpParserNode($subtractedType);
+            return $this->phpStanStaticTypeMapper->mapToPhpParserNode($subtractedType, $typeKind);
         }
 
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::OBJECT_TYPE)) {

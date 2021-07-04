@@ -23,7 +23,7 @@ final class PHPStanStaticTypeMapper
     ) {
     }
 
-    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind = null): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
     {
         foreach ($this->typeMappers as $typeMapper) {
             if (! is_a($type, $typeMapper->getNodeClass(), true)) {
@@ -36,7 +36,7 @@ final class PHPStanStaticTypeMapper
         throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
     }
 
-    public function mapToPhpParserNode(Type $type, TypeKind $typeKind = null): Name | NullableType | UnionType | null
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind): Name | NullableType | UnionType | null
     {
         foreach ($this->typeMappers as $typeMapper) {
             if (! is_a($type, $typeMapper->getNodeClass(), true)) {

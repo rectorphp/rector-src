@@ -12,6 +12,7 @@ use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 
 /**
  * @implements TypeMapperInterface<NonEmptyArrayType>
@@ -29,20 +30,16 @@ final class NonEmptyArrayTypeMapper implements TypeMapperInterface
     /**
      * @param NonEmptyArrayType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): TypeNode {
+    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
+    {
         return new SpacingAwareArrayTypeNode(new IdentifierTypeNode('mixed'));
     }
 
     /**
      * @param NonEmptyArrayType $type
      */
-    public function mapToPhpParserNode(
-        Type $type,
-        \Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind $typeKind = null
-    ): ?Node {
+    public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
+    {
         return new Name('array');
     }
 }
