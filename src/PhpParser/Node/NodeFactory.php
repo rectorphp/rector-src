@@ -581,9 +581,8 @@ final class NodeFactory
 
     /**
      * @param mixed $item
-     * @param string|int|null $key
      */
-    private function createArrayItem($item, $key = null): ArrayItem
+    private function createArrayItem($item, string | int | null $key = null): ArrayItem
     {
         $arrayItem = null;
 
@@ -697,10 +696,7 @@ final class NodeFactory
         return new FullyQualified($class);
     }
 
-    /**
-     * @param int|string|null $key
-     */
-    private function decoreateArrayItemWithKey($key, ArrayItem $arrayItem): void
+    private function decoreateArrayItemWithKey(int | string | null $key, ArrayItem $arrayItem): void
     {
         if ($key !== null) {
             $arrayItem->key = BuilderHelpers::normalizeValue($key);

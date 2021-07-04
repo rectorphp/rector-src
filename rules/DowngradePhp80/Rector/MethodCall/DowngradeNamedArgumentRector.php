@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PHPStan\Reflection\MethodReflection;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\DowngradePhp80\NodeAnalyzer\UnnamedArgumentResolver;
@@ -98,7 +99,7 @@ CODE_SAMPLE
             $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
         }
 
-        if ($functionLikeReflection === null) {
+        if (! $functionLikeReflection instanceof MethodReflection) {
             return null;
         }
 //

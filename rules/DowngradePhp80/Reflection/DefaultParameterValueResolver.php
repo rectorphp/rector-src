@@ -15,6 +15,7 @@ use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\ConstantType;
+use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
 
@@ -23,7 +24,7 @@ final class DefaultParameterValueResolver
     public function resolveFromParameterReflection(ParameterReflection $parameterReflection): Expr | null
     {
         $defaultValue = $parameterReflection->getDefaultValue();
-        if ($defaultValue === null) {
+        if (! $defaultValue instanceof Type) {
             return null;
         }
 
@@ -44,7 +45,7 @@ final class DefaultParameterValueResolver
         }
 
         $parameterReflection = $parametersAcceptor->getParameters()[$position] ?? null;
-        if ($parameterReflection === null) {
+        if (! $parameterReflection instanceof ParameterReflection) {
             return null;
         }
 
@@ -75,9 +76,9 @@ final class DefaultParameterValueResolver
 
     private function resolveConstantBooleanType(ConstantBooleanType $constantBooleanType): ConstFetch
     {
-        if ($constantBooleanType->getValue() === false) {
+        if (! $constantBooleanType->getValue()) {
             $name = new Name('false');
-        } elseif ($constantBooleanType->getValue() === true) {
+        } elseif ($constantBooleanType->getValue()) {
             $name = new Name('true');
         } else {
             throw new NotImplementedYetException();

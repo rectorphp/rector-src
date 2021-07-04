@@ -166,7 +166,10 @@ CODE_SAMPLE
     /**
      * @param Name|NullableType|PhpParserUnionType|null $node
      */
-    private function isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn(?Node $node, Property $property): bool
+    private function isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn(
+        Name | NullableType | PhpParserUnionType | null $node,
+        Property $property
+    ): bool
     {
         if (! $node instanceof Node) {
             return true;
