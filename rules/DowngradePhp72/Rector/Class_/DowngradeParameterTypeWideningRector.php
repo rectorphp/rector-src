@@ -30,8 +30,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeParameterTypeWideningRector extends AbstractRector
 {
+    //        $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($ancestors);
+    // @todo move to static reflection
+
+    /**
+     * @var mixed[]
+     */
+    private const CLASS_LIKES = [];
+
     public function __construct(
-        private ClassLikeWithTraitsClassMethodResolver $classLikeWithTraitsClassMethodResolver,
         private ParentChildClassMethodTypeResolver $parentChildClassMethodTypeResolver,
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private ParamContravariantDetector $paramContravariantDetector,
@@ -108,16 +115,11 @@ CODE_SAMPLE
 //        $hasChanged = false;
 
         /** @var ClassReflection[] $ancestors */
-        $ancestors = $classReflection->getAncestors();
-
-//        $classMethods = $this->classLikeWithTraitsClassMethodResolver->resolve($ancestors);
-
-        // @todo move to static reflection
-        $classLikes = []; // $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
+        $ancestors = $classReflection->getAncestors(); // $this->nodeRepository->findClassesAndInterfacesByType($classReflection->getName());
 
         $interfaceClassReflections = $classReflection->getInterfaces();
 //        foreach ($classMethods as $classMethod) {
-        if ($this->skipClassMethod($node, $classReflection, $ancestors, $classLikes)) {
+        if ($this->skipClassMethod($node, $classReflection, $ancestors, self::CLASS_LIKES)) {
             return null;
         }
 
