@@ -7,7 +7,6 @@ namespace Rector\DowngradePhp80\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
@@ -16,12 +15,11 @@ use PhpParser\Node\Name;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\DeadCode\Comparator\Parameter\ParameterDefaultsComparator;
+use Rector\DowngradePhp80\NodeAnalyzer\UnnamedArgumentResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -32,7 +30,7 @@ final class DowngradeNamedArgumentRector extends AbstractRector
 {
     public function __construct(
         private ReflectionResolver $reflectionResolver,
-        private ParameterDefaultsComparator $parameterDefaultsComparator
+        private UnnamedArgumentResolver $unnamedArgumentResolver
     ) {
     }
 
@@ -126,30 +124,10 @@ CODE_SAMPLE
         MethodCall | StaticCall | New_ $node,
         array $args
     ): MethodCall | StaticCall | New_ | null {
-        $newArgs = [];
-
+        $unnmaedArgs = $this->unnamedArgumentResolver->resolveFromReflection($functionLikeReflection, $args);
         $parametersAcceptor = $functionLikeReflection->getVariants()[0] ?? null;
-        if (! $parametersAcceptor instanceof ParametersAcceptor) {
-            return null;
-        }
 
-        foreach ($parametersAcceptor->getParameters() as $paramPosition => $parameterReflection) {
-            foreach ($args as $arg) {
-                if ($this->shouldSkipParam($arg, $parameterReflection)) {
-                    continue;
-                }
-
-                $newArgs[$paramPosition] = new Arg(
-                    $arg->value,
-                    $arg->byRef,
-                    $arg->unpack,
-                    $arg->getAttributes(),
-                    null
-                );
-            }
-        }
-
-        $this->replacePreviousArgs($node, $parametersAcceptor->getParameters(), $newArgs);
+        $this->replacePreviousArgs($node, $parametersAcceptor->getParameters(), $unnmaedArgs);
         return $node;
     }
 
@@ -174,7 +152,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            $defaultValue = $this->mapPHPStanTypeToExpr($parameterReflection->getDefaultValue());
+            $defaultValue = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                $parameterReflection->getDefaultValue()
+            );
             if (! $defaultValue instanceof Expr) {
                 continue;
             }
@@ -188,6 +168,10 @@ CODE_SAMPLE
 
         $countNewArgs = count($newArgs);
         for ($i = 0; $i < $countNewArgs; ++$i) {
+            if (! isset($newArgs[$i])) {
+                continue;
+            }
+
             $node->args[$i] = $newArgs[$i];
         }
     }
@@ -206,36 +190,22 @@ CODE_SAMPLE
         return true;
     }
 
-    private function mapPHPStanTypeToExpr(?Type $type): ?Expr
-    {
-        if ($type === null) {
-            return null;
-        }
+//    private function mapPHPStanTypeToExpr(?Type $type): ?Expr
+//    {
+//        if ($type === null) {
+//            return null;
+//        }
+//
+//        return new ConstFetch(new Name($type->describe(VerbosityLevel::value())));
+//    }
 
-        return new ConstFetch(new Name($type->describe(VerbosityLevel::value())));
-    }
 
-    private function areArgValueAndParameterDefaultValueEqual(ParameterReflection $parameterReflection, Arg $arg): bool
-    {
-        // arg value vs parameter default value
-        if ($parameterReflection->getDefaultValue() === null) {
-            return false;
-        }
-
-        $parameterDefaultValue = $this->parameterDefaultsComparator->resolveParameterReflectionDefaultValue(
-            $parameterReflection
-        );
-
-        // default value is set already, let's skip it
-        return $this->valueResolver->isValue($arg->value, $parameterDefaultValue);
-    }
-
-    private function shouldSkipParam(Arg $arg, ParameterReflection $parameterReflection): bool
-    {
-        if (! $this->isName($arg, $parameterReflection->getName())) {
-            return true;
-        }
-
-        return $this->areArgValueAndParameterDefaultValueEqual($parameterReflection, $arg);
-    }
+//    private function shouldSkipParam(Arg $arg, ParameterReflection $parameterReflection): bool
+//    {
+//        if (! $this->isName($arg, $parameterReflection->getName())) {
+//            return true;
+//        }
+//
+//        return $this->areArgValueAndParameterDefaultValueEqual($parameterReflection, $arg);
+//    }
 }
