@@ -9,7 +9,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\ParentChildClassMethodTypeResolver;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
@@ -37,8 +36,7 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector
         private ParentChildClassMethodTypeResolver $parentChildClassMethodTypeResolver,
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private TypeFactory $typeFactory,
-        private ClassLikeScopeResolver $classLikeScopeResolver,
-        private ReflectionProvider $reflectionProvider
+        private ClassLikeScopeResolver $classLikeScopeResolver
     ) {
     }
 
