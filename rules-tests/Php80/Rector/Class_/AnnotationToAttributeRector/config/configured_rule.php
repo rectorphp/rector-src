@@ -25,6 +25,20 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new AnnotationToAttribute(
                     'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\Path'
                 ),
+                new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity', 'Doctrine\ORM\Mapping\Entity'),
+
+                new AnnotationToAttribute(
+                    'Doctrine\ORM\Mapping\InheritanceType',
+                    'Doctrine\ORM\Mapping\InheritanceType'
+                ),
+                new AnnotationToAttribute(
+                    'Doctrine\ORM\Mapping\DiscriminatorColumn',
+                    'Doctrine\ORM\Mapping\DiscriminatorColumn'
+                ),
+                new AnnotationToAttribute(
+                    'Doctrine\ORM\Mapping\DiscriminatorMap',
+                    'Doctrine\ORM\Mapping\DiscriminatorMap'
+                ),
             ]),
         ]]);
 };
