@@ -18,7 +18,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,11 +28,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FuncGetArgsToVariadicParamRector extends AbstractRector
 {
-    public function __construct(
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Refactor func_get_args() in to a variadic param', [
@@ -116,7 +110,7 @@ CODE_SAMPLE
         $functionLike = $this->betterNodeFinder->findParentType($assign, FunctionLike::class);
         /** @var Stmt[] $stmts */
         $stmts = $functionLike->getStmts();
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($stmts, function (Node $node) use (
             $assign,
             $variable
         ): ?Expr {
