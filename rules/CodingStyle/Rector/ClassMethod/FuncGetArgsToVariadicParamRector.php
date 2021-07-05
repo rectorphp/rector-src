@@ -5,15 +5,19 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,6 +28,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FuncGetArgsToVariadicParamRector extends AbstractRector
 {
+    public function __construct(
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Refactor func_get_args() in to a variadic param', [
@@ -77,7 +86,23 @@ CODE_SAMPLE
                 return null;
             }
 
-            $this->removeNode($assign);
+            $parentArg = $this->betterNodeFinder->findParentType($assign, Arg::class);
+            if (! $parentArg instanceof Arg) {
+                $this->removeNode($assign);
+            } else {
+                $variable = $assign->var;
+                $functionLike = $this->betterNodeFinder->findParentType($assign, FunctionLike::class);
+                $this->simpleCallableNodeTraverser->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
+                    $assign,
+                    $variable
+                ): ?Expr {
+                    if (! $this->nodeComparator->areNodesEqual($node, $assign)) {
+                        return null;
+                    }
+
+                    return $variable;
+                });
+            }
         } else {
             $variableName = 'args';
             $assign->expr = new Variable('args');

@@ -6,7 +6,7 @@ use Webmozart\Assert\Assert;
 
 final class InMethodOrStaticCall
 {
-    public function phpError(): void
+    public function run(): void
     {
         $this->count($args = func_get_args(), 1);
         Assert::count($args = func_get_args(), 1);
@@ -28,7 +28,7 @@ use Webmozart\Assert\Assert;
 
 final class InMethodOrStaticCall
 {
-    public function phpError(...$args): void
+    public function run(...$args): void
     {
         $this->count($args, 1);
         Assert::count($args, 1);
