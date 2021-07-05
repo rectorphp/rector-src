@@ -14,6 +14,7 @@ final class InMethodOrStaticCall
 
     private function count($args, $value)
     {
+        Assert::count($args, $value);
     }
 }
 
