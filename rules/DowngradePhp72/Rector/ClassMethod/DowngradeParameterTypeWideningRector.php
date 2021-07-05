@@ -7,15 +7,14 @@ namespace Rector\DowngradePhp72\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\ParentChildClassMethodTypeResolver;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
+use Rector\DowngradePhp72\PHPStan\ClassLikeScopeResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Collector\TraitNodeScopeCollector;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -38,7 +37,7 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector
         private ParentChildClassMethodTypeResolver $parentChildClassMethodTypeResolver,
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private TypeFactory $typeFactory,
-        private TraitNodeScopeCollector $traitNodeScopeCollector,
+        private ClassLikeScopeResolver $classLikeScopeResolver,
         private ReflectionProvider $reflectionProvider
     ) {
     }
@@ -94,7 +93,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = $this->resolveScope($node);
+        $scope = $this->classLikeScopeResolver->resolveScope($node);
         if (! $scope instanceof Scope) {
             return null;
         }
@@ -105,33 +104,10 @@ CODE_SAMPLE
         }
 
         $classMethodName = $this->getName($node);
-        if ($classReflection->isInterface()) {
-            dump('____');
-            dump($classReflection->getName());
-            // the method can be implemented, but we don't know who implements it and how, so we'll put it on stack and get back to it, if one of the child class/interface appears to visit it :)
-//
-//            // downgrade callable
-//            foreach ($this->classMethodStack as $className => $classMethodNameToClassMethods) {
-//                if (! $this->reflectionProvider->hasClass($className)) {
-//                    continue;
-//                }
-//
-//                // @todo
-//            }
-//
-//            dump_node($node);
 
-            $this->classMethodStack[$classReflection->getName()][$classMethodName][] = $node;
-            return $node;
-        }
+        // the method can be implemented (interface), or extended (class), but we don't know who implements it and how, so we'll put it on stack and get back to it, if one of the child class/interface appears to visit it :)
 
-//        dump($classReflection->getName());
-//        dump($this->classMethodStack);
-
-        // if the class it not final, it can be changed later, so better stack it up here
-//        if (! $classReflection->isFinal()) {
         $this->classMethodStack[$classReflection->getName()][$classMethodName][] = $node;
-//        }
 
         if ($this->skipClassMethod($node)) {
             return null;
@@ -213,22 +189,5 @@ CODE_SAMPLE
         }
 
         return $classMethod->params === [];
-    }
-
-    private function resolveScope(ClassMethod $classMethod): ?Scope
-    {
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        if ($scope instanceof Scope) {
-            return $scope;
-        }
-
-        // fallback to a trait method
-        $classLike = $classMethod->getAttribute(AttributeKey::CLASS_NODE);
-        if ($classLike instanceof Trait_) {
-            $traitName = $this->getName($classLike);
-            return $this->traitNodeScopeCollector->getScopeForTrait($traitName);
-        }
-
-        return null;
     }
 }

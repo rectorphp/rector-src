@@ -30,7 +30,7 @@ final class StyleWithCallable implements InterfaceWithCallable
 interface InterfaceWithCallable
 {
     /**
-     * @param string|null $default
+     * @param callable|null $validator
      */
     public function ask($validator = null);
 }
