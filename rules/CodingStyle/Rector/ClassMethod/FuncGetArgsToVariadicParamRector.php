@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Core\Rector\AbstractRector;
@@ -86,23 +87,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $parentArg = $this->betterNodeFinder->findParentType($assign, Arg::class);
-            if (! $parentArg instanceof Arg) {
-                $this->removeNode($assign);
-            } else {
-                $variable = $assign->var;
-                $functionLike = $this->betterNodeFinder->findParentType($assign, FunctionLike::class);
-                $this->simpleCallableNodeTraverser->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
-                    $assign,
-                    $variable
-                ): ?Expr {
-                    if (! $this->nodeComparator->areNodesEqual($node, $assign)) {
-                        return null;
-                    }
-
-                    return $variable;
-                });
-            }
+            $this->changeAssignToVariable($assign);
         } else {
             $variableName = 'args';
             $assign->expr = new Variable('args');
@@ -116,6 +101,31 @@ CODE_SAMPLE
 
         $node->params[] = $param;
         return $node;
+    }
+
+    private function changeAssignToVariable(Assign $assign): void
+    {
+        $parentArg = $this->betterNodeFinder->findParentType($assign, Arg::class);
+        if (! $parentArg instanceof Arg) {
+            $this->removeNode($assign);
+            return;
+        }
+
+        $variable = $assign->var;
+        /** @var FunctionLike $functionLike */
+        $functionLike = $this->betterNodeFinder->findParentType($assign, FunctionLike::class);
+        /** @var Stmt[] $stmts */
+        $stmts = $functionLike->getStmts();
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
+            $assign,
+            $variable
+        ): ?Expr {
+            if (! $this->nodeComparator->areNodesEqual($node, $assign)) {
+                return null;
+            }
+
+            return $variable;
+        });
     }
 
     private function hasFunctionOrClosureInside(
