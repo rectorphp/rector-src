@@ -10,8 +10,8 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DowngradePhp72\NodeAnalyzer\ParamContravariantDetector;
 use Rector\DowngradePhp72\NodeAnalyzer\ParentChildClassMethodTypeResolver;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -32,13 +32,14 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector
      * Methods that are downgraded on a parent stack, by class, then method name
      * @var array<class-string, array<string, ClassMethod[]>>
      */
-    private $classMethodStack = [];
+    private array $classMethodStack = [];
 
     public function __construct(
         private ParentChildClassMethodTypeResolver $parentChildClassMethodTypeResolver,
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private TypeFactory $typeFactory,
-        private TraitNodeScopeCollector $traitNodeScopeCollector
+        private TraitNodeScopeCollector $traitNodeScopeCollector,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -104,20 +105,35 @@ CODE_SAMPLE
         }
 
         $classMethodName = $this->getName($node);
-
         if ($classReflection->isInterface()) {
+            dump('____');
+            dump($classReflection->getName());
             // the method can be implemented, but we don't know who implements it and how, so we'll put it on stack and get back to it, if one of the child class/interface appears to visit it :)
+//
+//            // downgrade callable
+//            foreach ($this->classMethodStack as $className => $classMethodNameToClassMethods) {
+//                if (! $this->reflectionProvider->hasClass($className)) {
+//                    continue;
+//                }
+//
+//                // @todo
+//            }
+//
+//            dump_node($node);
 
             $this->classMethodStack[$classReflection->getName()][$classMethodName][] = $node;
-            return null;
+            return $node;
         }
+
+//        dump($classReflection->getName());
+//        dump($this->classMethodStack);
 
         // if the class it not final, it can be changed later, so better stack it up here
-        if (! $classReflection->isFinal()) {
-            $this->classMethodStack[$classReflection->getName()][$classMethodName][] = $node;
-        }
+//        if (! $classReflection->isFinal()) {
+        $this->classMethodStack[$classReflection->getName()][$classMethodName][] = $node;
+//        }
 
-        if ($this->skipClassMethod($node, $classReflection)) {
+        if ($this->skipClassMethod($node)) {
             return null;
         }
 
@@ -159,6 +175,7 @@ CODE_SAMPLE
                 }
 
                 $stackedClassMethods = $this->classMethodStack[$ancestorClassReflection->getName()][$methodName] ?? [];
+
                 foreach ($stackedClassMethods as $stackedClassMethod) {
                     $this->removeParamTypeFromMethod($stackedClassMethod, $paramPosition);
                 }
@@ -171,7 +188,7 @@ CODE_SAMPLE
     private function removeParamTypeFromMethod(ClassMethod $classMethod, int $paramPosition): void
     {
         $param = $classMethod->params[$paramPosition] ?? null;
-        if ($param === null) {
+        if (! $param instanceof Param) {
             return;
         }
 
@@ -189,7 +206,7 @@ CODE_SAMPLE
         $param->type = null;
     }
 
-    private function skipClassMethod(ClassMethod $classMethod, ClassReflection $classReflection): bool
+    private function skipClassMethod(ClassMethod $classMethod): bool
     {
         if ($classMethod->isMagic()) {
             return true;

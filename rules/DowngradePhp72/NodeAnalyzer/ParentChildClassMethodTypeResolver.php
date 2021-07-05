@@ -71,7 +71,7 @@ final class ParentChildClassMethodTypeResolver
 
         // get subclasses of ancestors too
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
-            foreach ($classMethodStack as $className => $methodNameToClassMethods) {
+            foreach (array_keys($classMethodStack) as $className) {
                 if (! $this->reflectionProvider->hasClass($className)) {
                     continue;
                 }
