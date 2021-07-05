@@ -81,7 +81,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $this->changeAssignToVariable($assign);
+            $this->removeOrChangeAssignToVariable($assign);
         } else {
             $variableName = 'args';
             $assign->expr = new Variable('args');
@@ -97,7 +97,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function changeAssignToVariable(Assign $assign): void
+    private function removeOrChangeAssignToVariable(Assign $assign): void
     {
         $parentArg = $this->betterNodeFinder->findParentType($assign, Arg::class);
         if (! $parentArg instanceof Arg) {
