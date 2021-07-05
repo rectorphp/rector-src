@@ -96,6 +96,7 @@ final class AnonymousFunctionFactory
         $anonymousFunction->params = $newParams;
 
         if ($expr instanceof ClassConstFetch && $expr->name instanceof Identifier && $this->nodeNameResolver->isName($expr->name, 'class')) {
+            /** @var Expr $expr */
             $expr = $expr->class;
         }
 
