@@ -13,7 +13,6 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
 use Rector\DowngradePhp72\PHPStan\ClassLikeScopeResolver;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -76,9 +75,11 @@ final class SomeClass implements SomeInterface
     }
 }
 CODE_SAMPLE
-            , [
-                self::SAFE_TYPES => []
-            ]),
+            ,
+                [
+                    self::SAFE_TYPES => [],
+                ]
+            ),
         ]);
     }
 
