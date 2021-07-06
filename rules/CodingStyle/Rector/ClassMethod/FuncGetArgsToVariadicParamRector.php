@@ -90,10 +90,7 @@ CODE_SAMPLE
         return $this->applyVariadicParams($node, $assign, $variableName);
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
-    private function applyVariadicParams(Node $node, Assign $assign, string $variableName): ?Node
+    private function applyVariadicParams(ClassMethod|Function_|Closure $node, Assign $assign, string $variableName): ?Node
     {
         $param = $this->createVariadicParam($variableName);
         $variableParam = $param->var;
@@ -105,10 +102,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @param ClassMethod|Function_|Closure $node
-     */
-    private function removeOrChangeAssignToVariable(Node $node, Assign $assign, string $variableName): ?Node
+    private function removeOrChangeAssignToVariable(ClassMethod|Function_|Closure $node, Assign $assign, string $variableName): ?Node
     {
         $parent = $assign->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Expression) {
