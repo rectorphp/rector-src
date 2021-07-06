@@ -8,7 +8,7 @@ use stdClass;
 class SkipMixedReturnFromInterface implements ContainerInterface
 {
     /**
-     * @return stdClass|[]
+     * @return stdClass|array
      */
     public function get($id) {
         if (rand(0,1)) {
