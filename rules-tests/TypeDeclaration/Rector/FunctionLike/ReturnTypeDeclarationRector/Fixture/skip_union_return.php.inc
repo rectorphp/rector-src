@@ -2,14 +2,10 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
 
-use Psr\Container\ContainerInterface;
 use stdClass;
 
-class SkipMixedReturnFromInterface implements ContainerInterface
+class SkipUnionReturn
 {
-    /**
-     * @return stdClass|array
-     */
     public function get($id) {
         if (rand(0,1)) {
             return new stdClass();
