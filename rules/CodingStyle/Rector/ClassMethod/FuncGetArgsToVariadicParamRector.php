@@ -15,9 +15,11 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -81,12 +83,16 @@ CODE_SAMPLE
                 return null;
             }
 
-            $this->removeOrChangeAssignToVariable($assign);
-        } else {
-            $variableName = 'args';
-            $assign->expr = new Variable('args');
+            return $this->removeOrChangeAssignToVariable($node, $assign, $variableName);
         }
 
+        $variableName = 'args';
+        $assign->expr = new Variable('args');
+        return $this->applyVariadicParams($node, $assign, $variableName);
+    }
+
+    private function applyVariadicParams(Node $node, Assign $assign, string $variableName): ?Node
+    {
         $param = $this->createVariadicParam($variableName);
         $variableParam = $param->var;
         if ($variableParam instanceof Variable && $this->hasFunctionOrClosureInside($node, $variableParam)) {
@@ -97,20 +103,20 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function removeOrChangeAssignToVariable(Assign $assign): void
+    private function removeOrChangeAssignToVariable(Node $node, Assign $assign, string $variableName): ?Node
     {
-        $parentArg = $this->betterNodeFinder->findParentType($assign, Arg::class);
-        if (! $parentArg instanceof Arg) {
+        $parent = $assign->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Expression) {
             $this->removeNode($assign);
-            return;
+            return $this->applyVariadicParams($node, $assign, $variableName);
         }
 
         $variable = $assign->var;
         /** @var FunctionLike $functionLike */
-        $functionLike = $this->betterNodeFinder->findParentType($assign, FunctionLike::class);
+        $functionLike = $this->betterNodeFinder->findParentType($parent, FunctionLike::class);
         /** @var Stmt[] $stmts */
         $stmts = $functionLike->getStmts();
-        $this->traverseNodesWithCallable($stmts, function (Node $node) use (
+        $variable = $this->traverseNodesWithCallable($stmts, function (Node $node) use (
             $assign,
             $variable
         ): ?Expr {
@@ -120,6 +126,9 @@ CODE_SAMPLE
 
             return $variable;
         });
+
+        $this->applyVariadicParams($functionLike, $assign, $variableName);
+        return $node;
     }
 
     private function hasFunctionOrClosureInside(
