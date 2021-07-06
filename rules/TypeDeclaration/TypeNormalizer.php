@@ -113,7 +113,7 @@ final class TypeNormalizer
                 $traversedTypeTypes = $traversedType->getTypes();
                 $countTraversedTypes = count($traversedTypeTypes);
 
-                if ($this->isUnionMixed($countTraversedTypes, $traversedTypeTypes)) {
+                if ($this->isUnionMixedNeverType($countTraversedTypes, $traversedTypeTypes)) {
                     return new MixedType();
                 }
 
@@ -161,7 +161,7 @@ final class TypeNormalizer
     /**
      * @param Type[] $traversedTypeTypes
      */
-    private function isUnionMixed(int $countTraversedTypes, array $traversedTypeTypes): bool
+    private function isUnionMixedNeverType(int $countTraversedTypes, array $traversedTypeTypes): bool
     {
         return $countTraversedTypes === 2 && ($this->isArrayNeverType(
             $traversedTypeTypes[0]
