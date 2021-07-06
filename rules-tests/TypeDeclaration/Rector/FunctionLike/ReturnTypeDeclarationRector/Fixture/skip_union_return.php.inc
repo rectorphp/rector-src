@@ -2,6 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
 
+use stdClass;
+
 class SkipUnionReturn
 {
     public function get1($id) {
