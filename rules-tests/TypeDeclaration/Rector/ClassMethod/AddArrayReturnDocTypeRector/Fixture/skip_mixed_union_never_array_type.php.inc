@@ -16,7 +16,7 @@ class SkipMixedUnionNeverArrayType
             return [];
         }
 
-        /** @var stdClass[]|DateTime[] $propertyFetches */
+        /** @var stdClass[]|DateTime[] $value */
         $value = $this->getData();
 
         return $value;
