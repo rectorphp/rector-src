@@ -14,5 +14,14 @@ class SkipUnionReturn
         return [];
     }
 
-    public function has($id): bool { return true; }
+    /**
+     * @return stdClass|array
+     */
+    public function get2($id) {
+        if (rand(0,1)) {
+            return new stdClass();
+        }
+
+        return [];
+    }
 }
