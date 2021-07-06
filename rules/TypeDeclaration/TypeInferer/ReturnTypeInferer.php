@@ -12,8 +12,6 @@ use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeNormalizer;
-use PHPStan\Type\NeverType;
-use PHPStan\Type\ArrayType;
 
 final class ReturnTypeInferer
 {
@@ -55,18 +53,7 @@ final class ReturnTypeInferer
             }
 
             if ($originalType instanceof UnionType) {
-                $isNeverType = false;
-                foreach ($originalType->getTypes() as $type) {
-                    if ($type instanceof ArrayType) {
-                        dump($type);die;
-                        $isNeverType = true;
-                        break;
-                    }
-                }
-
-                if (! $isNeverType) {
-                    return $originalType;
-                }
+                return $originalType;
             }
 
             $type = $this->typeNormalizer->normalizeArrayTypeAndArrayNever($originalType);
