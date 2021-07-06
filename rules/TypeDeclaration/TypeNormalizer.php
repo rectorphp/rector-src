@@ -121,7 +121,7 @@ final class TypeNormalizer
                 $countCollectedTypes = count($collectedTypes);
 
                 // re-create new union types
-                if ($countTraversedTypes !== $countCollectedTypes && $countTraversedTypes !== 2) {
+                if ($countTraversedTypes !== $countCollectedTypes && $countTraversedTypes > 2) {
                     return $this->typeFactory->createMixedPassedOrUnionType($collectedTypes);
                 }
             }
