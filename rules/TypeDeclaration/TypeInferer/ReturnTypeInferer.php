@@ -57,7 +57,8 @@ final class ReturnTypeInferer
             if ($originalType instanceof UnionType) {
                 $isNeverType = false;
                 foreach ($originalType->getTypes() as $type) {
-                    if ($type instanceof ArrayType && ($type->keyType instanceof NeverType || $type->itemType instanceof NeverType)) {
+                    if ($type instanceof ArrayType) {
+                        dump($type);die;
                         $isNeverType = true;
                         break;
                     }
