@@ -100,7 +100,7 @@ final class TypeNormalizer
      */
     public function normalizeArrayTypeAndArrayNever(Type $type): Type
     {
-        return TypeTraverser::map($type, function (Type $traversedType, callable $traverserCallable) : Type {
+        return TypeTraverser::map($type, function (Type $traversedType, callable $traverserCallable): Type {
             if ($traversedType instanceof ConstantArrayType && $traversedType->getKeyType() instanceof NeverType && $traversedType->getItemType() instanceof NeverType) {
                 // not sure why, but with direct new node everything gets nulled to MixedType
                 $this->privatesAccessor->setPrivateProperty($traversedType, 'keyType', new MixedType());
@@ -110,21 +110,25 @@ final class TypeNormalizer
             }
 
             if ($traversedType instanceof UnionType) {
-                $collectedTypes     = [];
+                $collectedTypes = [];
                 $traversedTypeTypes = $traversedType->getTypes();
                 $countTraversedTypes = count($traversedTypeTypes);
 
-                if ($countTraversedTypes === 2 && ($this->isArrayNeverType($traversedTypeTypes[0]) || $this->isArrayNeverType($traversedTypeTypes[0]))) {
+                if ($countTraversedTypes === 2 && ($this->isArrayNeverType(
+                    $traversedTypeTypes[0]
+                ) || $this->isArrayNeverType(
+                    $traversedTypeTypes[0]
+                ))) {
                     return new MixedType();
                 }
 
-                foreach ($traversedTypeTypes as $unionedType) {
+                foreach ($traversedTypeTypes as $traversedTypeType) {
                     // basically an empty array - not useful at all
-                    if ($this->isArrayNeverType($unionedType)) {
+                    if ($this->isArrayNeverType($traversedTypeType)) {
                         continue;
                     }
 
-                    $collectedTypes[] = $unionedType;
+                    $collectedTypes[] = $traversedTypeType;
                 }
 
                 $countCollectedTypes = count($collectedTypes);
