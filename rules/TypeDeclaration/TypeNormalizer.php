@@ -110,19 +110,26 @@ final class TypeNormalizer
             }
 
             if ($traversedType instanceof UnionType) {
-                $collectedTypes = [];
-                $countTraversedTypes = count($traversedType->getTypes());
-                foreach ($traversedType->getTypes() as $unionedType) {
+                $collectedTypes     = [];
+                $traversedTypeTypes = $traversedType->getTypes();
+                $countTraversedTypes = count($traversedTypeTypes);
+
+                if ($countTraversedTypes === 2 && ($this->isArrayNeverType($traversedTypeTypes[0]) || $this->isArrayNeverType($traversedTypeTypes[0]))) {
+                    return new MixedType();
+                }
+
+                foreach ($traversedTypeTypes as $unionedType) {
                     // basically an empty array - not useful at all
-                    if ($countTraversedTypes > 2 && $this->isArrayNeverType($unionedType)) {
+                    if ($this->isArrayNeverType($unionedType)) {
                         continue;
                     }
 
                     $collectedTypes[] = $unionedType;
                 }
 
+                $countCollectedTypes = count($collectedTypes);
                 // re-create new union types
-                if ($countTraversedTypes !== count($collectedTypes)) {
+                if ($countTraversedTypes !== $countCollectedTypes && $countTraversedTypes !== 2) {
                     return $this->typeFactory->createMixedPassedOrUnionType($collectedTypes);
                 }
             }
