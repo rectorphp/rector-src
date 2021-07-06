@@ -33,9 +33,4 @@ final class Cache
     {
         $this->fileCacheStorage->clear();
     }
-
-    public function clean(string $cacheKey): void
-    {
-        $this->fileCacheStorage->clean($cacheKey);
-    }
 }

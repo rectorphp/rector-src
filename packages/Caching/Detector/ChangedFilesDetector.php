@@ -45,12 +45,6 @@ final class ChangedFilesDetector
         return $currentFileHash !== $cachedValue;
     }
 
-    public function invalidateFile(SmartFileInfo $smartFileInfo): void
-    {
-        $fileInfoCacheKey = $this->getFileInfoCacheKey($smartFileInfo);
-        $this->cache->clean($fileInfoCacheKey);
-    }
-
     public function clear(): void
     {
         $this->cache->clear();

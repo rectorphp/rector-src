@@ -79,17 +79,6 @@ final class FileCacheStorage
         $this->smartFileSystem->remove($tmpPath);
     }
 
-    public function clean(string $cacheKey): void
-    {
-        $cacheFilePaths = $this->getCacheFilePaths($cacheKey);
-
-        $this->smartFileSystem->remove([
-            $cacheFilePaths->getFirstDirectory(),
-            $cacheFilePaths->getSecondDirectory(),
-            $cacheFilePaths->getFilePath(),
-        ]);
-    }
-
     public function clear(): void
     {
         $this->smartFileSystem->remove($this->directory);

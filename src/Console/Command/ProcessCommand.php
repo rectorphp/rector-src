@@ -135,9 +135,6 @@ final class ProcessCommand extends Command
         $processResult = $this->processResultFactory->create($files);
         $outputFormatter->report($processResult, $configuration);
 
-        // invalidate affected files
-        $this->invalidateCacheChangedFiles($processResult);
-
         return $this->resolveReturnCode($processResult, $configuration);
     }
 
@@ -161,13 +158,6 @@ final class ProcessCommand extends Command
         $optionClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
         if ($optionClearCache) {
             $this->changedFilesDetector->clear();
-        }
-    }
-
-    private function invalidateCacheChangedFiles(ProcessResult $processResult): void
-    {
-        foreach ($processResult->getChangedFileInfos() as $changedFileInfo) {
-            $this->changedFilesDetector->invalidateFile($changedFileInfo);
         }
     }
 

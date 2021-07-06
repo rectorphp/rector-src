@@ -33,9 +33,6 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
         $this->changedFilesDetector->addFileWithDependencies($smartFileInfo, []);
 
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($smartFileInfo));
-        $this->changedFilesDetector->invalidateFile($smartFileInfo);
-
-        $this->assertTrue($this->changedFilesDetector->hasFileChanged($smartFileInfo));
     }
 
     /**
