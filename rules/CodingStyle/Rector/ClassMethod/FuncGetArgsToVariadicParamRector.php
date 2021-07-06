@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
@@ -91,6 +90,9 @@ CODE_SAMPLE
         return $this->applyVariadicParams($node, $assign, $variableName);
     }
 
+    /**
+     * @param ClassMethod|Function_|Closure $node
+     */
     private function applyVariadicParams(Node $node, Assign $assign, string $variableName): ?Node
     {
         $param = $this->createVariadicParam($variableName);
@@ -103,6 +105,9 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @param ClassMethod|Function_|Closure $node
+     */
     private function removeOrChangeAssignToVariable(Node $node, Assign $assign, string $variableName): ?Node
     {
         $parent = $assign->getAttribute(AttributeKey::PARENT_NODE);
@@ -112,14 +117,11 @@ CODE_SAMPLE
         }
 
         $variable = $assign->var;
-        /** @var FunctionLike $functionLike */
+        /** @var ClassMethod|Function_|Closure $functionLike */
         $functionLike = $this->betterNodeFinder->findParentType($parent, FunctionLike::class);
         /** @var Stmt[] $stmts */
         $stmts = $functionLike->getStmts();
-        $variable = $this->traverseNodesWithCallable($stmts, function (Node $node) use (
-            $assign,
-            $variable
-        ): ?Expr {
+        $this->traverseNodesWithCallable($stmts, function (Node $node) use ($assign, $variable): ?Expr {
             if (! $this->nodeComparator->areNodesEqual($node, $assign)) {
                 return null;
             }
