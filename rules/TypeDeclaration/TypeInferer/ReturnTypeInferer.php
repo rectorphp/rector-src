@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeInferer;
 
 use PhpParser\Node\FunctionLike;
-use PHPStan\Type\ClassStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
@@ -50,6 +50,10 @@ final class ReturnTypeInferer
             $originalType = $returnTypeInferer->inferFunctionLike($functionLike);
             if ($originalType instanceof MixedType) {
                 continue;
+            }
+
+            if ($originalType instanceof UnionType) {
+                return $originalType;
             }
 
             $type = $this->typeNormalizer->normalizeArrayTypeAndArrayNever($originalType);
