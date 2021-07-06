@@ -24,4 +24,10 @@ class SkipUnionReturn
 
         return [];
     }
+
+    public function get3($id) {
+        if (rand(0,1)) {
+            return [];
+        }
+    }
 }
