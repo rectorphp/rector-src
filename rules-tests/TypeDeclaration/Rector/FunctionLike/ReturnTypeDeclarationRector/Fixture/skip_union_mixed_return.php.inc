@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclaration
 
 use stdClass;
 
-class SkipUnionReturn
+class SkipUnionMixedReturn
 {
     public function get1($id) {
         if (rand(0,1)) {
