@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\TypeInferer;
 use PhpParser\Node\FunctionLike;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
@@ -27,8 +26,7 @@ final class ReturnTypeInferer
         array $returnTypeInferers,
         private TypeNormalizer $typeNormalizer,
         TypeInfererSorter $typeInfererSorter,
-        private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
-        private PhpDocInfoFactory $phpDocInfoFactory
+        private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer
     ) {
         $this->returnTypeInferers = $typeInfererSorter->sort($returnTypeInferers);
     }
@@ -43,9 +41,6 @@ final class ReturnTypeInferer
      */
     public function inferFunctionLikeWithExcludedInferers(FunctionLike $functionLike, array $excludedInferers): Type
     {
-        $phpDocInfo           = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
-        $phpDocInfoReturnType = $phpDocInfo->getReturnType();
-
         foreach ($this->returnTypeInferers as $returnTypeInferer) {
             if ($this->shouldSkipExcludedTypeInferer($returnTypeInferer, $excludedInferers)) {
                 continue;
