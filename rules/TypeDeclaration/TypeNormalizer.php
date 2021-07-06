@@ -100,7 +100,7 @@ final class TypeNormalizer
      */
     public function normalizeArrayTypeAndArrayNever(Type $type): Type
     {
-        return TypeTraverser::map($type, function (Type $traversedType, callable $traverserCallable): Type {
+        return TypeTraverser::map($type, function (Type $traversedType, callable $traverserCallable) : Type {
             if ($traversedType instanceof ConstantArrayType && $traversedType->getKeyType() instanceof NeverType && $traversedType->getItemType() instanceof NeverType) {
                 // not sure why, but with direct new node everything gets nulled to MixedType
                 $this->privatesAccessor->setPrivateProperty($traversedType, 'keyType', new MixedType());
@@ -109,12 +109,12 @@ final class TypeNormalizer
                 return $traversedType;
             }
 
-            if ($traversedType instanceof UnionType) { die('here');
+            if ($traversedType instanceof UnionType) {
                 $collectedTypes = [];
-
+                $countTraversedTypes = count($traversedType->getTypes());
                 foreach ($traversedType->getTypes() as $unionedType) {
                     // basically an empty array - not useful at all
-                    if ($this->isArrayNeverType($unionedType)) {
+                    if ($countTraversedTypes > 2 && $this->isArrayNeverType($unionedType)) {
                         continue;
                     }
 
@@ -122,7 +122,7 @@ final class TypeNormalizer
                 }
 
                 // re-create new union types
-                if (count($traversedType->getTypes()) !== count($collectedTypes)) {
+                if ($countTraversedTypes !== count($collectedTypes)) {
                     return $this->typeFactory->createMixedPassedOrUnionType($collectedTypes);
                 }
             }
