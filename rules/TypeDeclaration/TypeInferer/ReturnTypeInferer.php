@@ -61,7 +61,7 @@ final class ReturnTypeInferer
             }
 
             if ($originalType instanceof UnionType) {
-                $isArraySub = false;
+                /*$isArraySub = false;
                 foreach ($originalType->getTypes() as $type) {
                     if ($type instanceof ArrayType && $type->getItemType() instanceof FullyQualifiedObjectType) {
                         if ($phpDocInfoReturnType instanceof ArrayType && $phpDocInfoReturnType->getItemType() instanceof ObjectType) {
@@ -73,7 +73,7 @@ final class ReturnTypeInferer
 
                 if (! $isArraySub) {
                     return $originalType;
-                }
+                }*/
             }
 
             $type = $this->typeNormalizer->normalizeArrayTypeAndArrayNever($originalType);

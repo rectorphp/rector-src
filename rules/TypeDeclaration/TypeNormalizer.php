@@ -109,7 +109,7 @@ final class TypeNormalizer
                 return $traversedType;
             }
 
-            if ($traversedType instanceof UnionType) {
+            if ($traversedType instanceof UnionType) { die('here');
                 $collectedTypes = [];
 
                 foreach ($traversedType->getTypes() as $unionedType) {
