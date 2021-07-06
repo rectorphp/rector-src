@@ -8,10 +8,14 @@ use PhpParser\Node\FunctionLike;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\ArrayType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeNormalizer;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use PHPStan\Type\ObjectType;
 
 final class ReturnTypeInferer
 {
@@ -27,7 +31,8 @@ final class ReturnTypeInferer
         array $returnTypeInferers,
         private TypeNormalizer $typeNormalizer,
         TypeInfererSorter $typeInfererSorter,
-        private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer
+        private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
+        private PhpDocInfoFactory $phpDocInfoFactory
     ) {
         $this->returnTypeInferers = $typeInfererSorter->sort($returnTypeInferers);
     }
@@ -42,6 +47,9 @@ final class ReturnTypeInferer
      */
     public function inferFunctionLikeWithExcludedInferers(FunctionLike $functionLike, array $excludedInferers): Type
     {
+        $phpDocInfo           = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
+        $phpDocInfoReturnType = $phpDocInfo->getReturnType();
+
         foreach ($this->returnTypeInferers as $returnTypeInferer) {
             if ($this->shouldSkipExcludedTypeInferer($returnTypeInferer, $excludedInferers)) {
                 continue;
@@ -53,7 +61,19 @@ final class ReturnTypeInferer
             }
 
             if ($originalType instanceof UnionType) {
-                return $originalType;
+                $isArraySub = false;
+                foreach ($originalType->getTypes() as $type) {
+                    if ($type instanceof ArrayType && $type->getItemType() instanceof FullyQualifiedObjectType) {
+                        if ($phpDocInfoReturnType instanceof ArrayType && $phpDocInfoReturnType->getItemType() instanceof ObjectType) {
+                            $isArraySub = $type->getItemType()->isSuperTypeOf($phpDocInfoReturnType->getItemType())->yes();
+                            break;
+                        }
+                    }
+                }
+
+                if (! $isArraySub) {
+                    return $originalType;
+                }
             }
 
             $type = $this->typeNormalizer->normalizeArrayTypeAndArrayNever($originalType);
