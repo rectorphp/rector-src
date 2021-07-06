@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeR
 use stdClass;
 use DateTime;
 
-class SkipMixedUnionNeverType
+class SkipMixedUnionNeverArrayType
 {
     /**
      * @return stdClass[]|DateTime[]
