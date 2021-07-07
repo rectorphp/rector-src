@@ -12,10 +12,11 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\UnaryMinus;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Nette\NodeAnalyzer\BinaryOpAnalyzer;
 use Rector\Nette\ValueObject\FuncCallAndExpr;
-use Symplify\RuleDocGenerator\ValueObject\AbstractCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -106,7 +107,7 @@ CODE_SAMPLE
     /**
      * Covers:
      * $isMatch = substr($haystack, -strlen($needle)) === $needle;
-     * $isMatch = $needle === substr($haystack, -6)
+     * $isMatch = 'needle' === substr($haystack, -6)
      */
     private function refactorSubstr(BinaryOp $binaryOp): FuncCall | BooleanNot | null
     {
@@ -122,7 +123,9 @@ CODE_SAMPLE
 
         $haystack = $substrFuncCall->args[0]->value;
 
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrFuncCall->args[1]->value, $comparedNeedleExpr)) {
+        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrFuncCall->args[1]->value, $comparedNeedleExpr) &&
+            ! $this->isHardCodedLNumberAndString($substrFuncCall->args[1]->value, $comparedNeedleExpr)
+        ) {
             return null;
         }
 
@@ -146,7 +149,9 @@ CODE_SAMPLE
         $haystack = $substrCompareFuncCall->args[0]->value;
         $needle = $substrCompareFuncCall->args[1]->value;
 
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrCompareFuncCall->args[2]->value, $needle)) {
+        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrCompareFuncCall->args[2]->value, $needle) &&
+            ! $this->isHardCodedLNumberAndString($substrCompareFuncCall->args[2]->value, $needle)
+        ) {
             return null;
         }
 
@@ -171,6 +176,24 @@ CODE_SAMPLE
         }
 
         return $this->nodeComparator->areNodesEqual($funcCall->args[0]->value, $needle);
+    }
+
+    private function isHardCodedLNumberAndString(Node $substrOffset, Node $needle): bool
+    {
+        if (! $substrOffset instanceof UnaryMinus) {
+            return false;
+        }
+
+        if (! $substrOffset->expr instanceof LNumber) {
+            return false;
+        }
+        $lNumber = $substrOffset->expr;
+
+        if (! $needle instanceof String_) {
+            return false;
+        }
+
+        return $lNumber->value === strlen($needle->value);
     }
 
     private function buildReturnNode(?Expr $haystack, ?Expr $needle, bool $isPositive): FuncCall | BooleanNot
