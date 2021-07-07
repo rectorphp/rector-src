@@ -369,7 +369,7 @@ final class BetterStandardPrinter extends Standard
         $kind = $ternary->getAttribute(AttributeKey::KIND);
         if ($kind === 'wrapped_with_brackets') {
             $pExprTernary = parent::pExpr_Ternary($ternary);
-            return '(' . $pExprTernary  . ')';
+            return '(' . $pExprTernary . ')';
         }
 
         return parent::pExpr_Ternary($ternary);
