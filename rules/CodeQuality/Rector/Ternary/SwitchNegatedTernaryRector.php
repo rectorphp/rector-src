@@ -86,8 +86,8 @@ CODE_SAMPLE
         $else = $else instanceof Ternary
             ? new Name('(' . $this->betterStandardPrinter->print($else) . ')')
             : $else;
-
-        [$node->if, $node->else] = [$else, $if];
+        $node->if = $else;
+        $node->else = $if;
 
         return $node;
     }
