@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Name;
+use Rector\Core\PhpParser\Node\Value\TernaryBracketWrapper;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,6 +19,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SwitchNegatedTernaryRector extends AbstractRector
 {
+    public function __construct(private TernaryBracketWrapper $ternaryBracketWrapper)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -78,10 +83,10 @@ CODE_SAMPLE
         $else = $node->else;
 
         $if = $if instanceof Ternary
-            ? new ConstFetch(new Name('(' . $this->betterStandardPrinter->print($if) . ')'))
+            ? $this->ternaryBracketWrapper->getWrappedTernaryConstFetch($if)
             : $if;
         $else = $else instanceof Ternary
-            ? new ConstFetch(new Name('(' . $this->betterStandardPrinter->print($else) . ')'))
+            ? $this->ternaryBracketWrapper->getWrappedTernaryConstFetch($else)
             : $else;
 
         $node->if = $else;
