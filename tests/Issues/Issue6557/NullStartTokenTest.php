@@ -8,7 +8,7 @@ use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class RemoveOverriddenValuesRectorTest extends AbstractRectorTestCase
+final class NullStartTokenTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
