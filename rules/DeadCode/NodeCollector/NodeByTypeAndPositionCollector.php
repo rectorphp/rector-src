@@ -33,7 +33,6 @@ final class NodeByTypeAndPositionCollector
         $nodesByTypeAndPosition = [];
 
         foreach ($assignedVariables as $assignedVariable) {
-            /** @var int $startTokenPos */
             $startTokenPos = $assignedVariable->getAttribute(AttributeKey::START_TOKEN_POSITION);
 
             if ($startTokenPos === null) {
