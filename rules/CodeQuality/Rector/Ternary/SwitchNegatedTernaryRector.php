@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Ternary;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Name;
 use Rector\Core\Rector\AbstractRector;
@@ -77,15 +77,13 @@ CODE_SAMPLE
         $if = $node->if;
         $else = $node->else;
 
-        /** @var Expr $if */
         $if = $if instanceof Ternary
-            ? new Name('(' . $this->betterStandardPrinter->print($if) . ')')
+            ? new ConstFetch(new Name('(' . $this->betterStandardPrinter->print($if) . ')'))
             : $if;
-
-        /** @var Expr $else */
         $else = $else instanceof Ternary
-            ? new Name('(' . $this->betterStandardPrinter->print($else) . ')')
+            ? new ConstFetch(new Name('(' . $this->betterStandardPrinter->print($else) . ')'))
             : $else;
+
         $node->if = $else;
         $node->else = $if;
 
