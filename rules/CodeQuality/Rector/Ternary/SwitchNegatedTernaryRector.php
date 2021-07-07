@@ -6,9 +6,7 @@ namespace Rector\CodeQuality\Rector\Ternary;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BooleanNot;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Name;
 use Rector\Core\PhpParser\Node\Value\TernaryBracketWrapper;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -19,8 +17,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SwitchNegatedTernaryRector extends AbstractRector
 {
-    public function __construct(private TernaryBracketWrapper $ternaryBracketWrapper)
-    {
+    public function __construct(
+        private TernaryBracketWrapper $ternaryBracketWrapper
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -79,18 +78,11 @@ CODE_SAMPLE
         }
 
         $node->cond = $node->cond->expr;
-        $if = $node->if;
-        $else = $node->else;
+        [$node->if, $node->else] = [$node->else, $node->if];
 
-        $if = $if instanceof Ternary
-            ? $this->ternaryBracketWrapper->getWrappedTernaryConstFetch($if)
-            : $if;
-        $else = $else instanceof Ternary
-            ? $this->ternaryBracketWrapper->getWrappedTernaryConstFetch($else)
-            : $else;
-
-        $node->if = $else;
-        $node->else = $if;
+        if ($node->if instanceof Ternary) {
+            $this->ternaryBracketWrapper->wrapWithBracket($node->if);
+        }
 
         return $node;
     }
