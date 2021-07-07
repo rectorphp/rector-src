@@ -10,6 +10,13 @@ class NestedTernary
             ? []
             : (isset($result['validation_messages']['http']) ? $result['validation_messages'] : $result);
     }
+
+    function run2($a, $b, $c, $d, $e)
+    {
+        return ! $a
+            ? ($c ? $d : $e)
+            : $b;
+    }
 }
 
 ?>
@@ -24,7 +31,14 @@ class NestedTernary
     {
         return isset($result['validation_messages'])
             ? (isset($result['validation_messages']['http']) ? $result['validation_messages'] : $result)
-            : [];
+            : ([]);
+    }
+
+    function run2($a, $b, $c, $d, $e)
+    {
+        return $a
+            ? ($b)
+            : ($c ? $d : $e);
     }
 }
 

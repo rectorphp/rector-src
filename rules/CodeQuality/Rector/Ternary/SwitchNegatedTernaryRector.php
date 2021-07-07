@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\Ternary;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Name;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -72,6 +73,14 @@ CODE_SAMPLE
         }
 
         $node->cond = $node->cond->expr;
+
+        $node->if = $node->if instanceof Ternary
+            ? new Name('(' . $this->betterStandardPrinter->print($node->if) . ')')
+            : $node->if;
+        $node->else = $node->else instanceof Ternary
+            ? new Name('(' . $this->betterStandardPrinter->print($node->else) . ')')
+            : $node->else;
+
         [$node->if, $node->else] = [$node->else, $node->if];
 
         return $node;
