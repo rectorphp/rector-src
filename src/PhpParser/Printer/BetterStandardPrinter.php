@@ -366,7 +366,8 @@ final class BetterStandardPrinter extends Standard
 
     protected function pExpr_Ternary(Ternary $ternary): string
     {
-        if ($ternary->getAttribute(AttributeKey::KIND) === 'wrapped_with_brackets') {
+        $kind = $ternary->getAttribute(AttributeKey::KIND);
+        if ($kind === 'wrapped_with_brackets') {
             $pExprTernary = parent::pExpr_Ternary($ternary);
             return '(' . $pExprTernary  . ')';
         }
