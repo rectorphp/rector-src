@@ -15,7 +15,7 @@ final class TernaryBracketWrapper
     {
     }
 
-    public function getWrappedTernaryConstFetch(Ternary $ternary)
+    public function getWrappedTernaryConstFetch(Ternary $ternary): ConstFetch
     {
         return new ConstFetch(new Name('(' . $this->betterStandardPrinter->print($ternary) . ')'));
     }
