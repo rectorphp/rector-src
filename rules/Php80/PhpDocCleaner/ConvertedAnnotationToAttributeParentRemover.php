@@ -45,31 +45,36 @@ final class ConvertedAnnotationToAttributeParentRemover
                 return false;
             }
 
-            $hasRemoveNestedAnnotations = false;
-
-            // everythign is removed now
-            if ($nodeValue->getValues() !== [] || $nodeValue->getOriginalValues() === []) {
-                continue;
-            }
-
-            foreach ($nodeValue->getOriginalValues() as $nodeValueValue) {
-                $hasRemoveNestedAnnotations = false;
-
-                foreach ($annotationsToAttributes as $annotationToAttribute) {
-                    if (! $nodeValueValue instanceof DoctrineAnnotationTagValueNode) {
-                        return false;
-                    }
-
-                    if (! $nodeValueValue->hasClassName($annotationToAttribute->getTag())) {
-                        continue;
-                    }
-
-                    $hasRemoveNestedAnnotations = true;
-                    continue 2;
-                }
+            if (! $this->isCurlyListOfDoctrineAnnotationTagValueNodes($nodeValue, $annotationsToAttributes)) {
+                return false;
             }
         }
 
-        return $hasRemoveNestedAnnotations;
+        return true;
+    }
+
+    /**
+     * @param AnnotationToAttribute[] $annotationsToAttributes
+     */
+    private function isCurlyListOfDoctrineAnnotationTagValueNodes(
+        CurlyListNode $curlyListNode,
+        array $annotationsToAttributes
+    ): bool {
+        foreach ($curlyListNode->getOriginalValues() as $nodeValueValue) {
+            foreach ($annotationsToAttributes as $annotationToAttribute) {
+                if (! $nodeValueValue instanceof DoctrineAnnotationTagValueNode) {
+                    return false;
+                }
+
+                // found it
+                if ($nodeValueValue->hasClassName($annotationToAttribute->getTag())) {
+                    continue 2;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

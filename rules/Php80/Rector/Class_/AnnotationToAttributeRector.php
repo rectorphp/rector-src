@@ -19,6 +19,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\PhpDocCleaner\ConvertedAnnotationToAttributeParentRemover;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
@@ -59,7 +60,8 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
     public function __construct(
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private PhpDocTagRemover $phpDocTagRemover,
-        private ConvertedAnnotationToAttributeParentRemover $convertedAnnotationToAttributeParentRemover
+        private ConvertedAnnotationToAttributeParentRemover $convertedAnnotationToAttributeParentRemover,
+        private AttrGroupsFactory $attrGroupsFactory
     ) {
     }
 
@@ -235,19 +237,12 @@ CODE_SAMPLE
             return $node;
         });
 
-        foreach ($doctrineTagAndAnnotationToAttributes as $doctrineTagAndAnnotationToAttribute) {
-            $doctrineAnnotationTagValueNode = $doctrineTagAndAnnotationToAttribute->getDoctrineAnnotationTagValueNode();
-
-            // 1. remove php-doc tag
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineAnnotationTagValueNode);
-
-            // 2. add attributes
-            $node->attrGroups[] = $this->phpAttributeGroupFactory->create(
-                $doctrineAnnotationTagValueNode,
-                $doctrineTagAndAnnotationToAttribute->getAnnotationToAttribute()
-            );
+        $attrGroups = $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
+        if ($attrGroups === []) {
+            return;
         }
 
+        $node->attrGroups = $attrGroups;
         $this->convertedAnnotationToAttributeParentRemover->processPhpDocNode(
             $phpDocInfo->getPhpDocNode(),
             $this->annotationsToAttributes

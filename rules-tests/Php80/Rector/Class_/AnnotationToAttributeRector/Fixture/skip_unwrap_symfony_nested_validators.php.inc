@@ -2,7 +2,6 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class SkipUnwrapSymfonyNestedValidators
