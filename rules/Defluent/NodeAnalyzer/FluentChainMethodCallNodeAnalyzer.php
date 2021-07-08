@@ -248,9 +248,7 @@ final class FluentChainMethodCallNodeAnalyzer
                 continue;
             }
 
-            if ($this->nodeNameResolver->isNames($expr->class, ['self', 'this', 'static'])) {
-                return true;
-            }
+            return true;
         }
 
         return false;
