@@ -239,16 +239,16 @@ final class FluentChainMethodCallNodeAnalyzer
         $returns = $this->nodeFinder->findInstanceOf($classMethod, Return_::class);
 
         foreach ($returns as $return) {
-            $new = $return->expr;
-            if ($new instanceof Expr && $this->isCloneObject($new)) {
+            $expr = $return->expr;
+            if ($expr instanceof Expr && $this->isCloneObject($expr)) {
                 return true;
             }
 
-            if (! $new instanceof New_) {
+            if (! $expr instanceof New_) {
                 continue;
             }
 
-            if ($this->nodeNameResolver->isName($new->class, 'self')) {
+            if ($this->nodeNameResolver->isName($expr->class, 'self')) {
                 return true;
             }
         }
