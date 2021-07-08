@@ -245,7 +245,7 @@ final class FluentChainMethodCallNodeAnalyzer
                 continue;
             }
 
-            if (! $this->isDifferentObject($expr)) {
+            if (! $this->isNewInstance($expr)) {
                 continue;
             }
 
@@ -255,7 +255,7 @@ final class FluentChainMethodCallNodeAnalyzer
         return false;
     }
 
-    private function isDifferentObject(Expr $expr): bool
+    private function isNewInstance(Expr $expr): bool
     {
         if ($expr instanceof Clone_ || $expr instanceof New_) {
             return true;
