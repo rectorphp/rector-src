@@ -240,23 +240,17 @@ final class FluentChainMethodCallNodeAnalyzer
 
         foreach ($returns as $return) {
             $expr = $return->expr;
-            if ($expr instanceof Expr && $this->isCloneObject($expr)) {
+            if ($expr instanceof Expr && $this->isDifferentObject($expr)) {
                 return true;
             }
-
-            if (! $expr instanceof New_) {
-                continue;
-            }
-
-            return true;
         }
 
         return false;
     }
 
-    private function isCloneObject(Expr $expr): bool
+    private function isDifferentObject(Expr $expr): bool
     {
-        if ($expr instanceof Clone_) {
+        if ($expr instanceof Clone_ || $expr instanceof New_) {
             return true;
         }
 
@@ -269,7 +263,7 @@ final class FluentChainMethodCallNodeAnalyzer
                 return false;
             }
 
-            return $node->expr instanceof Clone_;
+            return $node->expr instanceof Clone_ || $node->expr instanceof New_;
         });
     }
 }
