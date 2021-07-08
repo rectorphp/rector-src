@@ -240,7 +240,7 @@ final class FluentChainMethodCallNodeAnalyzer
 
         foreach ($returns as $return) {
             $new = $return->expr;
-            if ($this->isCloneObject($new)) {
+            if ($new instanceof Expr && $this->isCloneObject($new)) {
                 return true;
             }
 
