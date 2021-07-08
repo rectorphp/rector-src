@@ -6,13 +6,8 @@ namespace Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\So
 
 final class SelfButCloneVersion
 {
-    public $status;
-
-    public function withStatus($status): self
+    public function duplicate(): self
     {
-        $self = clone $this;
-        $self->status = $status;
-
-        return $self;
+        return clone $this;
     }
 }

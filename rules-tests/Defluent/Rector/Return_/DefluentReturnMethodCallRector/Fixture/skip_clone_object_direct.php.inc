@@ -4,10 +4,10 @@ namespace Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\Fi
 
 use Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\Source\SelfButCloneVersion;
 
-final class SkipCloneObject
+final class SkipCloneObjectDirect
 {
     public function run(SelfButCloneVersion $selfButCloneVersion)
     {
-        return $selfButCloneVersion->withStatus(500);
+        return $selfButCloneVersion->duplicate();
     }
 }

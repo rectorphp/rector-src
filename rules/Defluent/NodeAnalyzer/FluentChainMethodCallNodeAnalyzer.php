@@ -248,7 +248,7 @@ final class FluentChainMethodCallNodeAnalyzer
                 continue;
             }
 
-            if ($this->nodeNameResolver->isName($expr->class, 'self')) {
+            if ($this->nodeNameResolver->isNames($expr->class, ['self', 'this', 'static'])) {
                 return true;
             }
         }
@@ -258,6 +258,10 @@ final class FluentChainMethodCallNodeAnalyzer
 
     private function isCloneObject(Expr $expr): bool
     {
+        if ($expr instanceof Clone_) {
+            return true;
+        }
+
         return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($expr, function (Node $node) use ($expr): bool {
             if (! $node instanceof Assign) {
                 return false;
