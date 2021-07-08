@@ -46,7 +46,13 @@ final class ConvertedAnnotationToAttributeParentRemover
             }
 
             $hasRemoveNestedAnnotations = false;
-            foreach ($nodeValue->getValues() as $nodeValueValue) {
+
+            // everythign is removed now
+            if ($nodeValue->getValues() !== [] || $nodeValue->getOriginalValues() === []) {
+                continue;
+            }
+
+            foreach ($nodeValue->getOriginalValues() as $nodeValueValue) {
                 $hasRemoveNestedAnnotations = false;
 
                 foreach ($annotationsToAttributes as $annotationToAttribute) {
