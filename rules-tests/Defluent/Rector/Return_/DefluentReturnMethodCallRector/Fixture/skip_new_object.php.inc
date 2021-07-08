@@ -8,16 +8,16 @@ final class SkipNewObject
 {
     public function run(SelfStaticButNewVersion $selfButNewVersion)
     {
-        return $selfButNewVersion->duplicate();
+        return $selfButNewVersion->duplicateSelf();
     }
 
     public function run2(SelfStaticButNewVersion $selfButNewVersion)
     {
-        return $selfButNewVersion->duplicate2();
+        return $selfButNewVersion->duplicateStatic();
     }
 
     public function run3(SelfStaticButNewVersion $selfButNewVersion)
     {
-        return $selfButNewVersion->duplicate3();
+        return $selfButNewVersion->duplicateThis();
     }
 }

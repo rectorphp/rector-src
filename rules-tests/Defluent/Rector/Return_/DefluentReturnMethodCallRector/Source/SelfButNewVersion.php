@@ -6,17 +6,17 @@ namespace Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\So
 
 final class SelfStaticButNewVersion
 {
-    public function duplicate(): self
+    public function duplicateSelf(): self
     {
         return new self();
     }
 
-    public function duplicate2(): self
+    public function duplicateStatic(): self
     {
         return new static();
     }
 
-    public function duplicate3(): self
+    public function duplicateThis(): self
     {
         return new $this;
     }
