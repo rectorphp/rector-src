@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class SkipUnwrapSymfonyNestedValidators
 {
     /**
+     *
      * @var array
      * @Assert\All(
      *     constraints={
