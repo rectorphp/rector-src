@@ -95,7 +95,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $booleanExpr->right instanceof Assign && ! $booleanExpr->right instanceof AssignOp) {
+        if (! $booleanExpr->right instanceof Expr) {
             return null;
         }
 

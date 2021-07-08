@@ -2,11 +2,20 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector\Fixture;
 
-class MethodCallRigth
+class MethodCallRight
 {
     public function run()
     {
-        $this->rowData === null || $this->dataSeek();
+        $this->data === null || $this->execute();
+    }
+
+    public function run2()
+    {
+        $this->data === null && $this->execute();
+    }
+
+    private function execute()
+    {
     }
 }
 
@@ -16,13 +25,24 @@ class MethodCallRigth
 
 namespace Rector\Tests\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector\Fixture;
 
-class MethodCallRigth
+class MethodCallRight
 {
     public function run()
     {
-        if ($this->rowData !== null) {
-            $this->dataSeek();
+        if ($this->data !== null) {
+            $this->execute();
         }
+    }
+
+    public function run2()
+    {
+        if ($this->data === null) {
+            $this->execute();
+        }
+    }
+
+    private function execute()
+    {
     }
 }
 
