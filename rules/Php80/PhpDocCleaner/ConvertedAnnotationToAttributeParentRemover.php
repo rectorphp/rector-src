@@ -17,7 +17,11 @@ final class ConvertedAnnotationToAttributeParentRemover
      * @param string[] $skippedUnwrapAnnotations
      * @param AnnotationToAttribute[] $annotationsToAttributes
      */
-    public function processPhpDocNode(PhpDocNode $phpDocNode, array $annotationsToAttributes, array $skippedUnwrapAnnotations): void
+    public function processPhpDocNode(
+        PhpDocNode $phpDocNode,
+        array $annotationsToAttributes,
+        array $skippedUnwrapAnnotations
+    ): void
     {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
 

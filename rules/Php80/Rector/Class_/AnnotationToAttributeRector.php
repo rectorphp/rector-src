@@ -181,7 +181,8 @@ CODE_SAMPLE
     /**
      * @return AttributeGroup[]
      */
-    private function processGenericTags(PhpDocInfo $phpDocInfo): array {
+    private function processGenericTags(PhpDocInfo $phpDocInfo): array
+    {
         $attributeGroups = [];
 
         foreach ($phpDocInfo->getAllTags() as $phpDocTagNode) {
