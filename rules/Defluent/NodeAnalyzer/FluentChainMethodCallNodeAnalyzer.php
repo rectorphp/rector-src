@@ -258,7 +258,7 @@ final class FluentChainMethodCallNodeAnalyzer
 
     private function isCloneObject(Expr $expr): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($expr, function (Node $node) use ($expr) {
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($expr, function (Node $node) use ($expr): bool {
             if (! $node instanceof Assign) {
                 return false;
             }
