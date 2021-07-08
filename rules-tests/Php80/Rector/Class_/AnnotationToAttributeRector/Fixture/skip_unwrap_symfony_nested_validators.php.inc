@@ -48,4 +48,3 @@ final class SkipUnwrapSymfonyNestedValidators
      */
     public $collection;
 }
-?>

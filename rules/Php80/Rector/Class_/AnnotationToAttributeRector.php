@@ -19,7 +19,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\Php80\PhpDocNodeVisitor\AnnotationToAttributePhpDocNodeVisitor;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
@@ -59,7 +58,6 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
     public function __construct(
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private PhpDocTagRemover $phpDocTagRemover,
-        //private AnnotationToAttributePhpDocNodeVisitor $annotationToAttributePhpDocNodeVisitor
     ) {
     }
 
