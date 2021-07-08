@@ -240,9 +240,16 @@ final class FluentChainMethodCallNodeAnalyzer
 
         foreach ($returns as $return) {
             $expr = $return->expr;
-            if ($expr instanceof Expr && $this->isDifferentObject($expr)) {
-                return true;
+
+            if (! $expr instanceof Expr) {
+                continue;
             }
+
+            if (! $this->isDifferentObject($expr)) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
