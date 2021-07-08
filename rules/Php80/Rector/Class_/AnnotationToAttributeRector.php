@@ -12,8 +12,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -166,18 +167,6 @@ CODE_SAMPLE
         $this->annotationsToAttributes = $annotationsToAttributes;
     }
 
-    private function isFoundGenericTag(
-        PhpDocInfo $phpDocInfo,
-        PhpDocTagValueNode $phpDocTagValueNode,
-        string $annotationToAttributeTag
-    ): bool {
-        if (! $phpDocInfo->hasByName($annotationToAttributeTag)) {
-            return false;
-        }
-
-        return $phpDocTagValueNode instanceof GenericTagValueNode;
-    }
-
     /**
      * @return AttributeGroup[]
      */
@@ -185,25 +174,40 @@ CODE_SAMPLE
     {
         $attributeGroups = [];
 
-        foreach ($phpDocInfo->getAllTags() as $phpDocTagNode) {
+        $phpDocNodeTraverser = new PhpDocNodeTraverser();
+        $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (DocNode $docNode) use (
+            &$attributeGroups,
+            $phpDocInfo
+        ) {
+            if (! $docNode instanceof PhpDocTagNode) {
+                return null;
+            }
+
+            if (! $docNode->value instanceof GenericTagValueNode) {
+                return null;
+            }
+
+            $tag = trim($docNode->name, '@');
+
+            // not a basic one
+            if (str_contains($tag, '\\')) {
+                return null;
+            }
+
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
                 $desiredTag = $annotationToAttribute->getTag();
-
-                // not a basic one
-                if (str_contains($desiredTag, '\\')) {
+                if ($desiredTag !== $tag) {
                     continue;
                 }
-
-                if (! $this->isFoundGenericTag($phpDocInfo, $phpDocTagNode->value, $desiredTag)) {
-                    continue;
-                }
-
-                // 1. remove php-doc tag
-                $this->phpDocTagRemover->removeByName($phpDocInfo, $desiredTag);
 
                 $attributeGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
+
+                $phpDocInfo->markAsChanged();
+                return PhpDocNodeTraverser::NODE_REMOVE;
             }
-        }
+
+            return null;
+        });
 
         return $attributeGroups;
     }

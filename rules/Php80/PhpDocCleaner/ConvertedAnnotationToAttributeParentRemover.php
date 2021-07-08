@@ -21,8 +21,7 @@ final class ConvertedAnnotationToAttributeParentRemover
         PhpDocNode $phpDocNode,
         array $annotationsToAttributes,
         array $skippedUnwrapAnnotations
-    ): void
-    {
+    ): void {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
 
         $phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function ($node) use (
