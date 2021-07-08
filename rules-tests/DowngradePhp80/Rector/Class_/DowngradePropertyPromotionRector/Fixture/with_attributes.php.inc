@@ -2,10 +2,6 @@
 
 namespace Rector\Tests\DowngradePhp80\Rector\Class_\DowngradePropertyPromotionRector\Fixture;
 
-class Deprecated
-{
-}
-
 class WithAttributes
 {
     public function __construct(
@@ -19,10 +15,6 @@ class WithAttributes
 <?php
 
 namespace Rector\Tests\DowngradePhp80\Rector\Class_\DowngradePropertyPromotionRector\Fixture;
-
-class Deprecated
-{
-}
 
 class WithAttributes
 {
