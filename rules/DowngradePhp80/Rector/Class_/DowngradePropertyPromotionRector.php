@@ -6,7 +6,6 @@ namespace Rector\DowngradePhp80\Rector\Class_;
 
 use PhpParser\Comment;
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
