@@ -2,21 +2,21 @@
 
 namespace Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\Fixture;
 
-use Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\Source\SelfStaticButNewVersion;
+use Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\Source\SelfStaticThisButNewVersion;
 
 final class SkipNewObject
 {
-    public function run(SelfStaticButNewVersion $selfButNewVersion)
+    public function run(SelfStaticThisButNewVersion $selfButNewVersion)
     {
         return $selfButNewVersion->duplicateSelf();
     }
 
-    public function run2(SelfStaticButNewVersion $selfButNewVersion)
+    public function run2(SelfStaticThisButNewVersion $selfButNewVersion)
     {
         return $selfButNewVersion->duplicateStatic();
     }
 
-    public function run3(SelfStaticButNewVersion $selfButNewVersion)
+    public function run3(SelfStaticThisButNewVersion $selfButNewVersion)
     {
         return $selfButNewVersion->duplicateThis();
     }
