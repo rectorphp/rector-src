@@ -214,7 +214,7 @@ CODE_SAMPLE
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function ($node) use (
             &$doctrineTagAndAnnotationToAttributes,
             $phpDocInfo
-        ) {
+        ): ?int {
             if ($node instanceof SpacelessPhpDocTagNode && $node->value instanceof DoctrineAnnotationTagValueNode) {
                 $doctrineAnnotationTagValueNode = $node->value;
             } elseif ($node instanceof DoctrineAnnotationTagValueNode) {

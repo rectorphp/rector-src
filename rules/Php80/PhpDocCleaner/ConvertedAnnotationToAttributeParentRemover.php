@@ -20,7 +20,9 @@ final class ConvertedAnnotationToAttributeParentRemover
     {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
 
-        $phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function ($node) use ($annotationsToAttributes) {
+        $phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function ($node) use (
+            $annotationsToAttributes
+        ): ?int {
             if (! $node instanceof SpacelessPhpDocTagNode) {
                 return null;
             }
