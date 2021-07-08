@@ -18,7 +18,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -62,7 +61,6 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
 
     public function __construct(
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
-        private PhpDocTagRemover $phpDocTagRemover,
         private ConvertedAnnotationToAttributeParentRemover $convertedAnnotationToAttributeParentRemover,
         private AttrGroupsFactory $attrGroupsFactory
     ) {
@@ -178,7 +176,7 @@ CODE_SAMPLE
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (DocNode $docNode) use (
             &$attributeGroups,
             $phpDocInfo
-        ) {
+        ): ?int {
             if (! $docNode instanceof PhpDocTagNode) {
                 return null;
             }
