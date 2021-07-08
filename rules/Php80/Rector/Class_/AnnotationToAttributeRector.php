@@ -19,6 +19,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php80\PhpDocCleaner\ConvertedAnnotationToAttributeParentRemover;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
@@ -58,6 +59,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
     public function __construct(
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private PhpDocTagRemover $phpDocTagRemover,
+        private ConvertedAnnotationToAttributeParentRemover $convertedAnnotationToAttributeParentRemover
     ) {
     }
 
@@ -202,6 +204,7 @@ CODE_SAMPLE
         if ($this->shouldSkip($phpDocInfo)) {
             return;
         }
+
         $doctrineTagAndAnnotationToAttributes = [];
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
@@ -244,6 +247,11 @@ CODE_SAMPLE
                 $doctrineTagAndAnnotationToAttribute->getAnnotationToAttribute()
             );
         }
+
+        $this->convertedAnnotationToAttributeParentRemover->processPhpDocNode(
+            $phpDocInfo->getPhpDocNode(),
+            $this->annotationsToAttributes
+        );
     }
 
     private function shouldSkip(PhpDocInfo $phpDocInfo): bool
