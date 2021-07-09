@@ -13,6 +13,7 @@ class WithAttributes
         // with attribute too
         #[\Deprecated]
         private int $property3 = 2,
+        #[\Deprecated] private int $property4 = 0,
         // normal comment on parameter should be kept
         int $normalParameter
     ) {
@@ -29,12 +30,15 @@ class WithAttributes
     private int $property = 0;
     private int $property2 = 1;
     private int $property3 = 2;
+    private int $property4 = 0;
     public function __construct(
         #[\Deprecated]
         int $property = 0,
         int $property2 = 1,
         #[\Deprecated]
         int $property3 = 2,
+        #[\Deprecated]
+        int $property4 = 0,
         // normal comment on parameter should be kept
         int $normalParameter
     )
@@ -45,6 +49,7 @@ class WithAttributes
         // a comment
         // with attribute too
         $this->property3 = $property3;
+        $this->property4 = $property4;
     }
 }
 ?>
