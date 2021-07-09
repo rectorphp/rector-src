@@ -9,7 +9,7 @@ class WithAttributes
         private int $property = 0,
         // normal comment on property promotion should be deleted
         private int $property2 = 1,
-        // normal comment on parameter
+        // normal comment on parameter should be kept
         int $normalParameter
     ) {
     }
@@ -28,7 +28,7 @@ class WithAttributes
         #[\Deprecated]
         int $property = 0,
         int $property2 = 1,
-        // normal comment on parameter
+        // normal comment on parameter should be kept
         int $normalParameter
     )
     {
