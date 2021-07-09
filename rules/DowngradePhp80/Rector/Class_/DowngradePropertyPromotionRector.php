@@ -116,7 +116,7 @@ CODE_SAMPLE
     {
         $comments = $param->attrGroups !== []
             ? [new Comment($this->betterStandardPrinter->print($param->attrGroups))]
-            : [];
+            : null;
 
         $param->attrGroups = [];
         $param->setAttribute(AttributeKey::COMMENTS, $comments);
