@@ -89,6 +89,9 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @return array<string, Comment|null>
+     */
     private function getOldComments(Class_ $class): array
     {
         $constructorClassMethod = $class->getMethod(MethodName::CONSTRUCT);
@@ -154,7 +157,11 @@ CODE_SAMPLE
      * @param Property[] $properties
      * @param array<string, Comment|null> $oldComments
      */
-    private function addPropertyAssignsToConstructorClassMethod(array $properties, Class_ $class, array $oldComments): void
+    private function addPropertyAssignsToConstructorClassMethod(
+        array $properties,
+        Class_ $class,
+        array $oldComments
+    ): void
     {
         $assigns = [];
 
