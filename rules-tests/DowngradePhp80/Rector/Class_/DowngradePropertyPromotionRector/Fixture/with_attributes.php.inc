@@ -7,8 +7,10 @@ class WithAttributes
     public function __construct(
         #[\Deprecated]
         private int $property = 0,
-        // normal comment should be deleted
-        private int $property2 = 1
+        // normal comment on property promotion should be deleted
+        private int $property2 = 1,
+        // normal comment on parameter
+        int $normalParameter
     ) {
     }
 }
@@ -25,7 +27,9 @@ class WithAttributes
     public function __construct(
         #[\Deprecated]
         int $property = 0,
-        int $property2 = 1
+        int $property2 = 1,
+        // normal comment on parameter
+        int $normalParameter
     )
     {
         $this->property = $property;
