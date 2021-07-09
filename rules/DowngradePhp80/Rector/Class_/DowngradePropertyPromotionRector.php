@@ -72,6 +72,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $oldComments = $this->getOldComments($node);
         $promotedParams = $this->resolvePromotedParams($node);
         if ($promotedParams === []) {
             return null;
@@ -79,13 +80,28 @@ CODE_SAMPLE
 
         $properties = $this->resolvePropertiesFromPromotedParams($promotedParams, $node);
 
-        $this->addPropertyAssignsToConstructorClassMethod($properties, $node);
+        $this->addPropertyAssignsToConstructorClassMethod($properties, $node, $oldComments);
 
         foreach ($promotedParams as $promotedParam) {
             $promotedParam->flags = 0;
         }
 
         return $node;
+    }
+
+    private function getOldComments(Class_ $class): array
+    {
+        $constructorClassMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $constructorClassMethod instanceof ClassMethod) {
+            return [];
+        }
+
+        $oldComments = [];
+        foreach ($constructorClassMethod->params as $param) {
+            $oldComments[$this->getName($param->var)] = $param->getAttribute(AttributeKey::COMMENTS);
+        }
+
+        return $oldComments;
     }
 
     /**
@@ -136,15 +152,18 @@ CODE_SAMPLE
 
     /**
      * @param Property[] $properties
+     * @param array<string, Comment|null> $oldComments
      */
-    private function addPropertyAssignsToConstructorClassMethod(array $properties, Class_ $class): void
+    private function addPropertyAssignsToConstructorClassMethod(array $properties, Class_ $class, array $oldComments): void
     {
         $assigns = [];
 
         foreach ($properties as $property) {
             $propertyName = $this->getName($property);
             $assign = $this->nodeFactory->createPropertyAssignment($propertyName);
-            $assigns[] = new Expression($assign);
+            $expression = new Expression($assign);
+            $expression->setAttribute(AttributeKey::COMMENTS, $oldComments[$propertyName]);
+            $assigns[] = $expression;
         }
 
         /** @var ClassMethod $constructorClassMethod */
