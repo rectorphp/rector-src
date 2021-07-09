@@ -9,7 +9,8 @@ class WithAttributes
         private int $property = 0,
         // normal comment on property promotion should be moved to assign
         private int $property2 = 1,
-        // normal comment on property promotion with Attribute will be kept and moved to assign as well
+        // a comment
+        // with attribute too
         #[\Deprecated]
         private int $property3 = 2,
         // normal comment on parameter should be kept
@@ -32,7 +33,6 @@ class WithAttributes
         #[\Deprecated]
         int $property = 0,
         int $property2 = 1,
-        // normal comment on property promotion with Attribute will be kept and moved to assign as well
         #[\Deprecated]
         int $property3 = 2,
         // normal comment on parameter should be kept
@@ -42,7 +42,8 @@ class WithAttributes
         $this->property = $property;
         // normal comment on property promotion should be moved to assign
         $this->property2 = $property2;
-        // normal comment on property promotion with Attribute will be kept and moved to assign as well
+        // a comment
+        // with attribute too
         $this->property3 = $property3;
     }
 }

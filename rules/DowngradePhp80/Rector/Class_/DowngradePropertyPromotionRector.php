@@ -133,8 +133,17 @@ CODE_SAMPLE
 
     private function setParamAttrGroupAsComment(Param $param): void
     {
+        $attrGroupsPrint = $this->betterStandardPrinter->print($param->attrGroups);
+
+        $comments = $param->getAttribute(AttributeKey::COMMENTS);
+        if (is_array($comments)) {
+            foreach ($comments as $comment) {
+                $attrGroupsPrint = str_replace($comment->getText(), '', $attrGroupsPrint);
+            }
+        }
+
         $comments = $param->attrGroups !== []
-            ? [new Comment($this->betterStandardPrinter->print($param->attrGroups))]
+            ? [new Comment($attrGroupsPrint)]
             : null;
 
         $param->attrGroups = [];
@@ -161,8 +170,7 @@ CODE_SAMPLE
         array $properties,
         Class_ $class,
         array $oldComments
-    ): void
-    {
+    ): void {
         $assigns = [];
 
         foreach ($properties as $property) {
