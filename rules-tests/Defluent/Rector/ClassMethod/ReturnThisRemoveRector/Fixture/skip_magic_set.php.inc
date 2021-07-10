@@ -28,7 +28,4 @@ class SkipMagicSet
     }
 }
 
-$obj = new SkipMagicSet();
-$obj->setAuthor('foo')->setTitle('bar');
-
 ?>
