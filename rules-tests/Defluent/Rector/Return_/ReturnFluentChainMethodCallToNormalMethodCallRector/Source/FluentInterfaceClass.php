@@ -30,13 +30,4 @@ final class FluentInterfaceClass extends InterFluentInterfaceClass
     {
         $this->value = 100;
     }
-
-    public function possiblyNotReturnThis()
-    {
-        if (rand(0,1)) {
-            return $this;
-        }
-
-        return [];
-    }
 }

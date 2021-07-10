@@ -26,8 +26,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
-use PHPStan\Type\ThisType;
 
 /**
  * Utils for chain of MethodCall Node:
@@ -49,8 +47,7 @@ final class FluentChainMethodCallNodeAnalyzer
         private NodeFinder $nodeFinder,
         private AstResolver $astResolver,
         private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator,
-        private ReturnTypeInferer $returnTypeInferer
+        private NodeComparator $nodeComparator
     ) {
     }
 
@@ -230,8 +227,22 @@ final class FluentChainMethodCallNodeAnalyzer
             return false;
         }
 
-        $inferFunctionLike = $this->returnTypeInferer->inferFunctionLike($classMethod);
-        return $inferFunctionLike instanceof ThisType;
+        /** @var Return_[] $returns */
+        $returns = $this->nodeFinder->findInstanceOf($classMethod, Return_::class);
+        foreach ($returns as $return) {
+            $expr = $return->expr;
+            if (! $expr instanceof Expr) {
+                return false;
+            }
+
+            if (! $expr instanceof Variable) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($expr, 'this');
+        }
+
+        return false;
     }
 
     private function isCall(Expr $expr): bool
