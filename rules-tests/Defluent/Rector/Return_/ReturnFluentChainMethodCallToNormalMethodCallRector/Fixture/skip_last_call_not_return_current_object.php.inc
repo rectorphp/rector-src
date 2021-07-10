@@ -21,6 +21,15 @@ class SkipLastCallNotReturnCurrentObject
                         ->otherFunction()
                         ->paginate();
     }
+
+    public function someFunction2()
+    {
+        $this->someClass = new FluentInterfaceClass();
+
+        return $this->someClass->someFunction()
+                        ->otherFunction()
+                        ->voidReturningMethod();
+    }
 }
 
 ?>
