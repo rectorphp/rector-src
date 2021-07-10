@@ -151,6 +151,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return $class->getMethod('__set') instanceof ClassMethod;
+        return $class->getMethod('__call') instanceof ClassMethod;
     }
 }
