@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -113,6 +114,7 @@ CODE_SAMPLE
         return [
             Class_::class,
             Property::class,
+            Param::class,
             ClassMethod::class,
             Function_::class,
             Closure::class,
