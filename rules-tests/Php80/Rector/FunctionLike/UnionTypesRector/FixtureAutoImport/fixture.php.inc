@@ -29,10 +29,7 @@ use stdClass;
 
 class Fixture
 {
-    /**
-     * @return stdClass|array
-     */
-    public function get()
+    public function get(): stdClass|array
     {
         if (random_int(0, 1) !== 0) {
             return new stdClass();
