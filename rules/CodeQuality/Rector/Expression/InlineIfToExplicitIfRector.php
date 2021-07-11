@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -95,6 +96,10 @@ CODE_SAMPLE
         }
 
         if ($booleanExpr->left instanceof FuncCall && $this->isName($booleanExpr->left, 'defined')) {
+            return null;
+        }
+
+        if ($booleanExpr->left instanceof BooleanNot && $this->isName($booleanExpr->left->expr, 'defined')) {
             return null;
         }
 
