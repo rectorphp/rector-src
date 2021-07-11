@@ -24,6 +24,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradePhpTokenRector extends AbstractRector
 {
+    /**
+     * @var string
+     */
+    private const PHP_TOKEN = 'PhpToken';
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('"something()" will be renamed to "somethingElse()"', [
@@ -51,7 +56,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -76,7 +81,7 @@ CODE_SAMPLE
 
     private function refactorStaticCall(StaticCall $staticCall): ?FuncCall
     {
-        if (! $this->isObjectType($staticCall->class, new ObjectType('PhpToken'))) {
+        if (! $this->isObjectType($staticCall->class, new ObjectType(self::PHP_TOKEN))) {
             return null;
         }
 
@@ -89,7 +94,7 @@ CODE_SAMPLE
 
     private function refactorMethodCall(MethodCall $methodCall): ?Ternary
     {
-        if (! $this->isObjectType($methodCall->var, new ObjectType('PhpToken'))) {
+        if (! $this->isObjectType($methodCall->var, new ObjectType(self::PHP_TOKEN))) {
             return null;
         }
 
@@ -106,7 +111,7 @@ CODE_SAMPLE
 
     private function refactorPropertyFetch(PropertyFetch $propertyFetch): ?Ternary
     {
-        if (! $this->isObjectType($propertyFetch->var, new ObjectType('PhpToken'))) {
+        if (! $this->isObjectType($propertyFetch->var, new ObjectType(self::PHP_TOKEN))) {
             return null;
         }
 
