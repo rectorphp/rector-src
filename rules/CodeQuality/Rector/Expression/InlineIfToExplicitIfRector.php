@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($booleanExpr->left instanceof BooleanNot && $this->isName($booleanExpr->left->expr, 'defined')) {
+        if ($booleanExpr->left instanceof BooleanNot && $booleanExpr->left->expr instanceof FuncCall && $this->isName($booleanExpr->left->expr, 'defined')) {
             return null;
         }
 
