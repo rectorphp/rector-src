@@ -123,7 +123,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Class_|Property|ClassMethod|Function_|Closure|ArrowFunction $node
+     * @param Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
