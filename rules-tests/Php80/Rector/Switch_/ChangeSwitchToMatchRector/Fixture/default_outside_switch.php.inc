@@ -30,10 +30,11 @@ final class DefaultOutsideSwitch
 {
     public function run($input)
     {
+        $value = 0;
         $value = match ($input) {
             100 => 1000,
             200 => 2000,
-            default => 0,
+            default => $value,
         };
 
         return $value;
