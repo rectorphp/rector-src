@@ -127,7 +127,13 @@ CODE_SAMPLE
 
     private function changeToAssign(Switch_ $switch, Match_ $match, Expr $assignExpr): Assign
     {
-        $prevInitializedAssign = $this->getPrevInitialization($switch, $assignExpr);
+        $prevInitializedAssign = $this->betterNodeFinder->findFirstPreviousOfNode(
+            $switch,
+            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
+                $node->var,
+                $assignExpr
+            )
+        );
 
         $assign = new Assign($assignExpr, $match);
         if (! $prevInitializedAssign instanceof Assign) {
@@ -215,19 +221,5 @@ CODE_SAMPLE
 
         $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN());
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
-    }
-
-    private function getPrevInitialization(Switch_ $switch, Expr $assignExpr): ?Assign
-    {
-        /** @var Assign|null $assign */
-        $assign = $this->betterNodeFinder->findFirstPreviousOfNode(
-            $switch,
-            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $node->var,
-                $assignExpr
-            )
-        );
-
-        return $assign;
     }
 }
