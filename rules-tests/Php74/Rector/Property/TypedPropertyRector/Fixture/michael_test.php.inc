@@ -1,5 +1,4 @@
 <?php
-// rules-tests/Php74/Rector/Property/TypedPropertyRector/Fixture/michael_test.php.inc
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
