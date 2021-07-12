@@ -136,7 +136,7 @@ CODE_SAMPLE
 
         if ($this->matchSwitchAnalyzer->hasDefaultValue($match)) {
             $default = $match->arms[count($match->arms) - 1]->body;
-            if ($this->nodeComparator->areNodesEqual($default, $assign->var)) {
+            if ($this->nodeComparator->areNodesEqual($default, $prevInitializedAssign->var)) {
                 return $assign;
             }
         }
