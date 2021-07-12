@@ -127,17 +127,18 @@ CODE_SAMPLE
 
     private function changeToAssign(Switch_ $switch, Match_ $match, Expr $assignExpr): Assign
     {
-        $prevInitializedAssign = $this->betterNodeFinder->findFirstPreviousOfNode(
-            $switch,
-            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $node->var,
-                $assignExpr
-            )
-        );
+        $prevInitializedAssign = $this->getPrevInitialization($switch, $assignExpr);
 
         $assign = new Assign($assignExpr, $match);
         if (! $prevInitializedAssign instanceof Assign) {
             return $assign;
+        }
+
+        if ($this->matchSwitchAnalyzer->hasDefaultValue($match)) {
+            $default = $match->arms[count($match->arms) - 1]->body;
+            if ($this->nodeComparator->areNodesEqual($default, $assign->var)) {
+                return $assign;
+            }
         }
 
         $parentAssign = $prevInitializedAssign->getAttribute(AttributeKey::PARENT_NODE);
@@ -184,7 +185,10 @@ CODE_SAMPLE
             return $match;
         }
 
-        $this->removeNode($nextNode);
+        $assignExpr = $this->resolveAssignExpr($condAndExprs);
+        if (! $assignExpr instanceof Expr || ! $this->getPrevInitialization($switch, $assignExpr)) {
+            $this->removeNode($nextNode);
+        }
 
         $condAndExprs[] = new CondAndExpr([], $returnedExpr, MatchKind::RETURN());
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
@@ -210,5 +214,19 @@ CODE_SAMPLE
 
         $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN());
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
+    }
+
+    private function getPrevInitialization(Switch_ $switch, Expr $assignExpr): ?Assign
+    {
+        /** @var Assign|null $assign */
+        $assign = $this->betterNodeFinder->findFirstPreviousOfNode(
+            $switch,
+            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
+                $node->var,
+                $assignExpr
+            )
+        );
+
+        return $assign;
     }
 }
