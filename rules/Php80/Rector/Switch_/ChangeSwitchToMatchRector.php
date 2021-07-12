@@ -186,7 +186,8 @@ CODE_SAMPLE
         }
 
         $assignExpr = $this->resolveAssignExpr($condAndExprs);
-        if (! $assignExpr instanceof Expr || ! $this->getPrevInitialization($switch, $assignExpr)) {
+
+        if (! $assignExpr instanceof Expr) {
             $this->removeNode($nextNode);
         }
 
