@@ -24,7 +24,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class IncreaseColumnIndexRector extends AbstractRector
 {
-    public const ALREADY_CHANGED = 'already_changed';
+    /**
+     * @var string
+     */
+    private const ALREADY_CHANGED = 'already_changed';
 
     /**
      * @var ObjectType[]
