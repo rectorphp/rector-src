@@ -23,7 +23,10 @@ final class SwapFuncCallArgumentsRector extends AbstractRector implements Config
      */
     public const FUNCTION_ARGUMENT_SWAPS = 'new_argument_positions_by_function_name';
 
-    public const JUST_SWAPPED = 'just_swapped';
+    /**
+     * @var string
+     */
+    private const JUST_SWAPPED = 'just_swapped';
 
     /**
      * @var SwapFuncCallArguments[]
