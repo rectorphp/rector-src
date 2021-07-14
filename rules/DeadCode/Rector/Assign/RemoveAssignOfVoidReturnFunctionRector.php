@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\VoidType;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -92,14 +93,18 @@ CODE_SAMPLE
         return $node->expr;
     }
 
-    private function isUsedNext(Expr $variable)
+    private function isUsedNext(Expr $variable): bool
     {
         return (bool) $this->betterNodeFinder->findFirstNext($variable, function (Node $node) use ($variable) : bool {
             if (! $node instanceof FuncCall) {
                 return $this->nodeComparator->areNodesEqual($variable, $node);
             }
 
-            return $this->compactFuncCallAnalyzer->isInCompact($node, $variable);
+            if ($variable instanceof Variable) {
+                return $this->compactFuncCallAnalyzer->isInCompact($node, $variable);
+            }
+
+            return false;
         });
     }
 }
