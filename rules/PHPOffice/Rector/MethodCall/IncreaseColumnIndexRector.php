@@ -92,7 +92,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->getAttribute(self::ALREADY_CHANGED)) {
+        $hasAlreadyChanged = $node->getAttribute(self::ALREADY_CHANGED);
+        if ($hasAlreadyChanged) {
             return null;
         }
 
