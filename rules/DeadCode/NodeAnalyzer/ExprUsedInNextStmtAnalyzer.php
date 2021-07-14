@@ -6,20 +6,13 @@ namespace Rector\DeadCode\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Include_;
-use PhpParser\Node\Expr\Variable;
-use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class ExprUsedInNextStmtAnalyzer
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator,
-        private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
-        private CompactFuncCallAnalyzer $compactFuncCallAnalyzer
+        private ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
     )
     {
     }
@@ -27,18 +20,7 @@ final class ExprUsedInNextStmtAnalyzer
     public function isUsed(Expr $expr): bool
     {
         return (bool) $this->betterNodeFinder->findFirstNext($expr, function (Node $node) use ($expr): bool {
-            if ($node instanceof Include_) {
-                return true;
-            }
-            if ($node instanceof FuncCall) {
-                return $this->compactFuncCallAnalyzer->isInCompact($node, $expr);
-            }
-
-            if ($expr instanceof Variable) {
-                return $this->usedVariableNameAnalyzer->isVariableNamed($node, $expr);
-            }
-
-            return $this->nodeComparator->areNodesEqual($node, $expr);
+            return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
         });
     }
 }
