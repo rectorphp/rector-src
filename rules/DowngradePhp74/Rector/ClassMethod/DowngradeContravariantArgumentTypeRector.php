@@ -148,7 +148,7 @@ CODE_SAMPLE
         /** @var Node $paramType */
         $paramType = $param->type;
 
-        if ($param->type instanceof NullableType) {
+        if ($this->paramAnalyzer->isNullable($param)) {
             /** @var NullableType $nullableType */
             $nullableType = $paramType;
             $paramTypeName = $this->getName($nullableType->type);
