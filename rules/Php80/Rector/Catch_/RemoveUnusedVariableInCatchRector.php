@@ -96,7 +96,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->nodeComparator->areNodesEqual($node, $variable);
+            return $this->exprUsedInNodeAnalyzer->isUsed($node, $variable);
         });
     }
 
