@@ -154,7 +154,7 @@ final class ConstructorPropertyTypeInferer implements PropertyTypeInfererInterfa
 
     private function isParamNullable(Param $param): bool
     {
-        if ($param->type instanceof NullableType) {
+        if ($this->paramAnalyzer->isNullable($param)) {
             return true;
         }
 
