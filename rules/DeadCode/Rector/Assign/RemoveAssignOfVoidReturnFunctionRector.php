@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveAssignOfVoidReturnFunctionRector extends AbstractRector
 {
     public function __construct(
-        private ExprUsedInNextNodeAnalyzer $ExprUsedInNextNodeAnalyzer
+        private ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -85,7 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->ExprUsedInNextNodeAnalyzer->isUsed($node->var)) {
+        if ($this->exprUsedInNextNodeAnalyzer->isUsed($node->var)) {
             return null;
         }
 

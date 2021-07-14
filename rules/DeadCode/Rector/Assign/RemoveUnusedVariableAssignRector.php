@@ -38,7 +38,7 @@ final class RemoveUnusedVariableAssignRector extends AbstractRector
         private ConditionSearcher $conditionSearcher,
         private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private PureFunctionDetector $pureFunctionDetector,
-        private ExprUsedInNextNodeAnalyzer $ExprUsedInNextNodeAnalyzer
+        private ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -154,7 +154,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->ExprUsedInNextNodeAnalyzer->isUsed($variable)) {
+        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable)) {
             return true;
         }
 

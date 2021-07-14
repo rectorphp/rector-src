@@ -30,7 +30,7 @@ final class RemoveUnusedAssignVariableRector extends AbstractRector
         private PreviousVariableAssignNodeFinder $previousVariableAssignNodeFinder,
         private ScopeNestingComparator $scopeNestingComparator,
         private SideEffectNodeDetector $sideEffectNodeDetector,
-        private ExprUsedInNextNodeAnalyzer $ExprUsedInNextNodeAnalyzer
+        private ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -92,7 +92,7 @@ CODE_SAMPLE
 
         if (! $this->isPreviousVariablePartOfOverridingAssign($node) && ($this->isVariableTypeInScope(
             $node
-        ) || $this->ExprUsedInNextNodeAnalyzer->isUsed($node->var))) {
+        ) || $this->exprUsedInNextNodeAnalyzer->isUsed($node->var))) {
             return null;
         }
 
