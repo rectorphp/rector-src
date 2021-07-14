@@ -20,7 +20,7 @@ use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\PhpParser\Comparing\ConditionSearcher;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextStmtAnalyzer;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Rector\DeadCode\NodeAnalyzer\UsedVariableNameAnalyzer;
 use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -38,7 +38,7 @@ final class RemoveUnusedVariableAssignRector extends AbstractRector
         private ConditionSearcher $conditionSearcher,
         private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private PureFunctionDetector $pureFunctionDetector,
-        private ExprUsedInNextStmtAnalyzer $exprUsedInNextStmtAnalyzer
+        private ExprUsedInNextNodeAnalyzer $ExprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -154,7 +154,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->exprUsedInNextStmtAnalyzer->isUsed($variable)) {
+        if ($this->ExprUsedInNextNodeAnalyzer->isUsed($variable)) {
             return true;
         }
 

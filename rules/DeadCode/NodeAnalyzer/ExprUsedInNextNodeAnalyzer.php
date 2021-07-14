@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
-final class ExprUsedInNextStmtAnalyzer
+final class ExprUsedInNextNodeAnalyzer
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,

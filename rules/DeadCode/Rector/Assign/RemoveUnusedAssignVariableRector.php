@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextStmtAnalyzer;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Rector\DeadCode\NodeFinder\NextVariableUsageNodeFinder;
 use Rector\DeadCode\NodeFinder\PreviousVariableAssignNodeFinder;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
@@ -30,7 +30,7 @@ final class RemoveUnusedAssignVariableRector extends AbstractRector
         private PreviousVariableAssignNodeFinder $previousVariableAssignNodeFinder,
         private ScopeNestingComparator $scopeNestingComparator,
         private SideEffectNodeDetector $sideEffectNodeDetector,
-        private ExprUsedInNextStmtAnalyzer $exprUsedInNextStmtAnalyzer
+        private ExprUsedInNextNodeAnalyzer $ExprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -92,7 +92,7 @@ CODE_SAMPLE
 
         if (! $this->isPreviousVariablePartOfOverridingAssign($node) && ($this->isVariableTypeInScope(
             $node
-        ) || $this->exprUsedInNextStmtAnalyzer->isUsed($node->var))) {
+        ) || $this->ExprUsedInNextNodeAnalyzer->isUsed($node->var))) {
             return null;
         }
 

@@ -11,7 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Type\VoidType;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextStmtAnalyzer;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveAssignOfVoidReturnFunctionRector extends AbstractRector
 {
     public function __construct(
-        private ExprUsedInNextStmtAnalyzer $exprUsedInNextStmtAnalyzer
+        private ExprUsedInNextNodeAnalyzer $ExprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -85,7 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->exprUsedInNextStmtAnalyzer->isUsed($node->var)) {
+        if ($this->ExprUsedInNextNodeAnalyzer->isUsed($node->var)) {
             return null;
         }
 
