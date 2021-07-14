@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
@@ -98,7 +99,11 @@ CODE_SAMPLE
     {
         return (bool) $this->betterNodeFinder->findFirstNext($expr, function (Node $node) use ($expr): bool {
             if (! $node instanceof FuncCall) {
-                return $this->nodeComparator->areNodesEqual($expr, $node);
+                if ($this->nodeComparator->areNodesEqual($expr, $node)) {
+                    return true;
+                }
+
+                return $node instanceof Include_;
             }
 
             if ($expr instanceof Variable) {

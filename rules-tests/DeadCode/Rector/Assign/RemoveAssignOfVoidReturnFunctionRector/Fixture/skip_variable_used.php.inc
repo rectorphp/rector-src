@@ -35,6 +35,15 @@ class SkipVariableUsed
         return compact('value');
     }
 
+    public function run4($value = 1)
+    {
+        if (rand(0, 1)) {
+            $value = $this->getOne();
+        }
+
+        include 'anotherFile.php';
+    }
+
     private function getOne(): void
     {
     }
