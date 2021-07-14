@@ -27,23 +27,18 @@ final class ExprUsedInNextStmtAnalyzer
     public function isUsed(Expr $expr): bool
     {
         return (bool) $this->betterNodeFinder->findFirstNext($expr, function (Node $node) use ($expr): bool {
-            if (! $node instanceof FuncCall) {
-                if ($this->nodeComparator->areNodesEqual($expr, $node)) {
-                    return true;
-                }
-
-                return $node instanceof Include_;
+            if ($node instanceof Include_) {
+                return true;
+            }
+            if ($node instanceof FuncCall) {
+                return $this->compactFuncCallAnalyzer->isInCompact($node, $expr);
             }
 
             if ($expr instanceof Variable) {
-                if ($this->compactFuncCallAnalyzer->isInCompact($node, $expr)) {
-                    return true;
-                }
-
                 return $this->usedVariableNameAnalyzer->isVariableNamed($node, $expr);
             }
 
-            return false;
+            return $this->nodeComparator->areNodesEqual($node, $expr);
         });
     }
 }
