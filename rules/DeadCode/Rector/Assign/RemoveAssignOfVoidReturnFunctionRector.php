@@ -8,13 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\VoidType;
-use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextStmtAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveAssignOfVoidReturnFunctionRector extends AbstractRector
 {
     public function __construct(
-        private CompactFuncCallAnalyzer $compactFuncCallAnalyzer
+        private ExprUsedInNextStmtAnalyzer $exprUsedInNextStmtAnalyzer
     ) {
     }
 
@@ -88,29 +86,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isUsedNext($node->var)) {
+        if ($this->exprUsedInNextStmtAnalyzer->isUsed($node->var)) {
             return null;
         }
 
         return $node->expr;
-    }
-
-    private function isUsedNext(Expr $expr): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirstNext($expr, function (Node $node) use ($expr): bool {
-            if (! $node instanceof FuncCall) {
-                if ($this->nodeComparator->areNodesEqual($expr, $node)) {
-                    return true;
-                }
-
-                return $node instanceof Include_;
-            }
-
-            if ($expr instanceof Variable) {
-                return $this->compactFuncCallAnalyzer->isInCompact($node, $expr);
-            }
-
-            return false;
-        });
     }
 }
