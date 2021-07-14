@@ -52,10 +52,15 @@ final class ParamAnalyzer
 
     public function isNullable(Param $param): bool
     {
-        if ($param->default instanceof ConstFetch && $this->valueResolver->isNull($param->default)) {
-            return true;
+        if ($param->type === null) {
+            return false;
         }
 
         return $param->type instanceof NullableType;
+    }
+
+    public function hasDefaultNull(Param $param): bool
+    {
+        return $param->default instanceof ConstFetch && $this->valueResolver->isNull($param->default);
     }
 }
