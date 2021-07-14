@@ -2,17 +2,8 @@
 
 namespace Rector\Tests\Php71\Rector\Assign\AssignArrayToStringRector\Fixture;
 
-class Fixture4
+final class InForeachAssignVariable
 {
-    public function run()
-    {
-        $someString = '';
-        $someString[] = 1;
-
-        $anotherString = '';
-        $anotherString[1] = 1;
-    }
-
     public function fun()
     {
         $array = [1, 2, 3];
@@ -30,17 +21,8 @@ class Fixture4
 
 namespace Rector\Tests\Php71\Rector\Assign\AssignArrayToStringRector\Fixture;
 
-class Fixture4
+final class InForeachAssignVariable
 {
-    public function run()
-    {
-        $someString = [];
-        $someString[] = 1;
-
-        $anotherString = '';
-        $anotherString[1] = 1;
-    }
-
     public function fun()
     {
         $array = [1, 2, 3];

@@ -2,13 +2,12 @@
 
 namespace Rector\Tests\Php71\Rector\Assign\AssignArrayToStringRector\Fixture;
 
-final class Fixture2
+final class AssignToArrayDimFetchVariable
 {
-    static $someStaticString = '';
-
     public function run()
     {
-        self::$someStaticString[] = 1;
+        $someString = '';
+        $someString[] = 1;
     }
 }
 
@@ -18,13 +17,12 @@ final class Fixture2
 
 namespace Rector\Tests\Php71\Rector\Assign\AssignArrayToStringRector\Fixture;
 
-final class Fixture2
+final class AssignToArrayDimFetchVariable
 {
-    static $someStaticString = [];
-
     public function run()
     {
-        self::$someStaticString[] = 1;
+        $someString = [];
+        $someString[] = 1;
     }
 }
 

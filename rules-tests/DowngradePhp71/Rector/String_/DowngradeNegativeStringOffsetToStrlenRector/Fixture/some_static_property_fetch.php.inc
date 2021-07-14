@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp71\Rector\String_\DowngradeNegativeStringOffsetToStrlenRector\Fixture;
 
-class StaticPropertyFetch
+final class SomeStaticPropertyFetch
 {
     private static $var;
 
@@ -19,7 +19,7 @@ class StaticPropertyFetch
 
 namespace Rector\Tests\DowngradePhp71\Rector\String_\DowngradeNegativeStringOffsetToStrlenRector\Fixture;
 
-class StaticPropertyFetch
+final class SomeStaticPropertyFetch
 {
     private static $var;
 

@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp70\Rector\Coalesce\DowngradeStrictTypeDeclarationRector\Fixture;
 
-class StaticPropertyFetch
+final class SomeStaticPropertyFetch
 {
     private static $a;
     private static $b;
@@ -19,7 +19,7 @@ class StaticPropertyFetch
 
 namespace Rector\Tests\DowngradePhp70\Rector\Coalesce\DowngradeStrictTypeDeclarationRector\Fixture;
 
-class StaticPropertyFetch
+final class SomeStaticPropertyFetch
 {
     private static $a;
     private static $b;
