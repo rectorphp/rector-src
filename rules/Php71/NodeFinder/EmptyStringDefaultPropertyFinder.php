@@ -62,7 +62,7 @@ final class EmptyStringDefaultPropertyFinder
         return $propertyProperties;
     }
 
-    private function isEmptyString(Expr $expr): bool
+    public function isEmptyString(Expr $expr): bool
     {
         if (! $expr instanceof String_) {
             return false;

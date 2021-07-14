@@ -152,6 +152,28 @@ final class BetterNodeFinder
     }
 
     /**
+     * @param Node|Stmt[] $nodes
+     * @param string $variableName
+     * @return Variable[]
+     */
+    public function findVariablesOfName(Node | array $nodes, string $variableName): array
+    {
+        $variables = $this->findInstanceOf($nodes, Variable::class);
+
+        $variablesOfName = [];
+
+        foreach ($variables as $variable) {
+            if (! $this->nodeNameResolver->isName($variable, $variableName)) {
+                continue;
+            }
+
+            $variablesOfName[] = $variable;
+        }
+
+        return $variablesOfName;
+    }
+
+    /**
      * @param Node|Node[] $nodes
      * @return Variable|null
      */

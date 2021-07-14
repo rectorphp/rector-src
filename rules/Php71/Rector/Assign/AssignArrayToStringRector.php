@@ -22,6 +22,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php71\NodeFinder\EmptyStringDefaultPropertyFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -74,7 +75,45 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $this->emptyStringProperties = $this->emptyStringDefaultPropertyFinder->find($node);
+        if ($this->emptyStringDefaultPropertyFinder->isEmptyString($node->expr)) {
+            // assign of empty string to something
+            $parentStmt = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+
+
+            // 1. variable!
+            if ($node->var instanceof Variable) {
+
+                $retype = false;
+
+                $variableName = $this->getName($node->var);
+
+                $variableUsages = $this->betterNodeFinder->findVariablesOfName($parentStmt, $variableName);
+
+                // detect if is part of variable assign?
+                foreach ($variableUsages as $variableUsage) {
+                    $parent = $variableUsage->getAttribute(AttributeKey::PARENT_NODE);
+                    if (! $parent instanceof ArrayDimFetch) {
+                        continue;
+                    }
+
+                    $firstAssign = $this->betterNodeFinder->findParentType($parent, Assign::class);
+
+                    if (! $firstAssign instanceof Assign) {
+                        continue;
+                    }
+
+                    $retype = true;
+                    break;
+                }
+            }
+//            dump($node->expr);
+//            die;
+        }
+
+        die;
+
+
+//        $this->emptyStringProperties = $this->emptyStringDefaultPropertyFinder->find($node);
 
         // only array with no explicit key assign, e.g. "$value[] = 5";
         if (! $node->var instanceof ArrayDimFetch) {
@@ -98,18 +137,18 @@ CODE_SAMPLE
         }
 
         // fallback to variable, property or static property = '' set
-        if ($this->processVariable($node, $variable)) {
-            return $node;
-        }
+//        if ($this->processVariable($node, $variable)) {
+//            return $node;
+//        }
 
-        $isFoundPrev = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
-            $variable,
-            fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $variable)
-        );
-
-        if (! $isFoundPrev) {
-            return null;
-        }
+//        $isFoundPrev = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
+//            $variable,
+//            fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $variable)
+//        );
+//
+//        if (! $isFoundPrev) {
+//            return null;
+//        }
 
         // there is "$string[] = ...;", which would cause error in PHP 7+
         // fallback - if no array init found, retype to (array)
@@ -155,6 +194,7 @@ CODE_SAMPLE
 
             return $this->valueResolver->isValue($node->expr, '');
         });
+
 
         if ($variableAssign instanceof Assign) {
             $variableAssign->expr = new Array_();
