@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Assign;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Type\VoidType;
+use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,6 +21,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAssignOfVoidReturnFunctionRector extends AbstractRector
 {
+    public function __construct(private CompactFuncCallAnalyzer $compactFuncCallAnalyzer)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -79,6 +85,21 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isUsedNext($node->var)) {
+            return null;
+        }
+
         return $node->expr;
+    }
+
+    private function isUsedNext(Expr $variable)
+    {
+        return (bool) $this->betterNodeFinder->findFirstNext($variable, function (Node $node) use ($variable) : bool {
+            if (! $node instanceof FuncCall) {
+                return $this->nodeComparator->areNodesEqual($variable, $node);
+            }
+
+            return $this->compactFuncCallAnalyzer->isInCompact($node, $variable);
+        });
     }
 }
