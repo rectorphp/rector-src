@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Assign;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;

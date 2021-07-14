@@ -20,8 +20,7 @@ final class ExprUsedInNodeAnalyzer
         private NodeComparator $nodeComparator,
         private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private CompactFuncCallAnalyzer $compactFuncCallAnalyzer
-    )
-    {
+    ) {
     }
 
     public function isUsed(Node $node, Expr $expr): bool

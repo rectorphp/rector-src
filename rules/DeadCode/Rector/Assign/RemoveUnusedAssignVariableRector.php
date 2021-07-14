@@ -92,9 +92,7 @@ CODE_SAMPLE
 
         if (! $this->isPreviousVariablePartOfOverridingAssign($node) && ($this->isVariableTypeInScope(
             $node
-        ) || $this->exprUsedInNextStmtAnalyzer->isUsed(
-            $node->var
-        ))) {
+        ) || $this->exprUsedInNextStmtAnalyzer->isUsed($node->var))) {
             return null;
         }
 

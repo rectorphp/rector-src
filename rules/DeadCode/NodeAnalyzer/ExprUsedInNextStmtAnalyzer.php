@@ -13,8 +13,7 @@ final class ExprUsedInNextStmtAnalyzer
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
-    )
-    {
+    ) {
     }
 
     public function isUsed(Expr $expr): bool
