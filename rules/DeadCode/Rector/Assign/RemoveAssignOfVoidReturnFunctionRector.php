@@ -22,8 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAssignOfVoidReturnFunctionRector extends AbstractRector
 {
-    public function __construct(private CompactFuncCallAnalyzer $compactFuncCallAnalyzer)
-    {
+    public function __construct(
+        private CompactFuncCallAnalyzer $compactFuncCallAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -93,15 +94,15 @@ CODE_SAMPLE
         return $node->expr;
     }
 
-    private function isUsedNext(Expr $variable): bool
+    private function isUsedNext(Expr $expr): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstNext($variable, function (Node $node) use ($variable) : bool {
+        return (bool) $this->betterNodeFinder->findFirstNext($expr, function (Node $node) use ($expr): bool {
             if (! $node instanceof FuncCall) {
-                return $this->nodeComparator->areNodesEqual($variable, $node);
+                return $this->nodeComparator->areNodesEqual($expr, $node);
             }
 
-            if ($variable instanceof Variable) {
-                return $this->compactFuncCallAnalyzer->isInCompact($node, $variable);
+            if ($expr instanceof Variable) {
+                return $this->compactFuncCallAnalyzer->isInCompact($node, $expr);
             }
 
             return false;
