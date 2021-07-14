@@ -18,6 +18,7 @@ final class ExprUsedInNextStmtAnalyzer
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private NodeComparator $nodeComparator,
+        private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private CompactFuncCallAnalyzer $compactFuncCallAnalyzer
     )
     {
@@ -35,7 +36,11 @@ final class ExprUsedInNextStmtAnalyzer
             }
 
             if ($expr instanceof Variable) {
-                return $this->compactFuncCallAnalyzer->isInCompact($node, $expr);
+                if ($this->compactFuncCallAnalyzer->isInCompact($node, $expr)) {
+                    return true;
+                }
+
+                return $this->usedVariableNameAnalyzer->isVariableNamed($node, $expr);
             }
 
             return false;
