@@ -92,10 +92,6 @@ CODE_SAMPLE
     private function isVariableUsedInStmts(array $nodes, Variable $variable): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($variable): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
             return $this->exprUsedInNodeAnalyzer->isUsed($node, $variable);
         });
     }
