@@ -110,9 +110,12 @@ final class ConstructorPropertyTypeInferer implements PropertyTypeInfererInterfa
         }
 
         if ($this->paramAnalyzer->isNullable($param)) {
+            /** @var NullableType $type */
+            $type = $param->type;
+
             $types = [];
             $types[] = new NullType();
-            $types[] = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type->type);
+            $types[] = $this->staticTypeMapper->mapPhpParserNodePHPStanType($type->type);
 
             return $this->typeFactory->createMixedPassedOrUnionType($types);
         }

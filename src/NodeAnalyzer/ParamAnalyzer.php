@@ -52,6 +52,10 @@ final class ParamAnalyzer
 
     public function isNullable(Param $param): bool
     {
+        if ($param->variadic) {
+            return false;
+        }
+
         if ($param->type === null) {
             return false;
         }
