@@ -63,7 +63,8 @@ final class RenameFunctionRector extends AbstractRector implements ConfigurableR
             }
 
             // not to refactor here
-            if ($node->name->getAttribute(AttributeKey::VIRTUAL_NODE)) {
+            $isVirtual = $node->name->getAttribute(AttributeKey::VIRTUAL_NODE);
+            if ($isVirtual) {
                 continue;
             }
 
