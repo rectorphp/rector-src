@@ -16,7 +16,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 final class ExprUsedInNodeAnalyzer
 {
     public function __construct(
-        private BetterNodeFinder $betterNodeFinder,
         private NodeComparator $nodeComparator,
         private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private CompactFuncCallAnalyzer $compactFuncCallAnalyzer
