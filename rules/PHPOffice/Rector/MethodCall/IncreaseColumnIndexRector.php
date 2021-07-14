@@ -135,7 +135,6 @@ CODE_SAMPLE
 
         if ($binaryOp->right instanceof LNumber) {
             ++$binaryOp->right->value;
-            return;
         }
     }
 
