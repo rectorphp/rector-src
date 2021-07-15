@@ -20,6 +20,13 @@ function () {
         return App::init();
     };
 
+    new class {
+        public function run()
+        {
+            return App::init();
+        }
+    };
+
 };
 
 ?>
@@ -44,6 +51,13 @@ function () {
 
     function foo(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App {
         return App::init();
+    };
+
+    new class {
+        public function run(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App
+        {
+            return App::init();
+        }
     };
 
 };

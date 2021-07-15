@@ -16,6 +16,13 @@ function () {
         return App::init();
     };
 
+    new class {
+        public function run()
+        {
+            return App::init();
+        }
+    };
+
     return App::init();
 
 };
@@ -38,6 +45,13 @@ function (): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStri
 
     function (): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App {
         return App::init();
+    };
+
+    new class {
+        public function run(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App
+        {
+            return App::init();
+        }
     };
 
     return App::init();
