@@ -96,21 +96,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $functionLike = $this->betterNodeFinder->find((array) $node->stmts, function (Node $n) use ($node): bool {
-            $currentFunctionLike = $this->betterNodeFinder->findParentType($n, FunctionLike::class);
-            if ($currentFunctionLike === $node) {
-                return $n instanceof Return_;
-            }
-
-            $return = $this->betterNodeFinder->findParentType($currentFunctionLike, Return_::class);
-            return $return instanceof Return_;
-        });
-
-        if (! $functionLike instanceof FunctionLike) {
+        if ($this->hasFunctionOrClosureInside($node)) {
             return null;
         }
 
-        $returns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->stmts, Return_::class);
+        /** @var Return_[] $returns */
+        $returns = $this->betterNodeFinder->findInstanceOf((array) $node->stmts, Return_::class);
+
         $returnedStrictTypes = $this->collectStrictReturnTypes($returns);
         if ($returnedStrictTypes === []) {
             return null;
@@ -129,6 +121,19 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function hasFunctionOrClosureInside(
+        ClassMethod | Function_ | Closure $functionLike
+    ): bool
+    {
+        if ($functionLike->stmts === null) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node): bool {
+            return $node instanceof Closure || $node instanceof Function_;
+        });
     }
 
     private function processSingleUnionType(
