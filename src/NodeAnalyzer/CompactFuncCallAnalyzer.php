@@ -28,44 +28,32 @@ final class CompactFuncCallAnalyzer
             return false;
         }
 
-        $args = $funcCall->args;
-        foreach ($args as $arg) {
-            if ($arg->value instanceof Array_) {
-                if ($this->isInArray($arg->value, $variableName)) {
-                    return true;
-                }
-
-                continue;
-            }
-
-            if (! $arg->value instanceof String_) {
-                continue;
-            }
-
-            if ($arg->value->value === $variableName) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->isInArgOrArrayItemNodes($funcCall->args, $variableName);
     }
 
-    private function isInArray(Array_ $array, string $variableName): bool
+    /**
+     * @param Array<\PhpParser\Node\Arg|\PhpParser\Node\Expr\ArrayItem|null> $nodes
+     */
+    private function isInArgOrArrayItemNodes(array $nodes, string $variableName): bool
     {
-        foreach ($array->items as $item) {
-            if ($item->value instanceof Array_) {
-                if ($this->isInArray($item->value, $variableName)) {
+        foreach ($nodes as $node) {
+            if ($node === null) {
+                continue;
+            }
+
+            if ($node->value instanceof Array_) {
+                if ($this->isInArgOrArrayItemNodes($node->value->items, $variableName)) {
                     return true;
                 }
 
                 continue;
             }
 
-            if (! $item->value instanceof String_) {
+            if (! $node->value instanceof String_) {
                 continue;
             }
 
-            if ($item->value->value === $variableName) {
+            if ($node->value->value === $variableName) {
                 return true;
             }
         }
