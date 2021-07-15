@@ -96,7 +96,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasFunctionOrClosureInside($node)) {
+        if ($this->hasFunctionLikeInside($node)) {
             return null;
         }
 
@@ -123,7 +123,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function hasFunctionOrClosureInside(
+    private function hasFunctionLikeInside(
         ClassMethod | Function_ | Closure $functionLike
     ): bool
     {
@@ -141,7 +141,7 @@ CODE_SAMPLE
                 return $node instanceof Return_;
             });
 
-            return ! $nextReturn instanceof Return_ && $node instanceof Closure || $node instanceof Function_;
+            return ! $nextReturn instanceof Return_ && $node instanceof FunctionLike;
         });
     }
 
