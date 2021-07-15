@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -24,6 +25,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -94,9 +96,21 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstanceOf((array) $node->stmts, Return_::class);
+        $functionLike = $this->betterNodeFinder->find((array) $node->stmts, function (Node $n) use ($node): bool {
+            $currentFunctionLike = $this->betterNodeFinder->findParentType($n, FunctionLike::class);
+            if ($currentFunctionLike === $node) {
+                return $n instanceof Return_;
+            }
 
+            $return = $this->betterNodeFinder->findParentType($currentFunctionLike, Return_::class);
+            return $return instanceof Return_;
+        });
+
+        if (! $functionLike instanceof FunctionLike) {
+            return null;
+        }
+
+        $returns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->stmts, Return_::class);
         $returnedStrictTypes = $this->collectStrictReturnTypes($returns);
         if ($returnedStrictTypes === []) {
             return null;

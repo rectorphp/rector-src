@@ -16,6 +16,10 @@ function () {
         return App::init();
     };
 
+    function foo() {
+        return App::init();
+    };
+
 };
 
 ?>
@@ -35,6 +39,10 @@ class App
 function () {
 
     function (): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App {
+        return App::init();
+    };
+
+    function foo(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App {
         return App::init();
     };
 
