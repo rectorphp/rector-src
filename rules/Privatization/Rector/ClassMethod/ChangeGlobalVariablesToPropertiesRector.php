@@ -96,7 +96,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->collectGlobalVariableNamesAndRefactorToPropertyFetch($node);
+        $this->collectGlobalVariableNamesAndRefactorToPropertyFetch($classLike, $node);
 
         if ($this->globalVariableNames === []) {
             return null;
@@ -109,12 +109,10 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function collectGlobalVariableNamesAndRefactorToPropertyFetch(ClassMethod $classMethod): void
+    private function collectGlobalVariableNamesAndRefactorToPropertyFetch(Class_ $class, ClassMethod $classMethod): void
     {
         $this->globalVariableNames = [];
 
-        /** @var Class_ $class */
-        $class = $classMethod->getAttribute(AttributeKey::CLASS_NODE);
         $this->traverseNodesWithCallable($classMethod, function (Node $node) use ($class): ?PropertyFetch {
             if ($node instanceof Global_) {
                 $this->refactorGlobal($class, $node);
