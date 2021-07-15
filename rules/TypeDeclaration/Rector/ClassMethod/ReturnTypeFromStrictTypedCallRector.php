@@ -25,7 +25,6 @@ use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -96,12 +95,26 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasFunctionLikeInside($node)) {
-            return null;
-        }
-
         /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstanceOf((array) $node->stmts, Return_::class);
+        $returns = $this->betterNodeFinder->find((array) $node->stmts, function (Node $n) use ($node) {
+            $currentFunctionLike = $this->betterNodeFinder->findParentType($n, FunctionLike::class);
+
+            if ($currentFunctionLike === $node) {
+                return $n instanceof Return_;
+            }
+
+            $currentReturn = $this->betterNodeFinder->findParentType($n, Return_::class);
+            if (! $currentReturn instanceof Return_) {
+                return false;
+            }
+
+            $currentFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
+            if ($currentFunctionLike !== $node) {
+                return false;
+            }
+
+            return $n instanceof Return_;
+        });
 
         $returnedStrictTypes = $this->collectStrictReturnTypes($returns);
         if ($returnedStrictTypes === []) {
@@ -121,28 +134,6 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    private function hasFunctionLikeInside(
-        ClassMethod | Function_ | Closure $functionLike
-    ): bool
-    {
-        if ($functionLike->stmts === null) {
-            return false;
-        }
-
-        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use ($functionLike): bool {
-            $return = $this->betterNodeFinder->findParentType($node, Return_::class);
-            if ($return instanceof Return_) {
-                return false;
-            }
-
-            $nextReturn = $this->betterNodeFinder->findFirstNext($node, function (Node $node): bool {
-                return $node instanceof Return_;
-            });
-
-            return ! $nextReturn instanceof Return_ && $node instanceof FunctionLike;
-        });
     }
 
     private function processSingleUnionType(
