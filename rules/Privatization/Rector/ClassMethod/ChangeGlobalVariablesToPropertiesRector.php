@@ -122,7 +122,7 @@ CODE_SAMPLE
             }
 
             if ($node instanceof Variable) {
-                return $this->refactorGlobalVariable($class, $node);
+                return $this->refactorGlobalVariable($node);
             }
 
             return null;
@@ -147,7 +147,7 @@ CODE_SAMPLE
         $this->removeNode($global);
     }
 
-    private function refactorGlobalVariable(Class_ $class, Variable $variable): ?PropertyFetch
+    private function refactorGlobalVariable(Variable $variable): ?PropertyFetch
     {
         if (! $this->isNames($variable, $this->globalVariableNames)) {
             return null;
