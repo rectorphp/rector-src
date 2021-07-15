@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-class SkipInCompact
+class SkipInCompactArray
 {
     public function run()
     {
@@ -10,5 +10,3 @@ class SkipInCompact
         return compact(['value']);
     }
 }
-
-?>
