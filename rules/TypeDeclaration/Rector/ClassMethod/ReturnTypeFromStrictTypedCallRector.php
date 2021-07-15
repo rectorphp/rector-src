@@ -131,8 +131,17 @@ CODE_SAMPLE
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node): bool {
-            return $node instanceof Closure || $node instanceof Function_;
+        return (bool) $this->betterNodeFinder->findFirst($functionLike->stmts, function (Node $node) use ($functionLike): bool {
+            $return = $this->betterNodeFinder->findParentType($node, Return_::class);
+            if ($return instanceof Return_) {
+                return false;
+            }
+
+            $nextReturn = $this->betterNodeFinder->findFirstNext($node, function (Node $node): bool {
+                return $node instanceof Return_;
+            });
+
+            return ! $nextReturn instanceof Return_ && $node instanceof Closure || $node instanceof Function_;
         });
     }
 
