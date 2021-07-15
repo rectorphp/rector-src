@@ -32,7 +32,7 @@ final class CompactFuncCallAnalyzer
     }
 
     /**
-     * @param Array<\PhpParser\Node\Arg|\PhpParser\Node\Expr\ArrayItem|null> $nodes
+     * @param array<int, \PhpParser\Node\Arg|\PhpParser\Node\Expr\ArrayItem|null> $nodes
      */
     private function isInArgOrArrayItemNodes(array $nodes, string $variableName): bool
     {
