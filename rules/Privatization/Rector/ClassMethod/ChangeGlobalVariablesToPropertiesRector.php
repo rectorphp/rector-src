@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Privatization\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
@@ -112,25 +113,31 @@ CODE_SAMPLE
     {
         $this->globalVariableNames = [];
 
-        $this->traverseNodesWithCallable($classMethod, function (Node $node): ?PropertyFetch {
+        /** @var Class_ $class */
+        $class = $classMethod->getAttribute(AttributeKey::CLASS_NODE);
+        $this->traverseNodesWithCallable($classMethod, function (Node $node) use ($class): ?PropertyFetch {
             if ($node instanceof Global_) {
-                $this->refactorGlobal($node);
+                $this->refactorGlobal($class, $node);
                 return null;
             }
 
             if ($node instanceof Variable) {
-                return $this->refactorGlobalVariable($node);
+                return $this->refactorGlobalVariable($class, $node);
             }
 
             return null;
         });
     }
 
-    private function refactorGlobal(Global_ $global): void
+    private function refactorGlobal(Class_ $class, Global_ $global): void
     {
         foreach ($global->vars as $var) {
             $varName = $this->getName($var);
             if ($varName === null) {
+                return;
+            }
+
+            if ($this->isReadOnly($class, $varName)) {
                 return;
             }
 
@@ -140,7 +147,7 @@ CODE_SAMPLE
         $this->removeNode($global);
     }
 
-    private function refactorGlobalVariable(Variable $variable): ?PropertyFetch
+    private function refactorGlobalVariable(Class_ $class, Variable $variable): ?PropertyFetch
     {
         if (! $this->isNames($variable, $this->globalVariableNames)) {
             return null;
@@ -153,5 +160,33 @@ CODE_SAMPLE
         }
 
         return $this->nodeFactory->createPropertyFetch('this', $variableName);
+    }
+
+    private function isReadOnly(Class_ $class, string $globalVariableName): bool
+    {
+        /** @var ClassMethod[] $classMethods */
+        $classMethods = $this->betterNodeFinder->findInstanceOf($class, ClassMethod::class);
+        foreach ($classMethods as $classMethod) {
+            $isReAssign = (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node) use (
+                $globalVariableName
+            ): bool {
+                if (! $node instanceof Assign) {
+                    return false;
+                }
+                if ($node->var instanceof Variable) {
+                    return $this->nodeNameResolver->isName($node->var, $globalVariableName);
+                }
+                if ($node->var instanceof PropertyFetch) {
+                    return $this->nodeNameResolver->isName($node->var, $globalVariableName);
+                }
+                return false;
+            });
+
+            if ($isReAssign) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
