@@ -51,7 +51,7 @@ function (): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStri
         return App::init();
     };
 
-    function foo(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App
+    function foo(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\App {
         return App::init();
     };
 
