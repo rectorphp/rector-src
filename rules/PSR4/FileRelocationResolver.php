@@ -180,7 +180,8 @@ final class FileRelocationResolver
         return implode(DIRECTORY_SEPARATOR, $relativeFilePathParts);
     }
 
-    private function normalizeDirectorySeparator(string $path):string {
+    private function normalizeDirectorySeparator(string $path): string
+    {
         return str_replace('/', DIRECTORY_SEPARATOR, $path);
     }
 }

@@ -23,6 +23,11 @@ final class TypeNormalizerTest extends AbstractTestCase
         $this->typeNormalizer = $this->getService(TypeNormalizer::class);
     }
 
+    protected function tearDown(): void
+    {
+        unset($this->typeNormalizer);
+    }
+
     /**
      * @dataProvider provideDataNormalizeArrayOfUnionToUnionArray()
      */
@@ -47,10 +52,5 @@ final class TypeNormalizerTest extends AbstractTestCase
 
         $evenMoreNestedArrayType = new ArrayType(new MixedType(), $moreNestedArrayType);
         yield [$evenMoreNestedArrayType, 'int[][][]|string[][][]'];
-    }
-
-    protected function tearDown(): void
-    {
-        unset($this->typeNormalizer);
     }
 }

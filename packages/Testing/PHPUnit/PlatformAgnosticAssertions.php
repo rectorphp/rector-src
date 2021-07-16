@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Testing\PHPUnit;
 
+use Nette\Utils\FileSystem;
 use PHPUnit\Framework\Constraint\IsEqual;
-use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * Relaxes phpunit assertions to be forgiving about platform issues, like directory-separators or newlines.
  */
-trait PlatformAgnosticAssertions {
+trait PlatformAgnosticAssertions
+{
     /**
      * Asserts that two variables have the same type and value.
      * Used on objects, it asserts that two variables reference
      * the same object.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws ExpectationFailedException
      *
      * @psalm-template ExpectedType
      * @psalm-param ExpectedType $expected
@@ -37,27 +37,46 @@ trait PlatformAgnosticAssertions {
     /**
      * Asserts that the contents of a string is equal
      * to the contents of a file.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws ExpectationFailedException
      */
-    public static function assertStringEqualsFile(string $expectedFile, string $actualString, string $message = ''): void
-    {
+    public static function assertStringEqualsFile(
+        string $expectedFile,
+        string $actualString,
+        string $message = ''
+    ): void {
         parent::assertFileExists($expectedFile, $message);
 
-        $expectedString = file_get_contents($expectedFile);
-        $expectedString = self::normalize($expectedString);
-        $constraint = new IsEqual($expectedString);
+        $expectedString = self::getNormalizedFileContents($expectedFile);
+        $isEqual = new IsEqual($expectedString);
 
         $actualString = self::normalize($actualString);
 
-        parent::assertThat($actualString, $constraint, $message);
+        parent::assertThat($actualString, $isEqual, $message);
     }
 
-    private static function normalize(string $string) {
-        $string = str_replace("\r\n", "\n", $string);
-        $string = str_replace(DIRECTORY_SEPARATOR, "/", $string);
+    /**
+     * Asserts that the contents of one file is equal to the contents of another
+     * file.
+     */
+    public static function assertFileEquals(string $expected, string $actual, string $message = ''): void
+    {
+        static::assertFileExists($expected, $message);
+        static::assertFileExists($actual, $message);
 
-        return $string;
+        $isEqual = new IsEqual(self::getNormalizedFileContents($expected));
+
+        static::assertThat(self::getNormalizedFileContents($actual), $isEqual, $message);
+    }
+
+    private static function normalize(string $string): array | string
+    {
+        $string = str_replace("\r\n", "\n", $string);
+
+        return str_replace(DIRECTORY_SEPARATOR, '/', $string);
+    }
+
+    private static function getNormalizedFileContents(string $filePath): string
+    {
+        $expectedString = FileSystem::read($filePath);
+        return self::normalize($expectedString);
     }
 }
