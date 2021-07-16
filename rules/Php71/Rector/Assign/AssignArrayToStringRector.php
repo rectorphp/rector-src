@@ -27,11 +27,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssignArrayToStringRector extends AbstractRector
 {
-    /**
-     * @var PropertyProperty[]
-     */
-    private array $emptyStringProperties = [];
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -64,7 +59,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $defaultExpr = $this->resolveDefaultValueExpr($node);
-        if ($defaultExpr === null) {
+        if (!$defaultExpr instanceof Expr) {
             return null;
         }
 
@@ -132,7 +127,7 @@ CODE_SAMPLE
         return $expr->value === '';
     }
 
-    private function resolveAssignedVar(Assign | Property $node): Property | Expr | Assign
+    private function resolveAssignedVar(Assign | Property $node): Expr|Property
     {
         if ($node instanceof Assign) {
             return $node->var;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
+use Rector\NodeNestingScope\ContextAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -18,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveLastReturnRector extends AbstractRector
 {
     public function __construct(
-        private \Rector\NodeNestingScope\ContextAnalyzer $contextAnalyzer
+        private ContextAnalyzer $contextAnalyzer
     ) {
     }
 
@@ -56,7 +57,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -76,7 +77,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($lastNode === null) {
+        if (!$lastNode instanceof Node) {
             return null;
         }
 

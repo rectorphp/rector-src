@@ -34,7 +34,6 @@ final class RemoveUnusedVariableAssignRector extends AbstractRector
 {
     public function __construct(
         private ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
-        private CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
         private ConditionSearcher $conditionSearcher,
         private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private PureFunctionDetector $pureFunctionDetector,

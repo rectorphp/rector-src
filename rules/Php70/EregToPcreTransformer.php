@@ -115,7 +115,6 @@ final class EregToPcreTransformer
         $rr = 0;
         $l = strlen($content);
         while ($i < $l) {
-            // atom
             $char = $content[$i];
             if ($char === '(') {
                 $i = (int) $i;
@@ -169,14 +168,12 @@ final class EregToPcreTransformer
                 }
                 $r[$rr] .= $this->_ere2pcre_escape($content[$i]);
             } else {
-                // including ] and } which are allowed as a literal character
                 $r[$rr] .= $this->_ere2pcre_escape($char);
             }
             ++$i;
             if ($i >= $l) {
                 break;
             }
-            // piece after the atom (only ONE of them is possible)
             $char = $content[$i];
             if ($char === '*' || $char === '+' || $char === '?') {
                 $r[$rr] .= $char;

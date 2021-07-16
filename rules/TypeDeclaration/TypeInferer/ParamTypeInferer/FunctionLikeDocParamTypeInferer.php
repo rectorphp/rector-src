@@ -22,7 +22,6 @@ final class FunctionLikeDocParamTypeInferer implements ParamTypeInfererInterface
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private PhpDocInfoFactory $phpDocInfoFactory,
-        private BetterNodeFinder $betterNodeFinder,
         private ParentFinder $parentFinder
     ) {
     }

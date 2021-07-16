@@ -20,7 +20,6 @@ final class VariableAndCallAssignMatcher
     public function __construct(
         private CallMatcher $callMatcher,
         private NodeNameResolver $nodeNameResolver,
-        private BetterNodeFinder $betterNodeFinder,
         private ParentFinder $parentFinder
     ) {
     }
