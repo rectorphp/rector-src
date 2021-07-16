@@ -6,7 +6,9 @@ final class EmptyStringArrayDimFetchValue
 {
     public function run()
     {
+        // a
         $r = [];
+        // b
         $r[] = '';
     }
 }
