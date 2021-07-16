@@ -45,8 +45,7 @@ trait PlatformAgnosticAssertions {
     {
         parent::assertFileExists($expectedFile, $message);
 
-        $expectedString = file_get_contents($expectedFile);
-        $expectedString = self::normalize($expectedString);
+        $expectedString = self::getNormalizedFileContents($expectedFile);
         $constraint = new IsEqual($expectedString);
 
         $actualString = self::normalize($actualString);
@@ -54,10 +53,32 @@ trait PlatformAgnosticAssertions {
         parent::assertThat($actualString, $constraint, $message);
     }
 
+    /**
+     * Asserts that the contents of one file is equal to the contents of another
+     * file.
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     */
+    public static function assertFileEquals(string $expected, string $actual, string $message = ''): void
+    {
+        static::assertFileExists($expected, $message);
+        static::assertFileExists($actual, $message);
+
+        $constraint = new IsEqual(self::getNormalizedFileContents($expected));
+
+        static::assertThat(self::getNormalizedFileContents($actual), $constraint, $message);
+    }
+
     private static function normalize(string $string) {
         $string = str_replace("\r\n", "\n", $string);
         $string = str_replace(DIRECTORY_SEPARATOR, "/", $string);
 
         return $string;
+    }
+
+    private static function getNormalizedFileContents(string $filePath): string {
+        $expectedString = file_get_contents($filePath);
+        return self::normalize($expectedString);
     }
 }
