@@ -18,6 +18,9 @@ final class ExprUsedInNextNodeAnalyzer
 
     public function isUsed(Expr $expr): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstNext($expr, fn(Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr));
+        return (bool) $this->betterNodeFinder->findFirstNext(
+            $expr,
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr)
+        );
     }
 }

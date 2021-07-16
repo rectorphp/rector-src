@@ -91,7 +91,10 @@ CODE_SAMPLE
      */
     private function isVariableUsedInStmts(array $nodes, Variable $variable): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, fn(Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable));
+        return (bool) $this->betterNodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
+        );
     }
 
     private function isVariableUsedNext(Catch_ $catch, Variable $variable): bool

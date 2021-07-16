@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
-use Rector\NodeNestingScope\ContextAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -77,7 +77,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!$lastNode instanceof Node) {
+        if (! $lastNode instanceof Node) {
             return null;
         }
 

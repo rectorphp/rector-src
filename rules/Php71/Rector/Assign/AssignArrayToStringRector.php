@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -59,7 +58,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $defaultExpr = $this->resolveDefaultValueExpr($node);
-        if (!$defaultExpr instanceof Expr) {
+        if (! $defaultExpr instanceof Expr) {
             return null;
         }
 
@@ -127,7 +126,7 @@ CODE_SAMPLE
         return $expr->value === '';
     }
 
-    private function resolveAssignedVar(Assign | Property $node): Expr|Property
+    private function resolveAssignedVar(Assign | Property $node): Expr | Property
     {
         if ($node instanceof Assign) {
             return $node->var;

@@ -128,7 +128,7 @@ CODE_SAMPLE
     {
         return (bool) $this->betterNodeFinder->findFirst(
             $foreach->stmts,
-            fn(Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
         );
     }
 
