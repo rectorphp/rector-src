@@ -22,13 +22,10 @@ jobs:
             matrix:
                 repository_name:
                     # must be repository name, e.g. https://github.com/rectorphp/rector-nette
-                    - rectorphp/rector-symfony
                     - rectorphp/rector-phpunit
-                    - rectorphp/rector-doctrine
                     - rectorphp/rector-laravel
                     - rectorphp/rector-nette
                     - rectorphp/rector-cakephp
-                    - sabbelasichon/typo3-rector
 
         steps:
             # see https://github.com/actions/checkout#usage
