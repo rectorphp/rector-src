@@ -120,14 +120,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isNotSupportStaticType($inferedReturnType)) {
+        if ($this->isNotSupportedStaticType($inferedReturnType)) {
             return null;
         }
 
         return $this->processType($node, $inferedReturnType);
     }
 
-    private function isNotSupportStaticType(Type $inferedReturnType): bool
+    private function isNotSupportedStaticType(Type $inferedReturnType): bool
     {
         if ($this->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
             return false;
