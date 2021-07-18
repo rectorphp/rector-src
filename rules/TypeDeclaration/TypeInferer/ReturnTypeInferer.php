@@ -66,34 +66,9 @@ final class ReturnTypeInferer
                 continue;
             }
 
-            if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === 'static') {
-                if (! $isSupportedStaticReturnType) {
-                    continue;
-                }
-
-                $type = new ThisType($type->getClassName());
-            }
-
-            if ($type instanceof UnionType) {
-                $returnTypes = $type->getTypes();
-                $types = [];
-                $hasStatic = false;
-                foreach ($returnTypes as $returnType) {
-                    if ($returnType instanceof FullyQualifiedObjectType && $returnType->getClassName() === 'static') {
-                        $types[] = new ThisType($returnType->getClassName());
-                        $hasStatic = true;
-                        continue;
-                    }
-
-                    $types[] = $returnType;
-                }
-
-                if ($hasStatic) {
-                    if (! $isSupportedStaticReturnType) {
-                        continue;
-                    }
-                    $type = new UnionType($types);
-                }
+            $type = $this->verifyStaticType($type, $isSupportedStaticReturnType);
+            if (! $type instanceof Type) {
+                continue;
             }
 
             // normalize ConstStringType to ClassStringType
@@ -101,6 +76,51 @@ final class ReturnTypeInferer
         }
 
         return new MixedType();
+    }
+
+    private function isStaticType(Type $type): bool
+    {
+        return $type instanceof FullyQualifiedObjectType && $type->getClassName() === 'static';
+    }
+
+    public function verifyStaticType(Type $type, bool $isSupportedStaticReturnType): ?Type
+    {
+        if ($this->isStaticType($type)) {
+            if (! $isSupportedStaticReturnType) {
+                return null;
+            }
+
+            /** @var FullyQualifiedObjectType $type */
+            return new ThisType($type->getClassName());
+        }
+
+        if (! $type instanceof UnionType) {
+            return $type;
+        }
+
+        $returnTypes = $type->getTypes();
+        $types = [];
+        $hasStatic = false;
+        foreach ($returnTypes as $returnType) {
+            if ($this->isStaticType($returnType)) {
+                /** @var FullyQualifiedObjectType $returnType */
+                $types[] = new ThisType($returnType->getClassName());
+                $hasStatic = true;
+                continue;
+            }
+
+            $types[] = $returnType;
+        }
+
+        if (! $hasStatic) {
+            return $type;
+        }
+
+        if (! $isSupportedStaticReturnType) {
+            return null;
+        }
+
+        return new UnionType($types);
     }
 
     /**
