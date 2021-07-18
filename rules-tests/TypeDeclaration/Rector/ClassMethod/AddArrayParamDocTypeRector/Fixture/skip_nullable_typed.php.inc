@@ -7,6 +7,10 @@ class SkipNullableTyped
 
     public function setBar(?bool $bar): void
     {
+        if ($bar === null) {
+            $bar = false;
+        }
+
         $this->bar = $bar;
     }
 }
