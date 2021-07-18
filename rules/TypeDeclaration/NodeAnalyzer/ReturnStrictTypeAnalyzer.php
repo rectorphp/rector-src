@@ -28,7 +28,7 @@ final class ReturnStrictTypeAnalyzer
 
     /**
      * @param Return_[] $returns
-     * @return array<Identifier|Name|NullableType|PhpParserUnionType>
+     * @return array<Identifier|Name|NullableType>
      */
     public function collectStrictReturnTypes(array $returns): array
     {
