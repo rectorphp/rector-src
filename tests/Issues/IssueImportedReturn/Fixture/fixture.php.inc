@@ -27,6 +27,7 @@ final class Fixture
 ?>
 -----
 <?php
+
 namespace Rector\Core\Tests\Issues\IssueImportedReturn\Fixture;
 
 use Rector\Core\Tests\Issues\IssueImportedReturn\Source\Logging;
