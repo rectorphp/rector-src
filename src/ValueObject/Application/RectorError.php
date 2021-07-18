@@ -10,7 +10,7 @@ final class RectorError
 {
     public function __construct(
         private string $message,
-        private SmartFileInfo $smartFileInfo,
+        private SmartFileInfo $fileInfo,
         private ?int $line = null,
         private ?string $rectorClass = null
     ) {
