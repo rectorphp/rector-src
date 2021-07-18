@@ -45,7 +45,7 @@ final class StaticAnalyzer
 
         return (bool) Strings::match(
             $resolvedPhpDocBlock->getPhpDocString(),
-            '#@method\s*static\s*(.*?)\b' . $methodName . '\b#'
+            '#@method\s*static\s*((([\w\|\\\\]+)|\$this)*+(\[\])*)*\s+\b' . $methodName . '\b#'
         );
     }
 }

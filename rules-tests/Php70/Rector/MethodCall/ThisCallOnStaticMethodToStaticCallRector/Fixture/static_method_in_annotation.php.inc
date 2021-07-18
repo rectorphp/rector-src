@@ -4,10 +4,10 @@ namespace Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCal
 
 /**
  * @method static static staticReturnStatic()
- * @method static static|\Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector\Fixture\StaticMethodInAnnotation|string[] staticReturnMixed()
+ * @method static static|StaticMethodInAnnotation|string[] staticReturnMixed()
  * @method static withoutReturnType()
  * @method static withoutParameters
- * @method \Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector\Fixture\StaticMethodInAnnotation|static returnStatic
+ * @method StaticMethodInAnnotation|static returnStatic
  */
 trait StaticMethodInAnnotation
 {
@@ -29,10 +29,10 @@ namespace Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCal
 
 /**
  * @method static static staticReturnStatic()
- * @method static static|\Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector\Fixture\StaticMethodInAnnotation|string[] staticReturnMixed()
+ * @method static static|StaticMethodInAnnotation|string[] staticReturnMixed()
  * @method static withoutReturnType()
  * @method static withoutParameters
- * @method \Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector\Fixture\StaticMethodInAnnotation|static returnStatic
+ * @method StaticMethodInAnnotation|static returnStatic
  */
 trait StaticMethodInAnnotation
 {
