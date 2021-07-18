@@ -4,7 +4,7 @@ namespace Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCal
 
 /**
  * @method static static staticReturnStatic()
- * @method static static|StaticMethodInAnnotation|string[] staticReturnMixed()
+ * @method static static|StaticMethodInAnnotation|string[]|$this staticReturnMixed()
  * @method static withoutReturnType()
  * @method static withoutParameters
  * @method StaticMethodInAnnotation|static returnStatic
@@ -29,7 +29,7 @@ namespace Rector\Tests\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCal
 
 /**
  * @method static static staticReturnStatic()
- * @method static static|StaticMethodInAnnotation|string[] staticReturnMixed()
+ * @method static static|StaticMethodInAnnotation|string[]|$this staticReturnMixed()
  * @method static withoutReturnType()
  * @method static withoutParameters
  * @method StaticMethodInAnnotation|static returnStatic
