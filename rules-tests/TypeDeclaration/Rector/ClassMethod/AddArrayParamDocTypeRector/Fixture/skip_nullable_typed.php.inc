@@ -1,7 +1,7 @@
 <?php
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector\Fixture;
 
-class Foo
+class SkipNullableTyped
 {
     public bool $bar;
 
