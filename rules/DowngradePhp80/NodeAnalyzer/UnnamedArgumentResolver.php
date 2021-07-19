@@ -44,6 +44,9 @@ final class UnnamedArgumentResolver
                     continue;
                 }
 
+               // $defaultValue = $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection);
+              //  dump($defaultValue);
+
                 $unnamedArgs[$paramPosition] = new Arg(
                     $currentArg->value,
                     $currentArg->byRef,
@@ -68,6 +71,10 @@ final class UnnamedArgumentResolver
 
     private function shouldSkipParam(Arg $arg, ParameterReflection $parameterReflection): bool
     {
+        if ($arg->name === null) {
+            return false;
+        }
+
         if (! $this->nodeNameResolver->isName($arg, $parameterReflection->getName())) {
             return true;
         }
@@ -83,6 +90,8 @@ final class UnnamedArgumentResolver
         }
 
         $defaultValue = $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection);
+
+        dump($defaultValue);
 
         // default value is set already, let's skip it
         return $this->valueResolver->isValue($arg->value, $defaultValue);
