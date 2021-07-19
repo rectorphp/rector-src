@@ -63,7 +63,7 @@ final class GenericClassStringTypeNormalizer
             $hasFullyQualifiedObjectType = false;
             foreach ($unionTypes as $unionType) {
                 if ($this->isAutoImportFullyQualifiedObjectType($unionType, $isAutoImport)) {
-                    /** @var FullyQualifiedObjectType $returnType */
+                    /** @var FullyQualifiedObjectType $unionType */
                     $types[] = new GenericClassStringType(new ObjectType($unionType->getClassName()));
                     $hasFullyQualifiedObjectType = true;
                     continue;
