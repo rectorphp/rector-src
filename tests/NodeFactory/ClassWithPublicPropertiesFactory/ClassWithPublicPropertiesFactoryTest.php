@@ -6,6 +6,7 @@ namespace Rector\Core\Tests\NodeFactory\ClassWithPublicPropertiesFactory;
 
 use Iterator;
 use Nette\Utils\Json;
+use Nette\Utils\Strings;
 use Rector\Core\NodeFactory\ClassWithPublicPropertiesFactory;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -34,6 +35,9 @@ final class ClassWithPublicPropertiesFactoryTest extends AbstractTestCase
     public function test(SmartFileInfo $fixtureFileInfo): void
     {
         $contents = $fixtureFileInfo->getContents();
+
+        // normalize for windows compat
+        $contents = Strings::replace($contents, '#\r\n|\r|\n#', "\n");
         [$content, $expected] = explode("-----\n", $contents, 2);
 
         $classSettings = Json::decode($content, Json::FORCE_ARRAY);
