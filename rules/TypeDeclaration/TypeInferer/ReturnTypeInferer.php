@@ -11,6 +11,7 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
+use Rector\Core\Configuration\Option;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -18,6 +19,7 @@ use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeNormalizer;
+use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class ReturnTypeInferer
 {
@@ -34,7 +36,8 @@ final class ReturnTypeInferer
         private TypeNormalizer $typeNormalizer,
         TypeInfererSorter $typeInfererSorter,
         private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
-        private PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider,
+        private ParameterProvider $parameterProvider
     ) {
         $this->returnTypeInferers = $typeInfererSorter->sort($returnTypeInferers);
     }
@@ -53,16 +56,17 @@ final class ReturnTypeInferer
             PhpVersionFeature::STATIC_RETURN_TYPE
         );
 
+        $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         foreach ($this->returnTypeInferers as $returnTypeInferer) {
             if ($this->shouldSkipExcludedTypeInferer($returnTypeInferer, $excludedInferers)) {
                 continue;
             }
 
-            if ($functionLike->returnType instanceof FullyQualified && ! str_contains($functionLike->returnType->toString(), '\\')) {
+            if ($functionLike->returnType instanceof FullyQualified && $isAutoImport && str_contains($functionLike->returnType->toString(), '\\')) {
                 continue;
             }
 
-            if ($functionLike->returnType instanceof PhpParserUnionType) {
+            if ($isAutoImport && $functionLike->returnType instanceof PhpParserUnionType) {
                 continue;
             }
 
