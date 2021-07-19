@@ -39,7 +39,7 @@ final class GenericClassStringTypeNormalizer
                     return $typeWithFullyQualifiedObjectType;
                 }
 
-                return $callback($type);
+                return $callbackType;
             }
 
             // skip string that look like classe
