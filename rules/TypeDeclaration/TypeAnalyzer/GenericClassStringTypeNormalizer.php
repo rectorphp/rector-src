@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
@@ -28,6 +29,11 @@ final class GenericClassStringTypeNormalizer
         $isAutoImport = $this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES);
         return TypeTraverser::map($type, function (Type $type, $callback) use ($isAutoImport): Type {
             if (! $type instanceof ConstantStringType) {
+                $callbackType = $callback($type);
+                if ($callbackType instanceof ArrayType) {
+                    return $callbackType;
+                }
+
                 $typeWithFullyQualifiedObjectType = $this->verifyAutoImportedFullyQualifiedType($type, $isAutoImport);
                 if ($typeWithFullyQualifiedObjectType instanceof Type) {
                     return $typeWithFullyQualifiedObjectType;
@@ -83,6 +89,9 @@ final class GenericClassStringTypeNormalizer
 
     private function isAutoImportFullyQualifiedObjectType(Type $type, bool $isAutoImport): bool
     {
-        return $isAutoImport && $type instanceof FullyQualifiedObjectType && ! str_contains($type->getClassName(), '\\');
+        return $isAutoImport && $type instanceof FullyQualifiedObjectType && ! str_contains(
+            $type->getClassName(),
+            '\\'
+        );
     }
 }
