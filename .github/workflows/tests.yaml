@@ -22,7 +22,7 @@ jobs:
                     - packages-tests
                 os: ['windows-latest', 'ubuntu-latest']
 
-        name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
+        name: PHP ${{ matrix.php }} tests for ${{ matrix.path }} [${{ matrix.os }}]
         steps:
             -   uses: actions/checkout@v2
 
