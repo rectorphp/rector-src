@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer;
 
+use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -138,14 +139,31 @@ final class ReturnTypeInferer
             return false;
         }
 
-        if ($functionLike instanceof ClassMethod && $functionLike->returnType instanceof FullyQualified && str_contains(
-            $functionLike->returnType->toString(),
-            '\\'
-        )) {
+        if (! $functionLike instanceof ClassMethod) {
+            return false;
+        }
+
+        if ($this->isNamespacedFullyQualified($functionLike->returnType)) {
             return true;
         }
 
-        return $functionLike instanceof ClassMethod && $functionLike->returnType instanceof PhpParserUnionType;
+        if (! $functionLike->returnType instanceof PhpParserUnionType) {
+            return false;
+        }
+
+        $types = $functionLike->returnType->types;
+        foreach ($types as $type) {
+            if ($this->isNamespacedFullyQualified($type)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isNamespacedFullyQualified(?Node $node): bool
+    {
+        return $node instanceof FullyQualified && str_contains($node->toString(), '\\');
     }
 
     private function isStaticType(Type $type): bool
