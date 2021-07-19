@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeInferer;
 
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use PhpParser\Node\UnionType as PhpParserUnionType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -53,6 +55,14 @@ final class ReturnTypeInferer
 
         foreach ($this->returnTypeInferers as $returnTypeInferer) {
             if ($this->shouldSkipExcludedTypeInferer($returnTypeInferer, $excludedInferers)) {
+                continue;
+            }
+
+            if ($functionLike->returnType instanceof FullyQualified && ! str_contains($functionLike->returnType->toString(), '\\')) {
+                continue;
+            }
+
+            if ($functionLike->returnType instanceof PhpParserUnionType) {
                 continue;
             }
 
