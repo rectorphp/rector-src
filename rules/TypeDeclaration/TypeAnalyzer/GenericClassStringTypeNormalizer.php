@@ -28,7 +28,7 @@ final class GenericClassStringTypeNormalizer
     public function normalize(Type $type): Type
     {
         $isAutoImport = $this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES);
-        return TypeTraverser::map($type, function (Type $type, $callback) use ($isAutoImport): ?Type {
+        return TypeTraverser::map($type, function (Type $type, $callback) use ($isAutoImport): Type {
             if (! $type instanceof ConstantStringType) {
                 if ($type instanceof UnionType) {
                     $returnTypes = $type->getTypes();
@@ -36,6 +36,7 @@ final class GenericClassStringTypeNormalizer
                     $hasFullyQualifiedObjectType = false;
                     foreach ($returnTypes as $returnType) {
                         if ($this->isAutoImportFullyQualifiedObjectType($returnType, $isAutoImport)) {
+                            /** @var FullyQualifiedObjectType $returnType */
                             $types[] = new GenericClassStringType(new ObjectType($returnType->getClassName()));
                             $hasFullyQualifiedObjectType = true;
                             continue;
@@ -52,6 +53,7 @@ final class GenericClassStringTypeNormalizer
                 }
 
                 if ($this->isAutoImportFullyQualifiedObjectType($type, $isAutoImport)) {
+                    /** @var FullyQualifiedObjectType $type */
                     return new GenericClassStringType(new ObjectType($type->getClassName()));
                 }
 
