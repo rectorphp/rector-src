@@ -134,7 +134,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     private function normalizeNewlines(string $string): string
     {
-        return Strings::replace($string, '#\r\n|\r|\n#', "\n");
+        return str_replace("\r\n", "\n", $string);
     }
 
     private function processFileInfo(SmartFileInfo $fileInfo): string

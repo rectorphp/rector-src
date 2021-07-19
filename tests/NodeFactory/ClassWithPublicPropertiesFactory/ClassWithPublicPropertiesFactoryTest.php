@@ -10,6 +10,7 @@ use Nette\Utils\Strings;
 use Rector\Core\NodeFactory\ClassWithPublicPropertiesFactory;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\PlatformAgnosticAssertions;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -18,6 +19,8 @@ use Symplify\SmartFileSystem\SmartFileInfo;
  */
 final class ClassWithPublicPropertiesFactoryTest extends AbstractTestCase
 {
+    use PlatformAgnosticAssertions;
+
     private ClassWithPublicPropertiesFactory $classWithPublicPropertiesFactory;
 
     private BetterStandardPrinter $betterStandardPrinter;
@@ -34,9 +37,7 @@ final class ClassWithPublicPropertiesFactoryTest extends AbstractTestCase
      */
     public function test(SmartFileInfo $fixtureFileInfo): void
     {
-        $contents = $fixtureFileInfo->getContents();
-        // normalize for windows compat
-        $contents = str_replace("\r\n", "\n", $contents);
+        $contents = $this->getNormalizedFileContents($fixtureFileInfo->getRealPath)
         [$content, $expected] = explode("-----\n", $contents, 2);
 
         $classSettings = Json::decode($content, Json::FORCE_ARRAY);
