@@ -83,6 +83,6 @@ final class GenericClassStringTypeNormalizer
 
     private function isAutoImportFullyQualifiedObjectType(Type $type, bool $isAutoImport): bool
     {
-        return $isAutoImport && $type instanceof FullyQualifiedObjectType;
+        return $isAutoImport && $type instanceof FullyQualifiedObjectType && ! str_contains($type->getClassName(), '\\');
     }
 }
