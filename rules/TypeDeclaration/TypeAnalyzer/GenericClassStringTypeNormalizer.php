@@ -26,7 +26,7 @@ final class GenericClassStringTypeNormalizer
 
     public function normalize(Type $type): Type
     {
-        $isAutoImport = $this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES);
+        $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         return TypeTraverser::map($type, function (Type $type, $callback) use ($isAutoImport): Type {
             if (! $type instanceof ConstantStringType) {
                 $callbackType = $callback($type);
