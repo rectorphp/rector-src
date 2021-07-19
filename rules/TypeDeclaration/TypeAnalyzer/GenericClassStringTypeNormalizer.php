@@ -9,12 +9,10 @@ use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPStan\Type\ThisType;
-use PHPStan\Type\UnionType;
 use PHPStan\Type\TypeTraverser;
+use PHPStan\Type\UnionType;
 use Rector\Core\Configuration\Option;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class GenericClassStringTypeNormalizer
@@ -30,31 +28,9 @@ final class GenericClassStringTypeNormalizer
         $isAutoImport = $this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES);
         return TypeTraverser::map($type, function (Type $type, $callback) use ($isAutoImport): Type {
             if (! $type instanceof ConstantStringType) {
-                if ($type instanceof UnionType) {
-                    $returnTypes = $type->getTypes();
-                    $types = [];
-                    $hasFullyQualifiedObjectType = false;
-                    foreach ($returnTypes as $returnType) {
-                        if ($this->isAutoImportFullyQualifiedObjectType($returnType, $isAutoImport)) {
-                            /** @var FullyQualifiedObjectType $returnType */
-                            $types[] = new GenericClassStringType(new ObjectType($returnType->getClassName()));
-                            $hasFullyQualifiedObjectType = true;
-                            continue;
-                        }
-
-                        $types[] = $returnType;
-                    }
-
-                    if ($hasFullyQualifiedObjectType) {
-                        return new UnionType($types);
-                    }
-
-                    return $type;
-                }
-
-                if ($this->isAutoImportFullyQualifiedObjectType($type, $isAutoImport)) {
-                    /** @var FullyQualifiedObjectType $type */
-                    return new GenericClassStringType(new ObjectType($type->getClassName()));
+                $typeWithFullyQualifiedObjectType = $this->verifyAutoImportedFullyQualifiedType($type, $isAutoImport);
+                if ($typeWithFullyQualifiedObjectType instanceof Type) {
+                    return $typeWithFullyQualifiedObjectType;
                 }
 
                 return $callback($type);
@@ -71,6 +47,38 @@ final class GenericClassStringTypeNormalizer
 
             return new GenericClassStringType(new ObjectType($type->getValue()));
         });
+    }
+
+    private function verifyAutoImportedFullyQualifiedType(Type $type, bool $isAutoImport): ?Type
+    {
+        if ($type instanceof UnionType) {
+            $returnTypes = $type->getTypes();
+            $types = [];
+            $hasFullyQualifiedObjectType = false;
+            foreach ($returnTypes as $returnType) {
+                if ($this->isAutoImportFullyQualifiedObjectType($returnType, $isAutoImport)) {
+                    /** @var FullyQualifiedObjectType $returnType */
+                    $types[] = new GenericClassStringType(new ObjectType($returnType->getClassName()));
+                    $hasFullyQualifiedObjectType = true;
+                    continue;
+                }
+
+                $types[] = $returnType;
+            }
+
+            if ($hasFullyQualifiedObjectType) {
+                return new UnionType($types);
+            }
+
+            return $type;
+        }
+
+        if ($this->isAutoImportFullyQualifiedObjectType($type, $isAutoImport)) {
+            /** @var FullyQualifiedObjectType $type */
+            return new GenericClassStringType(new ObjectType($type->getClassName()));
+        }
+
+        return null;
     }
 
     private function isAutoImportFullyQualifiedObjectType(Type $type, bool $isAutoImport): bool
