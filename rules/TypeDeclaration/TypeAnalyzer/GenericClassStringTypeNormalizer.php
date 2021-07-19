@@ -58,18 +58,18 @@ final class GenericClassStringTypeNormalizer
     private function verifyAutoImportedFullyQualifiedType(Type $type, bool $isAutoImport): ?Type
     {
         if ($type instanceof UnionType) {
-            $returnTypes = $type->getTypes();
+            $unionTypes = $type->getTypes();
             $types = [];
             $hasFullyQualifiedObjectType = false;
-            foreach ($returnTypes as $returnType) {
-                if ($this->isAutoImportFullyQualifiedObjectType($returnType, $isAutoImport)) {
+            foreach ($unionTypes as $unionType) {
+                if ($this->isAutoImportFullyQualifiedObjectType($unionType, $isAutoImport)) {
                     /** @var FullyQualifiedObjectType $returnType */
-                    $types[] = new GenericClassStringType(new ObjectType($returnType->getClassName()));
+                    $types[] = new GenericClassStringType(new ObjectType($unionType->getClassName()));
                     $hasFullyQualifiedObjectType = true;
                     continue;
                 }
 
-                $types[] = $returnType;
+                $types[] = $unionType;
             }
 
             if ($hasFullyQualifiedObjectType) {
