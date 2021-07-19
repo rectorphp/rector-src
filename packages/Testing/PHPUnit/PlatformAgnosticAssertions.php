@@ -14,9 +14,6 @@ trait PlatformAgnosticAssertions {
      * Used on objects, it asserts that two variables reference
      * the same object.
      *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws ExpectationFailedException
-     *
      * @psalm-template ExpectedType
      * @psalm-param ExpectedType $expected
      * @psalm-assert =ExpectedType $actual
@@ -37,9 +34,6 @@ trait PlatformAgnosticAssertions {
     /**
      * Asserts that the contents of a string is equal
      * to the contents of a file.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws ExpectationFailedException
      */
     public static function assertStringEqualsFile(string $expectedFile, string $actualString, string $message = ''): void
     {
@@ -56,9 +50,6 @@ trait PlatformAgnosticAssertions {
     /**
      * Asserts that the contents of one file is equal to the contents of another
      * file.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws ExpectationFailedException
      */
     public static function assertFileEquals(string $expected, string $actual, string $message = ''): void
     {
