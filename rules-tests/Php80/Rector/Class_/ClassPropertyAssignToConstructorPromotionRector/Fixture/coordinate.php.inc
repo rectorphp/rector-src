@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use JetBrains\PhpStorm\Immutable;
-
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
+
+use JetBrains\PhpStorm\Immutable;
 
 final class Coordinate
 {
@@ -25,9 +25,9 @@ final class Coordinate
 
 declare(strict_types=1);
 
-use JetBrains\PhpStorm\Immutable;
-
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
+
+use JetBrains\PhpStorm\Immutable;
 
 final class Coordinate
 {
