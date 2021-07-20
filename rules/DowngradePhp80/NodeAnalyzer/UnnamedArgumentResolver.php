@@ -18,6 +18,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use ReflectionFunction;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PhpParser\Node\Identifier;
 
 final class UnnamedArgumentResolver
 {
@@ -37,6 +38,36 @@ final class UnnamedArgumentResolver
         array $currentArgs
     ): array {
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
+        $unnamedArgs        = $currentArgs;
+        $parameters         = $parametersAcceptor->getParameters();
+
+        foreach ($parameters as $paramPosition => $parameterReflection) {
+            $parameterReflectionName = $parameterReflection->getName();
+
+            foreach ($currentArgs as $key => $currentArg) {
+                if (! $currentArg->name instanceof Identifier) {
+                    continue;
+                }
+
+                if ($key === $paramPosition) {
+                    if ($this->nodeNameResolver->isName($currentArg->name, $parameterReflectionName)) {
+                        $unnamedArgs[$paramPosition] = new Arg(
+                            $currentArg->value,
+                            $currentArg->byRef,
+                            $currentArg->unpack,
+                            $currentArg->getAttributes(),
+                            null
+                        );
+
+                        continue;
+                    }
+                }
+            }
+        }
+
+        return $unnamedArgs;
+
+        dump_node($currentArgs);
 
         $unnamedArgs = [];
         foreach ($parametersAcceptor->getParameters() as $paramPosition => $parameterReflection) {
