@@ -52,7 +52,6 @@ final class UnnamedArgumentResolver
 
         foreach ($parameters as $paramPosition => $parameterReflection) {
             $parameterReflectionName = $parameterReflection->getName();
-
             foreach ($currentArgs as $key => $currentArg) {
                 if ($key === $paramPosition) {
                     if (! $currentArg->name instanceof Identifier || $this->nodeNameResolver->isName($currentArg->name, $parameterReflectionName)) {
@@ -80,47 +79,50 @@ final class UnnamedArgumentResolver
                         );
 
                         continue;
+                    } else {
+                        $unnamedArgs[$paramPosition] = new Arg(
+                            $currentArgs[$paramPosition - 1]->value,
+                            false,
+                            false,
+                            [],
+                            null
+                        );
+                        continue;
                     }
-
-                    $unnamedArgs[$paramPosition] = new Arg($this->defaultParameterValueResolver->resolveFromFunctionLikeAndPosition(
-                        $functionLikeReflection,
-                        $paramPosition
-                    ));
-
-                    continue;
                 }
             }
         }
 
-        return $unnamedArgs;
-
-        dump_node($currentArgs);
-
-        $unnamedArgs = [];
-        foreach ($parametersAcceptor->getParameters() as $paramPosition => $parameterReflection) {
-            foreach ($currentArgs as $currentArg) {
-                if ($this->shouldSkipParam($currentArg, $parameterReflection)) {
-                    continue;
-                }
-
-                $unnamedArgs[$paramPosition] = new Arg(
-                    $currentArg->value,
-                    $currentArg->byRef,
-                    $currentArg->unpack,
-                    $currentArg->getAttributes(),
-                    null
-                );
+        $existingNames = [];
+        foreach ($currentArgs as $key => $currentArg) {
+            if ($currentArg->name instanceof Identifier) {
+                $existingNames[$key] = $this->nodeNameResolver->getName($currentArg->name);
             }
         }
 
-        $setArgumentPositoins = array_keys($unnamedArgs);
-        $highestParameterPosition = max($setArgumentPositoins);
-        if (! is_int($highestParameterPosition)) {
-            throw new ShouldNotHappenException();
+        $filledNames = [];
+        foreach ($parameters as $paramPosition => $parameterReflection) {
+            foreach (array_keys($unnamedArgs) as $value) {
+                if ($paramPosition === $value) {
+                    $filledNames[] = $parameterReflection->getName();
+                }
+            }
         }
 
-        $unnamedArgs = $this->fillArgValues($highestParameterPosition, $unnamedArgs, $functionLikeReflection);
-        ksort($unnamedArgs);
+        $appends = [];
+        foreach ($existingNames as $key => $existingName) {
+            if (! in_array($existingName, $filledNames, true)) {
+                $appends[$key] = $existingName;
+            }
+        }
+
+        foreach ($appends as $key => $append) {
+            foreach ($parameters as $paramPosition => $parameterReflection) {
+                if ($parameterReflection->getName() === $append) {
+                    $unnamedArgs[$paramPosition] = $currentArgs[$key];
+                }
+            }
+        }
 
         return $unnamedArgs;
     }
