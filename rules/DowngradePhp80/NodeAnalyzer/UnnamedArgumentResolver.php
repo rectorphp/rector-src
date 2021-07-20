@@ -121,7 +121,11 @@ final class UnnamedArgumentResolver
         array $parameters
     ): array {
         $keys = array_keys($unnamedArgs);
-        $highestParameterPosition = max($keys ?: [0]);
+        if ($keys === []) {
+            return $unnamedArgs;
+        }
+
+        $highestParameterPosition = max($keys);
         $parametersCount = count($parameters);
         for ($i = 0; $i < $parametersCount; ++$i) {
             if (in_array($i, $keys, true)) {
