@@ -12,6 +12,8 @@ class OnFuncCall
 
         json_encode([], depth: 10);
         json_encode([], flags: JSON_FORCE_OBJECT, depth: 100);
+
+        class_exists(class: 'stdClass');
     }
 }
 
@@ -31,6 +33,8 @@ class OnFuncCall
 
         json_encode([], 0, 10);
         json_encode([], JSON_FORCE_OBJECT, 100);
+
+        class_exists('stdClass', true);
     }
 }
 
