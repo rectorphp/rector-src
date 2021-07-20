@@ -124,10 +124,12 @@ final class UnnamedArgumentResolver
         $highestParameterPosition = max($keys ?: [0]);
         $parametersCount = count($parameters);
         for ($i = 0; $i < $parametersCount; ++$i) {
-            if (in_array($i, $keys, true) || $i > $highestParameterPosition) {
+            if (in_array($i, $keys, true)) {
                 continue;
             }
-
+            if ($i > $highestParameterPosition) {
+                continue;
+            }
             /** @var ParameterReflection|PhpParameterReflection $parameterReflection */
             if ($isNativeFunctionReflection) {
                 /** @var ReflectionFunction $functionLikeReflection */
