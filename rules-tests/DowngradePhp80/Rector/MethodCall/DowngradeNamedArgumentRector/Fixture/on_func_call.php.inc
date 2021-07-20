@@ -8,6 +8,7 @@ class OnFuncCall
     {
         json_decode('{}', associative: true, flags: JSON_THROW_ON_ERROR);
         json_decode('{}', flags: JSON_THROW_ON_ERROR);
+        json_decode(associative: true, flags: JSON_THROW_ON_ERROR, json: '{}');
     }
 }
 
@@ -23,6 +24,7 @@ class OnFuncCall
     {
         json_decode('{}', true, 512, JSON_THROW_ON_ERROR);
         json_decode('{}', null, 512, JSON_THROW_ON_ERROR);
+        json_decode('{}', true, 512, JSON_THROW_ON_ERROR);
     }
 }
 
