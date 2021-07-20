@@ -81,7 +81,7 @@ final class UnnamedArgumentResolver
                         continue;
                     } else {
                         $unnamedArgs[$paramPosition] = new Arg(
-                            $currentArgs[$paramPosition - 1]->value,
+                            $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection),
                             false,
                             false,
                             [],
@@ -115,6 +115,8 @@ final class UnnamedArgumentResolver
                 $appends[$key] = $existingName;
             }
         }
+
+        dump($appends);
 
         foreach ($appends as $key => $append) {
             foreach ($parameters as $paramPosition => $parameterReflection) {
