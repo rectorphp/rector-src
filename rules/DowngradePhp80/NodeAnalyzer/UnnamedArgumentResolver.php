@@ -50,6 +50,61 @@ final class UnnamedArgumentResolver
             $functionLikeReflection = new ReflectionFunction($functionLikeReflection->getName());
         }
 
+        /** @var Arg[] $unnamedArgs */
+        $unnamedArgs  = [];
+        $paramPosition = 0;
+
+        foreach ($currentArgs as $key => $arg) {
+            if ($arg->name === null || $this->nodeNameResolver->isName($arg->name, $parameters[$key]->getName())) {
+                $unnamedArgs[$key] = new Arg(
+                    $arg->value,
+                    $arg->byRef,
+                    $arg->unpack,
+                    $arg->getAttributes(),
+                    null
+                );
+            }
+        }
+
+        return $unnamedArgs;
+
+        $unnamedArgs = $this->replacePreviousArgs($currentArgs, $paramPosition, $unnamedArgs);
+        return $unnamedArgs;
+
+        // fill backward for unnamed as Cannot use positional argument after named argument
+        foreach ($currentArgs as $key => $currentArg) {
+            if (! $currentArg->name instanceof Identifier) {
+                for ($i = 0; $i <= $key; $i++) {
+                    if (! isset($unnamedArgs[$i])) {
+                        $unnamedArgs[$i] = $currentArgs[$i];
+                    }
+                }
+            }
+        }
+
+        /** @var null|int $lastUnnamedKey */
+        $lastUnnamedKey = array_key_last($unnamedArgs);
+
+        foreach ($parameters as $paramPosition => $parameterReflection) {
+            $parameterReflectionName = $parameterReflection->getName();
+            foreach ($currentArgs as $key => $currentArg) {
+                if ($key > $lastUnnamedKey && $paramPosition === $key && $this->nodeNameResolver->isName($currentArg->name, $parameterReflectionName) && ! isset($unnamedArgs[$paramPosition])) {
+                    $unnamedArgs[$paramPosition] = new Arg(
+                        $currentArg->value,
+                        $currentArg->byRef,
+                        $currentArg->unpack,
+                        $currentArg->getAttributes(),
+                        null
+                    );
+                }
+            }
+        }
+
+        /** @var null|int $lastUnnamedKey */
+        $lastUnnamedKey = array_key_last($unnamedArgs);
+
+        return $unnamedArgs;
+
         foreach ($parameters as $paramPosition => $parameterReflection) {
             $parameterReflectionName = $parameterReflection->getName();
             foreach ($currentArgs as $key => $currentArg) {
@@ -131,10 +186,6 @@ final class UnnamedArgumentResolver
 
     private function shouldSkipParam(Arg $arg, ParameterReflection $parameterReflection): bool
     {
-        if ($arg->name === null) {
-            return false;
-        }
-
         if (! $this->nodeNameResolver->isName($arg, $parameterReflection->getName())) {
             return true;
         }
