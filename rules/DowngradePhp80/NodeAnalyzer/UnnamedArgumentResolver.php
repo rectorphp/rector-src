@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
@@ -12,8 +13,6 @@ use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\Php\PhpParameterReflection;
-use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use ReflectionFunction;
@@ -22,9 +21,7 @@ final class UnnamedArgumentResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private ValueResolver $valueResolver,
-        private DefaultParameterValueResolver $defaultParameterValueResolver,
-        private NodeFactory $nodeFactory
+        private DefaultParameterValueResolver $defaultParameterValueResolver
     ) {
     }
 
@@ -83,27 +80,29 @@ final class UnnamedArgumentResolver
         array $currentArgs,
         array $toFillArgs,
         array $unnamedArgs
-    ): array
-    {
+    ): array {
         foreach ($parameters as $paramPosition => $parameterReflection) {
             $parameterReflectionName = $parameterReflection->getName();
             if (! in_array($parameterReflectionName, $toFillArgs, true)) {
                 continue;
             }
 
-            foreach ($currentArgs as $arg) {
-                if ($arg->name instanceof Identifier && $this->nodeNameResolver->isName(
-                    $arg->name,
-                    $parameterReflectionName
-                )) {
-                    $unnamedArgs[$paramPosition] = new Arg(
-                        $arg->value,
-                        $arg->byRef,
-                        $arg->unpack,
-                        $arg->getAttributes(),
-                        null
-                    );
+            foreach ($currentArgs as $currentArg) {
+                if (! $currentArg->name instanceof Identifier) {
+                    continue;
                 }
+
+                if (! $this->nodeNameResolver->isName($currentArg->name, $parameterReflectionName)) {
+                    continue;
+                }
+
+                $unnamedArgs[$paramPosition] = new Arg(
+                    $currentArg->value,
+                    $currentArg->byRef,
+                    $currentArg->unpack,
+                    $currentArg->getAttributes(),
+                    null
+                );
             }
         }
 
@@ -120,11 +119,11 @@ final class UnnamedArgumentResolver
         array $unnamedArgs,
         bool $isNativeFunctionReflection,
         array $parameters
-    ): array
-    {
+    ): array {
         $keys = array_keys($unnamedArgs);
         $highestParameterPosition = max($keys ?: [0]);
-        for ($i = 0; $i < count($parameters); ++$i) {
+        $parametersCount = count($parameters);
+        for ($i = 0; $i < $parametersCount; ++$i) {
             if (! in_array($i, $keys, true) && $i <= $highestParameterPosition) {
                 /** @var ParameterReflection|PhpParameterReflection $parameterReflection */
 
@@ -142,7 +141,7 @@ final class UnnamedArgumentResolver
                 $defaulValue = $this->defaultParameterValueResolver->resolveFromParameterReflection(
                     $parameterReflection
                 );
-                if ($defaulValue === null) {
+                if (! $defaulValue instanceof Expr) {
                     continue;
                 }
 
