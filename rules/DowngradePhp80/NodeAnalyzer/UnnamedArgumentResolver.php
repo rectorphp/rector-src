@@ -9,7 +9,6 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use ReflectionFunction;
 
@@ -17,7 +16,6 @@ final class UnnamedArgumentResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private DefaultParameterValueResolver $defaultParameterValueResolver,
         private NamedToUnnamedArgs $namedToUnnamedArgs
     ) {
     }
