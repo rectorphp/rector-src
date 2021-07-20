@@ -4,24 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\NodeAnalyzer;
 
-use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Identifier;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptor;
-use Rector\Core\Exception\ShouldNotHappenException;
+use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\Php\PhpParameterReflection;
+use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
 use ReflectionFunction;
-use PHPStan\Reflection\ParametersAcceptorSelector;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use Rector\Core\PhpParser\Node\NodeFactory;
 
 final class UnnamedArgumentResolver
 {
@@ -41,9 +36,9 @@ final class UnnamedArgumentResolver
         FunctionReflection | MethodReflection $functionLikeReflection,
         array $currentArgs
     ): array {
-        $parametersAcceptor         = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
-        $unnamedArgs                = [];
-        $parameters                 = $parametersAcceptor->getParameters();
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
+        $unnamedArgs = [];
+        $parameters = $parametersAcceptor->getParameters();
         $isNativeFunctionReflection = $functionLikeReflection instanceof NativeFunctionReflection;
 
         if ($isNativeFunctionReflection) {
@@ -51,64 +46,116 @@ final class UnnamedArgumentResolver
         }
 
         /** @var Arg[] $unnamedArgs */
-        $unnamedArgs  = [];
-        $toFillArgs   = [];
+        $unnamedArgs = [];
+        $toFillArgs = [];
         foreach ($currentArgs as $key => $arg) {
             if ($arg->name === null) {
-                $unnamedArgs[$key] = new Arg(
-                    $arg->value,
-                    $arg->byRef,
-                    $arg->unpack,
-                    $arg->getAttributes(),
-                    null
-                );
+                $unnamedArgs[$key] = new Arg($arg->value, $arg->byRef, $arg->unpack, $arg->getAttributes(), null);
 
                 continue;
             }
 
-            $toFillArgs[] = $this->nodeNameResolver->getName($arg->name);
+            /** @var string $argName */
+            $argName = $this->nodeNameResolver->getName($arg->name);
+            $toFillArgs[] = $argName;
         }
 
+        $unnamedArgs = $this->fillFromNamedArgs($parameters, $currentArgs, $toFillArgs, $unnamedArgs);
+        $unnamedArgs = $this->fillFromJumpedNamedArgs(
+            $functionLikeReflection,
+            $unnamedArgs,
+            $isNativeFunctionReflection,
+            $parameters
+        );
+        ksort($unnamedArgs);
+        return $unnamedArgs;
+    }
+
+    /**
+     * @param ParameterReflection[]|PhpParameterReflection[] $parameters
+     * @param Arg[] $currentArgs
+     * @param string[] $toFillArgs
+     * @param Arg[] $unnamedArgs
+     * @return Arg[]
+     */
+    private function fillFromNamedArgs(
+        array $parameters,
+        array $currentArgs,
+        array $toFillArgs,
+        array $unnamedArgs
+    ): array
+    {
         foreach ($parameters as $paramPosition => $parameterReflection) {
             $parameterReflectionName = $parameterReflection->getName();
-            if (in_array($parameterReflectionName, $toFillArgs, true)) {
-                foreach ($currentArgs as $key => $arg) {
-                    if ($arg->name instanceof Identifier && $this->nodeNameResolver->isName($arg->name, $parameterReflectionName)) {
-                        $unnamedArgs[$paramPosition] = new Arg(
-                            $arg->value,
-                            $arg->byRef,
-                            $arg->unpack,
-                            $arg->getAttributes(),
-                            null
-                        );
-                    }
+            if (! in_array($parameterReflectionName, $toFillArgs, true)) {
+                continue;
+            }
+
+            foreach ($currentArgs as $arg) {
+                if ($arg->name instanceof Identifier && $this->nodeNameResolver->isName(
+                    $arg->name,
+                    $parameterReflectionName
+                )) {
+                    $unnamedArgs[$paramPosition] = new Arg(
+                        $arg->value,
+                        $arg->byRef,
+                        $arg->unpack,
+                        $arg->getAttributes(),
+                        null
+                    );
                 }
             }
         }
 
+        return $unnamedArgs;
+    }
+
+    /**
+     * @param Arg[] $unnamedArgs
+     * @param ParameterReflection[]|PhpParameterReflection[] $parameters
+     * @return Arg[]
+     */
+    private function fillFromJumpedNamedArgs(
+        FunctionReflection | MethodReflection | ReflectionFunction $functionLikeReflection,
+        array $unnamedArgs,
+        bool $isNativeFunctionReflection,
+        array $parameters
+    ): array
+    {
         $keys = array_keys($unnamedArgs);
-        for ($i = 0; $i < count($parameters); $i++) {
+        for ($i = 0; $i < count($parameters); ++$i) {
             if (! in_array($i, $keys, true)) {
-                $parameterReflection = $isNativeFunctionReflection
-                    ? $functionLikeReflection->getParameters()[$i]
-                    : $parameters[$i];
+                /** @var ParameterReflection|PhpParameterReflection $parameterReflection */
+
+                if ($isNativeFunctionReflection) {
+                    /** @var ReflectionFunction $functionLikeReflection */
+                    $parameterReflection = new PhpParameterReflection(
+                        $functionLikeReflection->getParameters()[$i],
+                        null,
+                        null
+                    );
+                } else {
+                    $parameterReflection = $parameters[$i];
+                }
+
+                $defaulValue = $this->defaultParameterValueResolver->resolveFromParameterReflection(
+                    $parameterReflection
+                );
+                if ($defaulValue === null) {
+                    continue;
+                }
 
                 $unnamedArgs[$i] = new Arg(
-                    $isNativeFunctionReflection
-                        ? ($parameterReflection->getDefaultValue() === null
-                             ? $this->nodeFactory->createNull()
-                             : $this->nodeFactory->createConstFetch((string) $parameterReflection->getDefaultValue()))
-                        : $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection)
-                    ,
-                    $isNativeFunctionReflection ? $parameterReflection->isPassedByReference() : $parameterReflection->passedByReference()->yes(),
-                    $isNativeFunctionReflection ? $parameterReflection->isVariadic() : $parameterReflection->isVariadic(),
+                    $defaulValue,
+                    $parameterReflection->passedByReference()
+                        ->yes(),
+                    $parameterReflection->isVariadic(),
                     [],
                     null
                 );
             }
         }
 
-        ksort($unnamedArgs);
         return $unnamedArgs;
     }
 }
