@@ -27,7 +27,7 @@ final class Anything extends Autoconfigure
     public function __construct()
     {
         parent::__construct(
-            ['some_items']
+            ['some_items'], null, null, null, null, null, null, null, null
         );
     }
 }
