@@ -94,9 +94,10 @@ final class UnnamedArgumentResolver
                     : $parameters[$i];
 
                 $unnamedArgs[$i] = new Arg(
-                    $this->nodeFactory->createConstFetch(
-                        (string) $parameterReflection->getDefaultValue()
-                    ),
+                    $isNativeFunctionReflection
+                        ? $this->nodeFactory->createConstFetch((string) $parameterReflection->getDefaultValue())
+                        : $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection)
+                    ,
                     false,
                     false,
                     [],
