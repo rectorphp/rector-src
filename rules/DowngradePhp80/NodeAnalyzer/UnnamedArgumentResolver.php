@@ -74,7 +74,7 @@ final class UnnamedArgumentResolver
             if (in_array($parameterReflectionName, $toFillArgs, true)) {
                 foreach ($currentArgs as $key => $arg) {
                     if ($arg->name instanceof Identifier && $this->nodeNameResolver->isName($arg->name, $parameterReflectionName)) {
-                        $unnamedArgs[$key] = new Arg(
+                        $unnamedArgs[$paramPosition] = new Arg(
                             $arg->value,
                             $arg->byRef,
                             $arg->unpack,
