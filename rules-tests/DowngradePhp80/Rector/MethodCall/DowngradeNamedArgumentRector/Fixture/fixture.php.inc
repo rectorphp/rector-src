@@ -28,7 +28,7 @@ class Fixture
 
     public function run(string $name = null, array $attributes = [])
     {
-        $this->execute([[$name ?? 0 => $attributes]]);
+        $this->execute([[$name ?? 0 => $attributes]], null);
     }
 }
 

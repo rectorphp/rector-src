@@ -24,7 +24,7 @@ final class RectorConfiguration
 {
     public function run(array $fileExtensions)
     {
-        return new Configuration(true, true, false, 'console', $fileExtensions);
+        return new Configuration(true, true, false, 'console', $fileExtensions, [], true, null);
     }
 }
 
