@@ -54,12 +54,8 @@ final class UnnamedArgumentResolver
             $parameterReflectionName = $parameterReflection->getName();
 
             foreach ($currentArgs as $key => $currentArg) {
-                if (! $currentArg->name instanceof Identifier) {
-                    continue;
-                }
-
                 if ($key === $paramPosition) {
-                    if ($this->nodeNameResolver->isName($currentArg->name, $parameterReflectionName)) {
+                    if (! $currentArg->name instanceof Identifier || $this->nodeNameResolver->isName($currentArg->name, $parameterReflectionName)) {
                         $unnamedArgs[$paramPosition] = new Arg(
                             $currentArg->value,
                             $currentArg->byRef,
@@ -72,18 +68,26 @@ final class UnnamedArgumentResolver
                     }
 
                     if ($isNativeFunctionReflection) {
+                        $currentPosition = $functionLikeReflection->getParameters()[$paramPosition];
                         $unnamedArgs[$paramPosition] = new Arg(
                             $this->nodeFactory->createConstFetch(
-                                (string) $functionLikeReflection->getParameters()[$paramPosition]->getDefaultValue()
+                                (string) $currentPosition->getDefaultValue()
                             ),
-                            false,
-                            false,
+                            $currentPosition->isPassedByReference(),
+                            $currentPosition->isVariadic(),
                             [],
                             null
                         );
 
                         continue;
                     }
+
+                    $unnamedArgs[$paramPosition] = new Arg($this->defaultParameterValueResolver->resolveFromFunctionLikeAndPosition(
+                        $functionLikeReflection,
+                        $paramPosition
+                    ));
+
+                    continue;
                 }
             }
         }
