@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\NodeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PHPStan\Reflection\FunctionReflection;
@@ -14,6 +15,8 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
+use PHPStan\Reflection\Native\NativeFunctionReflection;
+use ReflectionFunction;
 
 final class UnnamedArgumentResolver
 {
@@ -44,11 +47,10 @@ final class UnnamedArgumentResolver
                     continue;
                 }
 
-               // $defaultValue = $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection);
-              //  dump($defaultValue);
+                $value = $this->getParameterValue($currentArgs, $paramPosition, $functionLikeReflection);
 
                 $unnamedArgs[$paramPosition] = new Arg(
-                    $currentArg->value,
+                    $value,
                     $currentArg->byRef,
                     $currentArg->unpack,
                     $currentArg->getAttributes(),
@@ -67,6 +69,13 @@ final class UnnamedArgumentResolver
         ksort($unnamedArgs);
 
         return $unnamedArgs;
+    }
+
+    /**
+     * @param Args[] $args
+     */
+    private function getParameterValue(array $args, int $paramPosition, FunctionReflection | MethodReflection $functionLikeReflection): Expr
+    {
     }
 
     private function shouldSkipParam(Arg $arg, ParameterReflection $parameterReflection): bool
@@ -90,8 +99,6 @@ final class UnnamedArgumentResolver
         }
 
         $defaultValue = $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection);
-
-        dump($defaultValue);
 
         // default value is set already, let's skip it
         return $this->valueResolver->isValue($arg->value, $defaultValue);
