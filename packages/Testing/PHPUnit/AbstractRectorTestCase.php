@@ -81,7 +81,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function isWindows(): bool
     {
-        return strncasecmp(PHP_OS, 'WIN', 3) === 0;
+        return PHP_OS_FAMILY === 'Windows';
     }
 
     protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo, bool $allowMatches = true): void
