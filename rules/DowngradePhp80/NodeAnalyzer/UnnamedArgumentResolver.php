@@ -100,8 +100,8 @@ final class UnnamedArgumentResolver
                              : $this->nodeFactory->createConstFetch((string) $parameterReflection->getDefaultValue()))
                         : $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection)
                     ,
-                    false,
-                    false,
+                    $isNativeFunctionReflection ? $parameterReflection->isPassedByReference() : $parameterReflection->passedByReference()->yes(),
+                    $isNativeFunctionReflection ? $parameterReflection->isVariadic() : $parameterReflection->isVariadic(),
                     [],
                     null
                 );
