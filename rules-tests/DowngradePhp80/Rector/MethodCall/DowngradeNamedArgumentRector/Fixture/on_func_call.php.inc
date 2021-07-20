@@ -34,7 +34,7 @@ class OnFuncCall
         json_encode([], 0, 10);
         json_encode([], JSON_FORCE_OBJECT, 100);
 
-        class_exists('stdClass', true);
+        class_exists('stdClass');
     }
 }
 
