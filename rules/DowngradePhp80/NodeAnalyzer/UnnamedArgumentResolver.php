@@ -52,10 +52,9 @@ final class UnnamedArgumentResolver
 
         /** @var Arg[] $unnamedArgs */
         $unnamedArgs  = [];
-        $paramPosition = 0;
-
+        $toFillArgs   = [];
         foreach ($currentArgs as $key => $arg) {
-            if ($arg->name === null || $this->nodeNameResolver->isName($arg->name, $parameters[$key]->getName())) {
+            if ($arg->name === null) {
                 $unnamedArgs[$key] = new Arg(
                     $arg->value,
                     $arg->byRef,
@@ -63,8 +62,50 @@ final class UnnamedArgumentResolver
                     $arg->getAttributes(),
                     null
                 );
+
+                continue;
+            }
+
+            $toFillArgs[] = $this->nodeNameResolver->getName($arg->name);
+        }
+
+        foreach ($parameters as $paramPosition => $parameterReflection) {
+            $parameterReflectionName = $parameterReflection->getName();
+            if (in_array($parameterReflectionName, $toFillArgs, true)) {
+                foreach ($currentArgs as $key => $arg) {
+                    if ($arg->name instanceof Identifier && $this->nodeNameResolver->isName($arg->name, $parameterReflectionName)) {
+                        $unnamedArgs[$key] = new Arg(
+                            $arg->value,
+                            $arg->byRef,
+                            $arg->unpack,
+                            $arg->getAttributes(),
+                            null
+                        );
+                    }
+                }
             }
         }
+
+        $keys = array_keys($unnamedArgs);
+        for ($i = 0; $i < count($parameters); $i++) {
+            if (! in_array($i, $keys, true)) {
+                $parameterReflection = $isNativeFunctionReflection
+                    ? $functionLikeReflection->getParameters()[$i]
+                    : $parameters[$i];
+
+                $unnamedArgs[$i] = new Arg(
+                    $this->nodeFactory->createConstFetch(
+                        (string) $parameterReflection->getDefaultValue()
+                    ),
+                    false,
+                    false,
+                    [],
+                    null
+                );
+            }
+        }
+
+        dump(array_keys($unnamedArgs));
 
         return $unnamedArgs;
 
