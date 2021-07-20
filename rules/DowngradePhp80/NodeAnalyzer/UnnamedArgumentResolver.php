@@ -7,6 +7,7 @@ namespace Rector\DowngradePhp80\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
@@ -19,13 +20,16 @@ use PHPStan\Reflection\Native\NativeFunctionReflection;
 use ReflectionFunction;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use Rector\Core\PhpParser\Node\NodeFactory;
 
 final class UnnamedArgumentResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private ValueResolver $valueResolver,
-        private DefaultParameterValueResolver $defaultParameterValueResolver
+        private DefaultParameterValueResolver $defaultParameterValueResolver,
+        private NodeFactory $nodeFactory
     ) {
     }
 
@@ -37,9 +41,14 @@ final class UnnamedArgumentResolver
         FunctionReflection | MethodReflection $functionLikeReflection,
         array $currentArgs
     ): array {
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
-        $unnamedArgs        = $currentArgs;
-        $parameters         = $parametersAcceptor->getParameters();
+        $parametersAcceptor         = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
+        $unnamedArgs                = [];
+        $parameters                 = $parametersAcceptor->getParameters();
+        $isNativeFunctionReflection = $functionLikeReflection instanceof NativeFunctionReflection;
+
+        if ($isNativeFunctionReflection) {
+            $functionLikeReflection = new ReflectionFunction($functionLikeReflection->getName());
+        }
 
         foreach ($parameters as $paramPosition => $parameterReflection) {
             $parameterReflectionName = $parameterReflection->getName();
@@ -56,6 +65,20 @@ final class UnnamedArgumentResolver
                             $currentArg->byRef,
                             $currentArg->unpack,
                             $currentArg->getAttributes(),
+                            null
+                        );
+
+                        continue;
+                    }
+
+                    if ($isNativeFunctionReflection) {
+                        $unnamedArgs[$paramPosition] = new Arg(
+                            $this->nodeFactory->createConstFetch(
+                                (string) $functionLikeReflection->getParameters()[$paramPosition]->getDefaultValue()
+                            ),
+                            false,
+                            false,
+                            [],
                             null
                         );
 

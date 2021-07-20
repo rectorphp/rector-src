@@ -534,6 +534,11 @@ final class NodeFactory
         return new ConstFetch(new Name('true'));
     }
 
+    public function createConstFetch(string $name): ConstFetch
+    {
+        return new ConstFetch(new Name($name));
+    }
+
     public function createClosureFromMethodReflection(MethodReflection $methodReflection): Closure
     {
         $classMethod = $this->reflectionAstResolver->resolveClassMethodFromMethodReflection($methodReflection);
