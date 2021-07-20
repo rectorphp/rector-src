@@ -17,6 +17,7 @@ use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use ReflectionFunction;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 
 final class UnnamedArgumentResolver
 {
@@ -35,10 +36,7 @@ final class UnnamedArgumentResolver
         FunctionReflection | MethodReflection $functionLikeReflection,
         array $currentArgs
     ): array {
-        $parametersAcceptor = $functionLikeReflection->getVariants()[0] ?? null;
-        if (! $parametersAcceptor instanceof ParametersAcceptor) {
-            return [];
-        }
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
 
         $unnamedArgs = [];
         foreach ($parametersAcceptor->getParameters() as $paramPosition => $parameterReflection) {
@@ -47,10 +45,8 @@ final class UnnamedArgumentResolver
                     continue;
                 }
 
-                $value = $this->getParameterValue($currentArgs, $paramPosition, $functionLikeReflection);
-
                 $unnamedArgs[$paramPosition] = new Arg(
-                    $value,
+                    $currentArg->value,
                     $currentArg->byRef,
                     $currentArg->unpack,
                     $currentArg->getAttributes(),
@@ -69,13 +65,6 @@ final class UnnamedArgumentResolver
         ksort($unnamedArgs);
 
         return $unnamedArgs;
-    }
-
-    /**
-     * @param Args[] $args
-     */
-    private function getParameterValue(array $args, int $paramPosition, FunctionReflection | MethodReflection $functionLikeReflection): Expr
-    {
     }
 
     private function shouldSkipParam(Arg $arg, ParameterReflection $parameterReflection): bool
