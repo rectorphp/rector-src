@@ -124,36 +124,38 @@ final class UnnamedArgumentResolver
         $highestParameterPosition = max($keys ?: [0]);
         $parametersCount = count($parameters);
         for ($i = 0; $i < $parametersCount; ++$i) {
-            if (! in_array($i, $keys, true) && $i <= $highestParameterPosition) {
-                /** @var ParameterReflection|PhpParameterReflection $parameterReflection */
+            if (in_array($i, $keys, true) || $i > $highestParameterPosition) {
+                continue;
+            }
 
-                if ($isNativeFunctionReflection) {
-                    /** @var ReflectionFunction $functionLikeReflection */
-                    $parameterReflection = new PhpParameterReflection(
-                        $functionLikeReflection->getParameters()[$i],
-                        null,
-                        null
-                    );
-                } else {
-                    $parameterReflection = $parameters[$i];
-                }
-
-                $defaulValue = $this->defaultParameterValueResolver->resolveFromParameterReflection(
-                    $parameterReflection
-                );
-                if (! $defaulValue instanceof Expr) {
-                    continue;
-                }
-
-                $unnamedArgs[$i] = new Arg(
-                    $defaulValue,
-                    $parameterReflection->passedByReference()
-                        ->yes(),
-                    $parameterReflection->isVariadic(),
-                    [],
+            /** @var ParameterReflection|PhpParameterReflection $parameterReflection */
+            if ($isNativeFunctionReflection) {
+                /** @var ReflectionFunction $functionLikeReflection */
+                $parameterReflection = new PhpParameterReflection(
+                    $functionLikeReflection->getParameters()[$i],
+                    null,
                     null
                 );
+            } else {
+                $parameterReflection = $parameters[$i];
             }
+
+            $defaulValue = $this->defaultParameterValueResolver->resolveFromParameterReflection(
+                $parameterReflection
+            );
+
+            if (! $defaulValue instanceof Expr) {
+                continue;
+            }
+
+            $unnamedArgs[$i] = new Arg(
+                $defaulValue,
+                $parameterReflection->passedByReference()
+                    ->yes(),
+                $parameterReflection->isVariadic(),
+                [],
+                null
+            );
         }
 
         return $unnamedArgs;
