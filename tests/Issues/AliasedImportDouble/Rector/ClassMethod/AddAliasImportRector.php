@@ -24,6 +24,9 @@ final class AddAliasImportRector extends AbstractRector
         return new RuleDefinition('demo', []);
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
@@ -32,7 +35,7 @@ final class AddAliasImportRector extends AbstractRector
     /**
      * @param ClassMethod $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ClassMethod
     {
         $node->name = new Identifier('go');
 
