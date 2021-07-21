@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -44,6 +45,11 @@ final class PropertyFetchByMethodAnalyzer
         $propertyUsageByMethods = [];
 
         foreach ($propertyNames as $propertyName) {
+            $property = $class->getProperty($propertyName);
+            if ($property instanceof Property && $property->props[0]->default) {
+                continue;
+            }
+
             foreach ($class->getMethods() as $classMethod) {
                 // assigned in constructor injection → skip
                 if ($this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT) && $this->isPropertyChanging($classMethod, $propertyName)) {
