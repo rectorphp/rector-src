@@ -44,16 +44,8 @@ final class PHPStanStubLoader
             }
 
             foreach (self::STUBS as $stub) {
-                $path = sprintf('phar://%s/phpstan/phpstan/phpstan.phar/stubs/runtime/%s', $vendorPath, $stub);
-                $isExists = file_exists($path);
-
-                if (! $isExists) {
-                    // this is to handle phpstan's stubs got from phpstan-extracted instead of the .phar.
-                    $path = sprintf('%s/phpstan/phpstan-extracted/stubs/runtime/%s', $vendorPath, $stub);
-                    $isExists = file_exists($path);
-                }
-
-                if (! $isExists) {
+                $path = $this->getStubPath($vendorPath, $stub);
+                if ($path === null) {
                     continue 2;
                 }
 
@@ -65,5 +57,23 @@ final class PHPStanStubLoader
             // already loaded? stop loop
             break;
         }
+    }
+
+    private function getStubPath(string $vendorPath, string $stub): ?string
+    {
+        $path = sprintf('phar://%s/phpstan/phpstan/phpstan.phar/stubs/runtime/%s', $vendorPath, $stub);
+        $isExists = file_exists($path);
+
+        if (! $isExists) {
+            // this is to handle phpstan's stubs got from phpstan-extracted instead of the .phar.
+            $path = sprintf('%s/phpstan/phpstan-extracted/stubs/runtime/%s', $vendorPath, $stub);
+            $isExists = file_exists($path);
+        }
+
+        if ($isExists) {
+            return $path;
+        }
+
+        return null;
     }
 }
