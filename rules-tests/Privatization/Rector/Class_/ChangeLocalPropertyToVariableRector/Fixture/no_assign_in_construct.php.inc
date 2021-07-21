@@ -10,9 +10,9 @@ final class NoAssignInConstruct
     {
     }
 
-    public function sayHello(string $name)
+    public function sayHello(string $aName)
     {
-        $this->name = $name;
+        $this->name = $aName;
         return "Hello {$this->name}";
     }
 }
@@ -29,9 +29,9 @@ final class NoAssignInConstruct
     {
     }
 
-    public function sayHello(string $name)
+    public function sayHello(string $aName)
     {
-        $name = $name;
+        $name = $aName;
         return "Hello {$name}";
     }
 }
