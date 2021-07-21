@@ -95,6 +95,21 @@ return [
             );
         },
 
+        // unprefixed ContainerConfigurator
+        function (string $filePath, string $prefix, string $content): string {
+            // keep vendor prefixed the prefixed file loading; not part of public API
+            // except @see https://github.com/symfony/symfony/commit/460b46f7302ec7319b8334a43809523363bfef39#diff-1cd56b329433fc34d950d6eeab9600752aa84a76cbe0693d3fab57fed0f547d3R110
+            if (str_contains($filePath, 'vendor/symfony') && ! str_ends_with($filePath, 'vendor/symfony/dependency-injection/Loader/PhpFileLoader.php')) {
+                return $content;
+            }
+
+            return Strings::replace(
+                $content,
+                '#' . $prefix . '\\\\Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\Configurator\\\\ContainerConfigurator#',
+                'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'
+            );
+        },
+
         // get version for prefixed version
         function (string $filePath, string $prefix, string $content): string {
             if (! Strings::endsWith($filePath, 'src/Configuration/Configuration.php')) {
@@ -116,6 +131,16 @@ return [
 
             // see https://regex101.com/r/v8zRMm/1
             return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\#', 'Composer\\');
+        },
+
+        // un-prefix phpstan-extracted Composer\Autoload\ClassLoader
+        function (string $filePath, string $prefix, string $content): string {
+            if (! Strings::contains($filePath, 'vendor/phpstan/phpstan-extracted/')) {
+                return $content;
+            }
+
+            // see https://regex101.com/r/1l9oxm/1
+            return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\Autoload\\\\\ClassLoader#', 'Composer\\Autoload\\ClassLoader');
         },
 
         // fixes https://github.com/rectorphp/rector/issues/6007
@@ -175,6 +200,11 @@ return [
 
             // skip "Rector\\" namespace
             if (Strings::contains($content, '$services->load(\'Rector')) {
+                return $content;
+            }
+
+            // skip "Ssch\\" namespace
+            if (Strings::contains($content, '$services->load(\'Ssch')) {
                 return $content;
             }
 

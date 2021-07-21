@@ -39,20 +39,26 @@ jobs:
 
             # install only prod dependencies - do not use ramsey, it uses cache including "dev", we want to avoid it here
             -   run: |
+                    composer remove --dev symplify/easy-coding-standard
+                    composer remove --dev symplify/coding-standard
                     composer remove composer/xdebug-handler
                     composer require composer/composer
                     composer require composer/xdebug-handler:"2.0.1 as 1.4.6"
                     composer install --no-dev --ansi
 
-                    # early downgrade individual files to be copied to phpstan-extracted
-                    bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php --ansi
-                    bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php --ansi
+            # early downgrade individual functions and files of symfony Attribute classes
+            -   run: bin/rector process src/functions -c build/config/config-downgrade.php --ansi
+            -   run: bin/rector process vendor/symfony/dependency-injection/Attribute/Autoconfigure.php -c build/config/config-downgrade.php --ansi
+            -   run: bin/rector process vendor/symfony/dependency-injection/Attribute/AutoconfigureTag.php -c build/config/config-downgrade.php --ansi
+            -   run: bin/rector process vendor/symfony/console/Event/ConsoleCommandEvent.php -c build/config/config-downgrade-php70.php --ansi
+            -   run: bin/rector process vendor/symfony/console/EventListener/ErrorListener.php -c build/config/config-downgrade-php70.php --ansi
 
             -   run: wget https://github.com/box-project/box/releases/download/3.12.2/box.phar -N --no-verbose
 
             # extra content of phpstan.phar to vendor/phpstan/phpstan-extracted and copy downgraded classes early
             -   run: |
                     php box.phar extract vendor/phpstan/phpstan/phpstan.phar vendor/phpstan/phpstan-extracted
+                    mv vendor/phpstan/phpstan-extracted/vendor/scoper-autoload.php vendor/phpstan/phpstan-extracted/vendor/phpstan-autoload.php
                     cp vendor/symfony/console/Event/ConsoleCommandEvent.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/Event/ConsoleCommandEvent.php
                     cp vendor/symfony/console/EventListener/ErrorListener.php vendor/phpstan/phpstan-extracted/vendor/symfony/console/EventListener/ErrorListener.php
 
@@ -62,6 +68,7 @@ jobs:
             -   run: rm -rf vendor/bin/phpstan vendor/phpstan/phpstan/bootstrap.php
             # the vendor/phpstan/phpstan/bootstrap.php is statically included by composer, so better add empty file
             -   run: echo "<?php " > vendor/phpstan/phpstan/bootstrap.php
+            -   run: echo "require_once __DIR__ . '/vendor/phpstan/phpstan-extracted/preload.php';" >> preload.php
             -   run: rm -rf vendor/phpstan/phpstan/phpstan.phar
             -   run: rm -rf phpstan-for-rector.neon
 
@@ -91,13 +98,14 @@ jobs:
                     rm -rf vendor
                     composer create-project php-parallel-lint/php-parallel-lint php-parallel-lint --ansi
 
-            -   run: php-parallel-lint/parallel-lint rector-prefixed-downgraded-php70 --exclude rector-prefixed-downgraded-php70/stubs --exclude rector-prefixed-downgraded-php70/vendor/symfony/error-handler/Resources --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-kernel/Resources --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/polyfill-mbstring/bootstrap80.php --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symplify/smart-file-system/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Session --exclude rector-prefixed-downgraded-php70/vendor/symfony/var-dumper --exclude rector-prefixed-downgraded-php70/vendor/nette/caching --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/src/Rector/LNumber --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Test --exclude rector-prefixed-downgraded-php70/vendor/symplify/simple-php-doc-parser/tests --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/src/Tracy/Bar/panels/info.panel.phtml --exclude rector-prefixed-downgraded-php70/vendor/rector/extension-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/string/Slugger/AsciiSlugger.php
+            -   run: php-parallel-lint/parallel-lint rector-prefixed-downgraded-php70 --exclude rector-prefixed-downgraded-php70/stubs --exclude rector-prefixed-downgraded-php70/vendor/symfony/error-handler/Resources --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-kernel/Resources --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/polyfill-mbstring/bootstrap80.php --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symplify/smart-file-system/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Session --exclude rector-prefixed-downgraded-php70/vendor/symfony/var-dumper --exclude rector-prefixed-downgraded-php70/vendor/nette/caching --exclude rector-prefixed-downgraded-php70/vendor/rector/rector-nette/src/Rector/LNumber --exclude rector-prefixed-downgraded-php70/vendor/symfony/http-foundation/Test --exclude rector-prefixed-downgraded-php70/vendor/symplify/simple-php-doc-parser/tests --exclude rector-prefixed-downgraded-php70/vendor/tracy/tracy/src/Tracy/Bar/panels/info.panel.phtml --exclude rector-prefixed-downgraded-php70/vendor/rector/extension-installer/tests --exclude rector-prefixed-downgraded-php70/vendor/symfony/string/Slugger/AsciiSlugger.php --exclude rector-prefixed-downgraded-php70/vendor/ssch/typo3-rector/templates/maker
 
             # 5. downgrade bootstrap.php and copy repository meta files
             -   run: |
                     cp -R build/target-repository-php70/. rector-prefixed-downgraded-php70
                     cp -R templates rector-prefixed-downgraded-php70/
                     cp CONTRIBUTING.md rector-prefixed-downgraded-php70/
+                    cp -R preload.php rector-prefixed-downgraded-php70/
 
             # 6. clone remote repository, so we can push it
             -
