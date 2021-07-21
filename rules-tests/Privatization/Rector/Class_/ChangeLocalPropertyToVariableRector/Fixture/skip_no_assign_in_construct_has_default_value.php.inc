@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Privatization\Rector\Class_\ChangeLocalPropertyToVariableRector\Fixture;
 
-final class NoAssignInConstructHasDefaultValue
+final class SkipNoAssignInConstructHasDefaultValue
 {
     private string $name = 'test';
 
