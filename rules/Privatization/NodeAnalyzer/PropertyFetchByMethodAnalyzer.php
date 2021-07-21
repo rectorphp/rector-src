@@ -46,7 +46,7 @@ final class PropertyFetchByMethodAnalyzer
         foreach ($propertyNames as $propertyName) {
             foreach ($class->getMethods() as $classMethod) {
                 // assigned in constructor injection → skip
-                if ($this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
+                if ($this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT) && $this->isPropertyChanging($classMethod, $propertyName)) {
                     return [];
                 }
 
