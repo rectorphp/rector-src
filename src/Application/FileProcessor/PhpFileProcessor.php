@@ -49,7 +49,14 @@ final class PhpFileProcessor implements FileProcessorInterface
         }, ApplicationPhase::PARSING());
 
         // 2. change nodes with Rectors
+        $i = 0;
         do {
+            ++$i;
+
+            if ($i === 10) { // ensure no infinite loop
+                break;
+            }
+
             $file->changeHasChanged(false);
             $this->refactorNodesWithRectors($file);
 
