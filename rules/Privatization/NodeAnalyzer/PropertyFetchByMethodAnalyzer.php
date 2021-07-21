@@ -63,6 +63,13 @@ final class PropertyFetchByMethodAnalyzer
                     continue;
                 }
 
+                if (! $this->isPropertyChanging(
+                    $classMethod,
+                    $propertyName
+                )) {
+                    continue;
+                }
+
                 $classMethodName = $this->nodeNameResolver->getName($classMethod);
                 $propertyUsageByMethods[$propertyName][] = $classMethodName;
             }
