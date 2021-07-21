@@ -45,14 +45,13 @@ final class PropertyFetchByMethodAnalyzer
         $propertyUsageByMethods = [];
 
         foreach ($propertyNames as $propertyName) {
-            $property = $class->getProperty($propertyName);
-            if ($property instanceof Property && $property->props[0]->default) {
+            if ($this->isPropertyHasDefaultValue($class, $propertyName)) {
                 continue;
             }
 
             foreach ($class->getMethods() as $classMethod) {
                 // assigned in constructor injection → skip
-                if ($this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT) && $this->isPropertyChanging($classMethod, $propertyName)) {
+                if ($this->isInConstructWithPropertyChanging($classMethod, $propertyName)) {
                     return [];
                 }
 
@@ -70,6 +69,23 @@ final class PropertyFetchByMethodAnalyzer
         }
 
         return $propertyUsageByMethods;
+    }
+
+    private function isPropertyHasDefaultValue(Class_ $class, string $propertyName): bool
+    {
+        $property = $class->getProperty($propertyName);
+        return $property instanceof Property && $property->props[0]->default;
+    }
+
+    private function isInConstructWithPropertyChanging(ClassMethod $classMethod, string $propertyName): bool
+    {
+        if (!$this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
+            return false;
+        }
+        return $this->isPropertyChanging(
+            $classMethod,
+            $propertyName
+        );
     }
 
     /**
@@ -104,11 +120,9 @@ final class PropertyFetchByMethodAnalyzer
                     return null;
                 }
 
-                if ($node instanceof If_) {
-                    $isPropertyReadInIf = $this->refactorIf($node, $propertyName);
-                }
-
+                $isPropertyReadInIf = $this->verifyPropertyReadInIf($isPropertyReadInIf, $node, $propertyName);
                 $isPropertyChanging = $this->isPropertyChanging($node, $propertyName);
+
                 if (! $isPropertyChanging) {
                     return null;
                 }
@@ -118,6 +132,15 @@ final class PropertyFetchByMethodAnalyzer
         );
 
         return $isPropertyChanging || $isIfFollowedByAssign || $isPropertyReadInIf;
+    }
+
+    private function verifyPropertyReadInIf(?bool $isPropertyReadInIf, Node $node, string $propertyName): ?bool
+    {
+        if ($node instanceof If_) {
+            $isPropertyReadInIf = $this->refactorIf($node, $propertyName);
+        }
+
+        return $isPropertyReadInIf;
     }
 
     private function isScopeChangingNode(Node $node): bool
