@@ -11,7 +11,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 /**
  * @see https://github.com/rectorphp/rector-src/pull/478/checks?check_run_id=3124352071
  */
-final class IssueAnnotationTest extends AbstractRectorTestCase
+final class AliasedImportDoubleTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

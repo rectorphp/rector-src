@@ -21,6 +21,7 @@ final class AddAliasImportRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
+        return new RuleDefinition('demo', []);
     }
 
     public function getNodeTypes(): array
