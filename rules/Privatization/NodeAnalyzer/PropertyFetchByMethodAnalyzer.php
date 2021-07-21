@@ -55,18 +55,14 @@ final class PropertyFetchByMethodAnalyzer
                     return [];
                 }
 
-                if (! $this->propertyFetchAnalyzer->containsLocalPropertyFetchName($classMethod, $propertyName)) {
-                    continue;
-                }
-
-                if ($this->isPropertyChangingInMultipleMethodCalls($classMethod, $propertyName)) {
-                    continue;
-                }
-
-                if (! $this->isPropertyChanging(
+                if ($this->isContainsLocalPropertyFetchNameOrPropertyChangingInMultipleMethodCalls(
                     $classMethod,
                     $propertyName
                 )) {
+                    continue;
+                }
+
+                if (! $this->isPropertyChanging($classMethod, $propertyName)) {
                     continue;
                 }
 
@@ -78,6 +74,18 @@ final class PropertyFetchByMethodAnalyzer
         return $propertyUsageByMethods;
     }
 
+    private function isContainsLocalPropertyFetchNameOrPropertyChangingInMultipleMethodCalls(
+        ClassMethod $classMethod,
+        string $propertyName
+    ): bool
+    {
+        if (! $this->propertyFetchAnalyzer->containsLocalPropertyFetchName($classMethod, $propertyName)) {
+            return true;
+        }
+
+        return $this->isPropertyChangingInMultipleMethodCalls($classMethod, $propertyName);
+    }
+
     private function isPropertyHasDefaultValue(Class_ $class, string $propertyName): bool
     {
         $property = $class->getProperty($propertyName);
@@ -86,13 +94,10 @@ final class PropertyFetchByMethodAnalyzer
 
     private function isInConstructWithPropertyChanging(ClassMethod $classMethod, string $propertyName): bool
     {
-        if (!$this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
+        if (! $this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
             return false;
         }
-        return $this->isPropertyChanging(
-            $classMethod,
-            $propertyName
-        );
+        return $this->isPropertyChanging($classMethod, $propertyName);
     }
 
     /**
