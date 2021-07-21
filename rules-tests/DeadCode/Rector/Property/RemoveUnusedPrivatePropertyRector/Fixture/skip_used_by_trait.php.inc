@@ -10,5 +10,3 @@ class SkipUsedByTrait
 
     private $aProperty;
 }
-
-?>
