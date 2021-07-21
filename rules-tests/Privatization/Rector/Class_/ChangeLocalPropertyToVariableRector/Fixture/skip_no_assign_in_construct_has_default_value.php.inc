@@ -15,5 +15,3 @@ final class SkipNoAssignInConstructHasDefaultValue
         return "Hello {$this->name}";
     }
 }
-
-?>
