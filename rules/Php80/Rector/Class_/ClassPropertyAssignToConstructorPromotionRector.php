@@ -132,6 +132,8 @@ CODE_SAMPLE
             $propertyName = $this->getName($property);
             $param->var->name = $propertyName;
             $param->flags = $property->flags;
+            // Copy over attributes of the "old" property
+            $param->attrGroups = $property->attrGroups;
             $this->processNullableType($property, $param);
         }
 

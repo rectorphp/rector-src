@@ -53,10 +53,6 @@ final class PromotedPropertyCandidateResolver
                 continue;
             }
 
-            if ($property->attrGroups !== []) {
-                continue;
-            }
-
             $propertyPromotionCandidate = $this->matchPropertyPromotionCandidate($property, $constructClassMethod);
             if (! $propertyPromotionCandidate instanceof PropertyPromotionCandidate) {
                 continue;

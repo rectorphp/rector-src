@@ -31,12 +31,8 @@ use JetBrains\PhpStorm\Immutable;
 
 final class Coordinate
 {
-    #[Immutable]
-    public float $latitude;
-
-    public function __construct(float $latitude, public float $longitude)
+    public function __construct(#[Immutable] public float $latitude, public float $longitude)
     {
-        $this->latitude = $latitude;
     }
 }
 ?>
