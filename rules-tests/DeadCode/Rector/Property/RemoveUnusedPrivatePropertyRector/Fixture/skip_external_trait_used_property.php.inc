@@ -4,9 +4,9 @@ namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRecto
 
 use Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Source\ATrait;
 
-class SkipUsedByTrait
+class SkipExternalTraitUsedProperty
 {
     use ATrait;
 
-    private $aProperty;
+    private $usedProperty = 10;
 }

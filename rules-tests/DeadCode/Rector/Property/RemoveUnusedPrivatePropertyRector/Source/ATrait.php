@@ -8,8 +8,6 @@ trait ATrait
 {
     public function run()
     {
-        if ($this->aProperty) {
-            $this->aProperty->execute();
-        }
+        return $this->usedProperty;
     }
 }
