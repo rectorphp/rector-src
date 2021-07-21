@@ -44,6 +44,7 @@ final class PHPStanStubLoader
             }
 
             foreach (self::STUBS as $stub) {
+                // this is to handle phpstan's stubs got from phpstan-extracted instead of the .phar.
                 $path = sprintf('%s/phpstan/phpstan-extracted/stubs/runtime/%s', $vendorPath, $stub);
                 $isExists = file_exists($path);
 

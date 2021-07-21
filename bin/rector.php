@@ -122,6 +122,7 @@ final class AutoloadIncluder
 
     public function loadIfExistsAndNotLoadedYet(string $filePath): void
     {
+        // the scoper-autoload.php is exists in phpstan-extracted/vendor/scoper-autoload.php, move the check in :
         if (! file_exists($filePath)) {
             return;
         }
