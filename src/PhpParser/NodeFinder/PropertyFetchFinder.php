@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Parser;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
@@ -59,7 +58,7 @@ final class PropertyFetchFinder
         $className = (string) $this->nodeNameResolver->getName($classLike);
         if (! $this->reflectionProvider->hasClass($className)) {
             /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-            $propertyFetches = $this->findPropertyFetchesInAnonymousClassLike($classLike->stmts, $propertyName);
+            $propertyFetches = $this->findPropertyFetchesInClassLike($classLike->stmts, $propertyName);
             return $propertyFetches;
         }
 
@@ -85,7 +84,10 @@ final class PropertyFetchFinder
             $traitName = $classLike->getName();
 
             /** @var Trait_|null $trait */
-            $trait = $this->betterNodeFinder->findFirst($allNodes, fn(Node $node): bool => $node instanceof Trait_ && $this->nodeNameResolver->isName($node, $traitName));
+            $trait = $this->betterNodeFinder->findFirst(
+                $allNodes,
+                fn (Node $node): bool => $node instanceof Trait_ && $this->nodeNameResolver->isName($node, $traitName)
+            );
 
             if (! $trait instanceof Trait_) {
                 continue;
@@ -94,7 +96,7 @@ final class PropertyFetchFinder
             $nodes[] = $trait;
         }
 
-        return $this->findPropertyFetchesInClassLike($nodes, $propertyName);
+        return $this->findPropertyFetchesInNonAnonymousClassLike($nodes, $propertyName);
     }
 
     /**
@@ -126,23 +128,17 @@ final class PropertyFetchFinder
      * @param Stmt[] $nodes
      * @return PropertyFetch[]|StaticPropertyFetch[]
      */
-    private function findPropertyFetchesInClassLike(array $nodes, string $propertyName): array
+    private function findPropertyFetchesInNonAnonymousClassLike(array $nodes, string $propertyName): array
     {
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use ($propertyName): bool {
-            // property + static fetch
-            if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
-                return false;
-            }
+        $propertyFetches = $this->findPropertyFetchesInClassLike($nodes, $propertyName);
 
-            // is it the name match?
-            if (! $this->nodeNameResolver->isName($node, $propertyName)) {
-                return false;
+        foreach ($propertyFetches as $key => $propertyFetch) {
+            $currentClassLike = $propertyFetch->getAttribute(AttributeKey::CLASS_NODE);
+            if ($this->classAnalyzer->isAnonymousClass($currentClassLike)) {
+                unset($propertyFetches[$key]);
             }
-
-            $currentClassLike = $node->getAttribute(AttributeKey::CLASS_NODE);
-            return ! $this->classAnalyzer->isAnonymousClass($currentClassLike);
-        });
+        }
 
         return $propertyFetches;
     }
@@ -151,10 +147,10 @@ final class PropertyFetchFinder
      * @param Stmt[] $nodes
      * @return PropertyFetch[]|StaticPropertyFetch[]
      */
-    private function findPropertyFetchesInAnonymousClassLike(array $nodes, string $propertyName): array
+    private function findPropertyFetchesInClassLike(array $nodes, string $propertyName): array
     {
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use ($propertyName) : bool {
+        $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use ($propertyName): bool {
             // property + static fetch
             if ($node instanceof PropertyFetch) {
                 return $this->nodeNameResolver->isName($node, $propertyName);
