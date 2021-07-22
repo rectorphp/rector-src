@@ -60,7 +60,8 @@ final class PropertyFetchFinder
         }
 
         $traits = $classReflection->getTraits(true);
-        $nodes  = [];
+        $nodes  = $classLike->stmts;
+
         foreach ($traits as $trait) {
             $fileName = $trait->getFileName();
             if (! $fileName) {
