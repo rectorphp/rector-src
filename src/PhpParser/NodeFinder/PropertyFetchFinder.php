@@ -54,15 +54,17 @@ final class PropertyFetchFinder
         }
 
         $className       = $this->nodeNameResolver->getName($classLike);
-        $classReflection = $this->reflectionProvider->getClass($className);
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return [];
+        }
 
+        $classReflection = $this->reflectionProvider->getClass($className);
         if (! $classReflection instanceof ClassReflection) {
             return [];
         }
 
         $classLikes = $classReflection->getTraits(true);
-        $nodes      = $classLike;
-
+        $nodes      = [$classLike];
         foreach ($classLikes as $classLike) {
             $fileName = $classLike->getFileName();
             if (! $fileName) {
@@ -76,22 +78,17 @@ final class PropertyFetchFinder
             $file = new File($smartFileInfo, $smartFileInfo->getContents());
 
             $allNodes = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes);
-            $traitName = $this->nodeNameResolver->getName($classLike);
-            $traits   = $this->betterNodeFinder->findFirst($allNodes, function (Node $node) use ($traitName) {
+            $traitName = $classLike->getName();
+            $trait   = $this->betterNodeFinder->findFirst($allNodes, function (Node $node) use ($traitName) {
                 return $node instanceof Trait_ && $this->nodeNameResolver->isName($node, $traitName);
             });
 
-            dump_node($traits);die;
-
-            foreach ($allNodes as $node) {
-                dump($node::class);
-                if ($node instanceof Trait_) {
-                    $nodes[] = $node; die;
-                }
+            if (! $trait instanceof Trait_) {
+                continue;
             }
+
+            $nodes[] = $trait;
         }
-
-
 
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
         return $this->betterNodeFinder->find($nodes, function (Node $node) use (
