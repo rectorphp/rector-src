@@ -110,17 +110,17 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->paramAnalyzer->isNullable($param)) {
+            if ($this->paramAnalyzer->isNullable($param) && ! $paramType instanceof UnionType) {
                 if (! $paramType instanceof ArrayType) {
                     continue;
                 }
 
                 $newType   = clone $paramType;
-                    $paramType = new UnionType(
-                        [
-                            new ArrayType($newType->getKeyType(), $newType->getItemType()),
-                            new NullType()
-                        ]
+                $paramType = new UnionType(
+                    [
+                        new ArrayType($newType->getKeyType(), $newType->getItemType()),
+                        new NullType()
+                    ]
                 );
             }
 
