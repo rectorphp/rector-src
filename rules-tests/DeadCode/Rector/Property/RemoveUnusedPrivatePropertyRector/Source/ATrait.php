@@ -10,4 +10,9 @@ trait ATrait
     {
         return $this->usedProperty;
     }
+
+    public function run2()
+    {
+        return static::$usedstaticProperty;
+    }
 }

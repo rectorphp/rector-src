@@ -9,4 +9,5 @@ class SkipExternalTraitUsedProperty
     use ATrait;
 
     private $usedProperty = 10;
+    private static $usedstaticProperty;
 }
