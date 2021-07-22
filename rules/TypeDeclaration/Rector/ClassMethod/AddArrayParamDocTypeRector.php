@@ -108,10 +108,6 @@ CODE_SAMPLE
             }
 
             if ($this->paramAnalyzer->isNullable($param) && ! $paramType instanceof UnionType) {
-                if (! $paramType instanceof ArrayType) {
-                    continue;
-                }
-
                 $paramType = new UnionType([$paramType, new NullType()]);
             }
 
