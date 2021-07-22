@@ -12,10 +12,14 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
 use PhpParser\Parser;
 
@@ -27,7 +31,9 @@ final class PropertyFetchFinder
         private ReflectionProvider $reflectionProvider,
         private ReflectionResolver $reflectionResolver,
         private SmartFileSystem $smartFileSystem,
-        private Parser $parser
+        private Parser $parser,
+        private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -54,7 +60,7 @@ final class PropertyFetchFinder
         }
 
         $traits = $classReflection->getTraits(true);
-        $propertyFetches = [];
+        $nodes  = [];
         foreach ($traits as $trait) {
             $fileName = $trait->getFileName();
             if (! $fileName) {
@@ -62,48 +68,17 @@ final class PropertyFetchFinder
             }
 
             $fileContent = $this->smartFileSystem->readFile($fileName);
-            $nodes       = $this->parser->parse($fileContent);
+            $parsedNodes = $this->parser->parse($fileContent);
 
-            $propertyFetches[] = $this->betterNodeFinder->findFirst($nodes, function (Node $node) use (
-                $propertyName
-            ): bool {
-                // property + static fetch
-                if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
-                    return false;
-                }
+            $smartFileInfo = new SmartFileInfo($fileName);
+            $file = new File($smartFileInfo, $smartFileInfo->getContents()); die;
 
-                return $this->nodeNameResolver->isName($node, $propertyName);
-            });
-        }
-
-        return $propertyFetches;
-
-        dump_node($traits);die;
-
-        $traits = [];
-        foreach ($classLike->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $trait) {
-                $traitName = $this->nodeNameResolver->getName($trait);
-                $traits[]  = $this->reflectionProvider->getClass($traitName);
-            }
-        }
-
-        foreach ($traits as $trait) {
-
-        }
-
-        $classLikesToSearch = $this->nodeRepository->findUsedTraitsInClass($classLike);
-        $classLikesToSearch[] = $classLike;
-
-        $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
-        if ($propertyName === null) {
-            return [];
+            $nodes[] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes);
         }
 
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->find($classLikesToSearch, function (Node $node) use (
-            $propertyName,
-            $classLikesToSearch
+        $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use (
+            $propertyName
         ): bool {
             // property + static fetch
             if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
@@ -111,13 +86,20 @@ final class PropertyFetchFinder
             }
 
             // is it the name match?
-            if (! $this->nodeNameResolver->isName($node, $propertyName)) {
-                return false;
+            if ($this->nodeNameResolver->isName($node, $propertyName)) {
+                dump($node->getAttribute(AttributeKey::PARENT_NODE));
+                print_node($node);
+                return true;
             }
 
-            $currentClassLike = $node->getAttribute(AttributeKey::CLASS_NODE);
-            return in_array($currentClassLike, $classLikesToSearch, true);
+            return false;
         });
+
+        die;
+
+        foreach ($propertyFetches as $propertyFetch) {
+            dump($propertyFetch->getAttribute(AttributeKey::PARENT_NODE));
+        }
 
         return $propertyFetches;
     }
