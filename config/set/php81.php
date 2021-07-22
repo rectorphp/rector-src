@@ -12,4 +12,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ReturnNeverTypeRector::class);
     $services->set(MyCLabsClassToEnumRector::class);
     $services->set(MyCLabsMethodCallToEnumConstRector::class);
+    $services->set(\Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector::class);
 };

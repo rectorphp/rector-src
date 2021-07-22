@@ -40,7 +40,7 @@ final class VisibilityManipulator
         $node->flags -= Class_::MODIFIER_STATIC;
     }
 
-    public function makeFinal(Class_ | ClassMethod $node): void
+    public function makeFinal(Class_ | ClassMethod | ClassConst $node): void
     {
         $this->addVisibilityFlag($node, Visibility::FINAL);
     }
