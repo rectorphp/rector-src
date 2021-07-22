@@ -71,13 +71,13 @@ final class PropertyFetchFinder
             $parsedNodes = $this->parser->parse($fileContent);
 
             $smartFileInfo = new SmartFileInfo($fileName);
-            $file = new File($smartFileInfo, $smartFileInfo->getContents()); die;
+            $file = new File($smartFileInfo, $smartFileInfo->getContents());
 
-            $nodes[] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes);
+            $nodes = array_merge($nodes, $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes));
         }
 
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use (
+        return $this->betterNodeFinder->find($nodes, function (Node $node) use (
             $propertyName
         ): bool {
             // property + static fetch
@@ -86,22 +86,8 @@ final class PropertyFetchFinder
             }
 
             // is it the name match?
-            if ($this->nodeNameResolver->isName($node, $propertyName)) {
-                dump($node->getAttribute(AttributeKey::PARENT_NODE));
-                print_node($node);
-                return true;
-            }
-
-            return false;
+            return $this->nodeNameResolver->isName($node, $propertyName);
         });
-
-        die;
-
-        foreach ($propertyFetches as $propertyFetch) {
-            dump($propertyFetch->getAttribute(AttributeKey::PARENT_NODE));
-        }
-
-        return $propertyFetches;
     }
 
     /**
