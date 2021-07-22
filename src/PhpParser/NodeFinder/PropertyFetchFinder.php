@@ -8,11 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Parser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -22,8 +25,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
-use PhpParser\Parser;
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 
 final class PropertyFetchFinder
 {
@@ -55,29 +56,17 @@ final class PropertyFetchFinder
             return [];
         }
 
-        $className       = $this->nodeNameResolver->getName($classLike);
+        $className = (string) $this->nodeNameResolver->getName($classLike);
         if (! $this->reflectionProvider->hasClass($className)) {
             /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-            return $this->betterNodeFinder->find($classLike->stmts, function (Node $node) use (
-                $propertyName
-            ): bool {
-                // property + static fetch
-                if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
-                    return false;
-                }
-
-                // is it the name match?
-                return $this->nodeNameResolver->isName($node, $propertyName);
-            });
+            $propertyFetches = $this->findPropertyFetchesInAnonymousClassLike($classLike->stmts, $propertyName);
+            return $propertyFetches;
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        if (! $classReflection instanceof ClassReflection) {
-            return [];
-        }
 
         $classLikes = $classReflection->getTraits(true);
-        $nodes      = [$classLike];
+        $nodes = [$classLike];
         foreach ($classLikes as $classLike) {
             $fileName = $classLike->getFileName();
             if (! $fileName) {
@@ -85,16 +74,18 @@ final class PropertyFetchFinder
             }
 
             $fileContent = $this->smartFileSystem->readFile($fileName);
+            /** @var Stmt[] $parsedNodes */
             $parsedNodes = $this->parser->parse($fileContent);
 
             $smartFileInfo = new SmartFileInfo($fileName);
             $file = new File($smartFileInfo, $smartFileInfo->getContents());
 
+            /** @var Stmt[] $allNodes */
             $allNodes = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes);
             $traitName = $classLike->getName();
-            $trait   = $this->betterNodeFinder->findFirst($allNodes, function (Node $node) use ($traitName) {
-                return $node instanceof Trait_ && $this->nodeNameResolver->isName($node, $traitName);
-            });
+
+            /** @var Trait_|null $trait */
+            $trait = $this->betterNodeFinder->findFirst($allNodes, fn(Node $node): bool => $node instanceof Trait_ && $this->nodeNameResolver->isName($node, $traitName));
 
             if (! $trait instanceof Trait_) {
                 continue;
@@ -103,24 +94,7 @@ final class PropertyFetchFinder
             $nodes[] = $trait;
         }
 
-        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        return $this->betterNodeFinder->find($nodes, function (Node $node) use (
-            $propertyName,
-            $classLike
-        ): bool {
-            // property + static fetch
-            if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
-                return false;
-            }
-
-            // is it the name match?
-            if (! $this->nodeNameResolver->isName($node, $propertyName)) {
-                return false;
-            }
-
-            $currentClassLike = $node->getAttribute(AttributeKey::CLASS_NODE);
-            return ! $this->classAnalyzer->isAnonymousClass($currentClassLike);
-        });
+        return $this->findPropertyFetchesInClassLike($nodes, $propertyName);
     }
 
     /**
@@ -146,6 +120,52 @@ final class PropertyFetchFinder
         }
 
         return $foundPropertyFetches;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     * @return PropertyFetch[]|StaticPropertyFetch[]
+     */
+    private function findPropertyFetchesInClassLike(array $nodes, string $propertyName): array
+    {
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+        $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use ($propertyName): bool {
+            // property + static fetch
+            if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
+                return false;
+            }
+
+            // is it the name match?
+            if (! $this->nodeNameResolver->isName($node, $propertyName)) {
+                return false;
+            }
+
+            $currentClassLike = $node->getAttribute(AttributeKey::CLASS_NODE);
+            return ! $this->classAnalyzer->isAnonymousClass($currentClassLike);
+        });
+
+        return $propertyFetches;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     * @return PropertyFetch[]|StaticPropertyFetch[]
+     */
+    private function findPropertyFetchesInAnonymousClassLike(array $nodes, string $propertyName): array
+    {
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+        $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use ($propertyName) : bool {
+            // property + static fetch
+            if ($node instanceof PropertyFetch) {
+                return $this->nodeNameResolver->isName($node, $propertyName);
+            }
+            if ($node instanceof StaticPropertyFetch) {
+                return $this->nodeNameResolver->isName($node, $propertyName);
+            }
+            return false;
+        });
+
+        return $propertyFetches;
     }
 
     private function resolvePropertyName(Property | Param $propertyOrPromotedParam): ?string
