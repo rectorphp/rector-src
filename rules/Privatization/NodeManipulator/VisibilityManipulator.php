@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\NodeManipulator;
 
-use PhpParser\Node;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -16,10 +14,10 @@ use Webmozart\Assert\Assert;
 
 final class VisibilityManipulator
 {
-//    /**
-//     * @var array<class-string<Stmt>>
-//     */
-//    private const ALLOWED_NODE_TYPES = [ClassMethod::class, Property::class, ClassConst::class, Class_::class];
+    public function hasVisibility(ClassMethod | Property | ClassConst | Param $node, int $visibility): bool
+    {
+        return (bool) ($node->flags & $visibility);
+    }
 
     public function makeStatic(ClassMethod | Property | ClassConst $node): void
     {

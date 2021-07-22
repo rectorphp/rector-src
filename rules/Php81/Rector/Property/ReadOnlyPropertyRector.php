@@ -6,6 +6,7 @@ namespace Rector\Php81\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\Rector\AbstractRector;
@@ -76,9 +77,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Param) {
-            // promted property?
-            // dump($node);
-            return null;
+            return $this->refactorParam($node);
         }
 
         // 1. is property read-only?
@@ -87,6 +86,25 @@ CODE_SAMPLE
         }
 
         if ($node->isReadonly()) {
+            return null;
+        }
+
+        $this->visibilityManipulator->makeReadonly($node);
+        return $node;
+    }
+
+    private function refactorParam(Param $node): Param | null
+    {
+        if ($node->flags === 0) {
+            return null;
+        }
+
+        // promoted property?
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($node)) {
+            return null;
+        }
+
+        if ($this->visibilityManipulator->hasVisibility($node, Class_::MODIFIER_READONLY)) {
             return null;
         }
 

@@ -93,14 +93,14 @@ final class PropertyManipulator
         });
     }
 
-    public function isPropertyChangeableExceptConstructor(Property $property): bool
+    public function isPropertyChangeableExceptConstructor(Property | Param $propertyOrParam): bool
     {
-        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
+        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($propertyOrParam);
 
         foreach ($propertyFetches as $propertyFetch) {
-//            if ($this->isChangeableContext($propertyFetch)) {
-//                return true;
-//            }
+            if ($this->isChangeableContext($propertyFetch)) {
+                return true;
+            }
 
             // skip for constructor? it is allowed to set value in constructor method
             $classMethod = $propertyFetch->getAttribute(AttributeKey::METHOD_NODE);
@@ -111,9 +111,9 @@ final class PropertyManipulator
                 continue;
             }
 
-//            if ($this->assignManipulator->isLeftPartOfAssign($propertyFetch)) {
-//                return true;
-//            }
+            if ($this->assignManipulator->isLeftPartOfAssign($propertyFetch)) {
+                return true;
+            }
         }
 
         return false;
