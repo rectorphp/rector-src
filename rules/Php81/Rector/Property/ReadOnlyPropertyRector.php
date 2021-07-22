@@ -64,7 +64,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -93,22 +93,22 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function refactorParam(Param $node): Param | null
+    private function refactorParam(Param $param): Param | null
     {
-        if ($node->flags === 0) {
+        if ($param->flags === 0) {
             return null;
         }
 
         // promoted property?
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($node)) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($param)) {
             return null;
         }
 
-        if ($this->visibilityManipulator->hasVisibility($node, Class_::MODIFIER_READONLY)) {
+        if ($this->visibilityManipulator->hasVisibility($param, Class_::MODIFIER_READONLY)) {
             return null;
         }
 
-        $this->visibilityManipulator->makeReadonly($node);
-        return $node;
+        $this->visibilityManipulator->makeReadonly($param);
+        return $param;
     }
 }
