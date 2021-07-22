@@ -11,6 +11,8 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
+use PHPStan\Type\NullType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -19,6 +21,9 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\Type\IntegerType;
+use PHPStan\Type\StringType;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector\AddArrayParamDocTypeRectorTest
@@ -105,6 +110,20 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->paramAnalyzer->isNullable($param)) {
+                if (! $paramType instanceof ArrayType) {
+                    continue;
+                }
+
+                $newType   = clone $paramType;
+                    $paramType = new UnionType(
+                        [
+                            new ArrayType($newType->getKeyType(), $newType->getItemType()),
+                            new NullType()
+                        ]
+                );
+            }
+
             $paramName = $this->getName($param);
 
             $this->phpDocTypeChanger->changeParamType($phpDocInfo, $paramType, $param, $paramName);
@@ -128,10 +147,6 @@ CODE_SAMPLE
 
         // not an array type
         $paramType = $this->nodeTypeResolver->resolve($param->type);
-
-        if (! $paramType->isArray()->maybe() && $this->paramAnalyzer->isNullable($param)) {
-            return true;
-        }
 
         // weird case for maybe interface
         if ($paramType->isIterable()->maybe() && ($paramType instanceof ObjectType)) {
