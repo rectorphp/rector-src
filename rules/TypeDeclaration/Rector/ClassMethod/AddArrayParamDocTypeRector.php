@@ -126,12 +126,12 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->paramAnalyzer->isNullable($param)) {
-            return true;
-        }
-
         // not an array type
         $paramType = $this->nodeTypeResolver->resolve($param->type);
+
+        if (! $paramType->isArray()->maybe() && $this->paramAnalyzer->isNullable($param)) {
+            return true;
+        }
 
         // weird case for maybe interface
         if ($paramType->isIterable()->maybe() && ($paramType instanceof ObjectType)) {
