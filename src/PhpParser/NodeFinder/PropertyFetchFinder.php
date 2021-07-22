@@ -23,6 +23,7 @@ use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
 use PhpParser\Parser;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 
 final class PropertyFetchFinder
 {
@@ -34,7 +35,8 @@ final class PropertyFetchFinder
         private SmartFileSystem $smartFileSystem,
         private Parser $parser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private AstResolver $astResolver
+        private AstResolver $astResolver,
+        private ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -55,7 +57,18 @@ final class PropertyFetchFinder
 
         $className       = $this->nodeNameResolver->getName($classLike);
         if (! $this->reflectionProvider->hasClass($className)) {
-            return [];
+            /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+            return $this->betterNodeFinder->find($classLike->stmts, function (Node $node) use (
+                $propertyName
+            ): bool {
+                // property + static fetch
+                if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
+                    return false;
+                }
+
+                // is it the name match?
+                return $this->nodeNameResolver->isName($node, $propertyName);
+            });
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
@@ -92,7 +105,8 @@ final class PropertyFetchFinder
 
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
         return $this->betterNodeFinder->find($nodes, function (Node $node) use (
-            $propertyName
+            $propertyName,
+            $classLike
         ): bool {
             // property + static fetch
             if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
@@ -100,7 +114,12 @@ final class PropertyFetchFinder
             }
 
             // is it the name match?
-            return $this->nodeNameResolver->isName($node, $propertyName);
+            if (! $this->nodeNameResolver->isName($node, $propertyName)) {
+                return false;
+            }
+
+            $currentClassLike = $node->getAttribute(AttributeKey::CLASS_NODE);
+            return ! $this->classAnalyzer->isAnonymousClass($currentClassLike);
         });
     }
 
