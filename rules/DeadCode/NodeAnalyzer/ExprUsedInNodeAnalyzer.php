@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
@@ -11,13 +12,19 @@ use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
+use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ExprUsedInNodeAnalyzer
 {
     public function __construct(
         private NodeComparator $nodeComparator,
         private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
-        private CompactFuncCallAnalyzer $compactFuncCallAnalyzer
+        private CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
+        private NodeNameResolver $nodeNameResolver,
+        private BetterStandardPrinter $betterStandardPrinter,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -25,6 +32,14 @@ final class ExprUsedInNodeAnalyzer
     {
         if ($node instanceof Include_) {
             return true;
+        }
+
+        // variable as variable variable need mark as used
+        if ($node instanceof Variable && $expr instanceof Variable) {
+            $print = $this->betterStandardPrinter->print($node);
+            if (Strings::startsWith($print, '${$')) {
+                return true;
+            }
         }
 
         if ($node instanceof FuncCall && $expr instanceof Variable) {
