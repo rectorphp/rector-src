@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
@@ -37,7 +36,7 @@ final class ExprUsedInNodeAnalyzer
         // variable as variable variable need mark as used
         if ($node instanceof Variable && $expr instanceof Variable) {
             $print = $this->betterStandardPrinter->print($node);
-            if (Strings::startsWith($print, '${$')) {
+            if (\str_starts_with($print, '${$')) {
                 return true;
             }
         }
