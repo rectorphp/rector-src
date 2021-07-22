@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp81\Rector\ClassConst;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\ClassConst;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -39,15 +40,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
-        return [\PhpParser\Node\Stmt\ClassConst::class];
+        return [ClassConst::class];
     }
 
     /**
-     * @param \PhpParser\Node\Stmt\ClassConst $node
+     * @param ClassConst $node
      */
     public function refactor(Node $node): ?Node
     {

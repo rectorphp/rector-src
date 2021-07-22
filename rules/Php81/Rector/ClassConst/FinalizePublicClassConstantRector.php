@@ -40,7 +40,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -52,10 +52,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->isPrivate() || $node->isProtected()) {
+        if ($node->isPrivate()) {
             return null;
         }
-
+        if ($node->isProtected()) {
+            return null;
+        }
         if ($node->isFinal()) {
             return null;
         }
