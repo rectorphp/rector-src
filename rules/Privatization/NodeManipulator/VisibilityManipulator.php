@@ -108,9 +108,9 @@ final class VisibilityManipulator
         $this->replaceVisibilityFlag($node, Visibility::PRIVATE);
     }
 
-    public function removeFinal(Class_ $class): void
+    public function removeFinal(Class_ | ClassConst $node): void
     {
-        $class->flags -= Class_::MODIFIER_FINAL;
+        $node->flags -= Class_::MODIFIER_FINAL;
     }
 
     private function addVisibilityFlag(Class_ | ClassMethod | Property | ClassConst $node, int $visibility): void
