@@ -64,37 +64,8 @@ final class PropertyFetchFinder
 
         $classReflection = $this->reflectionProvider->getClass($className);
 
-        $classLikes = $classReflection->getTraits(true);
         $nodes = [$classLike];
-        foreach ($classLikes as $classLike) {
-            $fileName = $classLike->getFileName();
-            if (! $fileName) {
-                continue;
-            }
-
-            $fileContent = $this->smartFileSystem->readFile($fileName);
-            /** @var Stmt[] $parsedNodes */
-            $parsedNodes = $this->parser->parse($fileContent);
-
-            $smartFileInfo = new SmartFileInfo($fileName);
-            $file = new File($smartFileInfo, $smartFileInfo->getContents());
-
-            /** @var Stmt[] $allNodes */
-            $allNodes = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes);
-            $traitName = $classLike->getName();
-
-            /** @var Trait_|null $trait */
-            $trait = $this->betterNodeFinder->findFirst(
-                $allNodes,
-                fn (Node $node): bool => $node instanceof Trait_ && $this->nodeNameResolver->isName($node, $traitName)
-            );
-
-            if (! $trait instanceof Trait_) {
-                continue;
-            }
-
-            $nodes[] = $trait;
-        }
+        $nodes = array_merge($nodes, $this->astResolver->parseClassReflectionTraits($classReflection));
 
         return $this->findPropertyFetchesInNonAnonymousClassLike($nodes, $propertyName);
     }
