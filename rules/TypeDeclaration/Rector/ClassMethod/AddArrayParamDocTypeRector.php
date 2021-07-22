@@ -9,10 +9,10 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\NullType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -21,9 +21,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
-use PHPStan\Type\IntegerType;
-use PHPStan\Type\StringType;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector\AddArrayParamDocTypeRectorTest
@@ -115,12 +112,9 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $newType   = clone $paramType;
+                $newType = clone $paramType;
                 $paramType = new UnionType(
-                    [
-                        new ArrayType($newType->getKeyType(), $newType->getItemType()),
-                        new NullType()
-                    ]
+                    [new ArrayType($newType->getKeyType(), $newType->getItemType()), new NullType()]
                 );
             }
 
