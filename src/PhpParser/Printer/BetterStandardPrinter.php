@@ -59,10 +59,10 @@ final class BetterStandardPrinter extends Standard
     private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
 
     /**
-     * @see https://regex101.com/r/qZiqGo/11
+     * @see https://regex101.com/r/qZiqGo/12
      * @var string
      */
-    private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^(((static)\s+)?((public|private|protected)\s+)?((static)\s+)?)?function .*\(.*\)) : #';
+    private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*?function .*\(.*\)) : ';
 
     /**
      * Use space by default
