@@ -14,4 +14,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(MyCLabsClassToEnumRector::class);
     $services->set(MyCLabsMethodCallToEnumConstRector::class);
     $services->set(FinalizePublicClassConstantRector::class);
+    $services->set(\Rector\Php81\Rector\Property\ReadOnlyPropertyRector::class);
 };
