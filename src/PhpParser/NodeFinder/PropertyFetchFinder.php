@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\PhpParser\AstResolver;
@@ -59,11 +60,11 @@ final class PropertyFetchFinder
             return [];
         }
 
-        $traits = $classReflection->getTraits(true);
-        $nodes  = $classLike->stmts;
+        $classLikes = $classReflection->getTraits(true);
+        $nodes      = $classLike;
 
-        foreach ($traits as $trait) {
-            $fileName = $trait->getFileName();
+        foreach ($classLikes as $classLike) {
+            $fileName = $classLike->getFileName();
             if (! $fileName) {
                 continue;
             }
@@ -74,8 +75,23 @@ final class PropertyFetchFinder
             $smartFileInfo = new SmartFileInfo($fileName);
             $file = new File($smartFileInfo, $smartFileInfo->getContents());
 
-            $nodes = array_merge($nodes, $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes));
+            $allNodes = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $parsedNodes);
+            $traitName = $this->nodeNameResolver->getName($classLike);
+            $traits   = $this->betterNodeFinder->findFirst($allNodes, function (Node $node) use ($traitName) {
+                return $node instanceof Trait_ && $this->nodeNameResolver->isName($node, $traitName);
+            });
+
+            dump_node($traits);die;
+
+            foreach ($allNodes as $node) {
+                dump($node::class);
+                if ($node instanceof Trait_) {
+                    $nodes[] = $node; die;
+                }
+            }
         }
+
+
 
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
         return $this->betterNodeFinder->find($nodes, function (Node $node) use (
