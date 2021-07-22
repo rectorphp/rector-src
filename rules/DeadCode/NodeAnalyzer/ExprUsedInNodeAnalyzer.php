@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -22,8 +21,7 @@ final class ExprUsedInNodeAnalyzer
         private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
         private NodeNameResolver $nodeNameResolver,
-        private BetterStandardPrinter $betterStandardPrinter,
-        private BetterNodeFinder $betterNodeFinder
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
