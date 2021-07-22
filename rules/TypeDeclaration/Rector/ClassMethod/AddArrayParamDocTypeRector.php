@@ -112,10 +112,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $newType = clone $paramType;
-                $paramType = new UnionType(
-                    [new ArrayType($newType->getKeyType(), $newType->getItemType()), new NullType()]
-                );
+                $paramType = new UnionType([$paramType, new NullType()]);
             }
 
             $paramName = $this->getName($param);
