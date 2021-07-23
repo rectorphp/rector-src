@@ -55,7 +55,7 @@ final class ChildParamPopulator
         // update their methods as well
         foreach ($childrenClassLikes as $childClassLike) {
             if ($childClassLike instanceof Class_) {
-                $className = $this->nodeNameResolver->getName($childClassLike);
+                $className = (string) $this->nodeNameResolver->getName($childClassLike);
                 if (! $this->reflectionProvider->hasClass($className)) {
                     continue;
                 }

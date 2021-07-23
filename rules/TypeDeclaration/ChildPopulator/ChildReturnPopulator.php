@@ -44,7 +44,7 @@ final class ChildReturnPopulator
 
         // update their methods as well
         foreach ($childrenClassLikes as $childClassLike) {
-            $className = $this->nodeNameResolver->getName($childClassLike);
+            $className = (string) $this->nodeNameResolver->getName($childClassLike);
             if (! $this->reflectionProvider->hasClass($className)) {
                 continue;
             }
