@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Rector\Tests\Caching\Detector;
 
 use Iterator;
+use Rector\Caching\Cache;
+use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
+use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class ChangedFilesDetectorTest extends AbstractRectorTestCase
 {
@@ -17,7 +21,21 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
     {
         parent::setUp();
 
-        $this->changedFilesDetector = $this->getService(ChangedFilesDetector::class);
+        $smartFileSystem = $this->getService(SmartFileSystem::class);
+
+        $cacheDir = sys_get_temp_dir() . '/rector_changed_files_detector_test';
+        $fileCacheStorage = new FileCacheStorage(
+            $cacheDir,
+            $smartFileSystem
+        );
+        $cache = new Cache($fileCacheStorage);
+
+        // use a local object, instead of this registered service,
+        // so this unit test does not clear global ChangedFilesDetector caches
+        $this->changedFilesDetector = new ChangedFilesDetector(
+            new FileHashComputer(),
+            $cache
+        );
     }
 
     protected function tearDown(): void
