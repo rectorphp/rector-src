@@ -58,7 +58,7 @@ final class ValueObjectClassAnalyzer
 
             // awesome!
             // is it services or value object?
-            /** ObjectType is class implements TypeWithClassName */
+            // ObjectType is class implements TypeWithClassName
             $paramTypeClass = $this->astResolver->resolveClassFromObjectType($paramType);
             if (! $paramTypeClass instanceof Class_) {
                 // not sure :/
