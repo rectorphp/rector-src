@@ -57,11 +57,11 @@ final class ChildParamPopulator
             if ($childClassLike instanceof Class_) {
                 $className = (string) $this->nodeNameResolver->getName($childClassLike);
                 if (! $this->reflectionProvider->hasClass($className)) {
-                    continue;
+                    $usedTraits = $this->nodeRepository->findUsedTraitsInClass($childClassLike);
+                } else {
+                    $classReflection = $this->reflectionProvider->getClass($className);
+                    $usedTraits = $this->astResolver->parseClassReflectionTraits($classReflection);
                 }
-
-                $classReflection = $this->reflectionProvider->getClass($className);
-                $usedTraits = $this->astResolver->parseClassReflectionTraits($classReflection);
 
                 foreach ($usedTraits as $usedTrait) {
                     $this->addParamTypeToMethod($usedTrait, $position, $functionLike, $paramType);

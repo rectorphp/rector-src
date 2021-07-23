@@ -46,11 +46,11 @@ final class ChildReturnPopulator
         foreach ($childrenClassLikes as $childClassLike) {
             $className = (string) $this->nodeNameResolver->getName($childClassLike);
             if (! $this->reflectionProvider->hasClass($className)) {
-                continue;
+                $usedTraits = $this->nodeRepository->findUsedTraitsInClass($childClassLike);
+            } else {
+                $classReflection = $this->reflectionProvider->getClass($className);
+                $usedTraits = $this->astResolver->parseClassReflectionTraits($classReflection);
             }
-
-            $classReflection = $this->reflectionProvider->getClass($className);
-            $usedTraits = $this->astResolver->parseClassReflectionTraits($classReflection);
 
             foreach ($usedTraits as $usedTrait) {
                 $this->addReturnTypeToChildMethod($usedTrait, $classMethod, $returnType);
