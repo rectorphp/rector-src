@@ -20,11 +20,6 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
         $this->changedFilesDetector = $this->getService(ChangedFilesDetector::class);
     }
 
-    protected function tearDown(): void
-    {
-        $this->changedFilesDetector->clear();
-    }
-
     public function testHasFileChanged(): void
     {
         $smartFileInfo = new SmartFileInfo(__DIR__ . '/Source/file.php');
