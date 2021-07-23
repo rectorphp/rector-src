@@ -51,9 +51,8 @@ final class ChildAndParentClassManipulator
         }
 
         // not in analyzed scope, nothing we can do
-        $parentClassNode = $this->astResolver->resolveClassFromClassReflection(
-            $parentClassReflection,
-            $parentClassReflection->getName()
+        $parentClassNode = $this->astResolver->resolveClassFromObjectType(
+            new ObjectType($parentClassReflection->getName())
         );
         if ($parentClassNode instanceof Class_) {
             $this->completeParentConstructorBasedOnParentNode($parentClassNode, $classMethod);
