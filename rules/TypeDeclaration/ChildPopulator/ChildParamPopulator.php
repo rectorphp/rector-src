@@ -8,8 +8,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -23,7 +25,9 @@ final class ChildParamPopulator
         private NodeNameResolver $nodeNameResolver,
         private RectorChangeCollector $rectorChangeCollector,
         private NodeRepository $nodeRepository,
-        private ChildTypeResolver $childTypeResolver
+        private ChildTypeResolver $childTypeResolver,
+        private ReflectionProvider $reflectionProvider,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -51,7 +55,13 @@ final class ChildParamPopulator
         // update their methods as well
         foreach ($childrenClassLikes as $childClassLike) {
             if ($childClassLike instanceof Class_) {
-                $usedTraits = $this->nodeRepository->findUsedTraitsInClass($childClassLike);
+                $className = $this->nodeNameResolver->getName($childClassLike);
+                if (! $this->reflectionProvider->hasClass($className)) {
+                    continue;
+                }
+
+                $classReflection = $this->reflectionProvider->getClass($className);
+                $usedTraits = $this->astResolver->parseClassReflectionTraits($classReflection);
 
                 foreach ($usedTraits as $usedTrait) {
                     $this->addParamTypeToMethod($usedTrait, $position, $functionLike, $paramType);

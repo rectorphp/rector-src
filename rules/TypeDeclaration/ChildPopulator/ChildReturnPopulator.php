@@ -6,8 +6,10 @@ namespace Rector\TypeDeclaration\ChildPopulator;
 
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -19,7 +21,9 @@ final class ChildReturnPopulator
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private NodeRepository $nodeRepository,
-        private ChildTypeResolver $childTypeResolver
+        private ChildTypeResolver $childTypeResolver,
+        private ReflectionProvider $reflectionProvider,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -40,7 +44,14 @@ final class ChildReturnPopulator
 
         // update their methods as well
         foreach ($childrenClassLikes as $childClassLike) {
-            $usedTraits = $this->nodeRepository->findUsedTraitsInClass($childClassLike);
+            $className = $this->nodeNameResolver->getName($childClassLike);
+            if (! $this->reflectionProvider->hasClass($className)) {
+                continue;
+            }
+
+            $classReflection = $this->reflectionProvider->getClass($className);
+            $usedTraits = $this->astResolver->parseClassReflectionTraits($classReflection);
+
             foreach ($usedTraits as $usedTrait) {
                 $this->addReturnTypeToChildMethod($usedTrait, $classMethod, $returnType);
             }
