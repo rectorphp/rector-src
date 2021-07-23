@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -52,7 +53,9 @@ final class PropertyUsageAnalyzer
         $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
 
         foreach ($childrenClassReflections as $childClassReflection) {
-            $childClass = $this->astResolver->resolveClassFromClassReflection($childClassReflection, $childClassReflection->getName());
+            $childClass = $this->astResolver->resolveClassFromObjectType(
+                new ObjectType($childClassReflection->getName())
+            );
             if (! $childClass instanceof Class_) {
                 continue;
             }
