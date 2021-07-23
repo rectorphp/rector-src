@@ -9,8 +9,8 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\ValueObject\MethodName;
-use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
@@ -25,8 +25,8 @@ final class ValueObjectClassAnalyzer
         private NodeNameResolver $nodeNameResolver,
         private NodeTypeResolver $nodeTypeResolver,
         private PhpDocInfoFactory $phpDocInfoFactory,
-        private NodeRepository $nodeRepository,
-        private ClassAnalyzer $classAnalyzer
+        private ClassAnalyzer $classAnalyzer,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -58,7 +58,7 @@ final class ValueObjectClassAnalyzer
 
             // awesome!
             // is it services or value object?
-            $paramTypeClass = $this->nodeRepository->findClass($paramType->getClassName());
+            $paramTypeClass = $this->astResolver->resolveClassFromObjectType($paramType->getClassName());
             if (! $paramTypeClass instanceof Class_) {
                 // not sure :/
                 continue;
