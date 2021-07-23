@@ -8,7 +8,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ObjectType;
 use Rector\Core\NodeAnalyzer\PromotedPropertyParamCleaner;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
@@ -23,7 +25,8 @@ final class ChildAndParentClassManipulator
         private NodeRepository $nodeRepository,
         private PromotedPropertyParamCleaner $promotedPropertyParamCleaner,
         private ReflectionProvider $reflectionProvider,
-        private ParentClassScopeResolver $parentClassScopeResolver
+        private ParentClassScopeResolver $parentClassScopeResolver,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -48,7 +51,10 @@ final class ChildAndParentClassManipulator
         }
 
         // not in analyzed scope, nothing we can do
-        $parentClassNode = $this->nodeRepository->findClass($parentClassReflection->getName());
+        $parentClassNode = $this->astResolver->resolveClassFromClassReflection(
+            $parentClassReflection,
+            $parentClassReflection->getName()
+        );
         if ($parentClassNode instanceof Class_) {
             $this->completeParentConstructorBasedOnParentNode($parentClassNode, $classMethod);
             return;
@@ -112,7 +118,7 @@ final class ChildAndParentClassManipulator
 
     private function findFirstParentConstructor(Class_ $class): ?ClassMethod
     {
-        while ($class !== null) {
+        while ($class instanceof Class_) {
             $constructMethodNode = $class->getMethod(MethodName::CONSTRUCT);
             if ($constructMethodNode !== null) {
                 return $constructMethodNode;
@@ -123,7 +129,7 @@ final class ChildAndParentClassManipulator
                 return null;
             }
 
-            $class = $this->nodeRepository->findClass($parentClassName);
+            $class = $this->astResolver->resolveClassFromObjectType(new ObjectType($parentClassName));
         }
 
         return null;
