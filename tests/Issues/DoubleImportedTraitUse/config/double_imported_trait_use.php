@@ -13,6 +13,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services = $containerConfigurator->services();
     $services->set(AddProphecyTraitRector::class);
-
     $services->set(AddArrayParamDocTypeRector::class);
 };

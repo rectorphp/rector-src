@@ -4,28 +4,71 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\DoubleImportedTraitUse\Fixture;
 
-use Generator;
-use Iterator;
 use PHPStan\Testing\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
+use stdClass;
 
-final class SomeTest extends TestCase
+final class AddArrayTrait extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @dataProvider invalidValues()
-     */
-    public function testInvalidValues(stdClass | array $value): void
+    private ObjectProphecy $client;
+
+    protected function setUp(): void
     {
+        $this->client = $this->prophesize(stdClass::class);
     }
 
     /**
-     * @return Generator<mixed, mixed>
+     * @dataProvider invalidValues
      */
-    public function invalidValues(): Iterator
+    public function testInvalidValues(int | array $value): void
     {
-        yield 'Class without __toString not possible' => [new stdClass()];
-        yield 'Array is not possible' => [[]];
+    }
+
+    public function invalidValues()
+    {
+        yield 'Class without __toString not possible' => [1000];
     }
 }
+
+?>
+-----
+<?php
+
+declare(strict_types=1);
+
+namespace Rector\Core\Tests\Issues\DoubleImportedTraitUse\Fixture;
+
+use PHPStan\Testing\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
+use stdClass;
+
+final class AddArrayTrait extends TestCase
+{
+    use ProphecyTrait;
+
+    private ObjectProphecy $client;
+
+    protected function setUp(): void
+    {
+        $this->client = $this->prophesize(stdClass::class);
+    }
+
+    /**
+     * @dataProvider invalidValues
+     * @param int $value
+     */
+    public function testInvalidValues(int | array $value): void
+    {
+    }
+
+    public function invalidValues()
+    {
+        yield 'Class without __toString not possible' => [1000];
+    }
+}
+
+?>
