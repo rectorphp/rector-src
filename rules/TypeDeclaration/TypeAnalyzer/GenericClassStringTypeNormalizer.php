@@ -9,6 +9,7 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
@@ -42,16 +43,23 @@ final class GenericClassStringTypeNormalizer
                 return $callbackType;
             }
 
+            $value = $type->getValue();
+
             // skip string that look like classe
-            if ($type->getValue() === 'error') {
+            if ($value === 'error') {
                 return $callback($type);
             }
 
-            if (! $this->reflectionProvider->hasClass($type->getValue())) {
+            if (! $this->reflectionProvider->hasClass($value)) {
                 return $callback($type);
             }
 
-            return new GenericClassStringType(new ObjectType($type->getValue()));
+            $classReflection = $this->reflectionProvider->getClass($value);
+            if (! $classReflection->isBuiltIn() && ! str_contains($value, '\\')) {
+                return new StringType($value);
+            }
+
+            return new GenericClassStringType(new ObjectType($value));
         });
     }
 
