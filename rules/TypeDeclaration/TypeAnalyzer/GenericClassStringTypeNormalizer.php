@@ -54,13 +54,18 @@ final class GenericClassStringTypeNormalizer
                 return $callback($type);
             }
 
-            $classReflection = $this->reflectionProvider->getClass($value);
-            if (! $classReflection->isBuiltIn() && ! str_contains($value, '\\')) {
-                return new StringType($value);
-            }
-
-            return new GenericClassStringType(new ObjectType($value));
+            return $this->resolveStringType($value);
         });
+    }
+
+    private function resolveStringType(string $value): Type
+    {
+        $classReflection = $this->reflectionProvider->getClass($value);
+        if (! $classReflection->isBuiltIn() && ! str_contains($value, '\\')) {
+            return new StringType();
+        }
+
+        return new GenericClassStringType(new ObjectType($value));
     }
 
     private function verifyAutoImportedFullyQualifiedType(Type $type, bool $isAutoImport): ?Type
