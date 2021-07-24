@@ -42,6 +42,7 @@
         "symplify/composer-json-manipulator": "^9.4.14",
         "symplify/console-color-diff": "^9.4.14",
         "symplify/package-builder": "^9.4.14",
+        "symplify/php-config-printer": "9.5.x-dev as 9.4.22",
         "symplify/rule-doc-generator-contracts": "^9.4.14",
         "symplify/simple-php-doc-parser": "^9.4.14",
         "symplify/skipper": "^9.4.14",
@@ -141,5 +142,7 @@
     "config": {
         "sort-packages": true,
         "platform-check": false
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
