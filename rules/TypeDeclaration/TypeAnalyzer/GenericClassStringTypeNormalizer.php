@@ -58,7 +58,7 @@ final class GenericClassStringTypeNormalizer
         });
     }
 
-    private function resolveStringType(string $value): Type
+    private function resolveStringType(string $value): StringType | GenericClassStringType
     {
         $classReflection = $this->reflectionProvider->getClass($value);
         if (! $classReflection->isBuiltIn() && ! str_contains($value, '\\')) {
