@@ -45,7 +45,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\PostRector\DependencyInjection\PropertyAdder;
-use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -455,21 +454,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function addNodeBeforeNode(Node $newNode, Node $positionNode): void
     {
         $this->nodesToAddCollector->addNodeBeforeNode($newNode, $positionNode);
-    }
-
-    /**
-     * @deprecated
-     * Use @see PropertyToAddCollector::addPropertyToClass() intead with
-     * @see PropertyMetadata
-     */
-    protected function addConstructorDependencyToClass(
-        Class_ $class,
-        Type $propertyType,
-        string $propertyName,
-        int $propertyFlags = 0
-    ): void {
-        $propertyMetadata = new PropertyMetadata($propertyName, $propertyType, $propertyFlags);
-        $this->propertyToAddCollector->addPropertyToClass($class, $propertyMetadata);
     }
 
     protected function removeNode(Node $node): void
