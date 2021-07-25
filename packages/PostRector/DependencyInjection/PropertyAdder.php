@@ -46,6 +46,10 @@ final class PropertyAdder
         $this->addConstructorDependencyToClass($classNode, $propertyType, $propertyName, $property->flags);
     }
 
+    /**
+     * @deprecated
+     * Use directly @see PropertyToAddCollector::addPropertyToClass() directly with PropertyMetadata object
+     */
     public function addConstructorDependencyToClass(
         Class_ $class,
         Type $propertyType,

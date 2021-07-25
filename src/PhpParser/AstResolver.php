@@ -7,6 +7,7 @@ namespace Rector\Core\PhpParser;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -25,6 +26,7 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -290,8 +292,9 @@ final class AstResolver
         return $traits;
     }
 
-    public function resolvePropertyFromPropertyReflection(ReflectionProperty $reflectionProperty): ?Property
-    {
+    public function resolvePropertyFromPropertyReflection(
+        ReflectionProperty $reflectionProperty
+    ): Property | Param | null {
         $reflectionClass = $reflectionProperty->getDeclaringClass();
 
         $fileName = $reflectionClass->getFileName();
@@ -308,14 +311,14 @@ final class AstResolver
 
         /** @var Property[] $properties */
         $properties = $this->betterNodeFinder->findInstanceOf($nodes, Property::class);
-
         foreach ($properties as $property) {
             if ($this->nodeNameResolver->isName($property, $desiredPropertyName)) {
                 return $property;
             }
         }
 
-        return null;
+        // promoted property
+        return $this->findPromotedPropertyByName($nodes, $desiredPropertyName);
     }
 
     /**
@@ -333,5 +336,33 @@ final class AstResolver
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
 
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     */
+    private function findPromotedPropertyByName(array $nodes, string $desiredPropertyName): ?Param
+    {
+        $class = $this->betterNodeFinder->findFirstInstanceOf($nodes, Class_::class);
+        if (! $class instanceof Class_) {
+            return null;
+        }
+
+        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        foreach ($constructClassMethod->getParams() as $param) {
+            if ($param->flags === 0) {
+                continue;
+            }
+
+            if ($this->nodeNameResolver->isName($param, $desiredPropertyName)) {
+                return $param;
+            }
+        }
+
+        return null;
     }
 }
