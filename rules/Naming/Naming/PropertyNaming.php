@@ -37,12 +37,6 @@ final class PropertyNaming
     private const INTERFACE = 'Interface';
 
     /**
-     * @see https://regex101.com/r/RDhBNR/1
-     * @var string
-     */
-    private const PREFIXED_CLASS_METHODS_REGEX = '#^(is|are|was|were|has|have|had|can)[A-Z].+#';
-
-    /**
      * @var string
      * @see https://regex101.com/r/U78rUF/1
      */
