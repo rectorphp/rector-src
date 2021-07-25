@@ -207,6 +207,9 @@ final class ClassDependencyManipulator
     private function hasClassPropertyAndDependency(Class_ $class, PropertyMetadata $propertyMetadata): bool
     {
         $property = $this->propertyPresenceChecker->getClassContextPropertyByName($class, $propertyMetadata->getName());
+        if ($property === null) {
+            return false;
+        }
 
 <<<<<<< HEAD
         $property = $class->getProperty($propertyMetadata->getName());
