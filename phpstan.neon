@@ -184,9 +184,6 @@ parameters:
 
         - '#Method "evaluateBinaryToVersionCompareCondition\(\)" returns bool type, so the name should start with is/has/was#'
 
-        # soo many false positive naming - fix later with Recto rule
-        - '#Method "(.*?)\(\)" returns bool type, so the name should start with is/has/was#'
-
         -
             message: '#Comparison operation "<" between 0 and 2 is always true#'
             paths:
@@ -526,3 +523,8 @@ parameters:
 
         # resolve later
         - '#Method "(.*?)\(\)" only calling another method call and has no added value\. Use the inlined call instead#'
+
+services:
+    -
+        class: Symplify\PHPStanRules\Rules\BoolishClassMethodPrefixRule
+        tags: [phpstan.rules.rule]
