@@ -17,9 +17,11 @@ use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
+use PhpParser\Node\Expr\Cast\Object_;
 
 final class CastTypeResolver implements NodeTypeResolverInterface
 {
@@ -54,6 +56,10 @@ final class CastTypeResolver implements NodeTypeResolverInterface
 
         if ($node instanceof Array_) {
             return new ArrayType(new MixedType(), new MixedType());
+        }
+
+        if ($node instanceof Object_) {
+            return new ObjectType($node::class);
         }
 
         throw new NotImplementedYetException($node::class);
