@@ -212,19 +212,29 @@ final class ClassDependencyManipulator
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $property = $class->getProperty($propertyMetadata->getName());
         if (! $property instanceof Property) {
             return $this->isParamInConstructor($class, $propertyMetadata->getName());
 =======
         // is inject/autowired property?
         if ($property instanceof Property && $this->autowiredClassMethodOrPropertyAnalyzer->detect($property)) {
+=======
+        if ($this->isParamInConstructor($class, $propertyMetadata->getName())) {
+>>>>>>> 83cb39938 (re-use PropertyMetadata value objetc)
             return true;
 >>>>>>> 2f3c1135d ([Transform] Add MethodCallToMethodCallRector)
         }
+<<<<<<< HEAD
         if (! $this->autowiredClassMethodOrPropertyAnalyzer->detect($property)) {
             return $this->isParamInConstructor($class, $propertyMetadata->getName());
         }
         return true;
+=======
+
+        // is inject/autowired property?
+        return $property instanceof Property && $this->autowiredClassMethodOrPropertyAnalyzer->detect($property);
+>>>>>>> 83cb39938 (re-use PropertyMetadata value objetc)
     }
 
     private function hasMethodParameter(ClassMethod $classMethod, string $name): bool

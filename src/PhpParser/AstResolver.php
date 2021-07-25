@@ -28,6 +28,7 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use ReflectionProperty;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
@@ -289,10 +290,11 @@ final class AstResolver
         return $traits;
     }
 
-    public function resolvePropertyFromPropertyReflection(\ReflectionProperty $reflectionProperty): ?Property
+    public function resolvePropertyFromPropertyReflection(ReflectionProperty $reflectionProperty): ?Property
     {
-        $declaringClass = $reflectionProperty->getDeclaringClass();
-        $fileName = $declaringClass->getFileName();
+        $reflectionClass = $reflectionProperty->getDeclaringClass();
+
+        $fileName = $reflectionClass->getFileName();
         if ($fileName === false) {
             return null;
         }

@@ -13,6 +13,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\PostRector\ValueObject\PropertyMetadata;
+use ReflectionNamedType;
 use ReflectionProperty;
 
 /**
@@ -101,7 +102,7 @@ final class PropertyPresenceChecker
             return null;
         }
 
-        if (! $reflectionProperty->getType() instanceof \ReflectionNamedType) {
+        if (! $reflectionProperty->getType() instanceof ReflectionNamedType) {
             return null;
         }
 

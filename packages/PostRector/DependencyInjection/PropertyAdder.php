@@ -15,6 +15,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PostRector\Collector\PropertyToAddCollector;
+use Rector\PostRector\ValueObject\PropertyMetadata;
 
 final class PropertyAdder
 {
@@ -51,7 +52,9 @@ final class PropertyAdder
         string $propertyName,
         int $propertyFlags = 0
     ): void {
-        $this->propertyToAddCollector->addPropertyToClass($class, $propertyName, $propertyType, $propertyFlags);
+        $propertyMetadata = new PropertyMetadata($propertyName, $propertyType, $propertyFlags);
+        $this->propertyToAddCollector->addPropertyToClass($class, $propertyMetadata);
+
         $this->rectorChangeCollector->notifyNodeFileInfo($class);
     }
 
