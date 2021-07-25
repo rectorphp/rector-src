@@ -182,7 +182,8 @@ parameters:
             paths:
                 - rules/Php80/Rector/If_/NullsafeOperatorRector.php
 
-        - '#Method "evaluateBinaryToVersionCompareCondition\(\)" returns bool type, so the name should start with is/has/was#'
+        # covered in symplify main
+        - '#Method "(equal|match)(.*?)\(\)" returns bool type, so the name should start with is/has/was#'
 
         -
             message: '#Comparison operation "<" between 0 and 2 is always true#'
@@ -523,8 +524,7 @@ parameters:
 
         # resolve later
         - '#Method "(.*?)\(\)" only calling another method call and has no added value\. Use the inlined call instead#'
-
-services:
-    -
-        class: Symplify\PHPStanRules\Rules\BoolishClassMethodPrefixRule
-        tags: [phpstan.rules.rule]
+        - '#Method "processRenameVariable\(\)" returns bool type, so the name should start with is/has/was#'
+        - '#Method "refactorParamType\(\)" returns bool type, so the name should start with is/has/was#'
+        - '#Method "decorateReturnWithSpecificType\(\)" returns bool type, so the name should start with is/has/was#'
+        - '#Method "resolveObjectType\(\)" returns bool type, so the name should start with is/has/was#'
