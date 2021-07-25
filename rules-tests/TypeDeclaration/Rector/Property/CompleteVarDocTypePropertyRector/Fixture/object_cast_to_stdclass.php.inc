@@ -9,7 +9,7 @@ class ObjectCastToStdClass
      */
     private static $services = [];
 
-    public static function register(\stdClass $service)
+    public static function register(array $service)
     {
         self::$services[] = (object) $service;
     }
@@ -28,7 +28,7 @@ class ObjectCastToStdClass
      */
     private static $services = [];
 
-    public static function register(\stdClass $service)
+    public static function register(array $service)
     {
         self::$services[] = (object) $service;
     }
