@@ -477,6 +477,8 @@ parameters:
         # generics single place
         - '#Method Rector\\Php80\\NodeResolver\\ArgumentSorter\:\:sortArgsByExpectedParamOrder\(\) should return array<T of PhpParser\\Node\\Arg\|PhpParser\\Node\\Param\> but returns array<PhpParser\\Node\\Arg\|PhpParser\\Node\\Param\>#'
 
+        - '#Class with base "StaticTypeMapper" name is already used in "Rector\\StaticTypeMapper\\StaticTypeMapper", "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\StaticTypeMapper"\. Use unique name to make classes easy to recognize#'
+
         # allowed for ease api
         -
             message: '#Cannot return include_once/require_once#'
