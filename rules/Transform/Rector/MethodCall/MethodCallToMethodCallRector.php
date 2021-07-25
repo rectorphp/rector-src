@@ -7,11 +7,15 @@ namespace Rector\Transform\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\NodeAnalyzer\PropertyPresenceChecker;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Transform\ValueObject\MethodCallToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -33,7 +37,8 @@ final class MethodCallToMethodCallRector extends AbstractRector implements Confi
     private array $methodCallsToMethodsCalls = [];
 
     public function __construct(
-        private PropertyNaming $propertyNaming
+        private PropertyNaming $propertyNaming,
+        private PropertyPresenceChecker $propertyPresenceChecker
     ) {
     }
 
@@ -107,12 +112,18 @@ CODE_SAMPLE
 
             $class = $node->getAttribute(AttributeKey::CLASS_NODE);
             $newObjectType = new ObjectType($methodCallToMethodsCall->getNewType());
-            $newPropertyName = $this->propertyNaming->fqnToVariableName($methodCallToMethodsCall->getNewType());
+
+            $newPropertyName = $this->matchNewPropertyName($methodCallToMethodsCall, $class);
+            if ($newPropertyName === null) {
+                continue;
+            }
 
             $this->addConstructorDependencyToClass($class, $newObjectType, $newPropertyName);
 
+            // rename property
             $node->var = new PropertyFetch($propertyFetch->var, $newPropertyName);
-            $node->name = new Node\Identifier($methodCallToMethodsCall->getNewMethod());
+            // rename method
+            $node->name = new Identifier($methodCallToMethodsCall->getNewMethod());
 
             return $node;
         }
@@ -137,5 +148,24 @@ CODE_SAMPLE
         }
 
         return $this->isName($methodCall->name, $methodCallToMethodsCall->getOldMethod());
+    }
+
+    private function matchNewPropertyName(MethodCallToMethodCall $methodCallToMethodsCall, Class_ $class): ?string
+    {
+        $newPropertyName = $this->propertyNaming->fqnToVariableName($methodCallToMethodsCall->getNewType());
+
+        $propertyMetadata = new PropertyMetadata(
+            $newPropertyName,
+            new ObjectType($methodCallToMethodsCall->getNewType()),
+            Class_::MODIFIER_PRIVATE
+        );
+
+        $classContextProperty = $this->propertyPresenceChecker->getClassContextProperty($class, $propertyMetadata);
+        if ($classContextProperty === null) {
+            return $newPropertyName;
+        }
+
+        // re-use existing proeprty name
+        return $this->getName($classContextProperty);
     }
 }
