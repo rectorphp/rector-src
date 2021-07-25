@@ -10,18 +10,18 @@ use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
+use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
-use PhpParser\Node\Expr\Cast\Object_;
 
 final class CastTypeResolver implements NodeTypeResolverInterface
 {
