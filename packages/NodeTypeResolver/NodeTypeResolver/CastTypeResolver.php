@@ -59,7 +59,8 @@ final class CastTypeResolver implements NodeTypeResolverInterface
         }
 
         if ($node instanceof Object_) {
-            return new ObjectType($node::class);
+            $class = $node::class;
+            return new ObjectType($class);
         }
 
         throw new NotImplementedYetException($node::class);
