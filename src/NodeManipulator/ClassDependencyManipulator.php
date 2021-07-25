@@ -206,13 +206,17 @@ final class ClassDependencyManipulator
 
     private function hasClassPropertyAndDependency(Class_ $class, PropertyMetadata $propertyMetadata): bool
     {
-        if (! $this->propertyPresenceChecker->hasClassContextPropertyByName($class, $propertyMetadata->getName())) {
-            return false;
-        }
+        $property = $this->propertyPresenceChecker->getClassContextPropertyByName($class, $propertyMetadata->getName());
 
+<<<<<<< HEAD
         $property = $class->getProperty($propertyMetadata->getName());
         if (! $property instanceof Property) {
             return $this->isParamInConstructor($class, $propertyMetadata->getName());
+=======
+        // is inject/autowired property?
+        if ($property instanceof Property && $this->autowiredClassMethodOrPropertyAnalyzer->detect($property)) {
+            return true;
+>>>>>>> 2f3c1135d ([Transform] Add MethodCallToMethodCallRector)
         }
         if (! $this->autowiredClassMethodOrPropertyAnalyzer->detect($property)) {
             return $this->isParamInConstructor($class, $propertyMetadata->getName());
