@@ -87,7 +87,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -99,21 +99,21 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodsCall) {
+        foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
             if (! $node->var instanceof PropertyFetch) {
                 continue;
             }
 
-            if (! $this->isMatch($node, $methodCallToMethodsCall)) {
+            if (! $this->isMatch($node, $methodCallToMethodCall)) {
                 continue;
             }
 
             $propertyFetch = $node->var;
 
             $class = $node->getAttribute(AttributeKey::CLASS_NODE);
-            $newObjectType = new ObjectType($methodCallToMethodsCall->getNewType());
+            $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
 
-            $newPropertyName = $this->matchNewPropertyName($methodCallToMethodsCall, $class);
+            $newPropertyName = $this->matchNewPropertyName($methodCallToMethodCall, $class);
             if ($newPropertyName === null) {
                 continue;
             }
@@ -123,7 +123,7 @@ CODE_SAMPLE
             // rename property
             $node->var = new PropertyFetch($propertyFetch->var, $newPropertyName);
             // rename method
-            $node->name = new Identifier($methodCallToMethodsCall->getNewMethod());
+            $node->name = new Identifier($methodCallToMethodCall->getNewMethod());
 
             return $node;
         }
@@ -141,22 +141,22 @@ CODE_SAMPLE
         $this->methodCallsToMethodsCalls = $methodCallsToMethodsCalls;
     }
 
-    private function isMatch(MethodCall $methodCall, MethodCallToMethodCall $methodCallToMethodsCall): bool
+    private function isMatch(MethodCall $methodCall, MethodCallToMethodCall $methodCallToMethodCall): bool
     {
-        if (! $this->isObjectType($methodCall->var, new ObjectType($methodCallToMethodsCall->getOldType()))) {
+        if (! $this->isObjectType($methodCall->var, new ObjectType($methodCallToMethodCall->getOldType()))) {
             return false;
         }
 
-        return $this->isName($methodCall->name, $methodCallToMethodsCall->getOldMethod());
+        return $this->isName($methodCall->name, $methodCallToMethodCall->getOldMethod());
     }
 
-    private function matchNewPropertyName(MethodCallToMethodCall $methodCallToMethodsCall, Class_ $class): ?string
+    private function matchNewPropertyName(MethodCallToMethodCall $methodCallToMethodCall, Class_ $class): ?string
     {
-        $newPropertyName = $this->propertyNaming->fqnToVariableName($methodCallToMethodsCall->getNewType());
+        $newPropertyName = $this->propertyNaming->fqnToVariableName($methodCallToMethodCall->getNewType());
 
         $propertyMetadata = new PropertyMetadata(
             $newPropertyName,
-            new ObjectType($methodCallToMethodsCall->getNewType()),
+            new ObjectType($methodCallToMethodCall->getNewType()),
             Class_::MODIFIER_PRIVATE
         );
 

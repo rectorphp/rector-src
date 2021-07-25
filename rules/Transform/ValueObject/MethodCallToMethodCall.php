@@ -8,9 +8,7 @@ final class MethodCallToMethodCall
 {
     /**
      * @param class-string $oldType
-     * @param string $oldMethod
      * @param class-string $newType
-     * @param string $newMethod
      */
     public function __construct(
         private string $oldType,
