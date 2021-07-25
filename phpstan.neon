@@ -568,9 +568,5 @@ parameters:
         # complex
         - '#Cognitive complexity for "Rector\\NodeNameResolver\\NodeNameResolver\:\:getName\(\)" is 10, keep it under 9#'
 
-<<<<<<< HEAD
-        - '#Method ".*\(\)" only calling another method call and has no added value\. Use the inlined call instead#'
-=======
         # resolve later
         - '#Method "(.*?)\(\)" only calling another method call and has no added value\. Use the inlined call instead#'
->>>>>>> 83cb39938 (re-use PropertyMetadata value objetc)
