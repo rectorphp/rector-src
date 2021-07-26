@@ -66,6 +66,7 @@ final class FileCacheStorage
         if ($errorAfter !== null && $errorBefore !== $errorAfter) {
             throw new CachingException(\sprintf('Error occurred while saving item %s (%s) to cache: %s', $key, $variableKey, $errorAfter['message']));
         }
+        // for performance reasons we don't use SmartFileSystem
         FileWriter::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported));
         $renameSuccess = @\rename($tmpPath, $path);
         if ($renameSuccess) {
