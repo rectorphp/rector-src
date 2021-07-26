@@ -13,6 +13,10 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\ArrayType;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\Constant\ConstantIntegerType;
+use PHPStan\Type\ClassStringType;
 
 final class GenericClassStringTypeNormalizer
 {
@@ -52,9 +56,31 @@ final class GenericClassStringTypeNormalizer
 
     private function resolveUnionType(UnionType $type): Type
     {
-        $unionTypes = $type->types;
-        foreach ($unionTypes as $unionType) {
+        $unionTypes       = $type->getTypes();
+        $isAllClassString = true;
 
+        foreach ($unionTypes as $unionType) {
+            if (! $unionType instanceof ArrayType) {
+                $isAllClassString = false;
+                break;
+            }
+
+            $keyType  = $unionType->getKeyType();
+            $itemType = $unionType->getItemType();
+
+            if (! $keyType instanceof MixedType && ! $keyType instanceof ConstantIntegerType) {
+                $isAllClassString = false;
+                break;
+            }
+
+            if (! $itemType instanceof ClassStringType) {
+                $isAllClassString = false;
+                break;
+            }
+        }
+
+        if ($isAllClassString) {
+            return new ArrayType(new MixedType(), new ClassStringType());
         }
 
         return $type;
