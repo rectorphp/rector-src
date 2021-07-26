@@ -19,7 +19,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                     Yaml::class,
                     'parse',
                     1,
-                    ['Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS', 'hey', 55, 5.5]
+                    [Yaml::class . '::PARSE_KEYS_AS_STRINGS', 'hey', 55, 5.5]
                 ),
                 new ArgumentRemover(RemoveInTheMiddle::class, 'run', 1, [
                     'name' => 'second',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
 use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Yaml\Yaml;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -18,7 +19,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                     'some_function',
                     0,
                     true,
-                    'Symfony\Component\Yaml\Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE'
+                    Yaml::class . '::DUMP_EXCEPTION_ON_INVALID_TYPE'
                 ),
             ]),
         ]]);

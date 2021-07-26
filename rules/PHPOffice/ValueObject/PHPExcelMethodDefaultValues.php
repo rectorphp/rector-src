@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PHPOffice\ValueObject;
 
+use PHPExcel_Cell_DataValidation;
+use PHPExcel_Style_Conditional;
+use PHPExcel_Worksheet;
 use Rector\Core\ValueObject\MethodName;
 
 final class PHPExcelMethodDefaultValues
@@ -71,8 +74,8 @@ final class PHPExcelMethodDefaultValues
         'PHPExcel_Cell_DataValidation' => [
             'setFormula1' => [''],
             'setFormula2' => [''],
-            'setType' => ['PHPExcel_Cell_DataValidation::TYPE_NONE'],
-            'setErrorStyle' => ['PHPExcel_Cell_DataValidation::STYLE_STOP'],
+            'setType' => [PHPExcel_Cell_DataValidation::class . '::TYPE_NONE'],
+            'setErrorStyle' => [PHPExcel_Cell_DataValidation::class . '::STYLE_STOP'],
             'setOperator' => [''],
             'setAllowBlank' => [false],
             'setShowDropDown' => [false],
@@ -310,8 +313,8 @@ final class PHPExcelMethodDefaultValues
             'setRGB' => ['000000'],
         ],
         'PHPExcel_Style_Conditional' => [
-            'setConditionType' => ['PHPExcel_Style_Conditional::CONDITION_NONE'],
-            'setOperatorType' => ['PHPExcel_Style_Conditional::OPERATOR_NONE'],
+            'setConditionType' => [PHPExcel_Style_Conditional::class . '::CONDITION_NONE'],
+            'setOperatorType' => [PHPExcel_Style_Conditional::class . '::OPERATOR_NONE'],
             'setText' => [null],
             'addCondition' => [''],
         ],
@@ -346,7 +349,7 @@ final class PHPExcelMethodDefaultValues
             'getChartByIndex' => [null],
             'getChartByName' => [''],
             'setTitle' => ['Worksheet', true],
-            'setSheetState' => ['PHPExcel_Worksheet::SHEETSTATE_VISIBLE'],
+            'setSheetState' => [PHPExcel_Worksheet::class . '::SHEETSTATE_VISIBLE'],
             'setCellValue' => ['A1', null, false],
             'setCellValueByColumnAndRow' => [0, '1', null, false],
             'setCellValueExplicit' => ['A1', null, 'PHPExcel_Cell_DataType::TYPE_STRING', false],
@@ -363,8 +366,8 @@ final class PHPExcelMethodDefaultValues
             'conditionalStylesExists' => ['A1'],
             'removeConditionalStyles' => ['A1'],
             'getStyleByColumnAndRow' => [0, '1', null, null],
-            'setBreak' => ['A1', 'PHPExcel_Worksheet::BREAK_NONE'],
-            'setBreakByColumnAndRow' => [0, '1', 'PHPExcel_Worksheet::BREAK_NONE'],
+            'setBreak' => ['A1', PHPExcel_Worksheet::class . '::BREAK_NONE'],
+            'setBreakByColumnAndRow' => [0, '1', PHPExcel_Worksheet::class . '::BREAK_NONE'],
             'mergeCells' => ['A1:A1'],
             'mergeCellsByColumnAndRow' => [0, '1', 0, '1'],
             'unmergeCells' => ['A1:A1'],
