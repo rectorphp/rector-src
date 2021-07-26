@@ -17,6 +17,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
+use PHPStan\Type\Constant\ConstantArrayType;
 
 final class GenericClassStringTypeNormalizer
 {
@@ -65,6 +66,23 @@ final class GenericClassStringTypeNormalizer
 
             $keyType = $unionType->getKeyType();
             $itemType = $unionType->getItemType();
+
+            if ($itemType instanceof ConstantArrayType) {
+                $itemTypeKeyTypes    = $itemType->getKeyTypes();
+                $itemTypeValueTypes = $itemType->getValueTypes();
+
+                foreach ($itemTypeKeyTypes as $itemTypeKeyType) {
+                    if (! $itemTypeKeyType instanceof ConstantIntegerType) {
+                        return $type;
+                    }
+                }
+
+                foreach ($itemTypeValueTypes as $itemTypeValueType) {
+                    if (! $itemTypeValueType instanceof UnionType) {
+                        return $type;
+                    }
+                }
+            }
 
             if (! $keyType instanceof MixedType && ! $keyType instanceof ConstantIntegerType) {
                 return $type;
