@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Caching\ValueObject\Storage;
 
 use Nette\Utils\Random;
+use Rector\Caching\ValueObject\CacheFilePaths;
 use Rector\Caching\ValueObject\CacheItem;
 use PHPStan\File\FileWriter;
 use Symplify\SmartFileSystem\SmartFileSystem;
