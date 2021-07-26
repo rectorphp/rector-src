@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ArrayType;
+use PHPStan\Type\ClassStringType;
+use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\Constant\ConstantIntegerType;
-use PHPStan\Type\ClassStringType;
+use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class GenericClassStringTypeNormalizer
 {
@@ -56,7 +56,7 @@ final class GenericClassStringTypeNormalizer
 
     private function resolveUnionType(UnionType $type): Type
     {
-        $unionTypes       = $type->getTypes();
+        $unionTypes = $type->getTypes();
         $isAllClassString = true;
 
         foreach ($unionTypes as $unionType) {
@@ -65,7 +65,7 @@ final class GenericClassStringTypeNormalizer
                 break;
             }
 
-            $keyType  = $unionType->getKeyType();
+            $keyType = $unionType->getKeyType();
             $itemType = $unionType->getItemType();
 
             if (! $keyType instanceof MixedType && ! $keyType instanceof ConstantIntegerType) {
