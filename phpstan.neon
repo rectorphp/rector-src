@@ -533,18 +533,18 @@ parameters:
         -
             message: '#Use explicit names over dynamic ones#'
             paths:
-                - path: packages/Caching/ValueObject/Storage/FileCacheStorage.php
+                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
 
         # native filesystem calls, required for performance reasons
         -
             message: '#"@\\unlink\(\$tmpPath\)" is forbidden to use#'
             paths:
-                - path: packages/Caching/ValueObject/Storage/FileCacheStorage.php
+                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
             message: '#"@\\rename\(\$tmpPath, \$path\)" is forbidden to use#'
             paths:
-                - path: packages/Caching/ValueObject/Storage/FileCacheStorage.php
+                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
             message: '#"%s" in sprintf\(\) format must be quoted#'
             paths:
-                - path: packages/Caching/ValueObject/Storage/FileCacheStorage.php
+                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
