@@ -7,8 +7,8 @@ namespace Rector\Caching\ValueObject\Storage;
 use Nette\Utils\Random;
 use Rector\Caching\ValueObject\CacheItem;
 use PHPStan\File\FileWriter;
-use PHPStan\ShouldNotHappenException;
 use Symplify\SmartFileSystem\SmartFileSystem;
+use Symplify\EasyCodingStandard\Caching\Exception\CachingException;
 
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/blob/1e7ceae933f07e5a250b61ed94799e6c2ea8daa2/src/Cache/FileCacheStorage.php
@@ -33,7 +33,7 @@ final class FileCacheStorage
                 return;
             }
             $error = \error_get_last();
-            throw new \InvalidArgumentException(\sprintf('Failed to create directory "%s" (%s).', $this->directory, $error !== null ? $error['message'] : 'unknown cause'));
+            throw new CachingException(\sprintf('Failed to create directory "%s" (%s).', $this->directory, $error !== null ? $error['message'] : 'unknown cause'));
         }
     }
 
@@ -77,7 +77,7 @@ final class FileCacheStorage
         $exported = @\var_export(new CacheItem($variableKey, $data), \true);
         $errorAfter = \error_get_last();
         if ($errorAfter !== null && $errorBefore !== $errorAfter) {
-            throw new ShouldNotHappenException(\sprintf('Error occurred while saving item %s (%s) to cache: %s', $key, $variableKey, $errorAfter['message']));
+            throw new CachingException(\sprintf('Error occurred while saving item %s (%s) to cache: %s', $key, $variableKey, $errorAfter['message']));
         }
         FileWriter::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported));
         $renameSuccess = @\rename($tmpPath, $path);
@@ -86,7 +86,7 @@ final class FileCacheStorage
         }
         @\unlink($tmpPath);
         if (\DIRECTORY_SEPARATOR === '/' || !\file_exists($path)) {
-            throw new \InvalidArgumentException(\sprintf('Could not write data to cache file %s.', $path));
+            throw new CachingException(\sprintf('Could not write data to cache file %s.', $path));
         }
     }
 
