@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\CompleteVarDocTypePropertyRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\CompleteVarDocTypePropertyRector\FixtureAutoImport;
 
 use stdClass;
 
