@@ -459,8 +459,6 @@ parameters:
             message: '#Access to an undefined property PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode\:\:\$value#'
             path: packages/BetterPhpDocParser/PhpDocInfo/PhpDocInfo.php #348
 
-        - '#"@var_export\(new \\Rector\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
-
         -
             message: '#Class with base "StaticTypeMapper" name is already used in "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\StaticTypeMapper", "Rector\\StaticTypeMapper\\StaticTypeMapper"\. Use unique name to make classes easy to recognize#'
             path: packages/StaticTypeMapper/StaticTypeMapper.php #31
@@ -546,5 +544,9 @@ parameters:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
             message: '#"%s" in sprintf\(\) format must be quoted#'
+            paths:
+                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
+        -
+            message: '#"@\\var_export\(new \\Rector\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
