@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\TypeAnalyzer;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ClassStringType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
@@ -17,7 +18,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use PHPStan\Type\Constant\ConstantArrayType;
 
 final class GenericClassStringTypeNormalizer
 {
@@ -68,20 +68,8 @@ final class GenericClassStringTypeNormalizer
             $itemType = $unionType->getItemType();
 
             if ($itemType instanceof ConstantArrayType) {
-                $itemTypeKeyTypes    = $itemType->getKeyTypes();
-                $itemTypeValueTypes = $itemType->getValueTypes();
-
-                foreach ($itemTypeKeyTypes as $itemTypeKeyType) {
-                    if (! $itemTypeKeyType instanceof ConstantIntegerType) {
-                        return $type;
-                    }
-                }
-
-                foreach ($itemTypeValueTypes as $itemTypeValueType) {
-                    if (! $itemTypeValueType instanceof UnionType) {
-                        return $type;
-                    }
-                }
+                $mixedArray = new ArrayType(new MixedType(), new MixedType());
+                return new ArrayType($keyType, $mixedArray);
             }
 
             if (! $keyType instanceof MixedType && ! $keyType instanceof ConstantIntegerType) {
