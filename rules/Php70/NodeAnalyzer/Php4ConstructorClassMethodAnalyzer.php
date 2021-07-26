@@ -6,7 +6,6 @@ namespace Rector\Php70\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -34,11 +33,6 @@ final class Php4ConstructorClassMethodAnalyzer
         }
 
         if ($classMethod->isStatic()) {
-            return false;
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
