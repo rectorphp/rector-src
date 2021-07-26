@@ -535,9 +535,9 @@ parameters:
 
         # native filesystem calls, required for performance reasons
         -
-            message: '#@\\Nette\\Utils\\FileSystem\:\:delete\(\$tmpPath\)" is forbidden to use#'
+            message: '#"@\\unlink\(\$tmpPath\)" is forbidden to use#'
             paths:
-                - packages/Caching/ValueObject/Storage/FileCacheStorage.php #79
+                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
             message: '#"@\\rename\(\$tmpPath, \$path\)" is forbidden to use#'
             paths:
@@ -550,8 +550,3 @@ parameters:
             message: '#"@\\var_export\(new \\Rector\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
-
-        -
-            message: '#Instead of "Nette\\Utils\\FileSystem" class/interface use "Symplify\\SmartFileSystem\\SmartFileSystem"#'
-            paths:
-                - packages/Caching/ValueObject/Storage/FileCacheStorage.php #79

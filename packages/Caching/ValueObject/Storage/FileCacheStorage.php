@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Caching\ValueObject\Storage;
 
-use Nette\Utils\FileSystem;
 use Nette\Utils\Random;
-use Nette\Utils\Strings;
 use PHPStan\File\FileWriter;
 use Rector\Caching\ValueObject\CacheFilePaths;
 use Rector\Caching\ValueObject\CacheItem;
@@ -55,7 +53,6 @@ final class FileCacheStorage
         $cacheFilePaths = $this->getCacheFilePaths($key);
         $this->smartFileSystem->mkdir($cacheFilePaths->getFirstDirectory());
         $this->smartFileSystem->mkdir($cacheFilePaths->getSecondDirectory());
-
         $path = $cacheFilePaths->getFilePath();
 
         $tmpPath = \sprintf('%s/%s.tmp', $this->directory, Random::generate());
@@ -76,7 +73,7 @@ final class FileCacheStorage
         if ($renameSuccess) {
             return;
         }
-        @FileSystem::delete($tmpPath);
+        @\unlink($tmpPath);
         if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($path)) {
             throw new CachingException(\sprintf('Could not write data to cache file %s.', $path));
         }
@@ -101,8 +98,8 @@ final class FileCacheStorage
     private function getCacheFilePaths(string $key): CacheFilePaths
     {
         $keyHash = sha1($key);
-        $firstDirectory = sprintf('%s/%s', $this->directory, Strings::substring($keyHash, 0, 2));
-        $secondDirectory = sprintf('%s/%s', $firstDirectory, Strings::substring($keyHash, 2, 2));
+        $firstDirectory = sprintf('%s/%s', $this->directory, substr($keyHash, 0, 2));
+        $secondDirectory = sprintf('%s/%s', $firstDirectory, substr($keyHash, 2, 2));
         $filePath = sprintf('%s/%s.php', $secondDirectory, $keyHash);
 
         return new CacheFilePaths($firstDirectory, $secondDirectory, $filePath);
