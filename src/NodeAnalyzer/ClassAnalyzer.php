@@ -25,8 +25,11 @@ final class ClassAnalyzer
             return false;
         }
 
-        /** @var string $className */
         $className = $this->nodeNameResolver->getName($node);
+        if ($className === null) {
+            return true;
+        }
+
         return ! $this->reflectionProvider->hasClass($className);
     }
 
