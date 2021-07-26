@@ -11,7 +11,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
-use Rector\Core\Configuration\Option;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class GenericClassStringTypeNormalizer
@@ -24,8 +23,7 @@ final class GenericClassStringTypeNormalizer
 
     public function normalize(Type $type): Type
     {
-        $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
-        return TypeTraverser::map($type, function (Type $type, $callback) use ($isAutoImport): Type {
+        return TypeTraverser::map($type, function (Type $type, $callback): Type {
             if (! $type instanceof ConstantStringType) {
                 return $callback($type);
             }
