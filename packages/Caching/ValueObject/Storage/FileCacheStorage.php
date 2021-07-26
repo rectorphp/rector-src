@@ -21,22 +21,6 @@ final class FileCacheStorage
     ) {
     }
 
-    private function makeDir(string $directory) : void
-    {
-        if (\is_dir($directory)) {
-            return;
-        }
-        $result = @\mkdir($directory, 0777);
-        if ($result === \false) {
-            \clearstatcache();
-            if (\is_dir($directory)) {
-                return;
-            }
-            $error = \error_get_last();
-            throw new CachingException(\sprintf('Failed to create directory "%s" (%s).', $this->directory, $error !== null ? $error['message'] : 'unknown cause'));
-        }
-    }
-
     /**
      * @param string $key
      * @param string $variableKey
@@ -69,9 +53,10 @@ final class FileCacheStorage
     public function save(string $key, string $variableKey, $data) : void
     {
         [$firstDirectory, $secondDirectory, $path] = $this->getFilePaths($key);
-        $this->makeDir($this->directory);
-        $this->makeDir($firstDirectory);
-        $this->makeDir($secondDirectory);
+
+        $this->smartFileSystem->mkdir($this->directory);
+        $this->smartFileSystem->mkdir($firstDirectory);
+        $this->smartFileSystem->mkdir($secondDirectory);
         $tmpPath = \sprintf('%s/%s.tmp', $this->directory, Random::generate());
         $errorBefore = \error_get_last();
         $exported = @\var_export(new CacheItem($variableKey, $data), \true);
