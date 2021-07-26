@@ -554,4 +554,4 @@ parameters:
         -
             message: '#Instead of "Nette\\Utils\\FileSystem" class/interface use "Symplify\\SmartFileSystem\\SmartFileSystem"#'
             paths:
-                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
+                - packages/Caching/ValueObject/Storage/FileCacheStorage.php #79
