@@ -55,7 +55,7 @@ final class GenericClassStringTypeNormalizer
         return $type;
     }
 
-    private function resolveClassStringInUnionType(UnionType $type): Type
+    private function resolveClassStringInUnionType(UnionType $type): UnionType | ArrayType
     {
         $unionTypes = $type->getTypes();
 
@@ -68,8 +68,8 @@ final class GenericClassStringTypeNormalizer
             $itemType = $unionType->getItemType();
 
             if ($itemType instanceof ConstantArrayType) {
-                $mixedArray = new ArrayType(new MixedType(), new MixedType());
-                return new ArrayType($keyType, $mixedArray);
+                $arrayType = new ArrayType(new MixedType(), new MixedType());
+                return new ArrayType($keyType, $arrayType);
             }
 
             if (! $keyType instanceof MixedType && ! $keyType instanceof ConstantIntegerType) {
