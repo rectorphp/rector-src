@@ -24,6 +24,11 @@ final class DowngradeAnonymousClassRector extends AbstractRector
      */
     private const ANONYMOUS_CLASS_PREFIX = 'Anonymous__';
 
+    /**
+     * @var Class_[]
+     */
+    private array $classes = [];
+
     public function __construct(
         private ClassAnalyzer $classAnalyzer,
         private ClassFromAnonymousFactory $classFromAnonymousFactory
@@ -124,10 +129,6 @@ CODE_SAMPLE
     {
         $smartFileInfo = $this->file->getSmartFileInfo();
 
-        return self::ANONYMOUS_CLASS_PREFIX . md5($smartFileInfo->getRealPath()) . '__' . (is_countable(
-            $this->classes
-        ) ? count(
-            $this->classes
-        ) : 0);
+        return self::ANONYMOUS_CLASS_PREFIX . md5($smartFileInfo->getRealPath()) . '__' . count($this->classes);
     }
 }
