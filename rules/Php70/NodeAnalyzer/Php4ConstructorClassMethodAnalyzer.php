@@ -7,10 +7,16 @@ namespace Rector\Php70\NodeAnalyzer;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class Php4ConstructorClassMethodAnalyzer
 {
+    public function __construct(
+        private ClassAnalyzer $classAnalyzer
+    ) {
+    }
+
     public function detect(ClassMethod $classMethod): bool
     {
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
@@ -36,6 +42,6 @@ final class Php4ConstructorClassMethodAnalyzer
             return false;
         }
 
-        return ! $classReflection->isAnonymous();
+        return ! $this->classAnalyzer->isAnonymousClassOfClassMethod($classMethod);
     }
 }

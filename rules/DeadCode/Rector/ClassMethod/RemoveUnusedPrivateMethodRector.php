@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
@@ -27,7 +28,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedPrivateMethodRector extends AbstractRector
 {
     public function __construct(
-        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher
+        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
+        private ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -128,7 +130,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($classReflection->isAnonymous()) {
+        if ($this->classAnalyzer->isAnonymousClassOfClassMethod($classMethod)) {
             return true;
         }
 
