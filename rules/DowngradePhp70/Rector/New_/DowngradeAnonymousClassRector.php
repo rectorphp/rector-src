@@ -24,11 +24,6 @@ final class DowngradeAnonymousClassRector extends AbstractRector
      */
     private const ANONYMOUS_CLASS_PREFIX = 'Anonymous__';
 
-    /**
-     * @var Class_[]
-     */
-    private array $classes = [];
-
     public function __construct(
         private ClassAnalyzer $classAnalyzer,
         private ClassFromAnonymousFactory $classFromAnonymousFactory
