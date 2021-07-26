@@ -124,6 +124,10 @@ CODE_SAMPLE
     {
         $smartFileInfo = $this->file->getSmartFileInfo();
 
-        return self::ANONYMOUS_CLASS_PREFIX . md5($smartFileInfo->getRealPath()) . '__' . count($this->classes);
+        return self::ANONYMOUS_CLASS_PREFIX . md5($smartFileInfo->getRealPath()) . '__' . (is_countable(
+            $this->classes
+        ) ? count(
+            $this->classes
+        ) : 0);
     }
 }
