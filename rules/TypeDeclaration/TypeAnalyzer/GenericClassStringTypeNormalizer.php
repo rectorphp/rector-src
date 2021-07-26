@@ -12,6 +12,7 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
+use PHPStan\Type\UnionType;
 
 final class GenericClassStringTypeNormalizer
 {
@@ -23,7 +24,7 @@ final class GenericClassStringTypeNormalizer
 
     public function normalize(Type $type): Type
     {
-        return TypeTraverser::map($type, function (Type $type, $callback): Type {
+        $type = TypeTraverser::map($type, function (Type $type, $callback): Type {
             if (! $type instanceof ConstantStringType) {
                 return $callback($type);
             }
@@ -41,6 +42,22 @@ final class GenericClassStringTypeNormalizer
 
             return $this->resolveStringType($value);
         });
+
+        if ($type instanceof UnionType) {
+            return $this->resolveUnionType($type);
+        }
+
+        return $type;
+    }
+
+    private function resolveUnionType(UnionType $type): Type
+    {
+        $unionTypes = $type->types;
+        foreach ($unionTypes as $unionType) {
+
+        }
+
+        return $type;
     }
 
     private function resolveStringType(string $value): GenericClassStringType | StringType
