@@ -29,7 +29,9 @@ final class FileCacheStorage
     public function load(string $key, string $variableKey)
     {
         return (function (string $key, string $variableKey) {
-            [, , $filePath] = $this->getFilePaths($key);
+            $cacheFilePaths = $this->getCacheFilePaths($key);
+
+            $filePath = $cacheFilePaths->getFilePath();
             if (!\is_file($filePath)) {
                 return null;
             }
@@ -52,11 +54,11 @@ final class FileCacheStorage
      */
     public function save(string $key, string $variableKey, $data) : void
     {
-        [$firstDirectory, $secondDirectory, $path] = $this->getFilePaths($key);
+        $cacheFilePaths = $this->getCacheFilePaths($key);
+        $this->smartFileSystem->mkdir($cacheFilePaths->getFirstDirectory());
+        $this->smartFileSystem->mkdir($cacheFilePaths->getSecondDirectory());
+        $path = $cacheFilePaths->getFilePath();
 
-        $this->smartFileSystem->mkdir($this->directory);
-        $this->smartFileSystem->mkdir($firstDirectory);
-        $this->smartFileSystem->mkdir($secondDirectory);
         $tmpPath = \sprintf('%s/%s.tmp', $this->directory, Random::generate());
         $errorBefore = \error_get_last();
         $exported = @\var_export(new CacheItem($variableKey, $data), \true);
@@ -77,12 +79,12 @@ final class FileCacheStorage
 
     public function clean(string $cacheKey): void
     {
-        [$firstDirectory, $secondDirectory, $path] = $this->getFilePaths($cacheKey);
+        $cacheFilePaths = $this->getCacheFilePaths($cacheKey);
 
         $this->smartFileSystem->remove([
-            $firstDirectory,
-            $secondDirectory,
-            $path
+            $cacheFilePaths->getFirstDirectory(),
+            $cacheFilePaths->getSecondDirectory(),
+            $cacheFilePaths->getFilePath(),
         ]);
     }
 
@@ -91,16 +93,13 @@ final class FileCacheStorage
         $this->smartFileSystem->remove($this->directory);
     }
 
-    /**
-     * @param string $key
-     * @return array{string, string, string}
-     */
-    private function getFilePaths(string $key) : array
+    private function getCacheFilePaths(string $key): CacheFilePaths
     {
-        $keyHash = \sha1($key);
-        $firstDirectory = \sprintf('%s/%s', $this->directory, \substr($keyHash, 0, 2));
-        $secondDirectory = \sprintf('%s/%s', $firstDirectory, \substr($keyHash, 2, 2));
-        $filePath = \sprintf('%s/%s.php', $secondDirectory, $keyHash);
-        return [$firstDirectory, $secondDirectory, $filePath];
+        $keyHash = sha1($key);
+        $firstDirectory = sprintf('%s/%s', $this->directory, Strings::substring($keyHash, 0, 2));
+        $secondDirectory = sprintf('%s/%s', $firstDirectory, Strings::substring($keyHash, 2, 2));
+        $filePath = sprintf('%s/%s.php', $secondDirectory, $keyHash);
+
+        return new CacheFilePaths($firstDirectory, $secondDirectory, $filePath);
     }
 }
