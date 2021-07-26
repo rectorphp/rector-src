@@ -62,7 +62,7 @@ final class FileCacheStorage
 
         $tmpPath = \sprintf('%s/%s.tmp', $this->directory, Random::generate());
         $errorBefore = \error_get_last();
-        $exported = @\var_export(new CacheItem($variableKey, $data), \true);
+        $exported = @\var_export(new CacheItem($variableKey, $data), true);
         $errorAfter = \error_get_last();
         if ($errorAfter !== null && $errorBefore !== $errorAfter) {
             throw new CachingException(\sprintf('Error occurred while saving item %s (%s) to cache: %s', $key, $variableKey, $errorAfter['message']));
