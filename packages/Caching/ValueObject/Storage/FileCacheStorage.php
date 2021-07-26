@@ -8,6 +8,7 @@ use Nette\Utils\Random;
 use PHPStan\Cache\CacheItem;
 use PHPStan\File\FileWriter;
 use PHPStan\ShouldNotHappenException;
+use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/blob/1e7ceae933f07e5a250b61ed94799e6c2ea8daa2/src/Cache/FileCacheStorage.php
