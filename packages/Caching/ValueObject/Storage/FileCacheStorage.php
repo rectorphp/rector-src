@@ -10,8 +10,7 @@ use PHPStan\File\FileWriter;
 use PHPStan\ShouldNotHappenException;
 
 /**
- * Inspired by
- * https://github.com/phpstan/phpstan-src/commit/4df7342f3a0aaef4bcd85456dd20ca88d38dd90d#diff-6dc14f6222bf150e6840ca44a7126653052a1cedc6a149b4e5c1e1a2c80eacdc
+ * Inspired by https://github.com/phpstan/phpstan-src/blob/1e7ceae933f07e5a250b61ed94799e6c2ea8daa2/src/Cache/FileCacheStorage.php
  */
 final class FileCacheStorage
 {
