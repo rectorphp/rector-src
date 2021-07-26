@@ -57,33 +57,25 @@ final class GenericClassStringTypeNormalizer
     private function resolveClassStringInUnionType(UnionType $type): Type
     {
         $unionTypes = $type->getTypes();
-        $isAllClassString = true;
 
         foreach ($unionTypes as $unionType) {
             if (! $unionType instanceof ArrayType) {
-                $isAllClassString = false;
-                break;
+                return $type;
             }
 
             $keyType = $unionType->getKeyType();
             $itemType = $unionType->getItemType();
 
             if (! $keyType instanceof MixedType && ! $keyType instanceof ConstantIntegerType) {
-                $isAllClassString = false;
-                break;
+                return $type;
             }
 
             if (! $itemType instanceof ClassStringType) {
-                $isAllClassString = false;
-                break;
+                return $type;
             }
         }
 
-        if ($isAllClassString) {
-            return new ArrayType(new MixedType(), new ClassStringType());
-        }
-
-        return $type;
+        return new ArrayType(new MixedType(), new ClassStringType());
     }
 
     private function resolveStringType(string $value): GenericClassStringType | StringType
