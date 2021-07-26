@@ -48,13 +48,13 @@ final class GenericClassStringTypeNormalizer
         });
 
         if ($type instanceof UnionType) {
-            return $this->resolveUnionType($type);
+            return $this->resolveClassStringInUnionType($type);
         }
 
         return $type;
     }
 
-    private function resolveUnionType(UnionType $type): Type
+    private function resolveClassStringInUnionType(UnionType $type): Type
     {
         $unionTypes = $type->getTypes();
         $isAllClassString = true;
