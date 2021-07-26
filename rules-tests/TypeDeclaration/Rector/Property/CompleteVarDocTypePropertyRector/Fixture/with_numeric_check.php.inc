@@ -9,7 +9,7 @@ final class WithNumericCheck
      */
     public $value;
 
-    public function run($value = '')
+    public function __construct($value = '')
     {
         if (is_numeric($value)) {
             $this->value = $value;
@@ -29,11 +29,11 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\CompleteVarDocTypePropert
 final class WithNumericCheck
 {
     /**
-     * @var float|int|string|null
+     * @var float|int|string
      */
     public $value;
 
-    public function run($value = '')
+    public function __construct($value = '')
     {
         if (is_numeric($value)) {
             $this->value = $value;
