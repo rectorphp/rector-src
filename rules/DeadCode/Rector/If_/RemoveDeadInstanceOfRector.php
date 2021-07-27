@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -117,7 +118,9 @@ CODE_SAMPLE
             return false;
         }
 
-        return ! $this->pureFunctionDetector->detect($instanceof->expr);
+        /** @var FuncCall $expr */
+        $expr = $instanceof->expr;
+        return ! $this->pureFunctionDetector->detect($expr);
     }
 
     private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): ?If_
