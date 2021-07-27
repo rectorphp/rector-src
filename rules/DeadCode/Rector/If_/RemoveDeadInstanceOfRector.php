@@ -18,6 +18,7 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -28,7 +29,8 @@ final class RemoveDeadInstanceOfRector extends AbstractRector
 {
     public function __construct(
         private IfManipulator $ifManipulator,
-        private PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -126,7 +128,10 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->propertyFetchAnalyzer->isFilledByConstructParam($property)) {
+            $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
+            $isFilledByConstructParam       = $this->propertyFetchAnalyzer->isFilledByConstructParam($property);
+
+            if (! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam) {
                 return null;
             }
         }
