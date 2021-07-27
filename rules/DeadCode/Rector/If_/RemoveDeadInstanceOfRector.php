@@ -7,8 +7,14 @@ namespace Rector\DeadCode\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -21,7 +27,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveDeadInstanceOfRector extends AbstractRector
 {
     public function __construct(
-        private IfManipulator $ifManipulator
+        private IfManipulator $ifManipulator,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -100,6 +107,28 @@ CODE_SAMPLE
             ->yes();
         if (! $isSameStaticTypeOrSubtype) {
             return null;
+        }
+
+        if (! $instanceof->expr instanceof Variable) {
+            /** @var PropertyFetch|StaticPropertyFetch $propertyFetch */
+            $propertyFetch = $instanceof->expr;
+
+            $classLike = $propertyFetch->getAttribute(AttributeKey::CLASS_NODE);
+            if (! $classLike instanceof Class_) {
+                return null;
+            }
+
+            /** @var string $propertyName */
+            $propertyName = $this->nodeNameResolver->getName($propertyFetch);
+            $property = $classLike->getProperty($propertyName);
+
+            if (! $property instanceof Property) {
+                return null;
+            }
+
+            if (! $this->propertyFetchAnalyzer->isFilledByConstructParam($property)) {
+                return null;
+            }
         }
 
         if ($if->cond === $instanceof) {
