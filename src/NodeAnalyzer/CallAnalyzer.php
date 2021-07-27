@@ -40,9 +40,4 @@ final class CallAnalyzer
 
         return false;
     }
-
-    public function isFuncCall(Expr $expr): bool
-    {
-        return $expr instanceof FuncCall;
-    }
 }
