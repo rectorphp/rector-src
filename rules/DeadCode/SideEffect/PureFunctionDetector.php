@@ -9,6 +9,7 @@ use PhpParser\Node\Name;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class PureFunctionDetector
 {
@@ -124,13 +125,15 @@ final class PureFunctionDetector
             return false;
         }
 
+        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
         $name = new Name($funcCallName);
-        $hasFunction = $this->reflectionProvider->hasFunction($name, null);
+
+        $hasFunction = $this->reflectionProvider->hasFunction($name, $scope);
         if (! $hasFunction) {
             return false;
         }
 
-        $function = $this->reflectionProvider->getFunction($name, null);
+        $function = $this->reflectionProvider->getFunction($name, $scope);
         if (! $function instanceof NativeFunctionReflection) {
             return false;
         }
