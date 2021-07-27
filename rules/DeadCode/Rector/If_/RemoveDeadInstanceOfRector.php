@@ -115,7 +115,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $instanceof->expr instanceof Variable) {
+        if (! $instanceof->expr instanceof Variable && ! $this->isInPropertyPromotedParams($instanceof->expr)) {
             /** @var PropertyFetch|StaticPropertyFetch $propertyFetch */
             $propertyFetch = $instanceof->expr;
 
@@ -148,7 +148,7 @@ CODE_SAMPLE
         return $if;
     }
 
-    private function isInPropertyPromotedParams(Expr $expr): bool
+    private function isInPropertyPromotedParams(?Expr $expr): bool
     {
         if (! $expr instanceof PropertyFetch) {
             return false;
