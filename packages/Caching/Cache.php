@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Caching;
 
-use Rector\Caching\ValueObject\Storage\CacheStorage;
+use Rector\Caching\ValueObject\Storage\CacheStorageInterface;
 
 final class Cache
 {
     public function __construct(
-        private CacheStorage $cacheStorage
+        private CacheStorageInterface $cacheStorage
     ) {
     }
 

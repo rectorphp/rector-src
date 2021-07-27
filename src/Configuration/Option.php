@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Configuration;
 
 use JetBrains\PhpStorm\Immutable;
-use Rector\Caching\ValueObject\Storage\CacheStorage;
+use Rector\Caching\ValueObject\Storage\CacheStorageInterface;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Symplify\Skipper\ValueObject\Option as SkipperOption;
 
@@ -114,7 +114,7 @@ final class Option
     public const CACHE_DIR = 'cache_dir';
 
     /**
-     * @var class-string<CacheStorage>
+     * @var class-string<CacheStorageInterface>
      */
     public const CACHE_CLASS = FileCacheStorage::class;
 

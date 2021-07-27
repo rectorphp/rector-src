@@ -7,7 +7,7 @@ namespace Rector\Caching\ValueObject\Storage;
 /**
  * inspired by https://github.com/phpstan/phpstan-src/blob/560652088406d7461c2c4ad4897784e33f8ab312/src/Cache/CacheStorage.php
  */
-interface CacheStorage
+interface CacheStorageInterface
 {
     /**
      * @return mixed|null

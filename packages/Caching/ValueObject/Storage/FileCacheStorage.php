@@ -14,7 +14,7 @@ use Symplify\SmartFileSystem\SmartFileSystem;
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/blob/1e7ceae933f07e5a250b61ed94799e6c2ea8daa2/src/Cache/FileCacheStorage.php
  */
-final class FileCacheStorage implements CacheStorage
+final class FileCacheStorage implements CacheStorageInterface
 {
     public function __construct(
         private string $directory,
