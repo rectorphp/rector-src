@@ -7,7 +7,6 @@ class SkipOnlyInReturnDocblock
     public function run()
     {
         $value = $this->getOne();
-        return $value;
     }
 
     /**
@@ -17,15 +16,5 @@ class SkipOnlyInReturnDocblock
     {
     }
 }
-
-class Extended extends SkipOnlyInReturnDocblock
-{
-    protected function getOne()
-    {
-        return 'test';
-    }
-}
-
-echo (new Extended())->run();
 
 ?>
