@@ -34,4 +34,4 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     if (false !== getenv('GITHUB_ACTION')) {
         $parameters->set(Option::CACHE_CLASS, MemoryCacheStorage::class);
     }
-;
+};
