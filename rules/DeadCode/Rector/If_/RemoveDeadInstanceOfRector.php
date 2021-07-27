@@ -19,6 +19,7 @@ use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
@@ -35,7 +36,8 @@ final class RemoveDeadInstanceOfRector extends AbstractRector
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private ConstructorAssignDetector $constructorAssignDetector,
         private PromotedPropertyResolver $promotedPropertyResolver,
-        private CallAnalyzer $callAnalyzer
+        private CallAnalyzer $callAnalyzer,
+        private PureFunctionDetector $pureFunctionDetector
     ) {
     }
 
@@ -107,7 +109,7 @@ CODE_SAMPLE
 
     private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): ?If_
     {
-        if ($this->callAnalyzer->isObjectCall($instanceof->expr) || $this->callAnalyzer->isFuncCall($instanceof->expr)) {
+        if ($this->callAnalyzer->isObjectCall($instanceof->expr) || ($this->callAnalyzer->isFuncCall($instanceof->expr) && ! $this->pureFunctionDetector->detect($instanceof->expr))) {
             return null;
         }
 
