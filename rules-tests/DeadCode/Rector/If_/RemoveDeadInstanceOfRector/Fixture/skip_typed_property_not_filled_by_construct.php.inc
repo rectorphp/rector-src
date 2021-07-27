@@ -8,9 +8,9 @@ class SkipTypedPropertyNotFilledByConstruct
 {
     private stdClass $var;
 
-    public function init(stdClass $var)
+    public function init()
     {
-        $this->var = $var;
+        $this->var = new stdClass;
     }
 
     public function go()
