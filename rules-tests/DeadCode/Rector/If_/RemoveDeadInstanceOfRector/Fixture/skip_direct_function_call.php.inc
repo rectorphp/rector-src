@@ -15,7 +15,7 @@ class SkipDirectFunctionCall
 {
     public function go()
     {
-        if (! $this->get() instanceof stdClass) {
+        if (! get() instanceof stdClass) {
             return false;
         }
 
