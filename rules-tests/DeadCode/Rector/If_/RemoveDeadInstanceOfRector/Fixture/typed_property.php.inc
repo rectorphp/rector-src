@@ -6,8 +6,11 @@ use stdClass;
 
 class TypedProperty
 {
-    public function __construct(private stdClass $stdClass)
+    private stdClass $var;
+
+    public function __construct()
     {
+        $this->var = new stdClass;
     }
 
     public function go()
@@ -31,8 +34,11 @@ use stdClass;
 
 class TypedProperty
 {
-    public function __construct(private stdClass $stdClass)
+    private stdClass $var;
+
+    public function __construct()
     {
+        $this->var = new stdClass;
     }
 
     public function go()
