@@ -8,7 +8,7 @@ class SkipDirectMethodCall
 {
     private function get(): stdClass
     {
-        $this->sideEffect();
+        session_start();
 
         return new stdClass;
     }
