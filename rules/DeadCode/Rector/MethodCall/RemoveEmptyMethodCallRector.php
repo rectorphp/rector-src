@@ -76,6 +76,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->var instanceof MethodCall) {
+            return null;
+        }
+
         $scope = $node->var->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return null;
