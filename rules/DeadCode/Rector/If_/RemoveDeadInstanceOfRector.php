@@ -147,15 +147,15 @@ CODE_SAMPLE
             return true;
         }
 
-        $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned(
-            $classLike,
-            $propertyName
-        );
-
         $isFilledByConstructParam = $this->propertyFetchAnalyzer->isFilledByConstructParam($property);
         if ($this->isInPropertyPromotedParams($propertyFetch)) {
             return false;
         }
+
+        $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned(
+            $classLike,
+            $propertyName
+        );
 
         return $property->type === null && ! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam;
     }
