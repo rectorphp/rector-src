@@ -108,7 +108,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isInstanceOfExprACall(Instanceof_ $instanceof): bool
+    private function shouldSkipExprCall(Instanceof_ $instanceof): bool
     {
         if ($this->callAnalyzer->isObjectCall($instanceof->expr)) {
             return true;
@@ -125,7 +125,7 @@ CODE_SAMPLE
 
     private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): ?If_
     {
-        if ($this->isInstanceOfExprACall($instanceof)) {
+        if ($this->shouldSkipExprCall($instanceof)) {
             return null;
         }
 
