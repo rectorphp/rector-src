@@ -6,7 +6,7 @@ use stdClass;
 
 class TypedPropertyViaPropertyPromotion
 {
-    public function __construct(private stdClass $stdClass)
+    public function __construct(private stdClass $var)
     {
     }
 
@@ -31,7 +31,7 @@ use stdClass;
 
 class TypedPropertyViaPropertyPromotion
 {
-    public function __construct(private stdClass $stdClass)
+    public function __construct(private stdClass $var)
     {
     }
 

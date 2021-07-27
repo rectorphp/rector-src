@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -18,6 +19,7 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,7 +32,8 @@ final class RemoveDeadInstanceOfRector extends AbstractRector
     public function __construct(
         private IfManipulator $ifManipulator,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private ConstructorAssignDetector $constructorAssignDetector
+        private ConstructorAssignDetector $constructorAssignDetector,
+        private PromotedPropertyResolver $promotedPropertyResolver
     ) {
     }
 
@@ -107,6 +110,7 @@ CODE_SAMPLE
 
         $isSameStaticTypeOrSubtype = $classType->equals($exprType) || $classType->isSuperTypeOf($exprType)
             ->yes();
+
         if (! $isSameStaticTypeOrSubtype) {
             return null;
         }
@@ -131,7 +135,7 @@ CODE_SAMPLE
             $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
             $isFilledByConstructParam       = $this->propertyFetchAnalyzer->isFilledByConstructParam($property);
 
-            if ($property->type === null && ! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam) {
+            if (! $this->isInPropertyPromotedParams($propertyFetch) && $property->type === null && ! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam) {
                 return null;
             }
         }
@@ -142,5 +146,29 @@ CODE_SAMPLE
 
         $this->removeNode($if);
         return $if;
+    }
+
+    private function isInPropertyPromotedParams(Expr $expr): bool
+    {
+        if (! $expr instanceof PropertyFetch) {
+            return false;
+        }
+
+        $classLike = $expr->getAttribute(AttributeKey::CLASS_NODE);
+        if (! $classLike instanceof Class_) {
+            return null;
+        }
+
+        /** @var string $propertyName */
+        $propertyName = $this->nodeNameResolver->getName($expr);
+        $params = $this->promotedPropertyResolver->resolveFromClass($classLike);
+
+        foreach ($params as $param) {
+            if ($this->nodeNameResolver->isName($param, $propertyName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
