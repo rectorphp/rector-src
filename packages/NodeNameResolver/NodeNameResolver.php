@@ -188,7 +188,7 @@ final class NodeNameResolver
 
     private function isCallOrIdentifier(Node $node): bool
     {
-        if ($this->callAnalyzer->isObjectCall($node)) {
+        if ($node instanceof Expr && $this->callAnalyzer->isObjectCall($node)) {
             return true;
         }
 
