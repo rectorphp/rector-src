@@ -115,29 +115,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $instanceof->expr instanceof Variable && ! $this->isInPropertyPromotedParams($instanceof->expr)) {
-            /** @var PropertyFetch|StaticPropertyFetch $propertyFetch */
-            $propertyFetch = $instanceof->expr;
-
-            $classLike = $propertyFetch->getAttribute(AttributeKey::CLASS_NODE);
-            if (! $classLike instanceof Class_) {
-                return null;
-            }
-
-            /** @var string $propertyName */
-            $propertyName = $this->nodeNameResolver->getName($propertyFetch);
-            $property = $classLike->getProperty($propertyName);
-
-            if (! $property instanceof Property) {
-                return null;
-            }
-
-            $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
-            $isFilledByConstructParam       = $this->propertyFetchAnalyzer->isFilledByConstructParam($property);
-
-            if (! $this->isInPropertyPromotedParams($propertyFetch) && $property->type === null && ! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam) {
-                return null;
-            }
+        if (! $instanceof->expr instanceof Variable && ! $this->isInPropertyPromotedParams(
+            $instanceof->expr
+        ) && $this->isSkippedPropertyFetch($instanceof->expr)) {
+            return null;
         }
 
         if ($if->cond === $instanceof) {
@@ -148,6 +129,37 @@ CODE_SAMPLE
         return $if;
     }
 
+    private function isSkippedPropertyFetch(Expr $expr): bool
+    {
+        /** @var PropertyFetch|StaticPropertyFetch $propertyFetch */
+        $propertyFetch = $expr;
+
+        $classLike = $propertyFetch->getAttribute(AttributeKey::CLASS_NODE);
+        if (! $classLike instanceof Class_) {
+            return true;
+        }
+
+        /** @var string $propertyName */
+        $propertyName = $this->nodeNameResolver->getName($propertyFetch);
+        $property = $classLike->getProperty($propertyName);
+
+        if (! $property instanceof Property) {
+            return true;
+        }
+
+        $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned(
+            $classLike,
+            $propertyName
+        );
+
+        $isFilledByConstructParam = $this->propertyFetchAnalyzer->isFilledByConstructParam($property);
+        if ($this->isInPropertyPromotedParams($propertyFetch)) {
+            return false;
+        }
+
+        return $property->type === null && ! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam;
+    }
+
     private function isInPropertyPromotedParams(?Expr $expr): bool
     {
         if (! $expr instanceof PropertyFetch) {
@@ -156,7 +168,7 @@ CODE_SAMPLE
 
         $classLike = $expr->getAttribute(AttributeKey::CLASS_NODE);
         if (! $classLike instanceof Class_) {
-            return null;
+            return false;
         }
 
         /** @var string $propertyName */
