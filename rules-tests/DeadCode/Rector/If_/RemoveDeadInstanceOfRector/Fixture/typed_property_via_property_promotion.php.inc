@@ -29,7 +29,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\Fixture;
 
 use stdClass;
 
-class TypedProperty
+class TypedPropertyViaPropertyPromotion
 {
     public function __construct(private stdClass $stdClass)
     {
