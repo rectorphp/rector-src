@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Caching;
 
+use Rector\Caching\ValueObject\Storage\CacheStorage;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
+use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
 use Rector\Core\Configuration\Option;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\SmartFileSystem;
@@ -20,13 +22,18 @@ final class CacheFactory
     public function create(): Cache
     {
         $cacheDirectory = $this->parameterProvider->provideStringParameter(Option::CACHE_DIR);
+        $cacheClass = $this->parameterProvider->provideStringParameter(Option::CACHE_CLASS);
 
-        // ensure cache directory exists
-        if (! $this->smartFileSystem->exists($cacheDirectory)) {
-            $this->smartFileSystem->mkdir($cacheDirectory);
+        if ($cacheClass === FileCacheStorage::class) {
+            // ensure cache directory exists
+            if (! $this->smartFileSystem->exists($cacheDirectory)) {
+                $this->smartFileSystem->mkdir($cacheDirectory);
+            }
+
+            $fileCacheStorage = new FileCacheStorage($cacheDirectory, $this->smartFileSystem);
+            return new Cache($fileCacheStorage);
         }
 
-        $fileCacheStorage = new FileCacheStorage($cacheDirectory, $this->smartFileSystem);
-        return new Cache($fileCacheStorage);
+        return new Cache(new MemoryCacheStorage());
     }
 }
