@@ -24,6 +24,7 @@ use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
+use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -38,7 +39,8 @@ final class RemoveDeadInstanceOfRector extends AbstractRector
         private ConstructorAssignDetector $constructorAssignDetector,
         private PromotedPropertyResolver $promotedPropertyResolver,
         private CallAnalyzer $callAnalyzer,
-        private PureFunctionDetector $pureFunctionDetector
+        private PureFunctionDetector $pureFunctionDetector,
+        private PropertyAssignMatcher $propertyAssignMatcher
     ) {
     }
 
@@ -155,10 +157,14 @@ CODE_SAMPLE
 
     private function isSkippedPropertyFetch(Expr $expr): bool
     {
+        if (! $this->propertyAssignMatcher->isPropertyFetch($expr)) {
+            return true;
+        }
+
         /** @var PropertyFetch|StaticPropertyFetch $propertyFetch */
         $propertyFetch = $expr;
-
         $classLike = $propertyFetch->getAttribute(AttributeKey::CLASS_NODE);
+
         if (! $classLike instanceof Class_) {
             return true;
         }
