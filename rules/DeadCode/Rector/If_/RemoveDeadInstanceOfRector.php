@@ -107,9 +107,22 @@ CODE_SAMPLE
         return $node;
     }
 
+    private function isInstanceOfExprACall(Instanceof_ $instanceof): bool
+    {
+        if ($this->callAnalyzer->isObjectCall($instanceof->expr)) {
+            return true;
+        }
+
+        if (! $this->callAnalyzer->isFuncCall($instanceof->expr)) {
+            return false;
+        }
+
+        return ! $this->pureFunctionDetector->detect($instanceof->expr);
+    }
+
     private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): ?If_
     {
-        if ($this->callAnalyzer->isObjectCall($instanceof->expr) || ($this->callAnalyzer->isFuncCall($instanceof->expr) && ! $this->pureFunctionDetector->detect($instanceof->expr))) {
+        if ($this->isInstanceOfExprACall($instanceof)) {
             return null;
         }
 
