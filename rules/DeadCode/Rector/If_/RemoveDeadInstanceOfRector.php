@@ -131,7 +131,7 @@ CODE_SAMPLE
             $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
             $isFilledByConstructParam       = $this->propertyFetchAnalyzer->isFilledByConstructParam($property);
 
-            if (! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam) {
+            if ($property->type === null && ! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam) {
                 return null;
             }
         }
