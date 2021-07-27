@@ -296,11 +296,6 @@ CODE_SAMPLE
                 return false;
             }
 
-            $funcName = $this->getName($n);
-            if ($funcName === null) {
-                return false;
-            }
-
             return ! $this->pureFunctionDetector->detect($n);
         });
     }
