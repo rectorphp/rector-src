@@ -9,7 +9,10 @@ class Fixture
         $value = $this->getOne();
     }
 
-    private function getOne(): void
+    /**
+     * @return void
+     */
+    private function getOne()
     {
     }
 }
@@ -27,7 +30,10 @@ class Fixture
         $this->getOne();
     }
 
-    private function getOne(): void
+    /**
+     * @return void
+     */
+    private function getOne()
     {
     }
 }
