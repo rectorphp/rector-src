@@ -160,7 +160,7 @@ CODE_SAMPLE
         return $property->type === null && ! $isPropertyAssignedInConstuctor && ! $isFilledByConstructParam;
     }
 
-    private function isInPropertyPromotedParams(?Expr $expr): bool
+    private function isInPropertyPromotedParams(Expr $expr): bool
     {
         if (! $expr instanceof PropertyFetch) {
             return false;
