@@ -114,7 +114,10 @@ final class Option
     public const CACHE_DIR = 'cache_dir';
 
     /**
+     * Cache backend. Most of the time we cache in files, but in ephemeral environment (e.g. CI), a faster `MemoryCacheStorage` can be usefull.
+     *
      * @var class-string<CacheStorageInterface>
+     * @internal
      */
     public const CACHE_CLASS = FileCacheStorage::class;
 
