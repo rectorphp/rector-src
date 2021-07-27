@@ -124,13 +124,13 @@ final class PureFunctionDetector
             return false;
         }
 
-        $funcCallName = new Name($funcCallName);
-        $hasFunction = $this->reflectionProvider->hasFunction($funcCallName, null);
+        $name = new Name($funcCallName);
+        $hasFunction = $this->reflectionProvider->hasFunction($name, null);
         if (! $hasFunction) {
             return false;
         }
 
-        $function = $this->reflectionProvider->getFunction($funcCallName, null);
+        $function = $this->reflectionProvider->getFunction($name, null);
         if (! $function instanceof NativeFunctionReflection) {
             return false;
         }
