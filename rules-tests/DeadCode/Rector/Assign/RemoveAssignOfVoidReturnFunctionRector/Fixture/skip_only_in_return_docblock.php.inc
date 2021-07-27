@@ -14,6 +14,7 @@ class SkipOnlyInReturnDocblock
      */
     protected function getOne()
     {
+        return 'test';
     }
 }
 
