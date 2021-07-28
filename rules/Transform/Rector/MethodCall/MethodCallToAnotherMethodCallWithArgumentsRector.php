@@ -49,10 +49,8 @@ CODE_SAMPLE
                             'Nette\DI\ServiceDefinition',
                             'setInject',
                             'addTag',
-                            [
-                            'inject',
-                        
-                        ]),
+                            ['inject']
+                        ),
                     ],
                 ]
             ),
