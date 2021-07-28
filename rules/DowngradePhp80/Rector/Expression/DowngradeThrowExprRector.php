@@ -83,7 +83,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processAssign(Expression $expression, Assign $assign): ?If_
+    private function processAssign(Expression $expression, Assign $assign): If_ | Expression | null
     {
         if (! $this->hasThrowInAssignExpr($assign)) {
             return null;
@@ -91,6 +91,10 @@ CODE_SAMPLE
 
         if ($assign->expr instanceof Coalesce) {
             return $this->processCoalesce($assign, $assign->expr);
+        }
+
+        if ($assign->expr instanceof Throw_) {
+            return new Expression(($assign->expr));
         }
 
         return $expression;
