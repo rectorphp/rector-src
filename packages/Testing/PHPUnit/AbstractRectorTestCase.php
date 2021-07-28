@@ -47,7 +47,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         @ini_set('memory_limit', '-1');
 
         // include local files
-        if (file_exists(__DIR__ . '/../../../preload.php')) {
+        if (file_exists(__DIR__ . '/../../../preload.php') && file_exists(__DIR__ . '/../../../vendor')) {
             require_once __DIR__ . '/../../../preload.php';
         }
 
@@ -77,6 +77,11 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
         return StaticFixtureFinder::yieldDirectoryExclusively($directory, $suffix);
+    }
+
+    protected function isWindows(): bool
+    {
+        return strncasecmp(PHP_OS, 'WIN', 3) === 0;
     }
 
     protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo, bool $allowMatches = true): void

@@ -15,9 +15,11 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\Error\InvalidNameNodeReporter;
 use Rector\NodeNameResolver\Regex\RegexPatternDetector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeNameResolver
 {
@@ -28,6 +30,7 @@ final class NodeNameResolver
         private RegexPatternDetector $regexPatternDetector,
         private ClassNaming $classNaming,
         private InvalidNameNodeReporter $invalidNameNodeReporter,
+        private CallAnalyzer $callAnalyzer,
         private array $nodeNameResolvers = []
     ) {
     }
@@ -72,6 +75,12 @@ final class NodeNameResolver
     {
         if (is_string($node)) {
             return $node;
+        }
+
+        // useful for looped imported names
+        $namespacedName = $node->getAttribute(AttributeKey::NAMESPACED_NAME);
+        if (is_string($namespacedName)) {
+            return $namespacedName;
         }
 
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
@@ -179,15 +188,11 @@ final class NodeNameResolver
 
     private function isCallOrIdentifier(Node $node): bool
     {
-        if ($node instanceof MethodCall) {
-            return true;
+        if (! $node instanceof Expr) {
+            return $node instanceof Identifier;
         }
 
-        if ($node instanceof StaticCall) {
-            return true;
-        }
-
-        return $node instanceof Identifier;
+        return $this->callAnalyzer->isObjectCall($node);
     }
 
     private function isSingleName(Node $node, string $name): bool

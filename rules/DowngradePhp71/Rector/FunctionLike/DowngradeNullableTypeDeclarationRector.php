@@ -56,7 +56,7 @@ class SomeClass
 {
     /**
      * @param string|null $input
-     * @return string|null $input
+     * @return string|null
      */
     public function run($input)
     {
@@ -79,9 +79,8 @@ CODE_SAMPLE
             }
         }
 
-        if ($node->returnType instanceof NullableType && $this->phpDocFromTypeDeclarationDecorator->decorate(
-            $node
-        )) {
+        if ($node->returnType instanceof NullableType) {
+            $this->phpDocFromTypeDeclarationDecorator->decorate($node);
             $hasChanged = true;
         }
 

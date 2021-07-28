@@ -16,14 +16,12 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\Generic\GenericObjectType;
@@ -43,6 +41,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\HasOffsetTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
@@ -69,6 +68,7 @@ final class NodeTypeResolver
         private GenericClassStringTypeCorrector $genericClassStringTypeCorrector,
         private ReflectionProvider $reflectionProvider,
         private HasOffsetTypeCorrector $hasOffsetTypeCorrector,
+        private AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
         private IdentifierTypeResolver $identifierTypeResolver,
         private RenamedClassesDataCollector $renamedClassesDataCollector,
         array $nodeTypeResolvers
@@ -126,6 +126,7 @@ final class NodeTypeResolver
     {
         $type = $this->resolveByNodeTypeResolvers($node);
         if ($type !== null) {
+            $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
             return $this->hasOffsetTypeCorrector->correct($type);
         }
 
@@ -157,6 +158,7 @@ final class NodeTypeResolver
         }
 
         $type = $scope->getType($node);
+        $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
 
         // hot fix for phpstan not resolving chain method calls
         if (! $node instanceof MethodCall) {
@@ -229,7 +231,7 @@ final class NodeTypeResolver
             return $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $staticType);
         }
 
-        return $staticType;
+        return $this->accessoryNonEmptyStringTypeCorrector->correct($staticType);
     }
 
     public function isNumberType(Node $node): bool
@@ -283,20 +285,6 @@ final class NodeTypeResolver
         }
 
         return false;
-    }
-
-    public function isPropertyBoolean(Property $property): bool
-    {
-        if ($this->isStaticType($property, BooleanType::class)) {
-            return true;
-        }
-
-        $defaultNodeValue = $property->props[0]->default;
-        if (! $defaultNodeValue instanceof Expr) {
-            return false;
-        }
-
-        return $this->isStaticType($defaultNodeValue, BooleanType::class);
     }
 
     /**

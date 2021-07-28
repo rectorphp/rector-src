@@ -44,7 +44,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
-use Rector\PostRector\DependencyInjection\PropertyAdder;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -105,8 +104,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     protected NodeComparator $nodeComparator;
 
-    protected PropertyAdder $propertyAdder;
-
     protected NodesToRemoveCollector $nodesToRemoveCollector;
 
     protected File $file;
@@ -147,7 +144,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         NodesToAddCollector $nodesToAddCollector,
         RectorChangeCollector $rectorChangeCollector,
         NodeRemover $nodeRemover,
-        PropertyAdder $propertyAdder,
         RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         BetterStandardPrinter $betterStandardPrinter,
         NodeNameResolver $nodeNameResolver,
@@ -176,7 +172,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->nodesToAddCollector = $nodesToAddCollector;
         $this->rectorChangeCollector = $rectorChangeCollector;
         $this->nodeRemover = $nodeRemover;
-        $this->propertyAdder = $propertyAdder;
         $this->removedAndAddedFilesCollector = $removedAndAddedFilesCollector;
         $this->betterStandardPrinter = $betterStandardPrinter;
         $this->nodeNameResolver = $nodeNameResolver;
@@ -363,6 +358,10 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         return $this->betterStandardPrinter->print($node);
     }
 
+    /**
+     * @deprecated Use FQN PhpVersionProvider service directly instead or implements provideMinPhpVersion, this method will be removed soon
+     * Or implement \Rector\VersionBonding\Contract\MinPhpVersionInterface
+     */
     protected function isAtLeastPhpVersion(int $version): bool
     {
         return $this->phpVersionProvider->isAtLeastPhpVersion($version);
@@ -450,15 +449,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function addNodeBeforeNode(Node $newNode, Node $positionNode): void
     {
         $this->nodesToAddCollector->addNodeBeforeNode($newNode, $positionNode);
-    }
-
-    protected function addConstructorDependencyToClass(
-        Class_ $class,
-        Type $propertyType,
-        string $propertyName,
-        int $propertyFlags = 0
-    ): void {
-        $this->propertyAdder->addConstructorDependencyToClass($class, $propertyType, $propertyName, $propertyFlags);
     }
 
     protected function removeNode(Node $node): void

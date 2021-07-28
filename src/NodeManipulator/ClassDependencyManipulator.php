@@ -24,6 +24,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\PostRector\ValueObject\PropertyMetadata;
+use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 
 final class ClassDependencyManipulator
 {
@@ -36,7 +37,8 @@ final class ClassDependencyManipulator
         private PhpVersionProvider $phpVersionProvider,
         private PropertyPresenceChecker $propertyPresenceChecker,
         private NodeNameResolver $nodeNameResolver,
-        private NodesToRemoveCollector $nodesToRemoveCollector
+        private NodesToRemoveCollector $nodesToRemoveCollector,
+        private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer
     ) {
     }
 
@@ -129,7 +131,7 @@ final class ClassDependencyManipulator
 
     public function addInjectProperty(Class_ $class, PropertyMetadata $propertyMetadata): void
     {
-        if ($this->propertyPresenceChecker->hasClassContextPropertyByName($class, $propertyMetadata->getName())) {
+        if ($this->propertyPresenceChecker->hasClassContextProperty($class, $propertyMetadata)) {
             return;
         }
 
@@ -204,11 +206,17 @@ final class ClassDependencyManipulator
 
     private function hasClassPropertyAndDependency(Class_ $class, PropertyMetadata $propertyMetadata): bool
     {
-        if (! $this->propertyPresenceChecker->hasClassContextPropertyByName($class, $propertyMetadata->getName())) {
+        $property = $this->propertyPresenceChecker->getClassContextProperty($class, $propertyMetadata);
+        if ($property === null) {
             return false;
         }
 
-        return $this->isParamInConstructor($class, $propertyMetadata->getName());
+        if (! $this->autowiredClassMethodOrPropertyAnalyzer->detect($property)) {
+            return $this->isParamInConstructor($class, $propertyMetadata->getName());
+        }
+
+        // is inject/autowired property?
+        return $property instanceof Property && $this->autowiredClassMethodOrPropertyAnalyzer->detect($property);
     }
 
     private function hasMethodParameter(ClassMethod $classMethod, string $name): bool

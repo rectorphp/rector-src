@@ -12,20 +12,22 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Type\ObjectType;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class UseImportsAdder
 {
     public function __construct(
-        private UsedImportsResolver $usedImportsResolver
+        private UsedImportsResolver $usedImportsResolver,
+        private TypeFactory $typeFactory
     ) {
     }
 
     /**
      * @param Stmt[] $stmts
-     * @param FullyQualifiedObjectType[] $useImportTypes
-     * @param FullyQualifiedObjectType[] $functionUseImportTypes
+     * @param array<FullyQualifiedObjectType|AliasedObjectType> $useImportTypes
+     * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
      * @return Stmt[]
      */
     public function addImportsToStmts(array $stmts, array $useImportTypes, array $functionUseImportTypes): array
@@ -78,7 +80,10 @@ final class UseImportsAdder
         $existingUseImportTypes = $this->usedImportsResolver->resolveForNode($namespace);
         $existingFunctionUseImportTypes = $this->usedImportsResolver->resolveFunctionImportsForStmts($namespace->stmts);
 
+        $existingUseImportTypes = $this->typeFactory->uniquateTypes($existingUseImportTypes);
+
         $useImportTypes = $this->diffFullyQualifiedObjectTypes($useImportTypes, $existingUseImportTypes);
+
         $functionUseImportTypes = $this->diffFullyQualifiedObjectTypes(
             $functionUseImportTypes,
             $existingFunctionUseImportTypes
@@ -89,9 +94,9 @@ final class UseImportsAdder
     }
 
     /**
-     * @param FullyQualifiedObjectType[] $mainTypes
-     * @param FullyQualifiedObjectType[] $typesToRemove
-     * @return FullyQualifiedObjectType[]
+     * @param array<FullyQualifiedObjectType|AliasedObjectType> $mainTypes
+     * @param array<FullyQualifiedObjectType|AliasedObjectType> $typesToRemove
+     * @return array<FullyQualifiedObjectType|AliasedObjectType>
      */
     private function diffFullyQualifiedObjectTypes(array $mainTypes, array $typesToRemove): array
     {
@@ -107,8 +112,8 @@ final class UseImportsAdder
     }
 
     /**
-     * @param AliasedObjectType[]|FullyQualifiedObjectType[] $useImportTypes
-     * @param FullyQualifiedObjectType[] $functionUseImportTypes
+     * @param array<AliasedObjectType|FullyQualifiedObjectType> $useImportTypes
+     * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
      * @return Use_[]
      */
     private function createUses(array $useImportTypes, array $functionUseImportTypes, ?string $namespaceName): array
