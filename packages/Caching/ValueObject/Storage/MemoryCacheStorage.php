@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace Rector\Caching\ValueObject\Storage;
 
@@ -9,17 +11,19 @@ use Rector\Caching\ValueObject\CacheItem;
  */
 class MemoryCacheStorage implements CacheStorageInterface
 {
-    /** @var array<string, CacheItem> */
+    /**
+     * @var array<string, CacheItem>
+     */
     private array $storage = [];
 
     public function load(string $key, string $variableKey)
     {
-        if (!isset($this->storage[$key])) {
+        if (! isset($this->storage[$key])) {
             return null;
         }
 
         $item = $this->storage[$key];
-        if (!$item->isVariableKeyValid($variableKey)) {
+        if (! $item->isVariableKeyValid($variableKey)) {
             return null;
         }
 
@@ -33,7 +37,7 @@ class MemoryCacheStorage implements CacheStorageInterface
 
     public function clean(string $key): void
     {
-        if (!isset($this->storage[$key])) {
+        if (! isset($this->storage[$key])) {
             return;
         }
 
