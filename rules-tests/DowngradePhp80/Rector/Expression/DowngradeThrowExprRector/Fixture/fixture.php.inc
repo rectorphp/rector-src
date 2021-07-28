@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DowngradePhp80\Rector\Throw_\DowngradeThrowExprRector\Fixture;
+namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeThrowExprRector\Fixture;
 
 use RuntimeException;
 
@@ -16,7 +16,7 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Tests\DowngradePhp80\Rector\Throw_\DowngradeThrowExprRector\Fixture;
+namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeThrowExprRector\Fixture;
 
 use RuntimeException;
 

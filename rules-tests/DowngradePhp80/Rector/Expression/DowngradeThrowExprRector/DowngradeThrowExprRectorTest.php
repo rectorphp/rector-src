@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DowngradePhp80\Rector\Throw_\DowngradeThrowExprRector;
+namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeThrowExprRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\DowngradePhp80\Rector\Throw_;
+namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Expr\Expression;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -13,7 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/throw_expression
  *
- * @see \Rector\Tests\DowngradePhp80\Rector\Throw_\DowngradeThrowExprRector\DowngradeThrowExprRectorTest
+ * @see \Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeThrowExprRector\DowngradeThrowExprRectorTest
  */
 final class DowngradeThrowExprRector extends AbstractRector
 {
@@ -53,11 +53,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Throw_::class];
+        return [Expression::class];
     }
 
     /**
-     * @param Throw_ $node
+     * @param Expression $node
      */
     public function refactor(Node $node): ?Node
     {
