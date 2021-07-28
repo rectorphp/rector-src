@@ -7,6 +7,7 @@ namespace Rector\Tests\NodeNameResolver;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -26,7 +27,7 @@ final class NodeNameResolverTest extends AbstractTestCase
             new Variable('foo'),
             new Identifier('bar')
         );
-        $this->assertSame('bar', $this->nodeNameResolver->getName($methodCallWithNameIdentifier->name));
-        $this->assertSame('bar', $this->nodeNameResolver->getName($methodCallWithNameIdentifier));
+        $this->nodeNameResolver->getName($methodCallWithNameIdentifier);
+        $this->expectException(ShouldNotHappenException::class);
     }
 }
