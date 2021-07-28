@@ -145,16 +145,14 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Expression $expression */
         $expression = $assign->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $expression instanceof Expression) {
+            return null;
+        }
 
         $nextNode = $expression->getAttribute(AttributeKey::NEXT_NODE);
-
         $nullSafe = $this->nullsafeManipulator->processNullSafeExpr($assignExpr);
         if ($nullSafe === null) {
-            throw new ShouldNotHappenException();
-            die;
-
             return null;
         }
 
