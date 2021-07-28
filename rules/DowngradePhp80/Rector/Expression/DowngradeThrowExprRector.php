@@ -6,8 +6,13 @@ namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
+use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,6 +24,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeThrowExprRector extends AbstractRector
 {
+    public function __construct(private IfManipulator $ifManipulator)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Downgrade throw as expr', [
@@ -74,19 +83,45 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processAssign(Expression $expression, Assign $assign): ?Expression
+    private function processAssign(Expression $expression, Assign $assign): ?If_
     {
         if (! $this->hasThrowInAssignExpr($assign)) {
             return null;
         }
 
+        if ($assign->expr instanceof Coalesce) {
+            return $this->processCoalesce($assign, $assign->expr);
+        }
+
         return $expression;
+    }
+
+    private function processCoalesce(Assign $assign, Coalesce $coalesce): ?If_
+    {
+        if (! $coalesce->right instanceof Throw_) {
+            return null;
+        }
+
+        $isset        = new BooleanNot(new Isset_([$coalesce->left]));
+        $assign->expr = $coalesce->left;
+
+        $if = $this->ifManipulator->createIfExpr(
+            $isset,
+            new Expression($coalesce->right)
+        );
+
+        $this->addNodeAfterNode(
+            new Expression($assign),
+            $if
+        );
+        return $if;
     }
 
     private function hasThrowInAssignExpr(Assign $assign): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($assign->expr, function (Node $node): bool {
-            return $node instanceof Throw_;
-        });
+        return (bool) $this->betterNodeFinder->findFirst(
+            $assign->expr,
+            fn (Node $node): bool => $node instanceof Throw_
+        );
     }
 }
