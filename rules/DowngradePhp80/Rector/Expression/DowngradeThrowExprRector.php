@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Expression;
+use PhpParser\Node\Expr\Throw_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -61,6 +62,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->expr instanceof Throw_) {
+            return null;
+        }
+
         return $node;
     }
 }
