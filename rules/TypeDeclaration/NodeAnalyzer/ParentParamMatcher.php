@@ -66,7 +66,7 @@ final class ParentParamMatcher
             }
 
             $parentClassMethod = $this->astResolver->resolveClassMethod($parnetClassReflection->getName(), $methodName);
-            if (! $parentClassMethod) {
+            if ($parentClassMethod === null) {
                 continue;
             }
 
