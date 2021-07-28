@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Expression;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Expr\Throw_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -66,6 +67,26 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->expr instanceof Assign) {
+            return $this->processAssign($node, $node->expr);
+        }
+
         return $node;
+    }
+
+    private function processAssign(Expression $expression, Assign $assign): ?Expression
+    {
+        if (! $this->hasThrowInAssignExpr($assign)) {
+            return null;
+        }
+
+        return $expression;
+    }
+
+    private function hasThrowInAssignExpr(Assign $assign): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst($assign->expr, function (Node $node): bool {
+            return $node instanceof Throw_;
+        });
     }
 }
