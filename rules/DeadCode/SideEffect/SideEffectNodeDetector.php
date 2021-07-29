@@ -80,12 +80,11 @@ final class SideEffectNodeDetector
             return false;
         }
 
-        $exprClass = $node::class;
-
         if ($node instanceof StaticCall && $this->isClassCallerThrowable($node)) {
             return false;
         }
 
+        $exprClass = $node::class;
         if (in_array($exprClass, self::CALL_EXPR_SIDE_EFFECT_NODE_TYPES, true)) {
             return true;
         }
