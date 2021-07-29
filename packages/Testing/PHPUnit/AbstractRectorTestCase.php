@@ -116,7 +116,11 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $fixturePath = $this->getFixtureTempDirectory() . '/' . $fixtureFileInfo->getFilename();
         $this->createFixtureDir($fixturePath);
-        file_put_contents($fixturePath, $originalContent . $separator . $expectedContent);
+        $fixtureContent = $originalContent;
+        if (trim($expectedContent)) {
+            $fixtureContent .= $separator . $expectedContent;
+        }
+        file_put_contents($fixturePath, $fixtureContent);
         $newFileInfo = new SmartFileInfo($fixturePath);
         $this->doTestFileInfo($newFileInfo);
 
