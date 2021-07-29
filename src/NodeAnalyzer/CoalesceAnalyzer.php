@@ -23,10 +23,11 @@ final class CoalesceAnalyzer
         StaticPropertyFetch::class,
     ];
 
-    public function hasIssetableLeft(Coalesce $coalesce)
+    public function hasIssetableLeft(Coalesce $coalesce): bool
     {
+        $leftClass = $coalesce->left::class;
         foreach (self::ISSETABLE_EXPR as $issetableExpr) {
-            if ($coalesce->left::class === $issetableExpr) {
+            if ($leftClass === $issetableExpr) {
                 return true;
             }
         }
