@@ -109,7 +109,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->coalesceAnalyzer->isIssetable($coalesce->left)) {
+        if (! $this->coalesceAnalyzer->hasIssetableLeft($coalesce)) {
             return null;
         }
 

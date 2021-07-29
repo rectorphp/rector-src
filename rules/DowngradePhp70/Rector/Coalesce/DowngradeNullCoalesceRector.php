@@ -59,7 +59,7 @@ CODE_SAMPLE
         $if = $node->left;
         $else = $node->right;
 
-        if ($this->coalesceAnalyzer->isIssetable($if)) {
+        if ($this->coalesceAnalyzer->hasIssetableLeft($node)) {
             $cond = new Isset_([$if]);
         } else {
             $cond = new NotIdentical($if, $this->nodeFactory->createNull());
