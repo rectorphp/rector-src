@@ -10,7 +10,7 @@ trait TraitA
     }
 }
 
-class SomeClass
+class SkipUsingTrait
 {
     use TraitA;
 
