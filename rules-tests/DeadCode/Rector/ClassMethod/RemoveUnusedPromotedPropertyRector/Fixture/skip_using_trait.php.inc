@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector\Fixture;
 
-trait TraitA
+trait SomeTraitUsed
 {
     public function foo()
     {
@@ -12,7 +12,7 @@ trait TraitA
 
 class SkipUsingTrait
 {
-    use TraitA;
+    use SomeTraitUsed;
 
     public function __construct(
         private $usedDependency
