@@ -9,7 +9,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Core\NodeManipulator\ClassManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
@@ -29,7 +28,6 @@ final class StringableForToStringRector extends AbstractRector
     private const STRINGABLE = 'Stringable';
 
     public function __construct(
-        private ClassManipulator $classManipulator,
         private FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
