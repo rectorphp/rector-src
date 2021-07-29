@@ -264,9 +264,10 @@ CODE_SAMPLE
 
     private function hasCall(Node $node): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($node, function (Node $n): bool {
-            return $this->sideEffectNodeDetector->detectCallExpr($n);
-        });
+        return (bool) $this->betterNodeFinder->findFirst(
+            $node,
+            fn (Node $n): bool => $this->sideEffectNodeDetector->detectCallExpr($n)
+        );
     }
 
     private function getCountFound(Node $node, Variable $variable): int
