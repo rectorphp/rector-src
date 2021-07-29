@@ -15,20 +15,25 @@ use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\ValueObject\MethodName;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
 use Rector\ReadWrite\NodeAnalyzer\ReadWritePropertyAnalyzer;
 use Symplify\PackageBuilder\Php\TypeChecker;
 
 /**
- * "private $property"
+ * For inspiration to improve this service,
+ * @see examples of variable modifications in https://wiki.php.net/rfc/readonly_properties_v2#proposal
  */
 final class PropertyManipulator
 {
@@ -40,13 +45,16 @@ final class PropertyManipulator
         private PhpDocInfoFactory $phpDocInfoFactory,
         private TypeChecker $typeChecker,
         private PropertyFetchFinder $propertyFetchFinder,
-        private ReflectionResolver $reflectionResolver
+        private ReflectionResolver $reflectionResolver,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 
-    public function isPropertyUsedInReadContext(Property $property): bool
+    public function isPropertyUsedInReadContext(Property | Param $propertyOrPromotedParam): bool
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
+
+        // @todo attributes too
         if ($phpDocInfo->hasByAnnotationClasses([
             'Doctrine\ORM\Mapping\Id',
             'Doctrine\ORM\Mapping\Column',
@@ -59,7 +67,9 @@ final class PropertyManipulator
             return true;
         }
 
-        $privatePropertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
+        // $propertyOrPromotedParam->attrGroups
+
+        $privatePropertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($propertyOrPromotedParam);
         foreach ($privatePropertyFetches as $privatePropertyFetch) {
             if ($this->readWritePropertyAnalyzer->isRead($privatePropertyFetch)) {
                 return true;
@@ -68,7 +78,7 @@ final class PropertyManipulator
 
         // has classLike $this->$variable call?
         /** @var ClassLike $classLike */
-        $classLike = $property->getAttribute(AttributeKey::CLASS_NODE);
+        $classLike = $propertyOrPromotedParam->getAttribute(AttributeKey::CLASS_NODE);
 
         return (bool) $this->betterNodeFinder->findFirst($classLike->stmts, function (Node $node): bool {
             if (! $node instanceof PropertyFetch) {
@@ -83,6 +93,32 @@ final class PropertyManipulator
         });
     }
 
+    public function isPropertyChangeableExceptConstructor(Property | Param $propertyOrParam): bool
+    {
+        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($propertyOrParam);
+
+        foreach ($propertyFetches as $propertyFetch) {
+            if ($this->isChangeableContext($propertyFetch)) {
+                return true;
+            }
+
+            // skip for constructor? it is allowed to set value in constructor method
+            $classMethod = $propertyFetch->getAttribute(AttributeKey::METHOD_NODE);
+            if ($classMethod instanceof ClassMethod && $this->nodeNameResolver->isName(
+                $classMethod->name,
+                MethodName::CONSTRUCT
+            )) {
+                continue;
+            }
+
+            if ($this->assignManipulator->isLeftPartOfAssign($propertyFetch)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function isPropertyChangeable(Property $property): bool
     {
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
@@ -91,14 +127,18 @@ final class PropertyManipulator
             if ($this->isChangeableContext($propertyFetch)) {
                 return true;
             }
+
+            if ($this->assignManipulator->isLeftPartOfAssign($propertyFetch)) {
+                return true;
+            }
         }
 
         return false;
     }
 
-    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $expr): bool
+    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
     {
-        $parent = $expr->getAttribute(AttributeKey::PARENT_NODE);
+        $parent = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof Node) {
             return false;
         }
@@ -123,7 +163,7 @@ final class PropertyManipulator
             }
         }
 
-        return $this->assignManipulator->isLeftPartOfAssign($expr);
+        return false;
     }
 
     private function isFoundByRefParam(MethodCall | StaticCall $node): bool

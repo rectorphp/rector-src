@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -29,7 +30,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveEmptyMethodCallRector extends AbstractRector
 {
     public function __construct(
-        private AstResolver $reflectionAstResolver
+        private AstResolver $reflectionAstResolver,
+        private CallAnalyzer $callAnalyzer
     ) {
     }
 
@@ -76,7 +78,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = $node->var->getAttribute(AttributeKey::SCOPE);
+        $scope = $this->getScope($node);
+
         if (! $scope instanceof Scope) {
             return null;
         }
@@ -112,6 +115,20 @@ CODE_SAMPLE
         $this->removeNode($node);
 
         return $node;
+    }
+
+    private function getScope(MethodCall $methodCall): ?Scope
+    {
+        if ($this->callAnalyzer->isObjectCall($methodCall->var)) {
+            return null;
+        }
+
+        $scope = $methodCall->var->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        return $scope;
     }
 
     private function shouldSkipClassMethod(Class_ | Trait_ | Interface_ $classLike, MethodCall $methodCall): bool
