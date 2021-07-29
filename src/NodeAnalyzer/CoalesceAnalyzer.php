@@ -14,7 +14,7 @@ use PhpParser\Node\Expr\Variable;
 final class CoalesceAnalyzer
 {
     /**
-     * @var string[]
+     * @var array<class-string<Expr>>
      */
     private const ISSETABLE_EXPR = [
         Variable::class,
@@ -26,12 +26,6 @@ final class CoalesceAnalyzer
     public function hasIssetableLeft(Coalesce $coalesce): bool
     {
         $leftClass = $coalesce->left::class;
-        foreach (self::ISSETABLE_EXPR as $issetableExpr) {
-            if ($leftClass === $issetableExpr) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($leftClass, self::ISSETABLE_EXPR, true);
     }
 }
