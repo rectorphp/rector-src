@@ -6,14 +6,17 @@ namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\ClassStringType;
+use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
-use Rector\Core\Configuration\Option;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class GenericClassStringTypeNormalizer
@@ -26,72 +29,70 @@ final class GenericClassStringTypeNormalizer
 
     public function normalize(Type $type): Type
     {
-        $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
-        return TypeTraverser::map($type, function (Type $type, $callback) use ($isAutoImport): Type {
+        $type = TypeTraverser::map($type, function (Type $type, $callback): Type {
             if (! $type instanceof ConstantStringType) {
-                $callbackType = $callback($type);
-                if ($callbackType instanceof ArrayType) {
-                    return $callbackType;
-                }
-
-                $typeWithFullyQualifiedObjectType = $this->verifyAutoImportedFullyQualifiedType($type, $isAutoImport);
-                if ($typeWithFullyQualifiedObjectType instanceof Type) {
-                    return $typeWithFullyQualifiedObjectType;
-                }
-
-                return $callbackType;
+                return $callback($type);
             }
+
+            $value = $type->getValue();
 
             // skip string that look like classe
-            if ($type->getValue() === 'error') {
+            if ($value === 'error') {
                 return $callback($type);
             }
 
-            if (! $this->reflectionProvider->hasClass($type->getValue())) {
+            if (! $this->reflectionProvider->hasClass($value)) {
                 return $callback($type);
             }
 
-            return new GenericClassStringType(new ObjectType($type->getValue()));
+            return $this->resolveStringType($value);
         });
-    }
 
-    private function verifyAutoImportedFullyQualifiedType(Type $type, bool $isAutoImport): ?Type
-    {
         if ($type instanceof UnionType) {
-            $unionTypes = $type->getTypes();
-            $types = [];
-            $hasFullyQualifiedObjectType = false;
-            foreach ($unionTypes as $unionType) {
-                if ($this->isAutoImportFullyQualifiedObjectType($unionType, $isAutoImport)) {
-                    /** @var FullyQualifiedObjectType $unionType */
-                    $types[] = new GenericClassStringType(new ObjectType($unionType->getClassName()));
-                    $hasFullyQualifiedObjectType = true;
-                    continue;
-                }
-
-                $types[] = $unionType;
-            }
-
-            if ($hasFullyQualifiedObjectType) {
-                return new UnionType($types);
-            }
-
-            return $type;
+            return $this->resolveClassStringInUnionType($type);
         }
 
-        if ($this->isAutoImportFullyQualifiedObjectType($type, $isAutoImport)) {
-            /** @var FullyQualifiedObjectType $type */
-            return new GenericClassStringType(new ObjectType($type->getClassName()));
-        }
-
-        return null;
+        return $type;
     }
 
-    private function isAutoImportFullyQualifiedObjectType(Type $type, bool $isAutoImport): bool
+    private function resolveClassStringInUnionType(UnionType $type): UnionType | ArrayType
     {
-        return $isAutoImport && $type instanceof FullyQualifiedObjectType && ! str_contains(
-            $type->getClassName(),
-            '\\'
-        );
+        $unionTypes = $type->getTypes();
+
+        foreach ($unionTypes as $unionType) {
+            if (! $unionType instanceof ArrayType) {
+                return $type;
+            }
+
+            $keyType = $unionType->getKeyType();
+            $itemType = $unionType->getItemType();
+
+            if ($itemType instanceof ConstantArrayType) {
+                $arrayType = new ArrayType(new MixedType(), new MixedType());
+                return new ArrayType($keyType, $arrayType);
+            }
+
+            if (! $keyType instanceof MixedType && ! $keyType instanceof ConstantIntegerType) {
+                return $type;
+            }
+
+            if (! $itemType instanceof ClassStringType) {
+                return $type;
+            }
+        }
+
+        return new ArrayType(new MixedType(), new ClassStringType());
+    }
+
+    private function resolveStringType(string $value): GenericClassStringType | StringType
+    {
+        $classReflection = $this->reflectionProvider->getClass($value);
+        if ($classReflection->isBuiltIn()) {
+            return new GenericClassStringType(new ObjectType($value));
+        }
+        if (str_contains($value, '\\')) {
+            return new GenericClassStringType(new ObjectType($value));
+        }
+        return new StringType();
     }
 }

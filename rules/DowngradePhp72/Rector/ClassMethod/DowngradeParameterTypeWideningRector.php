@@ -13,7 +13,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodAnalyzer;
+use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -49,7 +49,7 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector implemen
     public function __construct(
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private ReflectionProvider $reflectionProvider,
-        private AutowiredClassMethodAnalyzer $autowiredClassMethodAnalyzer
+        private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer
     ) {
     }
 
@@ -128,7 +128,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->skipSafeType($classReflection, $node)) {
+        if ($this->isSafeType($classReflection, $node)) {
             return null;
         }
 
@@ -136,7 +136,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->skipClassMethod($node)) {
+        if ($this->shouldSkipClassMethod($node)) {
             return null;
         }
 
@@ -184,7 +184,7 @@ CODE_SAMPLE
         $param->type = null;
     }
 
-    private function skipClassMethod(ClassMethod $classMethod): bool
+    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
     {
         if ($classMethod->isMagic()) {
             return true;
@@ -194,7 +194,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->autowiredClassMethodAnalyzer->detect($classMethod)) {
+        if ($this->autowiredClassMethodOrPropertyAnalyzer->detect($classMethod)) {
             return true;
         }
 
@@ -223,7 +223,7 @@ CODE_SAMPLE
         return count($classReflection->getAncestors()) === 1;
     }
 
-    private function skipSafeType(ClassReflection $classReflection, ClassMethod $classMethod): bool
+    private function isSafeType(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
         foreach ($this->safeTypes as $safeType) {
             if ($classReflection->isSubclassOf($safeType)) {

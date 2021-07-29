@@ -7,21 +7,24 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector\RemoveUnusedPromotedPropertyRectorTest
  */
-final class RemoveUnusedPromotedPropertyRector extends AbstractRector
+final class RemoveUnusedPromotedPropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private PropertyFetchFinder $propertyFetchFinder
+        private PropertyFetchFinder $propertyFetchFinder,
+        private PropertyManipulator $propertyManipulator,
     ) {
     }
 
@@ -77,10 +80,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::PROPERTY_PROMOTION)) {
-            return null;
-        }
-
         if (! $this->isName($node, MethodName::CONSTRUCT)) {
             return null;
         }
@@ -93,6 +92,10 @@ CODE_SAMPLE
         foreach ($node->getParams() as $param) {
             if ($param->flags === 0) {
                 continue;
+            }
+
+            if ($this->propertyManipulator->isPropertyUsedInReadContext($param)) {
+                return null;
             }
 
             // only private local scope; removing public property might be dangerous
@@ -112,5 +115,10 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::PROPERTY_PROMOTION;
     }
 }

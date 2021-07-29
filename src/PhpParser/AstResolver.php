@@ -7,11 +7,14 @@ namespace Rector\Core\PhpParser;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeFinder;
 use PhpParser\Parser;
@@ -23,9 +26,11 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use ReflectionProperty;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
@@ -105,12 +110,10 @@ final class AstResolver
             return null;
         }
 
-        $nodes = (array) $this->parser->parse($fileContent);
-
-        $smartFileInfo = new SmartFileInfo($fileName);
-        $file = new File($smartFileInfo, $smartFileInfo->getContents());
-
-        $nodes = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
+        $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+        if ($nodes === null) {
+            return null;
+        }
 
         $class = $this->nodeFinder->findFirstInstanceOf($nodes, Class_::class);
         if (! $class instanceof Class_) {
@@ -143,12 +146,10 @@ final class AstResolver
             return null;
         }
 
-        $nodes = (array) $this->parser->parse($fileContent);
-
-        $smartFileInfo = new SmartFileInfo($fileName);
-        $file = new File($smartFileInfo, $smartFileInfo->getContents());
-
-        $nodes = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
+        $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+        if ($nodes === null) {
+            return null;
+        }
 
         /** @var Function_[] $functions */
         $functions = $this->nodeFinder->findInstanceOf($nodes, Function_::class);
@@ -251,6 +252,117 @@ final class AstResolver
         }
 
         $this->classLikesByName[$classReflection->getName()] = null;
+        return null;
+    }
+
+    /**
+     * @return Trait_[]
+     */
+    public function parseClassReflectionTraits(ClassReflection $classReflection): array
+    {
+        $classLikes = $classReflection->getTraits(true);
+        $traits = [];
+        foreach ($classLikes as $classLike) {
+            $fileName = $classLike->getFileName();
+            if (! $fileName) {
+                continue;
+            }
+
+            $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+            if ($nodes === null) {
+                continue;
+            }
+
+            /** @var Trait_|null $trait */
+            $trait = $this->betterNodeFinder->findFirst(
+                $nodes,
+                fn (Node $node): bool => $node instanceof Trait_ && $this->nodeNameResolver->isName(
+                    $node,
+                    $classLike->getName()
+                )
+            );
+
+            if (! $trait instanceof Trait_) {
+                continue;
+            }
+
+            $traits[] = $trait;
+        }
+
+        return $traits;
+    }
+
+    public function resolvePropertyFromPropertyReflection(
+        ReflectionProperty $reflectionProperty
+    ): Property | Param | null {
+        $reflectionClass = $reflectionProperty->getDeclaringClass();
+
+        $fileName = $reflectionClass->getFileName();
+        if ($fileName === false) {
+            return null;
+        }
+
+        $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+        if ($nodes === null) {
+            return null;
+        }
+
+        $desiredPropertyName = $reflectionProperty->name;
+
+        /** @var Property[] $properties */
+        $properties = $this->betterNodeFinder->findInstanceOf($nodes, Property::class);
+        foreach ($properties as $property) {
+            if ($this->nodeNameResolver->isName($property, $desiredPropertyName)) {
+                return $property;
+            }
+        }
+
+        // promoted property
+        return $this->findPromotedPropertyByName($nodes, $desiredPropertyName);
+    }
+
+    /**
+     * @return Stmt[]|null
+     */
+    private function parseFileNameToDecoratedNodes(string $fileName): ?array
+    {
+        $fileContent = $this->smartFileSystem->readFile($fileName);
+        $nodes = $this->parser->parse($fileContent);
+        if ($nodes === null) {
+            return null;
+        }
+
+        $smartFileInfo = new SmartFileInfo($fileName);
+        $file = new File($smartFileInfo, $smartFileInfo->getContents());
+
+        return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     */
+    private function findPromotedPropertyByName(array $nodes, string $desiredPropertyName): ?Param
+    {
+        $class = $this->betterNodeFinder->findFirstInstanceOf($nodes, Class_::class);
+        if (! $class instanceof Class_) {
+            return null;
+        }
+
+        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        foreach ($constructClassMethod->getParams() as $param) {
+            if ($param->flags === 0) {
+                continue;
+            }
+
+            if ($this->nodeNameResolver->isName($param, $desiredPropertyName)) {
+                return $param;
+            }
+        }
+
         return null;
     }
 }
