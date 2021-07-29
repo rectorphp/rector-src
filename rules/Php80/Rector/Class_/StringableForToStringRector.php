@@ -84,7 +84,6 @@ CODE_SAMPLE
         // reflection cannot be used for real detection
         $classLikeAncestorNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
 
-        dump($classLikeAncestorNames);
 
         if (in_array(self::STRINGABLE, $classLikeAncestorNames, true)) {
             return null;
