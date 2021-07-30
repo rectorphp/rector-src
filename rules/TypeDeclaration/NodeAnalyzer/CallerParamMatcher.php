@@ -13,7 +13,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -80,12 +79,6 @@ final class CallerParamMatcher
 
         foreach ($call->args as $argPosition => $arg) {
             if (! $arg->value instanceof Variable) {
-                continue;
-            }
-
-            // skip conditional parameters, as the type can be different
-            $if = $this->betterNodeFinder->findParentType($arg->value, If_::class);
-            if ($if instanceof If_) {
                 continue;
             }
 
