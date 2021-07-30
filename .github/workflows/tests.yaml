@@ -33,7 +33,7 @@ jobs:
 
             -   uses: "ramsey/composer-install@v1"
 
-            -   run: vendor/bin/paratest -p8 ${{ matrix.path }}
+            -   run: vendor/bin/paratest -p4 --runner=WrapperRunner ${{ matrix.path }}
                 if: ${{ matrix.path == 'rules-tests' }}
 
             -   run: vendor/bin/phpunit ${{ matrix.path }}
