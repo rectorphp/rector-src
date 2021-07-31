@@ -119,10 +119,6 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
-            return null;
-        }
-
         $class = $this->nodeFinder->findFirstInstanceOf($nodes, Class_::class);
         if (! $class instanceof Class_) {
             // avoids looking for a class in a file where is not present
@@ -166,9 +162,6 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
-            return null;
-        }
 
         /** @var Function_[] $functions */
         $functions = $this->nodeFinder->findInstanceOf($nodes, Function_::class);
@@ -199,7 +192,13 @@ final class AstResolver
             return null;
         }
 
-        return $this->resolveClassMethodFromMethodReflection($methodReflection);
+        $classMethod = $this->resolveClassMethodFromMethodReflection($methodReflection);
+
+        if (! $classMethod instanceof ClassMethod) {
+            return $this->locateClassMethodInTrait($className, $methodName);
+        }
+
+        return $classMethod;
     }
 
     public function resolveClassMethodFromMethodCall(MethodCall $methodCall): ?ClassMethod
@@ -224,26 +223,7 @@ final class AstResolver
             return null;
         }
 
-        $classMethod = $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
-        if ($classMethod instanceof ClassMethod) {
-            return $classMethod;
-        }
-
-        $className       = $callerStaticType->getClassName();
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return null;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
-        if ($classReflection->isBuiltIn()) {
-            return null;
-        }
-
-        $traits = $this->parseClassReflectionTraits($classReflection);
-
-        return $this->betterNodeFinder->findFirst($traits, function (Node $node) use ($methodName): bool {
-            return $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName);
-        });
+        return $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
     }
 
     public function resolveClassFromClassReflection(
@@ -307,10 +287,6 @@ final class AstResolver
             }
 
             $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-            if ($nodes === null) {
-                continue;
-            }
-
             /** @var Trait_|null $trait */
             $trait = $this->betterNodeFinder->findFirst(
                 $nodes,
@@ -341,10 +317,6 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
-            return null;
-        }
-
         $desiredPropertyName = $reflectionProperty->name;
 
         /** @var Property[] $properties */
@@ -359,15 +331,34 @@ final class AstResolver
         return $this->findPromotedPropertyByName($nodes, $desiredPropertyName);
     }
 
+    private function locateClassMethodInTrait(string $className, string $methodName): ?Node
+    {
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+        if ($classReflection->isBuiltIn()) {
+            return null;
+        }
+
+        $traits = $this->parseClassReflectionTraits($classReflection);
+
+        return $this->betterNodeFinder->findFirst(
+            $traits,
+            fn (Node $node): bool => $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName)
+        );
+    }
+
     /**
-     * @return Stmt[]|null
+     * @return Stmt[]
      */
-    private function parseFileNameToDecoratedNodes(string $fileName): ?array
+    private function parseFileNameToDecoratedNodes(string $fileName): array
     {
         $fileContent = $this->smartFileSystem->readFile($fileName);
         $nodes = $this->parser->parse($fileContent);
         if ($nodes === null) {
-            return null;
+            return [];
         }
 
         $smartFileInfo = new SmartFileInfo($fileName);
