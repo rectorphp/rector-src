@@ -9,9 +9,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\PromotedPropertyParamCleaner;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
-use Rector\NodeCollector\NodeCollector\NodeRepository;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -20,10 +21,11 @@ final class ChildAndParentClassManipulator
     public function __construct(
         private NodeFactory $nodeFactory,
         private NodeNameResolver $nodeNameResolver,
-        private NodeRepository $nodeRepository,
         private PromotedPropertyParamCleaner $promotedPropertyParamCleaner,
         private ReflectionProvider $reflectionProvider,
-        private ParentClassScopeResolver $parentClassScopeResolver
+        private ParentClassScopeResolver $parentClassScopeResolver,
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -48,7 +50,7 @@ final class ChildAndParentClassManipulator
         }
 
         // not in analyzed scope, nothing we can do
-        $parentClassNode = $this->nodeRepository->findClass($parentClassReflection->getName());
+        $parentClassNode = $this->astResolver->resolveClassFromName($parentClassReflection->getName());
         if ($parentClassNode instanceof Class_) {
             $this->completeParentConstructorBasedOnParentNode($parentClassNode, $classMethod);
             return;
@@ -68,10 +70,18 @@ final class ChildAndParentClassManipulator
             return;
         }
 
-        $childClasses = $this->nodeRepository->findChildrenOfClass($className);
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+        $childClasses = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
 
         foreach ($childClasses as $childClass) {
-            $childConstructorClassMethod = $childClass->getMethod(MethodName::CONSTRUCT);
+            $childConstructorClassMethod = $childClass->resolveClassMethod(
+                $childClass->getName(),
+                MethodName::CONSTRUCT
+            );
             if (! $childConstructorClassMethod instanceof ClassMethod) {
                 continue;
             }
@@ -112,7 +122,7 @@ final class ChildAndParentClassManipulator
 
     private function findFirstParentConstructor(Class_ $class): ?ClassMethod
     {
-        while ($class !== null) {
+        while ($class instanceof Class_) {
             $constructMethodNode = $class->getMethod(MethodName::CONSTRUCT);
             if ($constructMethodNode !== null) {
                 return $constructMethodNode;
@@ -123,7 +133,7 @@ final class ChildAndParentClassManipulator
                 return null;
             }
 
-            $class = $this->nodeRepository->findClass($parentClassName);
+            $class = $this->astResolver->resolveClassFromName($parentClassName);
         }
 
         return null;
