@@ -20,7 +20,7 @@ class Other
     }
 }
 
-class SkipMethodNotFound
+class SkipCallStatic
 {
     public function run()
     {
