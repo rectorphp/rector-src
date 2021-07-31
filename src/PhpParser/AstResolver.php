@@ -224,6 +224,9 @@ final class AstResolver
             return null;
         }
 
+        dump($callerStaticType->getClassName());
+        die('here 2');
+
         return $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
     }
 
