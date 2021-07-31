@@ -119,6 +119,10 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+        if ($nodes === null) {
+            return null;
+        }
+
         $class = $this->nodeFinder->findFirstInstanceOf($nodes, Class_::class);
         if (! $class instanceof Class_) {
             // avoids looking for a class in a file where is not present
@@ -162,6 +166,9 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+        if ($nodes === null) {
+            return null;
+        }
 
         /** @var Function_[] $functions */
         $functions = $this->nodeFinder->findInstanceOf($nodes, Function_::class);
@@ -287,6 +294,10 @@ final class AstResolver
             }
 
             $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+            if ($nodes === null) {
+                continue;
+            }
+
             /** @var Trait_|null $trait */
             $trait = $this->betterNodeFinder->findFirst(
                 $nodes,
@@ -317,6 +328,10 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
+        if ($nodes === null) {
+            return null;
+        }
+
         $desiredPropertyName = $reflectionProperty->name;
 
         /** @var Property[] $properties */
@@ -358,7 +373,7 @@ final class AstResolver
         $fileContent = $this->smartFileSystem->readFile($fileName);
         $nodes = $this->parser->parse($fileContent);
         if ($nodes === null) {
-            return [];
+            return null;
         }
 
         $smartFileInfo = new SmartFileInfo($fileName);
