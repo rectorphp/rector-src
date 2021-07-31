@@ -202,7 +202,7 @@ final class AstResolver
         $classMethod = $this->resolveClassMethodFromMethodReflection($methodReflection);
 
         if (! $classMethod instanceof ClassMethod) {
-            return $this->locateClassMethodInTrait($className, $methodName);
+            return $this->locateClassMethodInTrait($methodName, $methodReflection);
         }
 
         return $classMethod;
@@ -346,17 +346,9 @@ final class AstResolver
         return $this->findPromotedPropertyByName($nodes, $desiredPropertyName);
     }
 
-    private function locateClassMethodInTrait(string $className, string $methodName): ?ClassMethod
+    private function locateClassMethodInTrait(string $methodName, MethodReflection $methodReflection): ?ClassMethod
     {
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return null;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
-        if ($classReflection->isBuiltIn()) {
-            return null;
-        }
-
+        $classReflection = $methodReflection->getDeclaringClass();
         $traits = $this->parseClassReflectionTraits($classReflection);
 
         /** @var ClassMethod|null $classMethod */
@@ -364,6 +356,7 @@ final class AstResolver
             $traits,
             fn (Node $node): bool => $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName)
         );
+        $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodName] = $classMethod;
 
         return $classMethod;
     }
