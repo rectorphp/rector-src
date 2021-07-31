@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
@@ -153,7 +154,8 @@ CODE_SAMPLE
 
         $classReflection = $this->reflectionProvider->getClass($className);
 
-        if ($this->reflectionResolver->resolveMethodReflection($className, '__callStatic', null)) {
+        $methodReflection = $this->reflectionResolver->resolveMethodReflection($className, '__callStatic', null);
+        if ($methodReflection instanceof MethodReflection) {
             return false;
         }
 
