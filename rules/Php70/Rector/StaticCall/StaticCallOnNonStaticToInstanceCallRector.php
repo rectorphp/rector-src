@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeCollector\StaticAnalyzer;
 use ReflectionMethod;
@@ -29,6 +30,7 @@ final class StaticCallOnNonStaticToInstanceCallRector extends AbstractRector
     public function __construct(
         private StaticAnalyzer $staticAnalyzer,
         private ReflectionProvider $reflectionProvider,
+        private ReflectionResolver $reflectionResolver,
         private ParentClassScopeResolver $parentClassScopeResolver
     ) {
     }
@@ -150,6 +152,11 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
+
+        if ($this->reflectionResolver->resolveMethodReflection($className, '__callStatic', null)) {
+            return false;
+        }
+
         $reflectionClass = $classReflection->getNativeReflection();
 
         $reflectionMethod = $reflectionClass->getConstructor();
