@@ -540,3 +540,8 @@ parameters:
             message: '#"@\\var_export\(new \\Rector\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
+
+        -
+            message: '#Class cognitive complexity is 52, keep it under 50#'
+            paths:
+                - src/PhpParser/AstResolver.php
