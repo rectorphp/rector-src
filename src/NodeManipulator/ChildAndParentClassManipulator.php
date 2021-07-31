@@ -78,7 +78,7 @@ final class ChildAndParentClassManipulator
         $childClasses = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
 
         foreach ($childClasses as $childClass) {
-            $childConstructorClassMethod = $childClass->resolveClassMethod(
+            $childConstructorClassMethod = $this->astResolver->resolveClassMethod(
                 $childClass->getName(),
                 MethodName::CONSTRUCT
             );
