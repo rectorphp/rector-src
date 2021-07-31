@@ -366,9 +366,9 @@ final class AstResolver
     }
 
     /**
-     * @return Stmt[]
+     * @return Stmt[]|null
      */
-    private function parseFileNameToDecoratedNodes(string $fileName): array
+    private function parseFileNameToDecoratedNodes(string $fileName): ?array
     {
         $fileContent = $this->smartFileSystem->readFile($fileName);
         $nodes = $this->parser->parse($fileContent);
