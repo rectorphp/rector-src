@@ -27,5 +27,3 @@ class SkipMethodNotFound
         return Service::getAlbum();
     }
 }
-
-var_dump((new SkipMethodNotFound())->run());
