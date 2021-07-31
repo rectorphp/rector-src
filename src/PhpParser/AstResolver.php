@@ -346,7 +346,7 @@ final class AstResolver
         return $this->findPromotedPropertyByName($nodes, $desiredPropertyName);
     }
 
-    private function locateClassMethodInTrait(string $className, string $methodName): ?Node
+    private function locateClassMethodInTrait(string $className, string $methodName): ?ClassMethod
     {
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
@@ -359,10 +359,13 @@ final class AstResolver
 
         $traits = $this->parseClassReflectionTraits($classReflection);
 
-        return $this->betterNodeFinder->findFirst(
+        /** @var ClassMethod|null $classMethod */
+        $classMethod = $this->betterNodeFinder->findFirst(
             $traits,
             fn (Node $node): bool => $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName)
         );
+
+        return $classMethod;
     }
 
     /**
