@@ -224,10 +224,26 @@ final class AstResolver
             return null;
         }
 
-        dump($callerStaticType->getClassName());
-        die('here 2');
+        $classMethod = $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
+        if ($classMethod instanceof ClassMethod) {
+            return $classMethod;
+        }
 
-        return $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
+        $className       = $callerStaticType->getClassName();
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($className);
+        if ($classReflection->isBuiltIn()) {
+            return null;
+        }
+
+        $traits = $this->parseClassReflectionTraits($classReflection);
+
+        return $this->betterNodeFinder->findFirst($traits, function (Node $node) use ($methodName): bool {
+            return $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName);
+        });
     }
 
     public function resolveClassFromClassReflection(
