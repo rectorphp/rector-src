@@ -13,6 +13,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -21,6 +22,7 @@ final class ChildAndParentClassManipulator
     public function __construct(
         private NodeFactory $nodeFactory,
         private NodeNameResolver $nodeNameResolver,
+        private NodeRepository $nodeRepository,
         private PromotedPropertyParamCleaner $promotedPropertyParamCleaner,
         private ReflectionProvider $reflectionProvider,
         private ParentClassScopeResolver $parentClassScopeResolver,
@@ -134,6 +136,9 @@ final class ChildAndParentClassManipulator
             }
 
             $class = $this->astResolver->resolveClassFromName($parentClassName);
+            if (! $class instanceof Class_) {
+                $class = $this->nodeRepository->findClass($parentClassName);
+            }
         }
 
         return null;
