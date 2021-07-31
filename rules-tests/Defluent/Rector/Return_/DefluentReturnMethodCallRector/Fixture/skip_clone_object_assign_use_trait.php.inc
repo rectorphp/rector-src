@@ -4,7 +4,7 @@ namespace Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\Fi
 
 use Rector\Tests\Defluent\Rector\Return_\DefluentReturnMethodCallRector\Source\UsesTrait;
 
-final class SkipCloneObjectAssign
+final class SkipCloneObjectAssignUseTrait
 {
     public function run(UsesTrait $usesTrait)
     {
