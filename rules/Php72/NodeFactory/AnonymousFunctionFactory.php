@@ -292,7 +292,7 @@ final class AnonymousFunctionFactory
             return $expr;
         }
 
-        // dynamic name, nothign we can do
+        // dynamic name, nothing we can do
         $className = $this->nodeNameResolver->getName($expr->class);
         if ($className === null) {
             return null;
