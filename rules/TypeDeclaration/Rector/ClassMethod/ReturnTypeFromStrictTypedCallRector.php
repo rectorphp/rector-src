@@ -87,7 +87,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -95,20 +95,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isUnionPossibleReturnsVoid($node)) {
-            return null;
-        }
-
         if ($node instanceof ArrowFunction) {
-            $resolvedType = $this->nodeTypeResolver->resolve($node->expr);
-            $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($resolvedType, TypeKind::RETURN());
-
-            if (! $returnType instanceof Node) {
-                return null;
-            }
-
-            $node->returnType = $returnType;
-            return $node;
+            return $this->processArrowFunction($node);
         }
 
         /** @var Return_[] $returns */
@@ -152,6 +140,19 @@ CODE_SAMPLE
         return null;
     }
 
+    private function processArrowFunction(ArrowFunction $arrowFunction): ?ArrowFunction
+    {
+        $resolvedType = $this->nodeTypeResolver->resolve($arrowFunction->expr);
+        $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($resolvedType, TypeKind::RETURN());
+
+        if (! $returnType instanceof Node) {
+            return null;
+        }
+
+        $arrowFunction->returnType = $returnType;
+        return $arrowFunction;
+    }
+
     private function isUnionPossibleReturnsVoid(ClassMethod | Function_ | Closure | ArrowFunction $node): bool
     {
         $inferReturnType = $this->returnTypeInferer->inferFunctionLike($node);
@@ -189,8 +190,13 @@ CODE_SAMPLE
         if ($node->returnType !== null) {
             return true;
         }
-
-        return $node instanceof ClassMethod && $node->isMagic();
+        if (! $node instanceof ClassMethod) {
+            return $this->isUnionPossibleReturnsVoid($node);
+        }
+        if (! $node->isMagic()) {
+            return $this->isUnionPossibleReturnsVoid($node);
+        }
+        return true;
     }
 
     private function refactorSingleReturnType(
