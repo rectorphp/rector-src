@@ -251,7 +251,7 @@ final class AnonymousFunctionFactory
             $innerMethodCall = new StaticCall($expr, $phpMethodReflection->getName());
         } else {
             $expr = $this->resolveExpr($expr);
-            if ($expr === null) {
+            if (! $expr instanceof Expr) {
                 return null;
             }
 
