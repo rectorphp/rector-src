@@ -27,6 +27,7 @@ jobs:
                 directories:
                     - src tests rules-tests packages packages-tests
                     - rules
+                    - rector.php
 
         runs-on: ubuntu-latest
         timeout-minutes: 30
