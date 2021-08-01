@@ -116,7 +116,10 @@ CODE_SAMPLE
 
         if ($isFoundPrevious) {
             ++$count;
-            $variableName = sprintf('%s%d', 'battleShipcompare', $count);
+            // re-assign first to ensure value count not appended after on increment
+            // like "battleShipcompare12", which should be "battleShipcompare2"
+            $variableName = 'battleShipcompare';
+            $variableName = sprintf('%s%d', $variableName, $count);
             return $this->getVariableAssign($stmt, $variableName, $count);
         }
 
