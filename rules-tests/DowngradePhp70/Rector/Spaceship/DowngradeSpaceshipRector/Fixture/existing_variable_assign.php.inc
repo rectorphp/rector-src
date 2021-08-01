@@ -10,6 +10,14 @@ class ExistingVariableAssign
         if ($a <=> $b) {
         }
     }
+
+    public function run2($a, $b)
+    {
+        $battleShipcompare = 'test';
+        $battleShipcompare1 = 'test2';
+        if ($a <=> $b) {
+        }
+    }
 }
 
 ?>
@@ -30,6 +38,20 @@ class ExistingVariableAssign
             return $left < $right ? -1 : 1;
         };
         if ($battleShipcompare1($a, $b)) {
+        }
+    }
+
+    public function run2($a, $b)
+    {
+        $battleShipcompare = 'test';
+        $battleShipcompare1 = 'test2';
+        $battleShipcompare2 = function ($left, $right) {
+            if ($left === $right) {
+                return 0;
+            }
+            return $left < $right ? -1 : 1;
+        };
+        if ($battleShipcompare2($a, $b)) {
         }
     }
 }

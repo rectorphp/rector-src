@@ -105,7 +105,7 @@ CODE_SAMPLE
         return new Expression(new Assign($variable, $closure));
     }
 
-    private function getVariableAssign(Stmt $stmt, string $variableName = 'battleShipcompare'): Variable
+    private function getVariableAssign(Stmt $stmt, string $variableName = 'battleShipcompare', int $count = 0): Variable
     {
         $variable = new Variable($variableName);
 
@@ -114,11 +114,10 @@ CODE_SAMPLE
             fn (Node $node): bool => $node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $variable)
         );
 
-        $count = 0;
         if ($isFoundPrevious) {
             ++$count;
-            $variableName .= (string) $count;
-            return $this->getVariableAssign($stmt, $variableName);
+            $variableName = sprintf('%s%d', 'battleShipcompare', $count);
+            return $this->getVariableAssign($stmt, $variableName, $count);
         }
 
         return $variable;
