@@ -14,6 +14,19 @@ class AsForeachValueUsed
             echo $singleData;
         }
     }
+
+    public function run2($singleData): void
+    {
+        $data = [
+            ["id" => 1, "name" => 'Tom'],
+            ["id" => 2, "name" => 'Fred'],
+        ];
+        $singleData1 = $this->run();
+        foreach ($data as list("id" => $id1, "name" => $name1)) {
+            echo $singleData;
+        }
+        echo $singleData1;
+    }
 }
 
 ?>
@@ -35,6 +48,21 @@ class AsForeachValueUsed
             $name1 = $singleData1["name"];
             echo $singleData;
         }
+    }
+
+    public function run2($singleData): void
+    {
+        $data = [
+            ["id" => 1, "name" => 'Tom'],
+            ["id" => 2, "name" => 'Fred'],
+        ];
+        $singleData1 = $this->run();
+        foreach ($data as $singleData2) {
+            $id1 = $singleData2["id"];
+            $name1 = $singleData2["name"];
+            echo $singleData;
+        }
+        echo $singleData1;
     }
 }
 

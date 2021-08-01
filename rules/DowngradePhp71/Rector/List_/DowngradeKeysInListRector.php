@@ -108,7 +108,8 @@ CODE_SAMPLE
         }
 
         if ($parent instanceof Foreach_) {
-            $newValueVar = $this->getNewValueVar($parent);
+            $defaultNewValueVar = $this->inflectorSingularResolver->resolve((string) $this->getName($parent->expr));
+            $newValueVar = $this->getNewValueVar($parent, $defaultNewValueVar);
             $parent->valueVar = new Variable($newValueVar);
             $stmts = $parent->stmts;
 
@@ -164,22 +165,26 @@ CODE_SAMPLE
 
     private function getExpressionFromForeachValue(Foreach_ $foreach, ArrayItem $arrayItem): Expression
     {
-        $newValueVar = $this->getNewValueVar($foreach);
+        $defaultNewValueVar = $this->inflectorSingularResolver->resolve((string) $this->getName($foreach->expr));
+        $newValueVar = $this->getNewValueVar($foreach, $defaultNewValueVar);
         $assign = new Assign($arrayItem->value, new ArrayDimFetch(new Variable($newValueVar), $arrayItem->key));
 
         return new Expression($assign);
     }
 
-    private function getNewValueVar(Foreach_ $foreach, ?string $newValueVar = null): string
+    private function getNewValueVar(Foreach_ $foreach, string $defaultNewValueVar, ?string $newValueVar = null, int $count = 0): string
     {
         if ($newValueVar === null) {
-            $newValueVar = $this->inflectorSingularResolver->resolve((string) $this->getName($foreach->expr));
+            $newValueVar = $defaultNewValueVar;
         }
 
-        $count = 0;
         if ($this->foreachAnalyzer->isValueVarUsed($foreach, $newValueVar)) {
-            $newValueVar .= (string) ++$count;
-            return $this->getNewValueVar($foreach, $newValueVar);
+            ++$count;
+            // re-assign first to ensure value count not appended after on increment
+            // like "singleData12", which should be "singleData2"
+            $newValueVar = $defaultNewValueVar;
+            $newValueVar = sprintf('%s%d', $newValueVar, $count);
+            return $this->getNewValueVar($foreach, $defaultNewValueVar, $newValueVar, $count);
         }
 
         return $newValueVar;
