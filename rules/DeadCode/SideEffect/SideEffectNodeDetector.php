@@ -21,6 +21,7 @@ use PhpParser\Node\Scalar\Encapsed;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use PHPStan\Type\TypeWithClassName;
 
 final class SideEffectNodeDetector
 {
@@ -86,7 +87,9 @@ final class SideEffectNodeDetector
 
         $exprClass = $node::class;
         if (in_array($exprClass, self::CALL_EXPR_SIDE_EFFECT_NODE_TYPES, true)) {
-            return true;
+            /** @var MethodCall|NullsafeMethodCall|StaticCall $expr */
+            $expr = $node;
+            return ! $this->isRectorPrefixed($expr);
         }
 
         if ($node instanceof FuncCall) {
@@ -94,6 +97,30 @@ final class SideEffectNodeDetector
         }
 
         return false;
+    }
+
+    /**
+     * @param MethodCall|NullsafeMethodCall|StaticCall $expr
+     */
+    private function isRectorPrefixed(MethodCall | NullsafeMethodCall | StaticCall $expr): bool
+    {
+        if ($expr instanceof MethodCall || $expr instanceof NullsafeMethodCall) {
+            $type = $this->nodeTypeResolver->resolve($expr->var);
+            if (! $type instanceof TypeWithClassName) {
+                return false;
+            }
+
+            $className = $type->getClassName();
+            return str_starts_with($className, 'Rector\\') && ! str_starts_with($className, 'Rector\\Tests\\');
+        }
+
+        $class = $expr->class;
+        if (! $class instanceof Name) {
+            return false;
+        }
+
+        $className = $class->toString();
+        return str_starts_with($className, 'Rector\\') && ! str_starts_with($className, 'Rector\\Tests\\');
     }
 
     private function isClassCallerThrowable(StaticCall $staticCall): bool
