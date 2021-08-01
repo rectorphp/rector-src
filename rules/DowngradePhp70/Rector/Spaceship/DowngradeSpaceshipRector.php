@@ -113,9 +113,8 @@ CODE_SAMPLE
             $stmt,
             fn (Node $node): bool => $node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $variable)
         );
-
-        $count = 0;
         if ($isFoundPrevious) {
+            $count = 0;
             ++$count;
             $variableName .= (string) $count;
             return $this->getVariableAssign($stmt, $variableName);

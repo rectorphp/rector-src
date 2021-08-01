@@ -20,8 +20,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Encapsed;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\ObjectType;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use PHPStan\Type\TypeWithClassName;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class SideEffectNodeDetector
 {
@@ -99,9 +99,6 @@ final class SideEffectNodeDetector
         return false;
     }
 
-    /**
-     * @param MethodCall|NullsafeMethodCall|StaticCall $expr
-     */
     private function isRectorPrefixed(MethodCall | NullsafeMethodCall | StaticCall $expr): bool
     {
         if ($expr instanceof MethodCall || $expr instanceof NullsafeMethodCall) {
