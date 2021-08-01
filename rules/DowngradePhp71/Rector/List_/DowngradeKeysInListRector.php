@@ -174,9 +174,7 @@ CODE_SAMPLE
 
     private function getNewValueVar(Foreach_ $foreach, string $defaultNewValueVar, ?string $newValueVar = null, int $count = 0): string
     {
-        if ($newValueVar === null) {
-            $newValueVar = $defaultNewValueVar;
-        }
+        $newValueVar = $newValueVar ?? $defaultNewValueVar;
 
         if ($this->foreachAnalyzer->isValueVarUsed($foreach, $newValueVar)) {
             ++$count;
