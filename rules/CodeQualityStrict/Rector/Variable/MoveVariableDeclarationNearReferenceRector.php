@@ -39,7 +39,6 @@ final class MoveVariableDeclarationNearReferenceRector extends AbstractRector
     public function __construct(
         private ScopeAwareNodeFinder $scopeAwareNodeFinder,
         private SideEffectNodeDetector $sideEffectNodeDetector,
-        private ReflectionProvider $reflectionProvider,
         private ParentFinder $parentFinder
     ) {
     }
@@ -108,7 +107,7 @@ CODE_SAMPLE
         }
 
         $usageStmt = $this->findUsageStmt($expression, $node);
-        if ($usageStmt === null) {
+        if (!$usageStmt instanceof Node) {
             return null;
         }
 
