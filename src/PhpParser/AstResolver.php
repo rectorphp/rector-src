@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
@@ -18,6 +20,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeFinder;
 use PhpParser\Parser;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpFunctionReflection;
@@ -133,6 +136,17 @@ final class AstResolver
         return $classMethod;
     }
 
+    public function resolveClassMethodOrFunctionFromCall(
+        FuncCall | StaticCall | MethodCall $call,
+        Scope $scope
+    ): ClassMethod | Function_ | null {
+        if ($call instanceof FuncCall) {
+            return $this->resolveFunctionFromFuncCall($call, $scope);
+        }
+
+        return $this->resolveClassMethodFromCall($call);
+    }
+
     public function resolveFunctionFromFunctionReflection(PhpFunctionReflection $phpFunctionReflection): ?Function_
     {
         if (isset($this->functionsByName[$phpFunctionReflection->getName()])) {
@@ -185,7 +199,13 @@ final class AstResolver
             return null;
         }
 
-        return $this->resolveClassMethodFromMethodReflection($methodReflection);
+        $classMethod = $this->resolveClassMethodFromMethodReflection($methodReflection);
+
+        if (! $classMethod instanceof ClassMethod) {
+            return $this->locateClassMethodInTrait($methodName, $methodReflection);
+        }
+
+        return $classMethod;
     }
 
     public function resolveClassMethodFromMethodCall(MethodCall $methodCall): ?ClassMethod
@@ -326,6 +346,21 @@ final class AstResolver
         return $this->findPromotedPropertyByName($nodes, $desiredPropertyName);
     }
 
+    private function locateClassMethodInTrait(string $methodName, MethodReflection $methodReflection): ?ClassMethod
+    {
+        $classReflection = $methodReflection->getDeclaringClass();
+        $traits = $this->parseClassReflectionTraits($classReflection);
+
+        /** @var ClassMethod|null $classMethod */
+        $classMethod = $this->betterNodeFinder->findFirst(
+            $traits,
+            fn (Node $node): bool => $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName)
+        );
+        $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodName] = $classMethod;
+
+        return $classMethod;
+    }
+
     /**
      * @return Stmt[]|null
      */
@@ -369,5 +404,23 @@ final class AstResolver
         }
 
         return null;
+    }
+
+    private function resolveFunctionFromFuncCall(FuncCall $funcCall, Scope $scope): ?Function_
+    {
+        if ($funcCall->name instanceof Expr) {
+            return null;
+        }
+
+        if (! $this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
+            return null;
+        }
+
+        $reflectionFunction = $this->reflectionProvider->getFunction($funcCall->name, $scope);
+        if (! $reflectionFunction instanceof PhpFunctionReflection) {
+            return null;
+        }
+
+        return $this->resolveFunctionFromFunctionReflection($reflectionFunction);
     }
 }

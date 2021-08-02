@@ -341,22 +341,6 @@ final class NodeFactory
         return $property;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function createPrivateClassConst(string $name, $value): ClassConst
-    {
-        return $this->createClassConstant($name, $value, Class_::MODIFIER_PRIVATE);
-    }
-
-    /**
-     * @param mixed $value
-     */
-    public function createPublicClassConst(string $name, $value): ClassConst
-    {
-        return $this->createClassConstant($name, $value, Class_::MODIFIER_PUBLIC);
-    }
-
     public function createGetterClassMethod(string $propertyName, Type $type): ClassMethod
     {
         $methodBuilder = new MethodBuilder('get' . ucfirst($propertyName));
@@ -451,19 +435,6 @@ final class NodeFactory
      */
     public function createStaticCall(string $class, string $method, array $args = []): StaticCall
     {
-//
-//        $args = $this->wrapToArg($args);
-//
-//        if (in_array($class, ['self', 'parent', 'static'], true)) {
-//            $class = new Name($class);
-//        } else {
-//            $class = new FullyQualified($class);
-//        }
-//
-//        return new StaticCall($class, $method, $args);
-
-
-
         $class = $this->createClassPart($class);
         $staticCall = new StaticCall($class, $method);
         $staticCall->args = $this->createArgs($args);
@@ -579,6 +550,25 @@ final class NodeFactory
         return $this->createBooleanAndFromNodes($newNodes);
     }
 
+    public function createClassConstant(string $name, Expr $expr, int $modifier): ClassConst
+    {
+        $expr = BuilderHelpers::normalizeValue($expr);
+
+        $const = new Const_($name, $expr);
+        $classConst = new ClassConst([$const]);
+        $classConst->flags |= $modifier;
+
+        // add @var type by default
+        $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($expr);
+
+        if (! $staticType instanceof MixedType) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classConst);
+            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $staticType);
+        }
+
+        return $classConst;
+    }
+
     /**
      * @param mixed $item
      */
@@ -665,29 +655,7 @@ final class NodeFactory
         $this->phpDocTypeChanger->changeVarType($phpDocInfo, $type);
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function createClassConstant(string $name, $value, int $modifier): ClassConst
-    {
-        $value = BuilderHelpers::normalizeValue($value);
-
-        $const = new Const_($name, $value);
-        $classConst = new ClassConst([$const]);
-        $classConst->flags |= $modifier;
-
-        // add @var type by default
-        $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($value);
-
-        if (! $staticType instanceof MixedType) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classConst);
-            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $staticType);
-        }
-
-        return $classConst;
-    }
-
-    private function createClassPart(string $class): Name
+    private function createClassPart(string $class): Name | FullyQualified
     {
         if (in_array($class, self::REFERENCES, true)) {
             return new Name($class);

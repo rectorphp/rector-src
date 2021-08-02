@@ -72,6 +72,11 @@ final class ParentClassMethodTypeOverrideGuard
         return ! str_contains($fileName, '/vendor/');
     }
 
+    public function hasParentClassMethod(ClassMethod $classMethod): bool
+    {
+        return $this->getParentClassMethod($classMethod) instanceof MethodReflection;
+    }
+
     private function getParentClassMethod(ClassMethod $classMethod): ?MethodReflection
     {
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
@@ -92,7 +97,7 @@ final class ParentClassMethodTypeOverrideGuard
                 continue;
             }
 
-            if (! $parentClassReflection->hasMethod($methodName)) {
+            if (! $parentClassReflection->hasNativeMethod($methodName)) {
                 continue;
             }
 

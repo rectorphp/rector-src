@@ -1,4 +1,4 @@
-# 492 Rules Overview
+# 475 Rules Overview
 
 <br>
 
@@ -14,7 +14,7 @@
 
 - [CodeQualityStrict](#codequalitystrict) (1)
 
-- [CodingStyle](#codingstyle) (39)
+- [CodingStyle](#codingstyle) (38)
 
 - [Composer](#composer) (6)
 
@@ -36,7 +36,7 @@
 
 - [DowngradePhp74](#downgradephp74) (11)
 
-- [DowngradePhp80](#downgradephp80) (16)
+- [DowngradePhp80](#downgradephp80) (17)
 
 - [DowngradePhp81](#downgradephp81) (1)
 
@@ -48,11 +48,9 @@
 
 - [MysqlToMysqli](#mysqltomysqli) (4)
 
-- [Naming](#naming) (7)
+- [Naming](#naming) (6)
 
 - [Order](#order) (1)
-
-- [PHPOffice](#phpoffice) (14)
 
 - [PSR4](#psr4) (2)
 
@@ -88,15 +86,15 @@
 
 - [Removing](#removing) (6)
 
-- [RemovingStatic](#removingstatic) (9)
+- [RemovingStatic](#removingstatic) (8)
 
 - [Renaming](#renaming) (11)
 
 - [Restoration](#restoration) (6)
 
-- [Transform](#transform) (37)
+- [Transform](#transform) (34)
 
-- [TypeDeclaration](#typedeclaration) (18)
+- [TypeDeclaration](#typedeclaration) (20)
 
 - [Visibility](#visibility) (2)
 
@@ -227,7 +225,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ReplaceArgumentDefaultValueRector::class)
         ->call('configure', [[
             ReplaceArgumentDefaultValueRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
-                new ReplaceArgumentDefaultValue('SomeExampleClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
+                new ReplaceArgumentDefaultValue('SomeClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
             ]),
         ]]);
 };
@@ -238,7 +236,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 ```diff
  $someObject = new SomeClass;
 -$someObject->someMethod(SomeClass::OLD_CONSTANT);
-+$someObject->someMethod(false);'
++$someObject->someMethod(false);
 ```
 
 <br>
@@ -359,8 +357,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 -// file: app/Entity/ProductRepository.php
 +// file: app/Repository/ProductRepository.php
 
--namespace App/Entity;
-+namespace App/Repository;
+-namespace App\Entity;
++namespace App\Repository;
 
  class ProductRepository
  {
@@ -1243,8 +1241,7 @@ Changes `settype()` to (type) where possible
 ```diff
  class SomeClass
  {
--    public function run($foo)
-+    public function run(array $items)
+     public function run($foo)
      {
 -        settype($foo, 'string');
 +        $foo = (string) $foo;
@@ -1895,7 +1892,7 @@ Changes switch with 2 options to if-else
 -    default:
 -        $result = 'not ok';
 +if ($foo == 'my string') {
-+    $result = 'ok;
++    $result = 'ok';
 +} else {
 +    $result = 'not ok';
  }
@@ -2378,7 +2375,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ReturnArrayClassMethodToYieldRector::class)
         ->call('configure', [[
             ReturnArrayClassMethodToYieldRector::METHODS_TO_YIELDS => ValueObjectInliner::inline([
-                new ReturnArrayClassMethodToYield('EventSubscriberInterface', 'getSubscribedEvents'),
+                new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
             ]),
         ]]);
 };
@@ -2387,12 +2384,14 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 ↓
 
 ```diff
- class SomeEventSubscriber implements EventSubscriberInterface
+ use PHPUnit\Framework\TestCase;
+
+ final class SomeTest implements TestCase
  {
-     public static function getSubscribedEvents()
+     public static function provideData()
      {
--        return ['event' => 'callback'];
-+        yield 'event' => 'callback';
+-        return [['some text']];
++        yield ['some text'];
      }
  }
 ```
@@ -2668,45 +2667,6 @@ Wrap encapsed variables in curly braces
  {
 -    echo "Hello $world!";
 +    echo "Hello {$world}!";
- }
-```
-
-<br>
-
-### YieldClassMethodToArrayClassMethodRector
-
-Turns yield return to array return in specific type and method
-
-:wrench: **configure it!**
-
-- class: [`Rector\CodingStyle\Rector\ClassMethod\YieldClassMethodToArrayClassMethodRector`](../rules/CodingStyle/Rector/ClassMethod/YieldClassMethodToArrayClassMethodRector.php)
-
-```php
-use Rector\CodingStyle\Rector\ClassMethod\YieldClassMethodToArrayClassMethodRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(YieldClassMethodToArrayClassMethodRector::class)
-        ->call('configure', [[
-            YieldClassMethodToArrayClassMethodRector::METHODS_BY_TYPE => [
-                'EventSubscriberInterface' => ['getSubscribedEvents'],
-
-            ], ]]);
-};
-```
-
-↓
-
-```diff
- class SomeEventSubscriber implements EventSubscriberInterface
- {
-     public static function getSubscribedEvents()
-     {
--        yield 'event' => 'callback';
-+        return ['event' => 'callback'];
-     }
  }
 ```
 
@@ -4346,7 +4306,7 @@ Refactor scalar types in PHP code in string snippets, e.g. generated container c
  $code = <<<'EOF'
 -    public function getParameter(string $name)
 +    /**
-+     * @param string
++     * @param string $name
 +     */
 +    public function getParameter($name)
      {
@@ -4573,7 +4533,7 @@ Remove the nullable type params, add `@param` tags instead
 -    public function run(?string $input): ?string
 +    /**
 +     * @param string|null $input
-+     * @return string|null $input
++     * @return string|null
 +     */
 +    public function run($input)
      {
@@ -4592,13 +4552,12 @@ Downgrade single one | separated to multi catch exception
 ```diff
  try {
      // Some code...
-- } catch (ExceptionType1 | ExceptionType2 $exception) {
+-} catch (ExceptionType1 | ExceptionType2 $exception) {
 +} catch (ExceptionType1 $exception) {
-     $sameCode;
-- }
-+} catch (ExceptionType2 $exception) {
 +    $sameCode;
-+}
++} catch (ExceptionType2 $exception) {
+     $sameCode;
+ }
 ```
 
 <br>
@@ -5134,8 +5093,8 @@ Changes property type definition from type definitions to `@var` annotations.
  {
 -    private string $property;
 +    /**
-+    * @var string
-+    */
++     * @var string
++     */
 +    private $property;
  }
 ```
@@ -5276,7 +5235,7 @@ Remove named argument
      public function run()
      {
 -        $this->execute(b: 100);
-+        $this->execute(null,  100);
++        $this->execute(null, 100);
      }
 
      private function execute($a = null, $b = null)
@@ -5434,6 +5393,28 @@ Downgrade `str_starts_with()` to `strncmp()` version
 
 <br>
 
+### DowngradeThrowExprRector
+
+Downgrade throw as expr
+
+- class: [`Rector\DowngradePhp80\Rector\Expression\DowngradeThrowExprRector`](../rules/DowngradePhp80/Rector/Expression/DowngradeThrowExprRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function run()
+     {
+-        $id = $somethingNonexistent ?? throw new RuntimeException();
++        if (!isset($somethingNonexistent)) {
++            throw new RuntimeException();
++        }
++        $id = $somethingNonexistent;
+     }
+ }
+```
+
+<br>
+
 ### DowngradeTrailingCommasInParamUseRector
 
 Remove trailing commas in param or use list
@@ -5498,8 +5479,8 @@ Removes union type property type definition, adding `@var` annotations instead.
  {
 -    private string|int $property;
 +    /**
-+    * @var string|int
-+    */
++     * @var string|int
++     */
 +    private $property;
  }
 ```
@@ -5967,29 +5948,6 @@ Add mysql_query and mysql_error with connection
 
 ## Naming
 
-### MakeBoolPropertyRespectIsHasWasMethodNamingRector
-
-Renames property to respect is/has/was method naming
-
-- class: [`Rector\Naming\Rector\Property\MakeBoolPropertyRespectIsHasWasMethodNamingRector`](../rules/Naming/Rector/Property/MakeBoolPropertyRespectIsHasWasMethodNamingRector.php)
-
-```diff
- class SomeClass
- {
--private $full = false;
-+private $isFull = false;
-
- public function isFull()
- {
--    return $this->full;
-+    return $this->isFull;
- }
-+
- }
-```
-
-<br>
-
 ### RenameForeachValueVariableToMatchExprVariableRector
 
 Renames value variable name in foreach loop to match expression variable
@@ -6002,7 +5960,7 @@ Renames value variable name in foreach loop to match expression variable
  public function run()
  {
      $array = [];
--    foreach ($variables as $foo) {
+-    foreach ($variables as $property) {
 -        $array[] = $property;
 +    foreach ($variables as $variable) {
 +        $array[] = $variable;
@@ -6152,283 +6110,6 @@ Order private methods in order of their use
 -    private function call1()
 +    private function call2()
      {
-     }
- }
-```
-
-<br>
-
-## PHPOffice
-
-### AddRemovedDefaultValuesRector
-
-Complete removed default values explicitly
-
-- class: [`Rector\PHPOffice\Rector\StaticCall\AddRemovedDefaultValuesRector`](../rules/PHPOffice/Rector/StaticCall/AddRemovedDefaultValuesRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
-         $logger = new \PHPExcel_CalcEngine_Logger;
--        $logger->setWriteDebugLog();
-+        $logger->setWriteDebugLog(false);
-     }
- }
-```
-
-<br>
-
-### CellStaticToCoordinateRector
-
-Methods to manipulate coordinates that used to exists in PHPExcel_Cell to PhpOffice\PhpSpreadsheet\Cell\Coordinate
-
-- class: [`Rector\PHPOffice\Rector\StaticCall\CellStaticToCoordinateRector`](../rules/PHPOffice/Rector/StaticCall/CellStaticToCoordinateRector.php)
-
-```diff
- class SomeClass
- {
-     public function run()
-     {
--        \PHPExcel_Cell::stringFromColumnIndex();
-+        \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex();
-     }
- }
-```
-
-<br>
-
-### ChangeChartRendererRector
-
-Change chart renderer
-
-- class: [`Rector\PHPOffice\Rector\StaticCall\ChangeChartRendererRector`](../rules/PHPOffice/Rector/StaticCall/ChangeChartRendererRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
--        \PHPExcel_Settings::setChartRenderer($rendererName, $rendererLibraryPath);
-+        \PHPExcel_Settings::setChartRenderer(\PhpOffice\PhpSpreadsheet\Chart\Renderer\JpGraph::class);
-     }
- }
-```
-
-<br>
-
-### ChangeConditionalGetConditionRector
-
-Change argument `PHPExcel_Style_Conditional->getCondition()` to `getConditions()`
-
-- class: [`Rector\PHPOffice\Rector\MethodCall\ChangeConditionalGetConditionRector`](../rules/PHPOffice/Rector/MethodCall/ChangeConditionalGetConditionRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
-         $conditional = new \PHPExcel_Style_Conditional;
--        $someCondition = $conditional->getCondition();
-+        $someCondition = $conditional->getConditions()[0] ?? '';
-     }
- }
-```
-
-<br>
-
-### ChangeConditionalReturnedCellRector
-
-Change conditional call to `getCell()`
-
-- class: [`Rector\PHPOffice\Rector\MethodCall\ChangeConditionalReturnedCellRector`](../rules/PHPOffice/Rector/MethodCall/ChangeConditionalReturnedCellRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
-         $worksheet = new \PHPExcel_Worksheet();
--        $cell = $worksheet->setCellValue('A1', 'value', true);
-+        $cell = $worksheet->getCell('A1')->setValue('value');
-     }
- }
-```
-
-<br>
-
-### ChangeConditionalSetConditionRector
-
-Change argument `PHPExcel_Style_Conditional->setCondition()` to `setConditions()`
-
-- class: [`Rector\PHPOffice\Rector\MethodCall\ChangeConditionalSetConditionRector`](../rules/PHPOffice/Rector/MethodCall/ChangeConditionalSetConditionRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
-         $conditional = new \PHPExcel_Style_Conditional;
--        $someCondition = $conditional->setCondition(1);
-+        $someCondition = $conditional->setConditions((array) 1);
-     }
- }
-```
-
-<br>
-
-### ChangeDataTypeForValueRector
-
-Change argument `DataType::dataTypeForValue()` to DefaultValueBinder
-
-- class: [`Rector\PHPOffice\Rector\StaticCall\ChangeDataTypeForValueRector`](../rules/PHPOffice/Rector/StaticCall/ChangeDataTypeForValueRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
--        $type = \PHPExcel_Cell_DataType::dataTypeForValue('value');
-+        $type = \PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder::dataTypeForValue('value');
-     }
- }
-```
-
-<br>
-
-### ChangeDuplicateStyleArrayToApplyFromArrayRector
-
-Change method call `duplicateStyleArray()` to `getStyle()` + `applyFromArray()`
-
-- class: [`Rector\PHPOffice\Rector\MethodCall\ChangeDuplicateStyleArrayToApplyFromArrayRector`](../rules/PHPOffice/Rector/MethodCall/ChangeDuplicateStyleArrayToApplyFromArrayRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
-         $worksheet = new \PHPExcel_Worksheet();
--        $worksheet->duplicateStyleArray($styles, $range, $advanced);
-+        $worksheet->getStyle($range)->applyFromArray($styles, $advanced);
-     }
- }
-```
-
-<br>
-
-### ChangeIOFactoryArgumentRector
-
-Change argument of `PHPExcel_IOFactory::createReader()`, `PHPExcel_IOFactory::createWriter()` and `PHPExcel_IOFactory::identify()`
-
-- class: [`Rector\PHPOffice\Rector\StaticCall\ChangeIOFactoryArgumentRector`](../rules/PHPOffice/Rector/StaticCall/ChangeIOFactoryArgumentRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
--        $writer = \PHPExcel_IOFactory::createWriter('CSV');
-+        $writer = \PHPExcel_IOFactory::createWriter('Csv');
-     }
- }
-```
-
-<br>
-
-### ChangePdfWriterRector
-
-Change init of PDF writer
-
-- class: [`Rector\PHPOffice\Rector\StaticCall\ChangePdfWriterRector`](../rules/PHPOffice/Rector/StaticCall/ChangePdfWriterRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
--        \PHPExcel_Settings::setPdfRendererName(PHPExcel_Settings::PDF_RENDERER_MPDF);
--        \PHPExcel_Settings::setPdfRenderer($somePath);
--        $writer = \PHPExcel_IOFactory::createWriter($spreadsheet, 'PDF');
-+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
-     }
- }
-```
-
-<br>
-
-### ChangeSearchLocationToRegisterReaderRector
-
-Change argument `addSearchLocation()` to `registerReader()`
-
-- class: [`Rector\PHPOffice\Rector\StaticCall\ChangeSearchLocationToRegisterReaderRector`](../rules/PHPOffice/Rector/StaticCall/ChangeSearchLocationToRegisterReaderRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
--        \PHPExcel_IOFactory::addSearchLocation($type, $location, $classname);
-+        \PhpOffice\PhpSpreadsheet\IOFactory::registerReader($type, $classname);
-     }
- }
-```
-
-<br>
-
-### GetDefaultStyleToGetParentRector
-
-Methods to (new `Worksheet())->getDefaultStyle()` to `getParent()->getDefaultStyle()`
-
-- class: [`Rector\PHPOffice\Rector\MethodCall\GetDefaultStyleToGetParentRector`](../rules/PHPOffice/Rector/MethodCall/GetDefaultStyleToGetParentRector.php)
-
-```diff
- class SomeClass
- {
-     public function run()
-     {
-         $worksheet = new \PHPExcel_Worksheet();
--        $worksheet->getDefaultStyle();
-+        $worksheet->getParent()->getDefaultStyle();
-     }
- }
-```
-
-<br>
-
-### IncreaseColumnIndexRector
-
-Column index changed from 0 to 1 - run only ONCE! changes current value without memory
-
-- class: [`Rector\PHPOffice\Rector\MethodCall\IncreaseColumnIndexRector`](../rules/PHPOffice/Rector/MethodCall/IncreaseColumnIndexRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
-         $worksheet = new \PHPExcel_Worksheet();
--        $worksheet->setCellValueByColumnAndRow(0, 3, '1150');
-+        $worksheet->setCellValueByColumnAndRow(1, 3, '1150');
-     }
- }
-```
-
-<br>
-
-### RemoveSetTempDirOnExcelWriterRector
-
-Remove `setTempDir()` on PHPExcel_Writer_Excel5
-
-- class: [`Rector\PHPOffice\Rector\MethodCall\RemoveSetTempDirOnExcelWriterRector`](../rules/PHPOffice/Rector/MethodCall/RemoveSetTempDirOnExcelWriterRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
-         $writer = new \PHPExcel_Writer_Excel5;
--        $writer->setTempDir();
      }
  }
 ```
@@ -6685,7 +6366,7 @@ The /e modifier is no longer supported, use preg_replace_callback instead
 -        $comment = preg_replace('~\b(\w)(\w+)~e', '"$1".strtolower("$2")', $comment);
 +        $comment = preg_replace_callback('~\b(\w)(\w+)~', function ($matches) {
 +              return($matches[1].strtolower($matches[2]));
-+        }, , $comment);
++        }, $comment);
      }
  }
 ```
@@ -7125,7 +6806,7 @@ Change binary operation between some number + string to PHP 7.1 compatible versi
 -        $value = 5 + '';
 -        $value = 5.0 + 'hi';
 +        $value = 5 + 0;
-+        $value = 5.0 + 0
++        $value = 5.0 + 0;
      }
  }
 ```
@@ -7190,14 +6871,12 @@ Changes multi catch of same exception to single one | separated.
 
 ```diff
  try {
--    // Some code...
+     // Some code...
 -} catch (ExceptionType1 $exception) {
 -    $sameCode;
 -} catch (ExceptionType2 $exception) {
--    $sameCode;
-+   // Some code...
 +} catch (ExceptionType1 | ExceptionType2 $exception) {
-+   $sameCode;
+     $sameCode;
  }
 ```
 
@@ -9075,7 +8754,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 ```diff
  $someObject = new SomeClass;
 -$someObject->someMethod(true);
-+$someObject->someMethod();'
++$someObject->someMethod();
 ```
 
 <br>
@@ -9327,7 +9006,7 @@ Change defined static service to dynamic one
      public function run()
      {
 -        SomeStaticMethod::someStatic();
-+        $this->someStaticMethod::someStatic();
++        $this->someStaticMethod->someStatic();
      }
  }
 ```
@@ -9346,7 +9025,7 @@ Change defined static service to dynamic one
      public function run()
      {
 -        SomeStaticMethod::$someStatic;
-+        $this->someStaticMethod::$someStatic;
++        $this->someStaticMethod->someStatic;
      }
  }
 ```
@@ -9421,58 +9100,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
      public function someFun()
      {
          return StaticClass::staticMethod();
-     }
- }
-```
-
-<br>
-
-### PHPUnitStaticToKernelTestCaseGetRector
-
-Convert static calls in PHPUnit test cases, to `get()` from the container of KernelTestCase
-
-:wrench: **configure it!**
-
-- class: [`Rector\RemovingStatic\Rector\Class_\PHPUnitStaticToKernelTestCaseGetRector`](../rules/RemovingStatic/Rector/Class_/PHPUnitStaticToKernelTestCaseGetRector.php)
-
-```php
-use Rector\RemovingStatic\Rector\Class_\PHPUnitStaticToKernelTestCaseGetRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(PHPUnitStaticToKernelTestCaseGetRector::class)
-        ->call('configure', [[
-            PHPUnitStaticToKernelTestCaseGetRector::STATIC_CLASS_TYPES => ['EntityFactory'],
-        ]]);
-};
-```
-
-↓
-
-```diff
--use PHPUnit\Framework\TestCase;
-+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-
--final class SomeTestCase extends TestCase
-+final class SomeTestCase extends KernelTestCase
- {
-+    /**
-+     * @var EntityFactory
-+     */
-+    private $entityFactory;
-+
-+    protected function setUp(): void
-+    {
-+        parent::setUp();
-+        $this->entityFactory = $this->getService(EntityFactory::class);
-+    }
-+
-     public function test()
-     {
--        $product = EntityFactory::create('product');
-+        $product = $this->entityFactory->create('product');
      }
  }
 ```
@@ -10664,27 +10291,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
 <br>
 
-### FunctionToStaticMethodRector
-
-Change functions to static calls, so composer can autoload them
-
-- class: [`Rector\Transform\Rector\FileWithoutNamespace\FunctionToStaticMethodRector`](../rules/Transform/Rector/FileWithoutNamespace/FunctionToStaticMethodRector.php)
-
-```diff
--function some_function()
-+class SomeUtilsClass
- {
-+    public static function someFunction()
-+    {
-+    }
- }
-
--some_function('lol');
-+SomeUtilsClass::someFunction('lol');
-```
-
-<br>
-
 ### GetAndSetToMethodCallRector
 
 Turns defined `__get`/`__set` to specific method calls.
@@ -10765,8 +10371,8 @@ Turns old method call with specific types to new one with arguments
 - class: [`Rector\Transform\Rector\MethodCall\MethodCallToAnotherMethodCallWithArgumentsRector`](../rules/Transform/Rector/MethodCall/MethodCallToAnotherMethodCallWithArgumentsRector.php)
 
 ```php
-use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
 use Rector\Transform\Rector\MethodCall\MethodCallToAnotherMethodCallWithArgumentsRector;
+use Rector\Transform\ValueObject\MethodCallToAnotherMethodCallWithArguments;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -10776,8 +10382,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(MethodCallToAnotherMethodCallWithArgumentsRector::class)
         ->call('configure', [[
             MethodCallToAnotherMethodCallWithArgumentsRector::METHOD_CALL_RENAMES_WITH_ADDED_ARGUMENTS => ValueObjectInliner::inline([
-                new MethodCallRenameWithArrayKey('Nette\DI\ServiceDefinition', 'setInject', 'addTag', 'inject'),
-            ]),
+                new MethodCallToAnotherMethodCallWithArguments('Nette\DI\ServiceDefinition', 'setInject', 'addTag', [
+                    'inject',
+                ]), ]
+            ),
         ]]);
 };
 ```
@@ -10872,50 +10480,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
      {
 -        $this->someMethod();
 +        $this->someProperty;
-     }
- }
-```
-
-<br>
-
-### MethodCallToReturnRector
-
-Wrap method call to return
-
-:wrench: **configure it!**
-
-- class: [`Rector\Transform\Rector\Expression\MethodCallToReturnRector`](../rules/Transform/Rector/Expression/MethodCallToReturnRector.php)
-
-```php
-use Rector\Transform\Rector\Expression\MethodCallToReturnRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(MethodCallToReturnRector::class)
-        ->call('configure', [[
-            MethodCallToReturnRector::METHOD_CALL_WRAPS => [
-                'SomeClass' => ['deny'],
-
-            ], ]]);
-};
-```
-
-↓
-
-```diff
- class SomeClass
- {
-     public function run()
-     {
--        $this->deny();
-+        return $this->deny();
-     }
-
-     public function deny()
-     {
-         return 1;
      }
  }
 ```
@@ -11156,17 +10720,19 @@ Replaces parent class to specific traits
 
 ```php
 use Rector\Transform\Rector\Class_\ParentClassToTraitsRector;
+use Rector\Transform\ValueObject\ParentClassToTraits;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ParentClassToTraitsRector::class)
         ->call('configure', [[
-            ParentClassToTraitsRector::PARENT_CLASS_TO_TRAITS => [
-                'Nette\Object' => ['Nette\SmartObject'],
-
-            ], ]]);
+            ParentClassToTraitsRector::PARENT_CLASS_TO_TRAITS => ValueObjectInliner::inline([
+                new ParentClassToTraits('Nette\Object', ['Nette\SmartObject']), ]
+            ),
+        ]]);
 };
 ```
 
@@ -11692,60 +11258,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
 <br>
 
-### VariableMethodCallToServiceCallRector
-
-Replace variable method call to a service one
-
-:wrench: **configure it!**
-
-- class: [`Rector\Transform\Rector\MethodCall\VariableMethodCallToServiceCallRector`](../rules/Transform/Rector/MethodCall/VariableMethodCallToServiceCallRector.php)
-
-```php
-use Rector\Transform\Rector\MethodCall\VariableMethodCallToServiceCallRector;
-use Rector\Transform\ValueObject\VariableMethodCallToServiceCall;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\SymfonyPhpConfig\ValueObjectInliner;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(VariableMethodCallToServiceCallRector::class)
-        ->call('configure', [[
-            VariableMethodCallToServiceCallRector::VARIABLE_METHOD_CALLS_TO_SERVICE_CALLS => ValueObjectInliner::inline([
-                new VariableMethodCallToServiceCall(
-                    'PhpParser\Node',
-                    'getAttribute',
-                    'php_doc_info',
-                    'Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory',
-                    'createFromNodeOrEmpty'
-                ),
-            ]),
-        ]]);
-};
-```
-
-↓
-
-```diff
-+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
- use PhpParser\Node;
-
- class SomeClass
- {
-+    public function __construct(PhpDocInfoFactory $phpDocInfoFactory)
-+    {
-+        $this->phpDocInfoFactory = $phpDocInfoFactory;
-+    }
-     public function run(Node $node)
-     {
--        $phpDocInfo = $node->getAttribute('php_doc_info');
-+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-     }
- }
-```
-
-<br>
-
 ### WrapReturnRector
 
 Wrap return value of specific method
@@ -12060,6 +11572,63 @@ Change null in argument, that is now not nullable anymore
 
      public function setValue(string $value)
      {
+     }
+ }
+```
+
+<br>
+
+### ParamTypeByMethodCallTypeRector
+
+Change param type based on passed method call type
+
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ParamTypeByMethodCallTypeRector.php)
+
+```diff
+ class SomeTypedService
+ {
+     public function run(string $name)
+     {
+     }
+ }
+
+ final class UseDependency
+ {
+     public function __construct(
+         private SomeTypedService $someTypedService
+     ) {
+     }
+
+-    public function go($value)
++    public function go(string $value)
+     {
+         $this->someTypedService->run($value);
+     }
+ }
+```
+
+<br>
+
+### ParamTypeByParentCallTypeRector
+
+Change param type based on parent param type
+
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ParamTypeByParentCallTypeRector.php)
+
+```diff
+ class SomeControl
+ {
+     public function __construct(string $name)
+     {
+     }
+ }
+
+ class VideoControl extends SomeControl
+ {
+-    public function __construct($name)
++    public function __construct(string $name)
+     {
+         parent::__construct($name);
      }
  }
 ```

@@ -29,6 +29,7 @@
         "rector/rector-nette": "^0.11.16",
         "rector/rector-phpunit": "^0.11.6",
         "rector/rector-symfony": "^0.11.12",
+        "rector/rector-phpoffice": "^0.11.2",
         "sebastian/diff": "^4.0.4",
         "ssch/typo3-rector": "^0.11.22",
         "symfony/console": "5.3.x-dev",
@@ -37,32 +38,33 @@
         "symfony/http-kernel": "^5.3",
         "symfony/process": "^5.3",
         "symfony/yaml": "^5.3",
-        "symplify/astral": "^9.4.14",
-        "symplify/autowire-array-parameter": "^9.4.14",
-        "symplify/composer-json-manipulator": "^9.4.14",
-        "symplify/console-color-diff": "^9.4.14",
-        "symplify/package-builder": "^9.4.14",
-        "symplify/rule-doc-generator-contracts": "^9.4.14",
-        "symplify/simple-php-doc-parser": "^9.4.14",
-        "symplify/skipper": "^9.4.14",
-        "symplify/smart-file-system": "^9.4.14",
-        "symplify/symfony-php-config": "^9.4.14",
+        "symplify/astral": "^9.4.24",
+        "symplify/autowire-array-parameter": "^9.4.24",
+        "symplify/composer-json-manipulator": "^9.4.24",
+        "symplify/console-color-diff": "^9.4.24",
+        "symplify/package-builder": "^9.4.24",
+        "symplify/rule-doc-generator-contracts": "^9.4.24",
+        "symplify/simple-php-doc-parser": "^9.4.24",
+        "symplify/skipper": "^9.4.24",
+        "symplify/smart-file-system": "^9.4.24",
+        "symplify/symfony-php-config": "^9.4.24",
         "tracy/tracy": "^2.8",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
+        "brianium/paratest": "^6.3",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-nette": "^0.12.19",
         "phpunit/phpunit": "^9.5",
         "rector/phpstan-rules": "^0.3.3",
         "rector/rector-generator": "^0.3",
-        "symplify/coding-standard": "^9.4.14",
-        "symplify/easy-ci": "^9.4.14",
+        "symplify/coding-standard": "^9.4.24",
+        "symplify/easy-ci": "^9.4.23",
         "symplify/easy-coding-standard": "^9.4.7",
-        "symplify/easy-testing": "^9.4.14",
-        "symplify/phpstan-extensions": "^9.4.14",
-        "symplify/phpstan-rules": "^9.4.14",
-        "symplify/rule-doc-generator": "^9.4.14",
+        "symplify/easy-testing": "^9.4.24",
+        "symplify/phpstan-extensions": "^9.4.24",
+        "symplify/phpstan-rules": "^9.4.24",
+        "symplify/rule-doc-generator": "^9.4.24",
         "timeweb/phpstan-enum": "^2.3"
     },
     "replace": {
@@ -106,7 +108,8 @@
             "stubs/Doctrine/Common/Persistence/ObjectManager.php",
             "rules-tests/Transform/Rector/FuncCall/FuncCallToMethodCallRector/Source/some_view_function.php",
             "rules-tests/TypeDeclaration/Rector/FunctionLike/ReturnTypeDeclarationRector/Source/MyBar.php",
-            "rules-tests/TypeDeclaration/Rector/Property/CompleteVarDocTypePropertyRector/Source/EventDispatcher.php"
+            "rules-tests/TypeDeclaration/Rector/Property/CompleteVarDocTypePropertyRector/Source/EventDispatcher.php",
+            "rules-tests/TypeDeclaration/Rector/ClassMethod/ParamTypeByMethodCallTypeRector/Source/FunctionTyped.php"
         ]
     },
     "scripts": {
@@ -141,5 +144,7 @@
     "config": {
         "sort-packages": true,
         "platform-check": false
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
