@@ -49,7 +49,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/config',
         __DIR__ . '/ecs.php',
         __DIR__ . '/rector.php',
-        __DIR__ . '/config/set',
     ]);
 
     $containerConfigurator->import(SetList::PSR_12);
