@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Composer\Semver\VersionParser;
+
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Ergebnis\Json\Printer\Printer;
@@ -25,6 +26,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterTypeParser;
+use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\PhpParser\Parser\NikicPhpParserFactory;
@@ -128,7 +130,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(FileHelper::class)
         ->factory([service(PHPStanServicesFactory::class), 'createFileHelper']);
 
-    $services->set(\Rector\Caching\Cache::class)
+    $services->set(Cache::class)
         ->factory([service(CacheFactory::class), 'create']);
 
     // type resolving
