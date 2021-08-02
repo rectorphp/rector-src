@@ -84,7 +84,7 @@ final class MissedRectorDueVersionChecker
     }
 
     /**
-     * @param MinPhpVersionInterface[] $minPhpVersions
+     * @param MinPhpVersionInterface[] $missedRectors
      */
     private function reportWarningMessage(int $minProjectPhpVersion, array $missedRectors): void
     {
