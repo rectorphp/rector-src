@@ -22,7 +22,6 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeNestingScope\NodeFinder\ScopeAwareNodeFinder;
@@ -107,7 +106,7 @@ CODE_SAMPLE
         }
 
         $usageStmt = $this->findUsageStmt($expression, $node);
-        if (!$usageStmt instanceof Node) {
+        if (! $usageStmt instanceof Node) {
             return null;
         }
 
