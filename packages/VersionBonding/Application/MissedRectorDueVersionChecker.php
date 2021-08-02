@@ -86,18 +86,23 @@ final class MissedRectorDueVersionChecker
     /**
      * @param MinPhpVersionInterface[] $minPhpVersions
      */
-    private function reportWarningMessage(int $minProjectPhpVersion, array $minPhpVersions): void
+    private function reportWarningMessage(int $minProjectPhpVersion, array $missedRectors): void
     {
         $phpVersion = new PhpVersion($minProjectPhpVersion);
 
         $warningMessage = sprintf(
-            'Your project requires min PHP version "%s".%s%d%sSome Rectors rules defined in your configuration require higher PHP version and will not run,%sto avoid breaking your codebase.',
+            'Your project requires min PHP version "%s".%s%sThe following Rector rules defined in your configuration require higher PHP version and will not run,%sto avoid breaking your codebase: ',
             $phpVersion->getVersionString(),
-            count($minPhpVersions),
             PHP_EOL,
             PHP_EOL . PHP_EOL,
             PHP_EOL
         );
+
+        $warningMessage .= PHP_EOL;
+        foreach ($missedRectors as $missedRector) {
+            $warningMessage .= PHP_EOL . ' - ' . $missedRector::class;
+        }
+
         $this->symfonyStyle->warning($warningMessage);
     }
 }
