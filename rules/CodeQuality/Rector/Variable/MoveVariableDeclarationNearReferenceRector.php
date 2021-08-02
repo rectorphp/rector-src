@@ -18,12 +18,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\InlineHTML;
-use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeNestingScope\NodeFinder\ScopeAwareNodeFinder;
 use Rector\NodeNestingScope\ParentFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -37,8 +33,8 @@ final class MoveVariableDeclarationNearReferenceRector extends AbstractRector
 {
     public function __construct(
         private ScopeAwareNodeFinder $scopeAwareNodeFinder,
-        private SideEffectNodeDetector $sideEffectNodeDetector,
-        private ParentFinder $parentFinder
+        private ParentFinder $parentFinder,
+        private \Rector\CodeQuality\UsageFinder\UsageInNextStmtFinder $usageInNextStmtFinder
     ) {
     }
 
@@ -97,7 +93,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasPropertyInExpr($expression, $parent->expr)) {
+        if ($this->hasPropertyInExpr($parent->expr)) {
             return null;
         }
 
@@ -130,7 +126,7 @@ CODE_SAMPLE
         return $this->isInsideCondition($expression);
     }
 
-    private function hasPropertyInExpr(Expression $expression, Expr $expr): bool
+    private function hasPropertyInExpr(Expr $expr): bool
     {
         return (bool) $this->betterNodeFinder->findFirst(
             $expr,
@@ -145,39 +141,6 @@ CODE_SAMPLE
         }
 
         return $this->hasReAssign($expression, $assign->expr);
-    }
-
-    private function getUsageInNextStmts(Expression $expression, Variable $variable): ?Variable
-    {
-        /** @var Node|null $next */
-        $next = $expression->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $next instanceof Node) {
-            return null;
-        }
-
-        if ($next instanceof InlineHTML) {
-            return null;
-        }
-
-        if ($this->hasCall($next)) {
-            return null;
-        }
-
-        $countFound = $this->getCountFound($next, $variable);
-        if ($countFound === 0) {
-            return null;
-        }
-        if ($countFound >= 2) {
-            return null;
-        }
-
-        $nextVariable = $this->getSameVarName([$next], $variable);
-
-        if ($nextVariable instanceof Variable) {
-            return $nextVariable;
-        }
-
-        return $this->getSameVarNameInNexts($next, $variable);
     }
 
     private function isInsideLoopStmts(Node $node): bool
@@ -258,78 +221,6 @@ CODE_SAMPLE
         return false;
     }
 
-    private function hasCall(Node $node): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst(
-            $node,
-            fn (Node $n): bool => $this->sideEffectNodeDetector->detectCallExpr($n)
-        );
-    }
-
-    private function getCountFound(Node $node, Variable $variable): int
-    {
-        $countFound = 0;
-        while ($node) {
-            $isFound = (bool) $this->getSameVarName([$node], $variable);
-
-            if ($isFound) {
-                ++$countFound;
-            }
-
-            $countFound = $this->countWithElseIf($node, $variable, $countFound);
-            $countFound = $this->countWithTryCatch($node, $variable, $countFound);
-            $countFound = $this->countWithSwitchCase($node, $variable, $countFound);
-
-            /** @var Node|null $node */
-            $node = $node->getAttribute(AttributeKey::NEXT_NODE);
-        }
-
-        return $countFound;
-    }
-
-    /**
-     * @param array<int, Node|null> $multiNodes
-     */
-    private function getSameVarName(array $multiNodes, Variable $variable): ?Variable
-    {
-        foreach ($multiNodes as $multiNode) {
-            if ($multiNode === null) {
-                continue;
-            }
-
-            /** @var Variable|null $found */
-            $found = $this->betterNodeFinder->findFirst($multiNode, function (Node $n) use ($variable): bool {
-                $n = $this->mayBeArrayDimFetch($n);
-                if (! $n instanceof Variable) {
-                    return false;
-                }
-                return $this->isName($n, (string) $this->getName($variable));
-            });
-
-            if ($found !== null) {
-                return $found;
-            }
-        }
-
-        return null;
-    }
-
-    private function getSameVarNameInNexts(Node $node, Variable $variable): ?Variable
-    {
-        while ($node) {
-            $found = $this->getSameVarName([$node], $variable);
-
-            if ($found instanceof Variable) {
-                return $found;
-            }
-
-            /** @var Node|null $node */
-            $node = $node->getAttribute(AttributeKey::NEXT_NODE);
-        }
-
-        return null;
-    }
-
     private function mayBeArrayDimFetch(Node $node): Node
     {
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
@@ -340,56 +231,9 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function countWithElseIf(Node $node, Variable $variable, int $countFound): int
-    {
-        if (! $node instanceof If_) {
-            return $countFound;
-        }
-
-        $isFoundElseIf = (bool) $this->getSameVarName($node->elseifs, $variable);
-        $isFoundElse = (bool) $this->getSameVarName([$node->else], $variable);
-
-        if ($isFoundElseIf || $isFoundElse) {
-            ++$countFound;
-        }
-
-        return $countFound;
-    }
-
-    private function countWithTryCatch(Node $node, Variable $variable, int $countFound): int
-    {
-        if (! $node instanceof TryCatch) {
-            return $countFound;
-        }
-
-        $isFoundInCatch = (bool) $this->getSameVarName($node->catches, $variable);
-        $isFoundInFinally = (bool) $this->getSameVarName([$node->finally], $variable);
-
-        if ($isFoundInCatch || $isFoundInFinally) {
-            ++$countFound;
-        }
-
-        return $countFound;
-    }
-
-    private function countWithSwitchCase(Node $node, Variable $variable, int $countFound): int
-    {
-        if (! $node instanceof Switch_) {
-            return $countFound;
-        }
-
-        $isFoundInCases = (bool) $this->getSameVarName($node->cases, $variable);
-
-        if ($isFoundInCases) {
-            ++$countFound;
-        }
-
-        return $countFound;
-    }
-
     private function findUsageStmt(Expression $expression, Variable $variable): Node | null
     {
-        $nextVariable = $this->getUsageInNextStmts($expression, $variable);
+        $nextVariable = $this->usageInNextStmtFinder->getUsageInNextStmts($expression, $variable);
         if (! $nextVariable instanceof Variable) {
             return null;
         }

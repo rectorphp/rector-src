@@ -88,7 +88,6 @@ parameters:
             paths:
                 - rules/Php70/EregToPcreTransformer.php
                 - packages/NodeTypeResolver/NodeTypeResolver.php
-                - rules/CodeQualityStrict/Rector/Variable/MoveVariableDeclarationNearReferenceRector.php
                 - rules/Php80/Rector/If_/NullsafeOperatorRector.php
                 - rules/Renaming/NodeManipulator/ClassRenamer.php
                 - rules/DowngradePhp72/Rector/FuncCall/DowngradePregUnmatchedAsNullConstantRector.php
