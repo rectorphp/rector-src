@@ -90,6 +90,7 @@ final class SetList implements SetListInterface
 
     /**
      * @var string
+     * @deprecated Use PHPExcelSetList instead
      */
     public const PHPEXCEL_TO_PHPSPREADSHEET = __DIR__ . '/../../../config/set/phpexcel-to-phpspreadsheet.php';
 
