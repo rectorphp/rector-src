@@ -96,7 +96,6 @@ final class MissedRectorDueVersionChecker
             count($minPhpVersions),
             PHP_EOL,
             PHP_EOL . PHP_EOL,
-            PHP_EOL,
             PHP_EOL
         );
         $this->symfonyStyle->warning($warningMessage);
