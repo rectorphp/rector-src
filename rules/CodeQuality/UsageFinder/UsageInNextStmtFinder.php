@@ -187,8 +187,9 @@ final class UsageInNextStmtFinder
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         while ($parent instanceof ArrayDimFetch) {
             $node = $parent->var;
-            $parent->getAttribute(AttributeKey::PARENT_NODE);
+            $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
         }
+
         return $node;
     }
 }

@@ -19,6 +19,7 @@ use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\While_;
+use Rector\CodeQuality\UsageFinder\UsageInNextStmtFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNestingScope\NodeFinder\ScopeAwareNodeFinder;
 use Rector\NodeNestingScope\ParentFinder;
@@ -34,7 +35,7 @@ final class MoveVariableDeclarationNearReferenceRector extends AbstractRector
     public function __construct(
         private ScopeAwareNodeFinder $scopeAwareNodeFinder,
         private ParentFinder $parentFinder,
-        private \Rector\CodeQuality\UsageFinder\UsageInNextStmtFinder $usageInNextStmtFinder
+        private UsageInNextStmtFinder $usageInNextStmtFinder
     ) {
     }
 
