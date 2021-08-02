@@ -99,7 +99,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, array<class-string, PreferenceSelfThis>> $configuration
+     * @param array<string, PreferenceSelfThis[]> $configuration
      */
     public function configure(array $configuration): void
     {
