@@ -107,13 +107,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $variable = $this->getUsageInNextStmts($expression, $node);
-        if (! $variable instanceof Variable) {
+        $usageStmt = $this->findUsageStmt($expression, $node);
+        if ($usageStmt === null) {
             return null;
         }
 
-        /** @var Node $usageStmt */
-        $usageStmt = $variable->getAttribute(AttributeKey::CURRENT_STATEMENT);
         if ($this->isInsideLoopStmts($usageStmt)) {
             return null;
         }
@@ -389,5 +387,15 @@ CODE_SAMPLE
         }
 
         return $countFound;
+    }
+
+    private function findUsageStmt(Expression $expression, Variable $variable): Node | null
+    {
+        $nextVariable = $this->getUsageInNextStmts($expression, $variable);
+        if (! $nextVariable instanceof Variable) {
+            return null;
+        }
+
+        return $nextVariable->getAttribute(AttributeKey::CURRENT_STATEMENT);
     }
 }
