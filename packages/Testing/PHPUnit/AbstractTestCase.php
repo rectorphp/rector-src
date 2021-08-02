@@ -35,7 +35,7 @@ abstract class AbstractTestCase extends TestCase
             $rectorKernel = self::$kernelsByHash[$configsHash];
             self::$currentContainer = $rectorKernel->getContainer();
         } else {
-            $rectorKernel = new RectorKernel('test_' . $configsHash, !$this->isRunningOnCI(), $configFileInfos);
+            $rectorKernel = new RectorKernel('test_' . $configsHash, ! $this->isRunningOnCI(), $configFileInfos);
             $rectorKernel->boot();
 
             self::$kernelsByHash[$configsHash] = $rectorKernel;
@@ -78,8 +78,9 @@ abstract class AbstractTestCase extends TestCase
         return $configHash;
     }
 
-    private function isRunningOnCI(): bool {
+    private function isRunningOnCI(): bool
+    {
         $runsInGithubAction = getenv('GITHUB_ACTION');
-        return false !== $runsInGithubAction;
+        return $runsInGithubAction !== false;
     }
 }
