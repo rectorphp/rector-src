@@ -122,7 +122,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         }
         file_put_contents($fixturePath, $fixtureContent);
         $newFileInfo = new SmartFileInfo($fixturePath);
-        $this->doTestFileInfo($newFileInfo);
+        $this->doTestFileInfo($newFileInfo, $allowMatches);
 
         $this->checkAdditionalChanges($expectedFileChanges);
 
