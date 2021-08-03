@@ -66,13 +66,18 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
-        $className = $calleeType->getClassName();
-        $methodName = $secondItemValue->value;
+        $className        = $calleeType->getClassName();
+        $currentClassName = $array->getAttribute(AttributeKey::CLASS_NAME);
+
+        if ($firstItemValue instanceof ClassConstFetch && $className !== $currentClassName) {
+            return null;
+        }
 
         if ($this->isCallbackAtFunctionNames($array, ['register_shutdown_function', 'forward_static_call'])) {
             return null;
         }
 
+        $methodName = $secondItemValue->value;
         return new ArrayCallable($firstItemValue, $className, $methodName);
     }
 
