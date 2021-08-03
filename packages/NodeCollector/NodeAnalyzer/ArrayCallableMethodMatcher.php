@@ -119,8 +119,11 @@ final class ArrayCallableMethodMatcher
         if ($hasConstruct) {
             $methodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
             $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
-            if ($parametersAcceptor->getParameters() !== []) {
-                return new MixedType();
+
+            foreach ($parametersAcceptor->getParameters() as $parameter) {
+                if ($parameter->getDefaultValue() === null) {
+                    return new MixedType();
+                }
             }
         }
 
