@@ -27,7 +27,7 @@ jobs:
 
                     -
                         name: 'Re-Generate preload.php'
-                        run: "composer preload"
+                        run: "composer preload && composer fix-cs -- preload.php"
                         branch: 'automated-regenerated-preload'
 
         name: ${{ matrix.actions.name }}

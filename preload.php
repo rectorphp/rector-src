@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/NameContext.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/NodeVisitorAbstract.php';
