@@ -86,25 +86,27 @@ final class FluentChainMethodCallNodeAnalyzer
             return false;
         }
 
-        return $this->isNotInstantiatingNewInstance($calleeStaticType, $methodCall);
-    }
+        if (! $calleeStaticType instanceof ObjectType) {
+            return false;
+        }
 
-    private function isNotInstantiatingNewInstance(Type $calleeStaticType, MethodCall $methodCall): bool
-    {
-        if ($calleeStaticType instanceof ObjectType) {
-            foreach (self::KNOWN_FACTORY_FLUENT_TYPES as $knownFactoryFluentType) {
-                if ($calleeStaticType->isInstanceOf($knownFactoryFluentType)->yes()) {
-                    return false;
-                }
-            }
-
-            $classLike = $this->astResolver->resolveClassFromObjectType($calleeStaticType);
-            if ($classLike instanceof Interface_) {
+        foreach (self::KNOWN_FACTORY_FLUENT_TYPES as $knownFactoryFluentType) {
+            if ($calleeStaticType->isInstanceOf($knownFactoryFluentType)->yes()) {
                 return false;
             }
         }
 
+        if ($this->isInterface($calleeStaticType)) {
+            return false;
+        }
+
         return ! $this->isMethodCallCreatingNewInstance($methodCall);
+    }
+
+    private function isInterface(ObjectType $type): bool
+    {
+        $classLike = $this->astResolver->resolveClassFromObjectType($type);
+        return $classLike instanceof Interface_;
     }
 
     public function isLastChainMethodCall(MethodCall $methodCall): bool
