@@ -2,19 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Fixture;
 
-final class OtherClass
-{
-    private $property;
-
-    public function __construct($property)
-    {
-        $this->property = $property;
-    }
-
-    public function someMethod()
-    {
-    }
-}
+use Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Source\OtherClass;
 
 final class SkipOtherClassHasConstructParameter
 {

@@ -2,16 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Fixture;
 
-final class OtherClass2
-{
-    public function __construct()
-    {
-    }
-
-    public function someMethod()
-    {
-    }
-}
+use Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Source\OtherClass2;
 
 final class OtherClassNotHasConstructParameter
 {
@@ -27,23 +18,14 @@ final class OtherClassNotHasConstructParameter
 
 namespace Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Fixture;
 
-final class OtherClass2
-{
-    public function __construct()
-    {
-    }
-
-    public function someMethod()
-    {
-    }
-}
+use Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Source\OtherClass2;
 
 final class OtherClassNotHasConstructParameter
 {
     public function run()
     {
         return function () {
-            return (new \Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Fixture\OtherClass2())->someMethod();
+            return (new \Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Source\OtherClass2())->someMethod();
         };
     }
 }
