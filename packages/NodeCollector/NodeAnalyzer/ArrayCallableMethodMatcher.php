@@ -120,8 +120,8 @@ final class ArrayCallableMethodMatcher
             $methodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
             $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
 
-            foreach ($parametersAcceptor->getParameters() as $parameter) {
-                if ($parameter->getDefaultValue() === null) {
+            foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
+                if ($parameterReflection->getDefaultValue() === null) {
                     return new MixedType();
                 }
             }
