@@ -4,19 +4,20 @@ Sometimes Rector does changes in multiple files. How to test it?
 
 ## Rector
 Add file with content in Rector:
-```
-$addedFileWithContent = new AddedFileWithContent($filePath, $content);
+
+```php
+$addedFileWithContent = new \Rector\FileSystemRector\ValueObject\AddedFileWithContent($filePath, $content);
 $this->removedAndAddedFilesCollector->addAddedFile($addedFileWithContent);
 ```
 
 ## RectorTest
 In RectorTest just use
-```
+```php
 $this->doTestFileInfoWithAdditionalChanges($fileInfo);
 ```
 instead of
 
-```
+```php
 $this->doTestFileInfo($fileInfo);
 ```
 
