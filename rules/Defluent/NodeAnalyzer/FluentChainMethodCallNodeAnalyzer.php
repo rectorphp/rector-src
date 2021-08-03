@@ -86,6 +86,11 @@ final class FluentChainMethodCallNodeAnalyzer
             return false;
         }
 
+        return $this->isNotInstantiatingNewInstance($calleeStaticType, $methodCall);
+    }
+
+    private function isNotInstantiatingNewInstance(Type $calleeStaticType, MethodCall $methodCall): bool
+    {
         if ($calleeStaticType instanceof ObjectType) {
             foreach (self::KNOWN_FACTORY_FLUENT_TYPES as $knownFactoryFluentType) {
                 if ($calleeStaticType->isInstanceOf($knownFactoryFluentType)->yes()) {
