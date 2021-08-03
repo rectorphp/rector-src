@@ -86,12 +86,14 @@ CODE_SAMPLE
         }
 
         $nodesToAdd = $assignAndRootExprAndNodesToAdd->getNodesToAdd();
-        $totalNodesToAddKey = count($nodesToAdd) - 1;
+        $lastNodeToAdd = end($nodesToAdd);
 
-        foreach ($nodesToAdd as $key => $nodeToAdd) {
-            if ($key === $totalNodesToAddKey && ! $nodeToAdd instanceof Return_) {
-                $nodesToAdd[$key] = new Return_($nodeToAdd);
-            }
+        if (! $lastNodeToAdd) {
+            return null;
+        }
+
+        if (! $lastNodeToAdd instanceof Return_) {
+            $nodesToAdd[array_key_last($nodesToAdd)] = new Return_($lastNodeToAdd);
         }
 
         $this->fluentNodeRemover->removeCurrentNode($node);
