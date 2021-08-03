@@ -22,9 +22,6 @@ final class StaticEasyPrefixer
      * @var string[]
      */
     private const EXCLUDED_NAMESPACES = [
-        // this is not prefixed on few places by php-scoper by default, probably some bug
-        'Doctrine\Inflector\*',
-
         // naturally
         'Rector\*',
         // we use this API a lot
