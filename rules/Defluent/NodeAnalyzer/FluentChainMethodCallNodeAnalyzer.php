@@ -103,12 +103,6 @@ final class FluentChainMethodCallNodeAnalyzer
         return ! $this->isMethodCallCreatingNewInstance($methodCall);
     }
 
-    private function isInterface(ObjectType $type): bool
-    {
-        $classLike = $this->astResolver->resolveClassFromObjectType($type);
-        return $classLike instanceof Interface_;
-    }
-
     public function isLastChainMethodCall(MethodCall $methodCall): bool
     {
         // is chain method call
@@ -246,6 +240,12 @@ final class FluentChainMethodCallNodeAnalyzer
 
         $inferFunctionLike = $this->returnTypeInferer->inferFunctionLike($classMethod);
         return $inferFunctionLike instanceof ThisType;
+    }
+
+    private function isInterface(ObjectType $objectType): bool
+    {
+        $classLike = $this->astResolver->resolveClassFromObjectType($objectType);
+        return $classLike instanceof Interface_;
     }
 
     private function isMethodCallCreatingNewInstance(MethodCall $methodCall): bool
