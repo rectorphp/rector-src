@@ -239,7 +239,7 @@ final class FluentChainMethodCallNodeAnalyzer
     {
         $classMethod = $this->astResolver->resolveClassMethodFromMethodCall($methodCall);
         if (! $classMethod instanceof ClassMethod) {
-            return false;
+            return true;
         }
 
         /** @var Return_[] $returns */
