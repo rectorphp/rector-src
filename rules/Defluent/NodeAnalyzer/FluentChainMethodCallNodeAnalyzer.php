@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\MutatingScope;
@@ -90,6 +91,11 @@ final class FluentChainMethodCallNodeAnalyzer
                 if ($calleeStaticType->isInstanceOf($knownFactoryFluentType)->yes()) {
                     return false;
                 }
+            }
+
+            $classLike = $this->astResolver->resolveClassFromObjectType($calleeStaticType);
+            if ($classLike instanceof Interface_) {
+                return false;
             }
         }
 
@@ -239,7 +245,7 @@ final class FluentChainMethodCallNodeAnalyzer
     {
         $classMethod = $this->astResolver->resolveClassMethodFromMethodCall($methodCall);
         if (! $classMethod instanceof ClassMethod) {
-            return true;
+            return false;
         }
 
         /** @var Return_[] $returns */
