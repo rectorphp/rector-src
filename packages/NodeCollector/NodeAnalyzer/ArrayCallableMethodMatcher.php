@@ -9,11 +9,13 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\Core\ValueObject\MethodName;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -47,13 +49,14 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
-        // $this, self, static, FQN
-        $firstItemValue = $array->items[0]->value;
         $secondItemValue = $array->items[1]->value;
 
         if (! $secondItemValue instanceof String_) {
             return null;
         }
+
+        // $this, self, static, FQN
+        $firstItemValue = $array->items[0]->value;
 
         // static ::class reference?
         if ($firstItemValue instanceof ClassConstFetch) {
@@ -66,17 +69,11 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
-        $className        = $calleeType->getClassName();
-        $currentClassName = $array->getAttribute(AttributeKey::CLASS_NAME);
-
-        if ($firstItemValue instanceof ClassConstFetch && $className !== $currentClassName) {
-            return null;
-        }
-
         if ($this->isCallbackAtFunctionNames($array, ['register_shutdown_function', 'forward_static_call'])) {
             return null;
         }
 
+        $className = $calleeType->getClassName();
         $methodName = $secondItemValue->value;
         return new ArrayCallable($firstItemValue, $className, $methodName);
     }
@@ -116,6 +113,17 @@ final class ArrayCallableMethodMatcher
         }
 
         $classReflection = $this->reflectionProvider->getClass($classConstantReference);
+        $scope = $classConstFetch->getAttribute(AttributeKey::SCOPE);
+        $hasConstruct = $classReflection->hasMethod(MethodName::CONSTRUCT);
+
+        if ($hasConstruct) {
+            $methodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
+            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+            if ($parametersAcceptor->getParameters() !== []) {
+                return new MixedType();
+            }
+        }
+
         return new ObjectType($classConstantReference, null, $classReflection);
     }
 }
