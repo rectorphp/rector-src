@@ -4,7 +4,7 @@ namespace Rector\Tests\Defluent\Rector\Return_\ReturnNewFluentChainMethodCallToN
 
 use Rector\Tests\Defluent\Rector\Return_\ReturnNewFluentChainMethodCallToNonFluentRector\Source\FluentInterfaceClass;
 
-class DoNotRemoveReturn
+class DoNotRemoveReturnFromParameter
 {
     public function someFunction(FluentInterfaceClass $fluentInterfaceClass)
     {
@@ -20,7 +20,7 @@ namespace Rector\Tests\Defluent\Rector\Return_\ReturnNewFluentChainMethodCallToN
 
 use Rector\Tests\Defluent\Rector\Return_\ReturnNewFluentChainMethodCallToNonFluentRector\Source\FluentInterfaceClass;
 
-class DoNotRemoveReturn
+class DoNotRemoveReturnFromParameter
 {
     public function someFunction(FluentInterfaceClass $fluentInterfaceClass)
     {
