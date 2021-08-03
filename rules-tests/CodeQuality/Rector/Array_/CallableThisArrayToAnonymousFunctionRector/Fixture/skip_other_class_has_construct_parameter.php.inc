@@ -6,9 +6,6 @@ final class OtherClass
 {
     private $property;
 
-    /**
-     * @param $property
-     */
     public function __construct($property)
     {
         $this->property = $property;
@@ -19,7 +16,7 @@ final class OtherClass
     }
 }
 
-final class SkipClassname
+final class SkipOtherClassHasConstructParameter
 {
     public function run()
     {
