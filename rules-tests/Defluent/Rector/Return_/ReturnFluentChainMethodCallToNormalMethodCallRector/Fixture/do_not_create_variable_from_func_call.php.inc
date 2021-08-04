@@ -11,7 +11,7 @@ function helper(): FluentInterfaceClass
     return new FluentInterfaceClass();
 }
 
-class ReturnBasicDoubleFluent
+class DoNotCreateVariableFromFuncCall
 {
     public function someFunction()
     {
@@ -34,7 +34,7 @@ function helper(): FluentInterfaceClass
     return new FluentInterfaceClass();
 }
 
-class ReturnBasicDoubleFluent
+class DoNotCreateVariableFromFuncCall
 {
     public function someFunction()
     {
