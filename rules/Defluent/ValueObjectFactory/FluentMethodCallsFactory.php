@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Defluent\ValueObjectFactory;
 
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use Rector\Defluent\NodeAnalyzer\FluentChainMethodCallNodeAnalyzer;
 use Rector\Defluent\NodeAnalyzer\SameClassMethodCallAnalyzer;
@@ -30,6 +31,10 @@ final class FluentMethodCallsFactory
         }
 
         $rootMethodCall = $this->resolveRootMethodCall($chainMethodCalls);
+
+        if ($rootMethodCall->var instanceof FuncCall) {
+            return null;
+        }
 
         return new FluentMethodCalls($rootMethodCall, $chainMethodCalls, $lastMethodCall);
     }
