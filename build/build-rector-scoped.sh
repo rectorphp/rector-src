@@ -43,8 +43,6 @@ php -d memory_limit=-1 php-scoper.phar add-prefix preload.php bin config src pac
 # note "Dumping Composer Autoload"
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --classmap-authoritative --no-dev
 
-php "$BUILD_DIRECTORY/build/build-preload.php" $RESULT_DIRECTORY
-
 rm -rf "$BUILD_DIRECTORY"
 
 
