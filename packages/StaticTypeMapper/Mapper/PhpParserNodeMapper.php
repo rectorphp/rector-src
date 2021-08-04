@@ -26,7 +26,7 @@ final class PhpParserNodeMapper
 
     public function mapToPHPStanType(Node $node): Type
     {
-        if ($node instanceof Name) {
+        if ($node::class === Name::class) {
             $namespacedName = $node->getAttribute(AttributeKey::NAMESPACED_NAME);
             if ($namespacedName !== null) {
                 $node = new FullyQualified($namespacedName);
