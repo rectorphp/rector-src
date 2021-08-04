@@ -6,7 +6,7 @@ namespace Rector\Tests\Defluent\Rector\Return_\ReturnFluentChainMethodCallToNorm
 
 use Rector\Tests\Defluent\Rector\Return_\ReturnFluentChainMethodCallToNormalMethodCallRector\Source\FluentInterfaceClass;
 
-class ReturnBasicDoubleFluent
+class SkipMethodCallVarAsVariableCall
 {
     public function someFunction()
     {
