@@ -216,13 +216,13 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($array->items[1]->value instanceof String_) {
-            $methodName = $array->items[1]->value->value;
-            return $class->getMethod($methodName) instanceof ClassMethod;
+        $value = $this->valueResolver->getValue($array->items[1]->value);
+
+        if (! is_string($value)) {
+            return false;
         }
 
-        // fallback for dynamic value array items[1]->value in array_map
-        return true;
+        return $class->getMethod($value) instanceof ClassMethod;
     }
 
     private function isClassMethodCalledInLocalArrayCall(Class_ $class, ClassMethod $classMethod): bool
