@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-final class DemoFile
+final class ReturnSelf
 {
     public function run()
     {
@@ -15,7 +15,7 @@ final class DemoFile
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-final class DemoFile
+final class ReturnSelf
 {
     public function run(): self
     {

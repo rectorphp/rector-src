@@ -18,12 +18,14 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\ThisType;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeUtils;
 use PHPStan\Type\VerbosityLevel;
 use Rector\StaticTypeMapper\TypeFactory\UnionTypeFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
 final class TypeFactory
@@ -166,7 +168,15 @@ final class TypeFactory
     {
         return TypeTraverser::map($type, function (Type $traversedType, callable $traverseCallback): Type {
             if ($traversedType instanceof ShortenedObjectType) {
-                return new FullyQualifiedObjectType($traversedType->getFullyQualifiedName());
+                if ($traversedType->getFullyQualifiedName() !== 'static') {
+                    return new FullyQualifiedObjectType($traversedType->getFullyQualifiedName());
+                }
+
+                return new ThisType($traversedType->getFullyQualifiedName());
+            }
+
+            if ($traversedType instanceof SelfObjectType) {
+                return $traverseCallback($traversedType);
             }
 
             if ($traversedType instanceof ObjectType && ! $traversedType instanceof GenericObjectType && ! $traversedType instanceof AliasedObjectType && $traversedType->getClassName() !== 'Iterator') {
