@@ -34,7 +34,7 @@ final class ArrayCallableMethodMatcher
     /**
      * Matches array like: "[$this, 'methodName']" → ['ClassName', 'methodName']
      */
-    public function match(Array_ $array): MixedType | null | ArrayCallable
+    public function match(Array_ $array): ?ArrayCallable
     {
         $arrayItems = $array->items;
         if (count($arrayItems) !== 2) {
@@ -66,7 +66,7 @@ final class ArrayCallableMethodMatcher
         }
 
         if (! $calleeType instanceof TypeWithClassName) {
-            return new MixedType();
+            return null;
         }
 
         if ($this->isCallbackAtFunctionNames($array, ['register_shutdown_function', 'forward_static_call'])) {
