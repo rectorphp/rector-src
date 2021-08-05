@@ -206,7 +206,7 @@ CODE_SAMPLE
             $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
 
             if (! $arrayCallable instanceof ArrayCallable) {
-                if ($class->getMethod($classMethodName)) {
+                if ($class->getMethod($classMethodName) instanceof ClassMethod) {
                     return true;
                 }
 
