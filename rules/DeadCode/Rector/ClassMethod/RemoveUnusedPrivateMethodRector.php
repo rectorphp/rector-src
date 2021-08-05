@@ -216,7 +216,7 @@ CODE_SAMPLE
             return $class->getMethod($methodName) instanceof ClassMethod;
         }
 
-        // fallback for dynamic value array items in array_map
+        // fallback for dynamic value array items[1]->value in array_map
         return true;
     }
 
