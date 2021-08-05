@@ -10,7 +10,8 @@ class SkipArrayMapExtendsException extends Exception
 {
     public static function fromError(array $data)
     {
-        return new self(current(array_map([self::class, 'message'], $data)));
+//        return new self(current(array_map([self::class, 'message'], $data)));
+        [self::class, 'message'];
     }
 
     private static function message(string $data)

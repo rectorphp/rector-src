@@ -199,11 +199,18 @@ CODE_SAMPLE
         /** @var Array_[] $arrays */
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
 
+        /** @var string $classMethodName */
+        $classMethodName = $this->nodeNameResolver->getName($classMethod);
+
         foreach ($arrays as $array) {
             $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
 
             if (! $arrayCallable instanceof ArrayCallable) {
-                return true;
+                if ($class->getMethod($classMethodName)) {
+                    return true;
+                }
+
+                continue;
             }
 
             // is current class method?
