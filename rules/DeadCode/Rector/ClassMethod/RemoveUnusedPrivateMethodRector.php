@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -201,6 +202,11 @@ CODE_SAMPLE
 
         foreach ($arrays as $array) {
             $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
+
+            if ($arrayCallable instanceof MixedType) {
+                return true;
+            }
+
             if (! $arrayCallable instanceof ArrayCallable) {
                 continue;
             }
