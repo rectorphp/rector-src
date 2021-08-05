@@ -16,8 +16,6 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
-use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -112,26 +110,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SCALAR_TYPES;
-    }
-
-    private function getType(string $className): SelfObjectType | ShortenedObjectType | ObjectType | null
-    {
-        if ($className === 'self') {
-            return new SelfObjectType($className);
-        }
-
-        if ($className === 'static') {
-            $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
-                PhpVersionFeature::STATIC_RETURN_TYPE
-            );
-
-            if ($isSupportedStaticReturnType) {
-                return new ShortenedObjectType($className, $className);
-            }
-
-            return null;
-        }
-
-        return new ObjectType($className);
     }
 }

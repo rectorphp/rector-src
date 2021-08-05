@@ -170,15 +170,19 @@ final class TypeFactory
     private function normalizeObjectTypes(Type $type): Type
     {
         return TypeTraverser::map($type, function (Type $traversedType, callable $traverseCallback): Type {
-            if ($traversedType instanceof ObjectType && $traversedType->getClassName() === 'static') {
-                if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
-                    return new ThisType($traversedType->getClassName());
-                }
+            if ($this->isStatic($traversedType) && $this->phpVersionProvider->isAtLeastPhpVersion(
+                PhpVersionFeature::STATIC_RETURN_TYPE
+            )) {
+                /** @var ObjectType $traversedType */
+                return new ThisType($traversedType->getClassName());
+            }
 
+            if ($this->isStatic($traversedType)) {
                 return new MixedType();
             }
 
-            if ($traversedType instanceof ObjectType && $traversedType->getClassName() === 'self') {
+            if ($this->isSelf($traversedType)) {
+                /** @var ObjectType $traversedType */
                 return new SelfObjectType($traversedType->getClassName());
             }
 
@@ -192,5 +196,15 @@ final class TypeFactory
 
             return $traverseCallback($traversedType);
         });
+    }
+
+    private function isStatic(Type $type): bool
+    {
+        return $type instanceof ObjectType && $type->getClassName() === 'static';
+    }
+
+    private function isSelf(Type $type): bool
+    {
+        return $type instanceof ObjectType && $type->getClassName() === 'self';
     }
 }
