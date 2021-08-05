@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\ThisType;
+use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -100,24 +100,13 @@ CODE_SAMPLE
             }
 
             $className = $this->getName($new->class);
-            if ($className === 'self') {
-                $newTypes[] = new SelfObjectType($className);
+            $newType = $this->getType($className);
+
+            if (! $newType instanceof Type) {
                 continue;
             }
 
-            if ($className === 'static') {
-                $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
-                    PhpVersionFeature::STATIC_RETURN_TYPE
-                );
-
-                if ($isSupportedStaticReturnType) {
-                    $newTypes[] = new ShortenedObjectType($className, $className);
-                }
-
-                continue;
-            }
-
-            $newTypes[] = new ObjectType($className);
+            $newTypes[] = $newType;
         }
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
@@ -130,5 +119,26 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SCALAR_TYPES;
+    }
+
+    private function getType(string $className): SelfObjectType | ShortenedObjectType | ObjectType | null
+    {
+        if ($className === 'self') {
+            return new SelfObjectType($className);
+        }
+
+        if ($className === 'static') {
+            $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
+                PhpVersionFeature::STATIC_RETURN_TYPE
+            );
+
+            if ($isSupportedStaticReturnType) {
+                return new ShortenedObjectType($className, $className);
+            }
+
+            return null;
+        }
+
+        return new ObjectType($className);
     }
 }

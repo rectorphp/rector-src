@@ -17,8 +17,8 @@ use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use PHPStan\Type\ThisType;
+use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeUtils;
 use PHPStan\Type\VerbosityLevel;
@@ -167,12 +167,12 @@ final class TypeFactory
     private function normalizeObjectTypes(Type $type): Type
     {
         return TypeTraverser::map($type, function (Type $traversedType, callable $traverseCallback): Type {
-            if ($traversedType instanceof ShortenedObjectType) {
-                if ($traversedType->getFullyQualifiedName() !== 'static') {
-                    return new FullyQualifiedObjectType($traversedType->getFullyQualifiedName());
-                }
-
+            if ($traversedType instanceof ShortenedObjectType && $traversedType->getShortName() === 'static') {
                 return new ThisType($traversedType->getFullyQualifiedName());
+            }
+
+            if ($traversedType instanceof ShortenedObjectType) {
+                return new FullyQualifiedObjectType($traversedType->getFullyQualifiedName());
             }
 
             if ($traversedType instanceof SelfObjectType) {
