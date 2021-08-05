@@ -32,6 +32,6 @@ final class ShouldNotHappenException extends Exception
 
         $method = $class ? ($class . '::' . $function) : $function;
 
-        return sprintf('Look at "%s()" on line %d', (string) $method, $line);
+        return sprintf('Look at "%s()" on line %d', $method, $line);
     }
 }

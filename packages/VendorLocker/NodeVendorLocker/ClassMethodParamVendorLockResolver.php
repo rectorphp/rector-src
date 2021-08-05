@@ -30,19 +30,20 @@ final class ClassMethodParamVendorLockResolver
             return true;
         }
 
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-
-        $classReflection = $scope->getClassReflection();
+        $classReflection = $this->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
+        /** @var string $methodName */
+        $methodName = $this->nodeNameResolver->getName($classMethod);
+
         if ($this->hasTraitMethodVendorLock($classReflection, $methodName)) {
+            return true;
+        }
+
+        // has interface vendor lock? → better skip it, as PHPStan has access only to just analyzed classes
+        if ($this->hasParentInterfaceMethod($classReflection, $methodName)) {
             return true;
         }
 
@@ -109,6 +110,52 @@ final class ClassMethodParamVendorLockResolver
                 if ($traitReflectionClass->hasMethod($methodName)) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    private function isInterfaceWithMultipleImplementers(ClassReflection $classReflection): bool
+    {
+        if (! $classReflection->isInterface()) {
+            return false;
+        }
+
+        $ancestorRelatedReflectionClasses = $this->findRelatedClassReflections($classReflection);
+
+        $implementingInterfaceClassReflections = [];
+        foreach ($ancestorRelatedReflectionClasses as $ancestorRelatedReflectionClass) {
+            if (! $ancestorRelatedReflectionClass->implementsInterface($classReflection->getName())) {
+                continue;
+            }
+
+            $implementingInterfaceClassReflections[] = $ancestorRelatedReflectionClass;
+        }
+
+        return count($implementingInterfaceClassReflections) > 1;
+    }
+
+    private function resolveClassReflection(ClassMethod $classMethod): ClassReflection|null
+    {
+        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        return $scope->getClassReflection();
+    }
+
+    /**
+     * Has interface even in our project?
+     * Better skip it, as PHPStan has access only to just analyzed classes.
+     * This might change type, that works for current class, but breaks another implementer.
+     */
+    private function hasParentInterfaceMethod(ClassReflection $classReflection, string $methodName): bool
+    {
+        foreach ($classReflection->getInterfaces() as $interfaceClassReflection) {
+            if ($interfaceClassReflection->hasMethod($methodName)) {
+                return true;
             }
         }
 
