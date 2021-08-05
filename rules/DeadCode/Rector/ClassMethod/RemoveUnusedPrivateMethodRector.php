@@ -201,6 +201,11 @@ CODE_SAMPLE
 
         foreach ($arrays as $array) {
             $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
+
+            if ($arrayCallable === null) {
+                return true;
+            }
+
             if (! $arrayCallable instanceof ArrayCallable) {
                 continue;
             }
