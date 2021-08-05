@@ -92,16 +92,6 @@ final class NodeRepository
     /**
      * @deprecated Use static reflection instead
      *
-     * @param class-string $class
-     */
-    public function findInterface(string $class): ?Interface_
-    {
-        return $this->parsedNodeCollector->findInterface($class);
-    }
-
-    /**
-     * @deprecated Use static reflection instead
-     *
      * @param class-string $name
      */
     public function findClass(string $name): ?Class_
