@@ -6,7 +6,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRect
 
 use Exception;
 
-class ArrayMapInClassExtendsException extends Exception
+class SkipArrayMapExtendsException extends Exception
 {
     public static function fromError(array $data)
     {
