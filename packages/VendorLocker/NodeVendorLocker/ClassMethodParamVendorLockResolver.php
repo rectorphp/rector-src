@@ -104,9 +104,9 @@ final class ClassMethodParamVendorLockResolver
         $relatedReflectionClasses = $this->findRelatedClassReflections($classReflection);
 
         foreach ($relatedReflectionClasses as $relatedReflectionClass) {
-            foreach ($relatedReflectionClass->getTraits() as $traitClassReflection) {
-                /** @var ClassReflection $traitClassReflection */
-                if ($traitClassReflection->hasMethod($methodName)) {
+            foreach ($relatedReflectionClass->getTraits() as $traitReflectionClass) {
+                /** @var ClassReflection $traitReflectionClass */
+                if ($traitReflectionClass->hasMethod($methodName)) {
                     return true;
                 }
             }

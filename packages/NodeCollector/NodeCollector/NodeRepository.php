@@ -6,7 +6,6 @@ namespace Rector\NodeCollector\NodeCollector;
 
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -112,25 +111,5 @@ final class NodeRepository
         }
 
         return $currentClassName !== $desiredClass;
-    }
-
-    /**
-     * @return Interface_[]
-     */
-    private function findImplementersOfInterface(string $interface): array
-    {
-        $implementerInterfaces = [];
-
-        foreach ($this->parsedNodeCollector->getInterfaces() as $interfaceNode) {
-            $className = $interfaceNode->getAttribute(AttributeKey::CLASS_NAME);
-
-            if (! $this->isChildOrEqualClassLike($interface, $className)) {
-                continue;
-            }
-
-            $implementerInterfaces[] = $interfaceNode;
-        }
-
-        return $implementerInterfaces;
     }
 }
