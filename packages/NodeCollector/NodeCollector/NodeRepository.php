@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeCollector\NodeCollector;
 
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -20,41 +17,9 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class NodeRepository
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver,
         private ParsedNodeCollector $parsedNodeCollector,
         private ReflectionProvider $reflectionProvider,
     ) {
-    }
-
-//    public function hasClassChildren(Class_ $desiredClass): bool
-//    {
-//        $desiredClassName = $this->nodeNameResolver->getName($desiredClass);
-//        if ($desiredClassName === null) {
-//            return false;
-//        }
-//
-//        return $this->findChildrenOfClass($desiredClassName) !== [];
-//    }
-
-    /**
-     * @deprecated Use ReflectionProvider instead to resolve all the traits
-     * @return Trait_[]
-     */
-    public function findUsedTraitsInClass(ClassLike $classLike): array
-    {
-        $traits = [];
-
-        foreach ($classLike->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $trait) {
-                $traitName = $this->nodeNameResolver->getName($trait);
-                $foundTrait = $this->parsedNodeCollector->findTrait($traitName);
-                if ($foundTrait !== null) {
-                    $traits[] = $foundTrait;
-                }
-            }
-        }
-
-        return $traits;
     }
 
     /**
@@ -69,6 +34,10 @@ final class NodeRepository
         // @todo refactor to reflection
         foreach ($this->parsedNodeCollector->getClasses() as $classNode) {
             $currentClassName = $classNode->getAttribute(AttributeKey::CLASS_NAME);
+            if ($currentClassName === null) {
+                continue;
+            }
+
             if (! $this->isChildOrEqualClassLike($className, $currentClassName)) {
                 continue;
             }
@@ -89,12 +58,8 @@ final class NodeRepository
         return $this->parsedNodeCollector->findClass($name);
     }
 
-    private function isChildOrEqualClassLike(string $desiredClass, ?string $currentClassName): bool
+    private function isChildOrEqualClassLike(string $desiredClass, string $currentClassName): bool
     {
-        if ($currentClassName === null) {
-            return false;
-        }
-
         if (! $this->reflectionProvider->hasClass($desiredClass)) {
             return false;
         }

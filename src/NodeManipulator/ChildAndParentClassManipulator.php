@@ -9,9 +9,9 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\PromotedPropertyParamCleaner;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -25,7 +25,7 @@ final class ChildAndParentClassManipulator
         private PromotedPropertyParamCleaner $promotedPropertyParamCleaner,
         private ReflectionProvider $reflectionProvider,
         private ParentClassScopeResolver $parentClassScopeResolver,
-        private FamilyRelationsAnalyzer $familyRelationsAnalyzer
+        private AstResolver $astResolver
     ) {
     }
 
@@ -50,9 +50,9 @@ final class ChildAndParentClassManipulator
         }
 
         // not in analyzed scope, nothing we can do
-        $parentClassNode = $this->nodeRepository->findClass($parentClassReflection->getName());
-        if ($parentClassNode instanceof Class_) {
-            $this->completeParentConstructorBasedOnParentNode($parentClassNode, $classMethod);
+        $parentClass = $this->astResolver->resolveClassFromName($parentClassReflection->getName());
+        if ($parentClass instanceof Class_) {
+            $this->completeParentConstructorBasedOnParentNode($parentClass, $classMethod);
             return;
         }
 
@@ -125,7 +125,7 @@ final class ChildAndParentClassManipulator
                 return null;
             }
 
-            $class = $this->nodeRepository->findClass($parentClassName);
+            $class = $this->astResolver->resolveClassFromName($parentClassName);
         }
 
         return null;
