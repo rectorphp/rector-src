@@ -52,6 +52,7 @@ final class ParsedNodeCollector
     }
 
     /**
+     * @deprecated Not reliable, as only works with so-far parsed classes
      * @return Class_[]
      */
     public function getClasses(): array

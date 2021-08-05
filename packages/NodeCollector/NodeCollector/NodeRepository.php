@@ -58,18 +58,22 @@ final class NodeRepository
     }
 
     /**
-     * @deprecated Use static reflection instead
-     *
-     * @param class-string $class
+     * @param class-string $className
      * @return Class_[]
+     *@deprecated Use static reflection instead
+     *
      */
-    public function findChildrenOfClass(string $class): array
+    public function findChildrenOfClass(string $className): array
     {
         $childrenClasses = [];
 
+        // @todo refactor to reflection
+        dump($this->parsedNodeCollector->getClasses());
+        die;
+
         foreach ($this->parsedNodeCollector->getClasses() as $classNode) {
             $currentClassName = $classNode->getAttribute(AttributeKey::CLASS_NAME);
-            if (! $this->isChildOrEqualClassLike($class, $currentClassName)) {
+            if (! $this->isChildOrEqualClassLike($className, $currentClassName)) {
                 continue;
             }
 
