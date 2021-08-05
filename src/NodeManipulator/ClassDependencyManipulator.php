@@ -30,7 +30,6 @@ use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 final class ClassDependencyManipulator
 {
     public function __construct(
-        private ChildClassMethodDecorator $childAndParentClassManipulator,
         private ClassInsertManipulator $classInsertManipulator,
         private ClassMethodAssignManipulator $classMethodAssignManipulator,
         private NodeFactory $nodeFactory,
@@ -104,7 +103,6 @@ final class ClassDependencyManipulator
             $constructorMethod,
             $scope
         );
-//        $this->childAndParentClassManipulator->completeChildConstructors($class, $constructorMethod);
     }
 
     /**
@@ -173,8 +171,6 @@ final class ClassDependencyManipulator
             $constructClassMethod,
             $scope
         );
-
-//        $this->childAndParentClassManipulator->completeChildConstructors($class, $constructClassMethod);
     }
 
     private function hasClassParentClassMethod(Class_ $class, string $methodName): bool
