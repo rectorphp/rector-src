@@ -105,6 +105,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // 4. abstract private method from trait (PHP 8.0+)
+        if ($this->isPrivateAbstractMethodInTrait($class, $classMethodName)) {
+            return null;
+        }
+
         $this->removeNode($node);
 
         return $node;
@@ -227,5 +232,35 @@ CODE_SAMPLE
 
         // is current class method?
         return ! $this->isName($class, $arrayCallable->getClass());
+    }
+
+    private function isPrivateAbstractMethodInTrait(Class_ $class, ?string $classMethodName): bool
+    {
+        if (null === $classMethodName) {
+            return false;
+        }
+
+        /** @var Node\Stmt\TraitUse[] $traitUsages */
+        $traitUsages = array_filter(
+            $class->stmts,
+            static fn (Node\Stmt $stmt) => $stmt instanceof Node\Stmt\TraitUse
+        );
+
+        foreach ($traitUsages as $traitUsage) {
+            $scope = $traitUsage->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                continue;
+            }
+
+            $classReflection = $scope->getClassReflection();
+            if (null === $classReflection) {
+                continue;
+            }
+            if ($classReflection->hasMethod($classMethodName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
