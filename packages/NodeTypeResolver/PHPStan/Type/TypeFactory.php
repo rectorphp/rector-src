@@ -22,6 +22,8 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeUtils;
 use PHPStan\Type\VerbosityLevel;
+use Rector\Core\Php\PhpVersionProvider;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\StaticTypeMapper\TypeFactory\UnionTypeFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -31,7 +33,8 @@ use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 final class TypeFactory
 {
     public function __construct(
-        private UnionTypeFactory $unionTypeFactory
+        private UnionTypeFactory $unionTypeFactory,
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 
@@ -168,7 +171,11 @@ final class TypeFactory
     {
         return TypeTraverser::map($type, function (Type $traversedType, callable $traverseCallback): Type {
             if ($traversedType instanceof ObjectType && $traversedType->getClassName() === 'static') {
-                return new ThisType($traversedType->getClassName());
+                if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
+                    return new ThisType($traversedType->getClassName());
+                }
+
+                return new MixedType();
             }
 
             if ($traversedType instanceof ObjectType && $traversedType->getClassName() === 'self') {
