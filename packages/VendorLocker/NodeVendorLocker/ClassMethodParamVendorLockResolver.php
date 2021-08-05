@@ -35,32 +35,16 @@ final class ClassMethodParamVendorLockResolver
             return false;
         }
 
+        $methodName = $this->nodeNameResolver->getName($classMethod);
+
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
-        // @todo decouple to some reflection finder?
-        /** @var ReflectionClass[] $reflectionClasses */
-        $reflectionClasses = $this->privatesAccessor->getPrivateProperty($this->reflectionProvider, 'classes');
-
-        foreach ($reflectionClasses as $reflectionClass) {
-            if ($reflectionClass->getName() === $classReflection->getName()) {
-                continue;
-            }
-
-            if (! $reflectionClass->isSubclassOf($classReflection->getName())) {
-                continue;
-            }
-
-            // is related!
-            dump($classReflection->getName());
-            dump($reflectionClass->getName());
+        if ($this->hasTraitMethodVendorLock($classReflection, $methodName)) {
+            return true;
         }
-
-        // build a family tree and check if there is a trait with the sam method in there
-        dump(count($reflectionClasses));
-        die;
 
         $methodName = $this->nodeNameResolver->getName($classMethod);
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
@@ -70,7 +54,6 @@ final class ClassMethodParamVendorLockResolver
             }
 
             // parent type
-
             if (! $ancestorClassReflection->hasNativeMethod($methodName)) {
                 continue;
             }
@@ -84,6 +67,49 @@ final class ClassMethodParamVendorLockResolver
 
             $normalizedFileName = $this->pathNormalizer->normalizePath($fileName);
             return str_contains($normalizedFileName, '/vendor/');
+        }
+
+        return false;
+    }
+
+    /**
+     * @return ReflectionClass[]
+     */
+    private function findRelatedClassReflections(ClassReflection $classReflection): array
+    {
+        // @todo decouple to some reflection family finder?
+
+        /** @var ReflectionClass[] $reflectionClasses */
+        $reflectionClasses = $this->privatesAccessor->getPrivateProperty($this->reflectionProvider, 'classes');
+
+        $relatedClassReflections = [];
+        foreach ($reflectionClasses as $reflectionClass) {
+            if ($reflectionClass->getName() === $classReflection->getName()) {
+                continue;
+            }
+
+            // is related?
+            if (! $reflectionClass->isSubclassOf($classReflection->getName())) {
+                continue;
+            }
+
+            $relatedClassReflections[] = $reflectionClass;
+        }
+
+        return $relatedClassReflections;
+    }
+
+    private function hasTraitMethodVendorLock(ClassReflection $classReflection, string $methodName): bool
+    {
+        $relatedReflectionClasses = $this->findRelatedClassReflections($classReflection);
+
+        foreach ($relatedReflectionClasses as $relatedReflectionClass) {
+            foreach ($relatedReflectionClass->getTraits() as $traitClassReflection) {
+                /** @var ClassReflection $traitClassReflection */
+                if ($traitClassReflection->hasMethod($methodName)) {
+                    return true;
+                }
+            }
         }
 
         return false;
