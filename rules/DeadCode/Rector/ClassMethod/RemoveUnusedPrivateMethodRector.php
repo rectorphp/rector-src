@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractRector;
@@ -240,10 +241,10 @@ CODE_SAMPLE
             return false;
         }
 
-        /** @var Node\Stmt\TraitUse[] $traitUsages */
+        /** @var TraitUse[] $traitUsages */
         $traitUsages = array_filter(
             $class->stmts,
-            static fn (Node\Stmt $stmt) => $stmt instanceof Node\Stmt\TraitUse
+            static fn (Node\Stmt $stmt) => $stmt instanceof TraitUse
         );
 
         foreach ($traitUsages as $traitUsage) {
