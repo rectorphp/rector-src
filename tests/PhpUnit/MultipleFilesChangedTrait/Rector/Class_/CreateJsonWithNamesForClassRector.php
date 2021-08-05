@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\PhpUnit\MultipleFilesChangedTrait\Rector;
+namespace Rector\Core\Tests\PhpUnit\MultipleFilesChangedTrait\Rector\Class_;
 
 use Nette\Utils\Json;
 use PhpParser\Node;
