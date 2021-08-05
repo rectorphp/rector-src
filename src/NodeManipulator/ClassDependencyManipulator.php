@@ -104,7 +104,7 @@ final class ClassDependencyManipulator
             $constructorMethod,
             $scope
         );
-        $this->childAndParentClassManipulator->completeChildConstructors($class, $constructorMethod);
+//        $this->childAndParentClassManipulator->completeChildConstructors($class, $constructorMethod);
     }
 
     /**
@@ -174,7 +174,7 @@ final class ClassDependencyManipulator
             $scope
         );
 
-        $this->childAndParentClassManipulator->completeChildConstructors($class, $constructClassMethod);
+//        $this->childAndParentClassManipulator->completeChildConstructors($class, $constructClassMethod);
     }
 
     private function hasClassParentClassMethod(Class_ $class, string $methodName): bool

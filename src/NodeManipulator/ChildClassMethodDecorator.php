@@ -21,8 +21,17 @@ final class ChildClassMethodDecorator
     ) {
     }
 
+    /**
+     * @deprecated This behavior depends on the analysed class order, and is not reliable. Thus should be removed,
+     * along with rule that build on it. We can cause serious bugs otherwise.
+     *
+     * Maybe PHPStan is able provide class tree some day and this behavior may be supported.
+     */
     public function completeChildConstructors(Class_ $class, ClassMethod $constructorClassMethod): void
     {
+        // @todo
+        return;
+
         $className = $this->nodeNameResolver->getName($class);
         if ($className === null) {
             return;
