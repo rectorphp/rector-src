@@ -11,6 +11,9 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\Core\Tests\PhpUnit\MultipleFilesChangedTrait\MultipleFilesChangedTraitTest
+ */
 final class CreateJsonWithNamesForClassRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition

@@ -534,5 +534,8 @@ parameters:
                 - packages/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
                 - packages/BetterPhpDocParser/PhpDocParser/BetterTypeParser.php
 
+        # dummy rector in tests has different namespace
+        - '#Class "Rector\\Core\\Tests\\PhpUnit\\MultipleFilesChangedTrait\\Rector\\CreateJsonWithNamesForClassRector" has invalid namespace category "Rector"\. Pick one of\: "Class_"#'
+
         # resolve later
         -  '#Variables "\$(.*?)" are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
