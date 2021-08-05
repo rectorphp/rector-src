@@ -11,6 +11,7 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
@@ -84,7 +85,7 @@ CODE_SAMPLE
             );
         }
 
-        if ($previousStatement instanceof While_) {
+        if ($previousStatement instanceof While_ || $previousStatement instanceof Do_) {
             $node->setAttribute(
                 AttributeKey::IS_UNREACHABLE,
                 $previousStatement->getAttribute(AttributeKey::IS_UNREACHABLE)
