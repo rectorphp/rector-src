@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Restoration\Rector\ClassLike\UpdateFileNameByClassNameFileSystemRectorUsingMultipleFilesChangedTrait;
+namespace Rector\Core\Tests\PhpUnit\MultipleFilesChangedTrait;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class UpdateFileNameByClassNameFileSystemRectorUsingMultipleFilesChangedTraitTest extends AbstractRectorTestCase
+final class MultipleFilesChangedTraitTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
