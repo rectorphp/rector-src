@@ -12,9 +12,9 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\DeadCode\NodeAnalyzer\CallCollectionAnalyzer;
@@ -31,7 +31,8 @@ final class RemoveUnusedPrivateMethodRector extends AbstractRector
 {
     public function __construct(
         private ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
-        private CallCollectionAnalyzer $callCollectionAnalyzer
+        private CallCollectionAnalyzer $callCollectionAnalyzer,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -107,7 +108,7 @@ CODE_SAMPLE
         }
 
         // 4. abstract private method from trait (PHP 8.0+)
-        if ($this->isPrivateAbstractMethodInTrait($class, $classMethodName)) {
+        if ($this->isPrivateAbstractMethodInTrait($node, $classMethodName)) {
             return null;
         }
 
@@ -235,29 +236,26 @@ CODE_SAMPLE
         return ! $this->isName($class, $arrayCallable->getClass());
     }
 
-    private function isPrivateAbstractMethodInTrait(Class_ $class, ?string $classMethodName): bool
+    private function isPrivateAbstractMethodInTrait(ClassMethod $classMethod, ?string $classMethodName): bool
     {
         if (null === $classMethodName) {
             return false;
         }
 
-        /** @var TraitUse[] $traitUsages */
-        $traitUsages = array_filter(
-            $class->stmts,
-            static fn (Node\Stmt $stmt) => $stmt instanceof TraitUse
-        );
+        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return false;
+        }
 
-        foreach ($traitUsages as $traitUsage) {
-            $scope = $traitUsage->getAttribute(AttributeKey::SCOPE);
-            if (! $scope instanceof Scope) {
-                continue;
-            }
+        $classReflection = $scope->getClassReflection();
+        if (null === $classReflection) {
+            return false;
+        }
 
-            $classReflection = $scope->getClassReflection();
-            if (null === $classReflection) {
-                continue;
-            }
-            if ($classReflection->hasMethod($classMethodName)) {
+        $traits = $this->astResolver->parseClassReflectionTraits($classReflection);
+        foreach ($traits as $trait) {
+            $method = $trait->getMethod($classMethodName);
+            if ($method instanceof ClassMethod) {
                 return true;
             }
         }
