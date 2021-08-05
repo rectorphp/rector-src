@@ -231,26 +231,32 @@ CODE_SAMPLE
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
 
         foreach ($arrays as $array) {
-            $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
-            if (! $arrayCallable instanceof ArrayCallable) {
-                if ($this->isInArrayMap($class, $array)) {
-                    return true;
-                }
-
-                continue;
+            if ($this->isInArrayMap($class, $array)) {
+                return true;
             }
 
-            // is current class method?
-            if (! $this->isName($class, $arrayCallable->getClass())) {
+            $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
+            if ($this->shouldSkipArrayCallable($class, $arrayCallable)) {
                 continue;
             }
 
             // the method is used
+            /** @var ArrayCallable $arrayCallable */
             if ($this->nodeNameResolver->isName($classMethod->name, $arrayCallable->getMethod())) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private function shouldSkipArrayCallable(Class_ $class, ?ArrayCallable $arrayCallable): bool
+    {
+        if (! $arrayCallable instanceof ArrayCallable) {
+            return true;
+        }
+
+        // is current class method?
+        return ! $this->isName($class, $arrayCallable->getClass());
     }
 }
