@@ -198,15 +198,13 @@ CODE_SAMPLE
     {
         /** @var Array_[] $arrays */
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
-
-        /** @var string $classMethodName */
-        $classMethodName = $this->nodeNameResolver->getName($classMethod);
+        $isClassMethodInClass = $classMethod->getAttribute(AttributeKey::CLASS_NODE) === $class;
 
         foreach ($arrays as $array) {
             $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
 
             if (! $arrayCallable instanceof ArrayCallable) {
-                if ($class->getMethod($classMethodName) instanceof ClassMethod) {
+                if ($isClassMethodInClass) {
                     return true;
                 }
 
