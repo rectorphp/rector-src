@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
@@ -154,22 +153,7 @@ CODE_SAMPLE
 
         /** @var StaticCall[] $staticCalls */
         $staticCalls = $this->betterNodeFinder->findInstanceOf($class, StaticCall::class);
-        foreach ($staticCalls as $staticCall) {
-            $callerType = $this->nodeTypeResolver->resolve($staticCall->class);
-            if (! $callerType instanceof TypeWithClassName) {
-                continue;
-            }
-
-            if ($callerType->getClassName() !== $className) {
-                continue;
-            }
-
-            if ($this->isName($staticCall->name, $classMethodName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->isCalled($staticCalls, $classMethodName, $className);
     }
 
     private function isClassMethodCalledInLocalMethodCall(Class_ $class, string $classMethodName): bool
@@ -178,8 +162,18 @@ CODE_SAMPLE
 
         /** @var MethodCall[] $methodCalls */
         $methodCalls = $this->betterNodeFinder->findInstanceOf($class, MethodCall::class);
-        foreach ($methodCalls as $methodCall) {
-            $callerType = $this->nodeTypeResolver->resolve($methodCall->var);
+        return $this->isCalled($methodCalls, $classMethodName, $className);
+    }
+
+    /**
+     * @param MethodCall[]|StaticCall[] $calls
+     */
+    private function isCalled(array $calls, string $classMethodName, ?string $className): bool
+    {
+        foreach ($calls as $call) {
+            $callerRoot = $call instanceof StaticCall ? $call->class : $call->var;
+            $callerType = $this->nodeTypeResolver->resolve($callerRoot);
+
             if (! $callerType instanceof TypeWithClassName) {
                 continue;
             }
@@ -189,7 +183,7 @@ CODE_SAMPLE
             }
 
             // the method is used
-            if ($this->isName($methodCall->name, $classMethodName)) {
+            if ($this->isName($call->name, $classMethodName)) {
                 return true;
             }
         }
