@@ -16,6 +16,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Type;
 use Rector\Core\NodeAnalyzer\PropertyPresenceChecker;
+use Rector\Core\NodeManipulator\Dependency\DependencyClassMethodDecorator;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
@@ -29,7 +30,7 @@ use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 final class ClassDependencyManipulator
 {
     public function __construct(
-        private ChildAndParentClassManipulator $childAndParentClassManipulator,
+        private ChildClassMethodDecorator $childAndParentClassManipulator,
         private ClassInsertManipulator $classInsertManipulator,
         private ClassMethodAssignManipulator $classMethodAssignManipulator,
         private NodeFactory $nodeFactory,
@@ -38,7 +39,8 @@ final class ClassDependencyManipulator
         private PropertyPresenceChecker $propertyPresenceChecker,
         private NodeNameResolver $nodeNameResolver,
         private NodesToRemoveCollector $nodesToRemoveCollector,
-        private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer
+        private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
+        private DependencyClassMethodDecorator $dependencyClassMethodDecorator
     ) {
     }
 
@@ -97,7 +99,11 @@ final class ClassDependencyManipulator
         /** @var Scope $scope */
         $scope = $class->getAttribute(AttributeKey::SCOPE);
 
-        $this->childAndParentClassManipulator->completeParentConstructor($class, $constructorMethod, $scope);
+        $this->dependencyClassMethodDecorator->decorateConstructorWithParentDependencies(
+            $class,
+            $constructorMethod,
+            $scope
+        );
         $this->childAndParentClassManipulator->completeChildConstructors($class, $constructorMethod);
     }
 
@@ -162,7 +168,12 @@ final class ClassDependencyManipulator
         /** @var Scope $scope */
         $scope = $class->getAttribute(AttributeKey::SCOPE);
 
-        $this->childAndParentClassManipulator->completeParentConstructor($class, $constructClassMethod, $scope);
+        $this->dependencyClassMethodDecorator->decorateConstructorWithParentDependencies(
+            $class,
+            $constructClassMethod,
+            $scope
+        );
+
         $this->childAndParentClassManipulator->completeChildConstructors($class, $constructClassMethod);
     }
 
