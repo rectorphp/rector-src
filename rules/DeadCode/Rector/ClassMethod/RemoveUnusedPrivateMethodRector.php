@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
@@ -198,16 +199,15 @@ CODE_SAMPLE
     {
         /** @var Array_[] $arrays */
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
-        $isClassMethodInClass = $classMethod->getAttribute(AttributeKey::CLASS_NODE) === $class;
 
         foreach ($arrays as $array) {
-            $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
+            $parentFuncCall = $this->betterNodeFinder->findParentType($array, FuncCall::class);
+            if ($parentFuncCall instanceof FuncCall && $this->nodeNameResolver->isName($parentFuncCall->name, 'array_map')) {
+                return true;
+            }
 
+            $arrayCallable  = $this->arrayCallableMethodMatcher->match($array);
             if (! $arrayCallable instanceof ArrayCallable) {
-                if ($isClassMethodInClass) {
-                    return true;
-                }
-
                 continue;
             }
 
