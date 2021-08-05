@@ -26,15 +26,15 @@ final class NodeRepository
     ) {
     }
 
-    public function hasClassChildren(Class_ $desiredClass): bool
-    {
-        $desiredClassName = $this->nodeNameResolver->getName($desiredClass);
-        if ($desiredClassName === null) {
-            return false;
-        }
-
-        return $this->findChildrenOfClass($desiredClassName) !== [];
-    }
+//    public function hasClassChildren(Class_ $desiredClass): bool
+//    {
+//        $desiredClassName = $this->nodeNameResolver->getName($desiredClass);
+//        if ($desiredClassName === null) {
+//            return false;
+//        }
+//
+//        return $this->findChildrenOfClass($desiredClassName) !== [];
+//    }
 
     /**
      * @deprecated Use ReflectionProvider instead to resolve all the traits
@@ -60,17 +60,13 @@ final class NodeRepository
     /**
      * @param class-string $className
      * @return Class_[]
-     *@deprecated Use static reflection instead
-     *
+     * @deprecated Use static reflection instead
      */
     public function findChildrenOfClass(string $className): array
     {
         $childrenClasses = [];
 
         // @todo refactor to reflection
-        dump($this->parsedNodeCollector->getClasses());
-        die;
-
         foreach ($this->parsedNodeCollector->getClasses() as $classNode) {
             $currentClassName = $classNode->getAttribute(AttributeKey::CLASS_NAME);
             if (! $this->isChildOrEqualClassLike($className, $currentClassName)) {

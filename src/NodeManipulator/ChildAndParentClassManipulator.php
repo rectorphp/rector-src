@@ -11,6 +11,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\PromotedPropertyParamCleaner;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeCollector\NodeCollector\NodeRepository;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -23,7 +24,8 @@ final class ChildAndParentClassManipulator
         private NodeRepository $nodeRepository,
         private PromotedPropertyParamCleaner $promotedPropertyParamCleaner,
         private ReflectionProvider $reflectionProvider,
-        private ParentClassScopeResolver $parentClassScopeResolver
+        private ParentClassScopeResolver $parentClassScopeResolver,
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
 
