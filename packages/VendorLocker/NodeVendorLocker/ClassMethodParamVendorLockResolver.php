@@ -9,11 +9,13 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
 
 final class ClassMethodParamVendorLockResolver
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver,
+        private PathNormalizer $pathNormalizer
     ) {
     }
 
@@ -41,9 +43,18 @@ final class ClassMethodParamVendorLockResolver
             }
 
             // parent type
-            if ($ancestorClassReflection->hasNativeMethod($methodName)) {
-                return true;
+
+            if (! $ancestorClassReflection->hasNativeMethod($methodName)) {
+                continue;
             }
+
+            // is file in vendor?
+            $fileName = $ancestorClassReflection->getFileName();
+
+            dump($fileName);
+
+            $normalizedFileName = $this->pathNormalizer->normalizePath($fileName);
+            return str_contains($normalizedFileName, '/vendor/');
         }
 
         return false;

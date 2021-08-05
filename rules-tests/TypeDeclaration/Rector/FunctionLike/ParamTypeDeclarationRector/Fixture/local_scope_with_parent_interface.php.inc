@@ -33,9 +33,6 @@ interface SniffInterface
 
 final class CoolSniffWithLocalinterface implements SniffInterface
 {
-    /**
-     * @param int $position
-     */
     public function process(string $file, int $position)
     {
     }

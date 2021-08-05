@@ -37,7 +37,7 @@ final class ParamTypeDeclarationRector extends AbstractRector implements MinPhpV
 {
     public function __construct(
         private VendorLockResolver $vendorLockResolver,
-        private ChildParamPopulator $childParamPopulator,
+        //private ChildParamPopulator $childParamPopulator,
         private ParamTypeInferer $paramTypeInferer,
         private TraitTypeAnalyzer $traitTypeAnalyzer,
         private ParamTagRemover $paramTagRemover
@@ -126,8 +126,10 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($node->params as $position => $param) {
-            $this->refactorParam($param, $node, (int) $position);
+        // @todo subscribe to Param node directly? narrow scope the better, right?
+
+        foreach ($node->params as $param) {
+            $this->refactorParam($param, $node);
         }
 
         return null;
@@ -138,7 +140,7 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function refactorParam(Param $param, ClassMethod | Function_ $functionLike, int $position): void
+    private function refactorParam(Param $param, ClassMethod | Function_ $functionLike): void
     {
         if ($this->shouldSkipParam($param, $functionLike)) {
             return;
@@ -154,7 +156,6 @@ CODE_SAMPLE
         }
 
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferedType, TypeKind::PARAM());
-
         if (! $paramTypeNode instanceof Node) {
             return;
         }
@@ -169,7 +170,7 @@ CODE_SAMPLE
         $functionLikePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
         $this->paramTagRemover->removeParamTagsIfUseless($functionLikePhpDocInfo, $functionLike);
 
-        $this->childParamPopulator->populateChildClassMethod($functionLike, $position, $inferedType);
+        // $this->childParamPopulator->populateChildClassMethod($functionLike, $position, $inferedType);
     }
 
     private function shouldSkipParam(Param $param, FunctionLike $functionLike): bool
