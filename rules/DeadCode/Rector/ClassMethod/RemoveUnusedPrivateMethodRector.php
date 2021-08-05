@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
@@ -195,18 +196,41 @@ CODE_SAMPLE
         return false;
     }
 
+    private function isInArrayMap(Class_ $class, Array_ $array): bool
+    {
+        $parentFuncCall = $this->betterNodeFinder->findParentType($array, FuncCall::class);
+        if (! $parentFuncCall instanceof FuncCall) {
+            return false;
+        }
+
+        if (! $this->nodeNameResolver->isName($parentFuncCall->name, 'array_map')) {
+            return false;
+        }
+
+        if (count($array->items) !== 2) {
+            return false;
+        }
+
+        if ($array->items[1]->value instanceof String_) {
+            $methodName = $array->items[1]->value->value;
+            return $class->getMethod($methodName) instanceof ClassMethod;
+        }
+
+        // fallback for dynamic value array items in array_map
+        return true;
+    }
+
     private function isClassMethodCalledInLocalArrayCall(Class_ $class, ClassMethod $classMethod): bool
     {
         /** @var Array_[] $arrays */
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
 
         foreach ($arrays as $array) {
-            $parentFuncCall = $this->betterNodeFinder->findParentType($array, FuncCall::class);
-            if ($parentFuncCall instanceof FuncCall && $this->nodeNameResolver->isName($parentFuncCall->name, 'array_map')) {
+            if ($this->isInArrayMap($class, $array)) {
                 return true;
             }
 
-            $arrayCallable  = $this->arrayCallableMethodMatcher->match($array);
+            $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
             if (! $arrayCallable instanceof ArrayCallable) {
                 continue;
             }
