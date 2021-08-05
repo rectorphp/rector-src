@@ -167,16 +167,16 @@ final class TypeFactory
     private function normalizeObjectTypes(Type $type): Type
     {
         return TypeTraverser::map($type, function (Type $traversedType, callable $traverseCallback): Type {
-            if ($traversedType instanceof ShortenedObjectType && $traversedType->getShortName() === 'static') {
-                return new ThisType($traversedType->getFullyQualifiedName());
+            if ($traversedType instanceof ObjectType && $traversedType->getClassName() === 'static') {
+                return new ThisType($traversedType->getClassName());
+            }
+
+            if ($traversedType instanceof ObjectType && $traversedType->getClassName() === 'self') {
+                return new SelfObjectType($traversedType->getClassName());
             }
 
             if ($traversedType instanceof ShortenedObjectType) {
                 return new FullyQualifiedObjectType($traversedType->getFullyQualifiedName());
-            }
-
-            if ($traversedType instanceof SelfObjectType) {
-                return $traverseCallback($traversedType);
             }
 
             if ($traversedType instanceof ObjectType && ! $traversedType instanceof GenericObjectType && ! $traversedType instanceof AliasedObjectType && $traversedType->getClassName() !== 'Iterator') {

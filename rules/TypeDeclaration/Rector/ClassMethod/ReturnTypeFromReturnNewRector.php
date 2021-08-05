@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -100,13 +99,7 @@ CODE_SAMPLE
             }
 
             $className = $this->getName($new->class);
-            $newType = $this->getType($className);
-
-            if (! $newType instanceof Type) {
-                continue;
-            }
-
-            $newTypes[] = $newType;
+            $newTypes[] = new ObjectType($className);
         }
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
