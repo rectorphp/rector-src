@@ -116,26 +116,6 @@ final class ClassMethodParamVendorLockResolver
         return false;
     }
 
-    private function isInterfaceWithMultipleImplementers(ClassReflection $classReflection): bool
-    {
-        if (! $classReflection->isInterface()) {
-            return false;
-        }
-
-        $ancestorRelatedReflectionClasses = $this->findRelatedClassReflections($classReflection);
-
-        $implementingInterfaceClassReflections = [];
-        foreach ($ancestorRelatedReflectionClasses as $ancestorRelatedReflectionClass) {
-            if (! $ancestorRelatedReflectionClass->implementsInterface($classReflection->getName())) {
-                continue;
-            }
-
-            $implementingInterfaceClassReflections[] = $ancestorRelatedReflectionClass;
-        }
-
-        return count($implementingInterfaceClassReflections) > 1;
-    }
-
     private function resolveClassReflection(ClassMethod $classMethod): ClassReflection|null
     {
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
