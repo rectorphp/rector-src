@@ -255,7 +255,10 @@ CODE_SAMPLE
         $traits = $this->astResolver->parseClassReflectionTraits($classReflection);
         foreach ($traits as $trait) {
             $method = $trait->getMethod($classMethodName);
-            if ($method instanceof ClassMethod) {
+            if (!$method instanceof ClassMethod) {
+                continue;
+            }
+            if ($method->isAbstract()) {
                 return true;
             }
         }

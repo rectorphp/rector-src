@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector\Fixture;
 
-trait MyTrait
+trait TraitWithAbstractPrivate
 {
     abstract private function privateMethod();
 
@@ -11,9 +11,9 @@ trait MyTrait
     }
 }
 
-class MyClass
+class SkipAbstractPrivateMethodInTrait
 {
-    use MyTrait;
+    use TraitWithAbstractPrivate;
 
     private function privateMethod()
     {
