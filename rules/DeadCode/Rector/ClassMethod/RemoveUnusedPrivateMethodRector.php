@@ -14,9 +14,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
+use Rector\DeadCode\NodeAnalyzer\CallCollectionAnalyzer;
 use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -29,7 +29,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedPrivateMethodRector extends AbstractRector
 {
     public function __construct(
-        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher
+        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
+        private CallCollectionAnalyzer $callCollectionAnalyzer
     ) {
     }
 
@@ -153,7 +154,7 @@ CODE_SAMPLE
 
         /** @var StaticCall[] $staticCalls */
         $staticCalls = $this->betterNodeFinder->findInstanceOf($class, StaticCall::class);
-        return $this->isCalled($staticCalls, $classMethodName, $className);
+        return $this->callCollectionAnalyzer->isExists($staticCalls, $classMethodName, $className);
     }
 
     private function isClassMethodCalledInLocalMethodCall(Class_ $class, string $classMethodName): bool
@@ -162,33 +163,7 @@ CODE_SAMPLE
 
         /** @var MethodCall[] $methodCalls */
         $methodCalls = $this->betterNodeFinder->findInstanceOf($class, MethodCall::class);
-        return $this->isCalled($methodCalls, $classMethodName, $className);
-    }
-
-    /**
-     * @param MethodCall[]|StaticCall[] $calls
-     */
-    private function isCalled(array $calls, string $classMethodName, ?string $className): bool
-    {
-        foreach ($calls as $call) {
-            $callerRoot = $call instanceof StaticCall ? $call->class : $call->var;
-            $callerType = $this->nodeTypeResolver->resolve($callerRoot);
-
-            if (! $callerType instanceof TypeWithClassName) {
-                continue;
-            }
-
-            if ($callerType->getClassName() !== $className) {
-                continue;
-            }
-
-            // the method is used
-            if ($this->isName($call->name, $classMethodName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->callCollectionAnalyzer->isExists($methodCalls, $classMethodName, $className);
     }
 
     private function isInArrayMap(Class_ $class, Array_ $array): bool
