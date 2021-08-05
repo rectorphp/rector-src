@@ -59,15 +59,6 @@ final class NodeRepository
     }
 
     /**
-     * @return Class_[]|Interface_[]
-     * @deprecated Use static reflection instead
-     */
-    public function findClassesAndInterfacesByType(string $type): array
-    {
-        return array_merge($this->findChildrenOfClass($type), $this->findImplementersOfInterface($type));
-    }
-
-    /**
      * @deprecated Use static reflection instead
      *
      * @param class-string $class

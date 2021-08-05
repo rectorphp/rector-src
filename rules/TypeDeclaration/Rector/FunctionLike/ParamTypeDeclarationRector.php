@@ -16,7 +16,6 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
-use Rector\TypeDeclaration\ChildPopulator\ChildParamPopulator;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\TraitTypeAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Rector\TypeDeclaration\ValueObject\NewType;
@@ -59,7 +58,7 @@ final class ParamTypeDeclarationRector extends AbstractRector implements MinPhpV
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class ParentClass
+abstract class VendorParentClass
 {
     /**
      * @param int $number
@@ -69,7 +68,7 @@ class ParentClass
     }
 }
 
-final class ChildClass extends ParentClass
+final class ChildClass extends VendorParentClass
 {
     /**
      * @param int $number
@@ -88,7 +87,7 @@ final class ChildClass extends ParentClass
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class ParentClass
+abstract class VendorParentClass
 {
     /**
      * @param int $number
@@ -98,7 +97,7 @@ class ParentClass
     }
 }
 
-final class ChildClass extends ParentClass
+final class ChildClass extends VendorParentClass
 {
     /**
      * @param int $number
@@ -169,11 +168,9 @@ CODE_SAMPLE
 
         $functionLikePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
         $this->paramTagRemover->removeParamTagsIfUseless($functionLikePhpDocInfo, $functionLike);
-
-        // $this->childParamPopulator->populateChildClassMethod($functionLike, $position, $inferedType);
     }
 
-    private function shouldSkipParam(Param $param, FunctionLike $functionLike): bool
+    private function shouldSkipParam(Param $param, ClassMethod | Function_ $functionLike): bool
     {
         if ($param->variadic) {
             return true;
