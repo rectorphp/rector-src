@@ -6,6 +6,8 @@ namespace Rector\NodeCollector\NodeCollector;
 
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -16,10 +18,30 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class NodeRepository
 {
+    /**
+     * @deprecated Not reliable, as only works with so-far parsed classes
+     * @var Class_[]
+     */
+    private array $classes = [];
+
     public function __construct(
-        private ParsedNodeCollector $parsedNodeCollector,
+        private ClassAnalyzer $classAnalyzer,
         private ReflectionProvider $reflectionProvider,
     ) {
+    }
+
+    public function collectClass(Class_ $class): void
+    {
+        if ($this->classAnalyzer->isAnonymousClass($class)) {
+            return;
+        }
+
+        $className = $class->getAttribute(AttributeKey::CLASS_NAME);
+        if ($className === null) {
+            throw new ShouldNotHappenException();
+        }
+
+        $this->classes[$className] = $class;
     }
 
     /**
@@ -32,8 +54,8 @@ final class NodeRepository
         $childrenClasses = [];
 
         // @todo refactor to reflection
-        foreach ($this->parsedNodeCollector->getClasses() as $classNode) {
-            $currentClassName = $classNode->getAttribute(AttributeKey::CLASS_NAME);
+        foreach ($this->classes as $class) {
+            $currentClassName = $class->getAttribute(AttributeKey::CLASS_NAME);
             if ($currentClassName === null) {
                 continue;
             }
@@ -42,20 +64,10 @@ final class NodeRepository
                 continue;
             }
 
-            $childrenClasses[] = $classNode;
+            $childrenClasses[] = $class;
         }
 
         return $childrenClasses;
-    }
-
-    /**
-     * @deprecated Use static reflection instead
-     *
-     * @param class-string $name
-     */
-    public function findClass(string $name): ?Class_
-    {
-        return $this->parsedNodeCollector->findClass($name);
     }
 
     private function isChildOrEqualClassLike(string $desiredClass, string $currentClassName): bool
