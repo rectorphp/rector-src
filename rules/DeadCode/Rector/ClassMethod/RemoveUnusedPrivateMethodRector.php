@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -211,6 +212,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if (! $array->items[1] instanceof ArrayItem) {
+            return false;
+        }
+
         if ($array->items[1]->value instanceof String_) {
             $methodName = $array->items[1]->value->value;
             return $class->getMethod($methodName) instanceof ClassMethod;
@@ -226,12 +231,12 @@ CODE_SAMPLE
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
 
         foreach ($arrays as $array) {
-            if ($this->isInArrayMap($class, $array)) {
-                return true;
-            }
-
             $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
             if (! $arrayCallable instanceof ArrayCallable) {
+                if ($this->isInArrayMap($class, $array)) {
+                    return true;
+                }
+
                 continue;
             }
 
