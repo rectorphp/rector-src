@@ -86,8 +86,6 @@ trait MultipleFilesChangedTrait
                 ? explode('_temp_fixture_easy_testing', $addedFile->getFilePath())
                 : null;
 
-//            dump($addedFilePathWithContentFilePath);die;
-            $this->assertSame($path, $addedFile ? $addedFile->getFilePath() : null);
             $this->assertSame($path, $addedFilePathWithContentFilePath);
             $realFileContent = $addedFile ? trim($addedFile->getFileContent()) : null;
             $this->assertSame($expectedFileChange, $realFileContent);
