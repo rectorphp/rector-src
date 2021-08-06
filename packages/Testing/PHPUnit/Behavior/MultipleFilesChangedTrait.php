@@ -84,13 +84,13 @@ trait MultipleFilesChangedTrait
         }
 
         foreach ($expectedFileChanges as $path => $expectedFileChange) {
-            [, $path] = explode('_temp_fixture_easy_testing', $path);
-            $addedFile = $addedFiles[$path] ?? null;
+            [, $relativePath] = explode('_temp_fixture_easy_testing', $path);
+            $addedFile = $addedFiles[$relativePath] ?? null;
             [, $addedFilePathWithContentFilePath] = $addedFile
                 ? explode('_temp_fixture_easy_testing', $addedFile->getFilePath())
                 : null;
 
-            $this->assertSame($path, $addedFilePathWithContentFilePath);
+            $this->assertSame($relativePath, $addedFilePathWithContentFilePath);
             $realFileContent = $addedFile ? trim($addedFile->getFileContent()) : null;
             $this->assertSame($expectedFileChange, $realFileContent);
             if (file_exists($path)) {
