@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\Visibility;
+use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -62,8 +63,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // Strip the abstract flag
-        $node->flags -= Visibility::ABSTRACT;
+        $this->visibilityManipulator->removeAbstract($node);
         // Add empty array for stmts to generate empty function body
         $node->stmts = [];
 
