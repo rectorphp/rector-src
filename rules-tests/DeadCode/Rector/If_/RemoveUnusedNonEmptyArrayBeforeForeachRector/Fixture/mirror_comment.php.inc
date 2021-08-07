@@ -6,13 +6,13 @@ class MirrorComment
 {
     public function run(array $values)
     {
-        // a comment
-        // another
-        // another again
+        $tmp = [];
+
+        // put lower values into tmp
         if ($values !== []) {
-            // another comment deep
+            // loop to put into tmp
             foreach ($values as $value) {
-                echo $value;
+                $tmp[] = strtolower($value);
             }
         }
     }
@@ -28,12 +28,12 @@ class MirrorComment
 {
     public function run(array $values)
     {
-        // a comment
-        // another
-        // another again
-        // another comment deep
+        $tmp = [];
+
+        // put lower values into tmp
+        // loop to put into tmp
         foreach ($values as $value) {
-            echo $value;
+            $tmp[] = strtolower($value);
         }
     }
 }
