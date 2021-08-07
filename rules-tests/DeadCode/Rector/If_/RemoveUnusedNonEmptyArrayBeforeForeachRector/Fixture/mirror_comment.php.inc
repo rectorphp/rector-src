@@ -27,6 +27,7 @@ class MirrorComment
     public function run(array $values)
     {
         // a comment
+        // another comment
         foreach ($values as $value) {
             echo $value;
         }
