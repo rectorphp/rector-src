@@ -75,6 +75,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function tearDown(): void
     {
+        // free memory and trigger gc to reduce memory peak consumption on windows
         unset(
             $this->applicationFileProcessor,
             $this->parameterProvider,
