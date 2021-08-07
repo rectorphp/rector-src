@@ -7,7 +7,6 @@ namespace Rector\DeadCode\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
-use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeManipulator\CountManipulator;
@@ -24,8 +23,7 @@ final class RemoveUnusedNonEmptyArrayBeforeForeachRector extends AbstractRector
     public function __construct(
         private CountManipulator $countManipulator,
         private IfManipulator $ifManipulator,
-        private UselessIfCondBeforeForeachDetector $uselessIfCondBeforeForeachDetector,
-        private CommentsMerger $commentsMerger
+        private UselessIfCondBeforeForeachDetector $uselessIfCondBeforeForeachDetector
     ) {
     }
 
@@ -86,7 +84,7 @@ CODE_SAMPLE
 
         $stmt = $node->stmts[0];
 
-        $ifComments   = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
+        $ifComments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
         $stmtComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
 
         $stmt->setAttribute(AttributeKey::COMMENTS, array_merge($ifComments, $stmtComments));
