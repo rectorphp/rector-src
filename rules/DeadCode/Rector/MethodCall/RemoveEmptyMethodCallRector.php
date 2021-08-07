@@ -124,8 +124,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $isInArg = (bool) $this->betterNodeFinder->findParentType($methodCall, Arg::class);
-        if ($isInArg) {
+        $parentArg = $this->betterNodeFinder->findParentType($methodCall, Arg::class);
+        if ($parentArg instanceof Arg) {
             return null;
         }
 
