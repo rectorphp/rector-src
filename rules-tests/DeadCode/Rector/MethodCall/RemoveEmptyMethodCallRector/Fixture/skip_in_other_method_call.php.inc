@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector\Fi
 
 use Rector\Tests\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector\Source\EmptyMethod;
 
-class SkipInOtherMethod
+class SkipInOtherMethodCall
 {
     public function run()
     {
