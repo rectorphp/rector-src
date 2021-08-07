@@ -81,7 +81,10 @@ CODE_SAMPLE
             return null;
         }
 
-        return $node->stmts[0];
+        $stmt = $node->stmts[0];
+        $this->mirrorComments($stmt, $node);
+
+        return $stmt;
     }
 
     private function isUselessBeforeForeachCheck(If_ $if): bool
