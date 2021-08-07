@@ -99,11 +99,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $isInArg = (bool) $this->betterNodeFinder->findParentType($node, Arg::class);
-        if ($isInArg) {
-            return null;
-        }
-
         // if->cond cannot removed, it has to be replaced with false, see https://3v4l.org/U9S9i
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof If_ && $parent->cond === $node) {
@@ -126,6 +121,11 @@ CODE_SAMPLE
     private function getScope(MethodCall $methodCall): ?Scope
     {
         if ($this->callAnalyzer->isObjectCall($methodCall->var)) {
+            return null;
+        }
+
+        $isInArg = (bool) $this->betterNodeFinder->findParentType($methodCall, Arg::class);
+        if ($isInArg) {
             return null;
         }
 
