@@ -87,7 +87,8 @@ CODE_SAMPLE
         $ifComments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
         $stmtComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
 
-        $stmt->setAttribute(AttributeKey::COMMENTS, array_merge($ifComments, $stmtComments));
+        $comments = array_merge($ifComments, $stmtComments);
+        $stmt->setAttribute(AttributeKey::COMMENTS, $comments);
 
         return $stmt;
     }
