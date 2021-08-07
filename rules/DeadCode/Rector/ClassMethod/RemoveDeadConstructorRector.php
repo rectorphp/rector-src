@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeManipulator\ClassMethodManipulator;
@@ -68,9 +69,18 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isNoStmtConstructorWithExtends($classLike)) {
+            return null;
+        }
+
         $this->removeNode($node);
 
         return null;
+    }
+
+    private function isNoStmtConstructorWithExtends(Class_ $class): bool
+    {
+        return $class->extends instanceof FullyQualified;
     }
 
     private function shouldSkipPropertyPromotion(ClassMethod $classMethod): bool
