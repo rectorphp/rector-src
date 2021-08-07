@@ -69,18 +69,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isNoStmtConstructorWithExtends($classLike)) {
+        if ($classLike->extends instanceof FullyQualified) {
             return null;
         }
 
         $this->removeNode($node);
 
         return null;
-    }
-
-    private function isNoStmtConstructorWithExtends(Class_ $class): bool
-    {
-        return $class->extends instanceof FullyQualified;
     }
 
     private function shouldSkipPropertyPromotion(ClassMethod $classMethod): bool
