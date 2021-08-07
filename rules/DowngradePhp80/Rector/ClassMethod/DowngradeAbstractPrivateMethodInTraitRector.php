@@ -7,9 +7,9 @@ namespace Rector\DowngradePhp80\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Trait_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\Visibility;
-use Rector\Privatization\NodeManipulator\VisibilityManipulator;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -55,11 +55,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->isAbstract()) {
-            return null;
-        }
-
-        if (! $node->isPrivate()) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -68,5 +64,23 @@ CODE_SAMPLE
         $node->stmts = [];
 
         return $node;
+    }
+
+    private function shouldSkip(ClassMethod $node): bool
+    {
+        if (! $node->isAbstract()) {
+            return true;
+        }
+
+        if (! $node->isPrivate()) {
+            return true;
+        }
+
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parent instanceof Trait_) {
+            return true;
+        }
+
+        return false;
     }
 }
