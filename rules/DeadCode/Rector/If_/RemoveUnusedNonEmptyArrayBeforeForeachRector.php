@@ -85,13 +85,11 @@ CODE_SAMPLE
         }
 
         $stmt = $node->stmts[0];
-        $this->commentsMerger->keepComments($stmt, [$node]);
 
-        $comments = $stmt->getAttribute(AttributeKey::COMMENTS);
-        if (is_array($comments)) {
-           $comments = array_reverse($comments);
-           $stmt->setAttribute(AttributeKey::COMMENTS, $comments);
-        }
+        $ifComments   = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
+        $stmtComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
+
+        $stmt->setAttribute(AttributeKey::COMMENTS, array_merge($ifComments, $stmtComments));
 
         return $stmt;
     }

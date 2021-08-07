@@ -7,8 +7,10 @@ class MirrorComment
     public function run(array $values)
     {
         // a comment
+        // another
+        // another again
         if ($values !== []) {
-            // another comment
+            // another comment deep
             foreach ($values as $value) {
                 echo $value;
             }
@@ -27,7 +29,9 @@ class MirrorComment
     public function run(array $values)
     {
         // a comment
-        // another comment
+        // another
+        // another again
+        // another comment deep
         foreach ($values as $value) {
             echo $value;
         }
