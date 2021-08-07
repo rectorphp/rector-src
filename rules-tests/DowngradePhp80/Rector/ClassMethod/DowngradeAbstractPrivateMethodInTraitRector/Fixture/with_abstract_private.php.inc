@@ -4,7 +4,7 @@ namespace Rector\Tests\DowngradePhp80\Rector\ClassMethod\DowngradeAbstractPrivat
 
 trait WithAbstractPrivate
 {
-    abstract private function doNotTouch();
+    abstract private function someAbstractPrivateFunction();
 }
 ?>
 -----
@@ -14,6 +14,8 @@ namespace Rector\Tests\DowngradePhp80\Rector\ClassMethod\DowngradeAbstractPrivat
 
 trait WithAbstractPrivate
 {
-    private function doNotTouch() {}
+    private function someAbstractPrivateFunction()
+    {
+    }
 }
 ?>
