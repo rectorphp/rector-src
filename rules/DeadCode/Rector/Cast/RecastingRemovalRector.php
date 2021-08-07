@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Cast;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Cast\Bool_;
@@ -12,6 +13,7 @@ use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
@@ -20,7 +22,9 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -40,6 +44,12 @@ final class RecastingRemovalRector extends AbstractRector
         Object_::class => ObjectType::class,
         Double::class => FloatType::class,
     ];
+
+    public function __construct(
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private ReflectionResolver $reflectionResolver
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -92,6 +102,25 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkip($node->expr)) {
+            return null;
+        }
+
         return $node->expr;
+    }
+
+    private function shouldSkip(Expr $expr): bool
+    {
+        if (! $this->propertyFetchAnalyzer->isPropertyFetch($expr)) {
+            return false;
+        }
+
+        $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($expr);
+        if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
+            return false;
+        }
+
+        $nativeType = $phpPropertyReflection->getNativeType();
+        return $nativeType instanceof MixedType;
     }
 }
