@@ -11,13 +11,13 @@ trait TraitWithNonAbstractPrivate
     }
 }
 
-class RemoveIfMethodNonAbstractPrivateInTrait
+class SkipOverwrittenPrivateFunctionOfTrait
 {
     use TraitWithNonAbstractPrivate;
 
     private function privateMethod()
     {
-        //code
+        // overwriting private trait
     }
 }
 ?>
@@ -35,8 +35,13 @@ trait TraitWithNonAbstractPrivate
     }
 }
 
-class RemoveIfMethodNonAbstractPrivateInTrait
+class SkipOverwrittenPrivateFunctionOfTrait
 {
     use TraitWithNonAbstractPrivate;
+
+    private function privateMethod()
+    {
+        // overwriting private trait
+    }
 }
 ?>
