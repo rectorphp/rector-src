@@ -12,6 +12,7 @@ use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeManipulator\CountManipulator;
 use Rector\DeadCode\UselessIfCondBeforeForeachDetector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -84,11 +85,13 @@ CODE_SAMPLE
         }
 
         $stmt = $node->stmts[0];
+        $this->commentsMerger->keepComments($stmt, [$node]);
 
-        $this->commentsMerger->keepParent($stmt, $node);
-        $this->mirrorComments($stmt, $node);
-
-      ///  $this->commentsMerger->keepComments($node, [$stmt]);
+        $comments = $stmt->getAttribute(AttributeKey::COMMENTS);
+        if (is_array($comments)) {
+           $comments = array_reverse($comments);
+           $stmt->setAttribute(AttributeKey::COMMENTS, $comments);
+        }
 
         return $stmt;
     }
