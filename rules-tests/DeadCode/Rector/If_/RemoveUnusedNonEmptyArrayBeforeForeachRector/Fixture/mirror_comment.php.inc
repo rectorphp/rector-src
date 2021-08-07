@@ -8,6 +8,7 @@ class MirrorComment
     {
         // a comment
         if ($values !== []) {
+            // another comment
             foreach ($values as $value) {
                 echo $value;
             }
