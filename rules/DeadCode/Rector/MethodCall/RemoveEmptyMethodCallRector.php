@@ -23,6 +23,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PhpParser\Node\Arg;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector\RemoveEmptyMethodCallRectorTest
@@ -95,6 +96,11 @@ CODE_SAMPLE
         }
 
         if ($this->shouldSkipClassMethod($classLike, $node)) {
+            return null;
+        }
+
+        $isInArg = (bool) $this->betterNodeFinder->findParentType($node, Arg::class);
+        if ($isInArg) {
             return null;
         }
 
