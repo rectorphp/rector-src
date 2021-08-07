@@ -15,5 +15,3 @@ class SkipHasGetMagic extends TestCase
         $obj->invalid;
     }
 }
-
-?>

@@ -99,7 +99,7 @@ CODE_SAMPLE
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($propertyFetch);
 
         /**
-         *  property not found assume has with __get method
+         *  property not found assume has class has __get method
          *  that can call non-defined property, that can have some special handling, eg: throw on special case
          */
         return ! $phpPropertyReflection instanceof PhpPropertyReflection;
