@@ -66,6 +66,14 @@ jobs:
                     cp CONTRIBUTING.md rector-prefixed-downgraded/
                     cp preload.php rector-prefixed-downgraded/
 
+            # sometime, when 2 or more consecutive PRs merged, the checkout rectorphp/rector is overlapped
+            # and reverting other commit change
+            # this should not happen on create a tag, so wait first
+            -
+                name: "Wait 3 minutes before checkout rectorphp/rector on create a tag"
+                if: "startsWith(github.ref, 'refs/tags/')"
+                run: sleep 180
+
             # 6. clone remote repository, so we can push it
             -
                 uses: "actions/checkout@v2"
