@@ -7,8 +7,6 @@ use Rector\EarlyReturn\Rector\If_\ChangeOrIfReturnToEarlyReturnRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
-    $parameters = $containerConfigurator->parameters();
-
     $services = $containerConfigurator->services();
     $services->set(ChangeOrIfReturnToEarlyReturnRector::class);
     $services->set(ChangeAndIfToEarlyReturnRector::class);
