@@ -7,7 +7,7 @@ final class IntType
     public function run(array $array, string $item)
     {
         $value = count($array);
-        return "We have {$count} {$item}";
+        return "We have {$value} {$item}";
     }
 }
 
@@ -22,7 +22,7 @@ final class IntType
     public function run(array $array, string $item)
     {
         $value = count($array);
-        return sprintf('We have %d %s', $count, $item);
+        return sprintf('We have %d %s', $value, $item);
     }
 }
 
