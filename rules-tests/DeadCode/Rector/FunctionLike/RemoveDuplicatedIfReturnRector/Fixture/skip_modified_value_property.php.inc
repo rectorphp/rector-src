@@ -8,12 +8,12 @@ class SkipModifiedValueProperty
 
     public function run(array $data)
     {
-        if ($this->data) {
+        if (! empty($this->data)) {
             return $this->data;
         }
 
         $this->data = $data;
-        if ($this->data) {
+        if (! empty($this->data)) {
             return $this->data;
         }
     }
