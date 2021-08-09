@@ -6,7 +6,6 @@ namespace Rector\PhpSpecToPHPUnit;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
@@ -16,7 +15,6 @@ use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 final class PHPUnitTypeDeclarationDecorator
 {
     public function __construct(
-        private ReflectionResolver $reflectionResolver,
         private AstResolver $astResolver
     ) {
     }
@@ -29,7 +27,7 @@ final class PHPUnitTypeDeclarationDecorator
         }
 
         $setUpClassMethod = $this->astResolver->resolveClassMethod('PHPUnit\Framework\TestCase', MethodName::SET_UP);
-        if ($setUpClassMethod === null) {
+        if (! $setUpClassMethod instanceof ClassMethod) {
             return;
         }
 
