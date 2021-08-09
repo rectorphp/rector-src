@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Static_;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;

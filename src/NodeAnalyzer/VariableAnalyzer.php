@@ -20,7 +20,7 @@ final class VariableAnalyzer
 
     public function isStatic(Variable $variable): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstPrevious($variable, function (Node $n) use (
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $n) use (
             $variable
         ): bool {
             if (! $n instanceof Static_) {
