@@ -35,7 +35,7 @@ final class MovedFile implements FileWithNodesInterface
 
     public function getFilePath(): string
     {
-        $fileInfo = $this->file->getSmartFileInfo();
-        return $fileInfo->getRelativeFilePath();
+        $smartFileInfo = $this->file->getSmartFileInfo();
+        return $smartFileInfo->getRelativeFilePath();
     }
 }
