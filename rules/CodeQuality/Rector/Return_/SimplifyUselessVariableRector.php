@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Static_;
 use PHPStan\Type\MixedType;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Core\Rector\AbstractRector;
@@ -102,6 +103,25 @@ CODE_SAMPLE
         return $node;
     }
 
+    private function isStaticVariable(AssignOp | Assign $previousNode, Expr $expr): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstPrevious($previousNode, function (Node $node) use (
+            $expr
+        ): bool {
+            if (! $node instanceof Static_) {
+                return false;
+            }
+
+            foreach ($node->vars as $staticVar) {
+                if ($this->nodeComparator->areNodesEqual($staticVar->var, $expr)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
     private function hasByRefReturn(Return_ $return): bool
     {
         $node = $return;
@@ -145,7 +165,12 @@ CODE_SAMPLE
         if (! $this->nodeComparator->areNodesEqual($previousNode->var, $variableNode)) {
             return true;
         }
-        return $this->isPreviousExpressionVisuallySimilar($previousExpression, $previousNode);
+
+        if ($this->isPreviousExpressionVisuallySimilar($previousExpression, $previousNode)) {
+            return true;
+        }
+
+        return $this->isStaticVariable($previousNode, $previousNode->var);
     }
 
     private function hasSomeComment(Expr $expr): bool
