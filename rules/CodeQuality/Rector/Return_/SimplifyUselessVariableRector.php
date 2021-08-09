@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Static_;
 use PHPStan\Type\MixedType;
+use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -27,7 +28,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyUselessVariableRector extends AbstractRector
 {
     public function __construct(
-        private AssignAndBinaryMap $assignAndBinaryMap
+        private AssignAndBinaryMap $assignAndBinaryMap,
+        private VariableAnalyzer $variableAnalyzer
     ) {
     }
 
@@ -103,25 +105,6 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isStaticVariable(AssignOp | Assign $previousNode, Expr $expr): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirstPrevious($previousNode, function (Node $node) use (
-            $expr
-        ): bool {
-            if (! $node instanceof Static_) {
-                return false;
-            }
-
-            foreach ($node->vars as $staticVar) {
-                if ($this->nodeComparator->areNodesEqual($staticVar->var, $expr)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
-    }
-
     private function hasByRefReturn(Return_ $return): bool
     {
         $node = $return;
@@ -145,6 +128,7 @@ CODE_SAMPLE
             return true;
         }
 
+        /** @var Variable $variableNode */
         $variableNode = $return->expr;
 
         $previousExpression = $return->getAttribute(AttributeKey::PREVIOUS_NODE);
@@ -170,7 +154,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->isStaticVariable($previousNode, $previousNode->var);
+        return $this->variableAnalyzer->isStatic($variableNode);
     }
 
     private function hasSomeComment(Expr $expr): bool
