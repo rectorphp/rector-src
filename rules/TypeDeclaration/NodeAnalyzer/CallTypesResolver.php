@@ -103,12 +103,13 @@ final class CallTypesResolver
             $unionedType = $this->narrowParentObjectTreeToSingleObjectChildType($unionedType);
             $staticTypeByArgumentPosition[$position] = $unionedType;
         }
-
-        if (count($staticTypeByArgumentPosition) === 1 && $staticTypeByArgumentPosition[0] instanceof NullType) {
-            return [new MixedType()];
+        if (count($staticTypeByArgumentPosition) !== 1) {
+            return $staticTypeByArgumentPosition;
         }
-
-        return $staticTypeByArgumentPosition;
+        if (! $staticTypeByArgumentPosition[0] instanceof NullType) {
+            return $staticTypeByArgumentPosition;
+        }
+        return [new MixedType()];
     }
 
     private function narrowParentObjectTreeToSingleObjectChildType(Type $type): Type
