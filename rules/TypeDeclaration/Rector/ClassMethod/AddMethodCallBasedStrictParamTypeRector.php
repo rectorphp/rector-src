@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Type\NullType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\NodeFinder\LocalMethodCallFinder;
 use Rector\Core\Rector\AbstractRector;
@@ -119,7 +120,15 @@ CODE_SAMPLE
             $classMethodParameterTypes = $this->callTypesResolver->resolveStrictTypesFromCalls($methodCalls);
         }
 
-        return $this->classMethodParamTypeCompleter->complete($node, $classMethodParameterTypes);
+        if (count($classMethodParameterTypes) !== 1) {
+            return $this->classMethodParamTypeCompleter->complete($node, $classMethodParameterTypes);
+        }
+
+        if (! $classMethodParameterTypes[0] instanceof NullType) {
+            return $this->classMethodParamTypeCompleter->complete($node, $classMethodParameterTypes);
+        }
+
+        return null;
     }
 
     /**
