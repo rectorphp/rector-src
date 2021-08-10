@@ -10,6 +10,7 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
+use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class PhpTagsAddedToBladeTest extends AbstractRectorTestCase
 {
@@ -26,7 +27,9 @@ final class PhpTagsAddedToBladeTest extends AbstractRectorTestCase
         $applicationFileProcessor->run([$file], $configuration);
 
         $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $file->getFileContent());
-        FileSystem::write($inputFileInfo->getRealPath(), $inputFileInfoContent);
+
+        $smartFileSystem = new SmartFileSystem();
+        $smartFileSystem->dumpFile($inputFileInfo->getRealPath(), $inputFileInfoContent);
     }
 
     public function provideConfigFilePath(): string
