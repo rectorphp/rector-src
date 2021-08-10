@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\PhpTagsAddedToBlade;
 
-use Nette\Utils\FileSystem;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
