@@ -2,7 +2,7 @@
 
 <?php
 // Some code to trigger rector to write the file
-echo isset($value) ? $value : 10;
+echo $value ?? 10;
 ?>
 
 @section('content')
