@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\PhpTagsAddedToBlade;
 
-use Iterator;
+use Nette\Utils\FileSystem;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
@@ -26,7 +26,7 @@ final class PhpTagsAddedToBladeTest extends AbstractRectorTestCase
         $applicationFileProcessor->run([$file], $configuration);
 
         $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $file->getFileContent());
-        file_put_contents($inputFileInfo->getRealPath(), $inputFileInfoContent);
+        FileSystem::write($inputFileInfo->getRealPath(), $inputFileInfoContent);
     }
 
     public function provideConfigFilePath(): string
