@@ -7,6 +7,8 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
@@ -100,6 +102,10 @@ final class CallTypesResolver
             // narrow parents to most child type
             $unionedType = $this->narrowParentObjectTreeToSingleObjectChildType($unionedType);
             $staticTypeByArgumentPosition[$position] = $unionedType;
+        }
+
+        if (count($staticTypeByArgumentPosition) === 1 && $staticTypeByArgumentPosition[0] instanceof NullType) {
+            return [new MixedType()];
         }
 
         return $staticTypeByArgumentPosition;
