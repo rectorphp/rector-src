@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Global_;
 use PhpParser\Node\Stmt\Static_;
+use PhpParser\Node\Stmt\StaticVar;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
@@ -28,8 +29,12 @@ final class VariableAnalyzer
                 return false;
             }
 
-            foreach ($n->vars as $staticVar) {
-                $staticVarVariable = $n instanceof Static_
+            /**
+             * @var StaticVar[]|Variable[] $vars
+             */
+            $vars = $n->vars;
+            foreach ($vars as $staticVar) {
+                $staticVarVariable = $staticVar instanceof StaticVar
                     ? $staticVar->var
                     : $staticVar;
 
