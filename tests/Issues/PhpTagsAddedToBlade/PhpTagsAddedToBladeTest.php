@@ -25,8 +25,8 @@ final class PhpTagsAddedToBladeTest extends AbstractRectorTestCase
         $applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
         $applicationFileProcessor->run([$file], $configuration);
 
-        file_put_contents($inputFileInfo->getRealPath(), $inputFileInfoContent);
         $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $file->getFileContent());
+        file_put_contents($inputFileInfo->getRealPath(), $inputFileInfoContent);
     }
 
     public function provideConfigFilePath(): string
