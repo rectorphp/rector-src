@@ -181,16 +181,20 @@ CODE_SAMPLE
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstNext($use, function (Node $node) use ($name, $loweredAliasName): bool {
-            if (! $node instanceof ClassConstFetch) {
-                if ($node instanceof FullyQualified) {
-                    $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
-                    if ($originalName instanceof Name) {
-                        $loweredOriginalName = strtolower($originalName->toString());
-                        return $loweredAliasName === Strings::before($loweredOriginalName, '\\');
-                    }
+        return (bool) $this->betterNodeFinder->findFirstNext($use, function (Node $node) use (
+            $name,
+            $loweredAliasName
+        ): bool {
+            if ($node instanceof FullyQualified) {
+                $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
+                if ($originalName instanceof Name) {
+                    $loweredOriginalName = strtolower($originalName->toString());
+                    $loweredOriginalNameNamespace = Strings::before($loweredOriginalName, '\\');
+                    return $loweredAliasName === $loweredOriginalNameNamespace;
                 }
+            }
 
+            if (! $node instanceof ClassConstFetch) {
                 return false;
             }
 
