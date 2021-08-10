@@ -33,10 +33,10 @@ final class VariableAnalyzer
              * @var StaticVar[]|Variable[] $vars
              */
             $vars = $n->vars;
-            foreach ($vars as $staticVar) {
-                $staticVarVariable = $staticVar instanceof StaticVar
-                    ? $staticVar->var
-                    : $staticVar;
+            foreach ($vars as $var) {
+                $staticVarVariable = $var instanceof StaticVar
+                    ? $var->var
+                    : $var;
 
                 if ($this->nodeComparator->areNodesEqual($staticVarVariable, $variable)) {
                     return true;
