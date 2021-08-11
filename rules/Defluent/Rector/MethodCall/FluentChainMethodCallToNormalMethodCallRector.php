@@ -85,8 +85,23 @@ CODE_SAMPLE
             return null;
         }
 
+        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        $nodesToAdd = $assignAndRootExprAndNodesToAdd->getNodesToAdd();
+
+        if ($currentStatement instanceof Return_) {
+            $lastNodeToAdd = end($nodesToAdd);
+
+            if (! $lastNodeToAdd) {
+                return null;
+            }
+
+            if (! $lastNodeToAdd instanceof Return_) {
+                $nodesToAdd[array_key_last($nodesToAdd)] = new Return_($lastNodeToAdd);
+            }
+        }
+
         $this->fluentNodeRemover->removeCurrentNode($node);
-        $this->addNodesAfterNode($assignAndRootExprAndNodesToAdd->getNodesToAdd(), $node);
+        $this->addNodesAfterNode($nodesToAdd, $node);
 
         return null;
     }

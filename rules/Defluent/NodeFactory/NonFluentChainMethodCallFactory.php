@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Defluent\NodeFactory;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
@@ -62,7 +64,8 @@ final class NonFluentChainMethodCallFactory
     public function createFromAssignObjectAndMethodCalls(
         AssignAndRootExpr $assignAndRootExpr,
         array $chainMethodCalls,
-        string $kind
+        string $kind,
+        ?Node $parentMethodCall = null
     ): array {
         $nodesToAdd = [];
 
@@ -81,6 +84,12 @@ final class NonFluentChainMethodCallFactory
 
         if ($assignAndRootExpr->getSilentVariable() !== null && $kind !== FluentCallsKind::IN_ARGS) {
             $nodesToAdd[] = $assignAndRootExpr->getReturnSilentVariable();
+        }
+
+        if ($parentMethodCall instanceof Cast) {
+            $lastNodeToAdd = $nodesToAdd[array_key_last($nodesToAdd)];
+            $cast = $parentMethodCall::class;
+            $nodesToAdd[array_key_last($nodesToAdd)] = new $cast($lastNodeToAdd);
         }
 
         return $nodesToAdd;
