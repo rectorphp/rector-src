@@ -110,12 +110,12 @@ CODE_SAMPLE
     private function removeCurrentNode(MethodCall $methodCall): void
     {
         $parent = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Cast) {
-            /** @var MethodCall|Return_ $parentParent */
-            $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
-            $this->fluentNodeRemover->removeCurrentNode($parentParent);
-
-            return;
+        while ($parent instanceof Cast) {
+            $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parent instanceof Cast) {
+                $this->fluentNodeRemover->removeCurrentNode($parent);
+                return;
+            }
         }
 
         $this->fluentNodeRemover->removeCurrentNode($methodCall);
