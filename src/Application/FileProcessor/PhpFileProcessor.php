@@ -68,10 +68,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             $file->changeHasChanged(false);
             $this->refactorNodesWithRectors($file);
 
-            $isDuplicated = false;
-
             // 3. apply post rectors
-            $this->tryCatchWrapper($file, function (File $file) use (&$isDuplicated): void {
+            $this->tryCatchWrapper($file, function (File $file): void {
                 $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
 
                 // this is needed for new tokens added in "afterTraverse()"
@@ -93,17 +91,22 @@ final class PhpFileProcessor implements FileProcessorInterface
                 $this->printFile($file, $configuration);
             }, ApplicationPhase::PRINT());
 
-            $isDuplicated = (bool) $this->betterNodeFinder->findFirst($file->getNewStmts(), function (Node $node): bool {
-                return (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
-                    $printNode = $this->betterStandardPrinter->print($node);
-                    $printSubNode = $this->betterStandardPrinter->print($subNode);
+            $oldStmts = $file->getOldStmts();
+            $newStmts = $file->getNewStmts();
 
-                    return $printNode === $printSubNode;
+            if ($oldStmts !== $newStmts) {
+                $isDuplicated = (bool) $this->betterNodeFinder->findFirst($newStmts, function (Node $node): bool {
+                    return (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
+                        $printNode = $this->betterStandardPrinter->print($node);
+                        $printSubNode = $this->betterStandardPrinter->print($subNode);
+
+                        return $printNode === $printSubNode;
+                    });
                 });
-            });
 
-            if ($isDuplicated) {
-                break;
+                if ($isDuplicated) {
+                    break;
+                }
             }
         } while ($file->hasChanged());
 
