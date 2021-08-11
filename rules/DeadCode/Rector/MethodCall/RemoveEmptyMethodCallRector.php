@@ -171,7 +171,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $type instanceof ThisType && ! $class->isFinal();
+        return $type instanceof ThisType && ! $class->isFinal() && ! $classMethod->isPrivate();
     }
 
     private function processArrowFunction(ArrowFunction $arrowFunction, MethodCall $methodCall): MethodCall | ConstFetch
