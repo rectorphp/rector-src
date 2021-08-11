@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileProcessor;
 
+use PhpParser\Node;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
@@ -12,11 +13,14 @@ use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Enum\ApplicationPhase;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Application\RectorError;
 use Rector\Core\ValueObject\Configuration;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -37,7 +41,9 @@ final class PhpFileProcessor implements FileProcessorInterface
         private FileDiffFileDecorator $fileDiffFileDecorator,
         private CurrentFileProvider $currentFileProvider,
         private PostFileProcessor $postFileProcessor,
-        private ErrorFactory $errorFactory
+        private ErrorFactory $errorFactory,
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeComparator $nodeComparator
     ) {
     }
 
@@ -60,9 +66,17 @@ final class PhpFileProcessor implements FileProcessorInterface
             $file->changeHasChanged(false);
             $this->refactorNodesWithRectors($file);
 
+            $isDuplicated = false;
+
             // 3. apply post rectors
-            $this->tryCatchWrapper($file, function (File $file): void {
+            $this->tryCatchWrapper($file, function (File $file) use (&$isDuplicated): void {
                 $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
+
+                $isDuplicated = (bool) $this->betterNodeFinder->findFirst($newStmts, function (Node $node): bool {
+                    return (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
+                        return $this->nodeComparator->areNodesEqual($node, $subNode);
+                    });
+                });
 
                 // this is needed for new tokens added in "afterTraverse()"
                 $file->changeNewStmts($newStmts);
@@ -76,6 +90,10 @@ final class PhpFileProcessor implements FileProcessorInterface
                 // cannot print file with errors, as print would b
                 $this->notifyPhase($file, ApplicationPhase::PRINT_SKIP());
                 continue;
+            }
+
+            if ($isDuplicated) {
+                break;
             }
 
             // important to detect if file has changed
