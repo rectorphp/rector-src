@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileProcessor;
 
+use Attribute;
 use PhpParser\Node;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
@@ -20,6 +21,7 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Application\RectorError;
 use Rector\Core\ValueObject\Configuration;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -85,35 +87,32 @@ final class PhpFileProcessor implements FileProcessorInterface
 
             // important to detect if file has changed
             $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
-                $this->printFile($file, $configuration);
-            }, ApplicationPhase::PRINT());
 
-            $oldStmts = $file->getOldStmts();
-            $newStmts = $file->getNewStmts();
-
-            if ($oldStmts !== $newStmts) {
                 $isDuplicated = (bool) $this->betterNodeFinder->findFirst(
-                    $newStmts,
+                    $file->getNewStmts(),
                     fn (Node $node): bool => (bool) $this->betterNodeFinder->findFirstNext($node, function (
                         Node $subNode
                     ) use (
                         $node
                     ): bool {
                     $printNode = $this->betterStandardPrinter->print($node);
+                    $prevNode  = $this->betterStandardPrinter->print($subNode->getAttribute(AttributeKey::PREVIOUS_NODE));
                     $printSubNode = $this->betterStandardPrinter->print($subNode);
 
-                    return $printNode === $printSubNode;
+                    return $prevNode === $printNode && $printNode === $printSubNode;
                 })
                 );
 
                 if ($isDuplicated) {
-                    break;
+                    $file->changeHasChanged(false);
+                } else {
+                    $this->printFile($file, $configuration);
                 }
-            }
+            }, ApplicationPhase::PRINT());
         } while ($file->hasChanged());
 
         $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
-            $this->printFile($file, $configuration);
+            //$this->printFile($file, $configuration);
         }, ApplicationPhase::PRINT());
     }
 
