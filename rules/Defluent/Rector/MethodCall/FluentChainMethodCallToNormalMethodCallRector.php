@@ -6,6 +6,7 @@ namespace Rector\Defluent\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
@@ -100,7 +101,16 @@ CODE_SAMPLE
             }
         }
 
-        $this->fluentNodeRemover->removeCurrentNode($node);
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Cast) {
+            $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentParent instanceof Node) {
+                $this->fluentNodeRemover->removeCurrentNode($parentParent);
+            }
+        } else {
+            $this->fluentNodeRemover->removeCurrentNode($node);
+        }
+
         $this->addNodesAfterNode($nodesToAdd, $node);
 
         return null;
