@@ -6,9 +6,9 @@ use Rector\Tests\Defluent\Rector\MethodCall\FluentChainMethodCallToNormalMethodC
 
 class CastedReturnValue
 {
-    public function getCastedValue(DifferentReturnValues $query)
+    public function getCastedValue(DifferentReturnValues $differentReturnValues)
     {
-        return (int) $query->someFunction()->otherFunction();
+        return (int) $differentReturnValues->someFunction()->otherFunction();
     }
 }
 
@@ -22,10 +22,10 @@ use Rector\Tests\Defluent\Rector\MethodCall\FluentChainMethodCallToNormalMethodC
 
 class CastedReturnValue
 {
-    public function getCastedValue(DifferentReturnValues $query)
+    public function getCastedValue(DifferentReturnValues $differentReturnValues)
     {
-        $query->someFunction();
-        return (int) $query->otherFunction();
+        $differentReturnValues->someFunction();
+        return (int) $differentReturnValues->otherFunction();
     }
 }
 
