@@ -141,9 +141,8 @@ CODE_SAMPLE
     private function shouldSkipClassMethod(
         Class_ | Trait_ | Interface_ $classLike,
         MethodCall $methodCall,
-        TypeWithClassName $type
-    ): bool
-    {
+        TypeWithClassName $typeWithClassName
+    ): bool {
         if (! $classLike instanceof Class_) {
             return true;
         }
@@ -171,7 +170,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $type instanceof ThisType && ! $class->isFinal() && ! $classMethod->isPrivate();
+        return $typeWithClassName instanceof ThisType && ! $class->isFinal() && ! $classMethod->isPrivate();
     }
 
     private function processArrowFunction(ArrowFunction $arrowFunction, MethodCall $methodCall): MethodCall | ConstFetch
