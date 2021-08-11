@@ -114,9 +114,11 @@ CODE_SAMPLE
             /** @var MethodCall|Return_ $parentParent */
             $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
             $this->fluentNodeRemover->removeCurrentNode($parentParent);
-        } else {
-            $this->fluentNodeRemover->removeCurrentNode($methodCall);
+
+            return;
         }
+
+        $this->fluentNodeRemover->removeCurrentNode($methodCall);
     }
 
     /**
