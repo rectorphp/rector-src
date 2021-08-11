@@ -6,15 +6,14 @@ namespace Rector\Core\Tests\Issues\IssueReturnBeforeElseIf\Fixture;
 
 class ComplexAndOr
 {
-    public function run($a, $b, $c, $d)
+    public function run($a, $b, $c, $d, $e)
     {
         if (($a && false === $b) || ! $c) {
             return '';
         } elseif ($d) {
             return '';
         }
-
-        return $d;
+        return $e;
     }
 }
 
@@ -28,15 +27,15 @@ namespace Rector\Core\Tests\Issues\IssueReturnBeforeElseIf\Fixture;
 
 class ComplexAndOr
 {
-    public function run($a, $b, $c, $d)
+    public function run($a, $b, $c, $d, $e)
     {
-        if ($a && false === $b) {
+        if (($a && false === $b) || ! $c) {
             return '';
         }
-        if (! $c) {
+        if ($d) {
             return '';
         }
-        return $d;
+        return $e;
     }
 }
 
