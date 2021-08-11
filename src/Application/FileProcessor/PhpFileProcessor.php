@@ -15,6 +15,7 @@ use Rector\Core\Enum\ApplicationPhase;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -43,7 +44,8 @@ final class PhpFileProcessor implements FileProcessorInterface
         private PostFileProcessor $postFileProcessor,
         private ErrorFactory $errorFactory,
         private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator,
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -74,7 +76,10 @@ final class PhpFileProcessor implements FileProcessorInterface
 
                 $isDuplicated = (bool) $this->betterNodeFinder->findFirst($newStmts, function (Node $node): bool {
                     return (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
-                        return $this->nodeComparator->areNodesEqual($node, $subNode);
+                        $printNode = $this->betterStandardPrinter->print($node);
+                        $printSubNode = $this->betterStandardPrinter->print($subNode);
+
+                        return $printNode === $printSubNode;
                     });
                 });
 
