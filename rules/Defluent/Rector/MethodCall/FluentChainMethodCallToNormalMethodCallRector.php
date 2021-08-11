@@ -101,19 +101,22 @@ CODE_SAMPLE
             }
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Cast) {
-            $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentParent instanceof Node) {
-                $this->fluentNodeRemover->removeCurrentNode($parentParent);
-            }
-        } else {
-            $this->fluentNodeRemover->removeCurrentNode($node);
-        }
-
+        $this->removeCurrentNode($node);
         $this->addNodesAfterNode($nodesToAdd, $node);
 
         return null;
+    }
+
+    private function removeCurrentNode(MethodCall $methodCall): void
+    {
+        $parent = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Cast) {
+            /** @var MethodCall|Return_ $parentParent */
+            $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+            $this->fluentNodeRemover->removeCurrentNode($parentParent);
+        } else {
+            $this->fluentNodeRemover->removeCurrentNode($methodCall);
+        }
     }
 
     /**
