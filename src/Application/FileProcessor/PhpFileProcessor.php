@@ -92,14 +92,14 @@ final class PhpFileProcessor implements FileProcessorInterface
                 continue;
             }
 
-            if ($isDuplicated) {
-                break;
-            }
-
             // important to detect if file has changed
             $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
                 $this->printFile($file, $configuration);
             }, ApplicationPhase::PRINT());
+
+            if ($isDuplicated) {
+                break;
+            }
         } while ($file->hasChanged());
 
         $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
