@@ -74,15 +74,6 @@ final class PhpFileProcessor implements FileProcessorInterface
             $this->tryCatchWrapper($file, function (File $file) use (&$isDuplicated): void {
                 $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
 
-                $isDuplicated = (bool) $this->betterNodeFinder->findFirst($newStmts, function (Node $node): bool {
-                    return (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
-                        $printNode = $this->betterStandardPrinter->print($node);
-                        $printSubNode = $this->betterStandardPrinter->print($subNode);
-
-                        return $printNode === $printSubNode;
-                    });
-                });
-
                 // this is needed for new tokens added in "afterTraverse()"
                 $file->changeNewStmts($newStmts);
             }, ApplicationPhase::POST_RECTORS());
@@ -101,6 +92,15 @@ final class PhpFileProcessor implements FileProcessorInterface
             $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
                 $this->printFile($file, $configuration);
             }, ApplicationPhase::PRINT());
+
+            $isDuplicated = (bool) $this->betterNodeFinder->findFirst($file->getNewStmts(), function (Node $node): bool {
+                return (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
+                    $printNode = $this->betterStandardPrinter->print($node);
+                    $printSubNode = $this->betterStandardPrinter->print($subNode);
+
+                    return $printNode === $printSubNode;
+                });
+            });
 
             if ($isDuplicated) {
                 break;
