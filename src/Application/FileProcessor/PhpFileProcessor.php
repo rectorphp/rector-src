@@ -13,7 +13,6 @@ use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Enum\ApplicationPhase;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
@@ -21,7 +20,6 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Application\RectorError;
 use Rector\Core\ValueObject\Configuration;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -44,7 +42,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         private PostFileProcessor $postFileProcessor,
         private ErrorFactory $errorFactory,
         private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator,
         private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
@@ -95,14 +92,19 @@ final class PhpFileProcessor implements FileProcessorInterface
             $newStmts = $file->getNewStmts();
 
             if ($oldStmts !== $newStmts) {
-                $isDuplicated = (bool) $this->betterNodeFinder->findFirst($newStmts, function (Node $node): bool {
-                    return (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
-                        $printNode = $this->betterStandardPrinter->print($node);
-                        $printSubNode = $this->betterStandardPrinter->print($subNode);
+                $isDuplicated = (bool) $this->betterNodeFinder->findFirst(
+                    $newStmts,
+                    fn (Node $node): bool => (bool) $this->betterNodeFinder->findFirstNext($node, function (
+                        Node $subNode
+                    ) use (
+                        $node
+                    ): bool {
+                    $printNode = $this->betterStandardPrinter->print($node);
+                    $printSubNode = $this->betterStandardPrinter->print($subNode);
 
-                        return $printNode === $printSubNode;
-                    });
-                });
+                    return $printNode === $printSubNode;
+                })
+                );
 
                 if ($isDuplicated) {
                     break;
