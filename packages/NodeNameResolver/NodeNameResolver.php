@@ -52,7 +52,7 @@ final class NodeNameResolver
     /**
      * @param Node|Node[] $node
      */
-    public function isName(Node | array $node, string $name): bool
+    public function isName(Node | array $node, string $name, bool $strict = false): bool
     {
         if ($node instanceof MethodCall) {
             return false;
@@ -63,7 +63,7 @@ final class NodeNameResolver
         $nodes = is_array($node) ? $node : [$node];
 
         foreach ($nodes as $node) {
-            if ($this->isSingleName($node, $name)) {
+            if ($this->isSingleName($node, $name, $strict)) {
                 return true;
             }
         }
@@ -195,7 +195,7 @@ final class NodeNameResolver
         return $this->callAnalyzer->isObjectCall($node);
     }
 
-    private function isSingleName(Node $node, string $name): bool
+    private function isSingleName(Node $node, string $name, bool $strict = false): bool
     {
         if ($node instanceof MethodCall) {
             // method call cannot have a name, only the variable or method name
@@ -226,6 +226,8 @@ final class NodeNameResolver
             return $name === $resolvedName;
         }
 
-        return strtolower($resolvedName) === strtolower($name);
+        return $strict === true
+            ? $resolvedName === $name
+            : strtolower($resolvedName) === strtolower($name);
     }
 }
