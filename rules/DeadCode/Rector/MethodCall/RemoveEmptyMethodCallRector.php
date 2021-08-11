@@ -138,7 +138,11 @@ CODE_SAMPLE
         return $scope;
     }
 
-    private function shouldSkipClassMethod(Class_ | Trait_ | Interface_ $classLike, MethodCall $methodCall, TypeWithClassName $type): bool
+    private function shouldSkipClassMethod(
+        Class_ | Trait_ | Interface_ $classLike,
+        MethodCall $methodCall,
+        TypeWithClassName $type
+    ): bool
     {
         if (! $classLike instanceof Class_) {
             return true;
@@ -167,7 +171,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $type instanceof ThisType && ! $classLike->isFinal() && ! $class->isFinal();
+        return $type instanceof ThisType && ! $class->isFinal();
     }
 
     private function processArrowFunction(ArrowFunction $arrowFunction, MethodCall $methodCall): MethodCall | ConstFetch
