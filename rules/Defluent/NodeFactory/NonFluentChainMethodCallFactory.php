@@ -59,13 +59,13 @@ final class NonFluentChainMethodCallFactory
 
     /**
      * @param MethodCall[] $chainMethodCalls
-     * @return Assign[]|MethodCall[]|Return_[]
+     * @return Assign[]|Cast[]|MethodCall[]|Return_[]
      */
     public function createFromAssignObjectAndMethodCalls(
         AssignAndRootExpr $assignAndRootExpr,
         array $chainMethodCalls,
         string $kind,
-        ?Node $parentMethodCall = null
+        ?Node $node = null
     ): array {
         $nodesToAdd = [];
 
@@ -86,9 +86,9 @@ final class NonFluentChainMethodCallFactory
             $nodesToAdd[] = $assignAndRootExpr->getReturnSilentVariable();
         }
 
-        if ($parentMethodCall instanceof Cast) {
+        if ($node instanceof Cast) {
             $lastNodeToAdd = $nodesToAdd[array_key_last($nodesToAdd)];
-            $cast = $parentMethodCall::class;
+            $cast = $node::class;
             $nodesToAdd[array_key_last($nodesToAdd)] = new $cast($lastNodeToAdd);
         }
 
