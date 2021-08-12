@@ -71,7 +71,7 @@ final class NodeNameResolver
         return false;
     }
 
-    public function isNameExactly(Node $node, string $name): bool
+    public function isCaseSensitiveName(Node $node, string $name): bool
     {
         if ($name === '') {
             return false;
