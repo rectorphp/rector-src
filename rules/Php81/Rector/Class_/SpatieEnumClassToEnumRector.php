@@ -44,7 +44,7 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-enum Status
+enum StatusEnum
 {
     case draft = 'draft';
     case published = 'published';
