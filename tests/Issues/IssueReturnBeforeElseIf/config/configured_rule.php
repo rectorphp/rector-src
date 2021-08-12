@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfReturnToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10,6 +9,5 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(ChangeOrIfReturnToEarlyReturnRector::class);
-    $services->set(ChangeAndIfToEarlyReturnRector::class);
     $services->set(RemoveAlwaysElseRector::class);
 };

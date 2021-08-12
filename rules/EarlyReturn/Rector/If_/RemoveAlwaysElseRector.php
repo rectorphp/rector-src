@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\EarlyReturn\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Else_;
@@ -74,6 +75,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($this->doesLastStatementBreakFlow($node)) {
+            return null;
+        }
+
+        if ($node->cond instanceof BooleanOr) {
             return null;
         }
 
