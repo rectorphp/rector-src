@@ -300,9 +300,14 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         return $this->nodesToReturn[$objectHash] ?? $node;
     }
 
-    protected function isName(Node $node, string $name, bool $strict = false): bool
+    protected function isName(Node $node, string $name): bool
     {
-        return $this->nodeNameResolver->isName($node, $name, $strict);
+        return $this->nodeNameResolver->isName($node, $name);
+    }
+
+    protected function isNameExactly(Node $node, string $name): bool
+    {
+        return $this->nodeNameResolver->isNameExactly($node, $name);
     }
 
     /**

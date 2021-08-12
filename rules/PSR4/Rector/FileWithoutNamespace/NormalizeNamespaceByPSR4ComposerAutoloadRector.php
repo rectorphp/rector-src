@@ -91,7 +91,7 @@ CODE_SAMPLE
         }
 
         // is namespace and already correctly named?
-        if ($node instanceof Namespace_ && $this->isName($node, $expectedNamespace, true)) {
+        if ($node instanceof Namespace_ && $this->isNameExactly($node, $expectedNamespace)) {
             return null;
         }
 

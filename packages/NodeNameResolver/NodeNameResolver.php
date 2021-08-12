@@ -52,7 +52,7 @@ final class NodeNameResolver
     /**
      * @param Node|Node[] $node
      */
-    public function isName(Node | array $node, string $name, bool $strict = false): bool
+    public function isName(Node | array $node, string $name): bool
     {
         if ($node instanceof MethodCall) {
             return false;
@@ -63,12 +63,33 @@ final class NodeNameResolver
         $nodes = is_array($node) ? $node : [$node];
 
         foreach ($nodes as $node) {
-            if ($this->isSingleName($node, $name, $strict)) {
+            if ($this->isSingleName($node, $name)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function isNameExactly(Node $node, string $name): bool
+    {
+        if ($name === '') {
+            return false;
+        }
+
+        if ($node instanceof MethodCall) {
+            return false;
+        }
+        if ($node instanceof StaticCall) {
+            return false;
+        }
+
+        $resolvedName = $this->getName($node);
+        if ($resolvedName === null) {
+            return false;
+        }
+
+        return $name === $resolvedName;
     }
 
     public function getName(Node | string $node): ?string
@@ -195,7 +216,7 @@ final class NodeNameResolver
         return $this->callAnalyzer->isObjectCall($node);
     }
 
-    private function isSingleName(Node $node, string $name, bool $strict = false): bool
+    private function isSingleName(Node $node, string $name): bool
     {
         if ($node instanceof MethodCall) {
             // method call cannot have a name, only the variable or method name
@@ -226,8 +247,6 @@ final class NodeNameResolver
             return $name === $resolvedName;
         }
 
-        return $strict === true
-            ? $resolvedName === $name
-            : strtolower($resolvedName) === strtolower($name);
+        return strtolower($resolvedName) === strtolower($name);
     }
 }
