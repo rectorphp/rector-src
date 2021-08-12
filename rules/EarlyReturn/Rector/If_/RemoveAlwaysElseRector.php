@@ -85,6 +85,12 @@ CODE_SAMPLE
             return null;
         }
 
+        // to avoid repetitive flipped elseif above return when used along with ChangeAndIfReturnToEarlyReturnRector
+        // @see https://github.com/rectorphp/rector-src/pull/654
+        if ($node->cond instanceof BooleanAnd && count($node->elseifs) > 1) {
+            return null;
+        }
+
         if ($node->elseifs !== []) {
             $originalNode = clone $node;
             $if = new If_($node->cond);
