@@ -78,6 +78,8 @@ CODE_SAMPLE
             return null;
         }
 
+        // to avoid repetitive If_ creation when used along with ChangeOrIfReturnToEarlyReturnRector
+        // @see https://github.com/rectorphp/rector-src/pull/651
         if ($node->cond instanceof BooleanOr) {
             return null;
         }
