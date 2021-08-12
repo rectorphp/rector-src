@@ -81,7 +81,7 @@ CODE_SAMPLE
 
         // to avoid repetitive If_ creation when used along with ChangeOrIfReturnToEarlyReturnRector
         // @see https://github.com/rectorphp/rector-src/pull/651
-        if ($node->cond instanceof BooleanOr) {
+        if ($node->cond instanceof BooleanOr && $node->elseifs !== []) {
             return null;
         }
 
