@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Class_\SpatieEnumClassToEnumRector\Fixture;
 
-use \Spatie\Enum\Enum;
+use Spatie\Enum\Enum;
 
 /**
  * @method static self draft()
