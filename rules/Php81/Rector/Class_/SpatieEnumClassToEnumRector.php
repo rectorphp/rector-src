@@ -68,7 +68,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isObjectType($node, new ObjectType('\Spatie\Enum\Enum'))) {
+        if (! $this->isObjectType($node, new ObjectType('Spatie\Enum\Enum'))) {
             return null;
         }
 
