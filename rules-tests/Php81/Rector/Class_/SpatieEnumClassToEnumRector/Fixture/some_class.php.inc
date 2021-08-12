@@ -21,7 +21,7 @@ namespace Rector\Tests\Php81\Rector\Class_\SpatieEnumClassToEnumRector\Fixture;
 
 use \Spatie\Enum\Enum;
 
-enum Status
+enum StatusEnum
 {
     case draft = 'draft';
     case published = 'published';
