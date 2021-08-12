@@ -40,7 +40,7 @@ final class EnumFactory
 
     public function createFromSpatieClass(Class_ $class): Enum_
     {
-        $shortClassName = Strings::before($this->nodeNameResolver->getShortName($class), 'Enum');
+        $shortClassName = $this->nodeNameResolver->getShortName($class);
         $enum = new Enum_($shortClassName);
 
         // constant to cases
