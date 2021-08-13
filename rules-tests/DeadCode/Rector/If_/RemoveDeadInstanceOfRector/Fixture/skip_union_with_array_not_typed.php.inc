@@ -6,7 +6,7 @@ use DateTime;
 use stdClass;
 
 /**
- * @var array|stdClass[]
+ * @var array|stdClass[] $lists
  */
 $lists = rand(0, 1)
     ? [new stdClass()]
