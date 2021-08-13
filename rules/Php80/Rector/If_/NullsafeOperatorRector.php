@@ -171,6 +171,10 @@ CODE_SAMPLE
 
         if (! $nextNode instanceof If_) {
             $nullSafe = $this->verifyDefaultValueInElse($if, $nullSafe, $assign);
+            if ($nullSafe === null) {
+                return null;
+            }
+
             return new Assign($assign->var, $nullSafe);
         }
 
@@ -181,17 +185,32 @@ CODE_SAMPLE
         If_ $if,
         NullsafeMethodCall | NullsafePropertyFetch $nullSafe,
         Assign $assign
-    ): NullsafeMethodCall | NullsafePropertyFetch | Coalesce {
-        if ($if->else instanceof Else_
-            && count($if->else->stmts) === 1
-            && $if->else->stmts[0] instanceof Expression
-            && $if->else->stmts[0]->expr instanceof Assign
-            && $this->nodeComparator->areNodesEqual($if->else->stmts[0]->expr->var, $assign->var)
-            && ! $this->valueResolver->isNull($if->else->stmts[0]->expr->expr)) {
-            return new Coalesce($nullSafe, $if->else->stmts[0]->expr->expr);
+    ): NullsafeMethodCall | NullsafePropertyFetch | Coalesce | null {
+        if (! $if->else instanceof Else_) {
+            return $nullSafe;
         }
 
-        return $nullSafe;
+        if (count($if->else->stmts) !== 1) {
+            return null;
+        }
+
+        if (! $if->else->stmts[0] instanceof Expression) {
+            return null;
+        }
+
+        if (! $if->else->stmts[0]->expr instanceof Assign) {
+            return null;
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($if->else->stmts[0]->expr->var, $assign->var)) {
+            return null;
+        }
+
+        if ($this->valueResolver->isNull($if->else->stmts[0]->expr->expr)) {
+            return $nullSafe;
+        }
+
+        return new Coalesce($nullSafe, $if->else->stmts[0]->expr->expr);
     }
 
     private function processAssign(Assign $assign, Expression $prevExpression, Node $nextNode, bool $isStartIf): ?Node
