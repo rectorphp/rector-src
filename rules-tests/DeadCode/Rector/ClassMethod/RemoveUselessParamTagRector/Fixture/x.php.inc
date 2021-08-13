@@ -6,7 +6,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\F
 
 class X {
 	/**
-	 * @param Closure(int): bool $filter
+	 * @param \Closure(int): bool $filter
 	 */
 	static function filter(Closure $filter): array {
 	}
