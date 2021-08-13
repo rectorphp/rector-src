@@ -14,6 +14,7 @@ final class MethodParameters
         return $param;
     }
 }
+
 ?>
 -----
 <?php
