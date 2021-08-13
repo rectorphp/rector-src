@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
 
-class X {
+class SkipTypedClosure {
 	/**
 	 * @param \Closure(int): bool $filter
 	 */
