@@ -194,23 +194,25 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $if->else->stmts[0] instanceof Expression) {
+        $expression = $if->else->stmts[0];
+        if (! $expression instanceof Expression) {
             return null;
         }
 
-        if (! $if->else->stmts[0]->expr instanceof Assign) {
+        $expressionAssign = $expression->expr;
+        if (! $expressionAssign instanceof Assign) {
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($if->else->stmts[0]->expr->var, $assign->var)) {
+        if (! $this->nodeComparator->areNodesEqual($expressionAssign->var, $assign->var)) {
             return null;
         }
 
-        if ($this->valueResolver->isNull($if->else->stmts[0]->expr->expr)) {
+        if ($this->valueResolver->isNull($expressionAssign->expr)) {
             return $nullSafe;
         }
 
-        return new Coalesce($nullSafe, $if->else->stmts[0]->expr->expr);
+        return new Coalesce($nullSafe, $expressionAssign->expr);
     }
 
     private function processAssign(Assign $assign, Expression $prevExpression, Node $nextNode, bool $isStartIf): ?Node
