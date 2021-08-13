@@ -7,10 +7,12 @@ namespace Rector\Php80\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -165,6 +167,10 @@ CODE_SAMPLE
         $nextOfNextNode = $this->processIfMayInNextNode($nextNode);
         if ($nextOfNextNode !== null) {
             return $nextOfNextNode;
+        }
+
+        if ($if->else instanceof Else_ && count($if->else->stmts) === 1 && $if->else->stmts[0] instanceof Expression && $if->else->stmts[0]->expr instanceof Assign && $this->nodeComparator->areNodesEqual($if->else->stmts[0]->expr->var, $assign->var) && ! $this->valueResolver->isNull($if->else->stmts[0]->expr->expr)) {
+            $nullSafe = new Coalesce($nullSafe, $if->else->stmts[0]->expr->expr);
         }
 
         if (! $nextNode instanceof If_) {
