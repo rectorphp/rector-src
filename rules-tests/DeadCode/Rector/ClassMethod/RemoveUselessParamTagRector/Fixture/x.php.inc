@@ -8,7 +8,7 @@ class X {
 	/**
 	 * @param \Closure(int): bool $filter
 	 */
-	static function filter(Closure $filter): array {
+	static function filter(\Closure $filter): array {
 	}
 }
 ?>
