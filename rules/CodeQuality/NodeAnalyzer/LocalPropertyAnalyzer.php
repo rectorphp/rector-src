@@ -56,7 +56,6 @@ final class LocalPropertyAnalyzer
         $fetchedLocalPropertyNameToTypes = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $node) use (
-            $class,
             &$fetchedLocalPropertyNameToTypes
         ): ?int {
             // skip anonymous class scope
@@ -84,13 +83,6 @@ final class LocalPropertyAnalyzer
 
             $parentFunctionLike = $this->betterNodeFinder->findParentType($node, FunctionLike::class);
             if (! $parentFunctionLike instanceof ClassMethod) {
-                return null;
-            }
-
-            $classMethodName = $this->nodeNameResolver->getName($parentFunctionLike);
-            $classMethod     = $class->getMethod($classMethodName);
-
-            if (! $classMethod instanceof ClassMethod) {
                 return null;
             }
 
