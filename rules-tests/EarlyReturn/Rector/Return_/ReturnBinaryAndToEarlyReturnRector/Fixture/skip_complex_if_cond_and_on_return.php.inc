@@ -4,7 +4,7 @@ namespace Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryAndToEarlyReturnRe
 
 class SkipComplexIfCondAndOnReturn
 {
-    public function run($a, $b, $c, $d, $e)
+    public function run($a, $b)
     {
         return $this->execute() &&
                isset($a) &&
