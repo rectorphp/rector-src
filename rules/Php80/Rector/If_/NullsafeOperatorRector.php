@@ -169,15 +169,29 @@ CODE_SAMPLE
             return $nextOfNextNode;
         }
 
-        if ($if->else instanceof Else_ && count($if->else->stmts) === 1 && $if->else->stmts[0] instanceof Expression && $if->else->stmts[0]->expr instanceof Assign && $this->nodeComparator->areNodesEqual($if->else->stmts[0]->expr->var, $assign->var) && ! $this->valueResolver->isNull($if->else->stmts[0]->expr->expr)) {
-            $nullSafe = new Coalesce($nullSafe, $if->else->stmts[0]->expr->expr);
-        }
-
         if (! $nextNode instanceof If_) {
+            $nullSafe = $this->verifyDefaultValueInElse($if, $nullSafe, $assign);
             return new Assign($assign->var, $nullSafe);
         }
 
         return $this->processNullSafeOperatorNotIdentical($nextNode, $nullSafe);
+    }
+
+    private function verifyDefaultValueInElse(
+        If_ $if,
+        NullsafeMethodCall | NullsafePropertyFetch $nullSafe,
+        Assign $assign
+    ): NullsafeMethodCall | NullsafePropertyFetch | Coalesce {
+        if ($if->else instanceof Else_
+            && count($if->else->stmts) === 1
+            && $if->else->stmts[0] instanceof Expression
+            && $if->else->stmts[0]->expr instanceof Assign
+            && $this->nodeComparator->areNodesEqual($if->else->stmts[0]->expr->var, $assign->var)
+            && ! $this->valueResolver->isNull($if->else->stmts[0]->expr->expr)) {
+            return new Coalesce($nullSafe, $if->else->stmts[0]->expr->expr);
+        }
+
+        return $nullSafe;
     }
 
     private function processAssign(Assign $assign, Expression $prevExpression, Node $nextNode, bool $isStartIf): ?Node
