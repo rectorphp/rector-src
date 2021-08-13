@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\If_\NullsafeOperatorRector\Fixture;
 
-final class MethodParameters
+final class MethodArgs
 {
     public function run()
     {
@@ -21,7 +21,7 @@ final class MethodParameters
 
 namespace Rector\Tests\Php80\Rector\If_\NullsafeOperatorRector\Fixture;
 
-final class MethodParameters
+final class MethodArgs
 {
     public function run()
     {
