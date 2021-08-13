@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Rector\Core\Tests\Issues\IssueReturnAnd\Fixture;
+namespace Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryAndToEarlyReturnRector\Fixture;
 
 class SkipComplexIfCondAndOnReturn
 {
