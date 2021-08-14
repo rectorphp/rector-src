@@ -109,7 +109,8 @@ final class SideEffectNodeDetector
             return false;
         }
 
-        return Strings::before($new->class->toString(), '\\', 1) === 'PhpParser';
+        $className = $new->class->toString();
+        return Strings::before($className, '\\', 1) === 'PhpParser';
     }
 
     private function isClassCallerThrowable(StaticCall $staticCall): bool
