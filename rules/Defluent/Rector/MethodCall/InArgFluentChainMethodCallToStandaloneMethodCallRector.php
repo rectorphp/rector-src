@@ -6,8 +6,10 @@ namespace Rector\Defluent\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Defluent\Matcher\AssignAndRootExprAndNodesToAddMatcher;
 use Rector\Defluent\NodeAnalyzer\FluentChainMethodCallNodeAnalyzer;
@@ -105,6 +107,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if ($currentStatement instanceof Return_) {
+            return null;
+        }
+
         // create instances from (new ...)->call, re-use from
         if ($node->var instanceof New_) {
             $this->refactorNew($node, $node->var);
@@ -146,6 +153,13 @@ CODE_SAMPLE
 
         /** @var MethodCall $parentParent */
         $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+
+        while ($parentParent instanceof Cast) {
+            $parentParent = $parentParent->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentParent instanceof Node && ! $parentParent instanceof Cast) {
+                break;
+            }
+        }
 
         $this->removeNode($parentParent);
     }
