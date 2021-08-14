@@ -72,15 +72,18 @@ CODE_SAMPLE
             return null;
         }
 
+        // early check self referencing, ensure that variable not re-used
+        if ($this->isSelfReferencing($node)) {
+            return null;
+        }
+
+        // detect call expression has side effect
         if ($this->sideEffectNodeDetector->detectCallExpr($previousStatement->expr->expr)) {
             return null;
         }
 
+        // check scoping variable
         if ($this->shouldSkipForDifferentScope($node, $previousStatement)) {
-            return null;
-        }
-
-        if ($this->isSelfReferencing($node)) {
             return null;
         }
 
