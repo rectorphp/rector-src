@@ -206,6 +206,10 @@ final class VariableNaming
     private function resolveFromNew(New_ $new): string
     {
         $className = $this->nodeNameResolver->getName($new->class);
+        if ($className === null) {
+            return '';
+        }
+
         return $this->nodeNameResolver->getShortName($className);
     }
 
