@@ -40,6 +40,10 @@ final class MethodCallSkipAnalyzer
     public function shouldSkipDependsWithOtherExpr(Node $node): bool
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
+            return false;
+        }
+
         if ($parentNode instanceof Return_) {
             return false;
         }
