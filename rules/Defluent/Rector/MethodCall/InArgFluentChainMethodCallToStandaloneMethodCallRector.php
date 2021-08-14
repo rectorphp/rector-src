@@ -156,9 +156,13 @@ CODE_SAMPLE
 
         while ($parentParent instanceof Cast) {
             $parentParent = $parentParent->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentParent instanceof Node && ! $parentParent instanceof Cast) {
-                break;
+            if (! $parentParent instanceof Node) {
+                continue;
             }
+            if ($parentParent instanceof Cast) {
+                continue;
+            }
+            break;
         }
 
         $this->removeNode($parentParent);
