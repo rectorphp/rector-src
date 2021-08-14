@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Assign;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
@@ -92,11 +88,6 @@ CODE_SAMPLE
         $this->removeNode($previousStatement);
 
         return $node;
-    }
-
-    private function isCall(Expr $expr): bool
-    {
-        return $expr instanceof FuncCall || $expr instanceof StaticCall || $expr instanceof MethodCall;
     }
 
     private function shouldSkipForDifferentScope(Assign $assign, Expression $expression): bool
