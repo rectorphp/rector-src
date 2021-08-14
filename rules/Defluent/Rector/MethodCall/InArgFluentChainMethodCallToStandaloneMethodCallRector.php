@@ -19,6 +19,7 @@ use Rector\Defluent\NodeFactory\NonFluentChainMethodCallFactory;
 use Rector\Defluent\NodeFactory\VariableFromNewFactory;
 use Rector\Defluent\ValueObject\AssignAndRootExprAndNodesToAdd;
 use Rector\Defluent\ValueObject\FluentCallsKind;
+use Rector\NodeNestingScope\ParentFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -34,7 +35,8 @@ final class InArgFluentChainMethodCallToStandaloneMethodCallRector extends Abstr
         private FluentMethodCallAsArgFactory $fluentMethodCallAsArgFactory,
         private AssignAndRootExprAndNodesToAddMatcher $assignAndRootExprAndNodesToAddMatcher,
         private FluentChainMethodCallNodeAnalyzer $fluentChainMethodCallNodeAnalyzer,
-        private NonFluentChainMethodCallFactory $nonFluentChainMethodCallFactory
+        private NonFluentChainMethodCallFactory $nonFluentChainMethodCallFactory,
+        private ParentFinder $parentFinder
     ) {
     }
 
@@ -107,8 +109,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if ($currentStatement instanceof Return_) {
+        $isInReturnOrCast = (bool) $this->parentFinder->findByTypes($node, [Return_::class, Cast::class]);
+        if ($isInReturnOrCast) {
             return null;
         }
 
@@ -153,20 +155,6 @@ CODE_SAMPLE
 
         /** @var MethodCall $parentParent */
         $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
-
-        while ($parentParent instanceof Cast) {
-            $parentParent = $parentParent->getAttribute(AttributeKey::PARENT_NODE);
-
-            if (! $parentParent instanceof Node) {
-                return;
-            }
-
-            if ($parentParent instanceof Cast) {
-                continue;
-            }
-
-            break;
-        }
 
         $this->removeNode($parentParent);
     }
