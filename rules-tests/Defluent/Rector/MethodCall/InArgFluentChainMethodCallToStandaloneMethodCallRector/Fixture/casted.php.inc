@@ -8,12 +8,12 @@ class Casted
 {
     public function run()
     {
-        (int) $this->processFluentClass((new FluentClass())->someFunction()->otherFunction2());
+        $data = (int) $this->processFluentClass((new FluentClass())->someFunction()->otherFunction2());
     }
 
     public function processFluentClass($value)
     {
-        return $this;
+        return $value;
     }
 }
 
@@ -32,12 +32,12 @@ class Casted
         $fluentClass = new FluentClass();
         ($fluentClass)->someFunction();
         $fluentClass->otherFunction2();
-        (int) $this->processFluentClass($fluentClass);
+        $data = (int) $this->processFluentClass($fluentClass);
     }
 
     public function processFluentClass($value)
     {
-        return $this;
+        return $value;
     }
 }
 
