@@ -48,7 +48,6 @@ final class ControlStructure
         Catch_::class,
         Case_::class,
         FunctionLike::class,
-        ClassMethod::class,
     ];
 
     /**
