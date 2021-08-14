@@ -121,7 +121,7 @@ CODE_SAMPLE
         }
 
         if ($parentNode instanceof Assign) {
-            ! $parentNode->getAttribute(AttributeKey::PARENT_NODE) instanceof Expression;
+            return ! $parentNode->getAttribute(AttributeKey::PARENT_NODE) instanceof Expression;
         }
 
         if ($parentNode instanceof Cast) {
