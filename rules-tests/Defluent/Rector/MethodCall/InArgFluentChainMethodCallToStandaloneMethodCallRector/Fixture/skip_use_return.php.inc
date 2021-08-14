@@ -4,7 +4,7 @@ namespace Rector\Tests\Defluent\Rector\MethodCall\InArgFluentChainMethodCallToSt
 
 use Rector\Tests\Defluent\Rector\MethodCall\InArgFluentChainMethodCallToStandaloneMethodCallRector\Source\FluentClass;
 
-class SkipNotFluentCall
+class SkipNotFluentUseReturn
 {
     public function run()
     {
