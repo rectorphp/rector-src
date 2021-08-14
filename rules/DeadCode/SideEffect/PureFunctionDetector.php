@@ -113,6 +113,9 @@ final class PureFunctionDetector
 
         // array
         'array_pop', 'array_push', 'array_shift', 'array_pop', 'next', 'prev',
+
+        // stream
+        'stream_filter_append',
     ];
 
     public function __construct(
