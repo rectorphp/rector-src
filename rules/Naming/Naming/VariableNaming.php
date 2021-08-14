@@ -205,12 +205,8 @@ final class VariableNaming
 
     private function resolveFromNew(New_ $new): string
     {
-        if ($new->class instanceof Name) {
-            $className = $this->nodeNameResolver->getName($new->class);
-            return $this->nodeNameResolver->getShortName($className);
-        }
-
-        throw new NotImplementedYetException();
+        $className = $this->nodeNameResolver->getName($new->class);
+        return $this->nodeNameResolver->getShortName($className);
     }
 
     private function unwrapNode(Node $node): ?Node

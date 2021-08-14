@@ -13,6 +13,18 @@ class NewInArgNotName
         );
     }
 
+    public function someFunction2()
+    {
+        $this->processFluentClass(
+            (new $this->getFluentClass())->someFunction()->otherFunction()
+        );
+    }
+
+    private function getFluentClass()
+    {
+        return ValueObject::A_CLASS;
+    }
+
     public function processFluentClass($arg)
     {
     }
