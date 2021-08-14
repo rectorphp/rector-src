@@ -37,9 +37,9 @@ final class MethodCallSkipAnalyzer
         return ! $this->fluentChainMethodCallNodeAnalyzer->isMethodCallReturnThis($methodCall);
     }
 
-    public function shouldSkipDependsWithOtherExpr(Node $methodCall): bool
+    public function shouldSkipDependsWithOtherExpr(Node $node): bool
     {
-        $parentNode = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof Return_) {
             return false;
         }
