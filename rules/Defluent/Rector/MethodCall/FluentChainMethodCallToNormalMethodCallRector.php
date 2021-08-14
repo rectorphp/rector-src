@@ -6,6 +6,7 @@ namespace Rector\Defluent\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Expression;
@@ -78,8 +79,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStatement instanceof Expression && ! $currentStatement instanceof Return_) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -111,6 +111,24 @@ CODE_SAMPLE
         $this->addNodesAfterNode($nodesToAdd, $node);
 
         return null;
+    }
+
+    private function shouldSkip(MethodCall $methodCall): bool
+    {
+        $parentNode = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof Return_) {
+            return false;
+        }
+
+        if ($parentNode instanceof Assign) {
+            ! $parentNode->getAttribute(AttributeKey::PARENT_NODE) instanceof Expression;
+        }
+
+        if ($parentNode instanceof Cast) {
+            return false;
+        }
+
+        return ! $parentNode instanceof Expression;
     }
 
     private function removeCurrentNode(MethodCall $methodCall): void
