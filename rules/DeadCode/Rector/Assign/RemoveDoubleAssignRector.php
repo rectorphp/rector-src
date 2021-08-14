@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeNestingScope\ScopeNestingComparator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -26,7 +27,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveDoubleAssignRector extends AbstractRector
 {
     public function __construct(
-        private ScopeNestingComparator $scopeNestingComparator
+        private ScopeNestingComparator $scopeNestingComparator,
+        private SideEffectNodeDetector $sideEffectNodeDetector
     ) {
     }
 
@@ -74,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isCall($previousStatement->expr->expr)) {
+        if ($this->sideEffectNodeDetector->detectCallExpr($previousStatement->expr->expr)) {
             return null;
         }
 

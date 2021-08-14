@@ -110,6 +110,9 @@ final class PureFunctionDetector
 
         // json
         'json_encode', 'json_decode', 'json_last_error',
+
+        // array
+        'array_pop', 'array_push', 'array_shift', 'array_pop', 'next', 'prev',
     ];
 
     public function __construct(
