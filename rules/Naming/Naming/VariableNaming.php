@@ -207,7 +207,7 @@ final class VariableNaming
     {
         $className = $this->nodeNameResolver->getName($new->class);
         if ($className === null) {
-            return '';
+            throw new NotImplementedYetException();
         }
 
         return $this->nodeNameResolver->getShortName($className);
