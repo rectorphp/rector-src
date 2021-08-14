@@ -94,6 +94,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
         // to keep original API from PHPStan untouched
         __DIR__ . '/packages/Caching/ValueObject/Storage/FileCacheStorage.php',
+
+        __DIR__ . '/rules-tests/Php72/Rector/FuncCall/IsObjectOnIncompleteClassRector/config/SkipNormalClass.php',
     ]);
 
     $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, __DIR__ . '/phpstan-for-rector.neon');
