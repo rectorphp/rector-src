@@ -4,7 +4,7 @@ namespace Rector\Tests\Defluent\Rector\MethodCall\InArgFluentChainMethodCallToSt
 
 use Rector\Tests\Defluent\Rector\MethodCall\InArgFluentChainMethodCallToStandaloneMethodCallRector\Source\ValueObject;
 
-class NewInArgNotName
+class SkipNewInArgNotName
 {
     public function someFunction(ValueObject $valueObject)
     {
