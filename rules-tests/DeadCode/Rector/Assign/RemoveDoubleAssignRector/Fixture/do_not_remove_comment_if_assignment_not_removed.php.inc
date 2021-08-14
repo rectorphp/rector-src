@@ -1,6 +1,8 @@
 <?php
 
-class DoNotRemoveCommentIfNotRemoved
+namespace Rector\Tests\DeadCode\Rector\Assign\RemoveDoubleAssignRector\Fixture;
+
+class DoNotRemoveCommentIfAssignmentNotRemoved
 {
     protected function run(array $data)
     {
