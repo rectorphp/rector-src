@@ -4,7 +4,7 @@ namespace Rector\Tests\Defluent\Rector\MethodCall\FluentChainMethodCallToNormalM
 
 use Rector\Tests\Defluent\Rector\MethodCall\FluentChainMethodCallToNormalMethodCallRector\Source\FluentInterfaceClass;
 
-class SkipInsideTernaryElse
+class SkipInsideTernaryElse2Casted
 {
     public function someFunction()
     {
