@@ -156,12 +156,15 @@ CODE_SAMPLE
 
         while ($parentParent instanceof Cast) {
             $parentParent = $parentParent->getAttribute(AttributeKey::PARENT_NODE);
+
             if (! $parentParent instanceof Node) {
-                continue;
+                return;
             }
+
             if ($parentParent instanceof Cast) {
                 continue;
             }
+
             break;
         }
 
