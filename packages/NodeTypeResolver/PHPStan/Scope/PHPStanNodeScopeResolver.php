@@ -24,7 +24,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -62,8 +61,7 @@ final class PHPStanNodeScopeResolver
         private TraitNodeScopeCollector $traitNodeScopeCollector,
         private PrivatesAccessor $privatesAccessor,
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
-        private ParentAttributeSourceLocator $parentAttributeSourceLocator,
-        private BetterStandardPrinter $betterStandardPrinter
+        private ParentAttributeSourceLocator $parentAttributeSourceLocator
     ) {
     }
 
@@ -113,10 +111,10 @@ final class PHPStanNodeScopeResolver
 
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
-        $printNodes = $this->betterStandardPrinter->print($nodes);
+        $content = $smartFileInfo->getContents();
 
         // avoid crash on class with @mixin @see https://github.com/rectorphp/rector-src/pull/688
-        if (! Strings::match($printNodes, self::MIXIN_REGEX)) {
+        if (! Strings::match($content, self::MIXIN_REGEX)) {
             $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);
         }
 
