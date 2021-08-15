@@ -24,6 +24,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -44,6 +45,13 @@ final class PHPStanNodeScopeResolver
      */
     private const ANONYMOUS_CLASS_START_REGEX = '#^AnonymousClass(\w+)#';
 
+    /**
+     * @var string
+     *
+     * @see https://regex101.com/r/3DVXef/1
+     */
+    private const MIXIN_REGEX = '#\*\s+\@mixin\s+\w+#';
+
     public function __construct(
         private ChangedFilesDetector $changedFilesDetector,
         private DependencyResolver $dependencyResolver,
@@ -54,7 +62,8 @@ final class PHPStanNodeScopeResolver
         private TraitNodeScopeCollector $traitNodeScopeCollector,
         private PrivatesAccessor $privatesAccessor,
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
-        private ParentAttributeSourceLocator $parentAttributeSourceLocator
+        private ParentAttributeSourceLocator $parentAttributeSourceLocator,
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -103,7 +112,11 @@ final class PHPStanNodeScopeResolver
         };
 
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
-        $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);
+
+        $printNodes = $this->betterStandardPrinter->print($nodes);
+        if (! Strings::match($printNodes, self::MIXIN_REGEX)) {
+            $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);
+        }
 
         $this->resolveAndSaveDependentFiles($nodes, $scope, $smartFileInfo);
 
