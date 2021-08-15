@@ -46,11 +46,28 @@ final class GenericClassStringTypeNormalizer
             return $this->resolveStringType($value);
         });
 
+        if ($type instanceof ArrayType && $type->getItemType() instanceof UnionType && $this->hasClassStringOnly($type->getItemType())) {
+            return new ArrayType(new MixedType(), new ClassStringType());
+        }
+
         if ($type instanceof UnionType) {
             return $this->resolveClassStringInUnionType($type);
         }
 
         return $type;
+    }
+
+    private function hasClassStringOnly(UnionType $type): bool
+    {
+        $unionTypes = $type->getTypes();
+
+        foreach ($unionTypes as $unionType) {
+            if (! $unionType instanceof GenericClassStringType) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function resolveClassStringInUnionType(UnionType $type): UnionType | ArrayType
