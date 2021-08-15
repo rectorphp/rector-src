@@ -47,9 +47,9 @@ final class PHPStanNodeScopeResolver
     /**
      * @var string
      *
-     * @see https://regex101.com/r/3DVXef/1
+     * @see https://regex101.com/r/3DVXef/2
      */
-    private const MIXIN_REGEX = '#\*\s+\@mixin\s+\w+#';
+    private const MIXIN_REGEX = '#\*\s+\@mixin\s+\\\\?\w+#';
 
     public function __construct(
         private ChangedFilesDetector $changedFilesDetector,
