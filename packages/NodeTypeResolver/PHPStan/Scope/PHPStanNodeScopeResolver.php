@@ -114,6 +114,8 @@ final class PHPStanNodeScopeResolver
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
         $printNodes = $this->betterStandardPrinter->print($nodes);
+
+        // avoid crash on class with @mixin @see https://github.com/rectorphp/rector-src/pull/688
         if (! Strings::match($printNodes, self::MIXIN_REGEX)) {
             $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);
         }
