@@ -8,7 +8,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\PhpParser\Node\NodeFactory;
 
 /**
@@ -20,8 +19,7 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 final class JsonEncodeStaticCallFactory
 {
     public function __construct(
-        private NodeFactory $nodeFactory,
-        private ReflectionProvider $reflectionProvider,
+        private NodeFactory $nodeFactory
     ) {
     }
 
@@ -36,11 +34,7 @@ final class JsonEncodeStaticCallFactory
         $jsonDataAssign = new Assign($assignExpr, $jsonArray);
 
         $jsonDataVariable = new Variable('jsonData');
-        if ($this->reflectionProvider->hasClass('Nette\Utils\Json')) {
-            $jsonDataAssign->expr = $this->nodeFactory->createStaticCall('Nette\Utils\Json', 'encode', [$jsonDataVariable]);
-        } else {
-            $jsonDataAssign->expr = $this->nodeFactory->createFuncCall('json_encode', [$jsonDataVariable]);
-        }
+        $jsonDataAssign->expr = $this->nodeFactory->createStaticCall('Nette\Utils\Json', 'encode', [$jsonDataVariable]);
 
         return $jsonDataAssign;
     }
