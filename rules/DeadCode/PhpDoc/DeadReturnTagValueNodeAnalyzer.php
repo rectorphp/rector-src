@@ -10,6 +10,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 
 final class DeadReturnTagValueNodeAnalyzer
 {
@@ -57,6 +58,10 @@ final class DeadReturnTagValueNodeAnalyzer
 
         foreach ($types as $type) {
             if ($type instanceof GenericTypeNode) {
+                if ($type->type instanceof IdentifierTypeNode && $type->type->name === 'array') {
+                    continue;
+                }
+
                 return true;
             }
         }

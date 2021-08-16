@@ -61,6 +61,10 @@ final class DeadParamTagValueNodeAnalyzer
 
         foreach ($types as $type) {
             if ($type instanceof GenericTypeNode) {
+                if ($type->type instanceof IdentifierTypeNode && $type->type->name === 'array') {
+                    continue;
+                }
+
                 return true;
             }
         }
