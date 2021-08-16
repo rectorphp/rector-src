@@ -116,12 +116,13 @@ final class PHPStanNodeScopeResolver
 
         $contents = $smartFileInfo->getContents();
 
+        // avoid crash on class with @mixin in source @see https://github.com/rectorphp/rector-src/pull/689
+        if ($this->isMixinInSource($nodes)) {
+            return $nodes;
+        }
+
         // avoid crash on class with @mixin @see https://github.com/rectorphp/rector-src/pull/688
         if (! Strings::match($contents, self::MIXIN_REGEX)) {
-            if ($this->isMixinInSource($nodes)) {
-                return $nodes;
-            }
-
             $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);
         }
 
@@ -129,6 +130,9 @@ final class PHPStanNodeScopeResolver
         return $nodes;
     }
 
+    /**
+     * @param Node[] $nodes
+     */
     private function isMixinInSource(array $nodes): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node): bool {
