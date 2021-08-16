@@ -118,7 +118,7 @@ final class PHPStanNodeScopeResolver
 
         // avoid crash on class with @mixin @see https://github.com/rectorphp/rector-src/pull/688
         if (! Strings::match($contents, self::MIXIN_REGEX)) {
-            if ($this->isMixinAsSource($nodes)) {
+            if ($this->isMixinInSource($nodes)) {
                 return $nodes;
             }
 
@@ -129,7 +129,7 @@ final class PHPStanNodeScopeResolver
         return $nodes;
     }
 
-    private function isMixinAsSource(array $nodes): bool
+    private function isMixinInSource(array $nodes): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node): bool {
             if (! $node instanceof FullyQualified) {
