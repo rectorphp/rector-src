@@ -115,7 +115,7 @@ final class PHPStanNodeScopeResolver
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
         // avoid crash on class with @mixin in source @see https://github.com/rectorphp/rector-src/pull/689
-        if ($this->isMixinInSource($nodes)) {
+        if ($this->isMixinInSource($nodes, $scope)) {
             return $nodes;
         }
 
@@ -134,15 +134,15 @@ final class PHPStanNodeScopeResolver
     /**
      * @param Node[] $nodes
      */
-    private function isMixinInSource(array $nodes): bool
+    private function isMixinInSource(array $nodes, Scope $scope): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node): bool {
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($scope): bool {
             if (! $node instanceof FullyQualified) {
                 return false;
             }
 
             $className = $node->toString();
-            $hasFunction = $this->reflectionProvider->hasFunction($node, null);
+            $hasFunction = $this->reflectionProvider->hasFunction($node, $scope);
 
             if ($hasFunction) {
                 return false;
