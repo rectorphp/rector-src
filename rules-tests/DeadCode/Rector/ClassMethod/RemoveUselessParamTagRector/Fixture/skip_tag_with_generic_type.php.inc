@@ -3,6 +3,7 @@
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
 
 use Ds\Vector;
+use IteratorAggregate;
 
 /**
  * @template TValue
