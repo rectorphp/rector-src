@@ -148,8 +148,8 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            $class    = $this->reflectionProvider->getClass($className);
-            $fileName = $class->getFileName();
+            $classReflection = $this->reflectionProvider->getClass($className);
+            $fileName = $classReflection->getFileName();
 
             if ($fileName === false) {
                 return false;
