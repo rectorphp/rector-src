@@ -134,7 +134,7 @@ final class PHPStanNodeScopeResolver
     /**
      * @param Node[] $nodes
      */
-    private function isMixinInSource(array $nodes, Scope $scope): bool
+    private function isMixinInSource(array $nodes, MutatingScope $scope): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($scope): bool {
             if (! $node instanceof FullyQualified) {
