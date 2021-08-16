@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use Closure;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
@@ -114,6 +115,15 @@ final class PHPStanNodeScopeResolver
 
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
+        return $this->processNodesWithMixinHandling($smartFileInfo, $nodes, $scope, $nodeCallback);
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     * @return Stmt[]
+     */
+    private function processNodesWithMixinHandling(SmartFileInfo $smartFileInfo, array $nodes, MutatingScope $scope, callable $nodeCallback): array
+    {
         $contents = $smartFileInfo->getContents();
 
         // avoid crash on class with @mixin @see https://github.com/rectorphp/rector-src/pull/688
