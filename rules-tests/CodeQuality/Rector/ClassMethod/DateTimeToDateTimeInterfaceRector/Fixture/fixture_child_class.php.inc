@@ -1,8 +1,8 @@
 <?php
 
-use DateTime as PhpDateTime;
-
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfaceRector\Fixture;
+
+use DateTime as PhpDateTime;
 
 class DateTime extends PhpDateTime
 {
