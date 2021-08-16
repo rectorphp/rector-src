@@ -8,7 +8,6 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -62,10 +61,6 @@ final class DeadParamTagValueNodeAnalyzer
 
         foreach ($types as $type) {
             if ($type instanceof GenericTypeNode) {
-                if ($type->type instanceof IdentifierTypeNode && $type->type->name === 'array') {
-                    continue;
-                }
-
                 return true;
             }
         }
