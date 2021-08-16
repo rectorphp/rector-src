@@ -114,12 +114,12 @@ final class PHPStanNodeScopeResolver
 
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
-        $contents = $smartFileInfo->getContents();
-
         // avoid crash on class with @mixin in source @see https://github.com/rectorphp/rector-src/pull/689
         if ($this->isMixinInSource($nodes)) {
             return $nodes;
         }
+
+        $contents = $smartFileInfo->getContents();
 
         // avoid crash on class with @mixin @see https://github.com/rectorphp/rector-src/pull/688
         if (! Strings::match($contents, self::MIXIN_REGEX)) {
