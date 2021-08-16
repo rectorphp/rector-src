@@ -14,7 +14,6 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\UnionType as NodeUnionType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
@@ -40,6 +39,7 @@ final class DateTimeToDateTimeInterfaceRector extends AbstractRector implements 
     private const METHODS_RETURNING_CLASS_INSTANCE_MAP = [
         'add', 'modify', MethodName::SET_STATE, 'setDate', 'setISODate', 'setTime', 'setTimestamp', 'setTimezone', 'sub',
     ];
+
     /**
      * @var string
      */
