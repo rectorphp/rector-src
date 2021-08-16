@@ -141,13 +141,12 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            $className = $node->toString();
-            $hasFunction = $this->reflectionProvider->hasFunction($node, $scope);
-
-            if ($hasFunction) {
+            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+            if (! $nextNode instanceof Node) {
                 return false;
             }
 
+            $className = $node->toString();
             $hasClass = $this->reflectionProvider->hasClass($className);
 
             if (! $hasClass) {
@@ -155,8 +154,11 @@ final class PHPStanNodeScopeResolver
             }
 
             $classReflection = $this->reflectionProvider->getClass($className);
-            $fileName = $classReflection->getFileName();
+            if (! $classReflection->isClass()) {
+                return false;
+            }
 
+            $fileName = $classReflection->getFileName();
             if ($fileName === false) {
                 return false;
             }
