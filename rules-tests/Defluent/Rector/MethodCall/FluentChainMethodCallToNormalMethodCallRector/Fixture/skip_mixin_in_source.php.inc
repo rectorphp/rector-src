@@ -4,12 +4,18 @@ namespace Rector\Tests\Defluent\Rector\MethodCall\FluentChainMethodCallToNormalM
 
 use Rector\Tests\Defluent\Rector\MethodCall\FluentChainMethodCallToNormalMethodCallRector\Source\MixinClass;
 
-class SkipMixinAsSource
+class SkipMixinInSource
 {
     public function someFunction()
     {
         $queryBuilder = new MixinClass();
         $queryBuilder->addQuery()
+                        ->select();
+    }
+
+    public function someFunction2(MixinClass $mixinClass)
+    {
+        $mixinClass->addQuery()
                         ->select();
     }
 }
