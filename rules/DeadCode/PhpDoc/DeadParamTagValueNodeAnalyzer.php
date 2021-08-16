@@ -43,12 +43,28 @@ final class DeadParamTagValueNodeAnalyzer
         if (in_array($paramTagValueNode->type::class, [
             GenericTypeNode::class,
             SpacingAwareCallableTypeNode::class,
-            BracketsAwareUnionTypeNode::class,
         ], true)) {
             return false;
         }
 
+        if ($paramTagValueNode->type instanceof BracketsAwareUnionTypeNode && $this->hasGenericType($paramTagValueNode->type)) {
+            return false;
+        }
+
         return $paramTagValueNode->description === '';
+    }
+
+    private function hasGenericType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
+    {
+        $types = $bracketsAwareUnionTypeNode->types;
+
+        foreach ($types as $type) {
+            if ($type instanceof GenericTypeNode) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function matchParamByName(string $desiredParamName, FunctionLike $functionLike): ?Param
