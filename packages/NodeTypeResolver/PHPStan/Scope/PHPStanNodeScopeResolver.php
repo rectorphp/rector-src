@@ -154,7 +154,7 @@ final class PHPStanNodeScopeResolver
             }
 
             $classReflection = $this->reflectionProvider->getClass($className);
-            if (! $classReflection->isClass()) {
+            if (! $classReflection->isClass() || $classReflection->isBuiltIn()) {
                 return false;
             }
 
