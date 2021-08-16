@@ -22,6 +22,12 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class ExclusionManager
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/DKW6RE/1
+     */
+    private const NO_RECTOR_START_REGEX = '#@noRector$#';
+
     public function __construct(
         private PhpDocInfoFactory $phpDocInfoFactory
     ) {
@@ -79,10 +85,12 @@ final class ExclusionManager
         }
 
         foreach ($node->getComments() as $comment) {
-            if (
-                Strings::match($comment->getText(), '~@noRector$~')
-                || Strings::match($comment->getText(), '~@noRector \\\\?' . preg_quote($rectorClass, '~') . '$~')
-            ) {
+            if (Strings::match($comment->getText(), self::NO_RECTOR_START_REGEX)) {
+                return true;
+            }
+
+            $noRectorWithRule = '#@noRector \\\\?' . preg_quote($rectorClass, '#') . '$#';
+            if (Strings::match($comment->getText(), $noRectorWithRule)) {
                 return true;
             }
         }
