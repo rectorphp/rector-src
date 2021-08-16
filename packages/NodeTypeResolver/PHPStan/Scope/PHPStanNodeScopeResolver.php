@@ -142,6 +142,12 @@ final class PHPStanNodeScopeResolver
             }
 
             $className = $node->toString();
+            $hasFunction = $this->reflectionProvider->hasFunction($node, null);
+
+            if ($hasFunction) {
+                return false;
+            }
+
             $hasClass = $this->reflectionProvider->hasClass($className);
 
             if (! $hasClass) {
