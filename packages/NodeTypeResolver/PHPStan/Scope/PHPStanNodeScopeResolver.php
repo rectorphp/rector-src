@@ -127,6 +127,7 @@ final class PHPStanNodeScopeResolver
         }
 
         $this->resolveAndSaveDependentFiles($nodes, $scope, $smartFileInfo);
+
         return $nodes;
     }
 
