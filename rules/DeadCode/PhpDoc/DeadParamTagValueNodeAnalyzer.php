@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 
 final class DeadParamTagValueNodeAnalyzer
 {
@@ -39,11 +40,11 @@ final class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        if ($paramTagValueNode->type instanceof GenericTypeNode) {
-            return false;
-        }
-
-        if ($paramTagValueNode->type instanceof SpacingAwareCallableTypeNode) {
+        if (in_array($paramTagValueNode->type::class, [
+            GenericTypeNode::class,
+            SpacingAwareCallableTypeNode::class,
+            BracketsAwareUnionTypeNode::class,
+        ], true)) {
             return false;
         }
 
