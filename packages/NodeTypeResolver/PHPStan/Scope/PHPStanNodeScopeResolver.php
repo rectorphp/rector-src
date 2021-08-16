@@ -152,7 +152,9 @@ final class PHPStanNodeScopeResolver
             }
 
             $className = $node->toString();
+
             // fix error in parallel test
+            // use function_exists on purpose as using reflectionProvider broke the test in parallel
             if (function_exists($className)) {
                 return false;
             }
