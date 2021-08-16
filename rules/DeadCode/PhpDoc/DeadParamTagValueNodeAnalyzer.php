@@ -8,10 +8,10 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 
 final class DeadParamTagValueNodeAnalyzer
 {
@@ -46,12 +46,13 @@ final class DeadParamTagValueNodeAnalyzer
         ], true)) {
             return false;
         }
-
-        if ($paramTagValueNode->type instanceof BracketsAwareUnionTypeNode && $this->hasGenericType($paramTagValueNode->type)) {
-            return false;
+        if (! $paramTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
+            return $paramTagValueNode->description === '';
         }
-
-        return $paramTagValueNode->description === '';
+        if (! $this->hasGenericType($paramTagValueNode->type)) {
+            return $paramTagValueNode->description === '';
+        }
+        return false;
     }
 
     private function hasGenericType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
