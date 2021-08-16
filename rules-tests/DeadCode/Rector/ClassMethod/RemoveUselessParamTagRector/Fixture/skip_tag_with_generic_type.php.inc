@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
+
 use Ds\Vector;
 
 /**
@@ -7,8 +9,6 @@ use Ds\Vector;
  *
  * @implements IteratorAggregate<int, TValue>
  */
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
-
 final class ImmutableVector implements Countable, IteratorAggregate
 {
 	/**
