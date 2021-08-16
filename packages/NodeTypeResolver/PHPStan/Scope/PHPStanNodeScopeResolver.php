@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use Closure;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
@@ -122,7 +121,12 @@ final class PHPStanNodeScopeResolver
      * @param Stmt[] $nodes
      * @return Stmt[]
      */
-    private function processNodesWithMixinHandling(SmartFileInfo $smartFileInfo, array $nodes, MutatingScope $scope, callable $nodeCallback): array
+    private function processNodesWithMixinHandling(
+        SmartFileInfo $smartFileInfo,
+        array $nodes,
+        MutatingScope $mutatingScope,
+        callable $nodeCallback
+    ): array
     {
         $contents = $smartFileInfo->getContents();
 
@@ -133,10 +137,10 @@ final class PHPStanNodeScopeResolver
                 return $nodes;
             }
 
-            $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);
+            $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
         }
 
-        $this->resolveAndSaveDependentFiles($nodes, $scope, $smartFileInfo);
+        $this->resolveAndSaveDependentFiles($nodes, $mutatingScope, $smartFileInfo);
 
         return $nodes;
     }
@@ -166,7 +170,11 @@ final class PHPStanNodeScopeResolver
             }
 
             $classReflection = $this->reflectionProvider->getClass($className);
-            if (! $classReflection->isClass() || $classReflection->isBuiltIn()) {
+            if (! $classReflection->isClass()) {
+                return false;
+            }
+
+            if ($classReflection->isBuiltIn()) {
                 return false;
             }
 
