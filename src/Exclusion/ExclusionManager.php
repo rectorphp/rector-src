@@ -62,9 +62,23 @@ final class ExclusionManager
 
         /** @var PhpDocTagNode[] $noRectorTags */
         $noRectorTags = array_merge($phpDocInfo->getTagsByName('noRector'), $phpDocInfo->getTagsByName('norector'));
+
         $rectorClass = $phpRector::class;
 
-        foreach ($noRectorTags as $noRectorTag) {
+        if ($this->matchesNoRectorTag($noRectorTags, $rectorClass)) {
+            return true;
+        }
+
+        return $this->matchesNoRectorComment($node, $rectorClass);
+    }
+
+    /**
+     * @param PhpDocTagNode[] $noRectorPhpDocTagNodes
+     * @param class-string<RectorInterface> $rectorClass
+     */
+    private function matchesNoRectorTag(array $noRectorPhpDocTagNodes, string $rectorClass): bool
+    {
+        foreach ($noRectorPhpDocTagNodes as $noRectorTag) {
             if (! $noRectorTag->value instanceof GenericTagValueNode) {
                 throw new ShouldNotHappenException();
             }
@@ -84,6 +98,14 @@ final class ExclusionManager
             }
         }
 
+        return false;
+    }
+
+    /**
+     * @param class-string<RectorInterface> $rectorClass
+     */
+    private function matchesNoRectorComment(Node $node, string $rectorClass): bool
+    {
         foreach ($node->getComments() as $comment) {
             if (Strings::match($comment->getText(), self::NO_RECTOR_START_REGEX)) {
                 return true;
