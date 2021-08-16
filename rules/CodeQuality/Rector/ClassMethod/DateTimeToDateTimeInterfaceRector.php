@@ -122,8 +122,15 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->paramAnalyzer->isNullable($param) && $param->type->type instanceof FullyQualified) {
-            $type = $param->type->type;
+        if ($this->paramAnalyzer->isNullable($param)) {
+            /** @var NullableType $nullableType */
+            $nullableType = $param->type;
+            $type         = $nullableType->type;
+
+            if (! $type instanceof FullyQualified) {
+                return true;
+            }
+
             return $type->toString() !== self::DATE_TIME;
         }
 
