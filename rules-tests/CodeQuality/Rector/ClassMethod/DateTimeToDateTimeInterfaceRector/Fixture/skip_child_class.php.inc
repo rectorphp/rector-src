@@ -12,7 +12,7 @@ class DateTime extends PhpDateTime
     }
 }
 
-class Foo
+class SkipChildClass
 {
     public static function bar(?DateTime $datetime)
     {

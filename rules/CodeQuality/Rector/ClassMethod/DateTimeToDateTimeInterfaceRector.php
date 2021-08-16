@@ -14,6 +14,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\UnionType as NodeUnionType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
@@ -39,6 +40,10 @@ final class DateTimeToDateTimeInterfaceRector extends AbstractRector implements 
     private const METHODS_RETURNING_CLASS_INSTANCE_MAP = [
         'add', 'modify', MethodName::SET_STATE, 'setDate', 'setISODate', 'setTime', 'setTimestamp', 'setTimezone', 'sub',
     ];
+    /**
+     * @var string
+     */
+    private const DATE_TIME = 'DateTime';
 
     public function __construct(
         private PhpDocTypeChanger $phpDocTypeChanger,
@@ -89,7 +94,7 @@ CODE_SAMPLE
     {
         $isModifiedNode = false;
         foreach ($node->getParams() as $param) {
-            if (! $this->isObjectType($param, new ObjectType('DateTime'))) {
+            if ($this->shouldSkip($param)) {
                 continue;
             }
 
@@ -111,6 +116,26 @@ CODE_SAMPLE
         return PhpVersionFeature::DATE_TIME_INTERFACE;
     }
 
+    private function shouldSkip(Param $param): bool
+    {
+        if ($param->type === null) {
+            return true;
+        }
+
+        if ($this->paramAnalyzer->isNullable($param) && $param->type->type instanceof FullyQualified) {
+            $type = $param->type->type;
+            return $type->toString() !== self::DATE_TIME;
+        }
+
+        if ($param->type instanceof FullyQualified) {
+            $type = $param->type;
+            return $type->toString() !== self::DATE_TIME;
+        }
+
+        // fallback last
+        return ! $this->isObjectType($param, new ObjectType(self::DATE_TIME));
+    }
+
     private function refactorParamTypeHint(Param $param): void
     {
         $fullyQualified = new FullyQualified('DateTimeInterface');
@@ -124,7 +149,7 @@ CODE_SAMPLE
 
     private function refactorParamDocBlock(Param $param, ClassMethod $classMethod): void
     {
-        $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
+        $types = [new ObjectType(self::DATE_TIME), new ObjectType('DateTimeImmutable')];
         if ($this->paramAnalyzer->isNullable($param)) {
             $types[] = new NullType();
         }
