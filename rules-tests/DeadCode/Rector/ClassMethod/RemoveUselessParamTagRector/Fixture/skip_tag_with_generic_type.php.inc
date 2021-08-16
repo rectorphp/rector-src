@@ -10,7 +10,7 @@ use IteratorAggregate;
  *
  * @implements IteratorAggregate<int, TValue>
  */
-final class ImmutableVector implements Countable, IteratorAggregate
+final class ImmutableVector implements IteratorAggregate
 {
 	/**
 	 * @var Vector<TValue>
