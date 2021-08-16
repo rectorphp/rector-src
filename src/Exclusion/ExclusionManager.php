@@ -78,12 +78,12 @@ final class ExclusionManager
      */
     private function matchesNoRectorTag(array $noRectorPhpDocTagNodes, string $rectorClass): bool
     {
-        foreach ($noRectorPhpDocTagNodes as $noRectorTag) {
-            if (! $noRectorTag->value instanceof GenericTagValueNode) {
+        foreach ($noRectorPhpDocTagNodes as $noRectorPhpDocTagNode) {
+            if (! $noRectorPhpDocTagNode->value instanceof GenericTagValueNode) {
                 throw new ShouldNotHappenException();
             }
 
-            $description = $noRectorTag->value->value;
+            $description = $noRectorPhpDocTagNode->value->value;
             if ($description === '') {
                 return true;
             }
