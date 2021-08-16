@@ -18,4 +18,9 @@ class Foo
     {
         // ...
     }
+
+    public static function baz(DateTime $datetime)
+    {
+        // ...
+    }
 }
