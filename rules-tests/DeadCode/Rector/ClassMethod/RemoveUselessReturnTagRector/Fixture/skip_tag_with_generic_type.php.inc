@@ -1,15 +1,16 @@
 <?php
 
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
+
 use Ds\Vector;
+use IteratorAggregate;
 
 /**
  * @template TValue
  *
  * @implements IteratorAggregate<int, TValue>
  */
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
-
-final class ImmutableVector implements Countable, IteratorAggregate
+final class ImmutableVector implements IteratorAggregate
 {
     /**
      * @return iterable<TValue>|null
