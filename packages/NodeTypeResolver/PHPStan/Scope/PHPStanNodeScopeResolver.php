@@ -151,12 +151,12 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-            if (! $currentStatement instanceof Node) {
+            $className = $node->toString();
+            // fix error in parallel test
+            if (function_exists($className)) {
                 return false;
             }
 
-            $className = $node->toString();
             $hasClass = $this->reflectionProvider->hasClass($className);
 
             if (! $hasClass) {
