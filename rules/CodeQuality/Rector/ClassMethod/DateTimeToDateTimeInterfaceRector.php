@@ -125,7 +125,7 @@ CODE_SAMPLE
         if ($this->paramAnalyzer->isNullable($param)) {
             /** @var NullableType $nullableType */
             $nullableType = $param->type;
-            $type         = $nullableType->type;
+            $type = $nullableType->type;
 
             if (! $type instanceof FullyQualified) {
                 return true;
