@@ -141,9 +141,9 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-            if (! $nextNode instanceof Node) {
-             //   return false;
+            $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+            if (! $currentStatement instanceof Node) {
+                return false;
             }
 
             $className = $node->toString();
