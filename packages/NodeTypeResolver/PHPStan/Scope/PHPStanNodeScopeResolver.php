@@ -143,7 +143,7 @@ final class PHPStanNodeScopeResolver
 
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
             if (! $nextNode instanceof Node) {
-                return false;
+             //   return false;
             }
 
             $className = $node->toString();
