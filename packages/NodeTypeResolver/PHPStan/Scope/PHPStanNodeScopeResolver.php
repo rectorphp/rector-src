@@ -149,8 +149,8 @@ final class PHPStanNodeScopeResolver
      */
     private function isMixinInSource(array $nodes, SmartFileInfo $smartFileInfo): bool
     {
-        $currentFileName = $smartFileInfo->getRealPath();
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($currentFileName): bool {
+        $realPath = $smartFileInfo->getRealPath();
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($realPath): bool {
             if (! $node instanceof FullyQualified) {
                 return false;
             }
@@ -183,7 +183,7 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            if ($fileName === $currentFileName) {
+            if ($fileName === $realPath) {
                 return false;
             }
 
