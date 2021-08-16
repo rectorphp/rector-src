@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Exclusion;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Stmt;
@@ -73,6 +74,15 @@ final class ExclusionManager
             }
 
             if (! is_a($description, RectorInterface::class, true)) {
+                return true;
+            }
+        }
+
+        foreach ($node->getComments() as $comment) {
+            if (
+                Strings::match($comment->getText(), '~@noRector$~')
+                || Strings::match($comment->getText(), '~@noRector \\\\?' . preg_quote($rectorClass, '~') . '$~')
+            ) {
                 return true;
             }
         }
