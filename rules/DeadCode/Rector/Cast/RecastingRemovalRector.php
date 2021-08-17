@@ -121,7 +121,7 @@ CODE_SAMPLE
         /** @var PropertyFetch|StaticPropertyFetch $expr */
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($expr);
         if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
-            return false;
+            return true;
         }
 
         $nativeType = $phpPropertyReflection->getNativeType();
