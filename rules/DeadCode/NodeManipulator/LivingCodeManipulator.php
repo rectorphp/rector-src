@@ -30,17 +30,15 @@ use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Expression;
+use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PostRector\Collector\NodesToAddCollector;
-use PHPStan\Type\ObjectType;
-use PHPStan\Reflection\ReflectionProvider;
 
 final class LivingCodeManipulator
 {
     public function __construct(
         private NodesToAddCollector $nodesToAddCollector,
-        private NodeTypeResolver $nodeTypeResolver,
-        private ReflectionProvider $reflectionProvider
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -84,8 +82,8 @@ final class LivingCodeManipulator
             $type = $this->nodeTypeResolver->resolve($expr->var);
 
             if ($type instanceof ObjectType) {
-                $arrayAccessType = new ObjectType('ArrayAccess');
-                if ($arrayAccessType->isSuperTypeOf($type)->yes()) {
+                $objectType = new ObjectType('ArrayAccess');
+                if ($objectType->isSuperTypeOf($type)->yes()) {
                     return [$expr];
                 }
             }
