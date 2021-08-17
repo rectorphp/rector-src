@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Rector;
 
 use stdClass;
 
-class SkipCastSetGetMagic
+class SkipCastSetMagic
 {
     public function __set($key, $value)
     {
@@ -19,6 +19,6 @@ class SkipCastSetGetMagic
     }
 }
 
-(new SkipCastSetGetMagic())->run(new stdClass());
+(new SkipCastSetMagic())->run(new stdClass());
 
 ?>
