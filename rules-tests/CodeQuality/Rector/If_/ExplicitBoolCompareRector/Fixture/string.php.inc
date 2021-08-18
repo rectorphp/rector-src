@@ -26,11 +26,11 @@ final class ExplicitString
 {
     public function run(string $item)
     {
-        if ($item === '') {
+        if ($item === '' || $item === '0') {
             return 'empty';
         }
 
-        if ($item !== '') {
+        if ($item !== '' && !$item !== '0') {
             return 'not empty';
         }
     }
