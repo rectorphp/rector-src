@@ -198,15 +198,13 @@ CODE_SAMPLE
         }
 
         $length = strlen($value);
-        if ($length === 0) {
-            return $identical;
-        }
-        if ($length > 1) {
-            return $identical;
+
+        if ($length === 1) {
+            $string = new String_('0');
+            return $this->resolveIdentical($expr, $isNegated, $string);
         }
 
-        $string = new String_('0');
-        return $this->resolveIdentical($expr, $isNegated, $string);
+        return $identical;
     }
 
     private function resolveIdentical(Expr $expr, bool $isNegated, String_ $string): Identical | NotIdentical
