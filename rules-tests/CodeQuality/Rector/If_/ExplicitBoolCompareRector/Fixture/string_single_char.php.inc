@@ -2,10 +2,14 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class ExplicitString
+final class StringSingleChar
 {
-    public function run(string $item)
+    public function run(bool $check)
     {
+        $item = $check
+            ? 'a'
+            : '0';
+
         if (!$item) {
             return 'empty';
         }
@@ -22,10 +26,14 @@ final class ExplicitString
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class ExplicitString
+final class StringSingleChar
 {
-    public function run(string $item)
+    public function run(bool $check)
     {
+        $item = $check
+            ? 'a'
+            : '0';
+
         if ($item === '' || $item === '0') {
             return 'empty';
         }

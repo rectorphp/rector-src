@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-class SkipExplode
+class SomeExplode
 {
     public function run()
     {
@@ -21,7 +21,7 @@ class SkipExplode
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-class SkipExplode
+class SomeExplode
 {
     public function run()
     {

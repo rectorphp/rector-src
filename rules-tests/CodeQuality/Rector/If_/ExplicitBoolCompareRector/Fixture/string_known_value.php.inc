@@ -2,10 +2,12 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class ExplicitString
+final class StringKnownvalue
 {
     public function run(string $item)
     {
+        $item = 'a value';
+
         if (!$item) {
             return 'empty';
         }
@@ -22,15 +24,17 @@ final class ExplicitString
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class ExplicitString
+final class StringKnownvalue
 {
     public function run(string $item)
     {
-        if ($item === '' || $item === '0') {
+        $item = 'a value';
+
+        if ($item === '') {
             return 'empty';
         }
 
-        if ($item !== '' && $item !== '0') {
+        if ($item !== '') {
             return 'not empty';
         }
     }
