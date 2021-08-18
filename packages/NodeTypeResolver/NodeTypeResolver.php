@@ -128,30 +128,23 @@ final class NodeTypeResolver
     {
         if ($node instanceof Ternary) {
             $second = $this->resolve($node->else);
-            if ($second instanceof NullType) {
-                return new MixedType();
-            }
 
             if ($node->if !== null) {
                 $first = $this->resolve($node->if);
                 $second = $this->resolve($node->else);
 
-                if ($first instanceof UnionType || $second instanceof UnionType) {
-                    return new MixedType();
+                if (! $first instanceof UnionType && ! $second instanceof UnionType && ! $second instanceof NullType) {
+                    return new UnionType([$first, $second]);
                 }
-
-                return new UnionType([$first, $second]);
             }
 
             $condType = $this->resolve($node->cond);
             if ($this->isNullableType($node->cond) && $condType instanceof UnionType) {
                 $first = $condType->getTypes()[0];
 
-                if ($first instanceof UnionType || $second instanceof UnionType) {
-                    return new MixedType();
+                if (! $first instanceof UnionType && ! $second instanceof UnionType && ! $second instanceof NullType) {
+                    return new UnionType([$first, $second]);
                 }
-
-                return new UnionType([$first, $second]);
             }
         }
 
@@ -159,11 +152,9 @@ final class NodeTypeResolver
             $first = $this->resolve($node->left);
             $second = $this->resolve($node->right);
 
-            if ($first instanceof UnionType || $second instanceof UnionType || $second instanceof NullType) {
-                return new MixedType();
+            if (! $first instanceof UnionType && ! $second instanceof UnionType && ! $second instanceof NullType) {
+                return new UnionType([$first, $second]);
             }
-
-            return new UnionType([$first, $second]);
         }
 
         $type = $this->resolveByNodeTypeResolvers($node);

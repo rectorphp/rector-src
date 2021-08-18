@@ -31,7 +31,7 @@ use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 
 final class ElseTernaryUnion
 {
-    public function run(?Expr $expr, Expr $expr2, Expr $expr3)
+    public function run(?Expr $expr, Expr $expr2, Expr $expr3): int|Expr|string
     {
         return $expr !== null ? $expr : $this->getOther();
     }
