@@ -128,7 +128,9 @@ final class NodeTypeResolver
 
     public function resolve(Node $node): Type
     {
-        if ($node instanceof Ternary) {
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+        if ($parent instanceof Return_ && $node instanceof Ternary) {
             if ($node->if !== null) {
                 $first = $this->resolve($node->if);
                 $second = $this->resolve($node->else);
@@ -145,7 +147,7 @@ final class NodeTypeResolver
             }
         }
 
-        if ($node instanceof Coalesce) {
+        if ($parent instanceof Return_ &&  $node instanceof Coalesce) {
             $first = $this->resolve($node->left);
             $second = $this->resolve($node->right);
 
