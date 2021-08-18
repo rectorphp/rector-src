@@ -209,28 +209,39 @@ CODE_SAMPLE
         return $this->getIdentical($expr, $isNegated, $string);
     }
 
-    private function getIdentical(Expr $expr, bool $isNegated, String_ $string): \Identical|\NotIdentical
+    private function getIdentical(Expr $expr, bool $isNegated, String_ $string): Identical | NotIdentical
     {
-        // compare === ''
-        return $isNegated
+        /**
+         * // compare === ''
+         *
+         * @var Identical|NotIdentical $identical
+         */
+        $identical = $isNegated
             ? new Identical($expr, $string)
             : new NotIdentical($expr, $string);
+
+        return $identical;
     }
 
     private function resolveZeroIdenticalstring(
         Identical | NotIdentical $identical,
         bool $isNegated,
         Expr $expr
-    ): \BooleanAnd|\BooleanOr
+    ): BooleanAnd | BooleanOr
     {
         $string = new String_('0');
         $zeroIdentical = $isNegated
             ? new Identical($expr, $string)
             : new NotIdentical($expr, $string);
 
-        return $isNegated
+        /**
+         * @var BooleanAnd|BooleanOr $result
+         */
+        $result = $isNegated
             ? new BooleanOr($identical, $zeroIdentical)
             : new BooleanAnd($identical, $zeroIdentical);
+
+        return $result;
     }
 
     private function resolveInteger(bool $isNegated, Expr $expr): Identical | NotIdentical
