@@ -4,7 +4,6 @@ namespace Rector\Core\Tests\Issues\AliasedImportDouble\Fixture;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
-use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 
 final class TernaryReturn
 {
@@ -24,7 +23,6 @@ namespace Rector\Core\Tests\Issues\AliasedImportDouble\Fixture;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
-use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 
 final class TernaryReturn
 {

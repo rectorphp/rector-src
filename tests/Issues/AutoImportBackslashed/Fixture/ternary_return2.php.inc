@@ -9,7 +9,7 @@ final class TernaryReturn2
 {
     public function run(?Expr $expr, Expr $expr2): BooleanOr
     {
-        return $expr ?: new BooleanOr($expr, $expr2);
+        return $expr ?: new BooleanOr($expr2, $expr2);
     }
 }
 
