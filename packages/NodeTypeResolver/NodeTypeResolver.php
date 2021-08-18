@@ -47,7 +47,6 @@ use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrect
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\HasOffsetTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\Type\StaticTypeAnalyzer;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\Type\ObjectTypeSpecifier;
@@ -74,7 +73,6 @@ final class NodeTypeResolver
         private AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
         private IdentifierTypeResolver $identifierTypeResolver,
         private RenamedClassesDataCollector $renamedClassesDataCollector,
-        private StaticTypeAnalyzer $staticTypeAnalyzer,
         array $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
@@ -131,7 +129,7 @@ final class NodeTypeResolver
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         if ($parent instanceof Return_ && $node instanceof Ternary) {
-            $second  = $this->resolve($node->else);
+            $second = $this->resolve($node->else);
             if ($second instanceof NullType) {
                 return new MixedType();
             }
@@ -145,13 +143,13 @@ final class NodeTypeResolver
 
             $condType = $this->resolve($node->cond);
             if ($this->isNullableType($node->cond) && $condType instanceof UnionType) {
-                $first  = $condType->getTypes()[0];
+                $first = $condType->getTypes()[0];
 
                 return new UnionType([$first, $second]);
             }
         }
 
-        if ($parent instanceof Return_ &&  $node instanceof Coalesce) {
+        if ($parent instanceof Return_ && $node instanceof Coalesce) {
             $first = $this->resolve($node->left);
             $second = $this->resolve($node->right);
 
