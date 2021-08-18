@@ -126,7 +126,10 @@ final class NodeTypeResolver
     public function resolve(Node $node): Type
     {
         if ($node instanceof Ternary) {
-            $first = $this->resolve($node->if);
+            $first = $node->if
+                ? $this->resolve($node->if)
+                : $this->resolve($node->cond);
+
             $second = $this->resolve($node->else);
 
             return new UnionType([$first, $second]);
