@@ -198,7 +198,10 @@ CODE_SAMPLE
         }
 
         $length = strlen($value);
-        if ($length === 0 || $length > 1) {
+        if ($length === 0) {
+            return $identical;
+        }
+        if ($length > 1) {
             return $identical;
         }
 
@@ -206,7 +209,7 @@ CODE_SAMPLE
         return $this->getIdentical($expr, $isNegated, $string);
     }
 
-    private function getIdentical(Expr $expr, bool $isNegated, String_ $string): Identical | NotIdentical
+    private function getIdentical(Expr $expr, bool $isNegated, String_ $string): \Identical|\NotIdentical
     {
         // compare === ''
         return $isNegated
@@ -214,7 +217,11 @@ CODE_SAMPLE
             : new NotIdentical($expr, $string);
     }
 
-    private function resolveZeroIdenticalstring(Identical | NotIdentical $identical, bool $isNegated, Expr $expr): BooleanAnd | BooleanOr
+    private function resolveZeroIdenticalstring(
+        Identical | NotIdentical $identical,
+        bool $isNegated,
+        Expr $expr
+    ): \BooleanAnd|\BooleanOr
     {
         $string = new String_('0');
         $zeroIdentical = $isNegated
