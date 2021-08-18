@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
@@ -124,6 +125,13 @@ final class NodeTypeResolver
 
     public function resolve(Node $node): Type
     {
+        if ($node instanceof Ternary) {
+            $first = $this->resolve($node->if);
+            $second = $this->resolve($node->else);
+
+            return new UnionType([$first, $second]);
+        }
+
         $type = $this->resolveByNodeTypeResolvers($node);
         if ($type !== null) {
             $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);

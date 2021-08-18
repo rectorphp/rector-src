@@ -45,8 +45,7 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
         private SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
         private AstResolver $reflectionAstResolver,
         private BetterStandardPrinter $betterStandardPrinter,
-        private ReflectionResolver $reflectionResolver,
-        private ParameterProvider $parameterProvider
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -72,12 +71,7 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
             return $this->resolveNoLocalReturnNodes($classLike, $functionLike);
         }
 
-        $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         foreach ($localReturnNodes as $localReturnNode) {
-            if ($isAutoImport && $localReturnNode->expr instanceof Ternary) {
-                continue;
-            }
-
             $returnedExprType = $this->nodeTypeResolver->getStaticType($localReturnNode);
             $returnedExprType = $this->correctWithNestedType($returnedExprType, $localReturnNode, $functionLike);
 
