@@ -127,13 +127,11 @@ final class NodeTypeResolver
     public function resolve(Node $node): Type
     {
         if ($node instanceof Ternary) {
-            $second = $this->resolve($node->else);
-
             if ($node->if !== null) {
                 $first = $this->resolve($node->if);
                 $second = $this->resolve($node->else);
 
-                if (! $first instanceof UnionType && ! $second instanceof UnionType && ! $second instanceof NullType) {
+                if ($this->isUnionTypeable($first, $second)) {
                     return new UnionType([$first, $second]);
                 }
             }
@@ -141,8 +139,9 @@ final class NodeTypeResolver
             $condType = $this->resolve($node->cond);
             if ($this->isNullableType($node->cond) && $condType instanceof UnionType) {
                 $first = $condType->getTypes()[0];
+                $second = $this->resolve($node->else);
 
-                if (! $first instanceof UnionType && ! $second instanceof UnionType && ! $second instanceof NullType) {
+                if ($this->isUnionTypeable($first, $second)) {
                     return new UnionType([$first, $second]);
                 }
             }
@@ -152,7 +151,7 @@ final class NodeTypeResolver
             $first = $this->resolve($node->left);
             $second = $this->resolve($node->right);
 
-            if (! $first instanceof UnionType && ! $second instanceof UnionType && ! $second instanceof NullType) {
+            if ($this->isUnionTypeable($first, $second)) {
                 return new UnionType([$first, $second]);
             }
         }
@@ -379,6 +378,11 @@ final class NodeTypeResolver
         }
 
         return new ObjectType($className, null, $classReflection);
+    }
+
+    private function isUnionTypeable(Type $first, Type $second): bool
+    {
+        return ! $first instanceof UnionType && ! $second instanceof UnionType && ! $second instanceof NullType;
     }
 
     private function addNodeTypeResolver(NodeTypeResolverInterface $nodeTypeResolver): void
