@@ -184,7 +184,7 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            if ($type->getClassName() === $classReflection->getName()) {
+            if ($type->getClassName() === $className) {
                 return true;
             }
 
