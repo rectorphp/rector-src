@@ -188,7 +188,7 @@ CODE_SAMPLE
     {
         $string = new String_('');
 
-        $identical = $this->getIdentical($expr, $isNegated, $string);
+        $identical = $this->resolveIdentical($expr, $isNegated, $string);
 
         $value = $this->valueResolver->getValue($expr);
 
@@ -206,10 +206,10 @@ CODE_SAMPLE
         }
 
         $string = new String_('0');
-        return $this->getIdentical($expr, $isNegated, $string);
+        return $this->resolveIdentical($expr, $isNegated, $string);
     }
 
-    private function getIdentical(Expr $expr, bool $isNegated, String_ $string): Identical | NotIdentical
+    private function resolveIdentical(Expr $expr, bool $isNegated, String_ $string): Identical | NotIdentical
     {
         /**
          * // compare === ''
