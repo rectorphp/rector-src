@@ -26,6 +26,7 @@ use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\NodeTypeResolver\TypeAnalyzer\StringTypeAnalyzer;
@@ -109,6 +110,10 @@ CODE_SAMPLE
 
         $conditionStaticType = $this->getStaticType($conditionNode);
         if ($conditionStaticType instanceof BooleanType || $conditionStaticType instanceof ConstantIntegerType) {
+            return null;
+        }
+
+        if ($conditionStaticType instanceof MixedType) {
             return null;
         }
 

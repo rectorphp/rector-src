@@ -7,19 +7,21 @@ namespace Rector\NodeTypeResolver\TypeAnalyzer;
 use PhpParser\Node;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class StringTypeAnalyzer
 {
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private ContextAnalyzer $contextAnalyzer
     ) {
     }
 
     public function isStringOrUnionStringOnlyType(Node $node): bool
     {
         $nodeType = $this->nodeTypeResolver->getStaticType($node);
-        if ($nodeType instanceof StringType) {
+        if ($nodeType instanceof StringType && ! $this->contextAnalyzer->isInLoop($node)) {
             return true;
         }
 
