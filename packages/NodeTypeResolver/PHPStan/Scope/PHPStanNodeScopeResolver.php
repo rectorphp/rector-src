@@ -22,6 +22,7 @@ use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ObjectType;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -127,17 +128,11 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        $contents = $smartFileInfo->getContents();
-
-        // avoid crash on class with @mixin @see https://github.com/rectorphp/rector-src/pull/688
-        if (! Strings::match($contents, self::MIXIN_REGEX)) {
-            // avoid crash on class with @mixin in source @see https://github.com/rectorphp/rector-src/pull/689
-            if ($this->isMixinInSource($nodes, $smartFileInfo)) {
-                return $nodes;
-            }
-
-            $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
+        if ($this->isMixinInSource($nodes, $smartFileInfo)) {
+            return $nodes;
         }
+
+        $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
 
         $this->resolveAndSaveDependentFiles($nodes, $mutatingScope, $smartFileInfo);
 
@@ -151,11 +146,12 @@ final class PHPStanNodeScopeResolver
     {
         $realPath = $smartFileInfo->getRealPath();
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($realPath): bool {
-            if (! $node instanceof FullyQualified) {
+
+            if (! $node instanceof FullyQualified && ! $node instanceof Class_) {
                 return false;
             }
 
-            $className = $node->toString();
+            $className = $node instanceof FullyQualified ? $node->toString() : $node->namespacedName->toString();
 
             // fix error in parallel test
             // use function_exists on purpose as using reflectionProvider broke the test in parallel
@@ -179,11 +175,16 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            if ($fileName === $realPath) {
-                return false;
+            foreach ($classReflection->getMixinTags() as $mixinTag) {
+                $type = $mixinTag->getType();
+                if ($type instanceof ObjectType) {
+                    if ($type->getClassName() === $className) {
+                        return true;
+                    }
+                }
             }
 
-            return $classReflection->getMixinTags() !== [];
+            return false;
         });
     }
 
