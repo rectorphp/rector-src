@@ -155,7 +155,7 @@ final class NodeTypeResolver
             $first = $this->resolve($node->left);
             $second = $this->resolve($node->right);
 
-            if ($second instanceof NullType) {
+            if ($first instanceof UnionType || $second instanceof NullType) {
                 return new MixedType();
             }
 
