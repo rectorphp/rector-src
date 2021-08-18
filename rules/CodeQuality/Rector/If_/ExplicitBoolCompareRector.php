@@ -227,8 +227,7 @@ CODE_SAMPLE
         Identical | NotIdentical $identical,
         bool $isNegated,
         Expr $expr
-    ): BooleanAnd | BooleanOr
-    {
+    ): BooleanAnd | BooleanOr {
         $string = new String_('0');
         $zeroIdentical = $isNegated
             ? new Identical($expr, $string)
