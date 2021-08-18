@@ -26,6 +26,7 @@ use PHPStan\Type\ObjectType;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
@@ -65,7 +66,8 @@ final class PHPStanNodeScopeResolver
         private PrivatesAccessor $privatesAccessor,
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private ParentAttributeSourceLocator $parentAttributeSourceLocator,
-        private BetterNodeFinder $betterNodeFinder
+        private BetterNodeFinder $betterNodeFinder,
+        private ClassAnalyzer $classAnalyzer,
     ) {
     }
 
@@ -149,7 +151,7 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            if ($node instanceof Class_ && $node->isAnonymous()) {
+            if ($this->classAnalyzer->isAnonymousClass($node)) {
                 return false;
             }
 
