@@ -6,7 +6,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 
-final class Anything
+final class TernaryReturn
 {
     public function run(Expr $expr, Expr $expr2): BooleanAnd | BooleanOr
     {
@@ -26,7 +26,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 
-final class Anything
+final class TernaryReturn
 {
     public function run(Expr $expr, Expr $expr2): BooleanAnd | BooleanOr
     {
