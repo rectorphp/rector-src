@@ -188,21 +188,30 @@ CODE_SAMPLE
     {
         $string = new String_('');
 
-        // compare === ''
-        $identical = $isNegated
-            ? new Identical($expr, $string)
-            : new NotIdentical($expr, $string);
+        $identical = $this->getIdentical($expr, $isNegated, $string);
 
         $value = $this->valueResolver->getValue($expr);
-        if (! is_string($value)) {
+
+        // unknown value. may be from parameter
+        if ($value === null) {
             return $this->resolveZeroIdenticalstring($identical, $isNegated, $expr);
         }
 
-        if (strlen($value) !== 1) {
+        $length = strlen($value);
+        if ($length === 0 || $length > 1) {
             return $identical;
         }
 
-        return $this->resolveZeroIdenticalstring($identical, $isNegated, $expr);
+        $string = new String_('0');
+        return $this->getIdentical($expr, $isNegated, $string);
+    }
+
+    private function getIdentical(Expr $expr, bool $isNegated, String_ $string): Identical | NotIdentical
+    {
+        // compare === ''
+        return $isNegated
+            ? new Identical($expr, $string)
+            : new NotIdentical($expr, $string);
     }
 
     private function resolveZeroIdenticalstring(Identical | NotIdentical $identical, bool $isNegated, Expr $expr): BooleanAnd | BooleanOr

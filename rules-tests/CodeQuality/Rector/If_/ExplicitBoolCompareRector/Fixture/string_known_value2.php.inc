@@ -2,17 +2,20 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class StringSingleChar
+final class StringKnownvalue2
 {
-    public function run(bool $check)
+    public function run()
     {
-        $item = $check
-            ? 'a'
-            : '0';
+        $item = '';
 
         if (!$item) {
             return 'empty';
         }
+    }
+
+    public function run2()
+    {
+        $item = '';
 
         if ($item) {
             return 'not empty';
@@ -26,19 +29,22 @@ final class StringSingleChar
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ExplicitBoolCompareRector\Fixture;
 
-final class StringSingleChar
+final class StringKnownvalue2
 {
-    public function run(bool $check)
+    public function run()
     {
-        $item = $check
-            ? 'a'
-            : '0';
+        $item = '';
 
-        if ($item === '' || $item === '0') {
+        if ($item === '') {
             return 'empty';
         }
+    }
 
-        if ($item !== '' && $item !== '0') {
+    public function run2()
+    {
+        $item = '';
+
+        if ($item !== '') {
             return 'not empty';
         }
     }
