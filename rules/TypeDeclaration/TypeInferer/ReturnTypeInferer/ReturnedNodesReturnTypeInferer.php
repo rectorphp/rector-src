@@ -75,7 +75,7 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
         $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         foreach ($localReturnNodes as $localReturnNode) {
             if ($isAutoImport && $localReturnNode->expr instanceof Ternary) {
-                return new MixedType();
+                continue;
             }
 
             $returnedExprType = $this->nodeTypeResolver->getStaticType($localReturnNode);
