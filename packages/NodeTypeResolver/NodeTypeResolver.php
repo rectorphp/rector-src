@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -137,6 +138,13 @@ final class NodeTypeResolver
             if ($condType instanceof UnionType) {
                 return new MixedType();
             }
+        }
+
+        if ($node instanceof Coalesce) {
+            $first = $this->resolve($node->left);
+            $second = $this->resolve($node->right);
+
+            return new UnionType([$first, $second]);
         }
 
         $type = $this->resolveByNodeTypeResolvers($node);
