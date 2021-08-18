@@ -131,6 +131,11 @@ final class NodeTypeResolver
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         if ($parent instanceof Return_ && $node instanceof Ternary) {
+            $second  = $this->resolve($node->else);
+            if ($second instanceof NullType) {
+                return new MixedType();
+            }
+
             if ($node->if !== null) {
                 $first = $this->resolve($node->if);
                 $second = $this->resolve($node->else);
@@ -141,7 +146,6 @@ final class NodeTypeResolver
             $condType = $this->resolve($node->cond);
             if ($this->isNullableType($node->cond) && $condType instanceof UnionType) {
                 $first  = $condType->getTypes()[0];
-                $second  = $this->resolve($node->else);
 
                 return new UnionType([$first, $second]);
             }
@@ -150,6 +154,10 @@ final class NodeTypeResolver
         if ($parent instanceof Return_ &&  $node instanceof Coalesce) {
             $first = $this->resolve($node->left);
             $second = $this->resolve($node->right);
+
+            if ($second instanceof NullType) {
+                return new MixedType();
+            }
 
             return new UnionType([$first, $second]);
         }
