@@ -2,12 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp74\Rector\ClassMethod\DowngradeContravariantArgumentTypeRector;
 
-/**
- * @method InterfaceWithPhpdocMethod someMethod(string|null $param)
- */
-interface InterfaceWithPhpdocMethod
-{
-}
+use Rector\Tests\DowngradePhp74\Rector\ClassMethod\DowngradeContravariantArgumentTypeRector\Source\InterfaceWithPhpdocMethod;
 
 class ContextImpl implements InterfaceWithPhpdocMethod
 {
@@ -23,12 +18,7 @@ class ContextImpl implements InterfaceWithPhpdocMethod
 
 namespace Rector\Tests\DowngradePhp74\Rector\ClassMethod\DowngradeContravariantArgumentTypeRector;
 
-/**
- * @method InterfaceWithPhpdocMethod someMethod(string|null $param)
- */
-interface InterfaceWithPhpdocMethod
-{
-}
+use Rector\Tests\DowngradePhp74\Rector\ClassMethod\DowngradeContravariantArgumentTypeRector\Source\InterfaceWithPhpdocMethod;
 
 class ContextImpl implements InterfaceWithPhpdocMethod
 {
