@@ -1,14 +1,12 @@
 <?php
 
-interface X {}
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
+
+interface X {}
 
 class Y implements X {}
-namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
 class Z {}
-
-namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
 final class Foo
 {
@@ -31,8 +29,12 @@ final class Foo
 -----
 <?php
 
+namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
+
 interface X {}
+
 class Y implements X {}
+
 class Z {}
 
 final class Foo
