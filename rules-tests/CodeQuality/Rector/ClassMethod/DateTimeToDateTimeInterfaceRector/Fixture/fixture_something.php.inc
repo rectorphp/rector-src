@@ -26,7 +26,7 @@ final class FixtureSomething
 }
 
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfaceRector\Fixture;
@@ -62,3 +62,5 @@ final class FixtureSomething
         return $this->date;
     }
 }
+
+?>

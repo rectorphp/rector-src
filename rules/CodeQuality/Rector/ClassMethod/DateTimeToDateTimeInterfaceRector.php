@@ -101,21 +101,31 @@ CODE_SAMPLE
 
         /** @var FullyQualified $returnType */
         $returnType = $node->returnType;
-        if ($returnType !== null && $this->isObjectType($returnType, new ObjectType('DateTime'))) {
-            $node->returnType = new FullyQualified('DateTimeInterface');
+        if ($returnType === null) {
+            if (! $isModifiedNode) {
+                return null;
+            }
 
-            $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
-//            if ($this->paramAnalyzer->isNullable($returnType)) {
-//                $types[] = new NullType();
-//            }
-
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
+            return $node;
         }
 
-        if (! $isModifiedNode) {
+        $isNullable = false;
+        if ($returnType instanceof NullableType) {
+            $isNullable = true;
+            $returnType = $returnType->type;
+        }
+        if (! $this->isObjectType($returnType, new ObjectType('DateTime'))) {
             return null;
         }
+        $node->returnType = new FullyQualified('DateTimeInterface');
+
+        $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
+        if ($isNullable) {
+            $types[] = new NullType();
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
 
         return $node;
     }
