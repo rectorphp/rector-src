@@ -9,14 +9,12 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Node\ClassPropertyNode;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
@@ -126,11 +124,8 @@ CODE_SAMPLE
             $classMethod->returnType = new NullableType($classMethod->returnType);
         }
 
-        $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
-        if ($isNullable) {
-            $types[] = new NullType();
-        }
 
+        $types = $this->determinePhpDocTypes($classMethod->returnType);
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
 
@@ -150,10 +145,7 @@ CODE_SAMPLE
 
     private function refactorParamDocBlock(Param $param, ClassMethod $classMethod): void
     {
-        $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
-        if ($this->paramAnalyzer->isNullable($param)) {
-            $types[] = new NullType();
-        }
+        $types = $this->determinePhpDocTypes($param);
 
         $paramName = $this->getName($param->var);
         if ($paramName === null) {
@@ -261,19 +253,36 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->type = new FullyQualified('DateTimeInterface');
-        if ($isNullable) {
-            $node->type = new NullableType($node->type);
-        }
 
-        $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
-        if ($isNullable) {
-            $types[] = new NullType();
-        }
+        $types = $this->determinePhpDocTypes($node->type);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $this->phpDocTypeChanger->changeVarType($phpDocInfo, new UnionType($types));
 
+        $node->type = new FullyQualified('DateTimeInterface');
+        if ($isNullable) {
+            $node->type = new NullableType($node->type);
+        }
         return $node;
+    }
+
+    private function determinePhpDocTypes(Node $node): array
+    {
+        $types = [
+            new ObjectType('DateTime'),
+            new ObjectType('DateTimeImmutable')
+        ];
+
+        if ($node instanceof Param) {
+            if ($this->paramAnalyzer->isNullable($node)) {
+                $types[] = new NullType();
+            }
+        } else {
+            if ($node instanceof NullableType) {
+                $types[] = new NullType();
+            }
+        }
+
+        return $types;
     }
 }
