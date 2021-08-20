@@ -87,7 +87,8 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof ClassMethod) {
-            return $this->refactorClassMethod($node);
+            $this->refactorClassMethod($node);
+            return $node;
         }
 
         return $this->refactorProperty($node);
@@ -130,7 +131,7 @@ CODE_SAMPLE
     /**
      * @return Type[]
      */
-    private function determinePhpDocTypes(Node $node): array
+    private function determinePhpDocTypes(?Node $node): array
     {
         $types = [
             new ObjectType('DateTime'),
@@ -144,7 +145,7 @@ CODE_SAMPLE
         return $types;
     }
 
-    private function canHaveNullType(Node $node): bool
+    private function canHaveNullType(?Node $node): bool
     {
         if ($node instanceof Param) {
             return $this->paramAnalyzer->isNullable($node);
@@ -153,7 +154,7 @@ CODE_SAMPLE
         return $node instanceof NullableType;
     }
 
-    private function refactorClassMethod(ClassMethod|Node $node): ClassMethod
+    private function refactorClassMethod(ClassMethod $node): void
     {
         $fromObjectType = new ObjectType('DateTime');
         $replaceIntoType = new FullyQualified('DateTimeInterface');
@@ -162,7 +163,7 @@ CODE_SAMPLE
             new ObjectType('DateTimeImmutable')
         ]);
 
-        $node = $this->parameterTypeManipulator->refactorFunctionParameters(
+        $this->parameterTypeManipulator->refactorFunctionParameters(
             $node,
             $fromObjectType,
             $replaceIntoType,
@@ -170,9 +171,9 @@ CODE_SAMPLE
             self::METHODS_RETURNING_CLASS_INSTANCE_MAP
         );
         if (! $node->returnType instanceof Node) {
-            return $node;
+            return;
         }
-        return $this->returnTypeManipulator->refactorFunctionReturnType(
+        $this->returnTypeManipulator->refactorFunctionReturnType(
             $node,
             $fromObjectType,
             $replaceIntoType,

@@ -29,12 +29,12 @@ final class ClassMethodReturnTypeManipulator
     public function refactorFunctionReturnType(
         ClassMethod $classMethod,
         ObjectType $toReplaceType,
-        Identifier|Name|NullableType|UnionType $replaceIntoType,
+        Identifier|Name|NullableType $replaceIntoType,
         Type $phpDocType
-    ): ClassMethod {
+    ): void {
         $returnType = $classMethod->returnType;
         if ($returnType === null) {
-            return $classMethod;
+            return;
         }
 
         $isNullable = false;
@@ -43,12 +43,12 @@ final class ClassMethodReturnTypeManipulator
             $returnType = $returnType->type;
         }
         if (! $this->nodeTypeResolver->isObjectType($returnType, $toReplaceType)) {
-            return $classMethod;
+            return;
         }
 
         $paramType = $this->nodeTypeResolver->resolve($returnType);
         if (! $paramType->isSuperTypeOf($toReplaceType)->yes()) {
-            return $classMethod;
+            return;
         }
 
         if ($isNullable) {
@@ -66,7 +66,5 @@ final class ClassMethodReturnTypeManipulator
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $phpDocType);
-
-        return $classMethod;
     }
 }

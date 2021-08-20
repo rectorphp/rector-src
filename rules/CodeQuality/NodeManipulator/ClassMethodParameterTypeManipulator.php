@@ -42,15 +42,15 @@ final class ClassMethodParameterTypeManipulator
     }
 
     /**
-     * @var string[] $methodsReturningClassInstance
+     * @param string[] $methodsReturningClassInstance
      */
     public function refactorFunctionParameters(
         ClassMethod $node,
         ObjectType $toReplaceType,
-        Identifier|Name|NullableType|UnionType $replaceIntoType,
+        Identifier|Name|NullableType $replaceIntoType,
         Type $phpDocType,
         array $methodsReturningClassInstance
-    ): ClassMethod {
+    ): void {
         foreach ($node->getParams() as $param) {
             if (! $this->nodeTypeResolver->isObjectType($param, $toReplaceType)) {
                 continue;
@@ -66,12 +66,10 @@ final class ClassMethodParameterTypeManipulator
             $this->refactorParamDocBlock($param, $node, $phpDocType);
             $this->refactorMethodCalls($param, $node, $methodsReturningClassInstance);
         }
-
-        return $node;
     }
 
 
-    private function refactorParamTypeHint(Param $param, Identifier|Name|NullableType|UnionType $replaceIntoType): void
+    private function refactorParamTypeHint(Param $param, Identifier|Name|NullableType $replaceIntoType): void
     {
         if ($this->paramAnalyzer->isNullable($param) && !$replaceIntoType instanceof NullableType) {
             $replaceIntoType = new NullableType($replaceIntoType);
@@ -100,7 +98,7 @@ final class ClassMethodParameterTypeManipulator
     }
 
     /**
-     * @var string[] $methodsReturningClassInstance
+     * @param string[] $methodsReturningClassInstance
      */
     private function refactorMethodCalls(Param $param, ClassMethod $classMethod, array $methodsReturningClassInstance): void
     {
@@ -118,7 +116,7 @@ final class ClassMethodParameterTypeManipulator
     }
 
     /**
-     * @var string[] $methodsReturningClassInstance
+     * @param string[] $methodsReturningClassInstance
      */
     private function refactorMethodCall(Param $param, MethodCall $methodCall, array $methodsReturningClassInstance): void
     {
@@ -147,7 +145,7 @@ final class ClassMethodParameterTypeManipulator
     }
 
     /**
-     * @var string[] $methodsReturningClassInstance
+     * @param string[] $methodsReturningClassInstance
      */
     private function shouldSkipMethodCallRefactor(string $paramName, MethodCall $methodCall, array $methodsReturningClassInstance): bool
     {
