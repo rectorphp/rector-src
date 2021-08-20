@@ -232,7 +232,7 @@ CODE_SAMPLE
 
             // Do not refactor if node's type is a child class of \DateTime (can have wider API)
             $paramType = $this->nodeTypeResolver->resolve($param);
-            if (! $paramType->isSuperTypeOf($objectType)->yes()) {
+            if (! $paramType->isSuperTypeOf(new ObjectType('DateTime'))->yes()) {
                 continue;
             }
 
