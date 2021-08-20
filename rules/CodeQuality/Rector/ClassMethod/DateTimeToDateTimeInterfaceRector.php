@@ -85,8 +85,8 @@ CODE_SAMPLE
             }
             return $this->returnTypeManipulator->changeReturnType(
                 $node,
-                'DateTime',
-                'DateTimeInterface',
+                new ObjectType('DateTime'),
+                new FullyQualified('DateTimeInterface'),
                 $this->determinePhpDocTypes($node->returnType)
             );
         }

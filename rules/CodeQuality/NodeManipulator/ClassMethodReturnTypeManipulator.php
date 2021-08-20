@@ -5,18 +5,15 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeManipulator;
 
-use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class ClassMethodReturnTypeManipulator
@@ -24,17 +21,19 @@ final class ClassMethodReturnTypeManipulator
     public function __construct(
         private PhpDocInfoFactory $phpDocInfoFactory,
         private PhpDocTypeChanger $phpDocTypeChanger,
-        private NodeTypeResolver $nodeTypeResolver,
-        private ParamAnalyzer $paramAnalyzer
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
     /**
      * @var Type[] $alternativeTypes
      */
-    public function changeReturnType(ClassMethod $classMethod, string $toReplaceType, string $replaceIntoType, array $alternativeTypes): ?ClassMethod
-    {
-        /** @var FullyQualified|null $returnType */
+    public function changeReturnType(
+        ClassMethod $classMethod,
+        ObjectType $toReplaceType,
+        Identifier|Name|NullableType|UnionType $replaceIntoType,
+        array $alternativeTypes
+    ): ?ClassMethod {
         $returnType = $classMethod->returnType;
         if ($returnType === null) {
             return null;
@@ -45,15 +44,14 @@ final class ClassMethodReturnTypeManipulator
             $isNullable = true;
             $returnType = $returnType->type;
         }
-        if (! $this->nodeTypeResolver->isObjectType($returnType, new ObjectType($toReplaceType))) {
+        if (! $this->nodeTypeResolver->isObjectType($returnType, $toReplaceType)) {
             return null;
         }
 
-        $classMethod->returnType = new FullyQualified($replaceIntoType);
-        if ($isNullable) {
-            $classMethod->returnType = new NullableType($classMethod->returnType);
+        if ($isNullable && !$replaceIntoType instanceof NullableType) {
+            $replaceIntoType = new NullableType($replaceIntoType);
         }
-
+        $classMethod->returnType = $replaceIntoType;
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($alternativeTypes));
