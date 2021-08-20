@@ -172,7 +172,7 @@ CODE_SAMPLE
         $parentClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
 
         foreach ($parentClassReflections as $parentClassReflection) {
-            $parentReflectionMethod = $this->resolveReflectionMethod($parentClassReflection, $methodName);
+            $parentReflectionMethod = $this->resolveParentReflectionMethod($parentClassReflection, $methodName);
 
             if (! $parentReflectionMethod instanceof ReflectionMethod) {
                 continue;
@@ -192,7 +192,10 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveReflectionMethod(ClassReflection $classReflection, string $methodName): ?ReflectionMethod
+    private function resolveParentReflectionMethod(
+        ClassReflection $classReflection,
+        string $methodName
+    ): ?ReflectionMethod
     {
         if (! $classReflection->hasMethod($methodName)) {
             return null;
