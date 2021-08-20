@@ -194,7 +194,7 @@ final class PromotedPropertyCandidateResolver
             }
 
             if ($isAllFullyQualifiedObjectType) {
-                return $this->typeComparator->areTypesEqual($propertyType, $matchedParamType);
+                return false;
             }
         }
 
