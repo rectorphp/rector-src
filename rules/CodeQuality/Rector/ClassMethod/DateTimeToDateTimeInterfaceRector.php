@@ -19,6 +19,7 @@ use Rector\CodeQuality\NodeManipulator\ClassMethodParameterTypeManipulator;
 use Rector\CodeQuality\NodeManipulator\ClassMethodReturnTypeManipulator;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,6 +30,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DateTimeToDateTimeInterfaceRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string[]
+     */
+    private const METHODS_RETURNING_CLASS_INSTANCE_MAP = [
+        'add', 'modify', MethodName::SET_STATE, 'setDate', 'setISODate', 'setTime', 'setTimestamp', 'setTimezone', 'sub',
+    ];
+
     public function __construct(
         private PhpDocTypeChanger $phpDocTypeChanger,
         private ParamAnalyzer $paramAnalyzer,
@@ -79,16 +87,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof ClassMethod) {
-            $node = $this->parameterTypeManipulator->refactorFunctionParameters($node);
-            if (! $node->returnType instanceof Node) {
-                return $node;
-            }
-            return $this->returnTypeManipulator->changeReturnType(
-                $node,
-                new ObjectType('DateTime'),
-                new FullyQualified('DateTimeInterface'),
-                new UnionType($this->determinePhpDocTypes($node->returnType))
-            );
+            return $this->refactorClassMethod($node);
         }
 
         return $this->refactorProperty($node);
@@ -152,5 +151,32 @@ CODE_SAMPLE
         }
 
         return $node instanceof NullableType;
+    }
+
+    private function refactorClassMethod(ClassMethod|Node $node): ClassMethod
+    {
+        $fromObjectType = new ObjectType('DateTime');
+        $replaceIntoType = new FullyQualified('DateTimeInterface');
+        $replacementPhpDocType = new UnionType([
+            new ObjectType('DateTime'),
+            new ObjectType('DateTimeImmutable')
+        ]);
+
+        $node = $this->parameterTypeManipulator->refactorFunctionParameters(
+            $node,
+            $fromObjectType,
+            $replaceIntoType,
+            $replacementPhpDocType,
+            self::METHODS_RETURNING_CLASS_INSTANCE_MAP
+        );
+        if (! $node->returnType instanceof Node) {
+            return $node;
+        }
+        return $this->returnTypeManipulator->refactorFunctionReturnType(
+            $node,
+            $fromObjectType,
+            $replaceIntoType,
+            $replacementPhpDocType
+        );
     }
 }
