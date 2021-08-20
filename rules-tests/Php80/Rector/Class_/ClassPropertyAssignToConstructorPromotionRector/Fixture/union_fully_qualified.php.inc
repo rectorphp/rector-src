@@ -8,7 +8,7 @@ class Y implements X {}
 
 class Z {}
 
-final class Foo
+final class UnionFullyQualified
 {
 	public Y $y;
 
@@ -37,7 +37,7 @@ class Y implements X {}
 
 class Z {}
 
-final class Foo
+final class UnionFullyQualified
 {
 	public function __construct(public Y $y, public Z $z)
 	{

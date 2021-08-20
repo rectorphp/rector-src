@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
@@ -21,6 +22,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\ValueObject\PropertyPromotionCandidate;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
 final class PromotedPropertyCandidateResolver
@@ -180,6 +182,20 @@ final class PromotedPropertyCandidateResolver
             $matchedParamType = $this->typeFactory->createMixedPassedOrUnionType(
                 [$matchedParamType, $defaultValueType]
             );
+        }
+
+        if ($propertyType instanceof UnionType) {
+            $isAllFullyQualifiedObjectType = true;
+            foreach ($propertyType->getTypes() as $type) {
+                if (! $type instanceof FullyQualifiedObjectType) {
+                    $isAllFullyQualifiedObjectType = false;
+                    break;
+                }
+            }
+
+            if ($isAllFullyQualifiedObjectType) {
+                return $this->typeComparator->areTypesEqual($propertyType, $matchedParamType);
+            }
         }
 
         // different types, not a good to fit
