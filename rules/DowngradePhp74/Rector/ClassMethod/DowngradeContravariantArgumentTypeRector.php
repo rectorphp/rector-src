@@ -178,6 +178,10 @@ CODE_SAMPLE
 
             $nativeClassReflection = $parentClassReflection->getNativeReflection();
 
+            if (! $nativeClassReflection->hasMethod($methodName)) {
+                continue;
+            }
+
             // Find the param we're looking for
             $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
 
