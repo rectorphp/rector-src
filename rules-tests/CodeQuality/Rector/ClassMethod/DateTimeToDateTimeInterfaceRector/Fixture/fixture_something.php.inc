@@ -39,7 +39,7 @@ final class FixtureSomething
     }
 
     /**
-     * @return \DateTime|\DateTimeImmutable $date
+     * @return \DateTime|\DateTimeImmutable
      */
     public function getDate(): \DateTimeInterface
     {

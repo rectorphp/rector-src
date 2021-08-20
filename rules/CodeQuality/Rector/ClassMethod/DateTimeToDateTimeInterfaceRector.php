@@ -99,6 +99,20 @@ CODE_SAMPLE
             $isModifiedNode = true;
         }
 
+        /** @var FullyQualified $returnType */
+        $returnType = $node->returnType;
+        if ($returnType !== null && $this->isObjectType($returnType, new ObjectType('DateTime'))) {
+            $node->returnType = new FullyQualified('DateTimeInterface');
+
+            $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
+//            if ($this->paramAnalyzer->isNullable($returnType)) {
+//                $types[] = new NullType();
+//            }
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
+        }
+
         if (! $isModifiedNode) {
             return null;
         }
