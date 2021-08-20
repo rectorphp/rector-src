@@ -15,6 +15,14 @@ final class FixtureSomething
     {
         return $this->date;
     }
+
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getNullableDate(): ?\DateTime
+    {
+        return $this->date;
+    }
 }
 
 ?>
@@ -42,6 +50,14 @@ final class FixtureSomething
      * @return \DateTime|\DateTimeImmutable
      */
     public function getDate(): \DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getNullableDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
