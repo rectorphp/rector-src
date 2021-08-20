@@ -264,8 +264,8 @@ CODE_SAMPLE
             $types[] = new NullType();
         }
 
-//        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-//        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $this->phpDocTypeChanger->changeVarType($phpDocInfo, new UnionType($types));
 
         return $node;
     }
