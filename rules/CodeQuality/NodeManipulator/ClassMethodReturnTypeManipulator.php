@@ -25,18 +25,15 @@ final class ClassMethodReturnTypeManipulator
     ) {
     }
 
-    /**
-     * @var Type[] $alternativeTypes
-     */
     public function changeReturnType(
         ClassMethod $classMethod,
         ObjectType $toReplaceType,
         Identifier|Name|NullableType|UnionType $replaceIntoType,
-        array $alternativeTypes
-    ): ?ClassMethod {
+        Type $phpDocType
+    ): ClassMethod {
         $returnType = $classMethod->returnType;
         if ($returnType === null) {
-            return null;
+            return $classMethod;
         }
 
         $isNullable = false;
@@ -45,7 +42,7 @@ final class ClassMethodReturnTypeManipulator
             $returnType = $returnType->type;
         }
         if (! $this->nodeTypeResolver->isObjectType($returnType, $toReplaceType)) {
-            return null;
+            return $classMethod;
         }
 
         if ($isNullable && !$replaceIntoType instanceof NullableType) {
@@ -54,7 +51,7 @@ final class ClassMethodReturnTypeManipulator
         $classMethod->returnType = $replaceIntoType;
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($alternativeTypes));
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $phpDocType);
 
         return $classMethod;
     }

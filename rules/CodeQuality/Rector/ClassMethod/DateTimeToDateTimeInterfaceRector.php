@@ -80,14 +80,14 @@ CODE_SAMPLE
     {
         if ($node instanceof ClassMethod) {
             $node = $this->parameterTypeManipulator->refactorFunctionParameters($node);
-            if (!$node->returnType instanceof Node) {
+            if (! $node->returnType instanceof Node) {
                 return $node;
             }
             return $this->returnTypeManipulator->changeReturnType(
                 $node,
                 new ObjectType('DateTime'),
                 new FullyQualified('DateTimeInterface'),
-                $this->determinePhpDocTypes($node->returnType)
+                new UnionType($this->determinePhpDocTypes($node->returnType))
             );
         }
 
