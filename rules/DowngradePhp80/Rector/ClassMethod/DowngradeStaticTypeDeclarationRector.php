@@ -6,8 +6,8 @@ namespace Rector\DowngradePhp80\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\StaticType;
@@ -18,7 +18,6 @@ use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Analyser\Scope;
 
 /**
  * @see \Rector\Tests\DowngradePhp80\Rector\ClassMethod\DowngradeStaticTypeDeclarationRector\DowngradeStaticTypeDeclarationRectorTest
@@ -121,11 +120,8 @@ CODE_SAMPLE
         }
 
         $classLike = $classMethod->getAttribute(AttributeKey::CLASS_NODE);
-        if (! $classLike instanceof ClassLike) {
-            return false;
-        }
-
         $className = $this->nodeNameResolver->getName($classLike);
+
         if ($className === null) {
             return false;
         }
@@ -135,10 +131,6 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        if ($classReflection->isBuiltIn()) {
-            return false;
-        }
-
         $methodName = $this->nodeNameResolver->getName($classMethod);
         $children = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
 
@@ -147,7 +139,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $method      = $child->getMethod($methodName, $scope);
+            $method = $child->getMethod($methodName, $scope);
             $classMethod = $this->astResolver->resolveClassMethodFromMethodReflection($method);
 
             if (! $classMethod instanceof ClassMethod) {
