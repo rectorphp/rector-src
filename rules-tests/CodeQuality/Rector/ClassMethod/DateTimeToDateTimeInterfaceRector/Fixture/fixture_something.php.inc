@@ -6,9 +6,12 @@ final class FixtureSomething
 {
     private \DateTime $date;
 
-    public function __construct(\DateTime $date)
+    private ?\DateTime $nullableDate;
+
+    public function __construct(\DateTime $date, ?\DateTime $nullableDate)
     {
         $this->date = $date;
+        $this->nullableDate = $nullableDate;
     }
 
     public function getDate(): \DateTime
@@ -16,12 +19,9 @@ final class FixtureSomething
         return $this->date;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
     public function getNullableDate(): ?\DateTime
     {
-        return $this->date;
+        return $this->nullableDate;
     }
 }
 
@@ -39,11 +39,18 @@ final class FixtureSomething
     private \DateTimeInterface $date;
 
     /**
-     * @param \DateTime|\DateTimeImmutable $date
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    public function __construct(\DateTimeInterface $date)
+    private ?\DateTimeInterface $nullableDate;
+
+    /**
+     * @param \DateTime|\DateTimeImmutable $date
+     * @param \DateTime|\DateTimeImmutable|null $nullableDate
+     */
+    public function __construct(\DateTimeInterface $date, ?\DateTimeInterface $nullableDate)
     {
         $this->date = $date;
+        $this->nullableDate = $nullableDate;
     }
 
     /**
@@ -59,7 +66,7 @@ final class FixtureSomething
      */
     public function getNullableDate(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->nullableDate;
     }
 }
 
