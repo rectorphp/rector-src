@@ -46,6 +46,11 @@ final class ClassMethodReturnTypeManipulator
             return $classMethod;
         }
 
+        $paramType = $this->nodeTypeResolver->resolve($returnType);
+        if (! $paramType->isSuperTypeOf($toReplaceType)->yes()) {
+            return $classMethod;
+        }
+
         if ($isNullable) {
             if ($phpDocType instanceof UnionType) {
                 // Adding a UnionType into a new UnionType throws an exception so we need to "unpack" the types

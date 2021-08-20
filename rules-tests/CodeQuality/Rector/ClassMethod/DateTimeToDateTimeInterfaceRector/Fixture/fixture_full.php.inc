@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfaceRector\Fixture;
 
-final class FixtureSomething
+final class FixtureFull
 {
     private \DateTime $date;
 
@@ -31,7 +31,7 @@ final class FixtureSomething
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfaceRector\Fixture;
 
-final class FixtureSomething
+final class FixtureFull
 {
     /**
      * @var \DateTime|\DateTimeImmutable
