@@ -61,7 +61,6 @@ final class ClassMethodParameterTypeManipulator
                 continue;
             }
 
-
             $this->refactorParamTypeHint($param, $replaceIntoType);
             $this->refactorParamDocBlock($param, $node, $phpDocType);
             $this->refactorMethodCalls($param, $node, $methodsReturningClassInstance);

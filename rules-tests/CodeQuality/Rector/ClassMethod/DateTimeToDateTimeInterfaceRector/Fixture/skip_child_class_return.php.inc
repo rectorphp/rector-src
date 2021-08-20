@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfac
 
 use DateTime as PhpDateTime;
 
-class DateTime extends PhpDateTime
+class ReturnDateTime extends PhpDateTime
 {
     public function getDateTimeCustomFormat(): ?string
     {
@@ -12,14 +12,14 @@ class DateTime extends PhpDateTime
     }
 }
 
-class Foo
+class SkipChildClassReturn
 {
-    public static function bar(): ?DateTime
+    public static function bar(): ?ReturnDateTime
     {
         // ...
     }
 
-    public static function baz(): DateTime
+    public static function baz(): ReturnDateTime
     {
         // ...
     }
