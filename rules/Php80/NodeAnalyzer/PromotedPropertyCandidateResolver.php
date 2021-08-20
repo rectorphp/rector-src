@@ -184,22 +184,18 @@ final class PromotedPropertyCandidateResolver
             );
         }
 
+        $isAllFullyQualifiedObjectType = true;
         if ($propertyType instanceof UnionType) {
-            $isAllFullyQualifiedObjectType = true;
             foreach ($propertyType->getTypes() as $type) {
                 if (! $type instanceof FullyQualifiedObjectType) {
                     $isAllFullyQualifiedObjectType = false;
                     break;
                 }
             }
-
-            if ($isAllFullyQualifiedObjectType) {
-                return false;
-            }
         }
 
         // different types, not a good to fit
-        return ! $this->typeComparator->areTypesEqual($propertyType, $matchedParamType);
+        return ! $isAllFullyQualifiedObjectType && ! $this->typeComparator->areTypesEqual($propertyType, $matchedParamType);
     }
 
     /**
