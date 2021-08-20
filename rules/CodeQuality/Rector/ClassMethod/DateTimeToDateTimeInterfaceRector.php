@@ -9,11 +9,14 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Property;
+use PHPStan\Node\ClassPropertyNode;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
@@ -79,18 +82,32 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [ClassMethod::class, Property::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param ClassMethod|Property $node
      */
     public function refactor(Node $node): ?Node
     {
-        $node = $this->refactorFunctionParameters($node);
+        if ($node instanceof ClassMethod) {
+            return $this->refactorClassMethod($node);
+        }
+
+        return $this->refactorProperty($node);
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DATE_TIME_INTERFACE;
+    }
+
+    private function refactorClassMethod(ClassMethod $classMethod): ?Node {
+
+        $classMethod = $this->refactorFunctionParameters($classMethod);
 
         /** @var FullyQualified|null $returnType */
-        $returnType = $node->returnType;
+        $returnType = $classMethod->returnType;
         if ($returnType === null) {
             return null;
         }
@@ -104,9 +121,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->returnType = new FullyQualified('DateTimeInterface');
+        $classMethod->returnType = new FullyQualified('DateTimeInterface');
         if ($isNullable) {
-            $node->returnType = new NullableType($node->returnType);
+            $classMethod->returnType = new NullableType($classMethod->returnType);
         }
 
         $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
@@ -114,15 +131,10 @@ CODE_SAMPLE
             $types[] = new NullType();
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
 
-        return $node;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::DATE_TIME_INTERFACE;
+        return $classMethod;
     }
 
     private function refactorParamTypeHint(Param $param): void
@@ -222,6 +234,38 @@ CODE_SAMPLE
             $this->refactorParamDocBlock($param, $node);
             $this->refactorMethodCalls($param, $node);
         }
+
+        return $node;
+    }
+
+    private function refactorProperty(Property $node): ?Node
+    {
+        $type = $node->type;
+        if ($type === null) {
+            return null;
+        }
+
+        $isNullable = false;
+        if ($type instanceof NullableType) {
+            $isNullable = true;
+            $type = $type->type;
+        }
+        if (! $this->isObjectType($type, new ObjectType('DateTime'))) {
+            return null;
+        }
+
+        $node->type = new FullyQualified('DateTimeInterface');
+        if ($isNullable) {
+            $node->type = new NullableType($node->type);
+        }
+
+        $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
+        if ($isNullable) {
+            $types[] = new NullType();
+        }
+
+//        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+//        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
 
         return $node;
     }
