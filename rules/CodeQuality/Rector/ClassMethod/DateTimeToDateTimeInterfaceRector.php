@@ -100,7 +100,8 @@ CODE_SAMPLE
         return PhpVersionFeature::DATE_TIME_INTERFACE;
     }
 
-    private function refactorClassMethod(ClassMethod $classMethod): ?Node {
+    private function refactorClassMethod(ClassMethod $classMethod): ?Node
+    {
 
         $classMethod = $this->refactorFunctionParameters($classMethod);
 
@@ -273,16 +274,19 @@ CODE_SAMPLE
             new ObjectType('DateTimeImmutable')
         ];
 
-        if ($node instanceof Param) {
-            if ($this->paramAnalyzer->isNullable($node)) {
-                $types[] = new NullType();
-            }
-        } else {
-            if ($node instanceof NullableType) {
-                $types[] = new NullType();
-            }
+        if ($this->canHaveNullType($node)) {
+            $types[] = new NullType();
         }
 
         return $types;
+    }
+
+    private function canHaveNullType(Node $node): bool
+    {
+        if ($node instanceof Param) {
+            return $this->paramAnalyzer->isNullable($node);
+        }
+
+        return $node instanceof NullableType;
     }
 }
