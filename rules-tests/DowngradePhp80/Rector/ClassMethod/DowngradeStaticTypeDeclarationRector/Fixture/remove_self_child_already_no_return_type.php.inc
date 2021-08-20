@@ -25,7 +25,10 @@ namespace Rector\Tests\DowngradePhp80\Rector\ClassMethod\DowngradeStaticTypeDecl
 
 interface RemoveSelfChildAlreadyNoType
 {
-    public function run()
+    /**
+     * @return $this
+     */
+    public function run();
 }
 
 class Child implements RemoveSelfChildAlreadyNoType
