@@ -15,6 +15,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\CodeQuality\NodeManipulator\ClassMethodParameterTypeManipulator;
 use Rector\CodeQuality\NodeManipulator\ClassMethodReturnTypeManipulator;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -31,7 +32,8 @@ final class DateTimeToDateTimeInterfaceRector extends AbstractRector implements 
     public function __construct(
         private PhpDocTypeChanger $phpDocTypeChanger,
         private ParamAnalyzer $paramAnalyzer,
-        private ClassMethodReturnTypeManipulator $returnTypeManipulator
+        private ClassMethodReturnTypeManipulator $returnTypeManipulator,
+        private ClassMethodParameterTypeManipulator $parameterTypeManipulator
     ) {
     }
 
@@ -77,6 +79,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof ClassMethod) {
+            $node = $this->parameterTypeManipulator->refactorFunctionParameters($node);
             return $this->returnTypeManipulator->changeReturnType($node);
         }
 
