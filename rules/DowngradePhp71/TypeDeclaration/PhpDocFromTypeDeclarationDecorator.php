@@ -17,7 +17,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use PHPStan\Type\VerbosityLevel;
 
 final class PhpDocFromTypeDeclarationDecorator
 {
@@ -36,7 +35,10 @@ final class PhpDocFromTypeDeclarationDecorator
             return;
         }
 
-        if ($functionLike->returnType instanceof Name && $this->nodeNameResolver->isName($functionLike->returnType, 'self')) {
+        if ($functionLike->returnType instanceof Name && $this->nodeNameResolver->isName(
+            $functionLike->returnType,
+            'self'
+        )) {
             return;
         }
 
