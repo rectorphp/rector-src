@@ -6,7 +6,6 @@ namespace Rector\DowngradePhp71\TypeDeclaration;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -32,13 +31,6 @@ final class PhpDocFromTypeDeclarationDecorator
     public function decorate(ClassMethod | Function_ | Closure $functionLike): void
     {
         if ($functionLike->returnType === null) {
-            return;
-        }
-
-        if ($functionLike->returnType instanceof Name && $this->nodeNameResolver->isName(
-            $functionLike->returnType,
-            'self'
-        )) {
             return;
         }
 
