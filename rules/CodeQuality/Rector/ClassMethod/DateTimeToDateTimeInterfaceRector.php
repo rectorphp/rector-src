@@ -119,6 +119,10 @@ CODE_SAMPLE
         }
         $node->returnType = new FullyQualified('DateTimeInterface');
 
+        if ($isNullable) {
+            $node->returnType = new NullableType($node->returnType);
+        }
+
         $types = [new ObjectType('DateTime'), new ObjectType('DateTimeImmutable')];
         if ($isNullable) {
             $types[] = new NullType();
