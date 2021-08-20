@@ -7,10 +7,15 @@ namespace Rector\Php80\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -58,7 +63,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -78,24 +83,33 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class];
+        return [If_::class, Ternary::class];
     }
 
     /**
-     * @param If_ $node
+     * @param If_|Ternary $node
      */
     public function refactor(Node $node): ?Node
     {
-        $processNullSafeOperator = $this->processNullSafeOperatorIdentical($node);
+        if ($node instanceof If_) {
+            return $this->handleIfNode($node);
+        }
+
+        return $this->handleTernaryNode($node);
+    }
+
+    private function handleIfNode(If_ $if): ?Node
+    {
+        $processNullSafeOperator = $this->processNullSafeOperatorIdentical($if);
         if ($processNullSafeOperator !== null) {
             /** @var Expression $prevNode */
-            $prevNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+            $prevNode = $if->getAttribute(AttributeKey::PREVIOUS_NODE);
             $this->removeNode($prevNode);
 
             return $processNullSafeOperator;
         }
 
-        return $this->processNullSafeOperatorNotIdentical($node);
+        return $this->processNullSafeOperatorNotIdentical($if);
     }
 
     private function processNullSafeOperatorIdentical(If_ $if, bool $isStartIf = true): ?Node
@@ -108,10 +122,6 @@ CODE_SAMPLE
         $prevNode = $if->getAttribute(AttributeKey::PREVIOUS_NODE);
         $nextNode = $if->getAttribute(AttributeKey::NEXT_NODE);
 
-        if (! $prevNode instanceof Node) {
-            return null;
-        }
-
         if (! $nextNode instanceof Node) {
             return null;
         }
@@ -120,12 +130,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->ifManipulator->isIfCondUsingAssignIdenticalVariable($if, $prevNode->expr)) {
+        $prevExpr = $prevNode->expr;
+        if (! $prevExpr instanceof Assign) {
             return null;
         }
 
-        $prevExpr = $prevNode->expr;
-        if (! $prevExpr instanceof Assign) {
+        if (! $this->ifManipulator->isIfCondUsingAssignIdenticalVariable($if, $prevExpr)) {
             return null;
         }
 
@@ -168,22 +178,71 @@ CODE_SAMPLE
         }
 
         if (! $nextNode instanceof If_) {
+            $nullSafe = $this->verifyDefaultValueInElse($if, $nullSafe, $assign);
+            if ($nullSafe === null) {
+                return null;
+            }
+
             return new Assign($assign->var, $nullSafe);
         }
 
         return $this->processNullSafeOperatorNotIdentical($nextNode, $nullSafe);
     }
 
-    private function processAssign(Assign $assign, Expression $prevExpression, Node $nextNode, bool $isStartIf): ?Node
-    {
-        if ($assign instanceof Assign && property_exists(
-            $assign->expr,
-            self::NAME
-        ) && property_exists($nextNode, 'expr') && property_exists($nextNode->expr, self::NAME)) {
-            return $this->processAssignInCurrentNode($assign, $prevExpression, $nextNode, $isStartIf);
+    private function verifyDefaultValueInElse(
+        If_ $if,
+        NullsafeMethodCall|NullsafePropertyFetch $nullSafe,
+        Assign $assign
+    ): NullsafeMethodCall|NullsafePropertyFetch|Coalesce|null {
+        if (! $if->else instanceof Else_) {
+            return $nullSafe;
         }
 
+        if (count($if->else->stmts) !== 1) {
+            return null;
+        }
+
+        $expression = $if->else->stmts[0];
+        if (! $expression instanceof Expression) {
+            return null;
+        }
+
+        $expressionAssign = $expression->expr;
+        if (! $expressionAssign instanceof Assign) {
+            return null;
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($expressionAssign->var, $assign->var)) {
+            return null;
+        }
+
+        if ($this->valueResolver->isNull($expressionAssign->expr)) {
+            return $nullSafe;
+        }
+
+        return new Coalesce($nullSafe, $expressionAssign->expr);
+    }
+
+    private function processAssign(Assign $assign, Expression $prevExpression, Node $nextNode, bool $isStartIf): ?Node
+    {
+        if ($this->shouldProcessAssignInCurrentNode($assign, $nextNode)) {
+            return $this->processAssignInCurrentNode($assign, $prevExpression, $nextNode, $isStartIf);
+        }
         return $this->processAssignMayInNextNode($nextNode);
+    }
+
+    private function shouldProcessAssignInCurrentNode(Assign $assign, Node $nextNode): bool
+    {
+        if (! property_exists($assign->expr, self::NAME)) {
+            return false;
+        }
+        if (! property_exists($nextNode, 'expr')) {
+            return false;
+        }
+        if (! property_exists($nextNode->expr, self::NAME)) {
+            return false;
+        }
+        return ! $this->valueResolver->isNull($nextNode->expr);
     }
 
     private function processIfMayInNextNode(?Node $nextNode = null): ?Node
@@ -338,5 +397,64 @@ CODE_SAMPLE
         }
 
         return $expr;
+    }
+
+    private function handleTernaryNode(Ternary $ternary): ?Node
+    {
+        if ($this->shouldSkipTernary($ternary)) {
+            return null;
+        }
+
+        $nullSafeElse = $this->nullsafeManipulator->processNullSafeExpr($ternary->else);
+
+        if ($nullSafeElse !== null) {
+            return $nullSafeElse;
+        }
+
+        if ($ternary->if === null) {
+            return null;
+        }
+
+        return $this->nullsafeManipulator->processNullSafeExpr($ternary->if);
+    }
+
+    private function shouldSkipTernary(Ternary $ternary): bool
+    {
+        if (! $this->canTernaryReturnNull($ternary)) {
+            return true;
+        }
+        if ($ternary->cond instanceof Identical) {
+            return ! $this->hasNullComparison($ternary->cond);
+        }
+
+        if ($ternary->cond instanceof NotIdentical) {
+            return ! $this->hasNullComparison($ternary->cond);
+        }
+
+        return true;
+    }
+
+    private function hasNullComparison(NotIdentical|Identical $check): bool
+    {
+        if ($this->valueResolver->isNull($check->left)) {
+            return true;
+        }
+
+        return $this->valueResolver->isNull($check->right);
+    }
+
+    private function canTernaryReturnNull(Ternary $ternary): bool
+    {
+        if ($this->valueResolver->isNull($ternary->else)) {
+            return true;
+        }
+
+        if ($ternary->if === null) {
+            // $foo === null ?: 'xx' returns true if $foo is null
+            // therefore it does not return null in case of the elvis operator
+            return false;
+        }
+
+        return $this->valueResolver->isNull($ternary->if);
     }
 }

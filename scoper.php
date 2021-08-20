@@ -108,6 +108,20 @@ return [
             'Symplify\SmartFileSystem\SmartFileInfo'
         ),
 
+        // unprefixed Statement
+        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+            $content,
+            '#' . $prefix . '\\\\Helmich\\\\TypoScriptParser\\\\Parser\\\\AST\\\\Statement#',
+            'Helmich\TypoScriptParser\Parser\AST\Statement'
+        ),
+
+        // unprefixed PHPUnit IsEqual
+        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+            $content,
+            '#' . $prefix . '\\\\PHPUnit\\\\Framework\\\\Constraint\\\\IsEqual#',
+            'PHPUnit\Framework\Constraint\IsEqual'
+        ),
+
         // unprefixed ContainerConfigurator
         function (string $filePath, string $prefix, string $content): string {
             // keep vendor prefixed the prefixed file loading; not part of public API

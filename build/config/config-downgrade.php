@@ -61,6 +61,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 \Symplify\RuleDocGenerator\Contract\RuleCodeSamplePrinterInterface::class,
                 \Symplify\RuleDocGenerator\Contract\Category\CategoryInfererInterface::class,
                 \PhpParser\PrettyPrinterAbstract::class,
+                \Helmich\TypoScriptParser\Parser\Traverser\Visitor::class,
             ],
             DowngradeParameterTypeWideningRector::SAFE_TYPES_TO_METHODS => [
                 ContainerInterface::class => [

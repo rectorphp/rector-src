@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Defluent\Matcher\AssignAndRootExprAndNodesToAddMatcher;
@@ -73,11 +74,22 @@ CODE_SAMPLE
     {
         // handled by another rule
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+        // may happen if another rule make parent null
+        if (! $parent instanceof Node) {
+            return null;
+        }
+
         if ($this->typeChecker->isInstanceOf($parent, [Return_::class, Arg::class])) {
             return null;
         }
 
         if (! $parent instanceof Assign) {
+            return null;
+        }
+
+        $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentParent instanceof Expression) {
             return null;
         }
 

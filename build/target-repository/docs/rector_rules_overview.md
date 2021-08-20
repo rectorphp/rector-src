@@ -1,4 +1,4 @@
-# 475 Rules Overview
+# 476 Rules Overview
 
 <br>
 
@@ -12,8 +12,6 @@
 
 - [CodeQuality](#codequality) (68)
 
-- [CodeQualityStrict](#codequalitystrict) (1)
-
 - [CodingStyle](#codingstyle) (38)
 
 - [Composer](#composer) (6)
@@ -26,7 +24,7 @@
 
 - [DowngradePhp53](#downgradephp53) (1)
 
-- [DowngradePhp70](#downgradephp70) (9)
+- [DowngradePhp70](#downgradephp70) (10)
 
 - [DowngradePhp71](#downgradephp71) (9)
 
@@ -34,9 +32,9 @@
 
 - [DowngradePhp73](#downgradephp73) (6)
 
-- [DowngradePhp74](#downgradephp74) (11)
+- [DowngradePhp74](#downgradephp74) (10)
 
-- [DowngradePhp80](#downgradephp80) (17)
+- [DowngradePhp80](#downgradephp80) (18)
 
 - [DowngradePhp81](#downgradephp81) (1)
 
@@ -76,7 +74,7 @@
 
 - [Php80](#php80) (17)
 
-- [Php81](#php81) (4)
+- [Php81](#php81) (5)
 
 - [PhpSpecToPHPUnit](#phpspectophpunit) (7)
 
@@ -1813,24 +1811,6 @@ Use ===/!== over ==/!=, it values have the same type
 
 <br>
 
-## CodeQualityStrict
-
-### MoveVariableDeclarationNearReferenceRector
-
-Move variable declaration near its reference
-
-- class: [`Rector\CodeQualityStrict\Rector\Variable\MoveVariableDeclarationNearReferenceRector`](../rules/CodeQualityStrict/Rector/Variable/MoveVariableDeclarationNearReferenceRector.php)
-
-```diff
--$var = 1;
- if ($condition === null) {
-+    $var = 1;
-     return $var;
- }
-```
-
-<br>
-
 ## CodingStyle
 
 ### AddArrayDefaultToArrayPropertyRector
@@ -2266,6 +2246,7 @@ Changes `$this->...` and static:: to self:: or vise versa for given types
 - class: [`Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector`](../rules/CodingStyle/Rector/MethodCall/PreferThisOrSelfMethodCallRector.php)
 
 ```php
+use PHPUnit\Framework\TestCase;
 use Rector\CodingStyle\Enum\PreferenceSelfThis;
 use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -2276,10 +2257,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(PreferThisOrSelfMethodCallRector::class)
         ->call('configure', [[
-            PreferThisOrSelfMethodCallRector::TYPE_TO_PREFERENCE => ValueObjectInliner::inline([
-                PreferenceSelfThis::PREFER_SELF(),
-            ]),
-        ]]);
+            PreferThisOrSelfMethodCallRector::TYPE_TO_PREFERENCE => [
+                TestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
+
+            ], ]]);
 };
 ```
 
@@ -4352,6 +4333,25 @@ Remove the type params and return type, add `@param` and `@return` tags instead
 
 <br>
 
+### DowngradeSelfTypeDeclarationRector
+
+Remove "self" return type, add a `"@return` self" tag instead
+
+- class: [`Rector\DowngradePhp70\Rector\ClassMethod\DowngradeSelfTypeDeclarationRector`](../rules/DowngradePhp70/Rector/ClassMethod/DowngradeSelfTypeDeclarationRector.php)
+
+```diff
+ class SomeClass
+ {
+-    public function foo(): self
++    public function foo()
+     {
+         return $this;
+     }
+ }
+```
+
+<br>
+
 ### DowngradeSessionStartArrayOptionsRector
 
 Move array option of session_start($options) to before statement's `ini_set()`
@@ -5033,25 +5033,6 @@ Remove "_" as thousands separator in numbers
 
 <br>
 
-### DowngradeSelfTypeDeclarationRector
-
-Remove "self" return type, add a `"@return` self" tag instead
-
-- class: [`Rector\DowngradePhp74\Rector\ClassMethod\DowngradeSelfTypeDeclarationRector`](../rules/DowngradePhp74/Rector/ClassMethod/DowngradeSelfTypeDeclarationRector.php)
-
-```diff
- class SomeClass
- {
--    public function foo(): self
-+    public function foo()
-     {
-         return $this;
-     }
- }
-```
-
-<br>
-
 ### DowngradeStripTagsCallWithArrayRector
 
 Convert 2nd param to `strip_tags` from array to string
@@ -5102,6 +5083,22 @@ Changes property type definition from type definitions to `@var` annotations.
 <br>
 
 ## DowngradePhp80
+
+### DowngradeAbstractPrivateMethodInTraitRector
+
+Remove "abstract" from private methods in traits and adds an empty function body
+
+- class: [`Rector\DowngradePhp80\Rector\ClassMethod\DowngradeAbstractPrivateMethodInTraitRector`](../rules/DowngradePhp80/Rector/ClassMethod/DowngradeAbstractPrivateMethodInTraitRector.php)
+
+```diff
+ trait SomeTrait
+ {
+-    abstract private function someAbstractPrivateFunction();
++    private function someAbstractPrivateFunction() {}
+ }
+```
+
+<br>
 
 ### DowngradeAttributeToAnnotationRector
 
@@ -8100,6 +8097,31 @@ Decorate read-only property with `readonly` attribute
 
 <br>
 
+### SpatieEnumClassToEnumRector
+
+Refactor Spatie enum class to native Enum
+
+- class: [`Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector`](../rules/Php81/Rector/Class_/SpatieEnumClassToEnumRector.php)
+
+```diff
+-use \Spatie\Enum\Enum;
+-
+-/**
+- * @method static self draft()
+- * @method static self published()
+- * @method static self archived()
+- */
+-class StatusEnum extends Enum
++enum StatusEnum
+ {
++    case draft = 'draft';
++    case published = 'published';
++    case archived = 'archived';
+ }
+```
+
+<br>
+
 ## PhpSpecToPHPUnit
 
 ### AddMockPropertiesRector
@@ -9321,7 +9343,6 @@ Replaces defined class constants in their calls.
 ```php
 use Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
-use Rector\Renaming\ValueObject\RenameClassConstFetch;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -9331,7 +9352,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(RenameClassConstFetchRector::class)
         ->call('configure', [[
             RenameClassConstFetchRector::CLASS_CONSTANT_RENAME => ValueObjectInliner::inline([
-                new RenameClassConstFetch('SomeClass', 'OLD_CONSTANT', 'NEW_CONSTANT'),
                 new RenameClassAndConstFetch('SomeClass', 'OTHER_OLD_CONSTANT', 'DifferentClass', 'NEW_CONSTANT'),
             ]),
         ]]);
@@ -10062,7 +10082,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ClassConstFetchToValueRector::class)
         ->call('configure', [[
             ClassConstFetchToValueRector::CLASS_CONST_FETCHES_TO_VALUES => ValueObjectInliner::inline([
-                new ClassConstFetchToValue('Nette\Configurator', 'DEVELOPMENT', 'development'),
                 new ClassConstFetchToValue('Nette\Configurator', 'PRODUCTION', 'production'),
             ]),
         ]]);
@@ -11642,7 +11661,7 @@ Change `@param` types to type declarations if not a BC-break
 - class: [`Rector\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/ParamTypeDeclarationRector.php)
 
 ```diff
- class ParentClass
+ abstract class VendorParentClass
  {
      /**
       * @param int $number
@@ -11652,7 +11671,7 @@ Change `@param` types to type declarations if not a BC-break
      }
  }
 
- final class ChildClass extends ParentClass
+ final class ChildClass extends VendorParentClass
  {
      /**
       * @param int $number

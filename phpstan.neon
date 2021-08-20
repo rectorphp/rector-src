@@ -75,8 +75,6 @@ parameters:
 
         - '#Parameter \#1 \$node of method Rector\\PostRector\\Collector\\NodesToAddCollector\:\:wrapToExpression\(\) expects PhpParser\\Node\\Expr\|PhpParser\\Node\\Stmt, PhpParser\\Node given#'
 
-        - '#Property PhpParser\\Node\\Stmt\\Namespace_\:\:\$stmts \(array<PhpParser\\Node\\Stmt\>\) does not accept array<PhpParser\\Node\>#'
-
         - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 9#'
 
         -
@@ -135,8 +133,6 @@ parameters:
             message: '#Function "dump\(\)" cannot be used/left in the code#'
             path: tests/debug_functions.php
 
-        - '#Parameter \#1 \$node of method Rector\\DeadCode\\Rector\\Plus\\RemoveDeadZeroAndOneOperationRector\:\:refactor\(\) expects PhpParser\\Node\\Expr\\AssignOp\\Div\|PhpParser\\Node\\Expr\\AssignOp\\Minus\|PhpParser\\Node\\Expr\\AssignOp\\Mul\|PhpParser\\Node\\Expr\\AssignOp\\Plus\|PhpParser\\Node\\Expr\\BinaryOp\\Div\|PhpParser\\Node\\Expr\\BinaryOp\\Minus\|PhpParser\\Node\\Expr\\BinaryOp\\Mul\|PhpParser\\Node\\Expr\\BinaryOp\\Plus, PhpParser\\Node\\Expr\\AssignOp\|PhpParser\\Node\\Expr\\BinaryOp given#'
-
         # symplify 9
         - '#Use another value object over array with string\-keys and objects, array<string, ValueObject\>#'
         - '#Do not use factory/method call in constructor\. Put factory in config and get service with dependency injection#'
@@ -146,6 +142,7 @@ parameters:
             paths:
                 - src/PhpParser/NodeTransformer.php
                 - src/Rector/AbstractRector.php
+                - src/Exclusion/ExclusionManager.php
                 # playing around with doc block format
                 - packages/Comments/CommentRemover.php
                 - rules/CodingStyle/Rector/Assign/PHPStormVarAnnotationRector.php
@@ -296,12 +293,6 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is \d+, keep it under 9#'
 
-        # needed for native reflection parameter reference
-        -
-            message: '#Instead of "ReflectionFunction" class/interface use "PHPStan\\Reflection\\FunctionReflection"#'
-            paths:
-                - packages/ReadWrite/Guard/VariableToConstantGuard.php
-
         -
             message: '#Argument and options "debug" got confused#'
             paths:
@@ -346,12 +337,6 @@ parameters:
             path: 'packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php'
 
         -
-            message: '#Do not inherit from abstract class, better use composition#'
-            paths:
-                - packages/BetterPhpDocParser/PhpDocParser/BetterTypeParser.php
-                - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
-
-        -
             message: '#Do not use setter on a service#'
             paths:
                 - packages/NodeTypeResolver/PhpDocNodeVisitor/*PhpDocNodeVisitor.php
@@ -394,6 +379,7 @@ parameters:
             paths:
                  - src/functions/node_helper.php
                  - packages/ReadWrite/Guard/VariableToConstantGuard.php
+                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
 
         # upgrade to PHP 7.4 wip
         - '#This property type might be inlined to PHP\. Do you have confidence it is correct\? Put it here#'
@@ -478,11 +464,6 @@ parameters:
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
         - '#Method Rector\\NodeNestingScope\\ParentFinder\:\:findByTypes\(\) should return T of PhpParser\\Node\|null but returns class\-string<T of PhpParser\\Node\>\|T of PhpParser\\Node#'
 
-        -
-            message: '#Instead of "ReflectionFunction" class/interface use "PHPStan\\Reflection\\FunctionReflection"#'
-            paths:
-                 - rules/DowngradePhp80/NodeAnalyzer/UnnamedArgumentResolver.php #45
-
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
 
@@ -496,18 +477,10 @@ parameters:
         - '#Method "decorateReturnWithSpecificType\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "resolveObjectType\(\)" returns bool type, so the name should start with is/has/was#'
 
-        - '#Method "(equal|match)(.*?)\(\)" returns bool type, so the name should start with is/has/was#'
-
         -
             message: '#Use dependency injection instead of dependency juggling#'
             paths:
                 - packages/NodeTypeResolver/Reflection/BetterReflection/SourceLocatorProvider
-
-        # resolve later
-        -
-            message: '#Use explicit names over dynamic ones#'
-            paths:
-                - packages/Caching/ValueObject/Storage/FileCacheStorage.php
 
         # native filesystem calls, required for performance reasons
         -
@@ -536,3 +509,32 @@ parameters:
 
         # resolve later
         -  '#Variables "\$(.*?)" are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
+
+        -
+            message: '#Instead of array shape, use value object with specific types in constructor and getters#'
+            path: src/NodeFactory/ClassWithPublicPropertiesFactory.php #26
+
+        -
+            message: '#Instead of abstract class, use specific service with composition#'
+            paths:
+                - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
+                - packages/PostRector/Rector/AbstractPostRector.php
+                - rules/Defluent/ValueObject/AbstractRootExpr.php
+                - rules/PhpSpecToPHPUnit/Rector/AbstractPhpSpecToPHPUnitRector.php
+                - src/Rector/AbstractRector.php
+
+        -
+            message: '#This call has duplicate argument#'
+            paths:
+                 - rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
+
+        -
+            message: '#foreach\(\), while\(\), for\(\) or if\(\) cannot contain a complex expression\. Extract it to a new variable on a line before#'
+            paths:
+                - packages/NodeNestingScope/FlowOfControlLocator.php
+                - packages/NodeNestingScope/ParentFinder.php
+                - rules/CodeQuality/Rector/Return_/SimplifyUselessVariableRector.php
+                - rules/CodingStyle/Rector/Assign/ManualJsonStringToJsonEncodeArrayRector.php
+                - rules/Php70/Rector/FuncCall/MultiDirnameRector.php
+                - src/Application/FileProcessor.php
+                - src/PhpParser/Node/BetterNodeFinder.php

@@ -230,6 +230,13 @@ CODE_SAMPLE
                 continue;
             }
 
+            // Do not refactor if node's type is a child class of \DateTime (can have wider API)
+            $paramType = $this->nodeTypeResolver->resolve($param);
+            if (! $paramType->isSuperTypeOf($objectType)->yes()) {
+                continue;
+            }
+
+
             $this->refactorParamTypeHint($param);
             $this->refactorParamDocBlock($param, $node);
             $this->refactorMethodCalls($param, $node);
