@@ -10,6 +10,7 @@ interface RemoveSelfChildAlreadyNoType
 class Child implements RemoveSelfChildAlreadyNoType
 {
     // return type may removed by other rules
+    // @see https://github.com/rectorphp/rector/issues/6652
     public function run()
     {
 
@@ -30,6 +31,7 @@ interface RemoveSelfChildAlreadyNoType
 class Child implements RemoveSelfChildAlreadyNoType
 {
     // return type may removed by other rules
+    // @see https://github.com/rectorphp/rector/issues/6652
     public function run()
     {
 
