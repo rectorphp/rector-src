@@ -87,26 +87,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $isModifiedNode = false;
-        foreach ($node->getParams() as $param) {
-            if (! $this->isObjectType($param, new ObjectType('DateTime'))) {
-                continue;
-            }
+        $node = $this->refactorFunctionParameters($node);
 
-            $this->refactorParamTypeHint($param);
-            $this->refactorParamDocBlock($param, $node);
-            $this->refactorMethodCalls($param, $node);
-            $isModifiedNode = true;
-        }
-
-        /** @var FullyQualified $returnType */
+        /** @var FullyQualified|null $returnType */
         $returnType = $node->returnType;
         if ($returnType === null) {
-            if (! $isModifiedNode) {
-                return null;
-            }
-
-            return $node;
+            return null;
         }
 
         $isNullable = false;
@@ -117,8 +103,8 @@ CODE_SAMPLE
         if (! $this->isObjectType($returnType, new ObjectType('DateTime'))) {
             return null;
         }
-        $node->returnType = new FullyQualified('DateTimeInterface');
 
+        $node->returnType = new FullyQualified('DateTimeInterface');
         if ($isNullable) {
             $node->returnType = new NullableType($node->returnType);
         }
@@ -223,5 +209,20 @@ CODE_SAMPLE
         }
 
         return $parentNode instanceof Assign;
+    }
+
+    private function refactorFunctionParameters(ClassMethod $node): ClassMethod
+    {
+        foreach ($node->getParams() as $param) {
+            if (! $this->isObjectType($param, new ObjectType('DateTime'))) {
+                continue;
+            }
+
+            $this->refactorParamTypeHint($param);
+            $this->refactorParamDocBlock($param, $node);
+            $this->refactorMethodCalls($param, $node);
+        }
+
+        return $node;
     }
 }
