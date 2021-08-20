@@ -80,7 +80,15 @@ CODE_SAMPLE
     {
         if ($node instanceof ClassMethod) {
             $node = $this->parameterTypeManipulator->refactorFunctionParameters($node);
-            return $this->returnTypeManipulator->changeReturnType($node);
+            if (!$node->returnType instanceof Node) {
+                return $node;
+            }
+            return $this->returnTypeManipulator->changeReturnType(
+                $node,
+                'DateTime',
+                'DateTimeInterface',
+                $this->determinePhpDocTypes($node->returnType)
+            );
         }
 
         return $this->refactorProperty($node);

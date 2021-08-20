@@ -29,7 +29,10 @@ final class ClassMethodReturnTypeManipulator
     ) {
     }
 
-    public function changeReturnType(ClassMethod $classMethod): ?ClassMethod
+    /**
+     * @var Type[] $alternativeTypes
+     */
+    public function changeReturnType(ClassMethod $classMethod, string $toReplaceType, string $replaceIntoType, array $alternativeTypes): ?ClassMethod
     {
         /** @var FullyQualified|null $returnType */
         $returnType = $classMethod->returnType;
@@ -42,46 +45,19 @@ final class ClassMethodReturnTypeManipulator
             $isNullable = true;
             $returnType = $returnType->type;
         }
-        if (! $this->nodeTypeResolver->isObjectType($returnType, new ObjectType('DateTime'))) {
+        if (! $this->nodeTypeResolver->isObjectType($returnType, new ObjectType($toReplaceType))) {
             return null;
         }
 
-        $classMethod->returnType = new FullyQualified('DateTimeInterface');
+        $classMethod->returnType = new FullyQualified($replaceIntoType);
         if ($isNullable) {
             $classMethod->returnType = new NullableType($classMethod->returnType);
         }
 
 
-        $types = $this->determinePhpDocTypes($classMethod->returnType);
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($types));
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new UnionType($alternativeTypes));
 
         return $classMethod;
-    }
-
-    /**
-     * @return Type[]
-     */
-    private function determinePhpDocTypes(Node $node): array
-    {
-        $types = [
-            new ObjectType('DateTime'),
-            new ObjectType('DateTimeImmutable')
-        ];
-
-        if ($this->canHaveNullType($node)) {
-            $types[] = new NullType();
-        }
-
-        return $types;
-    }
-
-    private function canHaveNullType(Node $node): bool
-    {
-        if ($node instanceof Param) {
-            return $this->paramAnalyzer->isNullable($node);
-        }
-
-        return $node instanceof NullableType;
     }
 }
