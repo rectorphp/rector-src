@@ -24,4 +24,10 @@ class SkipExactlyReturnDateTime
 
         return $obj2;
     }
+
+    public static function run4(): DateTime
+    {
+        $obj = new DateTime('now');
+        return clone $obj;
+    }
 }
