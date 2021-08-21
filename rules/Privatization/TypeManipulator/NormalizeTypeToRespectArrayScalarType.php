@@ -9,6 +9,8 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\Accessory\NonEmptyArrayType;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class NormalizeTypeToRespectArrayScalarType
@@ -34,6 +36,22 @@ final class NormalizeTypeToRespectArrayScalarType
 
         if ($type instanceof MixedType) {
             return new ArrayType($type, $type);
+        }
+
+        if ($type instanceof ArrayType) {
+            $itemType = $type->getItemType();
+            if (! $itemType instanceof IntersectionType) {
+                return $type;
+            }
+
+            $types = $itemType->getTypes();
+            foreach ($types as $key => $itemTypeType) {
+                if ($itemTypeType instanceof NonEmptyArrayType) {
+                    unset($types[$key]);
+                }
+            }
+
+            $type = new ArrayType($type->getKeyType(), new IntersectionType($types));
         }
 
         return $type;
