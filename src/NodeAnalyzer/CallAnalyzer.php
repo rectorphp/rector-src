@@ -25,8 +25,9 @@ final class CallAnalyzer
      */
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 
-    public function __construct(private NodeComparator $nodeComparator)
-    {
+    public function __construct(
+        private NodeComparator $nodeComparator
+    ) {
     }
 
     public function isObjectCall(Expr $expr): bool
@@ -68,7 +69,7 @@ final class CallAnalyzer
     /**
      * Inject BetterNodeFinder due Circular reference
      */
-    public function isNewInstance(BetterNodeFinder $betterNodeFinder, Expr $expr)
+    public function isNewInstance(BetterNodeFinder $betterNodeFinder, Expr $expr): bool
     {
         if ($expr instanceof Clone_ || $expr instanceof New_) {
             return true;
