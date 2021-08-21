@@ -41,11 +41,16 @@ final class DateTimeToDateTimeInterfaceRector extends AbstractRector implements 
         'add', 'modify', MethodName::SET_STATE, 'setDate', 'setISODate', 'setTime', 'setTimestamp', 'setTimezone', 'sub',
     ];
 
+    /**
+     * @var string
+     */
+    private const DATE_TIME = 'DateTime';
+
     public function __construct(
         private PhpDocTypeChanger $phpDocTypeChanger,
         private ParamAnalyzer $paramAnalyzer,
-        private ClassMethodReturnTypeManipulator $returnTypeManipulator,
-        private ClassMethodParameterTypeManipulator $parameterTypeManipulator
+        private ClassMethodReturnTypeManipulator $classMethodReturnTypeManipulator,
+        private ClassMethodParameterTypeManipulator $classMethodParameterTypeManipulator
     ) {
     }
 
@@ -103,9 +108,9 @@ CODE_SAMPLE
         return PhpVersionFeature::DATE_TIME_INTERFACE;
     }
 
-    private function refactorProperty(Property $node): ?Node
+    private function refactorProperty(Property $property): ?Node
     {
-        $type = $node->type;
+        $type = $property->type;
         if ($type === null) {
             return null;
         }
@@ -115,21 +120,20 @@ CODE_SAMPLE
             $isNullable = true;
             $type = $type->type;
         }
-        if (! $this->isObjectType($type, new ObjectType('DateTime'))) {
+        if (! $this->isObjectType($type, new ObjectType(self::DATE_TIME))) {
             return null;
         }
 
+        $types = $this->determinePhpDocTypes($property->type);
 
-        $types = $this->determinePhpDocTypes($node->type);
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
         $this->phpDocTypeChanger->changeVarType($phpDocInfo, new UnionType($types));
 
-        $node->type = new FullyQualified('DateTimeInterface');
+        $property->type = new FullyQualified('DateTimeInterface');
         if ($isNullable) {
-            $node->type = new NullableType($node->type);
+            $property->type = new NullableType($property->type);
         }
-        return $node;
+        return $property;
     }
 
     /**
@@ -137,10 +141,7 @@ CODE_SAMPLE
      */
     private function determinePhpDocTypes(?Node $node): array
     {
-        $types = [
-            new ObjectType('DateTime'),
-            new ObjectType('DateTimeImmutable')
-        ];
+        $types = [new ObjectType(self::DATE_TIME), new ObjectType('DateTimeImmutable')];
 
         if ($this->canHaveNullType($node)) {
             $types[] = new NullType();
@@ -158,40 +159,40 @@ CODE_SAMPLE
         return $node instanceof NullableType;
     }
 
-    private function refactorClassMethod(ClassMethod $node): void
+    private function refactorClassMethod(ClassMethod $classMethod): void
     {
-        if ($this->shouldSkipExactlyReturnDateTime($node)) {
+        if ($this->shouldSkipExactlyReturnDateTime($classMethod)) {
             return;
         }
 
-        $fromObjectType = new ObjectType('DateTime');
-        $replaceIntoType = new FullyQualified('DateTimeInterface');
-        $replacementPhpDocType = new UnionType([
-            new ObjectType('DateTime'),
-            new ObjectType('DateTimeImmutable')
-        ]);
+        $fromObjectType = new ObjectType(self::DATE_TIME);
+        $fullyQualified = new FullyQualified('DateTimeInterface');
+        $unionType = new UnionType([new ObjectType(self::DATE_TIME), new ObjectType('DateTimeImmutable')]);
 
-        $this->parameterTypeManipulator->refactorFunctionParameters(
-            $node,
+        $this->classMethodParameterTypeManipulator->refactorFunctionParameters(
+            $classMethod,
             $fromObjectType,
-            $replaceIntoType,
-            $replacementPhpDocType,
+            $fullyQualified,
+            $unionType,
             self::METHODS_RETURNING_CLASS_INSTANCE_MAP
         );
-        if (! $node->returnType instanceof Node) {
+        if (! $classMethod->returnType instanceof Node) {
             return;
         }
-        $this->returnTypeManipulator->refactorFunctionReturnType(
-            $node,
+        $this->classMethodReturnTypeManipulator->refactorFunctionReturnType(
+            $classMethod,
             $fromObjectType,
-            $replaceIntoType,
-            $replacementPhpDocType
+            $fullyQualified,
+            $unionType
         );
     }
 
     private function shouldSkipExactlyReturnDateTime(ClassMethod $classMethod): bool
     {
-        $return = $this->betterNodeFinder->findFirst((array) $classMethod->stmts, fn (Node $node): bool => $node instanceof Return_);
+        $return = $this->betterNodeFinder->findFirst(
+            (array) $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof Return_
+        );
         if (! $return instanceof Return_) {
             return false;
         }
@@ -200,6 +201,9 @@ CODE_SAMPLE
             return false;
         }
 
-        return $return->expr instanceof New_ && $return->expr->class instanceof Name && $this->nodeNameResolver->isName($return->expr->class, 'DateTime');
+        return $return->expr instanceof New_ && $return->expr->class instanceof Name && $this->nodeNameResolver->isName(
+            $return->expr->class,
+            self::DATE_TIME
+        );
     }
 }
