@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -156,6 +160,10 @@ CODE_SAMPLE
 
     private function refactorClassMethod(ClassMethod $node): void
     {
+        if ($this->shouldSkipExactlyReturnDateTime($node)) {
+            return;
+        }
+
         $fromObjectType = new ObjectType('DateTime');
         $replaceIntoType = new FullyQualified('DateTimeInterface');
         $replacementPhpDocType = new UnionType([
@@ -179,5 +187,19 @@ CODE_SAMPLE
             $replaceIntoType,
             $replacementPhpDocType
         );
+    }
+
+    private function shouldSkipExactlyReturnDateTime(ClassMethod $classMethod): bool
+    {
+        $return = $this->betterNodeFinder->findFirst((array) $classMethod->stmts, fn (Node $node): bool => $node instanceof Return_);
+        if (! $return instanceof Return_) {
+            return false;
+        }
+
+        if (! $return->expr instanceof Expr) {
+            return false;
+        }
+
+        return $return->expr instanceof New_ && $return->expr->class instanceof Name && $this->nodeNameResolver->isName($return->expr->class, 'DateTime');
     }
 }
