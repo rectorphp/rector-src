@@ -206,6 +206,6 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->resolve($return->expr);
-        return $type instanceof ObjectType && $type->getClassName() === 'DateTime';
+        return $type instanceof ObjectType && $type->getClassName() === self::DATE_TIME;
     }
 }
