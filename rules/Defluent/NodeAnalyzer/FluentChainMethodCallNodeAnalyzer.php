@@ -6,8 +6,6 @@ namespace Rector\Defluent\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Clone_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
@@ -23,7 +21,6 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -50,7 +47,6 @@ final class FluentChainMethodCallNodeAnalyzer
         private NodeFinder $nodeFinder,
         private AstResolver $astResolver,
         private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator,
         private ReturnTypeInferer $returnTypeInferer,
         private CallAnalyzer $callAnalyzer
     ) {
