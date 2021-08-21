@@ -265,7 +265,7 @@ final class FluentChainMethodCallNodeAnalyzer
                 continue;
             }
 
-            if (! $this->isNewInstance($expr)) {
+            if (! $this->callAnalyzer->isNewInstance($this->betterNodeFinder, $expr)) {
                 continue;
             }
 
@@ -273,24 +273,5 @@ final class FluentChainMethodCallNodeAnalyzer
         }
 
         return false;
-    }
-
-    private function isNewInstance(Expr $expr): bool
-    {
-        if ($expr instanceof Clone_ || $expr instanceof New_) {
-            return true;
-        }
-
-        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($expr, function (Node $node) use ($expr): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            if (! $this->nodeComparator->areNodesEqual($node->var, $expr)) {
-                return false;
-            }
-
-            return $node->expr instanceof Clone_ || $node->expr instanceof New_;
-        });
     }
 }
