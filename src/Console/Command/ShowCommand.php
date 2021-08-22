@@ -51,7 +51,7 @@ final class ShowCommand extends Command
 
         $this->reportLoadedRectors($outputFormat);
 
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
+        return Command::SUCCESS;
     }
 
     private function reportLoadedRectors(string $outputFormat): void

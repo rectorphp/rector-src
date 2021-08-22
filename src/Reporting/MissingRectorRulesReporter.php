@@ -7,6 +7,7 @@ namespace Rector\Core\Reporting;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MissingRectorRulesReporter
@@ -39,7 +40,7 @@ final class MissingRectorRulesReporter
 
         $this->report();
 
-        return \Symfony\Component\Console\Command\Command::FAILURE;
+        return Command::FAILURE;
     }
 
     public function report(): void

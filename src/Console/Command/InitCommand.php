@@ -62,7 +62,7 @@ final class InitCommand extends Command
             $this->symfonyStyle->success('"rector.php" config file was added');
         }
 
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
+        return Command::SUCCESS;
     }
 
     private function resolveTemplateFilePathByType(string $templateType): string

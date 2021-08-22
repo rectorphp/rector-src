@@ -184,15 +184,15 @@ final class ProcessCommand extends Command
     {
         // some errors were found → fail
         if ($processResult->getErrors() !== []) {
-            return \Symfony\Component\Console\Command\Command::FAILURE;
+            return Command::FAILURE;
         }
 
         // inverse error code for CI dry-run
         if (! $configuration->isDryRun()) {
-            return \Symfony\Component\Console\Command\Command::SUCCESS;
+            return Command::SUCCESS;
         }
 
-        return $processResult->getFileDiffs() === [] ? \Symfony\Component\Console\Command\Command::SUCCESS : \Symfony\Component\Console\Command\Command::FAILURE;
+        return $processResult->getFileDiffs() === [] ? Command::SUCCESS : Command::FAILURE;
     }
 
     /**
