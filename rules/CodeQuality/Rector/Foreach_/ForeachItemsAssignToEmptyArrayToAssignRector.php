@@ -115,8 +115,10 @@ CODE_SAMPLE
             return true;
         }
 
-        /** @var Scope $scope */
         $scope = $foreach->expr->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return true;
+        }
 
         if (! $scope instanceof Scope) {
             return false;
