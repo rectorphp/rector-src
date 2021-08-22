@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Foreach_;
 
-use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Foreach_;
+use PHPStan\Analyser\Scope;
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\ThisType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -113,33 +115,24 @@ CODE_SAMPLE
             return true;
         }
 
-        if (!$this->isExpressionThis($foreach)) {
+        /** @var Scope $scope */
+        $scope = $foreach->expr->getAttribute(AttributeKey::SCOPE);
+
+        if (! $scope instanceof Scope) {
             return false;
         }
 
-        $parentClass = $foreach->getAttribute(AttributeKey::CLASS_NODE);
-        if (! $parentClass instanceof Node\Stmt\Class_) {
-            return false;
+        $type = $scope->getType($foreach->expr);
+
+        if ($type instanceof ObjectType) {
+            return $type->isIterable()->yes();
         }
-        foreach ($parentClass->implements as $implement) {
-            if ((string)$implement === IteratorAggregate::class) {
-                return true;
-            }
+
+        if ($type instanceof ThisType) {
+            return $type->isIterable()->yes();
         }
 
         return false;
-    }
-
-    private function isExpressionThis(Foreach_ $foreach): bool
-    {
-        /** @var Expr\Variable $expr */
-        $expr = $foreach->expr;
-
-        if (! $expr instanceof Expr\Variable) {
-            return false;
-        }
-
-        return $expr->name === 'this';
     }
 
     private function shouldSkipAsPartOfNestedForeach(Foreach_ $foreach): bool
