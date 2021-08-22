@@ -218,7 +218,7 @@ CODE_SAMPLE
 
     private function decoratePropertyWithParamDocInfo(Param $param, Property $property): void
     {
-        $constructor = $param->getAttribute(AttributeKey::PARENT_NODE);
+        $constructor = $param->getAttribute(AttributeKey::METHOD_NODE);
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($constructor);
         if ($phpDocInfo === null) {
             return;
