@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Command\Command;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
