@@ -39,6 +39,7 @@ final class PhpFilesFinder
             foreach (self::NON_PHP_FILE_EXTENSIONS as $nonPHPFileExtension) {
                 if (str_ends_with($pathName, $nonPHPFileExtension)) {
                     unset($phpFileInfos[$key]);
+                    continue 2;
                 }
             }
         }
