@@ -75,7 +75,7 @@ final class DowngradePathsCommand extends Command
         $downgradePathsLine = implode(';', $downgradePaths);
         echo $downgradePathsLine . PHP_EOL;
 
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
+        return Command::SUCCESS;
     }
 
     /**
