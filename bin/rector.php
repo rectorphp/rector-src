@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Command\Command;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
@@ -56,7 +59,7 @@ try {
     $container = $rectorContainerFactory->createFromBootstrapConfigs($bootstrapConfigs);
 } catch (Throwable $throwable) {
     // for json output
-    $argvInput = new \Symfony\Component\Console\Input\ArgvInput();
+    $argvInput = new ArgvInput();
     $outputFormat = $argvInput->getParameterOption('--' . Option::OUTPUT_FORMAT);
 
     // report fatal error in json format
@@ -71,7 +74,7 @@ try {
         $symfonyStyle->error($throwable->getMessage());
     }
 
-    exit(\Symfony\Component\Console\Command\Command::FAILURE);
+    exit(Command::FAILURE);
 }
 
 /** @var ConsoleApplication $application */
