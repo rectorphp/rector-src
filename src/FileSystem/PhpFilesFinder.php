@@ -34,19 +34,14 @@ final class PhpFilesFinder
         $phpFileInfos = $this->filesFinder->findInDirectoriesAndFiles($paths);
 
         // filter out non-PHP files
-        $phpFileInfos = array_filter(
-            $phpFileInfos,
-            function (SmartFileInfo $smartFileInfo): bool {
-                $pathName = $smartFileInfo->getPathname();
-                foreach (self::NON_PHP_FILE_EXTENSIONS as $nonPHPFileExtension) {
-                    if (str_ends_with($pathName, $nonPHPFileExtension)) {
-                        return false;
-                    }
+        foreach ($phpFileInfos as $key => $phpFileInfo) {
+            $pathName = $phpFileInfo->getPathname();
+            foreach (self::NON_PHP_FILE_EXTENSIONS as $nonPHPFileExtension) {
+                if (str_ends_with($pathName, $nonPHPFileExtension)) {
+                    unset($phpFileInfos[$key]);
                 }
-
-                return true;
             }
-        );
+        }
 
         return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($phpFileInfos);
     }
