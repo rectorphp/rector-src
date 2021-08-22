@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Command\Command;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
@@ -12,6 +10,8 @@ use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
 use Rector\Core\HttpKernel\RectorKernel;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symplify\PackageBuilder\Reflection\PrivatesCaller;
 
 // @ intentionally: continue anyway
