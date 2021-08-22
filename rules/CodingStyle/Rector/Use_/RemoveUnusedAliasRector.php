@@ -210,18 +210,6 @@ CODE_SAMPLE
 
     private function refactorAliasName(Use_ $use, string $aliasName, string $lastName, UseUse $useUse): void
     {
-        // only alias name is used → use last name directly
-        $lowerAliasName = strtolower($aliasName);
-        if (! isset($this->resolvedNodeNames[$lowerAliasName])) {
-            return;
-        }
-
-        // keep to differentiate 2 aliases classes
-        $lowerLastName = strtolower($lastName);
-        if (count($this->useNamesAliasToName[$lowerLastName] ?? []) > 1) {
-            return;
-        }
-
         $parentUse = $use->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentUse instanceof Node) {
             return;
@@ -240,6 +228,7 @@ CODE_SAMPLE
             return;
         }
 
+        $lowerAliasName = strtolower($aliasName);
         $this->nameRenamer->renameNameNode($this->resolvedNodeNames[$lowerAliasName], $lastName);
         $useUse->alias = null;
     }
