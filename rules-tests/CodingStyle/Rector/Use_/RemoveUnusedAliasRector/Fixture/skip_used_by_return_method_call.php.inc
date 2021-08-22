@@ -9,21 +9,11 @@ class SkipUsedByReturnMethodCall
 {
     private function getObj()
     {
-        if (rand(0, 1)) {
-            return new StandaloneClassDifferentNamespace();
-        }
-
-        return null;
+        return new StandaloneClassDifferentNamespace();
     }
 
     public function run()
     {
-        $obj = $this->getObj();
-
-        if (! $obj instanceof StandaloneClassDifferentNamespace) {
-            return null;
-        }
-
-        return $obj;
+        return $this->getObj();
     }
 }
