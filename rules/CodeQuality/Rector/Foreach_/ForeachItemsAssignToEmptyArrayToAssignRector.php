@@ -120,10 +120,6 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
         $type = $scope->getType($foreach->expr);
 
         if ($type instanceof ObjectType) {
