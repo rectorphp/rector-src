@@ -10,7 +10,6 @@ use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
 use Rector\Core\HttpKernel\RectorKernel;
-use Symplify\PackageBuilder\Console\ShellCode;
 use Symplify\PackageBuilder\Reflection\PrivatesCaller;
 
 // @ intentionally: continue anyway
@@ -72,7 +71,7 @@ try {
         $symfonyStyle->error($throwable->getMessage());
     }
 
-    exit(ShellCode::ERROR);
+    exit(\Symfony\Component\Console\Command\Command::FAILURE);
 }
 
 /** @var ConsoleApplication $application */

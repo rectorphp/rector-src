@@ -8,7 +8,6 @@ use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symplify\PackageBuilder\Console\ShellCode;
 
 final class MissingRectorRulesReporter
 {
@@ -40,7 +39,7 @@ final class MissingRectorRulesReporter
 
         $this->report();
 
-        return ShellCode::ERROR;
+        return \Symfony\Component\Console\Command\Command::FAILURE;
     }
 
     public function report(): void
