@@ -82,10 +82,6 @@ CODE_SAMPLE
         }
 
         $countedNode = $node->args[0]->value;
-        if ($countedNode instanceof ClassConstFetch) {
-            return null;
-        }
-
         if ($this->countableTypeAnalyzer->isCountableType($countedNode)) {
             return null;
         }
@@ -134,6 +130,10 @@ CODE_SAMPLE
     private function shouldSkip(FuncCall $funcCall): bool
     {
         if (! $this->isName($funcCall, 'count')) {
+            return true;
+        }
+
+        if ($funcCall->args[0]->value instanceof ClassConstFetch) {
             return true;
         }
 
