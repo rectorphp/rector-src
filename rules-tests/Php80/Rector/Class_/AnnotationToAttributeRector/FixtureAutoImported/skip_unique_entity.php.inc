@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @UniqueEntity(fields={"username"})
+ * @UniqueEntity("email")
  */
 #[Entity(repositoryClass: 'UserRepository')]
 #[Table(name: 'users')]
