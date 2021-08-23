@@ -14,7 +14,9 @@ final class UseImportNameMatcher
 {
     /**
      * @var string
-     * @see https://regex101.com/r/ZxFSlc/1
+     *
+     * @see https://regex101.com/r/ZxFSlc/1 for last name, eg: Entity and UniqueEntity
+     * @see https://regex101.com/r/OLO0Un/1 for inside namespace, eg: ORM for ORM\Id or ORM\Column
      */
     private const SHORT_NAME_REGEX = '#^%s(\\\\[\w]+)?$#i';
 
