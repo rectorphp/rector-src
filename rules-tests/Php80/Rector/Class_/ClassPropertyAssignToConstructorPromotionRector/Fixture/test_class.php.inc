@@ -51,9 +51,9 @@ class TestClass
   )
 	{
 		$this->since = $validFrom,
-    /**
-	   * @ORM\Column(type = "string")
-	   */
+		/**
+		 * @ORM\Column(type = "string")
+		 */
 		$this->rate = $rate
 	}
 }
