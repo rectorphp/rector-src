@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -38,7 +38,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private PromotedPropertyCandidateResolver $promotedPropertyCandidateResolver,
         private VariableRenamer $variableRenamer,
         private VarTagRemover $varTagRemover,
-        private ParamAnalyzer $paramAnalyzer
+        private ParamAnalyzer $paramAnalyzer,
+        private PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -134,8 +135,7 @@ CODE_SAMPLE
             $param->attrGroups = $property->attrGroups;
             $this->processNullableType($property, $param);
 
-            // copy doc
-            $this->processCopyDoc($property, $param);
+            $this->phpDocTypeChanger->copyPropertyDocToParam($property, $param);
         }
 
         return $node;
@@ -144,26 +144,6 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::PROPERTY_PROMOTION;
-    }
-
-    private function processCopyDoc(Property $property, Param $param): void
-    {
-        $phpDocInfo = $property->getAttribute(AttributeKey::PHP_DOC_INFO);
-        if (! $phpDocInfo) {
-            return;
-        }
-
-        $varTag = $phpDocInfo->getVarTagValueNode();
-        if (! $varTag instanceof VarTagValueNode) {
-            return;
-        }
-
-        if ($varTag->description !== '') {
-            return;
-        }
-
-        $phpDocInfo->removeByType(VarTagValueNode::class);
-        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
     }
 
     private function processNullableType(Property $property, Param $param): void
