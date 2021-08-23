@@ -12,6 +12,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -25,6 +27,7 @@ use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Rector\BetterPhpDocParser\ValueObject\PhpDoc\VariadicAwareParamTagValueNode;
 
 /**
  * @changelog https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291
@@ -132,9 +135,32 @@ CODE_SAMPLE
             // Copy over attributes of the "old" property
             $param->attrGroups = $property->attrGroups;
             $this->processNullableType($property, $param);
+
+            // copy doc
+            $this->processCopyDoc($property, $param);
         }
 
         return $node;
+    }
+
+    private function processCopyDoc(Property $property, Param $param)
+    {
+        $phpDocInfo = $property->getAttribute(AttributeKey::PHP_DOC_INFO);
+        if (! $phpDocInfo) {
+            return;
+        }
+
+        $varTag = $phpDocInfo->getVarTagValueNode();
+        if (! $varTag instanceof VarTagValueNode) {
+            return;
+        }
+
+        if ($varTag->description !== '') {
+            return;
+        }
+
+        $phpDocInfo->removeByType(VarTagValueNode::class);
+        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
     }
 
     public function provideMinPhpVersion(): int

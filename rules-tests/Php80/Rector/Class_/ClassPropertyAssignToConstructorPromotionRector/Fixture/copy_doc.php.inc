@@ -13,7 +13,6 @@ final class CopyDoc
 
 	/**
 	 * @var Z[]
-	 *
 	 * @Assert\Valid()
 	 * @Assert\NotBlank()
 	 */
@@ -41,16 +40,18 @@ class Z {}
 
 final class CopyDoc
 {
+	/**
+	 * @param Z[] $z
+	 */
 	public function __construct(
 		public Y $y,
 		/**
-		 * @param Z[]
-		 *
 		 * @Assert\Valid()
 		 * @Assert\NotBlank()
 		 */
 		public array $z = []
-	) {
+	)
+	{
 	}
 }
 ?>
