@@ -108,7 +108,7 @@ CODE_SAMPLE
 
         if ($foreachExpr instanceof Variable) {
             $variableName = $this->nodeNameResolver->getName($foreachExpr);
-            if ($this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
+            if (is_string($variableName) && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
                 return false;
             }
         }
