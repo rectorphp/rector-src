@@ -30,6 +30,27 @@ final class X
 }
 ?>
 -----
-<?php
+<?php declare(strict_types = 1);
 
-// Not sure what's correct. I don't know if promoted properties can have a docblock with annotations. But it certainly shouldn't just delete my annotations.
+namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+class Y {}
+class Z {}
+
+final class X
+{
+	public function __construct(
+		public Y $y,
+		/**
+		 * @var Z[]
+		 *
+		 * @Assert\Valid()
+		 * @Assert\NotBlank()
+		 */
+		public array $z = []
+	) {
+	}
+}
+?>
