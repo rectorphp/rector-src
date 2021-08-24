@@ -191,12 +191,7 @@ final class PromotedPropertyCandidateResolver
                 return false;
             }
 
-            foreach ($propertyType->getTypes() as $type) {
-                if (! $type instanceof FullyQualifiedObjectType) {
-                    $isAllFullyQualifiedObjectType = false;
-                    break;
-                }
-            }
+            $isAllFullyQualifiedObjectType = ! $this->hasNonFullyQualifiedObjectType($propertyType);
         }
 
         // different types, not a good to fit
@@ -204,6 +199,17 @@ final class PromotedPropertyCandidateResolver
             $propertyType,
             $matchedParamType
         );
+    }
+
+    private function hasNonFullyQualifiedObjectType(UnionType $unionType): bool
+    {
+        foreach ($unionType->getTypes() as $type) {
+            if (! $type instanceof FullyQualifiedObjectType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function hasGenericTemplateType(UnionType $unionType): bool
