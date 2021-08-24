@@ -237,12 +237,12 @@ final class PromotedPropertyCandidateResolver
             return true;
         }
 
-        // @todo unknown type, not suitable?
-        $propertyType = $this->propertyTypeInferer->inferProperty($property);
-        if ($this->hasConflictingParamType($matchedParam, $propertyType)) {
+        if ($this->isParamUsedBeforeAssign($assignedVariable, $firstParamAsVariable)) {
             return true;
         }
 
-        return $this->isParamUsedBeforeAssign($assignedVariable, $firstParamAsVariable);
+        // @todo unknown type, not suitable?
+        $propertyType = $this->propertyTypeInferer->inferProperty($property);
+        return $this->hasConflictingParamType($matchedParam, $propertyType);
     }
 }
