@@ -16,7 +16,6 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
@@ -57,12 +56,6 @@ final class BetterStandardPrinter extends Standard
      * @var string
      */
     private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
-
-    /**
-     * @see https://regex101.com/r/qZiqGo/13
-     * @var string
-     */
-    private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
     /**
      * Use space by default
@@ -318,19 +311,6 @@ final class BetterStandardPrinter extends Standard
         $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
 
         return parent::pStmts($nodes, $indent);
-    }
-
-    /**
-     * "...$params) : ReturnType"
-     * ↓
-     * "...$params): ReturnType"
-     */
-    protected function pStmt_ClassMethod(ClassMethod $classMethod): string
-    {
-        $content = parent::pStmt_ClassMethod($classMethod);
-
-        // this approach is chosen, to keep changes in parent pStmt_ClassMethod() updated
-        return Strings::replace($content, self::REPLACE_COLON_WITH_SPACE_REGEX, '$1: ');
     }
 
     /**
