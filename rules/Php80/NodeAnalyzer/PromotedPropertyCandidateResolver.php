@@ -187,7 +187,7 @@ final class PromotedPropertyCandidateResolver
 
         $isAllFullyQualifiedObjectType = true;
         if ($propertyType instanceof UnionType) {
-            if ($this->hasGeneric($propertyType)) {
+            if ($this->hasGenericTemplateType($propertyType)) {
                 return false;
             }
 
@@ -206,7 +206,7 @@ final class PromotedPropertyCandidateResolver
         );
     }
 
-    private function hasGeneric(UnionType $unionType): bool
+    private function hasGenericTemplateType(UnionType $unionType): bool
     {
         foreach ($unionType->getTypes() as $type) {
             if ($type instanceof TemplateType) {
