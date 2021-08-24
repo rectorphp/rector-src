@@ -15,7 +15,8 @@ final class Generic
 	/**
 	 * @param T $value
 	 */
-	public function __construct(mixed $value) {
+	public function __construct(mixed $value)
+	{
 		$this->value = $value;
 	}
 }
@@ -33,7 +34,8 @@ final class Generic
 	/**
 	 * @param T $value
 	 */
-	public function __construct(public mixed $value) {
+	public function __construct(public mixed $value)
+	{
 	}
 }
 ?>

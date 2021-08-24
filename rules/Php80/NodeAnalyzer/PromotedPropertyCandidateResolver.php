@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -186,6 +187,10 @@ final class PromotedPropertyCandidateResolver
 
         $isAllFullyQualifiedObjectType = true;
         if ($propertyType instanceof UnionType) {
+            if ($this->hasGeneric($propertyType)) {
+                return false;
+            }
+
             foreach ($propertyType->getTypes() as $type) {
                 if (! $type instanceof FullyQualifiedObjectType) {
                     $isAllFullyQualifiedObjectType = false;
@@ -199,6 +204,17 @@ final class PromotedPropertyCandidateResolver
             $propertyType,
             $matchedParamType
         );
+    }
+
+    private function hasGeneric(UnionType $unionType): bool
+    {
+        foreach ($unionType->getTypes() as $type) {
+            if ($type instanceof TemplateType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
