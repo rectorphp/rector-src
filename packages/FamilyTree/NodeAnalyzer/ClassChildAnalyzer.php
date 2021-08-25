@@ -40,9 +40,7 @@ final class ClassChildAnalyzer
 
     public function hasParentClassMethod(ClassReflection $classReflection, string $methodName): bool
     {
-        dump($classReflection->getParents());
         foreach ($classReflection->getParents() as $parentClassReflections) {
-            dump($parentClassReflections->getName());
             if (! $parentClassReflections->hasMethod($methodName)) {
                 continue;
             }
