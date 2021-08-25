@@ -193,7 +193,7 @@ final class PromotedPropertyCandidateResolver
             return false;
         }
 
-        // different types, check not has mixed and not templated generic types
+        // different types, check not has mixed and not has templated generic types
         if (! $this->hasMixedType($propertyType)) {
             return false;
         }
