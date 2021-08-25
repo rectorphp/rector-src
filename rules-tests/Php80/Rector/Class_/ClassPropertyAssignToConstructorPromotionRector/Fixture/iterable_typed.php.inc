@@ -12,7 +12,8 @@ class IterableTyped
 	/**
 	 * @param iterable<string> $property
 	 */
-	public function __construct(iterable $property) {
+	public function __construct(iterable $property)
+	{
 		$this->property = $property;
 	}
 }
@@ -27,7 +28,8 @@ class IterableTyped
 	/**
 	 * @param iterable<string> $property
 	 */
-	public function __construct(private iterable $property) {
+	public function __construct(private iterable $property)
+	{
 	}
 }
 ?>
