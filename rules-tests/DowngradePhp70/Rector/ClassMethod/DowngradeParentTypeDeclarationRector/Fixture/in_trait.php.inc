@@ -29,7 +29,7 @@ namespace Rector\Tests\DowngradePhp70\Rector\ClassMethod\DowngradeParentTypeDecl
 trait SomeTrait
 {
     /**
-     * @return $this
+     * @return parent
      */
     public function run()
     {

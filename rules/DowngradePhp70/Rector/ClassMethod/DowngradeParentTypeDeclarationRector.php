@@ -6,17 +6,14 @@ namespace Rector\DowngradePhp70\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use PHPStan\Type\ThisType;
-use PHPStan\Type\Type;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,7 +23,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeParentTypeDeclarationRector extends AbstractRector
 {
     public function __construct(
-        private PhpDocTypeChanger $phpDocTypeChanger
+        private PhpDocTypeChanger $phpDocTypeChanger,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -99,31 +97,31 @@ CODE_SAMPLE
             return $node;
         }
 
-        $class = $node->getAttribute(AttributeKey::CLASS_NODE);
-        $type = $this->getType($class, $node);
+        $parentStaticType = $this->getType($node);
 
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
+        if (! $parentStaticType instanceof ParentStaticType) {
+            return $node;
+        }
+
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $parentStaticType);
         return $node;
     }
 
-    private function getType(?ClassLike $classLike, ClassMethod $classMethod): ThisType|Type
+    private function getType(ClassMethod $classMethod): ?ParentStaticType
     {
-        if (! $classLike instanceof ClassLike) {
-            return new ThisType('');
+        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+        if ($scope === null) {
+            // in a trait
+            $className = $classMethod->getAttribute(AttributeKey::CLASS_NAME);
+            $classReflection = $this->reflectionProvider->getClass($className);
+        } else {
+            $classReflection = $scope->getClassReflection();
         }
 
-        if (! $classLike instanceof Class_) {
-            return new ThisType('');
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
         }
 
-        if ($classLike->extends instanceof FullyQualified) {
-            return $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
-                new IdentifierTypeNode('parent'),
-                $classMethod
-            );
-        }
-
-        // handle when parent removed by other rules
-        return new ThisType('');
+        return new ParentStaticType($classReflection);
     }
 }
