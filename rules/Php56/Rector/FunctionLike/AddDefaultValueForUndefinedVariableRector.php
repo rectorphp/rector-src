@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\InlineHTML;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php56\NodeAnalyzer\UndefinedVariableResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -84,6 +85,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $hasInnerHTML = (bool) $this->betterNodeFinder->findFirst(
+            (array) $node->stmts,
+            fn (Node $node): bool => $node instanceof InlineHTML
+        );
+        if ($hasInnerHTML) {
+            return null;
+        }
+
         $undefinedVariableNames = $this->undefinedVariableResolver->resolve($node);
 
         // avoids adding same variable multiple tiemes
