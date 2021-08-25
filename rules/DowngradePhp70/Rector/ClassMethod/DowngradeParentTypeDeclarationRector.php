@@ -94,12 +94,8 @@ CODE_SAMPLE
         }
 
         $node->returnType = null;
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
 
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return null;
-        }
-
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         if ($phpDocInfo->hasByType(ReturnTagValueNode::class)) {
             return $node;
         }
