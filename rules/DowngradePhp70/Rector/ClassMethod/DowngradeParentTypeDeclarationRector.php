@@ -8,9 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ThisType;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
@@ -82,15 +85,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $class = $node->getAttribute(AttributeKey::CLASS_NODE);
-        if (! $class instanceof Class_) {
-            return null;
-        }
-
-        if (! $class->extends instanceof FullyQualified) {
-            return null;
-        }
-
         if (! $node->returnType instanceof Name) {
             return null;
         }
@@ -110,7 +104,28 @@ CODE_SAMPLE
             return $node;
         }
 
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new ObjectType($class->extends->toString()));
+        $class = $node->getAttribute(AttributeKey::CLASS_NODE);
+        $type = $this->getType($class);
+
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
         return $node;
+    }
+
+    private function getType(?ClassLike $classLike): ThisType | ObjectType
+    {
+        if (! $classLike instanceof ClassLike) {
+            return new ThisType('');
+        }
+
+        if (! $classLike instanceof Class_) {
+            return new ThisType('');
+        }
+
+        if ($classLike->extends instanceof FullyQualified) {
+            return new ObjectType($classLike->extends->toString());
+        }
+
+        // handle when parent removed by other rules
+        return new ThisType('');
     }
 }
