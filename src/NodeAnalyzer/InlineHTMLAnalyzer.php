@@ -19,7 +19,7 @@ final class InlineHTMLAnalyzer
     public function hasInlineHTML(Node $node): bool
     {
         if ($node instanceof FunctionLike) {
-            return (bool) $this->betterNodeFinder->findInstanceOf((array) $node->stmts, InlineHTML::class);
+            return (bool) $this->betterNodeFinder->findInstanceOf((array) $node->getStmts(), InlineHTML::class);
         }
 
         return (bool) $this->betterNodeFinder->findInstanceOf($node, InlineHTML::class);
