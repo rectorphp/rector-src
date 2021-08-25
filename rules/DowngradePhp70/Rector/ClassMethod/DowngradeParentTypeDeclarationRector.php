@@ -9,16 +9,13 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\Type\ObjectType;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DowngradePhp71\TypeDeclaration\PhpDocFromTypeDeclarationDecorator;
-use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use PHPStan\Type\ObjectType;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\DowngradePhp70\Rector\ClassMethod\DowngradeParentTypeDeclarationRector\DowngradeParentTypeDeclarationRectorTest
@@ -26,9 +23,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class DowngradeParentTypeDeclarationRector extends AbstractRector
 {
     public function __construct(
-        private PhpDocFromTypeDeclarationDecorator $phpDocFromTypeDeclarationDecorator,
-        private ReflectionProvider $reflectionProvider,
-        private ReturnTypeInferer $returnTypeInferer,
         private PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
@@ -107,7 +101,7 @@ CODE_SAMPLE
         $node->returnType = null;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
 
-        if (! $phpDocInfo) {
+        if ($phpDocInfo === null) {
             return null;
         }
 
