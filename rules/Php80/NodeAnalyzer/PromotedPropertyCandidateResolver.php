@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Generic\TemplateType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -185,9 +186,19 @@ final class PromotedPropertyCandidateResolver
             );
         }
 
+        if (! $propertyType instanceof UnionType) {
+            return false;
+        }
+
+        if (! $this->hasMixedType($propertyType)) {
+            return false;
+        }
+
+        return true;
+
         $isAllFullyQualifiedObjectType = true;
         if ($propertyType instanceof UnionType) {
-            if ($this->hasGenericTemplateType($propertyType)) {
+            if (! $this->hasMixedType($propertyType)) {
                 return false;
             }
 
@@ -212,10 +223,10 @@ final class PromotedPropertyCandidateResolver
         return false;
     }
 
-    private function hasGenericTemplateType(UnionType $unionType): bool
+    private function hasMixedType(UnionType $unionType): bool
     {
         foreach ($unionType->getTypes() as $type) {
-            if ($type instanceof TemplateType) {
+            if ($type instanceof MixedType) {
                 return true;
             }
         }

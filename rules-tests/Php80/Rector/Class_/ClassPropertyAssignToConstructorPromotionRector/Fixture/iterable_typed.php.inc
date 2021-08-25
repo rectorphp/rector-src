@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-class GenericProperty
+class IterableTyped
 {
 	/**
 	 * @var iterable<string>
@@ -22,7 +22,7 @@ class GenericProperty
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-class GenericProperty
+class IterableTyped
 {
 	/**
 	 * @param iterable<string> $property
