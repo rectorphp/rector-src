@@ -18,6 +18,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 
 /**
  * @see \Rector\Tests\DowngradePhp70\Rector\ClassMethod\DowngradeParentTypeDeclarationRector\DowngradeParentTypeDeclarationRectorTest
@@ -40,7 +41,7 @@ final class DowngradeParentTypeDeclarationRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove "parent" return type, add a "@return TheParentClass" tag instead',
+            'Remove "parent" return type, add a "@return parent" tag instead',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -65,7 +66,7 @@ class ParentClass
 class SomeClass extends ParentClass
 {
     /**
-     * @return ParentClass
+     * @return parent
      */
     public function foo()
     {
@@ -99,13 +100,13 @@ CODE_SAMPLE
         }
 
         $class = $node->getAttribute(AttributeKey::CLASS_NODE);
-        $type = $this->getType($class);
+        $type = $this->getType($class, $node);
 
         $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
         return $node;
     }
 
-    private function getType(?ClassLike $classLike): ThisType | ObjectType
+    private function getType(?ClassLike $classLike, ClassMethod $classMethod)// : ThisType | ObjectType
     {
         if (! $classLike instanceof ClassLike) {
             return new ThisType('');
@@ -116,7 +117,10 @@ CODE_SAMPLE
         }
 
         if ($classLike->extends instanceof FullyQualified) {
-            return new ObjectType($classLike->extends->toString());
+            return $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+                new IdentifierTypeNode('parent'),
+                $classMethod
+            );
         }
 
         // handle when parent removed by other rules

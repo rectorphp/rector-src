@@ -42,7 +42,7 @@ class ParentClass
 class SomeClass extends ParentClass implements SomeInterface
 {
     /**
-     * @return \Rector\Tests\DowngradePhp70\Rector\ClassMethod\DowngradeParentTypeDeclarationRector\Fixture\ParentClass
+     * @return parent
      */
     public function run()
     {
