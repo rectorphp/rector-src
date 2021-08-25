@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector\Fixture;
 
-final class Foo
+final class SkipWithEmbeddedHTML
 {
     public function run(): void
     {
