@@ -189,11 +189,11 @@ final class PromotedPropertyCandidateResolver
             return false;
         }
 
-        // different types, not a good to fit
         if ($this->typeComparator->areTypesEqual($propertyType, $matchedParamType)) {
             return false;
         }
 
+        // different types, check not has mixed and not templated generic types
         if (! $this->hasMixedType($propertyType)) {
             return false;
         }
