@@ -24,7 +24,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\ValueObject\PropertyPromotionCandidate;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
 final class PromotedPropertyCandidateResolver
@@ -190,32 +189,22 @@ final class PromotedPropertyCandidateResolver
             return false;
         }
 
+        // different types, not a good to fit
+        if ($this->typeComparator->areTypesEqual($propertyType, $matchedParamType)) {
+            return false;
+        }
+
         if (! $this->hasMixedType($propertyType)) {
             return false;
         }
 
-        return true;
-
-        $isAllFullyQualifiedObjectType = true;
-        if ($propertyType instanceof UnionType) {
-            if (! $this->hasMixedType($propertyType)) {
-                return false;
-            }
-
-            $isAllFullyQualifiedObjectType = ! $this->hasNonFullyQualifiedObjectType($propertyType);
-        }
-
-        // different types, not a good to fit
-        return ! $isAllFullyQualifiedObjectType && ! $this->typeComparator->areTypesEqual(
-            $propertyType,
-            $matchedParamType
-        );
+        return ! $this->hasTemplatedGenericType($propertyType);
     }
 
-    private function hasNonFullyQualifiedObjectType(UnionType $unionType): bool
+    private function hasTemplatedGenericType(UnionType $unionType): bool
     {
         foreach ($unionType->getTypes() as $type) {
-            if (! $type instanceof FullyQualifiedObjectType) {
+            if ($type instanceof TemplateType) {
                 return true;
             }
         }
