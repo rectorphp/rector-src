@@ -6,6 +6,8 @@ namespace Rector\DowngradePhp70\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
@@ -13,6 +15,10 @@ use Rector\DowngradePhp71\TypeDeclaration\PhpDocFromTypeDeclarationDecorator;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use PHPStan\Type\ObjectType;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\DowngradePhp70\Rector\ClassMethod\DowngradeParentTypeDeclarationRector\DowngradeParentTypeDeclarationRectorTest
@@ -22,7 +28,8 @@ final class DowngradeParentTypeDeclarationRector extends AbstractRector
     public function __construct(
         private PhpDocFromTypeDeclarationDecorator $phpDocFromTypeDeclarationDecorator,
         private ReflectionProvider $reflectionProvider,
-        private ReturnTypeInferer $returnTypeInferer
+        private ReturnTypeInferer $returnTypeInferer,
+        private PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -37,7 +44,7 @@ final class DowngradeParentTypeDeclarationRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove "parent" return type, add a "@return parent" tag instead',
+            'Remove "parent" return type, add a "@return TheParentClass" tag instead',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -80,6 +87,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $class = $node->getAttribute(AttributeKey::CLASS_NODE);
+        if (! $class instanceof Class_) {
+            return null;
+        }
+
+        if (! $class->extends instanceof FullyQualified) {
+            return null;
+        }
+
         if (! $node->returnType instanceof Name) {
             return null;
         }
@@ -89,6 +105,17 @@ CODE_SAMPLE
         }
 
         $node->returnType = null;
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+
+        if (! $phpDocInfo) {
+            return null;
+        }
+
+        if ($phpDocInfo->hasByType(ReturnTagValueNode::class)) {
+            return $node;
+        }
+
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new ObjectType($class->extends->toString()));
         return $node;
     }
 }

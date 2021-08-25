@@ -27,7 +27,7 @@ class ParentClass
 class Fixture extends ParentClass
 {
     /**
-     * @return parent
+     * @return \Rector\Tests\DowngradePhp70\Rector\ClassMethod\DowngradeParentTypeDeclarationRector\Fixture\ParentClass
      */
     public function getParent()
     {
