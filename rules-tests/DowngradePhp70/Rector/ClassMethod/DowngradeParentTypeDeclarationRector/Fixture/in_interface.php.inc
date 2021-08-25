@@ -14,7 +14,10 @@ class ParentClass
 
 class SomeClass extends ParentClass implements SomeInterface
 {
-    use SomeTrait;
+    public function run(): parent
+    {
+        return $this;
+    }
 }
 
 ?>
@@ -38,7 +41,13 @@ class ParentClass
 
 class SomeClass extends ParentClass implements SomeInterface
 {
-    use SomeTrait;
+    /**
+     * @return \Rector\Tests\DowngradePhp70\Rector\ClassMethod\DowngradeParentTypeDeclarationRector\Fixture\ParentClass
+     */
+    public function run()
+    {
+        return $this;
+    }
 }
 
 ?>
