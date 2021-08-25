@@ -42,6 +42,9 @@ class SomeOtherClassUsingAnAnonymousClass
     public function doSomething(): void
     {
         $class = new class () extends SomeClass {
+            /**
+            * @param string $world
+            */
             public function hello($world = 'world') {
                 printf('Hi %s', $world);
             }
