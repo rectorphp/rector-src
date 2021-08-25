@@ -65,7 +65,7 @@ class ParentClass
 class SomeClass extends ParentClass
 {
     /**
-     * @return parent
+     * @return ParentClass
      */
     public function foo()
     {
