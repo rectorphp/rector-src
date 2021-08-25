@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\InlineHTML;
+use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php56\NodeAnalyzer\UndefinedVariableResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -34,7 +35,8 @@ final class AddDefaultValueForUndefinedVariableRector extends AbstractRector
     private const ALREADY_ADDED_VARIABLE_NAMES = 'already_added_variable_names';
 
     public function __construct(
-        private UndefinedVariableResolver $undefinedVariableResolver
+        private UndefinedVariableResolver $undefinedVariableResolver,
+        private InlineHTMLAnalyzer $inlineHTMLAnalyzer
     ) {
     }
 
@@ -85,11 +87,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $hasInnerHTML = (bool) $this->betterNodeFinder->findFirst(
-            (array) $node->stmts,
-            fn (Node $node): bool => $node instanceof InlineHTML
-        );
-        if ($hasInnerHTML) {
+        if ($this->inlineHTMLAnalyzer->hasInlineHTML($node)) {
             return null;
         }
 
