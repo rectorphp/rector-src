@@ -37,7 +37,7 @@ final class DowngradeParentTypeDeclarationRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove "parent" return type, add a "@return $this" tag instead',
+            'Remove "parent" return type, add a "@return parent" tag instead',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
