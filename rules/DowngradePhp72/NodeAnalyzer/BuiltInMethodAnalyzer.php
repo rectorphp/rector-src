@@ -22,11 +22,15 @@ final class BuiltInMethodAnalyzer
         }
 
         foreach ($classReflection->getInterfaces() as $interfaceReflection) {
+            if (! $interfaceReflection->isBuiltIn()) {
+                continue;
+            }
+
             if (! $interfaceReflection->hasMethod($methodName)) {
                 continue;
             }
 
-            return $interfaceReflection->isBuiltIn();
+            return true;
         }
 
         return false;
