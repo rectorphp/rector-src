@@ -17,10 +17,6 @@ final class BuiltInMethodAnalyzer
     public function isImplementsBuiltInInterface(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
         $methodName = $this->nodeNameResolver->getName($classMethod);
-        if ($methodName === null) {
-            return false;
-        }
-
         foreach ($classReflection->getInterfaces() as $interfaceReflection) {
             if (! $interfaceReflection->isBuiltIn()) {
                 continue;
