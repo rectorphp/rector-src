@@ -32,7 +32,7 @@ abstract class ParentClass implements \SplObserver
     }
 }
 
-class IndirectImplementsNativeParamers extends ParentClass
+class IndirectImplementsNativeInterface extends ParentClass
 {
     public function update($subject): void
     {
