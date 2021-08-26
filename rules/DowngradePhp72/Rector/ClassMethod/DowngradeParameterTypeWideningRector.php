@@ -6,16 +6,13 @@ namespace Rector\DowngradePhp72\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
-use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -54,7 +51,6 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector implemen
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private ReflectionProvider $reflectionProvider,
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
-        private ClassChildAnalyzer $classChildAnalyzer,
         private BuiltInMethodAnalyzer $builtInMethodAnalyzer
     ) {
     }
@@ -146,10 +142,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $classLike = $node->getAttribute(AttributeKey::CLASS_NODE);
-        $methodName = $this->nodeNameResolver->getName($node);
-
-        if ($classLike instanceof Class_ && ! $this->classChildAnalyzer->hasChildClassMethod($classReflection, $methodName) && $this->builtInMethodAnalyzer->isImplementsBuiltInInterface($classReflection, $node)) {
+        if ($this->builtInMethodAnalyzer->isImplementsBuiltInInterface($classReflection, $node)) {
             return null;
         }
 

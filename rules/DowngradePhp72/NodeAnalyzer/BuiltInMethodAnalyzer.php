@@ -6,17 +6,26 @@ namespace Rector\DowngradePhp72\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
+use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class BuiltInMethodAnalyzer
 {
-    public function __construct(private NodeNameResolver $nodeNameResolver)
+    public function __construct(private NodeNameResolver $nodeNameResolver, private ClassChildAnalyzer $classChildAnalyzer)
     {
     }
 
     public function isImplementsBuiltInInterface(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
+        if (! $classReflection->isClass()) {
+            return false;
+        }
+
         $methodName = $this->nodeNameResolver->getName($classMethod);
+        if ($this->classChildAnalyzer->hasChildClassMethod($classReflection, $methodName)) {
+            return false;
+        }
+
         foreach ($classReflection->getInterfaces() as $interfaceReflection) {
             if (! $interfaceReflection->isBuiltIn()) {
                 continue;
