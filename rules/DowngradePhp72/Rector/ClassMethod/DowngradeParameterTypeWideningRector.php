@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\OverrideFromAnonymousClassMethodAnalyzer;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
@@ -53,7 +54,8 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector implemen
         private ReflectionProvider $reflectionProvider,
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
         private BuiltInMethodAnalyzer $builtInMethodAnalyzer,
-        private OverrideFromAnonymousClassMethodAnalyzer $overrideFromAnonymousClassMethodAnalyzer
+        private OverrideFromAnonymousClassMethodAnalyzer $overrideFromAnonymousClassMethodAnalyzer,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -119,6 +121,14 @@ CODE_SAMPLE
         }
 
         if ($this->overrideFromAnonymousClassMethodAnalyzer->isOverrideParentMethod($classLike, $node)) {
+            $classReflection = $this->reflectionProvider->getClass($classLike->extends->toString());
+            $methodName = $this->nodeNameResolver->getName($node);
+            $classMethod = $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
+
+            if ($this->shouldSkip($classReflection, $classMethod)) {
+                return null;
+            }
+
             return $this->processRemoveParamTypeFromMethod($node);
         }
 
@@ -132,19 +142,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        if ($this->isSealedClass($classReflection)) {
-            return null;
-        }
-
-        if ($this->isSafeType($classReflection, $node)) {
-            return null;
-        }
-
-        if ($node->isPrivate()) {
-            return null;
-        }
-
-        if ($this->shouldSkipClassMethod($node)) {
+        if ($this->shouldSkip($classReflection, $node)) {
             return null;
         }
 
@@ -153,6 +151,23 @@ CODE_SAMPLE
         }
 
         return $this->processRemoveParamTypeFromMethod($node);
+    }
+
+    private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod): bool
+    {
+        if ($this->isSealedClass($classReflection)) {
+            return true;
+        }
+
+        if ($this->isSafeType($classReflection, $classMethod)) {
+            return true;
+        }
+
+        if ($classMethod->isPrivate()) {
+            return true;
+        }
+
+        return $this->shouldSkipClassMethod($classMethod);
     }
 
     /**
