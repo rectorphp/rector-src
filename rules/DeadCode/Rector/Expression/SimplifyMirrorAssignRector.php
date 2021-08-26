@@ -23,7 +23,6 @@ final class SimplifyMirrorAssignRector extends AbstractRector
                 $a = $a;
             }',
             'function run() {
-
             }'
         )]);
     }

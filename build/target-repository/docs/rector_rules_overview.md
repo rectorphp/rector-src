@@ -3842,7 +3842,6 @@ Removes unneeded $a = $a assigns
 ```diff
  function run() {
 -                $a = $a;
-+
              }
 ```
 
