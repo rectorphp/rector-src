@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class OverrideFromAnonymousClassMethodAnalyzer
@@ -18,7 +17,6 @@ final class OverrideFromAnonymousClassMethodAnalyzer
     public function __construct(
         private ClassAnalyzer $classAnalyzer,
         private NodeNameResolver $nodeNameResolver,
-        private ClassChildAnalyzer $classChildAnalyzer,
         private ReflectionProvider $reflectionProvider
     ) {
     }
