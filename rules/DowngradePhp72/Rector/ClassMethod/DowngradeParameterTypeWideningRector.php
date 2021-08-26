@@ -12,8 +12,8 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DowngradePhp72\NodeAnalyzer\OverrideFromAnonymousClassMethodAnalyzer;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
+use Rector\DowngradePhp72\NodeAnalyzer\OverrideFromAnonymousClassMethodAnalyzer;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
@@ -153,23 +153,6 @@ CODE_SAMPLE
         return $this->processRemoveParamTypeFromMethod($node);
     }
 
-    private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod): bool
-    {
-        if ($this->isSealedClass($classReflection)) {
-            return true;
-        }
-
-        if ($this->isSafeType($classReflection, $classMethod)) {
-            return true;
-        }
-
-        if ($classMethod->isPrivate()) {
-            return true;
-        }
-
-        return $this->shouldSkipClassMethod($classMethod);
-    }
-
     /**
      * @param array<string, mixed> $configuration
      */
@@ -187,6 +170,27 @@ CODE_SAMPLE
         }
 
         $this->safeTypesToMethods = $safeTypesToMethods;
+    }
+
+    private function shouldSkip(ClassReflection $classReflection, ?ClassMethod $classMethod): bool
+    {
+        if (! $classMethod instanceof ClassMethod) {
+            return true;
+        }
+
+        if ($this->isSealedClass($classReflection)) {
+            return true;
+        }
+
+        if ($this->isSafeType($classReflection, $classMethod)) {
+            return true;
+        }
+
+        if ($classMethod->isPrivate()) {
+            return true;
+        }
+
+        return $this->shouldSkipClassMethod($classMethod);
     }
 
     private function processRemoveParamTypeFromMethod(ClassMethod $classMethod): ClassMethod
