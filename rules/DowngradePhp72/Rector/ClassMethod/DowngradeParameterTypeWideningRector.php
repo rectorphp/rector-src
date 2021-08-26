@@ -125,6 +125,7 @@ CODE_SAMPLE
         if ($this->overrideFromAnonymousClassMethodAnalyzer->isOverrideParentMethod($classLike, $node)) {
             $classReflection = $this->reflectionProvider->getClass($classLike->extends->toString());
             $methodName = $this->nodeNameResolver->getName($node);
+            /** @var ClassMethod $classMethod */
             $classMethod = $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
 
             if ($this->shouldSkip($classReflection, $classMethod)) {
@@ -174,12 +175,8 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function shouldSkip(ClassReflection $classReflection, ?ClassMethod $classMethod): bool
+    private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
-        if (! $classMethod instanceof ClassMethod) {
-            return true;
-        }
-
         if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
             return true;
         }
