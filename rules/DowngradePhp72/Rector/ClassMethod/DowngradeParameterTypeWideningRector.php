@@ -14,6 +14,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
 use Rector\DowngradePhp72\NodeAnalyzer\OverrideFromAnonymousClassMethodAnalyzer;
+use Rector\DowngradePhp72\NodeAnalyzer\SealedClassAnalyzer;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
@@ -55,7 +56,8 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector implemen
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
         private BuiltInMethodAnalyzer $builtInMethodAnalyzer,
         private OverrideFromAnonymousClassMethodAnalyzer $overrideFromAnonymousClassMethodAnalyzer,
-        private AstResolver $astResolver
+        private AstResolver $astResolver,
+        private SealedClassAnalyzer $sealedClassAnalyzer
     ) {
     }
 
@@ -178,7 +180,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->isSealedClass($classReflection)) {
+        if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
             return true;
         }
 
@@ -241,22 +243,6 @@ CODE_SAMPLE
         }
 
         return true;
-    }
-
-    /**
-     * This method is perfectly sealed, nothing to downgrade here
-     */
-    private function isSealedClass(ClassReflection $classReflection): bool
-    {
-        if (! $classReflection->isClass()) {
-            return false;
-        }
-
-        if (! $classReflection->isFinal()) {
-            return false;
-        }
-
-        return count($classReflection->getAncestors()) === 1;
     }
 
     private function isSafeType(ClassReflection $classReflection, ClassMethod $classMethod): bool
