@@ -18,7 +18,14 @@ final class SimplifyMirrorAssignRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Removes unneeded $a = $a assigns', [new CodeSample('$a = $a;', '')]);
+        return new RuleDefinition('Removes unneeded $a = $a assigns', [new CodeSample(
+            'function run() {
+                $a = $a;
+            }',
+            'function run() {
+
+            }'
+        )]);
     }
 
     /**
