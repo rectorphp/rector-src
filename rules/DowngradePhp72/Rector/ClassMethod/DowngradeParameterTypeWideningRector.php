@@ -11,6 +11,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DowngradePhp72\NodeAnalyzer\OverrideFromAnonymousClassMethodAnalyzer;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
 use Rector\DowngradePhp72\PhpDoc\NativeParamToPhpDocDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -51,7 +52,8 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector implemen
         private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
         private ReflectionProvider $reflectionProvider,
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
-        private BuiltInMethodAnalyzer $builtInMethodAnalyzer
+        private BuiltInMethodAnalyzer $builtInMethodAnalyzer,
+        private OverrideFromAnonymousClassMethodAnalyzer $overrideFromAnonymousClassMethodAnalyzer
     ) {
     }
 
@@ -116,6 +118,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->overrideFromAnonymousClassMethodAnalyzer->isOverrideParentMethod($classLike, $node)) {
+            return $this->processRemoveParamTypeFromMethod($node);
+        }
+
         $className = $this->nodeNameResolver->getName($classLike);
         if ($className === null) {
             return null;
@@ -146,12 +152,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // Downgrade every scalar parameter, just to be sure
-        foreach (array_keys($node->params) as $paramPosition) {
-            $this->removeParamTypeFromMethod($node, $paramPosition);
-        }
-
-        return $node;
+        return $this->processRemoveParamTypeFromMethod($node);
     }
 
     /**
@@ -171,6 +172,16 @@ CODE_SAMPLE
         }
 
         $this->safeTypesToMethods = $safeTypesToMethods;
+    }
+
+    private function processRemoveParamTypeFromMethod(ClassMethod $classMethod): ClassMethod
+    {
+        // Downgrade every scalar parameter, just to be sure
+        foreach (array_keys($classMethod->params) as $paramPosition) {
+            $this->removeParamTypeFromMethod($classMethod, $paramPosition);
+        }
+
+        return $classMethod;
     }
 
     private function removeParamTypeFromMethod(ClassMethod $classMethod, int $paramPosition): void
