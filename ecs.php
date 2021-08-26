@@ -52,11 +52,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/scoper.php',
     ]);
 
-    $containerConfigurator->import(SetList::PSR_12);
-    $containerConfigurator->import(SetList::SYMPLIFY);
-    $containerConfigurator->import(SetList::COMMON);
-    $containerConfigurator->import(SetList::CLEAN_CODE);
-
     $parameters->set(Option::SKIP, [
         '*/Source/*',
         '*/Fixture/*',
@@ -97,8 +92,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ],
     ]);
 
-    // import Control Structure SetList here on purpose to avoid overridden by existin Skip Option in current config
-    $containerConfigurator->import(SetList::CONTROL_STRUCTURES);
+    // import SetList here on purpose to avoid overridden by existing Skip Option in current config
+    $containerConfigurator->import(SetList::PSR_12);
+    $containerConfigurator->import(SetList::SYMPLIFY);
+    $containerConfigurator->import(SetList::COMMON);
+    $containerConfigurator->import(SetList::CLEAN_CODE);
 
     $parameters->set(Option::LINE_ENDING, "\n");
 };
