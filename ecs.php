@@ -97,6 +97,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ],
     ]);
 
+    // import Control Structure SetList here on purpose to avoid overridden by existin Skip Option in current config
     $containerConfigurator->import(SetList::CONTROL_STRUCTURES);
+
     $parameters->set(Option::LINE_ENDING, "\n");
 };
