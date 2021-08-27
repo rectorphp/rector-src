@@ -1,4 +1,4 @@
-# 477 Rules Overview
+# 476 Rules Overview
 
 <br>
 
@@ -84,7 +84,7 @@
 
 - [Removing](#removing) (6)
 
-- [RemovingStatic](#removingstatic) (8)
+- [RemovingStatic](#removingstatic) (7)
 
 - [Renaming](#renaming) (11)
 
@@ -132,31 +132,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
  $someObject = new SomeExampleClass;
 -$someObject->someMethod();
 +$someObject->someMethod(true);
-```
 
-<br>
-
-```php
-use Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector;
-use Rector\Arguments\ValueObject\ArgumentAdder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\SymfonyPhpConfig\ValueObjectInliner;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(ArgumentAdderRector::class)
-        ->call('configure', [[
-            ArgumentAdderRector::ADDED_ARGUMENTS => ValueObjectInliner::inline([
-                new ArgumentAdder('SomeExampleClass', 'someMethod', 0, 'someArgument', true, 'SomeType', null),
-            ]),
-        ]]);
-};
-```
-
-↓
-
-```diff
  class MyCustomClass extends SomeExampleClass
  {
 -    public function someMethod()
@@ -9101,56 +9077,6 @@ Change static method and local-only calls to non-static
 -    private static function someStatic()
 +    private function someStatic()
      {
-     }
- }
-```
-
-<br>
-
-### NewUniqueObjectToEntityFactoryRector
-
-Convert new X to new factories
-
-:wrench: **configure it!**
-
-- class: [`Rector\RemovingStatic\Rector\Class_\NewUniqueObjectToEntityFactoryRector`](../rules/RemovingStatic/Rector/Class_/NewUniqueObjectToEntityFactoryRector.php)
-
-```php
-use Rector\RemovingStatic\Rector\Class_\NewUniqueObjectToEntityFactoryRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(NewUniqueObjectToEntityFactoryRector::class)
-        ->call('configure', [[
-            NewUniqueObjectToEntityFactoryRector::TYPES_TO_SERVICES => ['ClassName'],
-        ]]);
-};
-```
-
-↓
-
-```diff
- class SomeClass
- {
-+    public function __construct(AnotherClassFactory $anotherClassFactory)
-+    {
-+        $this->anotherClassFactory = $anotherClassFactory;
-+    }
-+
-     public function run()
-     {
--        return new AnotherClass;
-+        return $this->anotherClassFactory->create();
-     }
- }
-
- class AnotherClass
- {
-     public function someFun()
-     {
-         return StaticClass::staticMethod();
      }
  }
 ```
