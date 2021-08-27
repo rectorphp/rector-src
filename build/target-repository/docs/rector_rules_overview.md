@@ -1,4 +1,4 @@
-# 475 Rules Overview
+# 474 Rules Overview
 
 <br>
 
@@ -84,7 +84,7 @@
 
 - [Removing](#removing) (6)
 
-- [RemovingStatic](#removingstatic) (6)
+- [RemovingStatic](#removingstatic) (5)
 
 - [Renaming](#renaming) (11)
 
@@ -9077,53 +9077,6 @@ Change static method and local-only calls to non-static
 -    private static function someStatic()
 +    private function someStatic()
      {
-     }
- }
-```
-
-<br>
-
-### StaticTypeToSetterInjectionRector
-
-Changes types to setter injection
-
-:wrench: **configure it!**
-
-- class: [`Rector\RemovingStatic\Rector\Class_\StaticTypeToSetterInjectionRector`](../rules/RemovingStatic/Rector/Class_/StaticTypeToSetterInjectionRector.php)
-
-```php
-use Rector\RemovingStatic\Rector\Class_\StaticTypeToSetterInjectionRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(StaticTypeToSetterInjectionRector::class)
-        ->call('configure', [[
-            StaticTypeToSetterInjectionRector::STATIC_TYPES => ['SomeStaticClass'],
-        ]]);
-};
-```
-
-↓
-
-```diff
- final class CheckoutEntityFactory
- {
-+    /**
-+     * @var SomeStaticClass
-+     */
-+    private $someStaticClass;
-+
-+    public function setSomeStaticClass(SomeStaticClass $someStaticClass)
-+    {
-+        $this->someStaticClass = $someStaticClass;
-+    }
-+
-     public function run()
-     {
--        return SomeStaticClass::go();
-+        return $this->someStaticClass->go();
      }
  }
 ```
