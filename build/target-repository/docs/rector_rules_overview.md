@@ -1,4 +1,4 @@
-# 476 Rules Overview
+# 475 Rules Overview
 
 <br>
 
@@ -84,7 +84,7 @@
 
 - [Removing](#removing) (6)
 
-- [RemovingStatic](#removingstatic) (7)
+- [RemovingStatic](#removingstatic) (6)
 
 - [Renaming](#renaming) (11)
 
@@ -9077,80 +9077,6 @@ Change static method and local-only calls to non-static
 -    private static function someStatic()
 +    private function someStatic()
      {
-     }
- }
-```
-
-<br>
-
-### PassFactoryToUniqueObjectRector
-
-Convert new `X/Static::call()` to factories in entities, pass them via constructor to each other
-
-:wrench: **configure it!**
-
-- class: [`Rector\RemovingStatic\Rector\Class_\PassFactoryToUniqueObjectRector`](../rules/RemovingStatic/Rector/Class_/PassFactoryToUniqueObjectRector.php)
-
-```php
-use Rector\RemovingStatic\Rector\Class_\PassFactoryToUniqueObjectRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
-
-    $services->set(PassFactoryToUniqueObjectRector::class)
-        ->call('configure', [[
-            PassFactoryToUniqueObjectRector::TYPES_TO_SERVICES => ['StaticClass'],
-        ]]);
-};
-```
-
-↓
-
-```diff
- class SomeClass
- {
-+    public function __construct(AnotherClassFactory $anotherClassFactory)
-+    {
-+        $this->anotherClassFactory = $anotherClassFactory;
-+    }
-+
-     public function run()
-     {
--        return new AnotherClass;
-+        return $this->anotherClassFactory->create();
-     }
- }
-
- class AnotherClass
- {
-+    public function __construct(StaticClass $staticClass)
-+    {
-+        $this->staticClass = $staticClass;
-+    }
-+
-     public function someFun()
-     {
--        return StaticClass::staticMethod();
-+        return $this->staticClass->staticMethod();
-+    }
-+}
-+
-+final class AnotherClassFactory
-+{
-+    /**
-+     * @var StaticClass
-+     */
-+    private $staticClass;
-+
-+    public function __construct(StaticClass $staticClass)
-+    {
-+        $this->staticClass = $staticClass;
-+    }
-+
-+    public function create(): AnotherClass
-+    {
-+        return new AnotherClass($this->staticClass);
      }
  }
 ```
