@@ -120,7 +120,7 @@ CODE_SAMPLE
         PhpDocInfo $phpDocInfo
     ): void {
         // skip parent class lock too, just to be safe in case of different parent docs
-        if ($functionLike instanceof ClassMethod && $this->classMethodParamVendorLockResolver->isVendorLocked(
+        if ($functionLike instanceof ClassMethod && $this->classMethodParamVendorLockResolver->isSoftLocked(
             $functionLike
         )) {
             return;
