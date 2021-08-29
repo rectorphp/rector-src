@@ -19,7 +19,7 @@ final class FullyQualifiedFromUseFinder
     ) {
     }
 
-    public function matchAlias(Use_ $use, string $loweredAliasName): ?FullyQualified
+    public function matchAlias(Use_ $use, string $loweredAliasName): ?Node
     {
         return $this->betterNodeFinder->findFirstNext($use, function (Node $node) use ($loweredAliasName): bool {
             if (! $node instanceof FullyQualified) {
