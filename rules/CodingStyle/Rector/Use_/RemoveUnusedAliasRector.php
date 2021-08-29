@@ -182,7 +182,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return (bool) $this->fullyQualifiedFromUseFinder->matchAlias($use, $loweredAliasName);
+        return (bool) $this->fullyQualifiedFromUseFinder->matchAliasNamespace($use, $loweredAliasName);
     }
 
     private function refactorAliasName(Use_ $use, string $aliasName, string $lastName, UseUse $useUse): void
