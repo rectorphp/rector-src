@@ -62,11 +62,9 @@ final class GetterNodeParamTypeInferer implements ParamTypeInfererInterface
             if (! $node instanceof Return_) {
                 return null;
             }
-
             if ($node->expr === null) {
                 return null;
             }
-
             $isMatch = $this->propertyFetchAnalyzer->isLocalPropertyOfNames($node->expr, $propertyNames);
             if (! $isMatch) {
                 return null;

@@ -83,11 +83,9 @@ CODE_SAMPLE
         if (! $this->isName($classMethod, MethodName::CONSTRUCT)) {
             return true;
         }
-
         if ($classMethod->stmts === null) {
             return true;
         }
-
         if ($classMethod->stmts !== []) {
             return true;
         }

@@ -37,7 +37,6 @@ final class RenamePackageComposerRector implements ComposerRectorInterface
                     $version
                 );
             }
-
             if ($composerJson->hasRequiredDevPackage($renamePackage->getOldPackageName())) {
                 $version = $composerJson->getRequireDev()[$renamePackage->getOldPackageName()];
                 $composerJson->replacePackage(

@@ -148,11 +148,9 @@ CODE_SAMPLE
         ) && ! $this->valueResolver->isNull($ternary->cond->right)) {
             return true;
         }
-
         if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->args[0]->value)) {
             return false;
         }
-
         return ! $this->valueResolver->isNull($ternary->cond->left);
     }
 
@@ -171,11 +169,9 @@ CODE_SAMPLE
         ) && $this->valueResolver->isNull($ternary->cond->right)) {
             return true;
         }
-
         if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->args[0]->value)) {
             return false;
         }
-
         return $this->valueResolver->isNull($ternary->cond->left);
     }
 }

@@ -169,15 +169,12 @@ CODE_SAMPLE
         if (! $class instanceof Class_) {
             return false;
         }
-
         if (! $typeWithClassName instanceof ThisType) {
             return false;
         }
-
         if ($class->isFinal()) {
             return false;
         }
-
         return ! $classMethod->isPrivate();
     }
 

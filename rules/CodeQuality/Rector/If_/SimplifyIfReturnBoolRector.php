@@ -121,7 +121,6 @@ CODE_SAMPLE
         if (! $nextNode instanceof Return_) {
             return true;
         }
-
         if ($nextNode->expr === null) {
             return true;
         }

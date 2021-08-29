@@ -72,11 +72,9 @@ CODE_SAMPLE
         if ($leftStaticType instanceof ObjectType) {
             return null;
         }
-
         if ($leftStaticType instanceof MixedType) {
             return null;
         }
-
         if ($rightStaticType instanceof MixedType) {
             return null;
         }

@@ -54,15 +54,12 @@ CODE_SAMPLE
         if ($parentNode instanceof Assign && $this->nodeComparator->areNodesEqual($node, $parentNode->var)) {
             return $this->processToList($node);
         }
-
         if (! $parentNode instanceof Foreach_) {
             return null;
         }
-
         if (! $this->nodeComparator->areNodesEqual($node, $parentNode->valueVar)) {
             return null;
         }
-
         return $this->processToList($node);
     }
 

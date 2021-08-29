@@ -69,11 +69,9 @@ final class ExtensionConfigResolver
         if (! file_exists($includedFilePath)) {
             return null;
         }
-
         if (! is_readable($includedFilePath)) {
             return null;
         }
-
         return $includedFilePath;
     }
 }

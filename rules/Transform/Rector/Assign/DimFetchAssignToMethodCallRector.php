@@ -136,10 +136,8 @@ CODE_SAMPLE
             if (! $this->isObjectType($assign->expr, $dimFetchAssignToMethodCall->getItemObjectType())) {
                 continue;
             }
-
             return $dimFetchAssignToMethodCall;
         }
-
         return null;
     }
 }

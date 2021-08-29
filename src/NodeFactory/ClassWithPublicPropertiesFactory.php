@@ -37,7 +37,6 @@ final class ClassWithPublicPropertiesFactory
         if ($namespace !== '') {
             $namespaceBuilder = new NamespaceBuilder($namespace);
         }
-
         $classBuilder = new ClassBuilder($className);
         if ($parent !== null && $parent !== '') {
             $classBuilder->extend($this->fixFullyQualifiedName($parent));
@@ -53,7 +52,6 @@ final class ClassWithPublicPropertiesFactory
             if ($nullable) {
                 $propertyType = new NullableType($propertyType);
             }
-
             $propertyBuilder = new PropertyBuilder($propertyName);
             $propertyBuilder->setType($propertyType);
             $classBuilder->addStmt($propertyBuilder);

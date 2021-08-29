@@ -31,7 +31,6 @@ final class BootstrapConfigs
         if ($this->mainConfigFileInfo !== null) {
             $configFileInfos[] = $this->mainConfigFileInfo;
         }
-
         return array_merge($configFileInfos, $this->setConfigFileInfos);
     }
 }

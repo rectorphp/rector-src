@@ -86,7 +86,6 @@ CODE_SAMPLE
         if (! $ifAssignVar instanceof Expr) {
             return null;
         }
-
         if (! $elseAssignVar instanceof Expr) {
             return null;
         }
@@ -100,7 +99,6 @@ CODE_SAMPLE
         if (! $ternaryIf instanceof Expr) {
             return null;
         }
-
         if (! $ternaryElse instanceof Expr) {
             return null;
         }

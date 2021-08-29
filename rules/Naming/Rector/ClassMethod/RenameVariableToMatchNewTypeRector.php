@@ -81,7 +81,6 @@ CODE_SAMPLE
             if ($expectedName === null) {
                 continue;
             }
-
             if ($this->isName($variable, $expectedName)) {
                 continue;
             }

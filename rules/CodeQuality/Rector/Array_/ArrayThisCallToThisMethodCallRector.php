@@ -93,7 +93,6 @@ CODE_SAMPLE
         if ($this->isAssignedToNetteMagicOnProperty($node)) {
             return null;
         }
-
         if ($this->isInsideProperty($node)) {
             return null;
         }

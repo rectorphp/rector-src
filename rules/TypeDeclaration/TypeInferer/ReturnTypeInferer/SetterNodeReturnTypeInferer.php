@@ -41,7 +41,6 @@ final class SetterNodeReturnTypeInferer implements ReturnTypeInfererInterface
             if (! $inferredPropertyType instanceof Type) {
                 continue;
             }
-
             $types[] = $inferredPropertyType;
         }
 

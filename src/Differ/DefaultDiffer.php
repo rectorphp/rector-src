@@ -25,7 +25,6 @@ final class DefaultDiffer
         if ($old === $new) {
             return '';
         }
-
         return $this->differ->diff($old, $new);
     }
 }

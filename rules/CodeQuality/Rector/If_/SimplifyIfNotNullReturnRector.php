@@ -68,7 +68,6 @@ CODE_SAMPLE
             if (! $nextNode instanceof Return_) {
                 return null;
             }
-
             if ($nextNode->expr === null) {
                 return null;
             }

@@ -159,7 +159,6 @@ CODE_SAMPLE
         if ($types[0] === $types[1]) {
             return true;
         }
-
         if ($types[0] instanceof NullType) {
             return false;
         }

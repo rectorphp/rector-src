@@ -498,7 +498,6 @@ final class NodeTypeResolver
         if (! $this->isObjectTypeOfObjectType($renamedObjectType, $requiredObjectType)) {
             return $this->isObjectTypeOfObjectType($resolvedObjectType, $requiredObjectType);
         }
-
         return true;
     }
 }

@@ -79,7 +79,6 @@ CODE_SAMPLE
         if (! $functionName) {
             return null;
         }
-
         if (! array_key_exists($functionName, $this->functionsToConstants)) {
             return null;
         }

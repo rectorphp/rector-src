@@ -150,7 +150,6 @@ CODE_SAMPLE
         if ($expr instanceof Scalar) {
             return false;
         }
-
         return ! $this->valueResolver->isTrueOrFalse($expr);
     }
 }

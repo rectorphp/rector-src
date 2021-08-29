@@ -110,7 +110,6 @@ CODE_SAMPLE
             if (! $this->valueResolver->isValue($node->expr, 1)) {
                 return null;
             }
-
             if ($this->nodeTypeResolver->isNumberType($node->var)) {
                 return $node->var;
             }
@@ -129,11 +128,9 @@ CODE_SAMPLE
         if ($node instanceof Mul) {
             return $this->processBinaryMulAndDiv($node);
         }
-
         if ($node instanceof Div) {
             return $this->processBinaryMulAndDiv($node);
         }
-
         return null;
     }
 
@@ -146,7 +143,6 @@ CODE_SAMPLE
             if ($binaryOp instanceof Minus) {
                 return new UnaryMinus($binaryOp->right);
             }
-
             return $binaryOp->right;
         }
 
