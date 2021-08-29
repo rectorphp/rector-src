@@ -55,8 +55,20 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $left = $this->shouldRecursivelyCall($node->left) ? $this->refactor($node->left) : $node->left;
-        $right = $this->shouldRecursivelyCall($node->right) ? $this->refactor($node->right) : $node->right;
+        /** @var LogicalAnd|LogicalOr $left */
+        $left = $node->left;
+        if ($this->shouldRecursivelyCall($left)) {
+            /** @var BooleanAnd|BooleanOr $left */
+            $left = $this->refactor($left);
+        }
+
+        /** @var LogicalAnd|LogicalOr $right */
+        $right = $node->right;
+        if ($this->shouldRecursivelyCall($right)) {
+            /** @var BooleanAnd|BooleanOr $right */
+            $right = $this->refactor($right);
+        }
+
         if ($node instanceof LogicalOr) {
             return new BooleanOr($left, $right);
         }
