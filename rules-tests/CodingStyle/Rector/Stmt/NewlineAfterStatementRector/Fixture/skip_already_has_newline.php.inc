@@ -4,22 +4,9 @@ namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixtu
 
 class SkipAlreadyHasNewline
 {
-    public function run()
-    {
-        if (rand(0,1)) {
-        }
+    private $property;
 
-        if (rand(0,1)) {
-        }
-    }
-
-    public function run2(array $data)
-    {
-        foreach ($data as $key => $value) {
-        }
-
-        return true;
-    }
+    private $property2;
 }
 
 ?>

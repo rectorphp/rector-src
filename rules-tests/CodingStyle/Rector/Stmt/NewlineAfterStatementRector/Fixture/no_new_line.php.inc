@@ -4,12 +4,8 @@ namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixtu
 
 class NoNewLine
 {
-    public function run()
-    {
-    }
-    public function run2()
-    {
-    }
+    private $property;
+    private $property2;
 }
 
 ?>
@@ -20,13 +16,9 @@ namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixtu
 
 class NoNewLine
 {
-    public function run()
-    {
-    }
+    private $property;
 
-    public function run2()
-    {
-    }
+    private $property2;
 }
 
 ?>
