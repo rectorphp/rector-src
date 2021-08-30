@@ -24,6 +24,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NewlineAfterStatementRector extends AbstractRector
 {
+    /**
+     * @var array<class-string<Node>>
+     */
     private const STMTS_TO_HAVE_NEXT_NEWLINE = [
         ClassMethod::class,
         Property::class,
@@ -101,9 +104,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentLineEnd = $node->getEndLine();
-        $nextLineStart  = $nextNode->getLine();
-        $rangeLine   = $nextLineStart - $currentLineEnd;
+        $endLine = $node->getEndLine();
+        $line = $nextNode->getLine();
+        $rangeLine = $line - $endLine;
 
         if ($rangeLine > 1) {
             return null;
