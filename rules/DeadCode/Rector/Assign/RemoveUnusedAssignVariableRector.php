@@ -96,14 +96,14 @@ CODE_SAMPLE
             return null;
         }
 
-        // is scalar assign? remove whole
-        if (! $this->sideEffectNodeDetector->detect($node->expr)) {
-            $this->removeNode($node);
+        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStatement instanceof Node) {
             return null;
         }
 
-        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStatement instanceof Node) {
+        // is scalar assign? remove whole
+        if (! $this->sideEffectNodeDetector->detect($node->expr)) {
+            $this->removeNode($node);
             return null;
         }
 
