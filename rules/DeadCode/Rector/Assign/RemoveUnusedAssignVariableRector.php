@@ -102,6 +102,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStatement instanceof Node) {
+            return null;
+        }
+
         return $node->expr;
     }
 
