@@ -126,7 +126,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            // need to UnionType check due rectify cause removing (array) cast on $node->args
+            // need to UnionType check due rectify cause add (array) cast on $node->args
             // on union $node type
             $varType = $this->nodeTypeResolver->resolve($expr->var);
             return ! $varType instanceof UnionType;
