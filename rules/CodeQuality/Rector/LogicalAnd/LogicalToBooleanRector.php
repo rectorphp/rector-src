@@ -55,16 +55,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        /** @var LogicalAnd|LogicalOr $left */
         $left = $node->left;
-        if ($this->shouldRecursivelyCall($left)) {
+        if ($left instanceof LogicalOr || $left instanceof LogicalAnd) {
             /** @var BooleanAnd|BooleanOr $left */
             $left = $this->refactor($left);
         }
 
-        /** @var LogicalAnd|LogicalOr $right */
         $right = $node->right;
-        if ($this->shouldRecursivelyCall($right)) {
+        if ($right instanceof LogicalOr || $right instanceof LogicalAnd) {
             /** @var BooleanAnd|BooleanOr $right */
             $right = $this->refactor($right);
         }
@@ -73,13 +71,5 @@ CODE_SAMPLE
             return new BooleanOr($left, $right);
         }
         return new BooleanAnd($left, $right);
-    }
-
-    private function shouldRecursivelyCall(Node $node): bool
-    {
-        if ($node instanceof LogicalOr) {
-            return true;
-        }
-        return $node instanceof LogicalAnd;
     }
 }
