@@ -70,6 +70,7 @@ CODE_SAMPLE
         if ($node instanceof LogicalOr) {
             return new BooleanOr($left, $right);
         }
+
         return new BooleanAnd($left, $right);
     }
 }
