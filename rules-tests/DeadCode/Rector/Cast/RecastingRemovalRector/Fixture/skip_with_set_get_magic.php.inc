@@ -19,7 +19,7 @@ class AConfig
     }
 }
 
-class SkipWithMagicSetGet
+class SkipWithSetGetMagic
 {
     public function run(AConfig $config)
     {
