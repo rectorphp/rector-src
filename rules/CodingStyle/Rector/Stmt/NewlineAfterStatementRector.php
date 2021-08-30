@@ -5,19 +5,15 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\Stmt;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\For_;
-use PhpParser\Node\Stmt\Nop;
-use PhpParser\Node\Stmt\While_;
 use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
-use PhpParser\NodeTraverser;
+use PhpParser\Node\Stmt\While_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,12 +25,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NewlineAfterStatementRector extends AbstractRector
 {
     private const STMTS_TO_HAVE_NEXT_NEWLINE = [
-        //ClassMethod::class,
+        ClassMethod::class,
         Property::class,
-        //Do_::class,
-        //While_::class,
-        //For_::class,
-        //Foreach_::class,
+        If_::class,
+        Foreach_::class,
+        Do_::class,
+        While_::class,
+        For_::class,
     ];
 
     private array $stmtsHashed = [];
@@ -87,44 +84,30 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        if (! in_array($node::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
             return null;
         }
 
-        $print = $this->betterStandardPrinter->prettyPrint([$parent]);
-        $this->traverseNodesWithCallable($parent, function (Node $subNode) use ($node, $print, $parent): void {
-            if (! in_array($node::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
-                return;
-            }
+        $hash = spl_object_hash($node);
+        if (isset($this->stmtsHashed[$hash])) {
+            return null;
+        }
 
-            if ($subNode !== $node) {
-                return;
-            }
+        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+        if (! $nextNode instanceof Node) {
+            return null;
+        }
 
-            $hash = spl_object_hash($node);
-            if (isset($this->stmtsHashed[$hash])) {
-                return;
-            }
+        $currentLineEnd = $node->getEndLine();
+        $nextLineStart  = $nextNode->getLine();
+        $rangeLine   = $nextLineStart - $currentLineEnd;
 
-            $nextNode = $subNode->getAttribute(AttributeKey::NEXT_NODE);
-            if ($nextNode instanceof Nop) {
-                return;
-            }
+        if ($rangeLine > 1) {
+            return null;
+        }
 
-            if (! $nextNode instanceof Node) {
-                return;
-            }
-
-            $parent = $subNode->getAttribute(AttributeKey::PARENT_NODE);
-            $newPrint = $this->betterStandardPrinter->prettyPrint([$parent]);
-            if ($newPrint !== $print) {
-                return;
-            }
-
-            $this->stmtsHashed[$hash] = true;
-            $this->addNodeAfterNode(new Nop(), $subNode);
-        });
+        $this->stmtsHashed[$hash] = true;
+        $this->addNodeAfterNode(new Nop(), $node);
 
         return $node;
     }

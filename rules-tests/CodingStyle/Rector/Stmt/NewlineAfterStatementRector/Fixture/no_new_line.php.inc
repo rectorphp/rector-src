@@ -6,6 +6,18 @@ class NoNewLine
 {
     private $property;
     private $property2;
+    public function run(array $data)
+    {
+        if (rand(0, 1)) {
+
+        }
+        echo 'test';
+
+        foreach ($data as $key => $value) {
+            # code...
+        }
+        return true;
+    }
 }
 
 ?>
@@ -19,6 +31,21 @@ class NoNewLine
     private $property;
 
     private $property2;
+
+    public function run(array $data)
+    {
+        if (rand(0, 1)) {
+
+        }
+
+        echo 'test';
+
+        foreach ($data as $key => $value) {
+            # code...
+        }
+
+        return true;
+    }
 }
 
 ?>
