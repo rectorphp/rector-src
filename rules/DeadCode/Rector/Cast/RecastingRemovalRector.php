@@ -126,8 +126,9 @@ CODE_SAMPLE
                 return true;
             }
 
-            // need to UnionType check due rectify cause add (array) cast on $node->args
-            // on union $node type
+            // need to UnionType check due rectify with RecastingRemovalRector + CountOnNullRector
+            // cause add (array) cast on $node->args
+            // on union $node type on combined with
             $varType = $this->nodeTypeResolver->resolve($expr->var);
             return ! $varType instanceof UnionType;
         }
