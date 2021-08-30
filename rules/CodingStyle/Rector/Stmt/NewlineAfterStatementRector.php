@@ -34,6 +34,9 @@ final class NewlineAfterStatementRector extends AbstractRector
         For_::class,
     ];
 
+    /**
+     * @var array<string, true>
+     */
     private array $stmtsHashed = [];
 
     public function getRuleDefinition(): RuleDefinition
