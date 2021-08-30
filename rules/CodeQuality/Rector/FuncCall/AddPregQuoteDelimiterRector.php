@@ -115,7 +115,6 @@ CODE_SAMPLE
             $upperMostConcat = $parent;
             $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
         }
-
         return $upperMostConcat;
     }
 }

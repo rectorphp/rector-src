@@ -113,7 +113,6 @@ CODE_SAMPLE
 
             $expr = $expr->right;
         }
-
         return $ifNegations + [
             $this->ifManipulator->createIfNegation($expr, new Return_($this->nodeFactory->createFalse())),
         ];

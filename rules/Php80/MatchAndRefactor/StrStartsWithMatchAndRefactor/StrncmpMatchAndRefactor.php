@@ -44,15 +44,12 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         )) {
             return $this->strStartsWithFactory->createFromFuncCall($binaryOp->left, $isPositive);
         }
-
         if (! $binaryOp->right instanceof FuncCall) {
             return null;
         }
-
         if (! $this->nodeNameResolver->isName($binaryOp->right, self::FUNCTION_NAME)) {
             return null;
         }
-
         return $this->strStartsWithFactory->createFromFuncCall($binaryOp->right, $isPositive);
     }
 

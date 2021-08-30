@@ -105,11 +105,9 @@ final class FamilyRelationsAnalyzer
             if ($ancestor->isSubclassOf('PHPUnit\Framework\TestCase')) {
                 continue;
             }
-
             if ($nodes === null) {
                 continue;
             }
-
             if (! $this->isPropertyWritten($nodes, $propertyName, $kindPropertyFetch)) {
                 continue;
             }

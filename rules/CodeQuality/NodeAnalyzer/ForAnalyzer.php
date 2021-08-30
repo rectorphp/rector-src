@@ -105,7 +105,6 @@ final class ForAnalyzer
                 if (! $parent instanceof Unset_) {
                     return false;
                 }
-
                 return $node instanceof ArrayDimFetch;
             }
         );
@@ -146,7 +145,6 @@ final class ForAnalyzer
             if (! $node instanceof Variable) {
                 return false;
             }
-
             return $this->nodeNameResolver->isName($node, $iteratedVariableSingle);
         });
     }

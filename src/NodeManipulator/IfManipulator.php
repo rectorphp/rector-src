@@ -191,7 +191,6 @@ final class IfManipulator
         if (! $this->nodeComparator->areNodesEqual($lastIfStmt->var, $lastElseStmt->var)) {
             return false;
         }
-
         return $this->nodeComparator->areNodesEqual($desiredExpr, $lastElseStmt->var);
     }
 
@@ -210,7 +209,6 @@ final class IfManipulator
         if (! $if->cond instanceof FuncCall) {
             return false;
         }
-
         return $this->nodeNameResolver->isName($if->cond, $functionName);
     }
 
@@ -241,7 +239,6 @@ final class IfManipulator
         if (! $this->isIfWithoutElseAndElseIfs($currentIf)) {
             return [];
         }
-
         $betterNodeFinderFindInstanceOf = $this->betterNodeFinder->findInstanceOf($currentIf->stmts, Return_::class);
 
         if ($betterNodeFinderFindInstanceOf !== []) {
@@ -300,11 +297,9 @@ final class IfManipulator
         if (! $node instanceof MethodCall && ! $node instanceof PropertyFetch) {
             return false;
         }
-
         if (! $if->cond instanceof NotIdentical) {
             return false;
         }
-
         return ! $this->nodeComparator->areNodesEqual($this->getIfCondVar($if), $node->var);
     }
 
@@ -351,7 +346,6 @@ final class IfManipulator
         if (! $this->nodeComparator->areNodesEqual($notIdentical->right, $return->expr)) {
             return null;
         }
-
         if ($this->valueResolver->isNull($notIdentical->left)) {
             return $notIdentical->right;
         }
@@ -364,11 +358,9 @@ final class IfManipulator
         if ($this->nodeComparator->areNodesEqual($notIdentical->left, $notIdentical->right)) {
             return false;
         }
-
         if ($this->valueResolver->isNull($notIdentical->right)) {
             return true;
         }
-
         return $this->valueResolver->isNull($notIdentical->left);
     }
 

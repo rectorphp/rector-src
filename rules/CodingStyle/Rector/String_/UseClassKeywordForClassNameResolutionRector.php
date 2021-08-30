@@ -127,7 +127,6 @@ CODE_SAMPLE
                 $exprsToConcat[] = new String_($part);
             }
         }
-
         return $exprsToConcat;
     }
 }

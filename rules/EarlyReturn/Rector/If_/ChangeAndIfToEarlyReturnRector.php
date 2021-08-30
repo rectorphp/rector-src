@@ -159,11 +159,9 @@ CODE_SAMPLE
         if (! $this->ifManipulator->isIfWithOnlyOneStmt($if)) {
             return true;
         }
-
         if (! $if->cond instanceof BooleanAnd) {
             return true;
         }
-
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($if)) {
             return true;
         }

@@ -78,7 +78,6 @@ CODE_SAMPLE
         if ($node instanceof BooleanNot) {
             return new Identical($funcCall, $this->nodeFactory->createFalse());
         }
-
         return new NotIdentical($funcCall, $this->nodeFactory->createFalse());
     }
 
@@ -91,11 +90,9 @@ CODE_SAMPLE
         if (! $expr instanceof FuncCall) {
             return null;
         }
-
         if (! $this->isName($expr, 'str_contains')) {
             return null;
         }
-
         return $expr;
     }
 }

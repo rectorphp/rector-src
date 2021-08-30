@@ -115,7 +115,6 @@ CODE_SAMPLE
         if ($left === null) {
             return null;
         }
-
         if ($right === null) {
             return null;
         }
@@ -132,7 +131,6 @@ CODE_SAMPLE
         if (! $expr instanceof ConstFetch) {
             return false;
         }
-
         return $expr->name->toString() === 'PHP_VERSION';
     }
 

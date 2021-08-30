@@ -41,7 +41,6 @@ final class ClassMethodReturnTypeManipulator
             $isNullable = true;
             $returnType = $returnType->type;
         }
-
         if (! $this->nodeTypeResolver->isObjectType($returnType, $objectType)) {
             return;
         }
@@ -58,12 +57,10 @@ final class ClassMethodReturnTypeManipulator
             } else {
                 $phpDocType = new UnionType([$phpDocType, new NullType()]);
             }
-
             if (! $replaceIntoType instanceof NullableType) {
                 $replaceIntoType = new NullableType($replaceIntoType);
             }
         }
-
         $classMethod->returnType = $replaceIntoType;
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);

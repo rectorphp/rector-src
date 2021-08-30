@@ -89,7 +89,6 @@ CODE_SAMPLE
         if ($expectedName === null) {
             return null;
         }
-
         if ($this->isName($variableAndCallForeach->getVariable(), $expectedName)) {
             return null;
         }

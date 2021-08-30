@@ -81,7 +81,6 @@ CODE_SAMPLE
         if (! $varType instanceof Type) {
             return null;
         }
-
         if ($varType instanceof  MixedType) {
             return null;
         }
