@@ -575,6 +575,10 @@ final class NodeFactory
     private function createArrayItem($item, string | int | null $key = null): ArrayItem
     {
         $arrayItem = null;
+        if ($item === null) {
+            $item = $this->createNull();
+            $arrayItem = new ArrayItem($item);
+        }
 
         if ($item instanceof Variable
             || $item instanceof MethodCall
