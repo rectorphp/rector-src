@@ -102,15 +102,12 @@ final class TypeComparator
         if ($firstType instanceof AliasedObjectType && $secondType instanceof ObjectType && $firstType->getFullyQualifiedClass() === $secondType->getClassName()) {
             return true;
         }
-
         if (! $secondType instanceof AliasedObjectType) {
             return false;
         }
-
         if (! $firstType instanceof ObjectType) {
             return false;
         }
-
         return $secondType->getFullyQualifiedClass() === $firstType->getClassName();
     }
 
@@ -122,7 +119,6 @@ final class TypeComparator
         if (! $firstType instanceof ArrayType) {
             return false;
         }
-
         if (! $secondType instanceof ArrayType) {
             return false;
         }

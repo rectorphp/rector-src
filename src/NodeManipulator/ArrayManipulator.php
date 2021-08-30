@@ -94,7 +94,6 @@ final class ArrayManipulator
         if (! $arrayItem->key instanceof String_) {
             return false;
         }
-
         return $arrayItem->key->value === $name;
     }
 }

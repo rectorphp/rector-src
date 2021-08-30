@@ -68,15 +68,12 @@ final class ClassMethodManipulator
         if (! $classLike instanceof Class_) {
             return false;
         }
-
         if ($classMethod->isPrivate()) {
             return true;
         }
-
         if ($classLike->isFinal()) {
             return false;
         }
-
         return $classMethod->isProtected();
     }
 

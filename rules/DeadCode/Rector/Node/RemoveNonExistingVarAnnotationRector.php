@@ -128,11 +128,9 @@ CODE_SAMPLE
         if (! $node instanceof Nop) {
             return ! $this->typeChecker->isInstanceOf($node, self::NODES_TO_MATCH);
         }
-
         if (count($node->getComments()) <= 1) {
             return ! $this->typeChecker->isInstanceOf($node, self::NODES_TO_MATCH);
         }
-
         return true;
     }
 

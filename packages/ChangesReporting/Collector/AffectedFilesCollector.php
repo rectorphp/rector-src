@@ -24,7 +24,6 @@ final class AffectedFilesCollector
         if ($this->affectedFiles !== []) {
             return current($this->affectedFiles);
         }
-
         return null;
     }
 

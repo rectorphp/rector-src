@@ -120,7 +120,6 @@ CODE_SAMPLE
             $isNullable = true;
             $type = $type->type;
         }
-
         if (! $this->isObjectType($type, new ObjectType(self::DATE_TIME))) {
             return null;
         }
@@ -134,7 +133,6 @@ CODE_SAMPLE
         if ($isNullable) {
             $property->type = new NullableType($property->type);
         }
-
         return $property;
     }
 
@@ -181,7 +179,6 @@ CODE_SAMPLE
         if (! $classMethod->returnType instanceof Node) {
             return;
         }
-
         $this->classMethodReturnTypeManipulator->refactorFunctionReturnType(
             $classMethod,
             $fromObjectType,

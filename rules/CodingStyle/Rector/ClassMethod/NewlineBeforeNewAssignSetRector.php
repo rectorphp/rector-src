@@ -92,7 +92,6 @@ CODE_SAMPLE
                 // insert newline before stmt
                 $newStmts[] = new Nop();
             }
-
             $newStmts[] = $stmt;
 
             $this->previousPreviousStmtVariableName = $this->previousStmtVariableName;

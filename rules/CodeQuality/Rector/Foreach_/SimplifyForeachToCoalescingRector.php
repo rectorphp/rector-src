@@ -148,7 +148,6 @@ CODE_SAMPLE
         } else {
             return null;
         }
-
         $nextNode = $foreach->getAttribute(AttributeKey::NEXT_NODE);
 
         // is next node Return?

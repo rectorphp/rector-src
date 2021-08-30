@@ -68,11 +68,9 @@ CODE_SAMPLE
         if ($node->if === null) {
             return null;
         }
-
         if (! $this->valueResolver->isTrue($node->if)) {
             return null;
         }
-
         if (! $this->valueResolver->isFalse($node->else)) {
             return null;
         }

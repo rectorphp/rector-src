@@ -74,11 +74,9 @@ CODE_SAMPLE
         if ($node instanceof Concat) {
             return null;
         }
-
         if ($node instanceof Coalesce) {
             return null;
         }
-
         if ($this->isStringOrStaticNonNumbericString($node->left) && $this->nodeTypeResolver->isNumberType(
             $node->right
         )) {

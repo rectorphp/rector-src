@@ -103,7 +103,6 @@ CODE_SAMPLE
         if ($methodName === null) {
             return null;
         }
-
         if ($className === null) {
             return null;
         }

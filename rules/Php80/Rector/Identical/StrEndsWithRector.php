@@ -169,7 +169,6 @@ CODE_SAMPLE
         if (! $substrOffset->expr instanceof FuncCall) {
             return false;
         }
-
         $funcCall = $substrOffset->expr;
 
         if (! $this->nodeNameResolver->isName($funcCall, 'strlen')) {
@@ -188,7 +187,6 @@ CODE_SAMPLE
         if (! $substrOffset->expr instanceof LNumber) {
             return false;
         }
-
         $lNumber = $substrOffset->expr;
 
         if (! $needle instanceof String_) {

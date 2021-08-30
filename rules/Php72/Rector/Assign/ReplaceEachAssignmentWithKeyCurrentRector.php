@@ -97,7 +97,6 @@ CODE_SAMPLE
         if (! $parentNode instanceof Assign) {
             return false;
         }
-
         return $parentNode->var instanceof List_;
     }
 

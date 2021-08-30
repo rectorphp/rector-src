@@ -98,7 +98,6 @@ CODE_SAMPLE
                     $currentNode = $currentNode->getAttribute(AttributeKey::NEXT_NODE);
                     continue;
                 }
-
                 return null;
             }
 
@@ -106,7 +105,6 @@ CODE_SAMPLE
                 $this->nodesToRemove[] = $currentNode;
                 break;
             }
-
             return null;
         }
 
@@ -114,7 +112,6 @@ CODE_SAMPLE
         if (count($this->coalescingNodes) < 2) {
             return null;
         }
-
         $this->removeNodes($this->nodesToRemove);
 
         return $this->createReturnCoalesceNode($this->coalescingNodes);

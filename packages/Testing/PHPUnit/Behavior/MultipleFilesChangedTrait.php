@@ -32,7 +32,6 @@ trait MultipleFilesChangedTrait
         if (trim($expectedContent)) {
             $fixtureContent .= $separator . $expectedContent;
         }
-
         FileSystem::write($fixturePath, $fixtureContent);
         $newFileInfo = new SmartFileInfo($fixturePath);
         $this->doTestFileInfo($newFileInfo, $allowMatches);
@@ -56,7 +55,6 @@ trait MultipleFilesChangedTrait
             if ($path === null) {
                 throw new ShouldNotHappenException('Path for additional change must be set');
             }
-
             $fullPath = $this->getFixtureTempDirectory() . '/' . $path;
 
             $input = isset($additionalFileChange[1]) ? trim($additionalFileChange[1]) : null;
@@ -67,7 +65,6 @@ trait MultipleFilesChangedTrait
 
             $expectedFileChanges[$fullPath] = isset($additionalFileChange[2]) ? trim($additionalFileChange[2]) : '';
         }
-
         return $expectedFileChanges;
     }
 

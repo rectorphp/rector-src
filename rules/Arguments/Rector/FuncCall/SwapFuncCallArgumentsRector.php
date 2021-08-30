@@ -124,11 +124,9 @@ CODE_SAMPLE
             if (! isset($funcCall->args[$oldPosition])) {
                 continue;
             }
-
             if (! isset($funcCall->args[$newPosition])) {
                 continue;
             }
-
             $newArguments[$newPosition] = $funcCall->args[$oldPosition];
         }
 

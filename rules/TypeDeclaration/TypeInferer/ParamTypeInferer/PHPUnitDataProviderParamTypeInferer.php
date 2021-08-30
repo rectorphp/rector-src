@@ -195,7 +195,6 @@ final class PHPUnitDataProviderParamTypeInferer implements ParamTypeInfererInter
                 if ($position !== $parameterPosition) {
                     continue;
                 }
-
                 if (! $singleDataProvidedSetItem instanceof ArrayItem) {
                     continue;
                 }

@@ -115,7 +115,6 @@ CODE_SAMPLE
         if ($this->firstValue === null) {
             return null;
         }
-
         if ($this->secondValue === null) {
             return null;
         }
@@ -181,11 +180,9 @@ CODE_SAMPLE
         )) {
             return true;
         }
-
         if (! $this->nodeComparator->areNodesEqual($binaryOp->right, $firstValue)) {
             return false;
         }
-
         return $this->nodeComparator->areNodesEqual($binaryOp->left, $secondValue);
     }
 

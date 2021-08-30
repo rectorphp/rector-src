@@ -86,7 +86,6 @@ CODE_SAMPLE
         if ($node instanceof DNumber && ! \str_contains($node->value, '.')) {
             $node->value .= '.0';
         }
-
         return $node;
     }
 
@@ -96,7 +95,6 @@ CODE_SAMPLE
         if ($node instanceof LNumber) {
             return $node->getAttribute(AttributeKey::KIND) === LNumber::KIND_DEC;
         }
-
         return true;
     }
 }

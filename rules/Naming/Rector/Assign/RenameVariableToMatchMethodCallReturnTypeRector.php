@@ -108,7 +108,6 @@ CODE_SAMPLE
         if ($expectedName === null) {
             return null;
         }
-
         if ($this->isName($node->var, $expectedName)) {
             return null;
         }

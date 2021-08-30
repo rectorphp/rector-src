@@ -38,11 +38,9 @@ final class FunctionLikeManipulator
             if (! $node instanceof Return_) {
                 return null;
             }
-
             if ($node->expr === null) {
                 return null;
             }
-
             if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($node->expr)) {
                 return null;
             }
