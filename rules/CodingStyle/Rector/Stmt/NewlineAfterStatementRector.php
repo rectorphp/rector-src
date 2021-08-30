@@ -6,10 +6,12 @@ namespace Rector\CodingStyle\Rector\Stmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
@@ -29,12 +31,14 @@ final class NewlineAfterStatementRector extends AbstractRector
      */
     private const STMTS_TO_HAVE_NEXT_NEWLINE = [
         ClassMethod::class,
+        Function_::class,
         Property::class,
         If_::class,
         Foreach_::class,
         Do_::class,
         While_::class,
         For_::class,
+        ClassConst::class,
     ];
 
     /**
