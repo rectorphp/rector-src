@@ -122,6 +122,10 @@ CODE_SAMPLE
         /** @var PropertyFetch|StaticPropertyFetch $expr */
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($expr);
         if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
+            if ($expr instanceof StaticPropertyFetch) {
+                return true;
+            }
+
             $varType = $this->nodeTypeResolver->resolve($expr->var);
             return ! $varType instanceof UnionType;
         }
