@@ -129,7 +129,6 @@ CODE_SAMPLE
             // need to UnionType check due rectify with RecastingRemovalRector + CountOnNullRector
             // cause add (array) cast on $node->args
             // on union $node types FuncCall|MethodCall|StaticCall
-            $varType = $this->nodeTypeResolver->resolve($expr->var);
             return ! $varType instanceof UnionType;
         }
 
