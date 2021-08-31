@@ -8,7 +8,7 @@ class AndNextOr
 {
     public function run($a, $b, $c, $d)
     {
-        if ($a && $b || $b) {
+        if ($a && $b || $c) {
             return null;
         }
 
@@ -37,7 +37,11 @@ class AndNextOr
 {
     public function run($a, $b, $c, $d)
     {
-        if ($a && $b || $b) {
+        if ($a && $b) {
+            return null;
+        }
+
+        if ($c) {
             return null;
         }
 
