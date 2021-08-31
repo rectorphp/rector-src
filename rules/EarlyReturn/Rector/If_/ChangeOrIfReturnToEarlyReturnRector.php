@@ -87,7 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isInstanceofCondOnly($node->cond)) {
+        if ($this->isInstanceofCondOnlyOrHasBooleanAnd($node->cond)) {
             return null;
         }
 
@@ -167,7 +167,7 @@ CODE_SAMPLE
         );
     }
 
-    private function isInstanceofCondOnly(BooleanOr $booleanOr): bool
+    private function isInstanceofCondOnlyOrHasBooleanAnd(BooleanOr $booleanOr): bool
     {
         $currentNode = $booleanOr;
 
@@ -176,11 +176,11 @@ CODE_SAMPLE
         }
 
         if ($currentNode->left instanceof BooleanOr) {
-            return $this->isInstanceofCondOnly($currentNode->left);
+            return $this->isInstanceofCondOnlyOrHasBooleanAnd($currentNode->left);
         }
 
         if ($currentNode->right instanceof BooleanOr) {
-            return $this->isInstanceofCondOnly($currentNode->right);
+            return $this->isInstanceofCondOnlyOrHasBooleanAnd($currentNode->right);
         }
 
         if (! $currentNode->right instanceof Instanceof_) {
