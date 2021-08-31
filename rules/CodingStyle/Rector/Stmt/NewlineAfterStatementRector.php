@@ -6,12 +6,14 @@ namespace Rector\CodingStyle\Rector\Stmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
@@ -122,7 +124,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipIfNextElseOrElseIf($node, $nextNode)) {
+        if ($this->shouldSkip($nextNode)) {
             return null;
         }
 
@@ -140,12 +142,8 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkipIfNextElseOrElseIf(Node $node, Node $nextNode): bool
+    private function shouldSkip(Node $nextNode): bool
     {
-        if (! $node instanceof If_) {
-            return false;
-        }
-
-        return $nextNode instanceof Else_ || $nextNode instanceof ElseIf_;
+        return $nextNode instanceof Else_ || $nextNode instanceof ElseIf_ || $nextNode instanceof Catch_ || $nextNode instanceof Finally_;
     }
 }
