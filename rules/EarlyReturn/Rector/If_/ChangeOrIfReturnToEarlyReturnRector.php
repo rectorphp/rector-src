@@ -172,7 +172,7 @@ CODE_SAMPLE
         $currentNode = $booleanOr;
 
         if ($currentNode->left instanceof BooleanAnd || $currentNode->right instanceof BooleanAnd) {
-            return false;
+            return true;
         }
 
         if ($currentNode->left instanceof BooleanOr) {
