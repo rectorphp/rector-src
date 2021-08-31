@@ -122,7 +122,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof If_ && $nextNode instanceof Else_ || $nextNode instanceof ElseIf_) {
+        if ($this->shouldSkipComplexIf($node, $nextNode)) {
             return null;
         }
 
@@ -138,5 +138,14 @@ CODE_SAMPLE
         $this->addNodeAfterNode(new Nop(), $node);
 
         return $node;
+    }
+
+    private function shouldSkipComplexIf(Node $node, Node $nextNode): bool
+    {
+        if (! $node instanceof If_) {
+            return false;
+        }
+
+        return $nextNode instanceof Else_ || $nextNode instanceof ElseIf_;
     }
 }
