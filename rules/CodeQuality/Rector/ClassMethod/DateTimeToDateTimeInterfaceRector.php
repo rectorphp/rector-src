@@ -97,7 +97,7 @@ CODE_SAMPLE
     {
         if ($node instanceof ClassMethod) {
             $this->refactorClassMethod($node);
-            return $node;
+            return null;
         }
 
         return $this->refactorProperty($node);
