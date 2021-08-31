@@ -92,10 +92,6 @@ CODE_SAMPLE
         }
 
         $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if ($this->shouldSkip($nextNode)) {
-            return null;
-        }
-
         /** @var Return_ $return */
         $return = $node->stmts[0];
 
@@ -116,15 +112,6 @@ CODE_SAMPLE
 
         $this->removeNode($node);
         return $node;
-    }
-
-    private function shouldSkip(?Node $nextNode): bool
-    {
-        if ($nextNode === null) {
-            return false;
-        }
-
-        return $nextNode instanceof Return_ && $nextNode->expr === null;
     }
 
     /**
