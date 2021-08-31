@@ -40,11 +40,9 @@ class AndNextOr
         if ($a && $b) {
             return null;
         }
-
         if ($c) {
             return null;
         }
-
         $a = 1;
         $b = 2;
 
