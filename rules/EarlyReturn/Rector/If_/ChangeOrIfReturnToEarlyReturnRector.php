@@ -99,6 +99,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // avoid repetitive ifs combined with other rules
+        if ($this->nodeComparator->areNodesEqual($nextNode->expr, $node->stmts[0]->expr)) {
+            return null;
+        }
+
         /** @var Return_ $return */
         $return = $node->stmts[0];
         $ifs = $this->createMultipleIfs($node->cond, $return, []);
