@@ -10,6 +10,8 @@ class ComplexIf
             if (rand(0, 1)) {
 
             }
+        } elseif (rand(0, 1)) {
+
         } else {
 
         }
@@ -31,6 +33,8 @@ class ComplexIf
             if (rand(0, 1)) {
 
             }
+        } elseif (rand(0, 1)) {
+
         } else {
 
         }

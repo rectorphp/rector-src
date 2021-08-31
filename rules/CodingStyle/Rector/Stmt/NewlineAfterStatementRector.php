@@ -10,6 +10,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
+use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
@@ -117,6 +119,10 @@ CODE_SAMPLE
 
         $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
         if (! $nextNode instanceof Node) {
+            return null;
+        }
+
+        if ($node instanceof If_ && $nextNode instanceof Else_ || $nextNode instanceof ElseIf_) {
             return null;
         }
 
