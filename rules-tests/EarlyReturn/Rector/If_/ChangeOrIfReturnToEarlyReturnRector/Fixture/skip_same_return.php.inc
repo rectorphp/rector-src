@@ -4,9 +4,9 @@ namespace Rector\Tests\EarlyReturn\Rector\If_\ChangeOrIfReturnToEarlyReturnRecto
 
 class SkipSameReturn
 {
-    public function run($a, $b)
+    public function run($a, $b, $c)
     {
-        if ($a || $b) {
+        if ($a && $b || $c) {
             return null;
         }
         return null;
