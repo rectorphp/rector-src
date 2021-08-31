@@ -17,6 +17,21 @@ class ComplexIf
         }
         return true;
     }
+
+    public function run2()
+    {
+        if (rand(0, 1)) {
+            if (rand(0, 1)) {
+
+            }
+            echo 'test';
+        } elseif (rand(0, 1)) {
+
+        } else {
+
+        }
+        return true;
+    }
 }
 
 ?>
@@ -33,6 +48,23 @@ class ComplexIf
             if (rand(0, 1)) {
 
             }
+        } elseif (rand(0, 1)) {
+
+        } else {
+
+        }
+
+        return true;
+    }
+
+    public function run2()
+    {
+        if (rand(0, 1)) {
+            if (rand(0, 1)) {
+
+            }
+
+            echo 'test';
         } elseif (rand(0, 1)) {
 
         } else {
