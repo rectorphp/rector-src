@@ -122,7 +122,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipComplexIf($node, $nextNode)) {
+        if ($this->shouldSkipIfNextElseOrElseIf($node, $nextNode)) {
             return null;
         }
 
@@ -140,7 +140,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkipComplexIf(Node $node, Node $nextNode): bool
+    private function shouldSkipIfNextElseOrElseIf(Node $node, Node $nextNode): bool
     {
         if (! $node instanceof If_) {
             return false;
