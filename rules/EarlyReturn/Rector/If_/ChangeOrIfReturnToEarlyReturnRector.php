@@ -91,7 +91,7 @@ CODE_SAMPLE
         }
 
         $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if ($this->shouldSkip($node, $nextNode)) {
+        if ($this->shouldSkip($nextNode)) {
             return null;
         }
 
@@ -99,7 +99,7 @@ CODE_SAMPLE
         $return = $node->stmts[0];
 
         // avoid repetitive ifs combined with other rules
-        if ($this->nodeComparator->areNodesEqual($nextNode->expr, $return->expr)) {
+        if ($nextNode instanceof Return_ && $this->nodeComparator->areNodesEqual($nextNode->expr, $return->expr)) {
             return null;
         }
 
@@ -117,7 +117,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(If_ $if, ?Node $nextNode): bool
+    private function shouldSkip(?Node $nextNode): bool
     {
         if ($nextNode === null) {
             return true;
