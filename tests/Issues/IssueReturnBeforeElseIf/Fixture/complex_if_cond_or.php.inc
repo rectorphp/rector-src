@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\IssueReturnBeforeElseIf\Fixture;
 
-class SkipComplexIfCondOr
+class ComplexIfCondOr
 {
     public function run($a, $b, $c, $d, $e)
     {
@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\IssueReturnBeforeElseIf\Fixture;
 
-class SkipComplexIfCondOr
+class ComplexIfCondOr
 {
     public function run($a, $b, $c, $d, $e)
     {
