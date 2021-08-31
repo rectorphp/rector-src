@@ -91,15 +91,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
         /** @var Return_ $return */
         $return = $node->stmts[0];
-
-        // avoid repetitive ifs combined with other rules
-        if ($nextNode instanceof Return_ && $this->nodeComparator->areNodesEqual($nextNode->expr, $return->expr)) {
-            return null;
-        }
-
         $ifs = $this->createMultipleIfs($node->cond, $return, []);
 
         foreach ($ifs as $key => $if) {
