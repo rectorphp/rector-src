@@ -29,7 +29,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeClosureFromCallableRector extends AbstractRector
 {
     public function __construct(
-        private NodesToAddCollector $nodesToAddCollector,
         private VariableNaming $variableNaming
     ) {
     }
