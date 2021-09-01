@@ -2,7 +2,7 @@
 
 namespace Rector\Core\Tests\Issues\Issue6670\Fixture;
 
-final class Client
+final class DoNotRemoveUsedClassMethod
 {
     public function doSomething(): int
     {
@@ -24,7 +24,7 @@ final class Client
 
 namespace Rector\Core\Tests\Issues\Issue6670\Fixture;
 
-final class Client
+final class DoNotRemoveUsedClassMethod
 {
     public function doSomething(): int
     {
