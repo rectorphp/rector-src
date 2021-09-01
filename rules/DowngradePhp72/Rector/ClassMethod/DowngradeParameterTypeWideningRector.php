@@ -7,6 +7,8 @@ namespace Rector\DowngradePhp72\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -124,34 +126,7 @@ CODE_SAMPLE
         }
 
         if ($this->overrideFromAnonymousClassMethodAnalyzer->isOverrideParentMethod($classLike, $node)) {
-            if ($classLike->extends === null) {
-                $interfaces = $classLike->implements;
-                foreach ($interfaces as $interface) {
-                    if (! $interface instanceof FullyQualified) {
-                        continue;
-                    }
-
-                    $classReflection = $this->reflectionProvider->getClass($interface->toString());
-                    $classMethod = $this->getClassMethodFromFullyQualified($classReflection, $node, $interface);
-
-                    if ($this->shouldSkip($classReflection, $classMethod)) {
-                        continue;
-                    }
-
-                    return $this->processRemoveParamTypeFromMethod($node);
-                }
-
-                return null;
-            }
-
-            $classReflection = $this->reflectionProvider->getClass($classLike->extends->toString());
-            $classMethod = $this->getClassMethodFromFullyQualified($classReflection, $node, $classLike->extends);
-
-            if ($this->shouldSkip($classReflection, $classMethod)) {
-                return null;
-            }
-
-            return $this->processRemoveParamTypeFromMethod($node);
+            return $this->processAnonymousOverride($classLike, $node);
         }
 
         $className = $this->nodeNameResolver->getName($classLike);
@@ -175,11 +150,41 @@ CODE_SAMPLE
         return $this->processRemoveParamTypeFromMethod($node);
     }
 
-    private function getClassMethodFromFullyQualified(ClassReflection $classReflection, ClassMethod $classMethod, FullyQualified $fullyQualified): ?ClassMethod
+    private function processAnonymousOverride(Class_ $classLike, ClassMethod $node): ?ClassMethod
     {
-        $classReflection = $this->reflectionProvider->getClass($fullyQualified->toString());
-        $methodName      = $this->nodeNameResolver->getName($classMethod);
+        if ($classLike->extends === null) {
+            $interfaces = $classLike->implements;
+            foreach ($interfaces as $interface) {
+                if (! $interface instanceof FullyQualified) {
+                    continue;
+                }
 
+                $classReflection = $this->reflectionProvider->getClass($interface->toString());
+                $classMethod = $this->resolveClassMethod($classReflection, $node);
+
+                if ($this->shouldSkip($classReflection, $classMethod)) {
+                    continue;
+                }
+
+                return $this->processRemoveParamTypeFromMethod($node);
+            }
+
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($classLike->extends->toString());
+        $classMethod = $this->resolveClassMethod($classReflection, $node);
+
+        if ($this->shouldSkip($classReflection, $classMethod)) {
+            return null;
+        }
+
+        return $this->processRemoveParamTypeFromMethod($node);
+    }
+
+    private function resolveClassMethod(ClassReflection $classReflection, ClassMethod $classMethod): ?ClassMethod
+    {
+        $methodName = $this->nodeNameResolver->getName($classMethod);
         return $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
     }
 
