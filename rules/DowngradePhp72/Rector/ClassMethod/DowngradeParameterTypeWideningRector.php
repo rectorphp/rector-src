@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp72\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
@@ -123,10 +124,28 @@ CODE_SAMPLE
         }
 
         if ($this->overrideFromAnonymousClassMethodAnalyzer->isOverrideParentMethod($classLike, $node)) {
+            if ($classLike->extends === null) {
+                $interfaces = $classLike->implements;
+                foreach ($interfaces as $interface) {
+                    if (! $interface instanceof FullyQualified) {
+                        continue;
+                    }
+
+                    $classReflection = $this->reflectionProvider->getClass($interface->toString());
+                    $classMethod = $this->getClassMethodFromFullyQualified($classReflection, $node, $interface);
+
+                    if ($this->shouldSkip($classReflection, $classMethod)) {
+                        continue;
+                    }
+
+                    return $this->processRemoveParamTypeFromMethod($node);
+                }
+
+                return null;
+            }
+
             $classReflection = $this->reflectionProvider->getClass($classLike->extends->toString());
-            $methodName = $this->nodeNameResolver->getName($node);
-            /** @var ClassMethod $classMethod */
-            $classMethod = $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
+            $classMethod = $this->getClassMethodFromFullyQualified($classReflection, $node, $classLike->extends);
 
             if ($this->shouldSkip($classReflection, $classMethod)) {
                 return null;
@@ -156,6 +175,14 @@ CODE_SAMPLE
         return $this->processRemoveParamTypeFromMethod($node);
     }
 
+    private function getClassMethodFromFullyQualified(ClassReflection $classReflection, ClassMethod $classMethod, FullyQualified $fullyQualified): ?ClassMethod
+    {
+        $classReflection = $this->reflectionProvider->getClass($fullyQualified->toString());
+        $methodName      = $this->nodeNameResolver->getName($classMethod);
+
+        return $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
+    }
+
     /**
      * @param array<string, mixed> $configuration
      */
@@ -175,8 +202,12 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod): bool
+    private function shouldSkip(ClassReflection $classReflection, ?ClassMethod $classMethod): bool
     {
+        if (! $classMethod instanceof ClassMethod) {
+            return false;
+        }
+
         if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
             return true;
         }

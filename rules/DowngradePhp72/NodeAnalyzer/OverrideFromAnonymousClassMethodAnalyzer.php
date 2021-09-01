@@ -31,15 +31,32 @@ final class OverrideFromAnonymousClassMethodAnalyzer
 
         /** @var Class_ $classLike */
         if (! $classLike->extends instanceof FullyQualified) {
+            $interfaces = $classLike->implements;
+
+            foreach ($interfaces as $interface) {
+                if (! $interface instanceof FullyQualified) {
+                    continue;
+                }
+
+                if ($this->isFoundNotPrivateMethod($interface, $classMethod)) {
+                    return true;
+                }
+            }
+
             return false;
         }
 
-        $extendsClass = $classLike->extends->toString();
-        if (! $this->reflectionProvider->hasClass($extendsClass)) {
+        return $this->isFoundNotPrivateMethod($classLike->extends, $classMethod);
+    }
+
+    private function isFoundNotPrivateMethod(FullyQualified $fullyQualified, ClassMethod $classMethod): bool
+    {
+        $ancestorClassLike = $fullyQualified->toString();
+        if (! $this->reflectionProvider->hasClass($ancestorClassLike)) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($extendsClass);
+        $classReflection = $this->reflectionProvider->getClass($ancestorClassLike);
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
         if (! $classReflection->hasMethod($methodName)) {
