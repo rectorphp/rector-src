@@ -155,18 +155,12 @@ CODE_SAMPLE
         if ($classLike->extends === null) {
             $interfaces = $classLike->implements;
             foreach ($interfaces as $interface) {
-                if (! $interface instanceof FullyQualified) {
-                    continue;
-                }
-
                 $classReflection = $this->reflectionProvider->getClass($interface->toString());
                 $classMethod = $this->resolveClassMethod($classReflection, $node);
 
-                if ($this->shouldSkip($classReflection, $classMethod)) {
-                    continue;
+                if (! $this->shouldSkip($classReflection, $classMethod)) {
+                    return $this->processRemoveParamTypeFromMethod($node);
                 }
-
-                return $this->processRemoveParamTypeFromMethod($node);
             }
 
             return null;
@@ -182,8 +176,12 @@ CODE_SAMPLE
         return $this->processRemoveParamTypeFromMethod($node);
     }
 
-    private function resolveClassMethod(ClassReflection $classReflection, ClassMethod $classMethod): ?ClassMethod
+    private function resolveClassMethod(?ClassReflection $classReflection, ClassMethod $classMethod): ?ClassMethod
     {
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
         $methodName = $this->nodeNameResolver->getName($classMethod);
         return $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
     }
@@ -207,8 +205,12 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function shouldSkip(ClassReflection $classReflection, ?ClassMethod $classMethod): bool
+    private function shouldSkip(?ClassReflection $classReflection, ?ClassMethod $classMethod): bool
     {
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
         if (! $classMethod instanceof ClassMethod) {
             return false;
         }
