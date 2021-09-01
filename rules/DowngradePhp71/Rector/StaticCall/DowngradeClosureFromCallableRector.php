@@ -49,11 +49,11 @@ final class DowngradeClosureFromCallableRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-\Closure::fromCallable(callable);
+\Closure::fromCallable('callable');
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-$callable = callable;
+$callable = 'callable';
 function () use ($callable) {
     return $callable(...func_get_args());
 };
@@ -68,7 +68,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$this->isClosureFromCallable($node)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -108,9 +108,16 @@ CODE_SAMPLE
         return $closure;
     }
 
-    private function isClosureFromCallable(StaticCall $node): bool
+    private function shouldSkip(StaticCall $staticCall): bool
     {
-        return $this->getName($node->class) === 'Closure' &&
-            $this->getName($node->name) === 'fromCallable';
+        if (! $this->nodeNameResolver->isName($staticCall->class, 'Closure')) {
+            return true;
+        }
+
+        if (! $this->nodeNameResolver->isName($staticCall->name, 'fromCallable')) {
+            return true;
+        }
+
+        return ! isset($staticCall->args[0]);
     }
 }
