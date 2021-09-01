@@ -31,7 +31,6 @@ final class Client
         if (true === false) {
             return -1;
         }
-
         return $this->notUnused();
     }
 
