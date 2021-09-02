@@ -98,7 +98,7 @@ CODE_SAMPLE
 
             $statements = $this->getStatementsElseIfs($node);
             if ($statements !== []) {
-                $this->addNodesAfterNode($statements, $node);
+                $this->nodesToAddCollector->addNodesAfterNode($statements, $node);
             }
 
             if ($originalNode->else instanceof Else_) {
@@ -110,7 +110,7 @@ CODE_SAMPLE
         }
 
         if ($node->else !== null) {
-            $this->addNodesAfterNode($node->else->stmts, $node);
+            $this->nodesToAddCollector->addNodesAfterNode($node->else->stmts, $node);
             $node->else = null;
             return $node;
         }
