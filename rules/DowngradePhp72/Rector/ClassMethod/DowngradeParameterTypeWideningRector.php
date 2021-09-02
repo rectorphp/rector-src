@@ -7,12 +7,9 @@ namespace Rector\DowngradePhp72\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
 use Rector\DowngradePhp72\NodeAnalyzer\OverrideFromAnonymousClassMethodAnalyzer;
@@ -58,7 +55,6 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector implemen
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
         private BuiltInMethodAnalyzer $builtInMethodAnalyzer,
         private OverrideFromAnonymousClassMethodAnalyzer $overrideFromAnonymousClassMethodAnalyzer,
-        private AstResolver $astResolver,
         private SealedClassAnalyzer $sealedClassAnalyzer
     ) {
     }
@@ -124,9 +120,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $scope = $classLike->getAttribute(AttributeKey::SCOPE);
-        $methodName = $this->nodeNameResolver->getName($node);
-
         $ancestorOfAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->resolveAncestorClassReflectionOverrideable(
             $classLike,
             $node
@@ -146,7 +139,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        if ($this->shouldSkip($classReflection, $methodName, $node, $scope)) {
+        if ($this->shouldSkip($classReflection, $node)) {
             return null;
         }
 
@@ -176,26 +169,8 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function shouldSkip(
-        ClassReflection $classReflection,
-        string $methodName,
-        ?ClassMethod $classMethod,
-        ?Scope $scope
-    ): bool {
-        if (! $scope instanceof Scope) {
-            return true;
-        }
-
-        // from interface
-        if (! $classMethod instanceof ClassMethod) {
-            $methodReflection = $classReflection->getMethod($methodName, $scope);
-            if (! $methodReflection instanceof PhpMethodReflection) {
-                return true;
-            }
-
-            return $methodReflection->isPrivate();
-        }
-
+    private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod,): bool
+    {
         if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
             return true;
         }
