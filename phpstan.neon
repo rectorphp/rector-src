@@ -527,6 +527,6 @@ parameters:
         - '#^Cognitive complexity for "Rector\\CodingStyle\\Naming\\NameRenamer\:\:renameNameNode\(\)" is 13, keep it under 9$#'
 
         -
-            message: '#Class cognitive complexity is 39, keep it under 30#'
+            message: '#Class cognitive complexity is 41, keep it under 30#'
             paths:
                 - rules/DowngradePhp72/Rector/ClassMethod/DowngradeParameterTypeWideningRector.php #34

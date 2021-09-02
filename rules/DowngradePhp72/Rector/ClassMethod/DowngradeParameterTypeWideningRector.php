@@ -24,6 +24,7 @@ use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
+use PHPStan\Reflection\Php\PhpMethodReflection;
 
 /**
  * @changelog https://www.php.net/manual/en/migration72.new-features.php#migration72.new-features.param-type-widening
@@ -228,6 +229,10 @@ CODE_SAMPLE
         // from interface
         if (! $classMethod instanceof ClassMethod) {
             $methodReflection = $classReflection->getMethod($methodName, $scope);
+            if (! $methodReflection instanceof PhpMethodReflection) {
+                return true;
+            }
+
             return $methodReflection->isPrivate();
         }
 
