@@ -80,7 +80,7 @@ CODE_SAMPLE
         $expression = new Expression(new Assign($tempVariable, $node->args[0]->value));
 
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        $this->addNodeBeforeNode($expression, $currentStatement);
+        $this->nodesToAddCollector->addNodeBeforeNode($expression, $currentStatement);
 
         $closure = new Closure();
         $closure->uses[] = new ClosureUse($tempVariable);
