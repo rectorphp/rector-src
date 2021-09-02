@@ -176,15 +176,6 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function resolveClassMethod(?ClassReflection $classReflection, string $methodName): ?ClassMethod
-    {
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        return $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
-    }
-
     private function shouldSkip(
         ClassReflection $classReflection,
         string $methodName,
