@@ -138,6 +138,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if (! isset($comments[0])) {
+                return null;
+            }
+
             $line = $comments[0]->getLine();
             $rangeLine = $line - $endLine;
 
