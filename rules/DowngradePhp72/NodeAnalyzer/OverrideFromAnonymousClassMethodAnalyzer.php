@@ -58,11 +58,6 @@ final class OverrideFromAnonymousClassMethodAnalyzer
 
         $classReflection = $this->reflectionProvider->getClass($ancestorClassLike);
         $methodName = $this->nodeNameResolver->getName($classMethod);
-
-        if (! $classReflection->hasMethod($methodName)) {
-            return null;
-        }
-
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
         $method = $classReflection->getMethod($methodName, $scope);
 
