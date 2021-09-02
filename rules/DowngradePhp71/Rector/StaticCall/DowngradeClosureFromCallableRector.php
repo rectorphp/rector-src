@@ -77,10 +77,10 @@ CODE_SAMPLE
 
         $tempVariable = new Variable($tempVariableName);
 
-        $assignment = new Expression(new Assign($tempVariable, $node->args[0]->value));
+        $expression = new Expression(new Assign($tempVariable, $node->args[0]->value));
 
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        $this->addNodeBeforeNode($assignment, $currentStatement);
+        $this->addNodeBeforeNode($expression, $currentStatement);
 
         $closure = new Closure();
         $closure->uses[] = new ClosureUse($tempVariable);
