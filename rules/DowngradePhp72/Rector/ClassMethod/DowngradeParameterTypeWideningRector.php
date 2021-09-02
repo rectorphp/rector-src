@@ -120,12 +120,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $ancestorOfAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->matchAncestorClassReflectionOverrideable(
+        $ancestorOverridableAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->matchAncestorClassReflectionOverrideable(
             $classLike,
             $node
         );
 
-        if ($ancestorOfAnonymousClass instanceof ClassReflection) {
+        if ($ancestorOverridableAnonymousClass instanceof ClassReflection) {
             return $this->processRemoveParamTypeFromMethod($node);
         }
 

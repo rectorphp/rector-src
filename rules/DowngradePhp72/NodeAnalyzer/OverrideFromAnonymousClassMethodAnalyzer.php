@@ -27,8 +27,7 @@ final class OverrideFromAnonymousClassMethodAnalyzer
     public function matchAncestorClassReflectionOverrideable(
         ClassLike $classLike,
         ClassMethod $classMethod
-    ): ?ClassReflection
-    {
+    ): ?ClassReflection {
         if (! $this->classAnalyzer->isAnonymousClass($classLike)) {
             return null;
         }
