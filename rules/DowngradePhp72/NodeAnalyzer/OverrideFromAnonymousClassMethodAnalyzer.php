@@ -24,7 +24,7 @@ final class OverrideFromAnonymousClassMethodAnalyzer
     ) {
     }
 
-    public function resolveAncestorClassReflectionOverrideableMethod(
+    public function resolveAncestorClassReflectionOverrideable(
         ClassLike $classLike,
         ClassMethod $classMethod
     ): ?ClassReflection

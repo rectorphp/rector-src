@@ -127,11 +127,12 @@ CODE_SAMPLE
         $scope = $classLike->getAttribute(AttributeKey::SCOPE);
         $methodName = $this->nodeNameResolver->getName($node);
 
-        $classReflectionAncestorFromAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->resolveAncestorClassReflectionOverrideableMethod(
+        $ancestorOfAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->resolveAncestorClassReflectionOverrideable(
             $classLike,
             $node
         );
-        if ($classReflectionAncestorFromAnonymousClass instanceof ClassReflection) {
+
+        if ($ancestorOfAnonymousClass instanceof ClassReflection) {
             return $this->processRemoveParamTypeFromMethod($node);
         }
 
