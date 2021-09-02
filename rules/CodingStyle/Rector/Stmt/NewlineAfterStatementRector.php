@@ -137,7 +137,7 @@ CODE_SAMPLE
         }
 
         $this->stmtsHashed[$hash] = true;
-        $this->addNodeAfterNode(new Nop(), $node);
+        $this->nodesToAddCollector->addNodeAfterNode(new Nop(), $node);
 
         return $node;
     }

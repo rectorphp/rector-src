@@ -87,7 +87,7 @@ CODE_SAMPLE
             $if = new If_($node->cond);
             $if->stmts = $node->stmts;
 
-            $this->addNodeBeforeNode($if, $node);
+            $this->nodesToAddCollector->addNodeBeforeNode($if, $node);
             $this->mirrorComments($if, $node);
 
             /** @var ElseIf_ $firstElseIf */
@@ -103,7 +103,7 @@ CODE_SAMPLE
 
             if ($originalNode->else instanceof Else_) {
                 $node->else = null;
-                $this->addNodeAfterNode($originalNode->else, $node);
+                $this->nodesToAddCollector->addNodeAfterNode($originalNode->else, $node);
             }
 
             return $node;

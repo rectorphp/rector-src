@@ -86,7 +86,7 @@ CODE_SAMPLE
         );
 
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        $this->addNodeBeforeNode($assignment, $currentStatement);
+        $this->nodesToAddCollector->addNodeBeforeNode($assignment, $currentStatement);
 
         $closure = new Closure;
         $closure->uses[] = new ClosureUse($tempVariable);
