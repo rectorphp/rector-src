@@ -169,7 +169,7 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod,): bool
+    private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
         if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
             return true;
