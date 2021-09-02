@@ -38,9 +38,7 @@ final class OverrideFromAnonymousClassMethodAnalyzer
                 continue;
             }
 
-            if ($this->isFoundNotPrivateMethod($interface, $classMethod)) {
-                return $this->reflectionProvider->getClass($interface->toString());
-            }
+            return $this->resolveNotPrivateMethod($interface, $classMethod);
         }
 
         /** @var Class_ $classLike */
@@ -48,34 +46,34 @@ final class OverrideFromAnonymousClassMethodAnalyzer
             return null;
         }
 
-        if ($this->isFoundNotPrivateMethod($classLike->extends, $classMethod)) {
-            return $this->reflectionProvider->getClass($classLike->extends->toString());
-        }
-
-        return null;
+        return $this->resolveNotPrivateMethod($classLike->extends, $classMethod);
     }
 
-    private function isFoundNotPrivateMethod(FullyQualified $fullyQualified, ClassMethod $classMethod): bool
+    private function resolveNotPrivateMethod(FullyQualified $fullyQualified, ClassMethod $classMethod): ?ClassReflection
     {
         $ancestorClassLike = $fullyQualified->toString();
         if (! $this->reflectionProvider->hasClass($ancestorClassLike)) {
-            return false;
+            return null;
         }
 
         $classReflection = $this->reflectionProvider->getClass($ancestorClassLike);
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
         if (! $classReflection->hasMethod($methodName)) {
-            return false;
+            return null;
         }
 
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
         $method = $classReflection->getMethod($methodName, $scope);
 
         if (! $method instanceof PhpMethodReflection) {
-            return false;
+            return null;
         }
 
-        return ! $method->isPrivate();
+        if ($method->isPrivate()) {
+            return null;
+        }
+
+        return $classReflection;
     }
 }
