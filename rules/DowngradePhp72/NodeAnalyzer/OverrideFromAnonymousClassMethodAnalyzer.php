@@ -32,6 +32,7 @@ final class OverrideFromAnonymousClassMethodAnalyzer
             return null;
         }
 
+        /** @var Class_ $classLike */
         $interfaces = $classLike->implements;
         foreach ($interfaces as $interface) {
             if (! $interface instanceof FullyQualified) {
