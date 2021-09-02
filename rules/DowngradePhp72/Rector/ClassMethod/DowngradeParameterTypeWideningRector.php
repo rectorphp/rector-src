@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp72\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\AstResolver;
@@ -24,7 +23,6 @@ use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
-use PHPStan\Reflection\Php\PhpMethodReflection;
 
 /**
  * @changelog https://www.php.net/manual/en/migration72.new-features.php#migration72.new-features.param-type-widening
@@ -129,8 +127,12 @@ CODE_SAMPLE
         $scope = $classLike->getAttribute(AttributeKey::SCOPE);
         $methodName = $this->nodeNameResolver->getName($node);
 
-        if ($this->overrideFromAnonymousClassMethodAnalyzer->isOverrideParentMethod($classLike, $node)) {
-            return $this->processAnonymousOverride($classLike, $node, $methodName, $scope);
+        $classReflectionAncestorFromAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->resolveAncestorClassReflectionOverrideableMethod(
+            $classLike,
+            $node
+        );
+        if ($classReflectionAncestorFromAnonymousClass instanceof ClassReflection) {
+            return $this->processRemoveParamTypeFromMethod($node);
         }
 
         $className = $this->nodeNameResolver->getName($classLike);
@@ -173,39 +175,6 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function processAnonymousOverride(
-        Class_ $class,
-        ClassMethod $node,
-        string $methodName,
-        ?Scope $scope
-    ): ?ClassMethod
-    {
-        if ($class->implements !== []) {
-            $interfaces = $class->implements;
-            foreach ($interfaces as $interface) {
-                $classReflection = $this->reflectionProvider->getClass($interface->toString());
-                $classMethod = $this->resolveClassMethod($classReflection, $methodName);
-
-                if (! $this->shouldSkip($classReflection, $methodName, $classMethod, $scope)) {
-                    return $this->processRemoveParamTypeFromMethod($node);
-                }
-            }
-        }
-
-        if (! $class->extends instanceof FullyQualified) {
-            return null;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($class->extends->toString());
-        $classMethod = $this->resolveClassMethod($classReflection, $methodName);
-
-        if ($this->shouldSkip($classReflection, $methodName, $classMethod, $scope)) {
-            return null;
-        }
-
-        return $this->processRemoveParamTypeFromMethod($node);
-    }
-
     private function resolveClassMethod(?ClassReflection $classReflection, string $methodName): ?ClassMethod
     {
         if (! $classReflection instanceof ClassReflection) {
@@ -220,8 +189,7 @@ CODE_SAMPLE
         string $methodName,
         ?ClassMethod $classMethod,
         ?Scope $scope
-    ): bool
-    {
+    ): bool {
         if (! $scope instanceof Scope) {
             return true;
         }

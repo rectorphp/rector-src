@@ -8,6 +8,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
@@ -23,10 +24,13 @@ final class OverrideFromAnonymousClassMethodAnalyzer
     ) {
     }
 
-    public function isOverrideParentMethod(ClassLike $classLike, ClassMethod $classMethod): bool
+    public function resolveAncestorClassReflectionOverrideableMethod(
+        ClassLike $classLike,
+        ClassMethod $classMethod
+    ): ?ClassReflection
     {
         if (! $this->classAnalyzer->isAnonymousClass($classLike)) {
-            return false;
+            return null;
         }
 
         $interfaces = $classLike->implements;
@@ -36,16 +40,20 @@ final class OverrideFromAnonymousClassMethodAnalyzer
             }
 
             if ($this->isFoundNotPrivateMethod($interface, $classMethod)) {
-                return true;
+                return $this->reflectionProvider->getClass($interface->toString());
             }
         }
 
         /** @var Class_ $classLike */
         if (! $classLike->extends instanceof FullyQualified) {
-            return false;
+            return null;
         }
 
-        return $this->isFoundNotPrivateMethod($classLike->extends, $classMethod);
+        if ($this->isFoundNotPrivateMethod($classLike->extends, $classMethod)) {
+            return $this->reflectionProvider->getClass($classLike->extends->toString());
+        }
+
+        return null;
     }
 
     private function isFoundNotPrivateMethod(FullyQualified $fullyQualified, ClassMethod $classMethod): bool
