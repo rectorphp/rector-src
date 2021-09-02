@@ -7,7 +7,7 @@ interface SomeInterface
     public function hello(string $world = 'world');
 }
 
-class SomeClass
+class SomeClass2
 {
     public function doSomething(): void
     {
@@ -40,7 +40,7 @@ interface SomeInterface
     public function hello($world = 'world');
 }
 
-class SomeClass
+class SomeClass2
 {
     public function doSomething(): void
     {

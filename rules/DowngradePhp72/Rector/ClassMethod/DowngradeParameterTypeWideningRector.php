@@ -8,8 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -125,8 +125,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $scope = $classLike->getAttribute(AttributeKey::SCOPE);
+        $methodName = $this->nodeNameResolver->getName($node);
+
         if ($this->overrideFromAnonymousClassMethodAnalyzer->isOverrideParentMethod($classLike, $node)) {
-            return $this->processAnonymousOverride($classLike, $node);
+            return $this->processAnonymousOverride($classLike, $node, $methodName, $scope);
         }
 
         $className = $this->nodeNameResolver->getName($classLike);
@@ -139,7 +142,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        if ($this->shouldSkip($classReflection, $node)) {
+        if ($this->shouldSkip($classReflection, $methodName, $node, $scope)) {
             return null;
         }
 
@@ -148,42 +151,6 @@ CODE_SAMPLE
         }
 
         return $this->processRemoveParamTypeFromMethod($node);
-    }
-
-    private function processAnonymousOverride(Class_ $classLike, ClassMethod $node): ?ClassMethod
-    {
-        if ($classLike->extends === null) {
-            $interfaces = $classLike->implements;
-            foreach ($interfaces as $interface) {
-                $classReflection = $this->reflectionProvider->getClass($interface->toString());
-                $classMethod = $this->resolveClassMethod($classReflection, $node);
-
-                if (! $this->shouldSkip($classReflection, $classMethod)) {
-                    return $this->processRemoveParamTypeFromMethod($node);
-                }
-            }
-
-            return null;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($classLike->extends->toString());
-        $classMethod = $this->resolveClassMethod($classReflection, $node);
-
-        if ($this->shouldSkip($classReflection, $classMethod)) {
-            return null;
-        }
-
-        return $this->processRemoveParamTypeFromMethod($node);
-    }
-
-    private function resolveClassMethod(?ClassReflection $classReflection, ClassMethod $classMethod): ?ClassMethod
-    {
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-        return $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
     }
 
     /**
@@ -205,14 +172,63 @@ CODE_SAMPLE
         $this->safeTypesToMethods = $safeTypesToMethods;
     }
 
-    private function shouldSkip(?ClassReflection $classReflection, ?ClassMethod $classMethod): bool
+    private function processAnonymousOverride(
+        Class_ $class,
+        ClassMethod $node,
+        string $methodName,
+        ?Scope $scope
+    ): ?ClassMethod
     {
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
+        if ($class->implements !== []) {
+            $interfaces = $class->implements;
+            foreach ($interfaces as $interface) {
+                $classReflection = $this->reflectionProvider->getClass($interface->toString());
+                $classMethod = $this->resolveClassMethod($classReflection, $methodName);
+
+                if (! $this->shouldSkip($classReflection, $methodName, $classMethod, $scope)) {
+                    return $this->processRemoveParamTypeFromMethod($node);
+                }
+            }
         }
 
+        if (! $class->extends instanceof FullyQualified) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($class->extends->toString());
+        $classMethod = $this->resolveClassMethod($classReflection, $methodName);
+
+        if ($this->shouldSkip($classReflection, $methodName, $classMethod, $scope)) {
+            return null;
+        }
+
+        return $this->processRemoveParamTypeFromMethod($node);
+    }
+
+    private function resolveClassMethod(?ClassReflection $classReflection, string $methodName): ?ClassMethod
+    {
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        return $this->astResolver->resolveClassMethod($classReflection->getName(), $methodName);
+    }
+
+    private function shouldSkip(
+        ClassReflection $classReflection,
+        string $methodName,
+        ?ClassMethod $classMethod,
+        ?Scope $scope
+    ): bool
+    {
+        if (! $scope instanceof Scope) {
+            return true;
+        }
+
+        // from interface
         if (! $classMethod instanceof ClassMethod) {
-            return false;
+            $methodReflection = $classReflection->getMethod($methodName, $scope);
+            return $methodReflection->isPrivate();
         }
 
         if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
