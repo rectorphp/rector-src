@@ -39,7 +39,12 @@ final class OverrideFromAnonymousClassMethodAnalyzer
                 continue;
             }
 
-            return $this->resolveNotPrivateMethod($interface, $classMethod);
+            $resolve = $this->resolveClassReflectionWithNotPrivateMethod($interface, $classMethod);
+            if (! $resolve instanceof ClassReflection) {
+                continue;
+            }
+
+            return $resolve;
         }
 
         /** @var Class_ $classLike */
@@ -47,10 +52,10 @@ final class OverrideFromAnonymousClassMethodAnalyzer
             return null;
         }
 
-        return $this->resolveNotPrivateMethod($classLike->extends, $classMethod);
+        return $this->resolveClassReflectionWithNotPrivateMethod($classLike->extends, $classMethod);
     }
 
-    private function resolveNotPrivateMethod(FullyQualified $fullyQualified, ClassMethod $classMethod): ?ClassReflection
+    private function resolveClassReflectionWithNotPrivateMethod(FullyQualified $fullyQualified, ClassMethod $classMethod): ?ClassReflection
     {
         $ancestorClassLike = $fullyQualified->toString();
         if (! $this->reflectionProvider->hasClass($ancestorClassLike)) {
