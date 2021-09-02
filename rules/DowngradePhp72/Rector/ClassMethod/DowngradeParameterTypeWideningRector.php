@@ -120,7 +120,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $ancestorOfAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->resolveAncestorClassReflectionOverrideable(
+        $ancestorOfAnonymousClass = $this->overrideFromAnonymousClassMethodAnalyzer->matchAncestorClassReflectionOverrideable(
             $classLike,
             $node
         );
