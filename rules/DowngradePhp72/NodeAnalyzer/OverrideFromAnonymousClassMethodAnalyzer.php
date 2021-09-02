@@ -40,11 +40,9 @@ final class OverrideFromAnonymousClassMethodAnalyzer
             }
 
             $resolve = $this->resolveClassReflectionWithNotPrivateMethod($interface, $classMethod);
-            if (! $resolve instanceof ClassReflection) {
-                continue;
+            if ($resolve instanceof ClassReflection) {
+                return $resolve;
             }
-
-            return $resolve;
         }
 
         /** @var Class_ $classLike */
