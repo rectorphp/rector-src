@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector\Fixture;
 
-interface SomeInterface
+interface SomeInterface2
 {
     public function test(\SplFileInfo $file);
 }
 
-abstract class SomeAbstractClass implements SomeInterface
+abstract class SomeAbstractClass implements SomeInterface2
 {
     public function test2(\SplFileInfo $file, string $world = 'world') {
         printf('Hello %s', $world);
@@ -26,7 +26,7 @@ return new class extends SomeAbstractClass {
 
 namespace Rector\Tests\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector\Fixture;
 
-interface SomeInterface
+interface SomeInterface2
 {
     /**
      * @param \SplFileInfo $file
@@ -34,7 +34,7 @@ interface SomeInterface
     public function test($file);
 }
 
-abstract class SomeAbstractClass implements SomeInterface
+abstract class SomeAbstractClass implements SomeInterface2
 {
     /**
      * @param \SplFileInfo $file
