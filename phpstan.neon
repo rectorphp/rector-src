@@ -525,8 +525,3 @@ parameters:
                 - rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php
 
         - '#^Cognitive complexity for "Rector\\CodingStyle\\Naming\\NameRenamer\:\:renameNameNode\(\)" is 13, keep it under 9$#'
-
-        -
-            message: '#Class cognitive complexity is 33, keep it under 30#'
-            paths:
-                - rules/DowngradePhp72/Rector/ClassMethod/DowngradeParameterTypeWideningRector.php #34
