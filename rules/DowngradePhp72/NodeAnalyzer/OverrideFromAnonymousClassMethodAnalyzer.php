@@ -29,20 +29,19 @@ final class OverrideFromAnonymousClassMethodAnalyzer
             return false;
         }
 
-        /** @var Class_ $classLike */
-        if (! $classLike->extends instanceof FullyQualified) {
-            $interfaces = $classLike->implements;
-
-            foreach ($interfaces as $interface) {
-                if (! $interface instanceof FullyQualified) {
-                    continue;
-                }
-
-                if ($this->isFoundNotPrivateMethod($interface, $classMethod)) {
-                    return true;
-                }
+        $interfaces = $classLike->implements;
+        foreach ($interfaces as $interface) {
+            if (! $interface instanceof FullyQualified) {
+                continue;
             }
 
+            if ($this->isFoundNotPrivateMethod($interface, $classMethod)) {
+                return true;
+            }
+        }
+
+        /** @var Class_ $classLike */
+        if (! $classLike->extends instanceof FullyQualified) {
             return false;
         }
 
