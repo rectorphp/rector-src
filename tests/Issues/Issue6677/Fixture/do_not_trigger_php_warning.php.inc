@@ -2,7 +2,7 @@
 
 namespace Rector\Core\Tests\Issues\Issue6677\Fixture;
 
-final class SkipEmptyArg
+final class DoNotTriggerPhpWarning
 {
     public function testListStyle() : void
     {
@@ -25,7 +25,7 @@ final class SkipEmptyArg
 
 namespace Rector\Core\Tests\Issues\Issue6677\Fixture;
 
-final class SkipEmptyArg
+final class DoNotTriggerPhpWarning
 {
     public function testListStyle() : void
     {
