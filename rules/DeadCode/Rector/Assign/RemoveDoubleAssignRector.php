@@ -104,8 +104,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $parent = $this->betterNodeFinder->findParentType($assign, Ternary::class);
-        return $parent instanceof Ternary;
+        return (bool) $this->betterNodeFinder->findParentType($assign, Ternary::class);
     }
 
     private function isSelfReferencing(Assign $assign): bool
