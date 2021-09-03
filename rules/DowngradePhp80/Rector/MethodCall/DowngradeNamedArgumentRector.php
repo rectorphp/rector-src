@@ -117,13 +117,15 @@ CODE_SAMPLE
     private function shouldSkip(array $args): bool
     {
         foreach ($args as $arg) {
-            if ($arg === null) {
+            if (! $arg instanceof Arg) {
                 continue;
             }
 
-            if ($arg->name instanceof Identifier) {
-                return false;
+            if (! $arg->name instanceof Identifier) {
+                continue;
             }
+
+            return false;
         }
 
         return true;
