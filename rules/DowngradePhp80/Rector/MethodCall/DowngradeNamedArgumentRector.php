@@ -118,7 +118,7 @@ CODE_SAMPLE
     {
         foreach ($args as $arg) {
             if ($arg === null) {
-                return true;
+                continue;
             }
 
             if ($arg->name instanceof Identifier) {
