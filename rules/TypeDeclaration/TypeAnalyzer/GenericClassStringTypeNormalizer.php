@@ -50,6 +50,10 @@ final class GenericClassStringTypeNormalizer
             return $this->resolveClassStringInUnionType($type);
         }
 
+        if ($type instanceof ArrayType && $type->getKeyType() instanceof UnionType) {
+            return new ArrayType($type->getKeyType(), new MixedType());
+        }
+
         return $type;
     }
 
