@@ -51,7 +51,12 @@ final class GenericClassStringTypeNormalizer
         }
 
         if ($type instanceof ArrayType && $type->getKeyType() instanceof UnionType) {
-            return new ArrayType($type->getKeyType(), new MixedType());
+            $keyType  = $type->getKeyType();
+            $itemType = $type->getItemType() instanceof UnionType
+                ? new MixedType()
+                : $type->getItemType();
+
+            return new ArrayType($keyType, $itemType);
         }
 
         return $type;
