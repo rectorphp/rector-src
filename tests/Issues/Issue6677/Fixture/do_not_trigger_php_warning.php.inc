@@ -33,7 +33,7 @@ final class SkipEmptyArg
 
     public function testBracketStyle() : void
     {
-        [, $b] = $this->value();
+        list(, $b) = $this->value();
     }
 
     private function value(): array
