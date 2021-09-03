@@ -112,7 +112,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Arg[] $args
+     * @param mixed[]|Arg[] $args
      */
     private function shouldSkip(array $args): bool
     {
