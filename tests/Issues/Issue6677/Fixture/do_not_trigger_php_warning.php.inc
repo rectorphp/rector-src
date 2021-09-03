@@ -1,6 +1,7 @@
 <?php
 
 namespace Rector\Core\Tests\Issues\Issue6677\Fixture;
+
 final class SkipEmptyArg
 {
     public function testListStyle() : void
