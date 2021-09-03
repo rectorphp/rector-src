@@ -67,12 +67,15 @@ final class GenericClassStringTypeNormalizer
         if ($itemType instanceof UnionType && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
             return new ArrayType($keyType, new ClassStringType());
         }
+
         if (! $itemType instanceof UnionType) {
             return $arrayType;
         }
+
         if ($this->isAllGenericClassStringType($itemType)) {
             return $arrayType;
         }
+
         return new ArrayType($keyType, new MixedType());
     }
 
