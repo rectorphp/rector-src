@@ -69,15 +69,16 @@ final class GenericClassStringTypeNormalizer
 
         $keyType = $arrayType->getKeyType();
         $isAllGenericClassStringType = $this->isAllGenericClassStringType($itemType);
-        if ($isAllGenericClassStringType && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
+
+        if (! $isAllGenericClassStringType) {
+            return new ArrayType($keyType, new MixedType());
+        }
+
+        if ($this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
             return new ArrayType($keyType, new ClassStringType());
         }
 
-        if ($isAllGenericClassStringType) {
-            return $arrayType;
-        }
-
-        return new ArrayType($keyType, new MixedType());
+        return $arrayType;
     }
 
     private function isAllGenericClassStringType(UnionType $unionType): bool
