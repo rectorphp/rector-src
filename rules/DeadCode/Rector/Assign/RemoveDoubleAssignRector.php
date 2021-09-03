@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
@@ -99,7 +100,12 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $this->scopeNestingComparator->areScopeNestingEqual($assign, $expression);
+        if (! $this->scopeNestingComparator->areScopeNestingEqual($assign, $expression)) {
+            return true;
+        }
+
+        $parent = $this->betterNodeFinder->findParentType($assign, Ternary::class);
+        return $parent instanceof Ternary;
     }
 
     private function isSelfReferencing(Assign $assign): bool
