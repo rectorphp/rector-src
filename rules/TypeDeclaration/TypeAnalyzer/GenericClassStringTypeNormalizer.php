@@ -63,9 +63,8 @@ final class GenericClassStringTypeNormalizer
     {
         $keyType = $arrayType->getKeyType();
         $itemType = $arrayType->getItemType();
-        $isAllGenericClassStringType = $this->isAllGenericClassStringType($itemType);
 
-        if ($itemType instanceof UnionType && $isAllGenericClassStringType && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
+        if ($itemType instanceof UnionType && $this->isAllGenericClassStringType($itemType) && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
             return new ArrayType($keyType, new ClassStringType());
         }
 
@@ -73,7 +72,7 @@ final class GenericClassStringTypeNormalizer
             return $arrayType;
         }
 
-        if ($isAllGenericClassStringType) {
+        if ($this->isAllGenericClassStringType($itemType)) {
             return $arrayType;
         }
 
