@@ -17,11 +17,13 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
+use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
 
 final class GenericClassStringTypeNormalizer
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider,
+        private DetailedTypeAnalyzer $detailedTypeAnalyzer
     ) {
     }
 
@@ -54,11 +56,13 @@ final class GenericClassStringTypeNormalizer
             $keyType  = $type->getKeyType();
             $itemType = $type->getItemType();
 
-            $itemType = $itemType instanceof UnionType && ! $this->isAllGenericClassStringType($itemType)
-                ? new MixedType()
-                : new ClassStringType();
+            if ($itemType instanceof UnionType && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
+                return new ArrayType($keyType, new ClassStringType());
+            }
 
-            return new ArrayType($keyType, $itemType);
+            if ($itemType instanceof UnionType && ! $this->isAllGenericClassStringType($itemType)) {
+                return new ArrayType($keyType, new MixedType());
+            }
         }
 
         return $type;
