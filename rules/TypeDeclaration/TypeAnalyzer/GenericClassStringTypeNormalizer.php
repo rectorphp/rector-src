@@ -53,19 +53,26 @@ final class GenericClassStringTypeNormalizer
         }
 
         if ($type instanceof ArrayType && $type->getKeyType() instanceof UnionType) {
-            $keyType  = $type->getKeyType();
-            $itemType = $type->getItemType();
-
-            if ($itemType instanceof UnionType && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
-                return new ArrayType($keyType, new ClassStringType());
-            }
-
-            if ($itemType instanceof UnionType && ! $this->isAllGenericClassStringType($itemType)) {
-                return new ArrayType($keyType, new MixedType());
-            }
+            return $this->resolveArrayTypeWithUnionKeyType($type);
         }
 
         return $type;
+    }
+
+    private function resolveArrayTypeWithUnionKeyType(ArrayType $arrayType): Type
+    {
+        $keyType  = $arrayType->getKeyType();
+        $itemType = $arrayType->getItemType();
+
+        if ($itemType instanceof UnionType && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
+            return new ArrayType($keyType, new ClassStringType());
+        }
+
+        if ($itemType instanceof UnionType && ! $this->isAllGenericClassStringType($itemType)) {
+            return new ArrayType($keyType, new MixedType());
+        }
+
+        return $arrayType;
     }
 
     private function isAllGenericClassStringType(UnionType $unionType): bool
