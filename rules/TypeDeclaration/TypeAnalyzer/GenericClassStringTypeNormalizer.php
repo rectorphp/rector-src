@@ -52,14 +52,29 @@ final class GenericClassStringTypeNormalizer
 
         if ($type instanceof ArrayType && $type->getKeyType() instanceof UnionType) {
             $keyType  = $type->getKeyType();
-            $itemType = $type->getItemType() instanceof UnionType
+            $itemType = $type->getItemType();
+
+            $itemType = $itemType instanceof UnionType && ! $this->isAllGenericClassStringType($itemType)
                 ? new MixedType()
-                : $type->getItemType();
+                : new ClassStringType();
 
             return new ArrayType($keyType, $itemType);
         }
 
         return $type;
+    }
+
+    private function isAllGenericClassStringType(UnionType $unionType): bool
+    {
+        $types = $unionType->getTypes();
+
+        foreach ($types as $type) {
+            if (! $type instanceof GenericClassStringType) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function resolveClassStringInUnionType(UnionType $type): UnionType | ArrayType
