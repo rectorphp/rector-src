@@ -37,6 +37,8 @@ final class NullsafeOperatorRector extends AbstractRector
      */
     private const NAME = 'name';
 
+    private const VAR = 'var';
+
     public function __construct(
         private IfManipulator $ifManipulator,
         private NullsafeManipulator $nullsafeManipulator
@@ -243,6 +245,15 @@ CODE_SAMPLE
         }
 
         if (! property_exists($nextNode->expr, self::NAME)) {
+            return false;
+        }
+
+        if (
+            property_exists($assign->expr, self::VAR) &&
+            property_exists($nextNode->expr, self::VAR) &&
+            $this->nodeComparator->areNodesEqual($assign->expr->var, $nextNode->expr->var) &&
+            ! ($assign->expr->name === $nextNode->expr->name)
+        ) {
             return false;
         }
 
