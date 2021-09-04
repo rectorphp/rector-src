@@ -117,7 +117,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isUsedInNextNode($node, $variableName)) {
+        if ($this->isUsedInNextNodeWithExtractPreviouslyCalled($node, $variableName)) {
             return null;
         }
 
@@ -131,7 +131,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isUsedInNextNode(Node $node, string $variableName): bool
+    private function isUsedInNextNodeWithExtractPreviouslyCalled(Node $node, string $variableName): bool
     {
         $variable         = new Variable($variableName);
         $isUsedInNextNode = (bool) $this->betterNodeFinder->findFirstNext(
