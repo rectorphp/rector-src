@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\VarLikeIdentifier;
 use PHPStan\Type\ThisType;
+use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -18,6 +19,12 @@ use Rector\Renaming\ValueObject\RenameProperty;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
+use PHPStan\Reflection\ReflectionProvider;
+use Rector\Core\PhpParser\AstResolver;
+use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
+use Rector\Naming\PropertyRenamer\MatchTypePropertyRenamer;
+use Rector\Naming\ValueObject\PropertyRename;
+use Rector\Naming\ValueObjectFactory\PropertyRenameFactory;
 
 /**
  * @see \Rector\Tests\Renaming\Rector\PropertyFetch\RenamePropertyRector\RenamePropertyRectorTest
@@ -33,6 +40,10 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
      * @var RenameProperty[]
      */
     private array $renamedProperties = [];
+
+    public function __construct(private ReflectionProvider $reflectionProvider, private AstResolver $astResolver, private MatchPropertyTypeExpectedNameResolver $matchPropertyTypeExpectedNameResolver, private PropertyRenameFactory $propertyRenameFactory, private MatchTypePropertyRenamer $matchTypePropertyRenamer)
+    {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -75,10 +86,11 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
 
             $nodeVarType = $this->nodeTypeResolver->resolve($node->var);
             if ($nodeVarType instanceof ThisType && $class instanceof ClassLike) {
-                $property = $class->getProperty($oldProperty);
-                if ($property instanceof Property) {
-                    $property->props[0]->name = new VarLikeIdentifier($renamedProperty->getNewProperty());
-                }
+                $this->processThisType($class, $oldProperty, $renamedProperty);
+            }
+
+            if ($nodeVarType instanceof ObjectType && $this->reflectionProvider->hasClass($nodeVarType->getClassName())) {
+                $this->processObjectType($nodeVarType->getClassName(), $oldProperty, $renamedProperty);
             }
 
             $node->name = new Identifier($renamedProperty->getNewProperty());
@@ -86,6 +98,38 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
         }
 
         return null;
+    }
+
+    private function processThisType(ClassLike $class, string $oldProperty, RenameProperty $renamedProperty): void
+    {
+        foreach ($class->getProperties() as $property) {
+            $expectedPropertyName = $this->matchPropertyTypeExpectedNameResolver->resolve($property);
+            if ($expectedPropertyName === null) {
+                continue;
+            }
+
+            $propertyRename = $this->propertyRenameFactory->createFromExpectedName($property, $expectedPropertyName);
+            if (! $propertyRename instanceof PropertyRename) {
+                continue;
+            }
+
+            $this->matchTypePropertyRenamer->rename($propertyRename);
+        }
+    }
+
+    private function processObjectType(string $className, string $oldProperty, RenameProperty $renamedProperty): void
+    {
+        $classReflection = $this->reflectionProvider->getClass($className);
+        if ($classReflection->isBuiltIn()) {
+            return;
+        }
+
+        $class = $this->astResolver->resolveClassFromName($className);
+        if (! $class instanceof ClassLike) {
+            return;
+        }
+
+        $this->processThisType($class, $oldProperty, $renamedProperty);
     }
 
     /**
