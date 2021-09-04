@@ -22,6 +22,8 @@ use PhpParser\Node\Stmt\While_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\Comments\CommentRemover;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\PackageBuilder\Php\TypeChecker;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -53,7 +55,8 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
 
     public function __construct(
         private TypeChecker $typeChecker,
-        private CommentRemover $commentRemover
+        private CommentRemover $commentRemover,
+        private ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
     ) {
     }
 
@@ -113,6 +116,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isUsedAfterNextNode($node, $variableName)) {
+            return null;
+        }
+
         $comments = $node->getComments();
         if (isset($comments[1]) && $comments[1] instanceof Comment) {
             $this->commentRemover->rollbackComments($node, $comments[1]);
@@ -121,6 +128,15 @@ CODE_SAMPLE
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
         return $node;
+    }
+
+    private function isUsedAfterNextNode(Node $node, string $variableName): bool
+    {
+        $variable = new Variable($variableName);
+        return (bool) $this->betterNodeFinder->findFirstNext(
+            $node,
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
+        );
     }
 
     private function shouldSkip(Node $node): bool
