@@ -55,6 +55,13 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
+        $values = $this->valueResolver->getValue($array);
+        $keys   = array_keys($values);
+
+        if ($keys !== [0, 1] && $keys !== [1]) {
+            return null;
+        }
+
         // $this, self, static, FQN
         $firstItemValue = $array->items[0]->value;
 

@@ -110,15 +110,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $value = $this->valueResolver->getValue($node);
-        if (is_array($value)) {
-            foreach (array_keys($value) as $singleValue) {
-                if (! is_int($singleValue)) {
-                    return null;
-                }
-            }
-        }
-
         return $this->anonymousFunctionFactory->createFromPhpMethodReflection(
             $phpMethodReflection,
             $arrayCallable->getCallerExpr()
