@@ -96,7 +96,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof Namespace_ && $this->skipAlreadyDefinedNamespace($node)) {
+        if ($node instanceof Namespace_ && $this->hasNamespaceInPreviousNamespace($node)) {
             return null;
         }
 
@@ -111,7 +111,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function skipAlreadyDefinedNamespace(Namespace_ $namespace)
+    private function hasNamespaceInPreviousNamespace(Namespace_ $namespace): bool
     {
         return (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
             $namespace,
