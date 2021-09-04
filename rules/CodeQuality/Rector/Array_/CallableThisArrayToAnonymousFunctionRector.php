@@ -112,10 +112,10 @@ CODE_SAMPLE
 
         $value = $this->valueResolver->getValue($node);
         if (is_array($value)) {
-            $isAssociativeArray = (bool) array_filter($value, fn ($k): bool => ! is_int($k), ARRAY_FILTER_USE_KEY);
-
-            if ($isAssociativeArray) {
-                return null;
+            foreach (array_keys($value) as $singleValue) {
+                if (! is_int($singleValue)) {
+                    return null;
+                }
             }
         }
 
