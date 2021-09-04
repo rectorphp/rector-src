@@ -56,9 +56,8 @@ final class ArrayCallableMethodMatcher
         }
 
         $values = $this->valueResolver->getValue($array);
-        $keys = array_keys($values);
 
-        if ($keys !== [0, 1] && $keys !== [1]) {
+        if ($this->shouldSkipAssociativeArray($array)) {
             return null;
         }
 
@@ -83,6 +82,14 @@ final class ArrayCallableMethodMatcher
         $className = $calleeType->getClassName();
         $methodName = $secondItemValue->value;
         return new ArrayCallable($firstItemValue, $className, $methodName);
+    }
+
+    private function shouldSkipAssociativeArray(Array_ $array): bool
+    {
+        $values = $this->valueResolver->getValue($array);
+        $keys = array_keys($values);
+
+        return $keys !== [0, 1] && $keys !== [1];
     }
 
     /**
