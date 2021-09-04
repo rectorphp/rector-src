@@ -8,6 +8,7 @@ use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignRef;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\Expression;
@@ -116,7 +117,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isUsedAfterNextNode($node, $variableName)) {
+        if ($this->isUsedInNextNode($node, $variableName)) {
             return null;
         }
 
@@ -130,13 +131,25 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isUsedAfterNextNode(Node $node, string $variableName): bool
+    private function isUsedInNextNode(Node $node, string $variableName): bool
     {
-        $variable = new Variable($variableName);
-        return (bool) $this->betterNodeFinder->findFirstNext(
+        $variable         = new Variable($variableName);
+        $isUsedInNextNode = (bool) $this->betterNodeFinder->findFirstNext(
             $node,
             fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
         );
+
+        if (! $isUsedInNextNode) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $subNode): bool {
+            if (! $subNode instanceof FuncCall) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($subNode, 'extract');
+        });
     }
 
     private function shouldSkip(Node $node): bool
