@@ -55,7 +55,7 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
-        $values = $this->valueResolver->getValue($array);
+        $this->valueResolver->getValue($array);
 
         if ($this->shouldSkipAssociativeArray($array)) {
             return null;
