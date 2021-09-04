@@ -14,5 +14,3 @@ class SkipAssociativeArray
         return $first <=> $second;
     }
 }
-
-?>

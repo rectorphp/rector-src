@@ -110,6 +110,17 @@ CODE_SAMPLE
             return null;
         }
 
+        $value = $this->valueResolver->getValue($node);
+        if (is_array($value)) {
+            $isAssociativeArray = (bool) array_filter($value, function($k) {
+                return ! is_int($k);
+            }, ARRAY_FILTER_USE_KEY);
+
+            if ($isAssociativeArray) {
+                return null;
+            }
+        }
+
         return $this->anonymousFunctionFactory->createFromPhpMethodReflection(
             $phpMethodReflection,
             $arrayCallable->getCallerExpr()
