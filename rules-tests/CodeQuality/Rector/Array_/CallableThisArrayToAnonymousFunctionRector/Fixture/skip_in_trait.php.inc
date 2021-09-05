@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Fixture;
 
-Trait SkipInTrait
+trait SkipInTrait
 {
     public function run(array $values)
     {
