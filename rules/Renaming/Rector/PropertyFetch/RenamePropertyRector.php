@@ -91,7 +91,8 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
     private function renameProperty(ClassLike $classLike, RenameProperty $renameProperty): void
     {
         $classLikeName = $this->nodeNameResolver->getName($classLike);
-        $className     = $renameProperty->getObjectType()->getClassName();
+        $renamePropertyObjectType = $renameProperty->getObjectType();
+        $className = $renamePropertyObjectType->getClassName();
 
         if ($classLikeName !== $className) {
             return;
