@@ -98,7 +98,7 @@ final class ArrayCallableMethodMatcher
     private function shouldSkipAssociativeArray(Array_ $array): bool
     {
         $values = $this->valueResolver->getValue($array);
-        if ($values === null) {
+        if (! is_array($values)) {
             return false;
         }
 
