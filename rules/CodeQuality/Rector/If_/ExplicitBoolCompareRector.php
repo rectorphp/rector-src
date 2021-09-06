@@ -28,7 +28,9 @@ use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\NodeTypeResolver\TypeAnalyzer\StringTypeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -116,6 +118,11 @@ CODE_SAMPLE
 
         $newConditionNode = $this->resolveNewConditionNode($conditionNode, $isNegated);
         if (! $newConditionNode instanceof BinaryOp) {
+            return null;
+        }
+
+        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+        if ($conditionStaticType instanceof StringType && $newConditionNode instanceof BooleanOr && ! $nextNode instanceof Node) {
             return null;
         }
 
