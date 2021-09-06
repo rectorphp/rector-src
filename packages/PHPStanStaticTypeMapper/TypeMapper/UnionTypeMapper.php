@@ -189,21 +189,8 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     private function hasObjectAndStaticType(PhpParserUnionType $phpParserUnionType): bool
     {
-        $hasObject = false;
-        $hasStatic = false;
-
-        foreach ($phpParserUnionType->types as $type) {
-            if ($this->nodeNameResolver->isName($type, 'object')) {
-                $hasObject = true;
-                continue;
-            }
-
-            if ($this->nodeNameResolver->isName($type, 'static')) {
-                $hasStatic = true;
-            }
-        }
-
-        return $hasObject && $hasStatic;
+        $typeNames = $this->nodeNameResolver->getNames($phpParserUnionType->types);
+        return ! (bool) array_diff(['object', 'static'], $typeNames);
     }
 
     /**
