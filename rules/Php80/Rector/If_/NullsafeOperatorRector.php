@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -32,13 +33,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NullsafeOperatorRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const NAME = 'name';
-
-    private const VAR = 'var';
-
     public function __construct(
         private IfManipulator $ifManipulator,
         private NullsafeManipulator $nullsafeManipulator
@@ -236,28 +230,27 @@ CODE_SAMPLE
 
     private function shouldProcessAssignInCurrentNode(Assign $assign, Node $nextNode): bool
     {
-        if (! property_exists($assign->expr, self::NAME)) {
+        if (! $nextNode instanceof Return_ && ! $nextNode instanceof Expression) {
             return false;
         }
 
-        if (! property_exists($nextNode, 'expr')) {
+        if ($nextNode->expr instanceof Assign) {
             return false;
         }
 
-        if (! property_exists($nextNode->expr, self::NAME)) {
-            return false;
+        if (! $assign->expr instanceof MethodCall) {
+            return ! $this->valueResolver->isNull($nextNode->expr);
         }
 
-        if (
-            property_exists($assign->expr, self::VAR) &&
-            property_exists($nextNode->expr, self::VAR) &&
-            $this->nodeComparator->areNodesEqual($assign->expr->var, $nextNode->expr->var) &&
-            ! ($assign->expr->name === $nextNode->expr->name)
-        ) {
-            return false;
+        if (! $nextNode->expr instanceof MethodCall) {
+            return ! $this->valueResolver->isNull($nextNode->expr);
         }
 
-        return ! $this->valueResolver->isNull($nextNode->expr);
+        if (! $this->nodeComparator->areNodesEqual($assign->expr->var, $nextNode->expr->var)) {
+            return ! $this->valueResolver->isNull($nextNode->expr);
+        }
+
+        return false;
     }
 
     private function processIfMayInNextNode(?Node $nextNode = null): ?Node
