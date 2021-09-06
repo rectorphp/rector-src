@@ -46,10 +46,9 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
     private bool $haveArgumentsChanged = false;
 
     public function __construct(
-        private ArgumentAddingScope      $argumentAddingScope,
+        private ArgumentAddingScope $argumentAddingScope,
         private ChangedArgumentsDetector $changedArgumentsDetector
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -212,7 +211,10 @@ CODE_SAMPLE
             }
 
             // argument added and default has been changed
-            if ($this->changedArgumentsDetector->isDefaultValueChanged($param, $argumentAdder->getArgumentDefaultValue())) {
+            if ($this->changedArgumentsDetector->isDefaultValueChanged(
+                $param,
+                $argumentAdder->getArgumentDefaultValue()
+            )) {
                 return true;
             }
 

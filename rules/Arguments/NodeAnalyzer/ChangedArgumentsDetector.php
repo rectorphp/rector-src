@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Arguments\NodeAnalyzer;
 
 use PhpParser\Node\Param;
@@ -11,8 +13,7 @@ class ChangedArgumentsDetector
     public function __construct(
         private ValueResolver $valueResolver,
         private NodeNameResolver $nodeNameResolver
-    )
-    {
+    ) {
     }
 
     public function isDefaultValueChanged(Param $param, $value): bool
