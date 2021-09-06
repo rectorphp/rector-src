@@ -202,7 +202,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->isName($node->params[$position], $argumentName);
+            return $this->isParameterChanged($node->params[$position], $argumentAdder);
         }
 
         if (isset($node->args[$position])) {
@@ -211,6 +211,49 @@ CODE_SAMPLE
 
         // is correct scope?
         return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
+    }
+
+    private function isParameterChanged(Param $param, ArgumentAdder $argumentAdder): bool
+    {
+        $argumentName = $argumentAdder->getArgumentName();
+        if ($argumentName === null) {
+            return true;
+        }
+        // argument added and name has been changed
+        if (! $this->isName($param, $argumentName)) {
+            return true;
+        }
+
+        // argument added and default has been changed
+        if ($this->isParameterDefaultValueChanged($param, $argumentAdder->getArgumentDefaultValue())) {
+            return true;
+        }
+
+        // argument added and type has been changed
+        return $this->isParameterTypeChanged($param, $argumentAdder->getArgumentType());
+    }
+
+    /**
+     * @param mixed $defaultValue
+     */
+    private function isParameterDefaultValueChanged(Param $param, $defaultValue): bool
+    {
+        if ($param->default === null) {
+            return false;
+        }
+
+        return ! $this->valueResolver->isValue($param->default, $defaultValue);
+    }
+
+    private function isParameterTypeChanged(Param $param, ?string $argumentType): bool
+    {
+        if ($param->type === null) {
+            return false;
+        }
+        if ($argumentType === null) {
+            return true;
+        }
+        return ! $this->isName($param->type, $argumentType);
     }
 
     private function addClassMethodParam(
