@@ -242,11 +242,11 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $assign->expr instanceof MethodCall) {
+        if (! $assign->expr instanceof MethodCall && ! $assign->expr instanceof PropertyFetch) {
             return ! $this->valueResolver->isNull($nextNode->expr);
         }
 
-        if (! $nextNode->expr instanceof MethodCall) {
+        if (! $nextNode->expr instanceof MethodCall && ! $nextNode->expr instanceof PropertyFetch) {
             return ! $this->valueResolver->isNull($nextNode->expr);
         }
 
