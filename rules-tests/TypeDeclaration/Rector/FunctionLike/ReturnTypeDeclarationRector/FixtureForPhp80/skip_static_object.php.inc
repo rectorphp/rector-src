@@ -19,6 +19,3 @@ class SkipStaticObject
         return $this;
     }
 }
-
-
-?>
