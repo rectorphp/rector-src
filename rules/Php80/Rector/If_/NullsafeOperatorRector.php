@@ -238,6 +238,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if (! $nextNode->expr instanceof Node) {
+            return false;
+        }
+
         if (! $assign->expr instanceof MethodCall) {
             return ! $this->valueResolver->isNull($nextNode->expr);
         }
