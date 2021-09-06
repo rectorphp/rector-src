@@ -16,6 +16,9 @@ class ChangedArgumentsDetector
     ) {
     }
 
+    /**
+     * @param mixed $value
+     */
     public function isDefaultValueChanged(Param $param, $value): bool
     {
         if ($param->default === null) {
