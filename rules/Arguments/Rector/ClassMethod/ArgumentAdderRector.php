@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\ObjectType;
 use Rector\Arguments\NodeAnalyzer\ArgumentAddingScope;
+use Rector\Arguments\NodeAnalyzer\ChangedArgumentsDetector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -45,8 +46,10 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
     private bool $haveArgumentsChanged = false;
 
     public function __construct(
-        private ArgumentAddingScope $argumentAddingScope
-    ) {
+        private ArgumentAddingScope      $argumentAddingScope,
+        private ChangedArgumentsDetector $changedArgumentsDetector
+    )
+    {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -202,7 +205,19 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->isParameterChanged($node->params[$position], $argumentAdder);
+            $param = $node->params[$position];
+            // argument added and name has been changed
+            if (! $this->isName($param, $argumentName)) {
+                return true;
+            }
+
+            // argument added and default has been changed
+            if ($this->changedArgumentsDetector->isDefaultValueChanged($param, $argumentAdder->getArgumentDefaultValue())) {
+                return true;
+            }
+
+            // argument added and type has been changed
+            return $this->changedArgumentsDetector->isTypeChanged($param, $argumentAdder->getArgumentType());
         }
 
         if (isset($node->args[$position])) {
@@ -211,49 +226,6 @@ CODE_SAMPLE
 
         // is correct scope?
         return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
-    }
-
-    private function isParameterChanged(Param $param, ArgumentAdder $argumentAdder): bool
-    {
-        $argumentName = $argumentAdder->getArgumentName();
-        if ($argumentName === null) {
-            return true;
-        }
-        // argument added and name has been changed
-        if (! $this->isName($param, $argumentName)) {
-            return true;
-        }
-
-        // argument added and default has been changed
-        if ($this->isParameterDefaultValueChanged($param, $argumentAdder->getArgumentDefaultValue())) {
-            return true;
-        }
-
-        // argument added and type has been changed
-        return $this->isParameterTypeChanged($param, $argumentAdder->getArgumentType());
-    }
-
-    /**
-     * @param mixed $defaultValue
-     */
-    private function isParameterDefaultValueChanged(Param $param, $defaultValue): bool
-    {
-        if ($param->default === null) {
-            return false;
-        }
-
-        return ! $this->valueResolver->isValue($param->default, $defaultValue);
-    }
-
-    private function isParameterTypeChanged(Param $param, ?string $argumentType): bool
-    {
-        if ($param->type === null) {
-            return false;
-        }
-        if ($argumentType === null) {
-            return true;
-        }
-        return ! $this->isName($param->type, $argumentType);
     }
 
     private function addClassMethodParam(
