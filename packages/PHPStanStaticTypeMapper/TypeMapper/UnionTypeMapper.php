@@ -195,6 +195,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         foreach ($unionType->types as $type) {
             if ($this->nodeNameResolver->isName($type, 'object')) {
                 $hasObject = true;
+                continue;
             }
 
             if ($this->nodeNameResolver->isName($type, 'static')) {
