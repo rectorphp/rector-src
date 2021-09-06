@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\FixtureForPhp80;
 
-class StaticObject
+class SkipStaticObject
 {
     /**
      * @var object

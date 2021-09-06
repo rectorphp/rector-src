@@ -25,6 +25,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
@@ -47,7 +48,8 @@ final class UnionTypeMapper implements TypeMapperInterface
         private PhpVersionProvider $phpVersionProvider,
         private UnionTypeAnalyzer $unionTypeAnalyzer,
         private BoolUnionTypeAnalyzer $boolUnionTypeAnalyzer,
-        private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower
+        private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -185,6 +187,24 @@ final class UnionTypeMapper implements TypeMapperInterface
         return null;
     }
 
+    private function hasObjectAndStaticType(PhpParserUnionType $unionType): bool
+    {
+        $hasObject = false;
+        $hasStatic = false;
+
+        foreach ($unionType->types as $type) {
+            if ($this->nodeNameResolver->isName($type, 'object')) {
+                $hasObject = true;
+            }
+
+            if ($this->nodeNameResolver->isName($type, 'static')) {
+                $hasStatic = true;
+            }
+        }
+
+        return $hasObject && $hasStatic;
+    }
+
     /**
      * @return Name|FullyQualified|PhpParserUnionType|null
      */
@@ -198,6 +218,10 @@ final class UnionTypeMapper implements TypeMapperInterface
                     return new Name('bool');
                 }
 
+                return null;
+            }
+
+            if ($this->hasObjectAndStaticType($phpParserUnionType)) {
                 return null;
             }
 
