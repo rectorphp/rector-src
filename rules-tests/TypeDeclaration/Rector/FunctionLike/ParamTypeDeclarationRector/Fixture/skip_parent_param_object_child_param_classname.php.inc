@@ -21,5 +21,3 @@ class ChildParamClassName extends ParentParamObjectChildParamClassName
     {
     }
 }
-
-?>
