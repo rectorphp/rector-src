@@ -21,3 +21,28 @@ class ChildParamClassName extends ParentParamObjectChildParamClassName
     {
     }
 }
+
+?>
+-----
+<?php
+
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationRector\Fixture;
+
+class ParentParamObjectChildParamClassName
+{
+    protected function someFunction(object $obj)
+    {
+    }
+}
+
+class ChildParamClassName extends ParentParamObjectChildParamClassName
+{
+    /**
+     * @param \stdClass $obj
+     */
+    protected function someFunction($obj)
+    {
+    }
+}
+
+?>

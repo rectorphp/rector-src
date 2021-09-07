@@ -9,6 +9,7 @@ use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use Rector\BetterPhpDocParser\ValueObject\PhpDoc\VariadicAwareParamTagValueNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -31,6 +32,10 @@ final class DeadParamTagValueNodeAnalyzer
 
         if ($param->type === null) {
             return false;
+        }
+
+        if ($paramTagValueNode instanceof VariadicAwareParamTagValueNode && $paramTagValueNode->type instanceof IdentifierTypeNode) {
+            return true;
         }
 
         if (! $this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(

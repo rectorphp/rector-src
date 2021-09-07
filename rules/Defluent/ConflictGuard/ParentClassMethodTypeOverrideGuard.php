@@ -12,13 +12,18 @@ use Rector\CodingStyle\Reflection\VendorLocationDetector;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
+use PHPStan\Type\Type;
+use Rector\Core\PhpParser\AstResolver;
+use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 
 final class ParentClassMethodTypeOverrideGuard
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private VendorLocationDetector $vendorLocationDetector,
-        private PathNormalizer $pathNormalizer
+        private PathNormalizer $pathNormalizer,
+        private AstResolver $astResolver,
+        private ParamTypeInferer $paramTypeInferer
     ) {
     }
 
@@ -78,6 +83,26 @@ final class ParentClassMethodTypeOverrideGuard
     public function hasParentClassMethod(ClassMethod $classMethod): bool
     {
         return $this->getParentClassMethod($classMethod) instanceof MethodReflection;
+    }
+
+    public function hasParentClassMethodDifferentType(ClassMethod $classMethod, int $position, Type $currentType): bool
+    {
+        $methodReflection = $this->getParentClassMethod($classMethod);
+        if (! $methodReflection instanceof MethodReflection) {
+            return false;
+        }
+
+        $classMethod = $this->astResolver->resolveClassMethodFromMethodReflection($methodReflection);
+        if (! $classMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        if (! isset($classMethod->params[$position])) {
+            return false;
+        }
+
+        $inferedType = $this->paramTypeInferer->inferParam($classMethod->params[$position]);
+        return $inferedType::class !== $currentType::class;
     }
 
     private function getParentClassMethod(ClassMethod $classMethod): ?MethodReflection
