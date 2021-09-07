@@ -23,6 +23,7 @@ use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Type\VerbosityLevel;
 
 /**
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
@@ -172,6 +173,13 @@ CODE_SAMPLE
         $parentNode = $functionLike->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof Interface_ && $parentNode->extends !== []) {
             return;
+        }
+
+        if ($param->default instanceof Node) {
+            $paramDefaultType = $this->nodeTypeResolver->resolve($param->default);
+            if (! $paramDefaultType instanceof $inferedType) {
+                return;
+            }
         }
 
         $param->type = $paramTypeNode;
