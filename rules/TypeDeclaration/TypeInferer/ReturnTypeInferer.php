@@ -91,7 +91,9 @@ final class ReturnTypeInferer
                 continue;
             }
 
-            return $this->resolveTypeWithVoidHandling($functionLike, $type);
+            // normalize ConstStringType to ClassStringType
+            $resolvedType = $this->genericClassStringTypeNormalizer->normalize($type);
+            return $this->resolveTypeWithVoidHandling($functionLike, $resolvedType);
         }
 
         return new MixedType();
@@ -137,10 +139,9 @@ final class ReturnTypeInferer
         return new UnionType($types);
     }
 
-    private function resolveTypeWithVoidHandling(FunctionLike $functionLike, Type $type): Type
+    private function resolveTypeWithVoidHandling(FunctionLike $functionLike, Type $resolvedType): Type
     {
         // normalize ConstStringType to ClassStringType
-        $resolvedType = $this->genericClassStringTypeNormalizer->normalize($type);
         if ($resolvedType instanceof VoidType) {
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirst(
                 (array) $functionLike->getStmts(),
