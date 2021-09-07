@@ -9,14 +9,12 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
 use Rector\Defluent\ConflictGuard\ParentClassMethodTypeOverrideGuard;
-use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\TraitTypeAnalyzer;
@@ -44,8 +42,6 @@ final class ParamTypeDeclarationRector extends AbstractRector implements MinPhpV
         private ParamTypeInferer $paramTypeInferer,
         private TraitTypeAnalyzer $traitTypeAnalyzer,
         private ParamTagRemover $paramTagRemover,
-        private ReflectionProvider $reflectionProvider,
-        private ClassChildAnalyzer $classChildAnalyzer,
         private ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
