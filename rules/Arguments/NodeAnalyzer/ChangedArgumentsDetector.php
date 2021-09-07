@@ -8,7 +8,7 @@ use PhpParser\Node\Param;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-class ChangedArgumentsDetector
+final class ChangedArgumentsDetector
 {
     public function __construct(
         private ValueResolver $valueResolver,
@@ -24,6 +24,7 @@ class ChangedArgumentsDetector
         if ($param->default === null) {
             return false;
         }
+
         return ! $this->valueResolver->isValue($param->default, $value);
     }
 
@@ -32,9 +33,11 @@ class ChangedArgumentsDetector
         if ($param->type === null) {
             return false;
         }
+
         if ($tyoe === null) {
             return true;
         }
+
         return ! $this->nodeNameResolver->isName($param->type, $tyoe);
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Arguments;
 
+use PhpParser\Node\Expr;
+use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -32,6 +35,7 @@ final class ArgumentDefaultValueReplacer
             if (! isset($node->params[$replaceArgumentDefaultValue->getPosition()])) {
                 return null;
             }
+
             $this->processParams($node, $replaceArgumentDefaultValue);
         } elseif (isset($node->args[$replaceArgumentDefaultValue->getPosition()])) {
             $this->processArgs($node, $replaceArgumentDefaultValue);
@@ -43,10 +47,10 @@ final class ArgumentDefaultValueReplacer
     /**
      * @param mixed $value
      */
-    public function isDefaultValueMatched(?Node\Expr $expr, $value): bool
+    public function isDefaultValueMatched(?Expr $expr, $value): bool
     {
         // allow any values before, also allow param without default value
-        if ($value === ValueObject\ReplaceArgumentDefaultValue::ANY_VALUE_BEFORE) {
+        if ($value === ReplaceArgumentDefaultValue::ANY_VALUE_BEFORE) {
             return true;
         }
 
@@ -59,11 +63,7 @@ final class ArgumentDefaultValueReplacer
         }
 
         // ValueResolver::isValue returns false when default value is `null`
-        if ($value === null && $this->valueResolver->isNull($expr)) {
-            return true;
-        }
-
-        return false;
+        return $value === null && $this->valueResolver->isNull($expr);
     }
 
     private function processParams(
@@ -78,6 +78,7 @@ final class ArgumentDefaultValueReplacer
         )) {
             return;
         }
+
         $classMethod->params[$position]->default = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
     }
 
@@ -113,7 +114,7 @@ final class ArgumentDefaultValueReplacer
     /**
      * @param mixed $value
      */
-    private function normalizeValue($value): mixed
+    private function normalizeValue($value): ClassConstFetch|Expr
     {
         // class constants → turn string to composite
         if (is_string($value) && \str_contains($value, '::')) {
