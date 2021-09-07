@@ -45,6 +45,7 @@ final class ArgumentDefaultValueReplacer
      */
     public function isDefaultValueMatched(?Node\Expr $expr, $value): bool
     {
+        // allow any values before, also allow param without default value
         if ($value === ValueObject\ReplaceArgumentDefaultValue::ANY_VALUE_BEFORE) {
             return true;
         }
@@ -57,6 +58,7 @@ final class ArgumentDefaultValueReplacer
             return true;
         }
 
+        // ValueResolver::isValue returns false when default value is `null`
         if ($value === null && $this->valueResolver->isNull($expr)) {
             return true;
         }
