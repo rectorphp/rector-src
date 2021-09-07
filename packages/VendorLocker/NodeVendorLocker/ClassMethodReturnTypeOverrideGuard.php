@@ -18,6 +18,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -36,7 +37,8 @@ final class ClassMethodReturnTypeOverrideGuard
         private NodeNameResolver $nodeNameResolver,
         private ReflectionProvider $reflectionProvider,
         private FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private BetterNodeFinder $betterNodeFinder
+        private BetterNodeFinder $betterNodeFinder,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -65,6 +67,20 @@ final class ClassMethodReturnTypeOverrideGuard
         $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
         if ($childrenClassReflections === []) {
             return false;
+        }
+
+        $methodName = $this->nodeNameResolver->getName($classMethod);
+        foreach ($childrenClassReflections as $childrenClassReflection) {
+            if (! $childrenClassReflection->hasMethod($methodName)) {
+                continue;
+            }
+
+            $methodReflection = $childrenClassReflection->getMethod($methodName, $scope);
+            $method = $this->astResolver->resolveClassMethodFromMethodReflection($methodReflection);
+
+            if ($method->returnType === null) {
+                return true;
+            }
         }
 
         if ($this->hasClassMethodExprReturn($classMethod)) {
