@@ -7,6 +7,7 @@ namespace Rector\Arguments;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -31,11 +32,51 @@ final class ArgumentDefaultValueReplacer
             if (! isset($node->params[$replaceArgumentDefaultValue->getPosition()])) {
                 return null;
             }
+            $this->processParams($node, $replaceArgumentDefaultValue);
         } elseif (isset($node->args[$replaceArgumentDefaultValue->getPosition()])) {
             $this->processArgs($node, $replaceArgumentDefaultValue);
         }
 
         return $node;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function isDefaultValueMatched(?Node\Expr $expr, $value): bool
+    {
+        if ($value === ValueObject\ReplaceArgumentDefaultValue::ANY_VALUE_BEFORE) {
+            return true;
+        }
+
+        if ($expr === null) {
+            return false;
+        }
+
+        if ($this->valueResolver->isValue($expr, $value)) {
+            return true;
+        }
+
+        if ($value === null && $this->valueResolver->isNull($expr)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function processParams(
+        ClassMethod $classMethod,
+        ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
+    ): void {
+        $position = $replaceArgumentDefaultValue->getPosition();
+
+        if (! $this->isDefaultValueMatched(
+            $classMethod->params[$position]->default,
+            $replaceArgumentDefaultValue->getValueBefore()
+        )) {
+            return;
+        }
+        $classMethod->params[$position]->default = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
     }
 
     private function processArgs(
@@ -64,15 +105,21 @@ final class ArgumentDefaultValueReplacer
      */
     private function normalizeValueToArgument($value): Arg
     {
+        return new Arg($this->normalizeValue($value));
+    }
+
+    /**
+     * @param mixed $value
+     */
+    private function normalizeValue($value): mixed
+    {
         // class constants → turn string to composite
         if (is_string($value) && \str_contains($value, '::')) {
             [$class, $constant] = explode('::', $value);
-            $classConstFetch = $this->nodeFactory->createClassConstFetch($class, $constant);
-
-            return new Arg($classConstFetch);
+            return $this->nodeFactory->createClassConstFetch($class, $constant);
         }
 
-        return new Arg(BuilderHelpers::normalizeValue($value));
+        return BuilderHelpers::normalizeValue($value);
     }
 
     /**
