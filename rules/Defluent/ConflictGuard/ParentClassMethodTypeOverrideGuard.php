@@ -87,6 +87,10 @@ final class ParentClassMethodTypeOverrideGuard
 
     public function hasParentClassMethodDifferentType(ClassMethod $classMethod, int $position, Type $currentType): bool
     {
+        if ($classMethod->isPrivate()) {
+            return false;
+        }
+
         $methodReflection = $this->getParentClassMethod($classMethod);
         if (! $methodReflection instanceof MethodReflection) {
             return false;
@@ -94,6 +98,10 @@ final class ParentClassMethodTypeOverrideGuard
 
         $classMethod = $this->astResolver->resolveClassMethodFromMethodReflection($methodReflection);
         if (! $classMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        if ($classMethod->isPrivate()) {
             return false;
         }
 
