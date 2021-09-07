@@ -23,7 +23,6 @@ use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Type\VerbosityLevel;
 
 /**
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
