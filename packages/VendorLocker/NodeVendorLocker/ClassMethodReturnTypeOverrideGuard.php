@@ -69,15 +69,15 @@ final class ClassMethodReturnTypeOverrideGuard
             return false;
         }
 
+        if ($classMethod->returnType instanceof Node) {
+            return true;
+        }
+
         if ($this->shouldSkipHasChildNoReturn($childrenClassReflections, $classMethod, $scope)) {
             return true;
         }
 
-        if ($this->hasClassMethodExprReturn($classMethod)) {
-            return false;
-        }
-
-        return $classMethod->returnType === null;
+        return $this->hasClassMethodExprReturn($classMethod);
     }
 
     public function shouldSkipClassMethodOldTypeWithNewType(Type $oldType, Type $newType): bool
