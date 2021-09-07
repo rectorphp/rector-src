@@ -8,13 +8,13 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\Type;
 use Rector\CodingStyle\Reflection\VendorLocationDetector;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
-use PHPStan\Type\Type;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
+use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
 
 final class ParentClassMethodTypeOverrideGuard
 {

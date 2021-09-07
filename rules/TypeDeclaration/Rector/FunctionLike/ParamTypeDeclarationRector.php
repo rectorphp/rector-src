@@ -9,11 +9,13 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
+use Rector\Defluent\ConflictGuard\ParentClassMethodTypeOverrideGuard;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
@@ -24,8 +26,6 @@ use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Reflection\ReflectionProvider;
-use Rector\Defluent\ConflictGuard\ParentClassMethodTypeOverrideGuard;
 
 /**
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
@@ -180,7 +180,11 @@ CODE_SAMPLE
             return;
         }
 
-        if ($functionLike instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethodDifferentType($functionLike, $position, $inferedType)) {
+        if ($functionLike instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethodDifferentType(
+            $functionLike,
+            $position,
+            $inferedType
+        )) {
             return;
         }
 
