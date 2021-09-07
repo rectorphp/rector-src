@@ -69,18 +69,8 @@ final class ClassMethodReturnTypeOverrideGuard
             return false;
         }
 
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-        foreach ($childrenClassReflections as $childrenClassReflection) {
-            if (! $childrenClassReflection->hasMethod($methodName)) {
-                continue;
-            }
-
-            $methodReflection = $childrenClassReflection->getMethod($methodName, $scope);
-            $method = $this->astResolver->resolveClassMethodFromMethodReflection($methodReflection);
-
-            if ($method->returnType === null) {
-                return true;
-            }
+        if ($this->shouldSkipHasChildNoReturn($childrenClassReflections, $classMethod, $scope)) {
+            return true;
         }
 
         if ($this->hasClassMethodExprReturn($classMethod)) {
@@ -103,6 +93,35 @@ final class ClassMethodReturnTypeOverrideGuard
 
         return $oldType->isSuperTypeOf($newType)
             ->yes();
+    }
+
+    /**
+     * @param ClassReflection[] $childrenClassReflections
+     */
+    private function shouldSkipHasChildNoReturn(
+        array $childrenClassReflections,
+        ClassMethod $classMethod,
+        Scope $scope
+    ): bool {
+        $methodName = $this->nodeNameResolver->getName($classMethod);
+        foreach ($childrenClassReflections as $childClassReflection) {
+            if (! $childClassReflection->hasMethod($methodName)) {
+                continue;
+            }
+
+            $methodReflection = $childClassReflection->getMethod($methodName, $scope);
+            $method = $this->astResolver->resolveClassMethodFromMethodReflection($methodReflection);
+
+            if (! $method instanceof ClassMethod) {
+                continue;
+            }
+
+            if ($method->returnType === null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function shouldSkipChaoticClassMethods(ClassMethod $classMethod): bool
