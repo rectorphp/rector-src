@@ -165,10 +165,6 @@ CODE_SAMPLE
             return;
         }
 
-        if ($this->isDefaultDifferentType($param, $inferedType)) {
-            return;
-        }
-
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferedType, TypeKind::PARAM());
         if (! $paramTypeNode instanceof Node) {
             return;
@@ -185,16 +181,6 @@ CODE_SAMPLE
         $this->paramTagRemover->removeParamTagsIfUseless($functionLikePhpDocInfo, $functionLike);
 
         $this->hasChanged = true;
-    }
-
-    private function isDefaultDifferentType(Param $param, Type $inferedType): bool
-    {
-        if (! $param->default instanceof Node) {
-            return false;
-        }
-
-        $paramDefaultType = $this->nodeTypeResolver->resolve($param->default);
-        return ! $paramDefaultType instanceof $inferedType;
     }
 
     private function shouldSkipParam(Param $param, ClassMethod | Function_ $functionLike): bool
