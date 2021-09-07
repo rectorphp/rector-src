@@ -30,9 +30,6 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationR
 
 class ParentParamObjectChildParamClassNamePrivateMethod
 {
-    /**
-     * @param object $obj
-     */
     private function someFunction(object $obj)
     {
     }

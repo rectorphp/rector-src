@@ -30,9 +30,6 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationR
 
 class ParentParamObjectChildParamClassName
 {
-    /**
-     * @param object $obj
-     */
     protected function someFunction(object $obj)
     {
     }
