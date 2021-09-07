@@ -141,7 +141,6 @@ final class ReturnTypeInferer
 
     private function resolveTypeWithVoidHandling(FunctionLike $functionLike, Type $resolvedType): Type
     {
-        // normalize ConstStringType to ClassStringType
         if ($resolvedType instanceof VoidType) {
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirst(
                 (array) $functionLike->getStmts(),
