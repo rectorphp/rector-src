@@ -16,7 +16,7 @@ abstract class AbstractClass2
     }
 }
 
-class ChildHasReturn extends AbstractClass2
+class SkipChildHasReturn1 extends AbstractClass2
 {
     /**
      * @param mixed[] $param
@@ -28,34 +28,15 @@ class ChildHasReturn extends AbstractClass2
     }
 }
 
-?>
------
-<?php
-
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
-
-abstract class AbstractClass2
+class SkipChildHasReturn2 extends AbstractClass2
 {
     /**
      * @param mixed[] $param
+     * @return string
      */
-    public function getValue(array $param): bool
+    public function getValue(array $param): string
     {
-        return rand(0, 1)
-            ? true
-            : false;
-    }
-}
-
-class ChildHasReturn extends AbstractClass2
-{
-    /**
-     * @param mixed[] $param
-     * @return bool
-     */
-    public function getValue(array $param): bool
-    {
-        return is_array($param);
+        return 'test';
     }
 }
 
