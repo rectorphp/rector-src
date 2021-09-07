@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
@@ -164,6 +165,10 @@ CODE_SAMPLE
             return;
         }
 
+        if ($this->isDefaultDifferentType($param, $inferedType)) {
+            return;
+        }
+
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferedType, TypeKind::PARAM());
         if (! $paramTypeNode instanceof Node) {
             return;
@@ -174,19 +179,22 @@ CODE_SAMPLE
             return;
         }
 
-        if ($param->default instanceof Node) {
-            $paramDefaultType = $this->nodeTypeResolver->resolve($param->default);
-            if (! $paramDefaultType instanceof $inferedType) {
-                return;
-            }
-        }
-
         $param->type = $paramTypeNode;
 
         $functionLikePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
         $this->paramTagRemover->removeParamTagsIfUseless($functionLikePhpDocInfo, $functionLike);
 
         $this->hasChanged = true;
+    }
+
+    private function isDefaultDifferentType(Param $param, Type $inferedType): bool
+    {
+        if (! $param->default instanceof Node) {
+            return false;
+        }
+
+        $paramDefaultType = $this->nodeTypeResolver->resolve($param->default);
+        return ! $paramDefaultType instanceof $inferedType;
     }
 
     private function shouldSkipParam(Param $param, ClassMethod | Function_ $functionLike): bool
