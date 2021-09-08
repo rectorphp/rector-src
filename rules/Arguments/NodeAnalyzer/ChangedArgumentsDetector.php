@@ -28,16 +28,16 @@ final class ChangedArgumentsDetector
         return ! $this->valueResolver->isValue($param->default, $value);
     }
 
-    public function isTypeChanged(Param $param, ?string $tyoe): bool
+    public function isTypeChanged(Param $param, ?string $type): bool
     {
         if ($param->type === null) {
             return false;
         }
 
-        if ($tyoe === null) {
+        if ($type === null) {
             return true;
         }
 
-        return ! $this->nodeNameResolver->isName($param->type, $tyoe);
+        return ! $this->nodeNameResolver->isName($param->type, $type);
     }
 }
