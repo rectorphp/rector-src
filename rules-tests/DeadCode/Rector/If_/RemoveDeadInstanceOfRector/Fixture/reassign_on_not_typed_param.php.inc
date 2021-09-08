@@ -8,7 +8,7 @@ use stdClass;
 /**
  * @param DateTime|stdClass $value
  */
-function reasssignOnNotTyped($value)
+function reasssignOnNotTypedParam($value)
 {
     $value = rand(0, 1)
         ? new stdClass

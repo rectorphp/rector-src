@@ -153,20 +153,11 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $instanceof->expr instanceof Variable) {
-            return false;
-        }
-
         $variable = $instanceof->expr;
-        $isReassign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode($instanceof, function (Node $subNode) use (
-            $variable
-        ): bool {
-            if (! $subNode instanceof Assign) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($subNode->var, $variable);
-        });
+        $isReassign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
+            $instanceof,
+            fn (Node $subNode): bool => $subNode instanceof Assign && $this->nodeComparator->areNodesEqual($subNode->var, $variable)
+        );
 
         if ($isReassign) {
             return false;
@@ -174,15 +165,9 @@ CODE_SAMPLE
 
         $params = $functionLike->getParams();
         foreach ($params as $param) {
-            if (! $param->var instanceof Variable) {
-                continue;
+            if ($this->nodeComparator->areNodesEqual($param->var, $instanceof->expr)) {
+                return $param->type === null;
             }
-
-            if (! $this->nodeComparator->areNodesEqual($param->var, $instanceof->expr)) {
-                continue;
-            }
-
-            return $param->type === null;
         }
 
         return false;
