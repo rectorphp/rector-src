@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\If_;
@@ -132,12 +133,37 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkipFromNotTypedParam($instanceof)) {
+            return null;
+        }
+
         if ($if->cond === $instanceof) {
             $this->nodesToAddCollector->addNodesBeforeNode($if->stmts, $if);
         }
 
         $this->removeNode($if);
         return $if;
+    }
+
+    private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool
+    {
+        $functionLike = $this->betterNodeFinder->findParentType($instanceof, FunctionLike::class);
+        if (! $functionLike instanceof FunctionLike) {
+            return false;
+        }
+
+        if (! $instanceof->expr instanceof Variable) {
+            return false;
+        }
+
+        $params = $functionLike->getParams();
+        foreach ($params as $param) {
+            if ($param->var instanceof Variable && $this->nodeComparator->areNodesEqual($param->var, $instanceof->expr)) {
+                return $param->type === null;
+            }
+        }
+
+        return false;
     }
 
     private function isSkippedPropertyFetch(Expr $expr): bool
