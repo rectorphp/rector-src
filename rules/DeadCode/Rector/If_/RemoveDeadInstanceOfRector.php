@@ -158,9 +158,13 @@ CODE_SAMPLE
 
         $params = $functionLike->getParams();
         foreach ($params as $param) {
-            if ($param->var instanceof Variable && $this->nodeComparator->areNodesEqual($param->var, $instanceof->expr)) {
-                return $param->type === null;
+            if (! $param->var instanceof Variable) {
+                continue;
             }
+            if (! $this->nodeComparator->areNodesEqual($param->var, $instanceof->expr)) {
+                continue;
+            }
+            return $param->type === null;
         }
 
         return false;
