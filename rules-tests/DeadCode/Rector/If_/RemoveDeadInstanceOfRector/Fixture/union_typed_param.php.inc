@@ -5,7 +5,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\Fixture;
 use DateTime;
 use stdClass;
 
-function run2(DateTime|stdClass $value)
+function unionTypedParam(DateTime|stdClass $value)
 {
     if ($value instanceof stdClass) {
         return 'a';
@@ -27,7 +27,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\Fixture;
 use DateTime;
 use stdClass;
 
-function run2(DateTime|stdClass $value)
+function unionTypedParam(DateTime|stdClass $value)
 {
     if ($value instanceof stdClass) {
         return 'a';

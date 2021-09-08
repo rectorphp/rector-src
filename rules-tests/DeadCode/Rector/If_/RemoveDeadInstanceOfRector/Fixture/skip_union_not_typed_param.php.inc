@@ -8,7 +8,7 @@ use stdClass;
 /**
  * @param DateTime|stdClass $value
  */
-function run($value)
+function skipUnionNotTypedParam($value)
 {
     if ($value instanceof stdClass) {
         return 'a';
