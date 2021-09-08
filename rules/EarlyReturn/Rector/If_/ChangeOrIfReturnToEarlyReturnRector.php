@@ -95,16 +95,13 @@ CODE_SAMPLE
         $return = $node->stmts[0];
         $ifs = $this->createMultipleIfs($node->cond, $return, []);
 
-        $statements = [];
-        foreach ($ifs as $key => $if) {
-            if ($key === 0) {
-                $this->mirrorComments($if, $node);
-            }
-
-            $statements[] = $if;
+        // ensure ifs not removed by other rules
+        if ($ifs === []) {
+            return null;
         }
 
-        return $statements;
+        $this->mirrorComments($ifs[0], $node);
+        return $ifs;
     }
 
     /**
