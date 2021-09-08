@@ -75,8 +75,9 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
+     * @return null|If_[]
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ?array
     {
         if (! $this->ifManipulator->isIfWithOnly($node, Return_::class)) {
             return null;
@@ -94,16 +95,17 @@ CODE_SAMPLE
         $return = $node->stmts[0];
         $ifs = $this->createMultipleIfs($node->cond, $return, []);
 
+        $statements = [];
         foreach ($ifs as $key => $if) {
             if ($key === 0) {
                 $this->mirrorComments($if, $node);
             }
 
-            $this->nodesToAddCollector->addNodeBeforeNode($if, $node);
+            $statements[] = $if;
         }
 
         $this->removeNode($node);
-        return $node;
+        return $statements;
     }
 
     /**
