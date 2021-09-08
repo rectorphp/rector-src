@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -153,6 +154,19 @@ CODE_SAMPLE
         }
 
         if (! $instanceof->expr instanceof Variable) {
+            return false;
+        }
+
+        $variable = $instanceof->expr;
+        $isReassign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode($instanceof, function (Node $subNode) use ($variable): bool {
+            if (! $subNode instanceof Assign) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($subNode->var, $variable);
+        });
+
+        if ($isReassign) {
             return false;
         }
 
