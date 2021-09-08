@@ -104,7 +104,6 @@ CODE_SAMPLE
             $statements[] = $if;
         }
 
-        $this->removeNode($node);
         return $statements;
     }
 
