@@ -52,7 +52,7 @@ CODE_SAMPLE
     /**
      * @param ArrayDimFetch $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ArrayDimFetch
     {
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         return $node;
