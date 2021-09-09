@@ -83,8 +83,9 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
+     * @return null|Node[]|If_
      */
-    public function refactor(Node $node): ?If_
+    public function refactor(Node $node): null | array | If_
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
@@ -112,7 +113,10 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): ?If_
+    /**
+     * @return null|Node[]|If_
+     */
+    private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): null | array | If_
     {
         if (! $instanceof->class instanceof Name) {
             return null;
@@ -139,7 +143,7 @@ CODE_SAMPLE
         }
 
         if ($if->cond === $instanceof) {
-            $this->nodesToAddCollector->addNodesBeforeNode($if->stmts, $if);
+            return $if->stmts;
         }
 
         $this->removeNode($if);
@@ -156,7 +160,10 @@ CODE_SAMPLE
         $variable = $instanceof->expr;
         $isReassign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
             $instanceof,
-            fn (Node $subNode): bool => $subNode instanceof Assign && $this->nodeComparator->areNodesEqual($subNode->var, $variable)
+            fn (Node $subNode): bool => $subNode instanceof Assign && $this->nodeComparator->areNodesEqual(
+                $subNode->var,
+                $variable
+            )
         );
 
         if ($isReassign) {
