@@ -14,7 +14,7 @@ use PHPStan\Type\ArrayType;
 
 /**
  * @changelog https://www.php.net/manual/en/migration74.deprecated.php
- * @see \Rector\Tests\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector\CurlyToSquareBracketArrayStringRector
+ * @see \Rector\Tests\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector\CurlyToSquareBracketArrayStringRectorTest
  */
 final class CurlyToSquareBracketArrayStringRector extends AbstractRector
 {
