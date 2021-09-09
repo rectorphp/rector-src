@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Privatization\Rector\Class_\ChangeReadOnlyVariableWithDefaultValueToConstantRector\Fixture;
 
-class FromParam
+class SkipFromParam
 {
     public function run($a)
     {
