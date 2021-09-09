@@ -9,6 +9,8 @@ use PhpParser\Node\Expr\Variable;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Type\StringType;
+use PHPStan\Type\ArrayType;
 
 /**
  * @changelog https://www.php.net/manual/en/migration74.deprecated.php
@@ -53,6 +55,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $type = $this->nodeTypeResolver->resolve($node);
+        if (! in_array($type::class, [StringType::class, ArrayType::class], true)) {
+            return null;
+        }
+
         return $node;
     }
 }
