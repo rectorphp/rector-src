@@ -60,6 +60,6 @@ CODE_SAMPLE
             return null;
         }
 
-        return $node;
+        return new ArrayDimFetch($node->var, $node->dim);
     }
 }
