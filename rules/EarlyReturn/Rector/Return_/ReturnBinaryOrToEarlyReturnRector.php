@@ -84,6 +84,7 @@ CODE_SAMPLE
         $left = $booleanOr->left;
         $ifs = $this->createMultipleIfs($left, $node, []);
 
+        // ensure ifs not removed by other rules
         if ($ifs === []) {
             return null;
         }
