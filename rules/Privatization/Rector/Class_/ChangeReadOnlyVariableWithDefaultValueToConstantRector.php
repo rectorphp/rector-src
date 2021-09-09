@@ -198,7 +198,7 @@ CODE_SAMPLE
 
             foreach ($classMethod->getParams() as $param) {
                 if ($this->nodeNameResolver->isName($param->var, $variableName)) {
-                    return;
+                    continue 2;
                 }
             }
 
