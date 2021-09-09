@@ -6,8 +6,6 @@ namespace Rector\Php74\Rector\ArrayDimFetch;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -56,11 +54,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $type = $this->nodeTypeResolver->resolve($node->var);
-        if (! in_array($type::class, [StringType::class, ArrayType::class], true)) {
-            return null;
-        }
-
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         return $node;
     }

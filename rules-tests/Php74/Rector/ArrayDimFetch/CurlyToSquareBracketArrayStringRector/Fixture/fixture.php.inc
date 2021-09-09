@@ -13,6 +13,12 @@ class Fixture
     {
         return $array{0};
     }
+
+    public function runArray2()
+    {
+        $array = ['a'];
+        return $array{0};
+    }
 }
 
 ?>
@@ -30,6 +36,12 @@ class Fixture
 
     public function runArray(array $array)
     {
+        return $array[0];
+    }
+
+    public function runArray2()
+    {
+        $array = ['a'];
         return $array[0];
     }
 }
