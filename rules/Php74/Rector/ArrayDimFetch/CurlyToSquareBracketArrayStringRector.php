@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php74\Rector\Variable;
+namespace Rector\Php74\Rector\ArrayDimFetch;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -14,7 +14,7 @@ use PHPStan\Type\ArrayType;
 
 /**
  * @changelog https://www.php.net/manual/en/migration74.deprecated.php
- * @see \Rector\Tests\Php74\Rector\Variable\CurlyToSquareBracketArrayStringRector\CurlyToSquareBracketArrayStringRector
+ * @see \Rector\Tests\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector\CurlyToSquareBracketArrayStringRector
  */
 final class CurlyToSquareBracketArrayStringRector extends AbstractRector
 {
@@ -47,15 +47,15 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Variable::class];
+        return [ArrayDimFetch::class];
     }
 
     /**
-     * @param Variable $node
+     * @param ArrayDimFetch $node
      */
     public function refactor(Node $node): ?Node
     {
-        $type = $this->nodeTypeResolver->resolve($node);
+        $type = $this->nodeTypeResolver->resolve($node->var);
         if (! in_array($type::class, [StringType::class, ArrayType::class], true)) {
             return null;
         }

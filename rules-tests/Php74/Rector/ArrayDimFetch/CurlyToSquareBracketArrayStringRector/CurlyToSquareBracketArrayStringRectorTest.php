@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php74\Rector\Variable\CurlyToSquareBracketArrayStringRector;
+namespace Rector\Tests\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
