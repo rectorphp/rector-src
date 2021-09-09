@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php74\Rector\StaticCall;
+namespace Rector\Php74\Rector\Variable;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
