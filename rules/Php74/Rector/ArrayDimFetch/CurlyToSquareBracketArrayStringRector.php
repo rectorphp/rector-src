@@ -6,11 +6,12 @@ namespace Rector\Php74\Rector\ArrayDimFetch;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PHPStan\Type\ArrayType;
+use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Type\StringType;
-use PHPStan\Type\ArrayType;
 
 /**
  * @changelog https://www.php.net/manual/en/migration74.deprecated.php
@@ -60,6 +61,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return new ArrayDimFetch($node->var, $node->dim);
+        $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        return $node;
     }
 }
