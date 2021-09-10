@@ -16,3 +16,20 @@ final class Fixture
 }
 
 ?>
+-----
+<?php
+
+declare(strict_types=1);
+
+namespace Rector\Core\Tests\Issues\IssueConstructorPromotionRename\Fixture;
+
+final class Fixture
+{
+    public function __construct(private \DateTimeInterface $dateTime)
+    {
+        dump($dateTime);
+        dump($dateTime->format('Y-m-d'));
+    }
+}
+
+?>
