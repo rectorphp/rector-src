@@ -64,3 +64,14 @@ composer dump-autoload -o
 ```
 
 before run the rector.
+
+If the false positive still happen, you can skip the rule applied as last resort to do:
+
+```php
+    $parameters->set(Option::SKIP, [
+        \Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector::class => [
+            // classes that has children, and not detected even with composer dump-autoload -o
+            __DIR__ . '/src/HasChildClass.php',
+        ],
+    ]);
+```
