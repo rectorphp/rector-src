@@ -68,11 +68,11 @@ final class PropertyPromotionRenamer
                 continue;
             }
 
-            $this->renameParamVarName($classLike, $constructClassMethod, $desiredPropertyName, $param);
+            $this->renameParamVarNameAndVariableUsage($classLike, $constructClassMethod, $desiredPropertyName, $param);
         }
     }
 
-    private function renameParamVarName(
+    private function renameParamVarNameAndVariableUsage(
         ClassLike $classLike,
         ClassMethod $classMethod,
         string $desiredPropertyName,
