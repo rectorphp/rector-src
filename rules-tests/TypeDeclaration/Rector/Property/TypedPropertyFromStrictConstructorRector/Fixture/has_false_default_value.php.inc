@@ -6,10 +6,7 @@ use stdClass;
 
 class HasFalseDefaultValue
 {
-    /**
-     * @var stdClass
-     */
-    private $stdClass = false;
+    private \stdClass $stdClass;
 
     public function __construct(stdClass $stdClass)
     {
