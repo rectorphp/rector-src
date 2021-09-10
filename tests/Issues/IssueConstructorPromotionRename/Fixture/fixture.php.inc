@@ -11,7 +11,7 @@ final class Fixture
     {
         $this->a = $a;
         dump($a);
-        dump($a->format('now'));
+        dump($a->format('Y-m-d'));
     }
 }
 
