@@ -52,3 +52,13 @@ Listed files will be executed like:
 ```php
 include $filePath;
 ```
+
+## Troubleshooting
+
+Sometime, when we run Rector to class that detect children class, like `\Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector`, we may experience that parent class changed to final while it has children class, it because of the `FamilyRelationsAnalyzer` cannot get all classes on scanning it. To avoid this issue, you may dump all classes via composer:
+
+```bash
+composer dump-autoload -o
+```
+
+before run the rector.
