@@ -439,14 +439,46 @@ CODE_SAMPLE
         }
 
         if ($ternary->cond instanceof Identical) {
-            return ! $this->hasNullComparison($ternary->cond);
+            if (! $this->hasNullComparison($ternary->cond)) {
+                return true;
+            }
+
+            return $this->hasIndirectUsageOnElse($ternary);
         }
 
         if ($ternary->cond instanceof NotIdentical) {
-            return ! $this->hasNullComparison($ternary->cond);
+            if (! $this->hasNullComparison($ternary->cond)) {
+                return true;
+            }
+
+            return $this->hasIndirectUsageOnElse($ternary);
         }
 
         return true;
+    }
+
+    private function hasIndirectUsageOnElse(Ternary $ternary): bool
+    {
+        /** @var NotIdentical|Identical $cond */
+        $cond = $ternary->cond;
+
+        $left = $cond->left;
+        $right = $cond->right;
+
+        $object = $this->valueResolver->isNull($left)
+            ? $right
+            : $left;
+
+        $else = $ternary->else;
+        if ($else instanceof MethodCall) {
+            return ! $this->nodeComparator->areNodesEqual($else->var, $object);
+        }
+
+        if ($else instanceof PropertyFetch) {
+            return ! $this->nodeComparator->areNodesEqual($else->var, $object);
+        }
+
+        return false;
     }
 
     private function hasNullComparison(NotIdentical|Identical $check): bool
