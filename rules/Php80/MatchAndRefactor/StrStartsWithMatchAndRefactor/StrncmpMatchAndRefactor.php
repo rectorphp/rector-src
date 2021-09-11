@@ -63,9 +63,11 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         if ($this->isNeedleExprWithStrlen($strStartsWith)) {
             return $this->strStartsWithFuncCallFactory->createStrStartsWith($strStartsWith);
         }
+
         if ($this->isHardcodedStringWithLNumberLength($strStartsWith)) {
             return $this->strStartsWithFuncCallFactory->createStrStartsWith($strStartsWith);
         }
+
         return null;
     }
 
