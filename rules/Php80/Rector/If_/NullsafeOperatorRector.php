@@ -438,23 +438,15 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($ternary->cond instanceof Identical) {
-            if (! $this->hasNullComparison($ternary->cond)) {
-                return true;
-            }
-
-            return $this->hasIndirectUsageOnElse($ternary);
+        if (! $ternary->cond instanceof Identical && ! $ternary->cond instanceof NotIdentical) {
+            return true;
         }
 
-        if ($ternary->cond instanceof NotIdentical) {
-            if (! $this->hasNullComparison($ternary->cond)) {
-                return true;
-            }
-
-            return $this->hasIndirectUsageOnElse($ternary);
+        if (! $this->hasNullComparison($ternary->cond)) {
+            return true;
         }
 
-        return true;
+        return $this->hasIndirectUsageOnElse($ternary);
     }
 
     private function hasIndirectUsageOnElse(Ternary $ternary): bool
