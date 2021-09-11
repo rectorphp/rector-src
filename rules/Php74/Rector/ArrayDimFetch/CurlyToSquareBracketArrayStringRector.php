@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php74\Tokenizer\FollowedByCurlyBracketAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -17,6 +18,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class CurlyToSquareBracketArrayStringRector extends AbstractRector
 {
+    public function __construct(private FollowedByCurlyBracketAnalyzer $followedByCurlyBracketAnalyzer)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -52,8 +57,12 @@ CODE_SAMPLE
     /**
      * @param ArrayDimFetch $node
      */
-    public function refactor(Node $node): ArrayDimFetch
+    public function refactor(Node $node): ?Node
     {
+        if (! $this->followedByCurlyBracketAnalyzer->isFollowed($this->file, $node)) {
+            return null;
+        }
+
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         return $node;
     }

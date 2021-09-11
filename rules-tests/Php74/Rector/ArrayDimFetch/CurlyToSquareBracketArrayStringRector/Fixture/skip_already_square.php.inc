@@ -4,8 +4,8 @@ namespace Rector\Tests\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStrin
 
 class SkipAlreadySquare
 {
-    public function runString(string $string)
+    public function runString(string $alreadySquare)
     {
-        return $string[0];
+        return $alreadySquare[0];
     }
 }
