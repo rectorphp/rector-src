@@ -446,13 +446,14 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->hasIndirectUsageOnElse($ternary);
+        return $this->hasIndirectUsageOnElse($ternary->cond, $ternary->else);
     }
 
-    private function hasIndirectUsageOnElse(Ternary $ternary): bool
+    private function hasIndirectUsageOnElse(Identical|NotIdentical $cond, Expr $expr): bool
     {
-        /** @var NotIdentical|Identical $cond */
-        $cond = $ternary->cond;
+        if (! $expr instanceof MethodCall && ! $expr instanceof PropertyFetch) {
+            return false;
+        }
 
         $left = $cond->left;
         $right = $cond->right;
@@ -461,16 +462,7 @@ CODE_SAMPLE
             ? $right
             : $left;
 
-        $else = $ternary->else;
-        if ($else instanceof MethodCall) {
-            return ! $this->nodeComparator->areNodesEqual($else->var, $object);
-        }
-
-        if ($else instanceof PropertyFetch) {
-            return ! $this->nodeComparator->areNodesEqual($else->var, $object);
-        }
-
-        return false;
+        return ! $this->nodeComparator->areNodesEqual($expr->var, $object);
     }
 
     private function hasNullComparison(NotIdentical|Identical $check): bool
