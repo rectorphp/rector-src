@@ -63,6 +63,7 @@ CODE_SAMPLE
             return null;
         }
 
+        // re-draw the ArrayDimFetch to use [] bracket
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         return $node;
     }
