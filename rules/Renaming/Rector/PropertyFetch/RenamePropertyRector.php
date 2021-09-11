@@ -17,6 +17,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Renaming\ValueObject\RenameProperty;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 use Webmozart\Assert\Assert;
 
 /**
@@ -41,9 +42,9 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
                 '$someObject->someOldProperty;',
                 '$someObject->someNewProperty;',
                 [
-                    self::RENAMED_PROPERTIES => [
+                    self::RENAMED_PROPERTIES => ValueObjectInliner::inline([
                         new RenameProperty('SomeClass', 'someOldProperty', 'someNewProperty'),
-                    ],
+                    ]),
                 ]
             ),
         ]);

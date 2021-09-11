@@ -22,6 +22,7 @@ use Rector\NodeTypeResolver\PhpDoc\PhpDocTypeRenamer;
 use Rector\Renaming\ValueObject\PseudoNamespaceToNamespace;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 use Webmozart\Assert\Assert;
 
 /**
@@ -69,9 +70,9 @@ $someClassToKeep = new Some_Class_To_Keep;
 CODE_SAMPLE
                 ,
                 [
-                    self::NAMESPACE_PREFIXES_WITH_EXCLUDED_CLASSES => [
+                    self::NAMESPACE_PREFIXES_WITH_EXCLUDED_CLASSES => ValueObjectInliner::inline([
                         new PseudoNamespaceToNamespace('Some_', ['Some_Class_To_Keep']),
-                    ],
+                    ]),
                 ]
             ),
         ]);

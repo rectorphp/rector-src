@@ -22,6 +22,7 @@ use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 use Webmozart\Assert\Assert;
 
 /**
@@ -60,9 +61,9 @@ $someObject->newMethod();
 CODE_SAMPLE
                 ,
                 [
-                    self::METHOD_CALL_RENAMES => [
+                    self::METHOD_CALL_RENAMES => ValueObjectInliner::inline([
                         new MethodCallRename('SomeExampleClass', 'oldMethod', 'newMethod'),
-                    ],
+                    ]),
                 ]
             ),
         ]);

@@ -13,6 +13,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Renaming\ValueObject\RenameStaticMethod;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 use Webmozart\Assert\Assert;
 
 /**
@@ -38,15 +39,15 @@ final class RenameStaticMethodRector extends AbstractRector implements Configura
     public function getRuleDefinition(): RuleDefinition
     {
         $renameClassConfiguration = [
-            self::OLD_TO_NEW_METHODS_BY_CLASSES => [
+            self::OLD_TO_NEW_METHODS_BY_CLASSES => ValueObjectInliner::inline([
                 new RenameStaticMethod(self::SOME_CLASS, 'oldMethod', 'AnotherExampleClass', 'newStaticMethod'),
-            ],
+            ]),
         ];
 
         $renameMethodConfiguration = [
-            self::OLD_TO_NEW_METHODS_BY_CLASSES => [
+            self::OLD_TO_NEW_METHODS_BY_CLASSES => ValueObjectInliner::inline([
                 new RenameStaticMethod(self::SOME_CLASS, 'oldMethod', self::SOME_CLASS, 'newStaticMethod'),
-            ],
+            ]),
         ];
 
         return new RuleDefinition('Turns method names to new ones.', [

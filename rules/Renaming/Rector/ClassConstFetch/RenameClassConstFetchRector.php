@@ -15,6 +15,7 @@ use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 use Rector\Renaming\ValueObject\RenameClassConstFetch;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 use Webmozart\Assert\Assert;
 
 /**
@@ -35,10 +36,10 @@ final class RenameClassConstFetchRector extends AbstractRector implements Config
     public function getRuleDefinition(): RuleDefinition
     {
         $configuration = [
-            self::CLASS_CONSTANT_RENAME => [
+            self::CLASS_CONSTANT_RENAME => ValueObjectInliner::inline([
                 new RenameClassConstFetch('SomeClass', 'OLD_CONSTANT', 'NEW_CONSTANT'),
                 new RenameClassAndConstFetch('SomeClass', 'OTHER_OLD_CONSTANT', 'DifferentClass', 'NEW_CONSTANT'),
-            ],
+            ]),
         ];
 
         return new RuleDefinition(

@@ -15,6 +15,7 @@ use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
 use Rector\Renaming\ValueObject\RenameAnnotation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 use Webmozart\Assert\Assert;
 
 /**
@@ -68,9 +69,9 @@ class SomeTest extends PHPUnit\Framework\TestCase
 CODE_SAMPLE
                     ,
                     [
-                        self::RENAMED_ANNOTATIONS_IN_TYPES => [
+                        self::RENAMED_ANNOTATIONS_IN_TYPES => ValueObjectInliner::inline([
                             new RenameAnnotation('PHPUnit\Framework\TestCase', 'test', 'scenario'),
-                        ],
+                        ]),
                     ]
                 ),
             ]
