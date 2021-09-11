@@ -15,6 +15,6 @@ final class FollowedByCurlyBracketAnalyzer
         $oldTokens    = $file->getOldTokens();
         $endTokenPost = $node->getEndTokenPos();
 
-        return $oldTokens[$endTokenPost] === '}';
+        return isset($oldTokens[$endTokenPost]) && $oldTokens[$endTokenPost] === '}';
     }
 }
