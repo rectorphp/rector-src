@@ -31,6 +31,7 @@ class UseExistsSameValue
      * @var string
      */
     private const REQUIRES = 'requires';
+
     public function run($key, $items)
     {
         if ($key === self::REQUIRES) {
