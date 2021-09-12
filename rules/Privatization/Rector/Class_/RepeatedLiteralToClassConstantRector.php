@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeManipulator\ClassInsertManipulator;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -162,6 +163,11 @@ CODE_SAMPLE
             }
 
             if (! $this->valueResolver->isValues($node, $stringsToReplace)) {
+                return null;
+            }
+
+            $isInMethod = (bool) $this->betterNodeFinder->findParentType($node, ClassMethod::class);
+            if (! $isInMethod) {
                 return null;
             }
 
