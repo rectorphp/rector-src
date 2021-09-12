@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Stmt;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
@@ -158,6 +159,9 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @param null|Doc[] $comments
+     */
     private function hasNoComment(?array $comments): bool
     {
         if ($comments === null) {
