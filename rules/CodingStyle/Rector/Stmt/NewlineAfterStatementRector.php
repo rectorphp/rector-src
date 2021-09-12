@@ -142,9 +142,10 @@ CODE_SAMPLE
                 return null;
             }
 
-            // re-draw original node
-            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            $endLine = $node->getEndLine();
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nextNode);
+            if ($phpDocInfo->hasChanged()) {
+                return null;
+            }
 
             $line = $comments[0]->getLine();
             $rangeLine = $line - $endLine;
