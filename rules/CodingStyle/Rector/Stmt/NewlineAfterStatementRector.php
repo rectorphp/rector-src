@@ -134,11 +134,8 @@ CODE_SAMPLE
 
         if ($rangeLine > 1) {
             $comments = $nextNode->getAttribute(AttributeKey::COMMENTS);
-            if ($comments === null) {
-                return null;
-            }
 
-            if (! isset($comments[0])) {
+            if ($this->hasNoComment($comments)) {
                 return null;
             }
 
@@ -159,6 +156,15 @@ CODE_SAMPLE
         $this->nodesToAddCollector->addNodeAfterNode(new Nop(), $node);
 
         return $node;
+    }
+
+    private function hasNoComment(?array $comments): bool
+    {
+        if ($comments === null) {
+            return true;
+        }
+
+        return ! isset($comments[0]);
     }
 
     private function shouldSkip(Node $nextNode): bool
