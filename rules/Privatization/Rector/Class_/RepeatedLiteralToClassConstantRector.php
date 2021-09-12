@@ -157,9 +157,12 @@ CODE_SAMPLE
      */
     private function replaceStringsWithClassConstReferences(Class_ $class, array $stringsToReplace): void
     {
-        $constants = $class->getConstants();
+        $classConsts = $class->getConstants();
 
-        $this->traverseNodesWithCallable($class, function (Node $node) use ($stringsToReplace, $constants): ?ClassConstFetch {
+        $this->traverseNodesWithCallable($class, function (Node $node) use (
+            $stringsToReplace,
+            $classConsts
+        ): ?ClassConstFetch {
             if (! $node instanceof String_) {
                 return null;
             }
@@ -174,21 +177,33 @@ CODE_SAMPLE
             }
 
             $constantName = $this->createConstName($node->value);
-            foreach ($constants as $constant) {
-                $consts = $constant->consts;
-                foreach ($consts as $const) {
-                    if (! $this->nodeNameResolver->isName($const->name, $constantName)) {
-                        continue;
-                    }
-
-                    if (! $this->valueResolver->isValue($const->value, $node->value)) {
-                        return null;
-                    }
-                }
+            if ($this->isClassConstExistsWithDifferentValue($classConsts, $constantName, $node->value)) {
+                return null;
             }
 
             return $this->nodeFactory->createSelfFetchConstant($constantName, $node);
         });
+    }
+
+    /**
+     * @param ClassConst[] $classConsts
+     */
+    private function isClassConstExistsWithDifferentValue(array $classConsts, string $constantName, string $value): bool
+    {
+        foreach ($classConsts as $classConst) {
+            $consts = $classConst->consts;
+            foreach ($consts as $const) {
+                if (! $this->nodeNameResolver->isName($const->name, $constantName)) {
+                    continue;
+                }
+
+                if (! $this->valueResolver->isValue($const->value, $value)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
