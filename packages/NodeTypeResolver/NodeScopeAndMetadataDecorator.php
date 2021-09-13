@@ -84,10 +84,10 @@ final class NodeScopeAndMetadataDecorator
         $nodes = $nodeTraverserForFormatPreservePrinting->traverse($nodes);
 
         // this split is needed, so nodes have names, classes and namespaces
-        $nodeTraverserForNodesHaveNames = new NodeTraverser();
-        $nodeTraverserForNodesHaveNames->addVisitor($this->statementNodeVisitor);
+        $nodeTraverserForNodesHaveNamesClassesAndNamespaces = new NodeTraverser();
+        $nodeTraverserForNodesHaveNamesClassesAndNamespaces->addVisitor($this->statementNodeVisitor);
 
-        return $nodeTraverserForNodesHaveNames->traverse($nodes);
+        return $nodeTraverserForNodesHaveNamesClassesAndNamespaces->traverse($nodes);
     }
 
     /**
