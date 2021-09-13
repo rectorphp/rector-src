@@ -37,7 +37,7 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
-if (! interface_exists('UnitEnum') && ! interface_exists('BackedEnum')) {
+if (! interface_exists('UnitEnum')) {
     /**
      * @since 8.1
      */
@@ -48,7 +48,9 @@ if (! interface_exists('UnitEnum') && ! interface_exists('BackedEnum')) {
          */
         public static function cases(): array;
     }
+}
 
+if (! interface_exists('BackedEnum')) {
     /**
      * @since 8.1
      */
