@@ -11,6 +11,9 @@ if (! interface_exists('UnitEnum')) {
     require_once __DIR__ . '/UnitEnum.php';
 }
 
+/**
+ * @since 8.1
+ */
 interface BackedEnum extends UnitEnum {
     public static function from(int|string $value): static;
     public static function tryFrom(int|string $value): ?static;
