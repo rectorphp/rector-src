@@ -79,7 +79,7 @@ final class NodeScopeAndMetadataDecorator
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->functionLikeParamArgPositionNodeVisitor);
 
         $fileNodeVisitor = new FileNodeVisitor($file);
-        $nodeTraverser->addVisitor($fileNodeVisitor);
+        $nodeTraverserForFormatPreservePrinting->addVisitor($fileNodeVisitor);
 
         $nodes = $nodeTraverserForFormatPreservePrinting->traverse($nodes);
 
