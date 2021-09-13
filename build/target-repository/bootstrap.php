@@ -37,7 +37,7 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
-if (! interface_exists('UnitEnum')) {
+if (! interface_exists('UnitEnum') && ! interface_exists('BackedEnum')) {
     /**
      * @since 8.1
      */
@@ -47,5 +47,13 @@ if (! interface_exists('UnitEnum')) {
          * @return static[]
          */
         public static function cases(): array;
+    }
+
+    /**
+     * @since 8.1
+     */
+    interface BackedEnum extends UnitEnum {
+        public static function from(int|string $value): static;
+        public static function tryFrom(int|string $value): ?static;
     }
 }
