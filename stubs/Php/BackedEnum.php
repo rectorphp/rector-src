@@ -6,11 +6,6 @@ if (interface_exists('BackedEnum')) {
     return;
 }
 
-if (! interface_exists('UnitEnum')) {
-    // avoid overlapped use
-    require_once __DIR__ . '/UnitEnum.php';
-}
-
 /**
  * @since 8.1
  */
