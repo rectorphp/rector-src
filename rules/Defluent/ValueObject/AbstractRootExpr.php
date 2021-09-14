@@ -26,9 +26,11 @@ abstract class AbstractRootExpr implements RootExprAwareInterface, FirstCallFact
         if (! $this->isFirstCallFactory) {
             return $this->createAssign($this->assignExpr, $this->rootExpr);
         }
+
         if ($this->getFirstAssign() === null) {
             return $this->createAssign($this->assignExpr, $this->rootExpr);
         }
+
         return $this->createFactoryAssign();
     }
 

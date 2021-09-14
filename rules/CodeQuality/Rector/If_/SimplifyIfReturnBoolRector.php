@@ -144,12 +144,15 @@ CODE_SAMPLE
         if (! $if->cond instanceof BooleanNot) {
             return new Return_($this->exprBoolCaster->boolCastOrNullCompareIfNeeded($if->cond));
         }
+
         if ($nextReturnNode->expr === null) {
             return new Return_($this->exprBoolCaster->boolCastOrNullCompareIfNeeded($if->cond));
         }
+
         if (! $this->valueResolver->isTrue($nextReturnNode->expr)) {
             return new Return_($this->exprBoolCaster->boolCastOrNullCompareIfNeeded($if->cond));
         }
+
         return new Return_($this->exprBoolCaster->boolCastOrNullCompareIfNeeded($if->cond->expr));
     }
 

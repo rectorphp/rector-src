@@ -116,7 +116,7 @@ final class NonFluentChainMethodCallFactory
 
     /**
      * @param MethodCall[] $chainMethodCalls
-     * @return Assign[]|MethodCall[]
+     * @return MethodCall[]|Assign[]|MethodCall[]
      */
     private function createNonFluentMethodCalls(
         array $chainMethodCalls,
@@ -136,12 +136,15 @@ final class NonFluentChainMethodCallFactory
             $chainMethodCall->var = $this->firstMethodCallVarResolver->resolve($assignAndRootExpr, $key);
             $decoupledMethodCalls[] = $chainMethodCall;
         }
+
         if (! $assignAndRootExpr->getRootExpr() instanceof New_) {
             return array_reverse($decoupledMethodCalls);
         }
+
         if ($assignAndRootExpr->getSilentVariable() === null) {
             return array_reverse($decoupledMethodCalls);
         }
+
         $decoupledMethodCalls[] = new Assign(
             $assignAndRootExpr->getSilentVariable(),
             $assignAndRootExpr->getRootExpr()
