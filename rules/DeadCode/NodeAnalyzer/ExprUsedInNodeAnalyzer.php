@@ -9,11 +9,9 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
-use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprUsedInNodeAnalyzer
 {
@@ -40,13 +38,7 @@ final class ExprUsedInNodeAnalyzer
         }
 
         if ($node instanceof FuncCall && $expr instanceof Variable) {
-            if ($this->compactFuncCallAnalyzer->isInCompact($node, $expr)) {
-                return true;
-            }
-
-            // handle renamed function call and add arg @see https://github.com/rectorphp/rector/issues/6675
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-            return ! $scope instanceof Scope;
+            return $this->compactFuncCallAnalyzer->isInCompact($node, $expr);
         }
 
         if ($expr instanceof Variable) {
