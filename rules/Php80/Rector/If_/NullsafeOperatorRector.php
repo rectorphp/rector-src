@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\If_;
 
+use PhpParser\Builder\Property;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -132,6 +133,10 @@ CODE_SAMPLE
         }
 
         if (! $this->ifManipulator->isIfCondUsingAssignIdenticalVariable($if, $prevExpr)) {
+            return null;
+        }
+
+        if ($nextNode instanceof Return_ && ($nextNode->expr instanceof PropertyFetch || $nextNode->expr instanceof MethodCall) && ! $this->nodeComparator->areNodesEqual($prevExpr->var, $nextNode->expr->var)) {
             return null;
         }
 
