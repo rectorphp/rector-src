@@ -140,6 +140,7 @@ return [
                     'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'
                 );
             }
+
             if (str_ends_with($filePath, 'vendor/symfony/dependency-injection/Loader/PhpFileLoader.php')) {
                 return Strings::replace(
                     $content,
@@ -147,6 +148,7 @@ return [
                     'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'
                 );
             }
+
             return $content;
         },
 
