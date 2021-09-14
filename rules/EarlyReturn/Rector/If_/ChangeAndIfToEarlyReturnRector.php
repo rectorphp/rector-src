@@ -130,21 +130,21 @@ CODE_SAMPLE
      * @param Expr[] $conditions
      * @return If_|Node[]
      */
-    private function processReplaceIfs(If_ $node, array $conditions, Return_ $ifNextReturnClone): If_ | array
+    private function processReplaceIfs(If_ $if, array $conditions, Return_ $ifNextReturnClone): If_ | array
     {
-        $ifs = $this->invertedIfFactory->createFromConditions($node, $conditions, $ifNextReturnClone);
-        $this->mirrorComments($ifs[0], $node);
+        $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone);
+        $this->mirrorComments($ifs[0], $if);
 
-        $this->nodesToAddCollector->addNodesBeforeNode($ifs, $node);
-        $this->removeNode($node);
+        $this->nodesToAddCollector->addNodesBeforeNode($ifs, $if);
+        $this->removeNode($if);
 
-        if (! $node->stmts[0] instanceof Return_ && $ifNextReturnClone->expr instanceof Expr && ! $this->contextAnalyzer->isInLoop(
-            $node
+        if (! $if->stmts[0] instanceof Return_ && $ifNextReturnClone->expr instanceof Expr && ! $this->contextAnalyzer->isInLoop(
+            $if
         )) {
-            return [$node, $ifNextReturnClone];
+            return [$if, $ifNextReturnClone];
         }
 
-        return $node;
+        return $if;
     }
 
     private function shouldSkip(If_ $if): bool
