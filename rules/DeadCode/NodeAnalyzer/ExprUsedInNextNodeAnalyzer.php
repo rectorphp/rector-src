@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Rector\DeadCode\NodeAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
+use PHPStan\Analyser\Scope;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use PHPStan\Analyser\Scope;
 
 final class ExprUsedInNextNodeAnalyzer
 {
@@ -21,7 +20,7 @@ final class ExprUsedInNextNodeAnalyzer
     }
 
     /**
-     * $isCheckNameScope is used to whether to check scope of Name that may be renamed
+     * $isCheckNameScope parameter is used to whether to check scope of Name that may be renamed
      * @see https://github.com/rectorphp/rector/issues/6675
      */
     public function isUsed(Expr $expr, bool $isCheckNameScope = false): bool
