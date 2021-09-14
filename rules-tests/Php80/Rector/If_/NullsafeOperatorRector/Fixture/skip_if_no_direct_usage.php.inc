@@ -6,7 +6,7 @@ final class SkipIfNoDirectUsage
 {
     private $myService;
 
-    public function run($prop1, $prop2)
+    public function withReturn($prop1, $prop2)
     {
         $prop3 = $this->getProp3($prop1);
 
@@ -15,6 +15,17 @@ final class SkipIfNoDirectUsage
         }
 
         return $this->myService->myMethod($prop1, $prop2, $prop3);
+    }
+
+    public function withoutReturn($prop1, $prop2)
+    {
+        $prop3 = $this->getProp3($prop1);
+
+        if (null === $prop3) {
+            return null;
+        }
+
+        $this->myService->myMethod($prop1, $prop2, $prop3);
     }
 }
 

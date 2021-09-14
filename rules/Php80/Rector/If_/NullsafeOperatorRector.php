@@ -136,7 +136,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($nextNode instanceof Return_ && ($nextNode->expr instanceof PropertyFetch || $nextNode->expr instanceof MethodCall) && ! $this->nodeComparator->areNodesEqual($prevExpr->var, $nextNode->expr->var)) {
+        if (($nextNode instanceof Return_ || $nextNode instanceof Expression) && ($nextNode->expr instanceof PropertyFetch || $nextNode->expr instanceof MethodCall) && ! $this->nodeComparator->areNodesEqual($prevExpr->var, $nextNode->expr->var)) {
             return null;
         }
 
