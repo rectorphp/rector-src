@@ -23,11 +23,13 @@ abstract class AbstractRootExpr implements RootExprAwareInterface, FirstCallFact
 
     public function createFirstAssign(): Assign
     {
-        if ($this->isFirstCallFactory && $this->getFirstAssign() !== null) {
-            return $this->createFactoryAssign();
+        if (! $this->isFirstCallFactory) {
+            return $this->createAssign($this->assignExpr, $this->rootExpr);
         }
-
-        return $this->createAssign($this->assignExpr, $this->rootExpr);
+        if ($this->getFirstAssign() === null) {
+            return $this->createAssign($this->assignExpr, $this->rootExpr);
+        }
+        return $this->createFactoryAssign();
     }
 
     protected function createAssign(Expr $assignVar, Expr $assignExpr): Assign
