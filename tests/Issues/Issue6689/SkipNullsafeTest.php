@@ -9,9 +9,9 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
- * @see https://github.com/rectorphp/rector/issues/6677
+ * @see https://github.com/rectorphp/rector/issues/6689
  */
-final class SkipNullsafe extends AbstractRectorTestCase
+final class SkipNullsafeTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
