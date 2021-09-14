@@ -189,12 +189,19 @@ final class TypeFactory
             if ($traversedType instanceof ShortenedObjectType) {
                 return new FullyQualifiedObjectType($traversedType->getFullyQualifiedName());
             }
-
-            if ($traversedType instanceof ObjectType && ! $traversedType instanceof GenericObjectType && ! $traversedType instanceof AliasedObjectType && $traversedType->getClassName() !== 'Iterator') {
-                return new FullyQualifiedObjectType($traversedType->getClassName());
+            if (! $traversedType instanceof ObjectType) {
+                return $traverseCallback($traversedType);
             }
-
-            return $traverseCallback($traversedType);
+            if ($traversedType instanceof GenericObjectType) {
+                return $traverseCallback($traversedType);
+            }
+            if ($traversedType instanceof AliasedObjectType) {
+                return $traverseCallback($traversedType);
+            }
+            if ($traversedType->getClassName() === 'Iterator') {
+                return $traverseCallback($traversedType);
+            }
+            return new FullyQualifiedObjectType($traversedType->getClassName());
         });
     }
 
