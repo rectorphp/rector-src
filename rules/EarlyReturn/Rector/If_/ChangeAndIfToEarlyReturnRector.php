@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\NodeManipulator\IfManipulator;
@@ -113,19 +112,14 @@ CODE_SAMPLE
         }
 
         $this->removeNode($ifNextReturn);
-        $ifNextReturn = $node->stmts[0];
-        $this->nodesToAddCollector->addNodeAfterNode($ifNextReturn, $node);
+        $this->nodesToAddCollector->addNodeAfterNode($node->stmts[0], $node);
 
-        $ifNextReturnClone = $ifNextReturn instanceof Return_
-            ? clone $ifNextReturn
+        $ifNextReturnClone = $node->stmts[0] instanceof Return_
+            ? clone $node->stmts[0]
             : new Return_();
 
         if (! $this->contextAnalyzer->isInLoop($node)) {
             return $this->processReplaceIfs($node, $booleanAndConditions, $ifNextReturnClone);
-        }
-
-        if (! $ifNextReturn instanceof Expression) {
-            return null;
         }
 
         $this->nodesToAddCollector->addNodeAfterNode(new Return_(), $node);
@@ -141,10 +135,7 @@ CODE_SAMPLE
         $ifs = $this->invertedIfFactory->createFromConditions($node, $conditions, $ifNextReturnClone);
         $this->mirrorComments($ifs[0], $node);
 
-        foreach ($ifs as $if) {
-            $this->nodesToAddCollector->addNodeBeforeNode($if, $node);
-        }
-
+        $this->nodesToAddCollector->addNodesBeforeNode($ifs, $node);
         $this->removeNode($node);
 
         if (! $node->stmts[0] instanceof Return_ && $ifNextReturnClone->expr instanceof Expr && ! $this->contextAnalyzer->isInLoop(
