@@ -9,12 +9,9 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Name;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use PHPStan\Analyser\Scope;
 
 final class ExprUsedInNodeAnalyzer
 {
@@ -28,15 +25,6 @@ final class ExprUsedInNodeAnalyzer
 
     public function isUsed(Node $node, Expr $expr): bool
     {
-        // handle scope already gone like renamed function call and add arg
-        // @see https://github.com/rectorphp/rector/issues/6675
-        if ($node instanceof Name) {
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-            if (! $scope instanceof Scope) {
-                return true;
-            }
-        }
-
         if ($node instanceof Include_) {
             return true;
         }
