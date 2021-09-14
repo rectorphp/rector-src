@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-class ArrayDimFetchUse
+class StaticPropetyFetch
 {
     private string $entityId;
     private string $className;
