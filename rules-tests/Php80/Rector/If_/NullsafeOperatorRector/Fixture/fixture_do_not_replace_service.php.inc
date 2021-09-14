@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6689\Fixture;
+namespace Rector\Tests\Php80\Rector\If_\NullsafeOperatorRector\Fixture;
 
-final class DemoFile
+final class FixtureDoNotReplaceService
 {
     private $myService;
 
@@ -21,9 +21,9 @@ final class DemoFile
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6689\Fixture;
+namespace Rector\Tests\Php80\Rector\If_\NullsafeOperatorRector\Fixture;
 
-final class DemoFile
+final class FixtureDoNotReplaceService
 {
     private $myService;
 
