@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\If_;
 
-use PhpParser\Builder\Property;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -136,11 +135,28 @@ CODE_SAMPLE
             return null;
         }
 
-        if (($nextNode instanceof Return_ || $nextNode instanceof Expression) && ($nextNode->expr instanceof PropertyFetch || $nextNode->expr instanceof MethodCall) && ! $this->nodeComparator->areNodesEqual($prevExpr->var, $nextNode->expr->var)) {
+        if ($this->hasIndirectUsageOnNextOfIf($prevExpr->var, $nextNode)) {
             return null;
         }
 
         return $this->processAssign($prevExpr, $prevNode, $nextNode, $isStartIf);
+    }
+
+    private function hasIndirectUsageOnNextOfIf(Expr $expr, Node $nextNode): bool
+    {
+        if (! $nextNode instanceof Return_ && ! $nextNode instanceof Expression) {
+            return false;
+        }
+
+        if ($nextNode->expr instanceof PropertyFetch) {
+            return ! $this->nodeComparator->areNodesEqual($expr, $nextNode->expr->var);
+        }
+
+        if ($nextNode->expr instanceof MethodCall) {
+            return ! $this->nodeComparator->areNodesEqual($expr, $nextNode->expr->var);
+        }
+
+        return false;
     }
 
     private function processNullSafeOperatorNotIdentical(If_ $if, ?Expr $expr = null): ?Node
