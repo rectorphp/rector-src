@@ -46,15 +46,19 @@ final class ReadWritePropertyAnalyzer
                 return true;
             }
         }
+
         if (! $parent instanceof ArrayDimFetch) {
             return ! $this->assignManipulator->isLeftPartOfAssign($node);
         }
+
         if ($parent->dim !== $node) {
             return ! $this->assignManipulator->isLeftPartOfAssign($node);
         }
+
         if (! $this->isNotInsideIssetUnset($parent)) {
             return ! $this->assignManipulator->isLeftPartOfAssign($node);
         }
+
         return $this->isArrayDimFetchRead($parent);
     }
 

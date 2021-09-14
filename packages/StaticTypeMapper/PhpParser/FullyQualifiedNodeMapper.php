@@ -33,9 +33,11 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
         if (! $this->isAliasedName($originalName, $fullyQualifiedName)) {
             return new FullyQualifiedObjectType($fullyQualifiedName);
         }
+
         if ($originalName === $fullyQualifiedName) {
             return new FullyQualifiedObjectType($fullyQualifiedName);
         }
+
         return new AliasedObjectType($originalName, $fullyQualifiedName);
     }
 

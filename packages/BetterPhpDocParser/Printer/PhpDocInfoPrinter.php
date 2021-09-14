@@ -275,16 +275,20 @@ final class PhpDocInfoPrinter
         if (isset($this->tokens[$from - 1]) && $this->tokens[$from - 1][1] === Lexer::TOKEN_HORIZONTAL_WS) {
             --$from;
         }
+
         // skip extra empty lines above if this is the last one
         if (! $shouldSkipEmptyLinesAbove) {
             return $this->appendToOutput($output, $from, $to, $positionJumpSet);
         }
+
         if (! \str_contains($this->tokens[$from][0], PHP_EOL)) {
             return $this->appendToOutput($output, $from, $to, $positionJumpSet);
         }
+
         if (! \str_contains($this->tokens[$from + 1][0], PHP_EOL)) {
             return $this->appendToOutput($output, $from, $to, $positionJumpSet);
         }
+
         ++$from;
         return $this->appendToOutput($output, $from, $to, $positionJumpSet);
     }
