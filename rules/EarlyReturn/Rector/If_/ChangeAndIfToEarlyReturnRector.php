@@ -178,18 +178,11 @@ CODE_SAMPLE
             return false;
         }
 
-        $ifExprs = $this->betterNodeFinder->findInstanceOf($if->stmts, Expr::class);
-        foreach ($ifExprs as $ifExpr) {
-            $isExprFoundInReturn = (bool) $this->betterNodeFinder->findFirst(
-                $return->expr,
-                fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $ifExpr)
-            );
-            if ($isExprFoundInReturn) {
-                return true;
-            }
-        }
-
-        return false;
+        $expr = $return->expr;
+        return (bool) $this->betterNodeFinder->findFirst(
+            $if->stmts,
+            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $expr)
+        );
     }
 
     private function getIfNextReturn(If_ $if): ?Return_
