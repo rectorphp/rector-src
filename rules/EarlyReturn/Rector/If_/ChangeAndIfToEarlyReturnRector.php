@@ -140,8 +140,6 @@ CODE_SAMPLE
         $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone);
         $this->mirrorComments($ifs[0], $if);
 
-        $this->removeNode($if);
-
         if (! $if->stmts[0] instanceof Return_ && $ifNextReturnClone->expr instanceof Expr && ! $this->contextAnalyzer->isInLoop(
             $if
         )) {
