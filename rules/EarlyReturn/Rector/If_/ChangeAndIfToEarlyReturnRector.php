@@ -98,6 +98,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($ifNextReturn instanceof Return_ && $ifNextReturn->expr instanceof BooleanAnd) {
+            return null;
+        }
+
         /** @var BooleanAnd $expr */
         $expr = $node->cond;
         $booleanAndConditions = $this->booleanAndAnalyzer->findBooleanAndConditions($expr);
@@ -106,10 +110,6 @@ CODE_SAMPLE
         if (! $ifNextReturn instanceof Return_) {
             $afters[] = $node->stmts[0];
             return $this->processReplaceIfs($node, $booleanAndConditions, new Return_(), $afters);
-        }
-
-        if ($ifNextReturn instanceof Return_ && $ifNextReturn->expr instanceof BooleanAnd) {
-            return null;
         }
 
         $this->removeNode($ifNextReturn);
