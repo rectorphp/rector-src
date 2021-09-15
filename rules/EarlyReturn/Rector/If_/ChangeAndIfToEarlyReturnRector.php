@@ -85,9 +85,9 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
-     * @return Node|Node[]|null
+     * @return Node[]|null
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?array
     {
         if ($this->shouldSkip($node)) {
             return null;
@@ -129,14 +129,14 @@ CODE_SAMPLE
     /**
      * @param Expr[] $conditions
      * @param Node[] $afters
-     * @return If_|Node[]
+     * @return Node[]
      */
     private function processReplaceIfs(
         If_ $if,
         array $conditions,
         Return_ $ifNextReturnClone,
         array $afters
-    ): If_ | array
+    ): array
     {
         $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone);
         $this->mirrorComments($ifs[0], $if);
