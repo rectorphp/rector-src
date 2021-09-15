@@ -136,8 +136,7 @@ CODE_SAMPLE
         array $conditions,
         Return_ $ifNextReturnClone,
         array $afters
-    ): array
-    {
+    ): array {
         $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone);
         $this->mirrorComments($ifs[0], $if);
 
