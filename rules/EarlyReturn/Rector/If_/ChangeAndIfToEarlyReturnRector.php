@@ -140,13 +140,20 @@ CODE_SAMPLE
         $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone);
         $this->mirrorComments($ifs[0], $if);
 
-        if (! $if->stmts[0] instanceof Return_ && $ifNextReturnClone->expr instanceof Expr && ! $this->contextAnalyzer->isInLoop(
-            $if
-        )) {
-            return array_merge($ifs, $afters, [$ifNextReturnClone]);
+        $result = array_merge($ifs, $afters);
+        if ($if->stmts[0] instanceof Return_) {
+            return $result;
         }
 
-        return array_merge($ifs, $afters);
+        if (! $ifNextReturnClone->expr instanceof Expr) {
+            return $result;
+        }
+
+        if ($this->contextAnalyzer->isInLoop($if)) {
+            return $result;
+        }
+
+        return array_merge($result, [$ifNextReturnClone]);
     }
 
     private function shouldSkip(If_ $if): bool
