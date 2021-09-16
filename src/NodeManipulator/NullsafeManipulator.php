@@ -27,8 +27,15 @@ final class NullsafeManipulator
         return null;
     }
 
-    public function processNullSafeExprResult(?Expr $expr, Identifier $nextExprIdentifier): ?Expr
+    /**
+     * @param Identifier|mixed
+     */
+    public function processNullSafeExprResult(?Expr $expr, $nextExprIdentifier): ?Expr
     {
+        if (! $nextExprIdentifier instanceof Identifier) {
+            return null;
+        }
+
         if ($expr === null) {
             return null;
         }

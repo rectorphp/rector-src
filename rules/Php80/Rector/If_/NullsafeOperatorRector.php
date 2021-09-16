@@ -372,6 +372,12 @@ CODE_SAMPLE
         $assignNullSafe = $isStartIf
             ? $assign->expr
             : $this->nullsafeManipulator->processNullSafeExpr($assign->expr);
+
+        if (! $this->isMethodCallOrPropertyFetch($nextNode->expr)) {
+            dump($nextNode->expr::class);
+            return null;
+        }
+
         $nullSafe = $this->nullsafeManipulator->processNullSafeExprResult($assignNullSafe, $nextNode->expr->name);
 
         $prevAssign = $expression->getAttribute(AttributeKey::PREVIOUS_NODE);
