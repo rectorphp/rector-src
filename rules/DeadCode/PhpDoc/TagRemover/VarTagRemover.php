@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -21,7 +20,6 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
-use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class VarTagRemover
@@ -108,7 +106,8 @@ final class VarTagRemover
         return $varTagValueNode->type instanceof ArrayTypeNode;
     }
 
-    private function isArrayOfClass(Node $node, SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode): bool {
+    private function isArrayOfClass(Node $node, SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode): bool
+    {
         if ($spacingAwareArrayTypeNode->type instanceof SpacingAwareArrayTypeNode) {
             return $this->isArrayOfClass($node, $spacingAwareArrayTypeNode->type);
         }
