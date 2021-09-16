@@ -263,15 +263,17 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $assign->expr instanceof MethodCall && ! $assign->expr instanceof PropertyFetch) {
+        if (! $this->isMethodCallOrPropertyFetch($assign->expr)) {
             return ! $this->valueResolver->isNull($nextNode->expr);
         }
 
-        if (! $nextNode->expr instanceof MethodCall && ! $nextNode->expr instanceof PropertyFetch) {
-            return ! $this->valueResolver->isNull($nextNode->expr);
+        /** @var MethodCall|PropertyFetch $expr */
+        $expr = $assign->expr;
+        if (! $this->isMethodCallOrPropertyFetch($expr->var)) {
+            return ! $this->valueResolver->isNull($expr);
         }
 
-        if (! $this->nodeComparator->areNodesEqual($assign->expr->var, $nextNode->expr->var)) {
+        if (! $this->isMethodCallOrPropertyFetch($nextNode->expr)) {
             return ! $this->valueResolver->isNull($nextNode->expr);
         }
 
@@ -481,6 +483,7 @@ CODE_SAMPLE
 
         if ($this->valueResolver->isNull($expr)) {
             if ($this->isMethodCallOrPropertyFetch($if)) {
+                /** @var MethodCall|PropertyFetch $if */
                 return ! $this->nodeComparator->areNodesEqual($if->var, $object);
             }
 
@@ -488,6 +491,7 @@ CODE_SAMPLE
         }
 
         if ($this->isMethodCallOrPropertyFetch($expr)) {
+            /** @var MethodCall|PropertyFetch $expr */
             return ! $this->nodeComparator->areNodesEqual($expr->var, $object);
         }
 
