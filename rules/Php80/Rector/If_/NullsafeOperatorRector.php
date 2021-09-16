@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -186,7 +185,10 @@ CODE_SAMPLE
         $params = $functionLike->getParams();
         foreach ($params as $param) {
             if ($this->nodeComparator->areNodesEqual($param->var, $variable)) {
-                return ! $this->paramAnalyzer->isNullable($param) && ! $this->paramAnalyzer->hasDefaultNull($param);
+                if ($this->paramAnalyzer->isNullable($param)) {
+                    return false;
+                }
+                return ! $this->paramAnalyzer->hasDefaultNull($param);
             }
         }
 
