@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -20,6 +21,7 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
+use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class VarTagRemover
@@ -86,6 +88,20 @@ final class VarTagRemover
                 if ($type instanceof SpacingAwareArrayTypeNode && $this->isArrayOfClass($node, $type)) {
                     return true;
                 }
+
+                if ($type instanceof GenericTypeNode && $type->type instanceof IdentifierTypeNode && $type->type->name === 'array') {
+                    $countGenericTypes = count($type->genericTypes);
+
+                    if ($countGenericTypes === 1) {
+                        return $type->genericTypes[0] instanceof IdentifierTypeNode && $type->genericTypes[0]->name !== 'mixed';
+                    }
+
+                    if ($countGenericTypes > 1) {
+                        return true;
+                    }
+
+                    return false;
+                }
             }
         }
 
@@ -98,7 +114,6 @@ final class VarTagRemover
 
     private function isArrayTypeNode(VarTagValueNode $varTagValueNode): bool
     {
-        dump($varTagValueNode->type);
         return $varTagValueNode->type instanceof ArrayTypeNode;
     }
 
