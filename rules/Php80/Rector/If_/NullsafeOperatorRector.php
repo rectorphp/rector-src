@@ -36,6 +36,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NullsafeOperatorRector extends AbstractRector
 {
+    /**
+     * @var array<class-string<Expr>>
+     */
+    private const ALLOWED_NEXT_NODE_EXPRS = [
+        MethodCall::class,
+        PropertyFetch::class,
+        NullsafeMethodCall::class,
+        NullsafePropertyFetch::class,
+    ];
+
     public function __construct(
         private IfManipulator $ifManipulator,
         private NullsafeManipulator $nullsafeManipulator,
@@ -373,8 +383,7 @@ CODE_SAMPLE
             ? $assign->expr
             : $this->nullsafeManipulator->processNullSafeExpr($assign->expr);
 
-        if (! $this->isMethodCallOrPropertyFetch($nextNode->expr)) {
-            dump($nextNode->expr::class);
+        if (! in_array($nextNode->expr::class, self::ALLOWED_NEXT_NODE_EXPRS, true)) {
             return null;
         }
 
