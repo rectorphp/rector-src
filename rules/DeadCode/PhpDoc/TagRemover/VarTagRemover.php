@@ -89,18 +89,8 @@ final class VarTagRemover
                     return true;
                 }
 
-                if ($type instanceof GenericTypeNode && $type->type instanceof IdentifierTypeNode && $type->type->name === 'array') {
-                    $countGenericTypes = count($type->genericTypes);
-
-                    if ($countGenericTypes === 1) {
-                        return $type->genericTypes[0] instanceof IdentifierTypeNode && $type->genericTypes[0]->name !== 'mixed';
-                    }
-
-                    if ($countGenericTypes > 1) {
-                        return true;
-                    }
-
-                    return false;
+                if ($type instanceof GenericTypeNode) {
+                    return true;
                 }
             }
         }
