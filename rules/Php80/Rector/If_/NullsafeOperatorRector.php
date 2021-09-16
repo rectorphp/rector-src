@@ -22,6 +22,7 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\NodeManipulator\NullsafeManipulator;
 use Rector\Core\Rector\AbstractRector;
@@ -37,7 +38,8 @@ final class NullsafeOperatorRector extends AbstractRector
 {
     public function __construct(
         private IfManipulator $ifManipulator,
-        private NullsafeManipulator $nullsafeManipulator
+        private NullsafeManipulator $nullsafeManipulator,
+        private ParamAnalyzer $paramAnalyzer
     ) {
     }
 
@@ -184,7 +186,7 @@ CODE_SAMPLE
         $params = $functionLike->getParams();
         foreach ($params as $param) {
             if ($this->nodeComparator->areNodesEqual($param->var, $variable)) {
-                return $param->type !== null && ! $param->type instanceof NullableType;
+                return ! $this->paramAnalyzer->isNullable($param) && ! $this->paramAnalyzer->hasDefaultNull($param);
             }
         }
 
