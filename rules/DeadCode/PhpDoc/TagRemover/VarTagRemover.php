@@ -102,6 +102,10 @@ final class VarTagRemover
     }
 
     private function isArrayOfClass(Node $node, SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode): bool {
+        if ($spacingAwareArrayTypeNode->type instanceof SpacingAwareArrayTypeNode) {
+            return $this->isArrayOfClass($node, $spacingAwareArrayTypeNode->type);
+        }
+
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $spacingAwareArrayTypeNode,
             $node
