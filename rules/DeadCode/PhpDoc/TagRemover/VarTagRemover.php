@@ -89,6 +89,7 @@ final class VarTagRemover
                     return true;
                 }
 
+                // keep generic types
                 if ($type instanceof GenericTypeNode) {
                     return true;
                 }
