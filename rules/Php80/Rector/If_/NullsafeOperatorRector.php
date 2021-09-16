@@ -191,7 +191,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function processNullSafeOperatorNotIdentical(If_ $if, ?Expr $expr = null): ?Node
+    private function verifyAssignMatchIfNotNullNextAssignment(If_ $if): ?Assign
     {
         $assign = $this->ifManipulator->matchIfNotNullNextAssignment($if);
         if (! $assign instanceof Assign) {
@@ -199,6 +199,16 @@ CODE_SAMPLE
         }
 
         if ($this->shouldSkipNeverNullDefinedBefore($assign)) {
+            return null;
+        }
+
+        return $assign;
+    }
+
+    private function processNullSafeOperatorNotIdentical(If_ $if, ?Expr $expr = null): ?Node
+    {
+        $assign = $this->verifyAssignMatchIfNotNullNextAssignment($if);
+        if (! $assign instanceof Assign) {
             return null;
         }
 
