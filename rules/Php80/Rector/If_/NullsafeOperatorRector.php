@@ -386,7 +386,6 @@ CODE_SAMPLE
         $assignNullSafe = $isStartIf
             ? $assign->expr
             : $this->nullsafeManipulator->processNullSafeExpr($assign->expr);
-
         $nullSafe = $this->nullsafeManipulator->processNullSafeExprResult($assignNullSafe, $nextNode->expr->name);
 
         $prevAssign = $expression->getAttribute(AttributeKey::PREVIOUS_NODE);
