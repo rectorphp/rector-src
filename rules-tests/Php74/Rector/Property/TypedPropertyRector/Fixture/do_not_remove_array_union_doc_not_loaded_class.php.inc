@@ -6,9 +6,6 @@ final class DoNotRemoveArrayUnionDocNotLoadedClass
 {
     /** @var string[]|\NotLoadedClass[] */
     private $unionValue;
-
-    /** @var string[][]|\NotLoadedClass[][] */
-    private $unionValue2;
 }
 
 ?>
@@ -21,9 +18,6 @@ final class DoNotRemoveArrayUnionDocNotLoadedClass
 {
     /** @var string[]|\NotLoadedClass[] */
     private array $unionValue;
-
-    /** @var string[][]|\NotLoadedClass[][] */
-    private array $unionValue2;
 }
 
 ?>
