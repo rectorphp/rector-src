@@ -15,7 +15,9 @@ use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -159,10 +161,44 @@ CODE_SAMPLE
         return false;
     }
 
+    private function shouldSkipNeverNullDefinedBefore(Assign $assign): bool
+    {
+        $variable = $assign->var;
+        $isReassign = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
+            $assign,
+            fn (Node $subNode): bool => $subNode instanceof Assign && $this->nodeComparator->areNodesEqual(
+                $subNode->var,
+                $variable
+            ) && ! $this->valueResolver->isNull($subNode->expr)
+        );
+
+        if ($isReassign) {
+            return true;
+        }
+
+        $functionLike = $this->betterNodeFinder->findParentType($assign, FunctionLike::class);
+        if (! $functionLike instanceof FunctionLike) {
+            return false;
+        }
+
+        $params = $functionLike->getParams();
+        foreach ($params as $param) {
+            if ($this->nodeComparator->areNodesEqual($param->var, $variable)) {
+                return $param->type !== null && ! $param->type instanceof NullableType;
+            }
+        }
+
+        return false;
+    }
+
     private function processNullSafeOperatorNotIdentical(If_ $if, ?Expr $expr = null): ?Node
     {
         $assign = $this->ifManipulator->matchIfNotNullNextAssignment($if);
         if (! $assign instanceof Assign) {
+            return null;
+        }
+
+        if ($this->shouldSkipNeverNullDefinedBefore($assign)) {
             return null;
         }
 
