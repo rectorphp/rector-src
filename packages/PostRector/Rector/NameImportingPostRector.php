@@ -140,10 +140,10 @@ CODE_SAMPLE
 
     private function shouldApply(File $file): bool
     {
-        if ($file->hasContentChanged()) {
+        if (! (bool) $this->parameterProvider->provideBoolParameter(Option::APPLY_AUTO_IMPORT_NAMES_ON_CHANGED_FILES_ONLY)) {
             return true;
         }
 
-        return ! $this->parameterProvider->provideBoolParameter(Option::APPLY_AUTO_IMPORT_NAMES_ON_CHANGED_FILES_ONLY);
+        return $file->hasContentChanged();
     }
 }
