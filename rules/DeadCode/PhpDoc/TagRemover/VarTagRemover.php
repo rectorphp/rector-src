@@ -21,7 +21,6 @@ use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 
 final class VarTagRemover
 {
@@ -29,7 +28,6 @@ final class VarTagRemover
         private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private StaticTypeMapper $staticTypeMapper,
         private PhpDocInfoFactory $phpDocInfoFactory,
-        private ClassLikeExistenceChecker $classLikeExistenceChecker,
         private DeadVarTagValueNodeAnalyzer $deadVarTagValueNodeAnalyzer
     ) {
     }
@@ -103,10 +101,7 @@ final class VarTagRemover
         return $varTagValueNode->type instanceof ArrayTypeNode;
     }
 
-    private function isArrayOfClass(
-        Node $node,
-        SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode
-    ): bool {
+    private function isArrayOfClass(Node $node, SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode): bool {
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $spacingAwareArrayTypeNode,
             $node
