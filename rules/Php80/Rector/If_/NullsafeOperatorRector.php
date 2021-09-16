@@ -379,13 +379,13 @@ CODE_SAMPLE
         Node $nextNode,
         bool $isStartIf
     ): ?Node {
-        $assignNullSafe = $isStartIf
-            ? $assign->expr
-            : $this->nullsafeManipulator->processNullSafeExpr($assign->expr);
-
         if (! in_array($nextNode->expr::class, self::ALLOWED_NEXT_NODE_EXPRS, true)) {
             return null;
         }
+
+        $assignNullSafe = $isStartIf
+            ? $assign->expr
+            : $this->nullsafeManipulator->processNullSafeExpr($assign->expr);
 
         $nullSafe = $this->nullsafeManipulator->processNullSafeExprResult($assignNullSafe, $nextNode->expr->name);
 
