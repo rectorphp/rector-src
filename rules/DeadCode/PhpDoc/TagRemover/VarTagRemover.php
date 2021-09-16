@@ -98,6 +98,7 @@ final class VarTagRemover
 
     private function isArrayTypeNode(VarTagValueNode $varTagValueNode): bool
     {
+        dump($varTagValueNode->type);
         return $varTagValueNode->type instanceof ArrayTypeNode;
     }
 
