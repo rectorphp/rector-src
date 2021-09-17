@@ -39,7 +39,7 @@ class Dd { }
 class PairClassStringArray2
 {
     /**
-     * @var array<class-string, class-string>
+     * @var array<string, class-string>
      */
     private const CLASSES = [
         A::class => Aa::class,

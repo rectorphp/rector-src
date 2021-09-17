@@ -18,7 +18,7 @@ namespace Rector\Tests\CodingStyle\Rector\ClassConst\VarConstantCommentRector\Fi
 class PairClassStringArray
 {
     /**
-     * @var array<class-string, class-string>
+     * @var array<string, class-string<\Rector\Tests\CodingStyle\Rector\ClassConst\VarConstantCommentRector\Fixture\PairClassStringArray>>
      */
     private const CLASSES = [
         \stdClass::class => PairClassStringArray::class,

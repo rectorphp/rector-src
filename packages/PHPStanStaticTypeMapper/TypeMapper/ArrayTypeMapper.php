@@ -20,12 +20,15 @@ use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\ClassStringType;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
+use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
+use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -52,11 +55,15 @@ final class ArrayTypeMapper implements TypeMapperInterface
     public function autowireArrayTypeMapper(
         PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
         UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
-        ReflectionProvider $reflectionProvider
+        ReflectionProvider $reflectionProvider,
+        GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
+        DetailedTypeAnalyzer $detailedTypeAnalyzer
     ): void {
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
         $this->unionTypeCommonTypeNarrower = $unionTypeCommonTypeNarrower;
         $this->reflectionProvider = $reflectionProvider;
+        $this->genericClassStringTypeNormalizer = $genericClassStringTypeNormalizer;
+        $this->detailedTypeAnalyzer = $detailedTypeAnalyzer;
     }
 
     /**
@@ -182,7 +189,17 @@ final class ArrayTypeMapper implements TypeMapperInterface
                 $arrayType->getKeyType(),
                 $typeKind
             );
-            $genericTypes = [$keyTypeNode, $itemTypeNode];
+
+            if ($itemTypeNode instanceof BracketsAwareUnionTypeNode && $arrayType->getItemType() instanceof UnionType && $this->genericClassStringTypeNormalizer->isAllGenericClassStringType($arrayType->getItemType())) {
+                if ($this->detailedTypeAnalyzer->isTooDetailed($arrayType->getItemType())) {
+                    $genericTypes = [$keyTypeNode, $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
+                        new ClassStringType(),
+                        $typeKind
+                    )];
+                }
+            } else {
+                $genericTypes = [$keyTypeNode, $itemTypeNode];
+            }
         } else {
             $genericTypes = [$itemTypeNode];
         }
