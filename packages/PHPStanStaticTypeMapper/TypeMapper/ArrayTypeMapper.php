@@ -173,8 +173,9 @@ final class ArrayTypeMapper implements TypeMapperInterface
         TypeKind $typeKind,
         bool $withKey = false
     ): GenericTypeNode {
+        $itemType = $arrayType->getItemType();
         $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-            $arrayType->getItemType(),
+            $itemType,
             $typeKind
         );
         $identifierTypeNode = new IdentifierTypeNode('array');
@@ -190,8 +191,8 @@ final class ArrayTypeMapper implements TypeMapperInterface
                 $typeKind
             );
 
-            if ($itemTypeNode instanceof BracketsAwareUnionTypeNode && $arrayType->getItemType() instanceof UnionType && $this->genericClassStringTypeNormalizer->isAllGenericClassStringType($arrayType->getItemType())) {
-                if ($this->detailedTypeAnalyzer->isTooDetailed($arrayType->getItemType())) {
+            if ($itemTypeNode instanceof BracketsAwareUnionTypeNode && $itemType instanceof UnionType && $this->genericClassStringTypeNormalizer->isAllGenericClassStringType($itemType)) {
+                if ($this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
                     $genericTypes = [$keyTypeNode, $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
                         new ClassStringType(),
                         $typeKind
