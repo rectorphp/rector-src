@@ -217,11 +217,15 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private function isPairClassTooDetailed(Type $itemType): bool
     {
-        if ($itemType instanceof UnionType && $this->genericClassStringTypeNormalizer->isAllGenericClassStringType($itemType) && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
-            return true;
+        if (! $itemType instanceof UnionType) {
+            return false;
         }
 
-        return false;
+        if (! $this->genericClassStringTypeNormalizer->isAllGenericClassStringType($itemType)) {
+            return false;
+        }
+
+        return $this->detailedTypeAnalyzer->isTooDetailed($itemType);
     }
 
     private function isIntegerKeyAndNonNestedArray(ArrayType $arrayType): bool
@@ -260,7 +264,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
     private function createTypeNodeFromGenericClassStringType(
         GenericClassStringType $genericClassStringType,
         TypeKind $typeKind
-    ): TypeNode {
+    ): IdentifierTypeNode|GenericTypeNode {
         $genericType = $genericClassStringType->getGenericType();
         if ($genericType instanceof ObjectType && ! $this->reflectionProvider->hasClass($genericType->getClassName())) {
             return new IdentifierTypeNode($genericType->getClassName());
