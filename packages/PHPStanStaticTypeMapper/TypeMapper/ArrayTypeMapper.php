@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Generic\GenericClassStringType;
@@ -20,7 +21,6 @@ use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\ClassStringType;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
@@ -48,6 +48,10 @@ final class ArrayTypeMapper implements TypeMapperInterface
     private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower;
 
     private ReflectionProvider $reflectionProvider;
+
+    private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer;
+
+    private DetailedTypeAnalyzer $detailedTypeAnalyzer;
 
     // To avoid circular dependency
 
@@ -174,10 +178,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
         bool $withKey = false
     ): GenericTypeNode {
         $itemType = $arrayType->getItemType();
-        $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-            $itemType,
-            $typeKind
-        );
+        $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($itemType, $typeKind);
         $identifierTypeNode = new IdentifierTypeNode('array');
 
         // is class-string[] list only
@@ -191,13 +192,11 @@ final class ArrayTypeMapper implements TypeMapperInterface
                 $typeKind
             );
 
-            if ($itemTypeNode instanceof BracketsAwareUnionTypeNode && $itemType instanceof UnionType && $this->genericClassStringTypeNormalizer->isAllGenericClassStringType($itemType)) {
-                if ($this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
-                    $genericTypes = [$keyTypeNode, $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-                        new ClassStringType(),
-                        $typeKind
-                    )];
-                }
+            if ($itemTypeNode instanceof BracketsAwareUnionTypeNode && $this->isPairClassTooDetailed($itemType)) {
+                $genericTypes = [$keyTypeNode, $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
+                    new ClassStringType(),
+                    $typeKind
+                )];
             } else {
                 $genericTypes = [$keyTypeNode, $itemTypeNode];
             }
@@ -214,6 +213,15 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
         $identifierTypeNode->setAttribute(self::HAS_GENERIC_TYPE_PARENT, $withKey);
         return new GenericTypeNode($identifierTypeNode, $genericTypes);
+    }
+
+    private function isPairClassTooDetailed(Type $itemType): bool
+    {
+        if ($itemType instanceof UnionType && $this->genericClassStringTypeNormalizer->isAllGenericClassStringType($itemType) && $this->detailedTypeAnalyzer->isTooDetailed($itemType)) {
+            return true;
+        }
+
+        return false;
     }
 
     private function isIntegerKeyAndNonNestedArray(ArrayType $arrayType): bool
