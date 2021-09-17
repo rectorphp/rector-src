@@ -11,7 +11,7 @@ class Cc { }
 class D { }
 class Dd { }
 
-class PairClassStringArray2
+class PairClassStringArrayTooMany
 {
     private const CLASSES = [
         A::class => Aa::class,
@@ -36,7 +36,7 @@ class Cc { }
 class D { }
 class Dd { }
 
-class PairClassStringArray2
+class PairClassStringArrayTooMany
 {
     /**
      * @var array<string, class-string>
