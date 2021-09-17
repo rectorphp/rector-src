@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Arguments;
 
-use PhpParser\Node\Expr;
-use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
+use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 
@@ -36,12 +35,14 @@ final class ArgumentDefaultValueReplacer
                 return null;
             }
 
-            $this->processParams($node, $replaceArgumentDefaultValue);
-        } elseif (isset($node->args[$replaceArgumentDefaultValue->getPosition()])) {
-            $this->processArgs($node, $replaceArgumentDefaultValue);
+            return $this->processParams($node, $replaceArgumentDefaultValue);
         }
 
-        return $node;
+        if (! isset($node->args[$replaceArgumentDefaultValue->getPosition()])) {
+            return null;
+        }
+
+        return $this->processArgs($node, $replaceArgumentDefaultValue);
     }
 
     /**
@@ -69,23 +70,24 @@ final class ArgumentDefaultValueReplacer
     private function processParams(
         ClassMethod $classMethod,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
-    ): void {
+    ): ?ClassMethod {
         $position = $replaceArgumentDefaultValue->getPosition();
 
         if (! $this->isDefaultValueMatched(
             $classMethod->params[$position]->default,
             $replaceArgumentDefaultValue->getValueBefore()
         )) {
-            return;
+            return null;
         }
 
         $classMethod->params[$position]->default = $this->normalizeValue($replaceArgumentDefaultValue->getValueAfter());
+        return $classMethod;
     }
 
     private function processArgs(
         MethodCall | StaticCall | FuncCall $expr,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
-    ): void {
+    ): ?Expr {
         $position = $replaceArgumentDefaultValue->getPosition();
 
         $argValue = $this->valueResolver->getValue($expr->args[$position]->value);
@@ -101,6 +103,8 @@ final class ArgumentDefaultValueReplacer
                 $expr->args = $newArgs;
             }
         }
+
+        return $expr;
     }
 
     /**
