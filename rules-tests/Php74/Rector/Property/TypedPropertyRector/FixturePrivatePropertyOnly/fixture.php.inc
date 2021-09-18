@@ -2,12 +2,10 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixturePrivatePropertyOnly;
 
-use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass;
-
 final class Fixture
 {
     /**
-     * @var AnotherClass
+     * @var bool
      */
     private $privateProperty;
 
@@ -23,11 +21,9 @@ final class Fixture
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixturePrivatePropertyOnly;
 
-use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass;
-
 final class Fixture
 {
-    private AnotherClass $privateProperty;
+    private bool $privateProperty;
 
     /**
      * @var bool
