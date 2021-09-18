@@ -13,6 +13,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(TypedPropertyRector::class)
         ->call('configure', [[
-            TypedPropertyRector::ONLY_PRIVATE_PROPERTIES => true,
+            TypedPropertyRector::PRIVATE_PROPERTY_ONLY => true,
         ]]);
 };

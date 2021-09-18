@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureOnlyPrivateProperties;
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixturePrivatePropertyOnly;
 
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass;
 
@@ -21,7 +21,7 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureOnlyPrivateProperties;
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixturePrivatePropertyOnly;
 
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass;
 

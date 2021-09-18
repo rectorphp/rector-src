@@ -8,7 +8,7 @@ use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class OnlyPrivatePropertiesTest extends AbstractRectorTestCase
+final class PrivatePropertyOnlyTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
@@ -23,11 +23,11 @@ final class OnlyPrivatePropertiesTest extends AbstractRectorTestCase
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureOnlyPrivateProperties');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePrivatePropertyOnly');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/only_private_properties.php';
+        return __DIR__ . '/config/private_property_only.php';
     }
 }
