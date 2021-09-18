@@ -98,6 +98,7 @@ CODE_SAMPLE
                     ,
                     [
                         self::CLASS_LIKE_TYPE_ONLY => false,
+                        self::ONLY_PRIVATE_PROPERTIES => false,
                     ]
                 ),
             ]
