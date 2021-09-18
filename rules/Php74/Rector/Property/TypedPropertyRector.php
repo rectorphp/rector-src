@@ -58,6 +58,7 @@ final class TypedPropertyRector extends AbstractRector implements ConfigurableRe
 
     /**
      * If want to keep BC, it can be set to true
+     * @see https://3v4l.org/spl4P
      */
     private bool $onlyPrivateProperties = false;
 
