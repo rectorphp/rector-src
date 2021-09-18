@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixturePrivatePropertyOnly;
 
-final class Fixture
+class Fixture
 {
     /**
      * @var bool
@@ -12,7 +12,15 @@ final class Fixture
     /**
      * @var bool
      */
-    public $publicProperty;
+    protected $protectedProperty;
+}
+
+class ExtendsFixture extends Fixture
+{
+    /**
+     * @var bool
+     */
+    protected $protectedProperty;
 }
 
 ?>
@@ -21,14 +29,22 @@ final class Fixture
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixturePrivatePropertyOnly;
 
-final class Fixture
+class Fixture
 {
     private bool $privateProperty;
 
     /**
      * @var bool
      */
-    public $publicProperty;
+    protected $protectedProperty;
+}
+
+class ExtendsFixture extends Fixture
+{
+    /**
+     * @var bool
+     */
+    protected $protectedProperty;
 }
 
 ?>
