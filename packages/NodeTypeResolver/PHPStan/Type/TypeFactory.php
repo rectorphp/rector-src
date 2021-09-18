@@ -68,12 +68,20 @@ final class TypeFactory
     public function uniquateTypes(array $types, bool $keepConstant = false): array
     {
         $uniqueTypes = [];
-        foreach ($types as $type) {
+        foreach ($types as $key => $type) {
             if (! $keepConstant) {
                 $type = $this->removeValueFromConstantType($type);
             }
 
             $type = $this->normalizeObjectTypes($type);
+
+            if ($type instanceof FullyQualifiedObjectType && isset($types[$key-1])) {
+                $previousType = $types[$key - 1];
+                if ($previousType instanceof AliasedObjectType && $previousType->getFullyQualifiedClass() === $type->getClassName()) {
+                    unset($types[$key]);
+                    continue;
+                }
+            }
 
             $typeHash = $type->describe(VerbosityLevel::cache());
             $uniqueTypes[$typeHash] = $type;
