@@ -47,9 +47,19 @@ final class TypedPropertyRector extends AbstractRector implements ConfigurableRe
     public const CLASS_LIKE_TYPE_ONLY = 'class_like_type_only';
 
     /**
+     * @var string
+     */
+    public const ONLY_PRIVATE_PROPERTIES = 'only_private_properties';
+
+    /**
      * Useful for refactoring of huge applications. Taking types first narrows scope
      */
     private bool $classLikeTypeOnly = false;
+
+    /**
+     * If want to keep BC, it can be set to true
+     */
+    private bool $onlyPrivateProperties = false;
 
     public function __construct(
         private PropertyTypeInferer $propertyTypeInferer,
@@ -158,6 +168,7 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         $this->classLikeTypeOnly = $configuration[self::CLASS_LIKE_TYPE_ONLY] ?? false;
+        $this->onlyPrivateProperties = $configuration[self::ONLY_PRIVATE_PROPERTIES] ?? false;
     }
 
     public function provideMinPhpVersion(): int
@@ -259,6 +270,10 @@ CODE_SAMPLE
         }
 
         // skip multiple properties
-        return count($property->props) > 1;
+        if (count($property->props) > 1) {
+            return true;
+        }
+
+        return $this->onlyPrivateProperties && ! $property->isPrivate();
     }
 }
