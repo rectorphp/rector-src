@@ -5,7 +5,7 @@ namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureClassLik
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass;
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass as Alias;
 
-final class ConflictWithAlais
+final class ConflictWithAlias
 {
     /**
      * @var Alias
