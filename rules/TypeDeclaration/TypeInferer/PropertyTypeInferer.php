@@ -11,7 +11,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
-use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -47,25 +46,6 @@ final class PropertyTypeInferer
         $this->propertyTypeInferers = $typeInfererSorter->sort($propertyTypeInferers);
     }
 
-    private function resolveTypeFromVarForNoType(Property $property): ?Type
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-        if ($property->type === null && $phpDocInfo instanceof PhpDocInfo) {
-            $resolvedType = $this->varDocPropertyTypeInferer->inferProperty($property);
-            if ($resolvedType instanceof AliasedObjectType) {
-                return $resolvedType;
-            }
-
-            if ($resolvedType instanceof ShortenedObjectType) {
-                return $resolvedType;
-            }
-
-            return null;
-        }
-
-        return null;
-    }
-
     public function inferProperty(Property $property): Type
     {
         $resolvedTypeFromVarNoType = $this->resolveTypeFromVarForNoType($property);
@@ -73,21 +53,7 @@ final class PropertyTypeInferer
             return $resolvedTypeFromVarNoType;
         }
 
-        $resolvedTypes = [];
-
-        foreach ($this->propertyTypeInferers as $propertyTypeInferer) {
-            $type = $propertyTypeInferer->inferProperty($property);
-            if (! $type instanceof Type) {
-                continue;
-            }
-
-            if ($type instanceof VoidType) {
-                continue;
-            }
-
-            $resolvedTypes[] = $type;
-        }
-
+        $resolvedTypes = $this->getResolvedTypes($property);
         $resolvedTypes = $this->typeFactory->uniquateTypes($resolvedTypes);
 
         // if nothing is clear from variable use, we use @var doc as fallback
@@ -108,6 +74,48 @@ final class PropertyTypeInferer
         }
 
         return $this->genericClassStringTypeNormalizer->normalize($resolvedType);
+    }
+
+    private function resolveTypeFromVarForNoType(Property $property): ?Type
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+        if ($property->type === null && $phpDocInfo instanceof PhpDocInfo) {
+            $resolvedType = $this->varDocPropertyTypeInferer->inferProperty($property);
+            if ($resolvedType instanceof AliasedObjectType) {
+                return $resolvedType;
+            }
+
+            if ($resolvedType instanceof ShortenedObjectType) {
+                return $resolvedType;
+            }
+
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Type[]
+     */
+    private function getResolvedTypes(Property $property): array
+    {
+        $resolvedTypes = [];
+
+        foreach ($this->propertyTypeInferers as $propertyTypeInferer) {
+            $type = $propertyTypeInferer->inferProperty($property);
+            if (! $type instanceof Type) {
+                continue;
+            }
+
+            if ($type instanceof VoidType) {
+                continue;
+            }
+
+            $resolvedTypes[] = $type;
+        }
+
+        return $resolvedTypes;
     }
 
     private function shouldUnionWithDefaultValue(Type $defaultValueType, Type $type): bool
