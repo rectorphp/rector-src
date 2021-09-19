@@ -53,11 +53,11 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
 
     public function getRuleDefinition(): RuleDefinition
     {
-        $paramType = new ObjectType('SomeType');
+        $objectType = new ObjectType('SomeType');
 
         $exampleConfiguration = [
             self::ADDED_ARGUMENTS => [
-                new ArgumentAdder('SomeExampleClass', 'someMethod', 0, 'someArgument', true, $paramType),
+                new ArgumentAdder('SomeExampleClass', 'someMethod', 0, 'someArgument', true, $objectType),
             ],
         ];
 
@@ -245,7 +245,7 @@ CODE_SAMPLE
         }
 
         $param = new Param(new Variable($argumentName), BuilderHelpers::normalizeValue($defaultValue));
-        if ($type) {
+        if ($type !== null) {
             $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM());
             $param->type = $typeNode;
         }
