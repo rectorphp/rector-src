@@ -74,6 +74,7 @@ final class TypeFactory
             }
 
             $type = $this->normalizeObjectTypes($type);
+
             $typeHash = $type->describe(VerbosityLevel::cache());
             $uniqueTypes[$typeHash] = $type;
         }
