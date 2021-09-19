@@ -1,14 +1,14 @@
 <?php
 
-namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureClassLikeTypeOnly;
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureImported;
 
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass;
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass as Alias;
 
-final class ConflictWithAlias2
+final class ConflictWithAlias
 {
     /**
-     * @var AnotherClass
+     * @var Alias
      */
     private $anotherClass;
 
@@ -22,14 +22,14 @@ final class ConflictWithAlias2
 -----
 <?php
 
-namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureClassLikeTypeOnly;
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureImported;
 
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass;
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass as Alias;
 
-final class ConflictWithAlias2
+final class ConflictWithAlias
 {
-    private \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass $anotherClass;
+    private Alias $anotherClass;
 
     public function __construct(AnotherClass $anotherClass)
     {

@@ -11,8 +11,13 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use PHPStan\Type\ObjectType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
+use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\Contract\TypeInferer\PropertyTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
@@ -36,13 +41,38 @@ final class PropertyTypeInferer
         private VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private TypeFactory $typeFactory,
         private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
+        private PhpDocInfoFactory $phpDocInfoFactory,
         array $propertyTypeInferers
     ) {
         $this->propertyTypeInferers = $typeInfererSorter->sort($propertyTypeInferers);
     }
 
+    private function resolveTypeFromVarForNoType(Property $property): ?Type
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+        if ($property->type === null && $phpDocInfo instanceof PhpDocInfo) {
+            $resolvedType = $this->varDocPropertyTypeInferer->inferProperty($property);
+            if ($resolvedType instanceof AliasedObjectType) {
+                return $resolvedType;
+            }
+
+            if ($resolvedType instanceof ShortenedObjectType) {
+                return $resolvedType;
+            }
+
+            return null;
+        }
+
+        return null;
+    }
+
     public function inferProperty(Property $property): Type
     {
+        $resolvedTypeFromVarNoType = $this->resolveTypeFromVarForNoType($property);
+        if ($resolvedTypeFromVarNoType instanceof Type) {
+            return $resolvedTypeFromVarNoType;
+        }
+
         $resolvedTypes = [];
 
         foreach ($this->propertyTypeInferers as $propertyTypeInferer) {
