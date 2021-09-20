@@ -11,11 +11,13 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\Contract\TypeInferer\PropertyTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
@@ -48,11 +50,6 @@ final class PropertyTypeInferer
 
     public function inferProperty(Property $property): Type
     {
-        $resolvedTypeFromVarNoType = $this->resolveTypeFromVarForNoType($property);
-        if ($resolvedTypeFromVarNoType instanceof Type) {
-            return $resolvedTypeFromVarNoType;
-        }
-
         $resolvedTypes = $this->getResolvedTypes($property);
         $resolvedTypes = $this->typeFactory->uniquateTypes($resolvedTypes);
 
@@ -76,25 +73,6 @@ final class PropertyTypeInferer
         return $this->genericClassStringTypeNormalizer->normalize($resolvedType);
     }
 
-    private function resolveTypeFromVarForNoType(Property $property): ?Type
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-        if ($property->type === null && $phpDocInfo instanceof PhpDocInfo) {
-            $resolvedType = $this->varDocPropertyTypeInferer->inferProperty($property);
-            if ($resolvedType instanceof AliasedObjectType) {
-                return $resolvedType;
-            }
-
-            if ($resolvedType instanceof ShortenedObjectType) {
-                return $resolvedType;
-            }
-
-            return null;
-        }
-
-        return null;
-    }
-
     /**
      * @return Type[]
      */
@@ -102,6 +80,7 @@ final class PropertyTypeInferer
     {
         $resolvedTypes = [];
 
+        $hasAliasedObjectType = false;
         foreach ($this->propertyTypeInferers as $propertyTypeInferer) {
             $type = $propertyTypeInferer->inferProperty($property);
             if (! $type instanceof Type) {
@@ -112,7 +91,15 @@ final class PropertyTypeInferer
                 continue;
             }
 
+            if ($type instanceof AliasedObjectType) {
+                $hasAliasedObjectType = true;
+            }
+
             $resolvedTypes[] = $type;
+        }
+
+        if ($property->type === null && $hasAliasedObjectType) {
+            return [];
         }
 
         return $resolvedTypes;
