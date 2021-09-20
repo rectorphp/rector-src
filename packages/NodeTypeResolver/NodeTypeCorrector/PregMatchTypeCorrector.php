@@ -57,8 +57,10 @@ final class PregMatchTypeCorrector
             if (! $this->nodeNameResolver->isNames($funcCallNode, ['preg_match', 'preg_match_all'])) {
                 continue;
             }
-
-            if (! isset($funcCallNode->args[2]) || ! $funcCallNode->args[2] instanceof Arg) {
+            if (! isset($funcCallNode->args[2])) {
+                continue;
+            }
+            if (! $funcCallNode->args[2] instanceof Arg) {
                 continue;
             }
 
