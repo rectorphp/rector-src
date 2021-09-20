@@ -74,8 +74,8 @@ final class PropertyTypeInferer
     private function getResolvedTypes(Property $property): array
     {
         $resolvedTypes = [];
+        $resolvedType = $this->varDocPropertyTypeInferer->inferProperty($property);
 
-        $hasAliasedObjectType = false;
         foreach ($this->propertyTypeInferers as $propertyTypeInferer) {
             $type = $propertyTypeInferer->inferProperty($property);
             if (! $type instanceof Type) {
@@ -86,22 +86,14 @@ final class PropertyTypeInferer
                 continue;
             }
 
-            if ($type instanceof AliasedObjectType) {
-                $hasAliasedObjectType = true;
+            if ($type instanceof AliasedObjectType && ! $resolvedType instanceof MixedType) {
+                return [];
             }
 
             $resolvedTypes[] = $type;
         }
 
-        if ($property->type !== null) {
-            return $resolvedTypes;
-        }
-
-        if (!$hasAliasedObjectType) {
-            return $resolvedTypes;
-        }
-
-        return [];
+        return $resolvedTypes;
     }
 
     private function shouldUnionWithDefaultValue(Type $defaultValueType, Type $type): bool
