@@ -80,6 +80,14 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! isset($node->args[1])) {
+            return null;
+        }
+
+        if (! $node->args[1] instanceof Node\Arg) {
+            return null;
+        }
+
         // is argument string?
         $needleArgNode = $node->args[1]->value;
         if ($this->nodeTypeAnalyzer->isStringTypeExpr($needleArgNode)) {
