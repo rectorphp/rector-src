@@ -11,6 +11,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
@@ -38,6 +39,7 @@ final class PropertyTypeInferer
         private VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private TypeFactory $typeFactory,
         private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
+        private PhpDocInfoFactory $phpDocInfoFactory,
         array $propertyTypeInferers
     ) {
         $this->propertyTypeInferers = $typeInfererSorter->sort($propertyTypeInferers);
@@ -74,7 +76,8 @@ final class PropertyTypeInferer
     private function getResolvedTypes(Property $property): array
     {
         $resolvedTypes = [];
-        $resolvedType = $this->varDocPropertyTypeInferer->inferProperty($property);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+        $hasByVarName = $phpDocInfo->hasByName('var');
 
         foreach ($this->propertyTypeInferers as $propertyTypeInferer) {
             $type = $propertyTypeInferer->inferProperty($property);
@@ -86,7 +89,7 @@ final class PropertyTypeInferer
                 continue;
             }
 
-            if ($type instanceof AliasedObjectType && ! $resolvedType instanceof MixedType) {
+            if ($property->type == null && $type instanceof AliasedObjectType && $hasByVarName) {
                 return [];
             }
 
