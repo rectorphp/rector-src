@@ -11,14 +11,10 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
-use PHPStan\Type\UnionType;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\Contract\TypeInferer\PropertyTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
@@ -42,7 +38,6 @@ final class PropertyTypeInferer
         private VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private TypeFactory $typeFactory,
         private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
-        private PhpDocInfoFactory $phpDocInfoFactory,
         array $propertyTypeInferers
     ) {
         $this->propertyTypeInferers = $typeInfererSorter->sort($propertyTypeInferers);
@@ -98,11 +93,15 @@ final class PropertyTypeInferer
             $resolvedTypes[] = $type;
         }
 
-        if ($property->type === null && $hasAliasedObjectType) {
-            return [];
+        if ($property->type !== null) {
+            return $resolvedTypes;
         }
 
-        return $resolvedTypes;
+        if (!$hasAliasedObjectType) {
+            return $resolvedTypes;
+        }
+
+        return [];
     }
 
     private function shouldUnionWithDefaultValue(Type $defaultValueType, Type $type): bool
