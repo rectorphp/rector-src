@@ -58,7 +58,7 @@ final class PregMatchTypeCorrector
                 continue;
             }
 
-            if (! isset($funcCallNode->args[2])) {
+            if (! isset($funcCallNode->args[2]) || ! $funcCallNode->args[2] instanceof Arg) {
                 continue;
             }
 
