@@ -89,6 +89,10 @@ final class RegexPatternArgumentManipulator
                 return [];
             }
 
+            if (! $funcCall->args[$argumentPosition] instanceof Node\Arg) {
+                return [];
+            }
+
             return $this->resolveArgumentValues($funcCall->args[$argumentPosition]->value);
         }
 
@@ -111,6 +115,10 @@ final class RegexPatternArgumentManipulator
                 }
 
                 if (! isset($staticCall->args[$argumentPosition])) {
+                    return [];
+                }
+
+                if (! $staticCall->args[$argumentPosition] instanceof Node\Arg) {
                     return [];
                 }
 
