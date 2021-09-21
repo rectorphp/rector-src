@@ -48,7 +48,6 @@ final class ArrayCallableMethodMatcher
 
         /** @var ArrayItem[] $items */
         $items = $array->items;
-        $values = $this->valueResolver->getValue($array);
 
         // $this, self, static, FQN
         $firstItemValue = $items[0]->value;
@@ -62,6 +61,7 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
+        $values = $this->valueResolver->getValue($array);
         if ($values === []) {
             return $array;
         }
