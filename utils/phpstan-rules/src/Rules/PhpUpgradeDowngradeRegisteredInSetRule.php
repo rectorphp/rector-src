@@ -7,8 +7,8 @@ namespace Rector\PHPStanRules\Rules;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
-use PHPStan\Analyser\Scope;
 use PhpParser\Node\Stmt\Class_;
+use PHPStan\Analyser\Scope;
 use Symplify\PHPStanRules\Rules\AbstractSymplifyRule;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,8 +30,9 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
      */
     private const PREFIX_REGEX = '#(Downgrade)?Php\d+#';
 
-    public function __construct(private SmartFileSystem $smartFileSystem)
-    {
+    public function __construct(
+        private SmartFileSystem $smartFileSystem
+    ) {
     }
 
     /**
@@ -61,9 +62,13 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
 
         $implements = $node->implements;
         foreach ($implements as $implement) {
-            if ($implement instanceof FullyQualified && (string) $implement === 'Rector\Core\Contract\Rector\ConfigurableRectorInterface') {
-                return [];
+            if (! $implement instanceof FullyQualified) {
+                continue;
             }
+            if ((string) $implement !== 'Rector\Core\Contract\Rector\ConfigurableRectorInterface') {
+                continue;
+            }
+            return [];
         }
 
         $phpVersion = Strings::substring($prefix, -2);
