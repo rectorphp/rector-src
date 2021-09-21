@@ -44,6 +44,7 @@ final class CompactFuncCallAnalyzer
                 continue;
             }
 
+            /** @var Arg|ArrayItem $node */
             if ($node->value instanceof Array_) {
                 if ($this->isInArgOrArrayItemNodes($node->value->items, $variableName)) {
                     return true;
