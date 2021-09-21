@@ -166,6 +166,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const MATCH_EXPRESSION = PhpVersion::PHP_80;
+
+    /**
+     * @var int
+     */
     public const IS_ITERABLE = PhpVersion::PHP_71;
 
     /**

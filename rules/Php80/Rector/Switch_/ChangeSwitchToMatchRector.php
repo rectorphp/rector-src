@@ -229,4 +229,9 @@ CODE_SAMPLE
         $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN());
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
     }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::MATCH_EXPRESSION;
+    }
 }
