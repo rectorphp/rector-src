@@ -224,4 +224,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const ENUM = PhpVersion::PHP_81;
+
+    /**
+     * @see https://wiki.php.net/rfc/match_expression_v2
+     * @var int
+     */
+    public const MATCH = PhpVersion::PHP_80;
 }
