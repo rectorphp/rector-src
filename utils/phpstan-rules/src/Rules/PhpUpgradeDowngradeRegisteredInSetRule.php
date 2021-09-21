@@ -103,7 +103,7 @@ CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
 // config/set/php74.php
-$services->set(TypedDeclatarationRector::class);
+$services->set(RealToFloatTypeCastRector::class);
 CODE_SAMPLE
             ),
         ]);
