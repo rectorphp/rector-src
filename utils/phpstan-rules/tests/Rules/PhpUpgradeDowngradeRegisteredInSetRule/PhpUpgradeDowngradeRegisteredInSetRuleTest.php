@@ -29,6 +29,7 @@ final class PhpUpgradeDowngradeRegisteredInSetRuleTest extends AbstractServiceAw
     public function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/SkipSomePhpFeatureRector.php', []];
+        yield [__DIR__ . '/Fixture/SkipImplementsConfigurableRector.php', []];
         yield [__DIR__ . '/Fixture/SomePhpFeatureRector.php', [
             [sprintf(PhpUpgradeDowngradeRegisteredInSetRule::ERROR_MESSAGE, 'Rector\Php80\Rector\Class_\SomePhpFeatureRector', 'php80'), 7]
         ]];

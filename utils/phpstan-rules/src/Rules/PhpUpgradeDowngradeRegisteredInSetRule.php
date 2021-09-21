@@ -6,6 +6,7 @@ namespace Rector\PHPStanRules\Rules;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
 use PhpParser\Node\Stmt\Class_;
 use Symplify\PHPStanRules\Rules\AbstractSymplifyRule;
@@ -56,6 +57,13 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
         [, $prefix] = explode('\\', $className);
         if (! Strings::match($prefix, self::PREFIX_REGEX)) {
             return [];
+        }
+
+        $implements = $node->implements;
+        foreach ($implements as $implement) {
+            if ($implement instanceof FullyQualified && (string) $implement === 'Rector\Core\Contract\Rector\ConfigurableRectorInterface') {
+                return [];
+            }
         }
 
         $phpVersion = Strings::substring($prefix, -2);
