@@ -129,7 +129,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::MATCH;
+        return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
     private function changeToAssign(Switch_ $switch, Match_ $match, Expr $assignExpr): Assign
@@ -228,10 +228,5 @@ CODE_SAMPLE
 
         $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN());
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::MATCH_EXPRESSION;
     }
 }
