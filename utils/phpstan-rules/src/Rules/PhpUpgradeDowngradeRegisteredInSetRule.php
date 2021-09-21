@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\PHPStan\Rule;
+namespace Rector\PHPStanRules\Rules;
 
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
@@ -11,8 +11,16 @@ use Symplify\PHPStanRules\Rules\AbstractSymplifyRule;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\PHPStanRules\Tests\Rules\PhpUpgradeDowngradeRegisteredInSetRule\PhpUpgradeDowngradeRegisteredInSetRuleTest
+ */
 final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
 {
+    /**
+     * @var string
+     */
+    public const ERROR_MESSAGE = 'Register %s to %s config set';
+
     /**
      * @return array<class-string<Node>>
      */

@@ -12,6 +12,9 @@ includes:
     - vendor/symplify/phpstan-rules/config/symfony-rules.neon
     - vendor/symplify/phpstan-rules/config/test-rules.neon
 
+services:
+    - Rector\PHPStanRules\Rules\PhpUpgradeDowngradeRegisteredInSetRule
+
 parameters:
     level: max
 
@@ -509,3 +512,5 @@ parameters:
                 - rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php
 
         - '#^Cognitive complexity for "Rector\\CodingStyle\\Naming\\NameRenamer\:\:renameNameNode\(\)" is 13, keep it under 9$#'
+        - '#^The "PHPStan\\PhpDocParser\\Ast\\NodeAttributes" trait is already used in parent class\. Remove it here$#'
+        - '#Method Rector\\PHPStanRules\\Tests\\Rules\\.*::provide(.*?) return type has no value type specified in iterable type Iterator#'
