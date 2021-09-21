@@ -100,7 +100,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $node instanceof Arg) {
+            if (! $node->args[$position] instanceof Arg) {
                 continue;
             }
 
