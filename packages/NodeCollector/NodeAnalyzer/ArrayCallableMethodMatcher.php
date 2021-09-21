@@ -34,6 +34,9 @@ final class ArrayCallableMethodMatcher
 
     /**
      * Matches array like: "[$this, 'methodName']" → ['ClassName', 'methodName']
+     * Returns back value $array when unknown method of callable used, eg: [$this, $other]
+     * @see https://github.com/rectorphp/rector-src/pull/908
+     * @see https://github.com/rectorphp/rector-src/pull/909
      */
     public function match(Array_ $array): null | Array_ | ArrayCallable
     {
