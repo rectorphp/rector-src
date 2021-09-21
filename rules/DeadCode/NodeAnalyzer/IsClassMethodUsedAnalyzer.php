@@ -119,7 +119,7 @@ final class IsClassMethodUsedAnalyzer
 
             $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
             if ($this->shouldSkipArrayCallable($class, $arrayCallable)) {
-                continue;
+                return true;
             }
 
             // the method is used
