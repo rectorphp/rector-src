@@ -35,7 +35,7 @@ final class ArrayCallableMethodMatcher
     /**
      * Matches array like: "[$this, 'methodName']" → ['ClassName', 'methodName']
      */
-    public function match(Array_ $array): ?ArrayCallable
+    public function match(Array_ $array): null | Array_ | ArrayCallable
     {
         $arrayItems = $array->items;
         if (count($arrayItems) !== 2) {
@@ -51,7 +51,7 @@ final class ArrayCallableMethodMatcher
         $secondItemValue = $items[1]->value;
 
         if (! $secondItemValue instanceof String_) {
-            return null;
+            return $array;
         }
 
         if ($this->shouldSkipAssociativeArray($array)) {
