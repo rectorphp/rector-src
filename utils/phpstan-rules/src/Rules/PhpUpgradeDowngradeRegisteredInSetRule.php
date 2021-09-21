@@ -65,9 +65,11 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
             if (! $implement instanceof FullyQualified) {
                 continue;
             }
+
             if ((string) $implement !== 'Rector\Core\Contract\Rector\ConfigurableRectorInterface') {
                 continue;
             }
+
             return [];
         }
 
