@@ -13,7 +13,9 @@ includes:
     - vendor/symplify/phpstan-rules/config/test-rules.neon
 
 services:
-    - Rector\PHPStanRules\Rules\PhpUpgradeDowngradeRegisteredInSetRule
+    -
+        class: Rector\PHPStanRules\Rules\PhpUpgradeDowngradeRegisteredInSetRule
+        tags: [phpstan.rules.rule]
 
 parameters:
     level: max

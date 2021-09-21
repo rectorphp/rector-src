@@ -29,11 +29,6 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
      */
     private const PREFIX_REGEX = '#(Downgrade)?Php\d+#';
 
-    /**
-     * @var string
-     */
-    private const TO_SEARCH = "\$services->set(\$shortClassName::class);";
-
     public function __construct(private SmartFileSystem $smartFileSystem)
     {
     }
@@ -73,7 +68,10 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
             __DIR__ . '/../../../../config/set/' . $configFile . '.php'
         );
 
-        if (! str_contains($configContent, self::TO_SEARCH)) {
+        $shortClassName = (string) $node->name;
+        $toSearch = sprintf('$services->set(%s::class)', $shortClassName);
+
+        if (! str_contains($configContent, $toSearch)) {
             return [sprintf(self::ERROR_MESSAGE, $className, $configFile)];
         }
 
