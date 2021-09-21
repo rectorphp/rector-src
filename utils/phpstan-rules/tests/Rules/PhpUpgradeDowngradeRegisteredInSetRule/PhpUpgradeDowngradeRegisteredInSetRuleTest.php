@@ -29,6 +29,7 @@ final class PhpUpgradeDowngradeRegisteredInSetRuleTest extends AbstractServiceAw
     public function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/SkipSomePhpFeatureRector.php', []];
+        yield [__DIR__ . '/Fixture/SomePhpFeatureRector.php', []];
     }
 
     protected function getRule(): Rule

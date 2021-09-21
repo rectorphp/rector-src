@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\PHPStanRules\Tests\PhpUpgradeDowngadeRegisteredInSetRule\Fixture;
+namespace Rector\Arguments\Rector\ClassMethod;
 
 final class SkipSomePhpFeatureRector
 {

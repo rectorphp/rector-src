@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanRules\Rules;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PhpParser\Node\Stmt\Class_;
@@ -22,6 +23,12 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
     public const ERROR_MESSAGE = 'Register %s to %s config set';
 
     /**
+     * @var string
+     * @see https://regex101.com/r/C3nz6e/1/
+     */
+    private const PREFIX_REGEX = '#(Downgrade)?Php\d+#';
+
+    /**
      * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
@@ -35,6 +42,17 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
      */
     public function process(Node $node, Scope $scope): array
     {
+        /** @var string $className */
+        $className = (string) $node->namespacedName;
+        if (! str_ends_with($className, 'Rector')) {
+            return [];
+        }
+
+        [, $prefix] = explode('\\', $className);
+        if (! Strings::match($prefix, self::PREFIX_REGEX)) {
+            return [];
+        }
+
         return [];
     }
 
