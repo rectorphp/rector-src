@@ -230,4 +230,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const MATCH = PhpVersion::PHP_80;
+
+    /**
+     * @see https://wiki.php.net/rfc/non-capturing_catches
+     * @var int
+     */
+    public const NON_CAPTURING_CATCH = PhpVersion::PHP_80;
 }
