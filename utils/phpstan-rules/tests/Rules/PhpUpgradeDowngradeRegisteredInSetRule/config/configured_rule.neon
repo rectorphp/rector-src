@@ -1,2 +1,3 @@
 services:
+    - Symplify\SmartFileSystem\SmartFileSystem
     - Rector\PHPStanRules\Rules\PhpUpgradeDowngradeRegisteredInSetRule

@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Class_;
 use Symplify\PHPStanRules\Rules\AbstractSymplifyRule;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * @see \Rector\PHPStanRules\Tests\Rules\PhpUpgradeDowngradeRegisteredInSetRule\PhpUpgradeDowngradeRegisteredInSetRuleTest
@@ -27,6 +28,15 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
      * @see https://regex101.com/r/C3nz6e/1/
      */
     private const PREFIX_REGEX = '#(Downgrade)?Php\d+#';
+
+    /**
+     * @var string
+     */
+    private const TO_SEARCH = "\$services->set(\$shortClassName::class);";
+
+    public function __construct(private SmartFileSystem $smartFileSystem)
+    {
+    }
 
     /**
      * @return array<class-string<Node>>
@@ -51,6 +61,20 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
         [, $prefix] = explode('\\', $className);
         if (! Strings::match($prefix, self::PREFIX_REGEX)) {
             return [];
+        }
+
+        $phpVersion = Strings::substring($prefix, -2);
+
+        $configFile = str_starts_with($prefix, 'Downgrade')
+            ? 'downgrade-php' . $phpVersion
+            : 'php' . $phpVersion;
+
+        $configContent = $this->smartFileSystem->readFile(
+            __DIR__ . '/../../../../config/set/' . $configFile . '.php'
+        );
+
+        if (! str_contains($configContent, self::TO_SEARCH)) {
+            return [sprintf(self::ERROR_MESSAGE, $className, $configFile)];
         }
 
         return [];
