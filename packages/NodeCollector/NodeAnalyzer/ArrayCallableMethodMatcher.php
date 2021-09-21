@@ -50,14 +50,6 @@ final class ArrayCallableMethodMatcher
         $items = $array->items;
         $values = $this->valueResolver->getValue($array);
 
-        if ($values === []) {
-            return $array;
-        }
-
-        if ($this->shouldSkipAssociativeArray($values)) {
-            return null;
-        }
-
         // $this, self, static, FQN
         $firstItemValue = $items[0]->value;
 
@@ -67,6 +59,14 @@ final class ArrayCallableMethodMatcher
             : $this->nodeTypeResolver->resolve($firstItemValue);
 
         if (! $calleeType instanceof TypeWithClassName) {
+            return null;
+        }
+
+        if ($values === []) {
+            return $array;
+        }
+
+        if ($this->shouldSkipAssociativeArray($values)) {
             return null;
         }
 
