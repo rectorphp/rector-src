@@ -6,8 +6,8 @@ namespace Rector\PHPStanRules\Tests\Rules\PhpUpgradeDowngradeRegisteredInSetRule
 
 use Iterator;
 use PHPStan\Rules\Rule;
-use Symplify\PHPStanExtensions\Testing\AbstractServiceAwareRuleTestCase;
 use Rector\PHPStanRules\Rules\PhpUpgradeDowngradeRegisteredInSetRule;
+use Symplify\PHPStanExtensions\Testing\AbstractServiceAwareRuleTestCase;
 
 /**
  * @extends AbstractServiceAwareRuleTestCase<PhpUpgradeDowngradeRegisteredInSetRule>
@@ -23,6 +23,9 @@ final class PhpUpgradeDowngradeRegisteredInSetRuleTest extends AbstractServiceAw
         $this->analyse([$filePath], $expectedErrorMessagesWithLines);
     }
 
+    /**
+     * @return Iterator<string[]|array<int, mixed[]>>
+     */
     public function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/SkipSomePhpFeatureRector.php', []];
