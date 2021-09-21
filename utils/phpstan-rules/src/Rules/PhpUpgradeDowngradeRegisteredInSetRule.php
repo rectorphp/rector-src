@@ -60,19 +60,6 @@ final class PhpUpgradeDowngradeRegisteredInSetRule extends AbstractSymplifyRule
             return [];
         }
 
-        $implements = $node->implements;
-        foreach ($implements as $implement) {
-            if (! $implement instanceof FullyQualified) {
-                continue;
-            }
-
-            if ((string) $implement !== 'Rector\Core\Contract\Rector\ConfigurableRectorInterface') {
-                continue;
-            }
-
-            return [];
-        }
-
         $phpVersion = Strings::substring($prefix, -2);
 
         $configFile = str_starts_with($prefix, 'Downgrade')
