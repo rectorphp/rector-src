@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php74\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -104,6 +105,10 @@ CODE_SAMPLE
         $array = new Array_();
 
         foreach ($funcCall->args as $arg) {
+            if (! $arg instanceof Arg) {
+                continue;
+            }
+
             // cannot handle unpacked arguments
             if ($arg->unpack) {
                 return null;
