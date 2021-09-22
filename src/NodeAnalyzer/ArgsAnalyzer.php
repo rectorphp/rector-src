@@ -20,4 +20,25 @@ final class ArgsAnalyzer
 
         return $args[$position] instanceof Arg;
     }
+
+    /**
+     * @param Arg[]|VariadicPlaceholder[] $args
+     * @param int[] $positions
+     */
+    public function isArgsInstanceInArgsPositions(array $args, array $positions): bool
+    {
+        foreach ($positions as $position) {
+            if (! isset($args[$position])) {
+                return false;
+            }
+
+            if ($args[$position] instanceof Arg) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }
