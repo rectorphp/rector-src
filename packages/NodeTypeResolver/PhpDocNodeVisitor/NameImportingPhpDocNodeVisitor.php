@@ -117,7 +117,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return null;
             }
 
-            if ($newNode->name !== $identifierTypeNode->name && $this->shouldImport($file, $newNode, $identifierTypeNode)) {
+            if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
                 $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
                 return $newNode;
             }
@@ -125,7 +125,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($newNode->name !== $identifierTypeNode->name && $this->shouldImport($file, $newNode, $identifierTypeNode)) {
+        if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
             // do not import twice
             if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
                 return null;
@@ -140,6 +140,10 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private function shouldImport(File $file, IdentifierTypeNode $newNode, IdentifierTypeNode $identifierTypeNode): bool
     {
+        if ($newNode->name === $identifierTypeNode->name) {
+            return false;
+        }
+
         $firstPart = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
 
         if ($firstPart === null) {
