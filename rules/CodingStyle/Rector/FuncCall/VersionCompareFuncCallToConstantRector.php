@@ -107,7 +107,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($node->args, [0, 1, 2, 3])) {
+        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($node->args, [0, 1, 2])) {
             return null;
         }
 
