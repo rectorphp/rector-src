@@ -125,7 +125,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             $firstPart = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
 
             if ($firstPart !== null) {
-                return null;
+                //return null;
             }
 
             // do not import twice
