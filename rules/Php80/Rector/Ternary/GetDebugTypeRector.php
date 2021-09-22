@@ -79,6 +79,14 @@ CODE_SAMPLE
 
         /** @var FuncCall $funcCall */
         $funcCall = $node->if;
+        if (! isset($funcCall->args[0])) {
+            return null;
+        }
+
+        if (! $funcCall->args[0] instanceof Arg) {
+            return null;
+        }
+
         $firstExpr = $funcCall->args[0]->value;
 
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
