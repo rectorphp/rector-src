@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php70\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -88,6 +89,10 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
         }
 
         foreach ($arguments as $key => $argument) {
+            if (! $node->args[$key] instanceof Arg) {
+                continue;
+            }
+
             $replacements = $this->getReplacementsFor($argument, $currentScope, $scopeNode);
 
             $current = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
