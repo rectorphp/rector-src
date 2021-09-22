@@ -74,7 +74,7 @@ CODE_SAMPLE
         }
 
         if (! $node->args[0] instanceof Arg) {
-            return new ClassConstFetch(new Name('self'), 'class');
+            return null;
         }
 
         $object = $node->args[0]->value;
