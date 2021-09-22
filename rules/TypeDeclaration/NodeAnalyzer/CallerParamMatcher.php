@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -76,6 +77,10 @@ final class CallerParamMatcher
         $paramName = $this->nodeNameResolver->getName($param);
 
         foreach ($call->args as $argPosition => $arg) {
+            if (! $arg instanceof Arg) {
+                continue;
+            }
+
             if (! $arg->value instanceof Variable) {
                 continue;
             }
