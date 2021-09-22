@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
-use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -25,6 +22,7 @@ use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
+use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 use Symplify\SimplePhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 
 final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
@@ -37,7 +35,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private ClassNameImportSkipper $classNameImportSkipper,
         private UseNodesToAddCollector $useNodesToAddCollector,
         private CurrentFileProvider $currentFileProvider,
-        private BetterNodeFinder $betterNodeFinder
+        private ClassLikeExistenceChecker $classLikeExistenceChecker
     ) {
     }
 
@@ -117,7 +115,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return null;
             }
 
-            if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
+            if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
                 $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
                 return $newNode;
             }
@@ -125,7 +123,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
+        if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
             // do not import twice
             if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
                 return null;
@@ -138,25 +136,18 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         return null;
     }
 
-    private function shouldImport(File $file, IdentifierTypeNode $newNode, IdentifierTypeNode $identifierTypeNode): bool
+    private function shouldImport(
+        IdentifierTypeNode $newNode,
+        IdentifierTypeNode $identifierTypeNode,
+        FullyQualifiedObjectType $fullyQualifiedObjectType
+    ): bool
     {
         if ($newNode->name === $identifierTypeNode->name) {
             return false;
         }
 
-        $firstPart = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
-        if ($firstPart === null) {
-            return true;
-        }
-
-        if ($firstPart === '') {
-            return true;
-        }
-
-        $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
-        $name = new Name($firstPart);
-
-        return ! $this->classNameImportSkipper->isFoundInUse($name, $currentUses);
+        $className = $fullyQualifiedObjectType->getClassName();
+        return $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($className);
     }
 
     private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
