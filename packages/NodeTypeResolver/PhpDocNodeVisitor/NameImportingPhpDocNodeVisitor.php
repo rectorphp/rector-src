@@ -117,7 +117,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return null;
             }
 
-            if ($newNode->name !== $identifierTypeNode->name) {
+            if ($newNode->name !== $identifierTypeNode->name && $this->shouldImport($file, $newNode, $identifierTypeNode)) {
                 $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
                 return $newNode;
             }
@@ -125,18 +125,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($newNode->name !== $identifierTypeNode->name) {
-            $firstPart = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
-
-            if ($firstPart !== null) {
-                $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
-                $nameFirstPart = new Name($firstPart);
-
-                if ($this->classNameImportSkipper->isFoundInUse($nameFirstPart, $currentUses)) {
-                    return null;
-                }
-            }
-
+        if ($newNode->name !== $identifierTypeNode->name && $this->shouldImport($file, $newNode, $identifierTypeNode)) {
             // do not import twice
             if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
                 return null;
@@ -147,6 +136,20 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         return null;
+    }
+
+    private function shouldImport(File $file, IdentifierTypeNode $newNode, IdentifierTypeNode $identifierTypeNode): bool
+    {
+        $firstPart = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
+
+        if ($firstPart === null) {
+            return true;
+        }
+
+        $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
+        $name = new Name($firstPart);
+
+        return ! $this->classNameImportSkipper->isFoundInUse($name, $currentUses);
     }
 
     private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
