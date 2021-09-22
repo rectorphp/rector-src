@@ -148,6 +148,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         if ($firstPart === null) {
             return true;
         }
+
         if ($firstPart === '') {
             return true;
         }
