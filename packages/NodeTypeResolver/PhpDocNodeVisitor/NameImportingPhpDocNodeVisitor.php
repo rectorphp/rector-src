@@ -6,6 +6,8 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
 use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -16,6 +18,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -33,7 +36,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private ParameterProvider $parameterProvider,
         private ClassNameImportSkipper $classNameImportSkipper,
         private UseNodesToAddCollector $useNodesToAddCollector,
-        private CurrentFileProvider $currentFileProvider
+        private CurrentFileProvider $currentFileProvider,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -125,7 +129,12 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             $firstPart = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
 
             if ($firstPart !== null) {
-                //return null;
+                $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
+                $nameFirstPart = new Name($firstPart);
+
+                if ($this->classNameImportSkipper->isFoundInUse($nameFirstPart, $currentUses)) {
+                    return null;
+                }
             }
 
             // do not import twice
