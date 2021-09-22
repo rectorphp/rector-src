@@ -155,7 +155,7 @@ final class PhpSpecPromisesToPHPUnitAssertRector extends AbstractPhpSpecToPHPUni
             return $this->assertMethodCallFactory->createAssertMethod(
                 $newMethod,
                 $node->var,
-                $node->args[0]->value ?? null,
+                $node->getArgs()[0]->value ?? null,
                 $this->getTestedObjectPropertyFetch()
             );
         }
@@ -256,7 +256,7 @@ final class PhpSpecPromisesToPHPUnitAssertRector extends AbstractPhpSpecToPHPUni
             $methodCall->name = $methodCall->var->name;
             $methodCall->var = $this->getTestedObjectPropertyFetch();
             $methodCall->args = [];
-            $funcCall->args[] = new Arg($methodCall);
+            $funcCall->getArgs()[] = new Arg($methodCall);
 
             $this->nodesToAddCollector->addNodesAfterNode([$assign, $funcCall], $methodCall);
 

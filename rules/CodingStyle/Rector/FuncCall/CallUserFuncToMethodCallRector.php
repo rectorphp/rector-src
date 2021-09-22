@@ -70,7 +70,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgValue = $node->args[0]->value;
+        $firstArgValue = $node->getArgs()[0]->value;
         if (! $firstArgValue instanceof Array_) {
             return null;
         }

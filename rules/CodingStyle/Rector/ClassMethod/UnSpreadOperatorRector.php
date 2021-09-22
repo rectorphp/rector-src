@@ -132,7 +132,7 @@ CODE_SAMPLE
         if ($variadicArgs !== []) {
             $array = $this->nodeFactory->createArray($variadicArgs);
 
-            $spreadArg = $methodCall->args[$firstSpreadParamPosition] ?? null;
+            $spreadArg = $methodCall->getArgs()[$firstSpreadParamPosition] ?? null;
 
             // already set value
             if ($spreadArg instanceof Arg && $spreadArg->value instanceof Array_) {
@@ -143,7 +143,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $methodCall->args[$firstSpreadParamPosition] = new Arg($array);
+            $methodCall->getArgs()[$firstSpreadParamPosition] = new Arg($array);
             $this->removeLaterArguments($methodCall, $firstSpreadParamPosition);
 
             return $methodCall;
@@ -174,7 +174,7 @@ CODE_SAMPLE
     {
         $argCount = count($methodCall->args);
         for ($i = $argumentPosition + 1; $i < $argCount; ++$i) {
-            unset($methodCall->args[$i]);
+            unset($methodCall->getArgs()[$i]);
         }
     }
 
@@ -186,7 +186,7 @@ CODE_SAMPLE
         foreach ($variadicArgs as $position => $variadicArg) {
             if ($variadicArg->unpack) {
                 $variadicArg->unpack = false;
-                $methodCall->args[$position] = $variadicArg;
+                $methodCall->getArgs()[$position] = $variadicArg;
             }
         }
     }

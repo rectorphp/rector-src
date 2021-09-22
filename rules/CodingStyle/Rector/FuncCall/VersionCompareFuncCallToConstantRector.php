@@ -104,14 +104,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isPhpVersionConstant($node->args[0]->value) && ! $this->isPhpVersionConstant(
-            $node->args[1]->value
+        if (! $this->isPhpVersionConstant($node->getArgs()[0]->value) && ! $this->isPhpVersionConstant(
+            $node->getArgs()[1]->value
         )) {
             return null;
         }
 
-        $left = $this->getNewNodeForArg($node->args[0]->value);
-        $right = $this->getNewNodeForArg($node->args[1]->value);
+        $left = $this->getNewNodeForArg($node->getArgs()[0]->value);
+        $right = $this->getNewNodeForArg($node->getArgs()[1]->value);
         if ($left === null) {
             return null;
         }
@@ -121,7 +121,7 @@ CODE_SAMPLE
         }
 
         /** @var String_ $operator */
-        $operator = $node->args[2]->value;
+        $operator = $node->getArgs()[2]->value;
         $comparisonClass = self::OPERATOR_TO_COMPARISON[$operator->value];
 
         return new $comparisonClass($left, $right);

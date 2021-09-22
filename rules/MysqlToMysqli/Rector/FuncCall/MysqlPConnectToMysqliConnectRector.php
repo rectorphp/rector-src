@@ -69,7 +69,7 @@ CODE_SAMPLE
 
         $node->name = new Name('mysqli_connect');
 
-        $node->args[0]->value = $this->joinStringWithNode('p:', $node->args[0]->value);
+        $node->getArgs()[0]->value = $this->joinStringWithNode('p:', $node->getArgs()[0]->value);
 
         return $node;
     }

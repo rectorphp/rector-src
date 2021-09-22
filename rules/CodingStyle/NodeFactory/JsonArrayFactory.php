@@ -61,7 +61,7 @@ final class JsonArrayFactory
 
                 if ($placeholderNode && $this->implodeAnalyzer->isImplodeToJson($placeholderNode)) {
                     /** @var FuncCall $placeholderNode */
-                    return $placeholderNode->args[1]->value;
+                    return $placeholderNode->getArgs()[1]->value;
                 }
             }
 

@@ -38,7 +38,7 @@ final class ArgumentDefaultValueReplacer
             return $this->processParams($node, $replaceArgumentDefaultValue);
         }
 
-        if (! isset($node->args[$replaceArgumentDefaultValue->getPosition()])) {
+        if (! isset($node->getArgs()[$replaceArgumentDefaultValue->getPosition()])) {
             return null;
         }
 
@@ -90,12 +90,12 @@ final class ArgumentDefaultValueReplacer
     ): Expr {
         $position = $replaceArgumentDefaultValue->getPosition();
 
-        $argValue = $this->valueResolver->getValue($expr->args[$position]->value);
+        $argValue = $this->valueResolver->getValue($expr->getArgs()[$position]->value);
 
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()
         ) && $argValue === $replaceArgumentDefaultValue->getValueBefore()) {
-            $expr->args[$position] = $this->normalizeValueToArgument($replaceArgumentDefaultValue->getValueAfter());
+            $expr->getArgs()[$position] = $this->normalizeValueToArgument($replaceArgumentDefaultValue->getValueAfter());
         } elseif (is_array($replaceArgumentDefaultValue->getValueBefore())) {
             $newArgs = $this->processArrayReplacement($expr->args, $replaceArgumentDefaultValue);
 

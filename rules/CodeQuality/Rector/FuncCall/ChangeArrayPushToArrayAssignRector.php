@@ -80,11 +80,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $arrayDimFetch = new ArrayDimFetch($node->args[0]->value);
+        $arrayDimFetch = new ArrayDimFetch($node->getArgs()[0]->value);
 
         $position = 1;
-        while (isset($node->args[$position])) {
-            $assign = new Assign($arrayDimFetch, $node->args[$position]->value);
+        while (isset($node->getArgs()[$position])) {
+            $assign = new Assign($arrayDimFetch, $node->getArgs()[$position]->value);
             $assignExpression = new Expression($assign);
 
             // keep comments of first line

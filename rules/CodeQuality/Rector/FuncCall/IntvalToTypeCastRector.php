@@ -65,14 +65,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if (isset($node->args[1])) {
-            $secondArgumentValue = $this->valueResolver->getValue($node->args[1]->value);
+        if (isset($node->getArgs()[1])) {
+            $secondArgumentValue = $this->valueResolver->getValue($node->getArgs()[1]->value);
             // default value
             if ($secondArgumentValue !== 10) {
                 return null;
             }
         }
 
-        return new Int_($node->args[0]->value);
+        return new Int_($node->getArgs()[0]->value);
     }
 }

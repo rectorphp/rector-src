@@ -89,8 +89,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $params = $this->createParamsFromString($node->args[0]->value);
-        $stmts = $this->parseStringToBody($node->args[1]->value);
+        $params = $this->createParamsFromString($node->getArgs()[0]->value);
+        $stmts = $this->parseStringToBody($node->getArgs()[1]->value);
 
         $refactored = $this->anonymousFunctionFactory->create($params, $stmts, null);
         foreach ($refactored->uses as $key => $use) {

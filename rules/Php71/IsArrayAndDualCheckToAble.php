@@ -55,12 +55,12 @@ final class IsArrayAndDualCheckToAble
         }
 
         // both use same var
-        if (! $funcCall->args[0]->value instanceof Variable) {
+        if (! $funcCall->getArgs()[0]->value instanceof Variable) {
             return null;
         }
 
         /** @var Variable $firstVarNode */
-        $firstVarNode = $funcCall->args[0]->value;
+        $firstVarNode = $funcCall->getArgs()[0]->value;
 
         if (! $instanceOf->expr instanceof Variable) {
             return null;

@@ -70,8 +70,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $haystack = $funcCall->args[0]->value;
-        $needle = $funcCall->args[1]->value;
+        $haystack = $funcCall->getArgs()[0]->value;
+        $needle = $funcCall->getArgs()[1]->value;
 
         $funcCall = $this->nodeFactory->createFuncCall('strpos', [$haystack, $needle]);
 

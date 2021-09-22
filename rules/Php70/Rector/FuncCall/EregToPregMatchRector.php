@@ -75,7 +75,7 @@ final class EregToPregMatchRector extends AbstractRector
             return null;
         }
 
-        $patternNode = $node->args[0]->value;
+        $patternNode = $node->getArgs()[0]->value;
         if ($patternNode instanceof String_) {
             $this->processStringPattern($node, $patternNode, $functionName);
         } elseif ($patternNode instanceof Variable) {
@@ -87,7 +87,7 @@ final class EregToPregMatchRector extends AbstractRector
         $node->name = new Name(self::OLD_NAMES_TO_NEW_ONES[$functionName]);
 
         // ereg|eregi 3rd argument return value fix
-        if (in_array($functionName, ['ereg', 'eregi'], true) && isset($node->args[2])) {
+        if (in_array($functionName, ['ereg', 'eregi'], true) && isset($node->getArgs()[2])) {
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
             if ($parentNode instanceof Assign) {
                 return $this->createTernaryWithStrlenOfFirstMatch($node);
@@ -102,7 +102,7 @@ final class EregToPregMatchRector extends AbstractRector
         $pattern = $string->value;
         $pattern = $this->eregToPcreTransformer->transform($pattern, $this->isCaseInsensitiveFunction($functionName));
 
-        $funcCall->args[0]->value = new String_($pattern);
+        $funcCall->getArgs()[0]->value = new String_($pattern);
     }
 
     private function processVariablePattern(FuncCall $funcCall, Variable $variable, string $functionName): void
@@ -117,7 +117,7 @@ final class EregToPregMatchRector extends AbstractRector
         $endDelimiter = $this->isCaseInsensitiveFunction($functionName) ? '#mi' : '#m';
         $concat = new Concat($startConcat, new String_($endDelimiter));
 
-        $funcCall->args[0]->value = $concat;
+        $funcCall->getArgs()[0]->value = $concat;
     }
 
     /**
@@ -133,16 +133,16 @@ final class EregToPregMatchRector extends AbstractRector
         }
 
         // 3rd argument - $limit, 0 → 1
-        if (! isset($funcCall->args[2])) {
+        if (! isset($funcCall->getArgs()[2])) {
             return;
         }
 
-        if (! $funcCall->args[2]->value instanceof LNumber) {
+        if (! $funcCall->getArgs()[2]->value instanceof LNumber) {
             return;
         }
 
         /** @var LNumber $limitNumberNode */
-        $limitNumberNode = $funcCall->args[2]->value;
+        $limitNumberNode = $funcCall->getArgs()[2]->value;
         if ($limitNumberNode->value !== 0) {
             return;
         }
@@ -152,7 +152,7 @@ final class EregToPregMatchRector extends AbstractRector
 
     private function createTernaryWithStrlenOfFirstMatch(FuncCall $funcCall): Ternary
     {
-        $arrayDimFetch = new ArrayDimFetch($funcCall->args[2]->value, new LNumber(0));
+        $arrayDimFetch = new ArrayDimFetch($funcCall->getArgs()[2]->value, new LNumber(0));
         $strlenFuncCall = $this->nodeFactory->createFuncCall('strlen', [$arrayDimFetch]);
 
         return new Ternary($funcCall, $strlenFuncCall, $this->nodeFactory->createFalse());

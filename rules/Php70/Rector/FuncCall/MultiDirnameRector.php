@@ -65,8 +65,8 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
             return $activeFuncCallNode;
         }
 
-        $node->args[0] = $lastFuncCallNode->args[0];
-        $node->args[1] = new Arg(new LNumber($this->nestingLevel));
+        $node->getArgs()[0] = $lastFuncCallNode->getArgs()[0];
+        $node->getArgs()[1] = new Arg(new LNumber($this->nestingLevel));
 
         return $node;
     }
@@ -88,19 +88,19 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
 
         // dirname($path, <LEVEL>);
         if (count($funcCall->args) === 2) {
-            if (! $funcCall->args[1]->value instanceof LNumber) {
+            if (! $funcCall->getArgs()[1]->value instanceof LNumber) {
                 return null;
             }
 
             /** @var LNumber $levelNumber */
-            $levelNumber = $funcCall->args[1]->value;
+            $levelNumber = $funcCall->getArgs()[1]->value;
 
             $this->nestingLevel += $levelNumber->value;
         } else {
             ++$this->nestingLevel;
         }
 
-        $nestedFuncCallNode = $funcCall->args[0]->value;
+        $nestedFuncCallNode = $funcCall->getArgs()[0]->value;
         if (! $nestedFuncCallNode instanceof FuncCall) {
             return null;
         }

@@ -88,8 +88,8 @@ final class ConditionResolver
 
         // includes compare sign as 3rd argument
         $versionCompareSign = null;
-        if (isset($funcCall->args[2])) {
-            $versionCompareSign = $this->valueResolver->getValue($funcCall->args[2]->value);
+        if (isset($funcCall->getArgs()[2])) {
+            $versionCompareSign = $this->valueResolver->getValue($funcCall->getArgs()[2]->value);
         }
 
         return new VersionCompareCondition($firstVersion, $secondVersion, $versionCompareSign);
@@ -112,7 +112,7 @@ final class ConditionResolver
 
     private function resolveArgumentValue(FuncCall $funcCall, int $argumentPosition): ?int
     {
-        $firstArgValue = $funcCall->args[$argumentPosition]->value;
+        $firstArgValue = $funcCall->getArgs()[$argumentPosition]->value;
 
         /** @var mixed|null $version */
         $version = $this->valueResolver->getValue($firstArgValue);

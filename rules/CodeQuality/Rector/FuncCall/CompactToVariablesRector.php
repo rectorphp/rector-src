@@ -88,7 +88,7 @@ CODE_SAMPLE
             return $this->compactConverter->convertToArray($node);
         }
 
-        $firstValue = $node->args[0]->value;
+        $firstValue = $node->getArgs()[0]->value;
         $firstValueStaticType = $this->getStaticType($firstValue);
         if (! $firstValueStaticType instanceof ConstantArrayType) {
             return null;
@@ -138,7 +138,7 @@ CODE_SAMPLE
 
         $this->arrayCompacter->compactStringToVariableArray($array);
 
-        $assignVariable = $funcCall->args[0]->value;
+        $assignVariable = $funcCall->getArgs()[0]->value;
         $preAssign = new Assign($assignVariable, $array);
 
         $currentStatement = $funcCall->getAttribute(AttributeKey::CURRENT_STATEMENT);

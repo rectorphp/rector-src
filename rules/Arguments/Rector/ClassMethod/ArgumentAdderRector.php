@@ -180,11 +180,11 @@ CODE_SAMPLE
             $this->processStaticCall($node, $position, $argumentAdder);
         } else {
             $arg = new Arg(BuilderHelpers::normalizeValue($defaultValue));
-            if (isset($node->args[$position])) {
+            if (isset($node->getArgs()[$position])) {
                 return;
             }
 
-            $node->args[$position] = $arg;
+            $node->getArgs()[$position] = $arg;
             $this->haveArgumentsChanged = true;
         }
     }
@@ -224,7 +224,7 @@ CODE_SAMPLE
             return $this->changedArgumentsDetector->isTypeChanged($param, $argumentAdder->getArgumentType());
         }
 
-        if (isset($node->args[$position])) {
+        if (isset($node->getArgs()[$position])) {
             return true;
         }
 
@@ -269,7 +269,7 @@ CODE_SAMPLE
             return;
         }
 
-        $staticCall->args[$position] = new Arg(new Variable($argumentName));
+        $staticCall->getArgs()[$position] = new Arg(new Variable($argumentName));
         $this->haveArgumentsChanged = true;
     }
 }

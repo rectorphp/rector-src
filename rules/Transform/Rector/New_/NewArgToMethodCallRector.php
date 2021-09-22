@@ -81,16 +81,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! isset($node->args[0])) {
+            if (! isset($node->getArgs()[0])) {
                 return null;
             }
 
-            $firstArgValue = $node->args[0]->value;
+            $firstArgValue = $node->getArgs()[0]->value;
             if (! $this->valueResolver->isValue($firstArgValue, $newArgToMethodCall->getValue())) {
                 continue;
             }
 
-            unset($node->args[0]);
+            unset($node->getArgs()[0]);
 
             return new MethodCall($node, 'usePutenv');
         }

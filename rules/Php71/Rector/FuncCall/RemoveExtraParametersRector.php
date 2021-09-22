@@ -82,7 +82,7 @@ final class RemoveExtraParametersRector extends AbstractRector
         }
 
         for ($i = $maximumAllowedParameterCount; $i <= $numberOfArguments; ++$i) {
-            unset($node->args[$i]);
+            unset($node->getArgs()[$i]);
         }
 
         return $node;

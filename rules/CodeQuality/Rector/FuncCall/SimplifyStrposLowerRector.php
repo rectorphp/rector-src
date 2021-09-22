@@ -41,22 +41,22 @@ final class SimplifyStrposLowerRector extends AbstractRector
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
-        if (! $node->args[0]->value instanceof FuncCall) {
+        if (! $node->getArgs()[0]->value instanceof FuncCall) {
             return null;
         }
 
         /** @var FuncCall $innerFuncCall */
-        $innerFuncCall = $node->args[0]->value;
+        $innerFuncCall = $node->getArgs()[0]->value;
         if (! $this->isName($innerFuncCall, 'strtolower')) {
             return null;
         }
 
         // pop 1 level up
-        $node->args[0] = $innerFuncCall->args[0];
+        $node->getArgs()[0] = $innerFuncCall->getArgs()[0];
         $node->name = new Name('stripos');
 
         return $node;

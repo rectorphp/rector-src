@@ -63,7 +63,7 @@ CODE_SAMPLE
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
 
         /** @var Array_ $options */
-        $options = $node->args[0]->value;
+        $options = $node->getArgs()[0]->value;
 
         foreach ($options->items as $option) {
             if (! $option instanceof ArrayItem) {
@@ -85,7 +85,7 @@ CODE_SAMPLE
             $this->nodesToAddCollector->addNodeBeforeNode(new Expression($iniSet), $currentStatement);
         }
 
-        unset($node->args[0]);
+        unset($node->getArgs()[0]);
         return $node;
     }
 
@@ -95,10 +95,10 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return true;
         }
 
-        return ! $funcCall->args[0]->value instanceof Array_;
+        return ! $funcCall->getArgs()[0]->value instanceof Array_;
     }
 }

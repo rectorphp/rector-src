@@ -71,11 +71,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
-        $argValue = $node->args[0]->value;
+        $argValue = $node->getArgs()[0]->value;
         if (! $argValue instanceof FuncCall) {
             return null;
         }
@@ -88,7 +88,7 @@ CODE_SAMPLE
         $assign = new Assign($messageVariable, $argValue);
         $this->nodesToAddCollector->addNodeBeforeNode($assign, $node);
 
-        $node->args[0]->value = $messageVariable;
+        $node->getArgs()[0]->value = $messageVariable;
 
         return $node;
     }

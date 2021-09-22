@@ -71,7 +71,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $variable = $node->left->args[0]->value;
+            $variable = $node->left->getArgs()[0]->value;
         } elseif ($node->right instanceof FuncCall) {
             if (! $this->isName($node->right, 'strlen')) {
                 return null;
@@ -81,7 +81,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $variable = $node->right->args[0]->value;
+            $variable = $node->right->getArgs()[0]->value;
         } else {
             return null;
         }

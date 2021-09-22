@@ -42,7 +42,7 @@ final class MockVariableCollector
         /** @var string $variableName */
         $variableName = $this->nodeNameResolver->getName($variable);
 
-        $type = $node->args[0]->value;
+        $type = $node->getArgs()[0]->value;
 
         $mockedType = $this->valueResolver->getValue($type);
         $mockVariableTypesByNames[$variableName] = $mockedType;

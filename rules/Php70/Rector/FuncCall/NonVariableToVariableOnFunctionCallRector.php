@@ -91,7 +91,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
                 $current instanceof Return_ ? $current : $currentStatement
             );
 
-            $node->args[$key]->value = $replacements->getVariable();
+            $node->getArgs()[$key]->value = $replacements->getVariable();
 
             // add variable name to scope, so we prevent duplication of new variable of the same name
             $currentScope = $currentScope->assignExpression(
@@ -122,7 +122,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
             /** @var ParameterReflection $parameterReflection */
             foreach ($parametersAcceptor->getParameters() as $key => $parameterReflection) {
                 // omitted optional parameter
-                if (! isset($call->args[$key])) {
+                if (! isset($call->getArgs()[$key])) {
                     continue;
                 }
 
@@ -130,7 +130,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector
                     continue;
                 }
 
-                $argument = $call->args[$key]->value;
+                $argument = $call->getArgs()[$key]->value;
 
                 if ($this->isVariableLikeNode($argument)) {
                     continue;

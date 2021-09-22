@@ -226,7 +226,7 @@ CODE_SAMPLE
             return;
         }
 
-        $attributeGroup->attrs[0]->args[] = new Arg($flagCollection);
+        $attributeGroup->attrs[0]->getArgs()[] = new Arg($flagCollection);
     }
 
     private function shouldSkipClass(PhpDocInfo $phpDocInfo, Class_ $class): bool

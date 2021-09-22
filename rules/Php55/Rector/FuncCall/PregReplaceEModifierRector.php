@@ -77,13 +77,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]->value;
         $patternWithoutE = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);
         if (! $patternWithoutE instanceof Expr) {
             return null;
         }
 
-        $secondArgumentValue = $node->args[1]->value;
+        $secondArgumentValue = $node->getArgs()[1]->value;
         $anonymousFunction = $this->anonymousFunctionFactory->createAnonymousFunctionFromString(
             $secondArgumentValue
         );
@@ -92,8 +92,8 @@ CODE_SAMPLE
         }
 
         $node->name = new Name('preg_replace_callback');
-        $node->args[0]->value = $patternWithoutE;
-        $node->args[1]->value = $anonymousFunction;
+        $node->getArgs()[0]->value = $patternWithoutE;
+        $node->getArgs()[1]->value = $anonymousFunction;
 
         return $node;
     }

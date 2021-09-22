@@ -145,7 +145,7 @@ CODE_SAMPLE
     {
         if ($expr instanceof FuncCall && $this->isIteratorToArrayFuncCall($expr)) {
             /** @var FuncCall $expr */
-            $expr = $expr->args[0]->value;
+            $expr = $expr->getArgs()[0]->value;
         }
 
         if (! $expr instanceof Ternary) {

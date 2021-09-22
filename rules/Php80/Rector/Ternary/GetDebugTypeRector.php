@@ -71,7 +71,7 @@ CODE_SAMPLE
 
         /** @var FuncCall $funcCall */
         $funcCall = $node->if;
-        $firstExpr = $funcCall->args[0]->value;
+        $firstExpr = $funcCall->getArgs()[0]->value;
 
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
     }
@@ -105,15 +105,15 @@ CODE_SAMPLE
     {
         /** @var FuncCall $isObjectFuncCall */
         $isObjectFuncCall = $ternary->cond;
-        $firstExpr = $isObjectFuncCall->args[0]->value;
+        $firstExpr = $isObjectFuncCall->getArgs()[0]->value;
 
         /** @var FuncCall $getClassFuncCall */
         $getClassFuncCall = $ternary->if;
-        $secondExpr = $getClassFuncCall->args[0]->value;
+        $secondExpr = $getClassFuncCall->getArgs()[0]->value;
 
         /** @var FuncCall $gettypeFuncCall */
         $gettypeFuncCall = $ternary->else;
-        $thirdExpr = $gettypeFuncCall->args[0]->value;
+        $thirdExpr = $gettypeFuncCall->getArgs()[0]->value;
 
         if (! $this->nodeComparator->areNodesEqual($firstExpr, $secondExpr)) {
             return false;

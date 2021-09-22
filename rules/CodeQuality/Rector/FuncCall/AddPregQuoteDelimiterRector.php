@@ -59,7 +59,7 @@ CODE_SAMPLE
         }
 
         // already completed
-        if (isset($node->args[1])) {
+        if (isset($node->getArgs()[1])) {
             return null;
         }
 
@@ -68,7 +68,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args[1] = new Arg(new String_($delimiter));
+        $node->getArgs()[1] = new Arg(new String_($delimiter));
 
         return $node;
     }

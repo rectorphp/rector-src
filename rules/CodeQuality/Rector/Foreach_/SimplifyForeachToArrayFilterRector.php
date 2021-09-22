@@ -164,6 +164,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->nodeComparator->areNodesEqual($funcCall->args[0], $foreach->valueVar);
+        return $this->nodeComparator->areNodesEqual($funcCall->getArgs()[0], $foreach->valueVar);
     }
 }

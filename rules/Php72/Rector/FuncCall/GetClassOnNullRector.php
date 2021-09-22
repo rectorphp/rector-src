@@ -70,7 +70,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgValue = $node->args[0]->value;
+        $firstArgValue = $node->getArgs()[0]->value;
 
         // only relevant inside the class
         $scope = $node->getAttribute(AttributeKey::SCOPE);
@@ -144,12 +144,12 @@ CODE_SAMPLE
 
         if ($this->nodeComparator->areNodesEqual(
             $ternary->cond->left,
-            $funcCall->args[0]->value
+            $funcCall->getArgs()[0]->value
         ) && ! $this->valueResolver->isNull($ternary->cond->right)) {
             return true;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->args[0]->value)) {
+        if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->getArgs()[0]->value)) {
             return false;
         }
 
@@ -167,12 +167,12 @@ CODE_SAMPLE
 
         if ($this->nodeComparator->areNodesEqual(
             $ternary->cond->left,
-            $funcCall->args[0]->value
+            $funcCall->getArgs()[0]->value
         ) && $this->valueResolver->isNull($ternary->cond->right)) {
             return true;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->args[0]->value)) {
+        if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->getArgs()[0]->value)) {
             return false;
         }
 

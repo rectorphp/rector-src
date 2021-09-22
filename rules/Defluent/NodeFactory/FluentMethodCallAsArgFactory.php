@@ -19,7 +19,7 @@ final class FluentMethodCallAsArgFactory
         $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
 
         $lastMethodCall = new MethodCall($parentParent->var, $parentParent->name);
-        $lastMethodCall->args[] = new Arg($variable);
+        $lastMethodCall->getArgs()[] = new Arg($variable);
 
         return $lastMethodCall;
     }

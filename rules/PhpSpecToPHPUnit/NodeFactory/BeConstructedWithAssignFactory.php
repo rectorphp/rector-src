@@ -36,7 +36,7 @@ final class BeConstructedWithAssignFactory
         }
 
         if ($this->nodeNameResolver->isName($methodCall->name, 'beConstructedThrough')) {
-            $methodName = $this->valueResolver->getValue($methodCall->args[0]->value);
+            $methodName = $this->valueResolver->getValue($methodCall->getArgs()[0]->value);
             $staticCall = $this->nodeFactory->createStaticCall($testedClass, $methodName);
 
             $this->moveConstructorArguments($methodCall, $staticCall);
@@ -49,22 +49,22 @@ final class BeConstructedWithAssignFactory
 
     private function moveConstructorArguments(MethodCall $methodCall, StaticCall $staticCall): void
     {
-        if (! isset($methodCall->args[1])) {
+        if (! isset($methodCall->getArgs()[1])) {
             return;
         }
 
-        if (! $methodCall->args[1]->value instanceof Array_) {
+        if (! $methodCall->getArgs()[1]->value instanceof Array_) {
             return;
         }
 
         /** @var Array_ $array */
-        $array = $methodCall->args[1]->value;
+        $array = $methodCall->getArgs()[1]->value;
         foreach ($array->items as $arrayItem) {
             if (! $arrayItem instanceof ArrayItem) {
                 continue;
             }
 
-            $staticCall->args[] = new Arg($arrayItem->value);
+            $staticCall->getArgs()[] = new Arg($arrayItem->value);
         }
     }
 }

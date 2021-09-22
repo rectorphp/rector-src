@@ -71,7 +71,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $maskArgument = $node->args[0]->value;
+        $maskArgument = $node->getArgs()[0]->value;
         if (! $maskArgument instanceof String_) {
             return null;
         }
@@ -80,7 +80,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $valueArgument = $node->args[1]->value;
+        $valueArgument = $node->getArgs()[1]->value;
         if (! $this->nodeTypeResolver->isStaticType($valueArgument, StringType::class)) {
             return null;
         }

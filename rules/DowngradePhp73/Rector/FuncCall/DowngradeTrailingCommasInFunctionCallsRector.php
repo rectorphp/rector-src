@@ -76,7 +76,7 @@ CODE_SAMPLE
         if ($node->args) {
             $lastArgumentPosition = array_key_last($node->args);
 
-            $last = $node->args[$lastArgumentPosition];
+            $last = $node->getArgs()[$lastArgumentPosition];
             if (! $this->followedByCommaAnalyzer->isFollowed($this->file, $last)) {
                 return null;
             }

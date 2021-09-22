@@ -58,12 +58,12 @@ final class PregMatchTypeCorrector
                 continue;
             }
 
-            if (! isset($funcCallNode->args[2])) {
+            if (! isset($funcCallNode->getArgs()[2])) {
                 continue;
             }
 
             // are the same variables
-            if (! $this->nodeComparator->areNodesEqual($funcCallNode->args[2]->value, $node)) {
+            if (! $this->nodeComparator->areNodesEqual($funcCallNode->getArgs()[2]->value, $node)) {
                 continue;
             }
 

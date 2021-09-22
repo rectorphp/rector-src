@@ -23,19 +23,19 @@ final class DuringMethodCallFactory
 
     public function create(MethodCall $methodCall, PropertyFetch $propertyFetch): MethodCall
     {
-        if (! isset($methodCall->args[0])) {
+        if (! isset($methodCall->getArgs()[0])) {
             throw new ShouldNotHappenException();
         }
 
-        $name = $this->valueResolver->getValue($methodCall->args[0]->value);
+        $name = $this->valueResolver->getValue($methodCall->getArgs()[0]->value);
         $thisObjectPropertyMethodCall = new MethodCall($propertyFetch, $name);
 
-        if (isset($methodCall->args[1]) && $methodCall->args[1]->value instanceof Array_) {
+        if (isset($methodCall->getArgs()[1]) && $methodCall->getArgs()[1]->value instanceof Array_) {
             /** @var Array_ $array */
-            $array = $methodCall->args[1]->value;
+            $array = $methodCall->getArgs()[1]->value;
 
             if (isset($array->items[0])) {
-                $thisObjectPropertyMethodCall->args[] = new Arg($array->items[0]->value);
+                $thisObjectPropertyMethodCall->getArgs()[] = new Arg($array->items[0]->value);
             }
         }
 

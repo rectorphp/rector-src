@@ -85,11 +85,11 @@ final class RegexPatternArgumentManipulator
                 continue;
             }
 
-            if (! isset($funcCall->args[$argumentPosition])) {
+            if (! isset($funcCall->getArgs()[$argumentPosition])) {
                 return [];
             }
 
-            return $this->resolveArgumentValues($funcCall->args[$argumentPosition]->value);
+            return $this->resolveArgumentValues($funcCall->getArgs()[$argumentPosition]->value);
         }
 
         return [];
@@ -110,11 +110,11 @@ final class RegexPatternArgumentManipulator
                     continue;
                 }
 
-                if (! isset($staticCall->args[$argumentPosition])) {
+                if (! isset($staticCall->getArgs()[$argumentPosition])) {
                     return [];
                 }
 
-                return $this->resolveArgumentValues($staticCall->args[$argumentPosition]->value);
+                return $this->resolveArgumentValues($staticCall->getArgs()[$argumentPosition]->value);
             }
         }
 

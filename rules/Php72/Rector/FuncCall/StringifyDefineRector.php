@@ -70,17 +70,17 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->stringTypeAnalyzer->isStringOrUnionStringOnlyType($node->args[0]->value)) {
+        if ($this->stringTypeAnalyzer->isStringOrUnionStringOnlyType($node->getArgs()[0]->value)) {
             return null;
         }
 
-        if ($node->args[0]->value instanceof ConstFetch) {
-            $nodeName = $this->getName($node->args[0]->value);
+        if ($node->getArgs()[0]->value instanceof ConstFetch) {
+            $nodeName = $this->getName($node->getArgs()[0]->value);
             if ($nodeName === null) {
                 return null;
             }
 
-            $node->args[0]->value = new String_($nodeName);
+            $node->getArgs()[0]->value = new String_($nodeName);
         }
 
         return $node;

@@ -70,12 +70,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->args[1]->value instanceof Array_) {
+        if (! $node->getArgs()[1]->value instanceof Array_) {
             return null;
         }
 
         /** @var Array_ $arrayNode */
-        $arrayNode = $node->args[1]->value;
+        $arrayNode = $node->getArgs()[1]->value;
         if (count($arrayNode->items) !== 1) {
             return null;
         }
@@ -87,10 +87,10 @@ CODE_SAMPLE
 
         $firstArrayItemValue = $firstArrayItem->value;
         // strict
-        if (isset($node->args[2])) {
-            return new Identical($node->args[0]->value, $firstArrayItemValue);
+        if (isset($node->getArgs()[2])) {
+            return new Identical($node->getArgs()[0]->value, $firstArrayItemValue);
         }
 
-        return new Equal($node->args[0]->value, $firstArrayItemValue);
+        return new Equal($node->getArgs()[0]->value, $firstArrayItemValue);
     }
 }

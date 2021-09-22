@@ -55,16 +55,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($node->args[1])) {
+        if (! isset($node->getArgs()[1])) {
             return null;
         }
 
-        if (! $this->isName($node->args[1]->value, 'FILTER_SANITIZE_MAGIC_QUOTES')) {
+        if (! $this->isName($node->getArgs()[1]->value, 'FILTER_SANITIZE_MAGIC_QUOTES')) {
             return null;
         }
 
         $node->name = new Name('addslashes');
-        unset($node->args[1]);
+        unset($node->getArgs()[1]);
 
         return $node;
     }

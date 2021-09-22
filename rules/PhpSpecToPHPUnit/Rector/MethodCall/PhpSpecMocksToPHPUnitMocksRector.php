@@ -103,7 +103,7 @@ final class PhpSpecMocksToPHPUnitMocksRector extends AbstractPhpSpecToPHPUnitRec
                 throw new ShouldNotHappenException();
             }
 
-            $expectedArg = $methodCall->var->args[0]->value ?? null;
+            $expectedArg = $methodCall->var->getArgs()[0]->value ?? null;
 
             $methodCall->var->name = new Identifier('expects');
             $thisOnceMethodCall = $this->nodeFactory->createLocalMethodCall('atLeastOnce');
@@ -190,7 +190,7 @@ final class PhpSpecMocksToPHPUnitMocksRector extends AbstractPhpSpecToPHPUnitRec
     private function createNewMockVariableAssign(Param $param, Name $name): Expression
     {
         $methodCall = $this->nodeFactory->createLocalMethodCall('createMock');
-        $methodCall->args[] = new Arg(new ClassConstFetch($name, 'class'));
+        $methodCall->getArgs()[] = new Arg(new ClassConstFetch($name, 'class'));
 
         $assign = new Assign($param->var, $methodCall);
         $assignExpression = new Expression($assign);
@@ -212,7 +212,7 @@ final class PhpSpecMocksToPHPUnitMocksRector extends AbstractPhpSpecToPHPUnitRec
         $propertyFetch = new PropertyFetch(new Variable('this'), $variable);
 
         $methodCall = $this->nodeFactory->createLocalMethodCall('createMock');
-        $methodCall->args[] = new Arg(new ClassConstFetch($name, 'class'));
+        $methodCall->getArgs()[] = new Arg(new ClassConstFetch($name, 'class'));
 
         $assign = new Assign($propertyFetch, $methodCall);
 
@@ -221,7 +221,7 @@ final class PhpSpecMocksToPHPUnitMocksRector extends AbstractPhpSpecToPHPUnitRec
 
     private function createIsTypeOrIsInstanceOf(StaticCall $staticCall): MethodCall
     {
-        $type = $this->valueResolver->getValue($staticCall->args[0]->value);
+        $type = $this->valueResolver->getValue($staticCall->getArgs()[0]->value);
 
         $name = $this->typeAnalyzer->isPhpReservedType($type) ? 'isType' : 'isInstanceOf';
 

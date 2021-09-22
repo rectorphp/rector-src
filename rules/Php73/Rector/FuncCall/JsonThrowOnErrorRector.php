@@ -93,31 +93,31 @@ CODE_SAMPLE
 
     private function processJsonEncode(FuncCall $funcCall): ?FuncCall
     {
-        if (isset($funcCall->args[1])) {
+        if (isset($funcCall->getArgs()[1])) {
             return null;
         }
 
-        $funcCall->args[1] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
+        $funcCall->getArgs()[1] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
 
         return $funcCall;
     }
 
     private function processJsonDecode(FuncCall $funcCall): ?FuncCall
     {
-        if (isset($funcCall->args[3])) {
+        if (isset($funcCall->getArgs()[3])) {
             return null;
         }
 
         // set default to inter-args
-        if (! isset($funcCall->args[1])) {
-            $funcCall->args[1] = new Arg($this->nodeFactory->createNull());
+        if (! isset($funcCall->getArgs()[1])) {
+            $funcCall->getArgs()[1] = new Arg($this->nodeFactory->createNull());
         }
 
-        if (! isset($funcCall->args[2])) {
-            $funcCall->args[2] = new Arg(new LNumber(512));
+        if (! isset($funcCall->getArgs()[2])) {
+            $funcCall->getArgs()[2] = new Arg(new LNumber(512));
         }
 
-        $funcCall->args[3] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
+        $funcCall->getArgs()[3] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
 
         return $funcCall;
     }

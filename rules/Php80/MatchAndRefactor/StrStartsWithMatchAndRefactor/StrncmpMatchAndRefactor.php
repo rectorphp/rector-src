@@ -76,7 +76,7 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         $strncmpFuncCall = $strStartsWith->getFuncCall();
         $needleExpr = $strStartsWith->getNeedleExpr();
 
-        $secondArgumentValue = $strncmpFuncCall->args[2]->value;
+        $secondArgumentValue = $strncmpFuncCall->getArgs()[2]->value;
         if (! $secondArgumentValue instanceof FuncCall) {
             return false;
         }
@@ -86,8 +86,8 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         }
 
         /** @var FuncCall $strlenFuncCall */
-        $strlenFuncCall = $strncmpFuncCall->args[2]->value;
-        $strlenArgumentValue = $strlenFuncCall->args[0]->value;
+        $strlenFuncCall = $strncmpFuncCall->getArgs()[2]->value;
+        $strlenArgumentValue = $strlenFuncCall->getArgs()[0]->value;
 
         return $this->nodeComparator->areNodesEqual($needleExpr, $strlenArgumentValue);
     }
@@ -96,12 +96,12 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
     {
         $strncmpFuncCall = $strStartsWith->getFuncCall();
 
-        $hardcodedStringNeedle = $strncmpFuncCall->args[1]->value;
+        $hardcodedStringNeedle = $strncmpFuncCall->getArgs()[1]->value;
         if (! $hardcodedStringNeedle instanceof String_) {
             return false;
         }
 
-        $lNumberLength = $strncmpFuncCall->args[2]->value;
+        $lNumberLength = $strncmpFuncCall->getArgs()[2]->value;
         if (! $lNumberLength instanceof LNumber) {
             return false;
         }

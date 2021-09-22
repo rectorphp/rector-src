@@ -109,7 +109,7 @@ CODE_SAMPLE
         }
 
         $strlenFuncCall = $this->nodeFactory->createFuncCall('strlen', [$args[0]]);
-        $funcCall->args[2]->value = new Minus($strlenFuncCall, $args[2]->value->expr);
+        $funcCall->getArgs()[2]->value = new Minus($strlenFuncCall, $args[2]->value->expr);
 
         return $funcCall;
     }

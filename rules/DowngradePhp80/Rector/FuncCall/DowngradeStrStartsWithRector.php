@@ -78,7 +78,7 @@ final class DowngradeStrStartsWithRector extends AbstractRector
 
     private function createStrlenFuncCall(FuncCall $funcCall): FuncCall
     {
-        return new FuncCall(new Name('strlen'), [$funcCall->args[1]]);
+        return new FuncCall(new Name('strlen'), [$funcCall->getArgs()[1]]);
     }
 
     private function createStrncmpFuncCall(FuncCall $funcCall, FuncCall $strlenFuncCall): FuncCall

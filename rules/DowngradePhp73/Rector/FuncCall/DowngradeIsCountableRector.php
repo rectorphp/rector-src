@@ -56,7 +56,7 @@ CODE_SAMPLE
         }
 
         $isArrayFuncCall = $this->nodeFactory->createFuncCall('is_array', $node->args);
-        $instanceof = new Instanceof_($node->args[0]->value, new FullyQualified('Countable'));
+        $instanceof = new Instanceof_($node->getArgs()[0]->value, new FullyQualified('Countable'));
 
         return new BooleanOr($isArrayFuncCall, $instanceof);
     }

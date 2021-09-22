@@ -93,7 +93,7 @@ final class ClassMethodNodeRemover
                 continue;
             }
 
-            unset($staticCall->args[$key]);
+            unset($staticCall->getArgs()[$key]);
         }
     }
 

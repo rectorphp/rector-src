@@ -29,11 +29,11 @@ final class ImplodeAnalyzer
             return false;
         }
 
-        if (! isset($expr->args[1])) {
+        if (! isset($expr->getArgs()[1])) {
             return false;
         }
 
-        $firstArgumentValue = $expr->args[0]->value;
+        $firstArgumentValue = $expr->getArgs()[0]->value;
         if (! $firstArgumentValue instanceof String_) {
             return true;
         }

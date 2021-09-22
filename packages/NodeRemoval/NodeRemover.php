@@ -101,14 +101,14 @@ final class NodeRemover
         }
 
         // already removed
-        if (! isset($node->args[$key])) {
+        if (! isset($node->getArgs()[$key])) {
             return;
         }
 
         // notify about remove node
-        $this->rectorChangeCollector->notifyNodeFileInfo($node->args[$key]);
+        $this->rectorChangeCollector->notifyNodeFileInfo($node->getArgs()[$key]);
 
-        unset($node->args[$key]);
+        unset($node->getArgs()[$key]);
     }
 
     public function removeImplements(Class_ $class, int $key): void

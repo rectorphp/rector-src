@@ -36,7 +36,7 @@ final class NewFluentChainMethodCallNodeAnalyzer
             return null;
         }
 
-        $onlyArgValue = $methodCall->args[0]->value;
+        $onlyArgValue = $methodCall->getArgs()[0]->value;
         if (! $onlyArgValue instanceof New_) {
             return null;
         }

@@ -11,8 +11,8 @@ final class StrStartsWithFactory
 {
     public function createFromFuncCall(FuncCall $funcCall, bool $isPositive): StrStartsWith
     {
-        $haystack = $funcCall->args[0]->value;
-        $needle = $funcCall->args[1]->value;
+        $haystack = $funcCall->getArgs()[0]->value;
+        $needle = $funcCall->getArgs()[1]->value;
 
         return new StrStartsWith($funcCall, $haystack, $needle, $isPositive);
     }

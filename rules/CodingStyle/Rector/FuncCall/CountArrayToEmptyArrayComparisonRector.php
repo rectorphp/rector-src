@@ -72,7 +72,7 @@ CODE_SAMPLE
         }
 
         /** @var Expr $expr */
-        $expr = $node->args[0]->value;
+        $expr = $node->getArgs()[0]->value;
 
         // not pass array type, skip
         if (! $this->isArray($expr)) {
@@ -114,7 +114,7 @@ CODE_SAMPLE
         }
 
         /** @var Expr $expr */
-        $expr = $booleanNot->expr->args[0]->value;
+        $expr = $booleanNot->expr->getArgs()[0]->value;
 
         // not pass array type, skip
         if (! $this->isArray($expr)) {

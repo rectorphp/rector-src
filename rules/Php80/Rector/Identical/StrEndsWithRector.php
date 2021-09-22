@@ -121,10 +121,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $haystack = $substrFuncCall->args[0]->value;
+        $haystack = $substrFuncCall->getArgs()[0]->value;
 
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrFuncCall->args[1]->value, $comparedNeedleExpr) &&
-            ! $this->isHardCodedLNumberAndString($substrFuncCall->args[1]->value, $comparedNeedleExpr)
+        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrFuncCall->getArgs()[1]->value, $comparedNeedleExpr) &&
+            ! $this->isHardCodedLNumberAndString($substrFuncCall->getArgs()[1]->value, $comparedNeedleExpr)
         ) {
             return null;
         }
@@ -146,11 +146,11 @@ CODE_SAMPLE
         }
 
         $substrCompareFuncCall = $funcCallAndExpr->getFuncCall();
-        $haystack = $substrCompareFuncCall->args[0]->value;
-        $needle = $substrCompareFuncCall->args[1]->value;
+        $haystack = $substrCompareFuncCall->getArgs()[0]->value;
+        $needle = $substrCompareFuncCall->getArgs()[1]->value;
 
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrCompareFuncCall->args[2]->value, $needle) &&
-            ! $this->isHardCodedLNumberAndString($substrCompareFuncCall->args[2]->value, $needle)
+        if (! $this->isUnaryMinusStrlenFuncCallArgValue($substrCompareFuncCall->getArgs()[2]->value, $needle) &&
+            ! $this->isHardCodedLNumberAndString($substrCompareFuncCall->getArgs()[2]->value, $needle)
         ) {
             return null;
         }
@@ -176,7 +176,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->nodeComparator->areNodesEqual($funcCall->args[0]->value, $needle);
+        return $this->nodeComparator->areNodesEqual($funcCall->getArgs()[0]->value, $needle);
     }
 
     private function isHardCodedLNumberAndString(Node $substrOffset, Node $needle): bool

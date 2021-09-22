@@ -45,21 +45,21 @@ final class MbStrrposEncodingArgumentPositionRector extends AbstractRector
             return null;
         }
 
-        if (! isset($node->args[2])) {
+        if (! isset($node->getArgs()[2])) {
             return null;
         }
 
-        if (isset($node->args[3])) {
+        if (isset($node->getArgs()[3])) {
             return null;
         }
 
-        $secondArgType = $this->getStaticType($node->args[2]->value);
+        $secondArgType = $this->getStaticType($node->getArgs()[2]->value);
         if ($secondArgType instanceof IntegerType) {
             return null;
         }
 
-        $node->args[3] = $node->args[2];
-        $node->args[2] = new Arg(new LNumber(0));
+        $node->getArgs()[3] = $node->getArgs()[2];
+        $node->getArgs()[2] = new Arg(new LNumber(0));
 
         return $node;
     }

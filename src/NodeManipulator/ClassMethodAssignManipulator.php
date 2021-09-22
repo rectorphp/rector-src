@@ -286,7 +286,7 @@ final class ClassMethodAssignManipulator
         }
 
         // is 1t argument
-        return $node->args[0]->value !== $variable;
+        return $node->getArgs()[0]->value !== $variable;
     }
 
     private function isConstructorWithReference(Node $node, int $argumentPosition): bool

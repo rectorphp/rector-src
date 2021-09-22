@@ -39,6 +39,6 @@ final class FunctionExistsFunCallAnalyzer
         /** @var FuncCall $functionExists */
         $functionExists = $firstParentIf->cond;
 
-        return $this->valueResolver->isValue($functionExists->args[0]->value, $functionName);
+        return $this->valueResolver->isValue($functionExists->getArgs()[0]->value, $functionName);
     }
 }

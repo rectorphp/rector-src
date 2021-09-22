@@ -94,11 +94,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! isset($node->args[$singleCallableInMethodCallToVariable->getArgumentPosition()])) {
+            if (! isset($node->getArgs()[$singleCallableInMethodCallToVariable->getArgumentPosition()])) {
                 continue;
             }
 
-            $arg = $node->args[$singleCallableInMethodCallToVariable->getArgumentPosition()];
+            $arg = $node->getArgs()[$singleCallableInMethodCallToVariable->getArgumentPosition()];
             $argValueType = $this->getStaticType($arg->value);
             if (! $argValueType instanceof ClosureType) {
                 continue;

@@ -77,11 +77,11 @@ CODE_SAMPLE
         }
 
         /** @var String_ $arg0 */
-        $arg0 = $funcCall->args[0]->value;
+        $arg0 = $funcCall->getArgs()[0]->value;
         $arg0Value = $arg0->value;
 
         /** @var Array_ $arg1Value */
-        $arg1Value = $funcCall->args[1]->value;
+        $arg1Value = $funcCall->getArgs()[1]->value;
 
         return new Node\Stmt\Const_([new Const_($arg0Value, $arg1Value)]);
     }

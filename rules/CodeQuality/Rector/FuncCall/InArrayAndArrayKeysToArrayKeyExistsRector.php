@@ -41,7 +41,7 @@ final class InArrayAndArrayKeysToArrayKeyExistsRector extends AbstractRector
             return null;
         }
 
-        $secondArgument = $node->args[1]->value;
+        $secondArgument = $node->getArgs()[1]->value;
         if (! $secondArgument instanceof FuncCall) {
             return null;
         }
@@ -54,12 +54,12 @@ final class InArrayAndArrayKeysToArrayKeyExistsRector extends AbstractRector
             return null;
         }
 
-        $keyArg = $node->args[0];
-        $arrayArg = $node->args[1];
+        $keyArg = $node->getArgs()[0];
+        $arrayArg = $node->getArgs()[1];
 
         /** @var FuncCall $innerFuncCallNode */
         $innerFuncCallNode = $arrayArg->value;
-        $arrayArg = $innerFuncCallNode->args[0];
+        $arrayArg = $innerFuncCallNode->getArgs()[0];
 
         $node->name = new Name('array_key_exists');
         $node->args = [$keyArg, $arrayArg];

@@ -74,7 +74,7 @@ CODE_SAMPLE
         }
 
         // is argument string?
-        $needleArgNode = $node->args[1]->value;
+        $needleArgNode = $node->getArgs()[1]->value;
         if ($this->nodeTypeAnalyzer->isStringTypeExpr($needleArgNode)) {
             return null;
         }
@@ -83,7 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args[1]->value = new String_($node->args[1]->value);
+        $node->getArgs()[1]->value = new String_($node->getArgs()[1]->value);
 
         return $node;
     }

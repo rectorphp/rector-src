@@ -121,11 +121,11 @@ CODE_SAMPLE
             return;
         }
 
-        if (! isset($node->args[$argumentRemover->getPosition()])) {
+        if (! isset($node->getArgs()[$argumentRemover->getPosition()])) {
             return;
         }
 
-        if ($this->isArgumentValueMatch($node->args[$argumentRemover->getPosition()], $match)) {
+        if ($this->isArgumentValueMatch($node->getArgs()[$argumentRemover->getPosition()], $match)) {
             $this->nodeRemover->removeArg($node, $argumentRemover->getPosition());
         }
     }
@@ -133,7 +133,7 @@ CODE_SAMPLE
     private function removeByName(ClassMethod | StaticCall | MethodCall $node, int $position, string $name): void
     {
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
-            if (isset($node->args[$position]) && $this->isName($node->args[$position], $name)) {
+            if (isset($node->getArgs()[$position]) && $this->isName($node->getArgs()[$position], $name)) {
                 $this->nodeRemover->removeArg($node, $position);
             }
 

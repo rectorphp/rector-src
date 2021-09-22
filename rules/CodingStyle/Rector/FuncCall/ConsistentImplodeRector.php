@@ -80,19 +80,19 @@ CODE_SAMPLE
 
         if (count($node->args) === 1) {
             // complete default value ''
-            $node->args[1] = $node->args[0];
-            $node->args[0] = new Arg(new String_(''));
+            $node->getArgs()[1] = $node->getArgs()[0];
+            $node->getArgs()[0] = new Arg(new String_(''));
 
             return $node;
         }
 
-        $firstArgumentValue = $node->args[0]->value;
+        $firstArgumentValue = $node->getArgs()[0]->value;
         if ($firstArgumentValue instanceof String_) {
             return null;
         }
 
         if (count($node->args) === 2 && $this->stringTypeAnalyzer->isStringOrUnionStringOnlyType(
-            $node->args[1]->value
+            $node->getArgs()[1]->value
         )) {
             $node->args = array_reverse($node->args);
         }

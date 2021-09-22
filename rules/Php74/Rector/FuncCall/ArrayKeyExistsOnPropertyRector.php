@@ -66,7 +66,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgStaticType = $this->getStaticType($node->args[1]->value);
+        $firstArgStaticType = $this->getStaticType($node->getArgs()[1]->value);
         if (! $firstArgStaticType instanceof ObjectType) {
             return null;
         }

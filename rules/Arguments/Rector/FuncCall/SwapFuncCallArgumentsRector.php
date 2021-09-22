@@ -93,7 +93,7 @@ CODE_SAMPLE
             }
 
             foreach ($newArguments as $newPosition => $argument) {
-                $node->args[$newPosition] = $argument;
+                $node->getArgs()[$newPosition] = $argument;
             }
 
             $node->setAttribute(self::JUST_SWAPPED, true);
@@ -121,15 +121,15 @@ CODE_SAMPLE
     {
         $newArguments = [];
         foreach ($swapFuncCallArguments->getOrder() as $oldPosition => $newPosition) {
-            if (! isset($funcCall->args[$oldPosition])) {
+            if (! isset($funcCall->getArgs()[$oldPosition])) {
                 continue;
             }
 
-            if (! isset($funcCall->args[$newPosition])) {
+            if (! isset($funcCall->getArgs()[$newPosition])) {
                 continue;
             }
 
-            $newArguments[$newPosition] = $funcCall->args[$oldPosition];
+            $newArguments[$newPosition] = $funcCall->getArgs()[$oldPosition];
         }
 
         return $newArguments;

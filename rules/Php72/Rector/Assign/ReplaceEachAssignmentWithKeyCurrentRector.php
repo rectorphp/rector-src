@@ -68,7 +68,7 @@ CODE_SAMPLE
 
         /** @var FuncCall $eachFuncCall */
         $eachFuncCall = $node->expr;
-        $eachedVariable = $eachFuncCall->args[0]->value;
+        $eachedVariable = $eachFuncCall->getArgs()[0]->value;
 
         $assignVariable = $node->var;
 

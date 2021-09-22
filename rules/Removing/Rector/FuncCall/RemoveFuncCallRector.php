@@ -119,10 +119,10 @@ CODE_SAMPLE
      */
     private function isArgumentPositionValueMatch(FuncCall $funcCall, int $argumentPosition, array $values): bool
     {
-        if (! isset($funcCall->args[$argumentPosition])) {
+        if (! isset($funcCall->getArgs()[$argumentPosition])) {
             return false;
         }
 
-        return $this->valueResolver->isValues($funcCall->args[$argumentPosition]->value, $values);
+        return $this->valueResolver->isValues($funcCall->getArgs()[$argumentPosition]->value, $values);
     }
 }

@@ -177,11 +177,11 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! isset($node->args[0])) {
+                if (! isset($node->getArgs()[0])) {
                     return null;
                 }
 
-                $countedArgument = $node->args[0]->value;
+                $countedArgument = $node->getArgs()[0]->value;
                 if (! $countedArgument instanceof PropertyFetch) {
                     return null;
                 }

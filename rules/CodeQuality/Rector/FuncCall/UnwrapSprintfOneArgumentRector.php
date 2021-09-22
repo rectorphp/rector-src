@@ -52,10 +52,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->args[0]->unpack) {
+        if ($node->getArgs()[0]->unpack) {
             return null;
         }
 
-        return $node->args[0]->value;
+        return $node->getArgs()[0]->value;
     }
 }

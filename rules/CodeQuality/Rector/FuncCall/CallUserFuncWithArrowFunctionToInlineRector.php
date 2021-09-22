@@ -75,7 +75,7 @@ CODE_SAMPLE
         }
 
         // change the node
-        $firstArgValue = $node->args[0]->value;
+        $firstArgValue = $node->getArgs()[0]->value;
         if ($firstArgValue instanceof ArrowFunction) {
             return $firstArgValue->expr;
         }

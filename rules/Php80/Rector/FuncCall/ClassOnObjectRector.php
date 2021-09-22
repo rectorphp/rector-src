@@ -68,11 +68,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return new ClassConstFetch(new Name('self'), 'class');
         }
 
-        $object = $node->args[0]->value;
+        $object = $node->getArgs()[0]->value;
 
         return new ClassConstFetch($object, 'class');
     }

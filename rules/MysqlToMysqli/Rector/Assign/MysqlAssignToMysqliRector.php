@@ -105,7 +105,7 @@ CODE_SAMPLE
     {
         $funcCall->name = new Name(self::MYSQLI_DATA_SEEK);
 
-        $newFuncCall = new FuncCall(new Name('mysql_fetch_array'), [$funcCall->args[0]]);
+        $newFuncCall = new FuncCall(new Name('mysql_fetch_array'), [$funcCall->getArgs()[0]]);
         $newAssignNode = new Assign($assign->var, new ArrayDimFetch($newFuncCall, new LNumber(0)));
 
         $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
@@ -117,7 +117,7 @@ CODE_SAMPLE
     {
         $funcCall->name = new Name(self::MYSQLI_DATA_SEEK);
 
-        $mysqlFetchRowFuncCall = new FuncCall(new Name('mysqli_fetch_row'), [$funcCall->args[0]]);
+        $mysqlFetchRowFuncCall = new FuncCall(new Name('mysqli_fetch_row'), [$funcCall->getArgs()[0]]);
         $fetchVariable = new Variable('fetch');
         $newAssignNode = new Assign($fetchVariable, $mysqlFetchRowFuncCall);
         $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
@@ -132,17 +132,17 @@ CODE_SAMPLE
     {
         $funcCall->name = new Name('mysqli_select_db');
 
-        $newAssignNode = new Assign($assign->var, new FuncCall(new Name('mysqli_query'), [$funcCall->args[1]]));
+        $newAssignNode = new Assign($assign->var, new FuncCall(new Name('mysqli_query'), [$funcCall->getArgs()[1]]));
         $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
 
-        unset($funcCall->args[1]);
+        unset($funcCall->getArgs()[1]);
 
         return $funcCall;
     }
 
     private function processMysqlFetchField(Assign $assign, FuncCall $funcCall): Assign
     {
-        $funcCall->name = isset($funcCall->args[1]) ? new Name('mysqli_fetch_field_direct') : new Name(
+        $funcCall->name = isset($funcCall->getArgs()[1]) ? new Name('mysqli_fetch_field_direct') : new Name(
             'mysqli_fetch_field'
         );
 
@@ -152,14 +152,14 @@ CODE_SAMPLE
     private function processMysqlResult(Assign $assign, FuncCall $funcCall): FuncCall
     {
         $fetchField = null;
-        if (isset($funcCall->args[2])) {
-            $fetchField = $funcCall->args[2]->value;
-            unset($funcCall->args[2]);
+        if (isset($funcCall->getArgs()[2])) {
+            $fetchField = $funcCall->getArgs()[2]->value;
+            unset($funcCall->getArgs()[2]);
         }
 
         $funcCall->name = new Name(self::MYSQLI_DATA_SEEK);
 
-        $mysqlFetchArrayFuncCall = new FuncCall(new Name('mysqli_fetch_array'), [$funcCall->args[0]]);
+        $mysqlFetchArrayFuncCall = new FuncCall(new Name('mysqli_fetch_array'), [$funcCall->getArgs()[0]]);
         $fetchVariable = new Variable('fetch');
         $newAssignNode = new Assign($fetchVariable, $mysqlFetchArrayFuncCall);
         $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);

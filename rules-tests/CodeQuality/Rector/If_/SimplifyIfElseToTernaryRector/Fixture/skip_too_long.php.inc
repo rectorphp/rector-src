@@ -6,7 +6,7 @@ class SkipTooLong
 {
     public function run()
     {
-        if ($this->nodeTypeResolver->isStringyType($staticCall->args[1]->value)) {
+        if ($this->nodeTypeResolver->isStringyType($staticCall->getArgs()[1]->value)) {
             $name = $this->nameResolver->isName(
                 $staticCall,
                 'contains'

@@ -184,7 +184,7 @@ final class TokenManipulator
                 return null;
             }
 
-            if (! $this->nodeComparator->areNodesEqual($node->args[0]->value, $singleTokenVariable)) {
+            if (! $this->nodeComparator->areNodesEqual($node->getArgs()[0]->value, $singleTokenVariable)) {
                 return null;
             }
 
@@ -217,7 +217,7 @@ final class TokenManipulator
                 return null;
             }
 
-            $possibleTokenArray = $node->args[0]->value;
+            $possibleTokenArray = $node->getArgs()[0]->value;
             if (! $possibleTokenArray instanceof ArrayDimFetch) {
                 return null;
             }

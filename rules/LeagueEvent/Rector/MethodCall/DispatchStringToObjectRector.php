@@ -119,12 +119,12 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $this->getStaticType($methodCall->args[0]->value) instanceof StringType;
+        return ! $this->getStaticType($methodCall->getArgs()[0]->value) instanceof StringType;
     }
 
     private function updateNode(MethodCall $methodCall): MethodCall
     {
-        $methodCall->args[0] = new Arg($this->createNewAnonymousEventClass($methodCall->args[0]->value));
+        $methodCall->getArgs()[0] = new Arg($this->createNewAnonymousEventClass($methodCall->getArgs()[0]->value));
         return $methodCall;
     }
 

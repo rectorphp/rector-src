@@ -73,7 +73,7 @@ CODE_SAMPLE
 
     private function refactorArrayKeyFirst(FuncCall $funcCall): FuncCall
     {
-        $array = $funcCall->args[0]->value;
+        $array = $funcCall->getArgs()[0]->value;
 
         $resetFuncCall = $this->nodeFactory->createFuncCall('reset', [$array]);
         $this->nodesToAddCollector->addNodeBeforeNode($resetFuncCall, $funcCall);
@@ -85,7 +85,7 @@ CODE_SAMPLE
 
     private function refactorArrayKeyLast(FuncCall $funcCall): FuncCall
     {
-        $array = $funcCall->args[0]->value;
+        $array = $funcCall->getArgs()[0]->value;
         $resetFuncCall = $this->nodeFactory->createFuncCall('end', [$array]);
         $this->nodesToAddCollector->addNodeBeforeNode($resetFuncCall, $funcCall);
 

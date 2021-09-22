@@ -272,7 +272,7 @@ CODE_SAMPLE
         }
 
         if ($arrayFuncCallToMethodCall->getArrayMethod() && $this->arrayTypeAnalyzer->isArrayType(
-            $funcCall->args[0]->value
+            $funcCall->getArgs()[0]->value
         )) {
             return new MethodCall($propertyFetch, $arrayFuncCallToMethodCall->getArrayMethod(), $funcCall->args);
         }
@@ -281,7 +281,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->arrayTypeAnalyzer->isArrayType($funcCall->args[0]->value)) {
+        if ($this->arrayTypeAnalyzer->isArrayType($funcCall->getArgs()[0]->value)) {
             return null;
         }
 

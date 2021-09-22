@@ -68,19 +68,19 @@ CODE_SAMPLE
 
         if ($this->isName($node, 'mysql_list_dbs')) {
             $node->name = new Name(self::MYSQLI_QUERY);
-            $node->args[0] = new Arg(new String_('SHOW DATABASES'));
+            $node->getArgs()[0] = new Arg(new String_('SHOW DATABASES'));
         }
 
         if ($this->isName($node, 'mysql_list_fields')) {
             $node->name = new Name(self::MYSQLI_QUERY);
-            $node->args[0]->value = $this->joinStringWithNode('SHOW COLUMNS FROM', $node->args[1]->value);
+            $node->getArgs()[0]->value = $this->joinStringWithNode('SHOW COLUMNS FROM', $node->getArgs()[1]->value);
 
-            unset($node->args[1]);
+            unset($node->getArgs()[1]);
         }
 
         if ($this->isName($node, 'mysql_list_tables')) {
             $node->name = new Name(self::MYSQLI_QUERY);
-            $node->args[0]->value = $this->joinStringWithNode('SHOW TABLES FROM', $node->args[0]->value);
+            $node->getArgs()[0]->value = $this->joinStringWithNode('SHOW TABLES FROM', $node->getArgs()[0]->value);
         }
 
         return $node;
@@ -89,7 +89,7 @@ CODE_SAMPLE
     private function processMysqlCreateDb(FuncCall $funcCall): FuncCall
     {
         $funcCall->name = new Name(self::MYSQLI_QUERY);
-        $funcCall->args[0]->value = $this->joinStringWithNode('CREATE DATABASE', $funcCall->args[0]->value);
+        $funcCall->getArgs()[0]->value = $this->joinStringWithNode('CREATE DATABASE', $funcCall->getArgs()[0]->value);
 
         return $funcCall;
     }
@@ -97,7 +97,7 @@ CODE_SAMPLE
     private function processMysqlDropDb(FuncCall $funcCall): FuncCall
     {
         $funcCall->name = new Name(self::MYSQLI_QUERY);
-        $funcCall->args[0]->value = $this->joinStringWithNode('DROP DATABASE', $funcCall->args[0]->value);
+        $funcCall->getArgs()[0]->value = $this->joinStringWithNode('DROP DATABASE', $funcCall->getArgs()[0]->value);
 
         return $funcCall;
     }

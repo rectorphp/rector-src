@@ -78,13 +78,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($node->args[1])) {
+        if (! isset($node->getArgs()[1])) {
             return null;
         }
 
-        $secondArgValue = $node->args[1]->value;
+        $secondArgValue = $node->getArgs()[1]->value;
         if ($this->valueResolver->isTrue($secondArgValue)) {
-            $node->args[1]->value = $this->nodeFactory->createClassConstFetch(
+            $node->getArgs()[1]->value = $this->nodeFactory->createClassConstFetch(
                 'Carbon\CarbonInterface',
                 'DIFF_ABSOLUTE'
             );
@@ -92,7 +92,7 @@ CODE_SAMPLE
         }
 
         if ($this->valueResolver->isFalse($secondArgValue)) {
-            $node->args[1]->value = $this->nodeFactory->createClassConstFetch(
+            $node->getArgs()[1]->value = $this->nodeFactory->createClassConstFetch(
                 'Carbon\CarbonInterface',
                 'DIFF_RELATIVE_AUTO'
             );

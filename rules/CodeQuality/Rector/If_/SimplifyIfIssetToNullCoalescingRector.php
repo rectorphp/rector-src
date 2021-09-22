@@ -108,11 +108,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($firstAssign->expr->args[0]->value, $valueNode)) {
+        if (! $this->nodeComparator->areNodesEqual($firstAssign->expr->getArgs()[0]->value, $valueNode)) {
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($secondAssign->expr, $firstAssign->expr->args[1]->value)) {
+        if (! $this->nodeComparator->areNodesEqual($secondAssign->expr, $firstAssign->expr->getArgs()[1]->value)) {
             return null;
         }
 

@@ -75,8 +75,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArgValue = $node->args[0]->value;
-        $secondArgValue = $node->args[1]->value;
+        $firstArgValue = $node->getArgs()[0]->value;
+        $secondArgValue = $node->getArgs()[1]->value;
 
         if ($firstArgValue instanceof String_) {
             $functionName = $this->valueResolver->getValue($firstArgValue);
@@ -111,7 +111,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $methodCall->args[] = $this->createUnpackedArg($secondExpr);
+        $methodCall->getArgs()[] = $this->createUnpackedArg($secondExpr);
         return $methodCall;
     }
 

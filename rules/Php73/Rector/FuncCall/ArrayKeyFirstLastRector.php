@@ -114,7 +114,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->nodeComparator->areNodesEqual($resetOrEndFuncCall->args[0], $node->args[0]);
+            return $this->nodeComparator->areNodesEqual($resetOrEndFuncCall->getArgs()[0], $node->getArgs()[0]);
         });
 
         if (! $keyFuncCall instanceof FuncCall) {

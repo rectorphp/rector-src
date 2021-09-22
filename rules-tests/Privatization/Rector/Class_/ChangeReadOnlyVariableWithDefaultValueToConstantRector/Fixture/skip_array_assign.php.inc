@@ -10,7 +10,7 @@ class SkipArrayAssign
         $labelFilters = [];
         if ($label instanceof FuncCall && $this->isName($label, '__')) {
             $labelFilters[] = 'trans';
-            $label = $label->args[0]->value;
+            $label = $label->getArgs()[0]->value;
         }
     }
 }

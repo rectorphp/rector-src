@@ -77,7 +77,7 @@ CODE_SAMPLE
 
         $tempVariable = new Variable($tempVariableName);
 
-        $expression = new Expression(new Assign($tempVariable, $node->args[0]->value));
+        $expression = new Expression(new Assign($tempVariable, $node->getArgs()[0]->value));
 
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
         $this->nodesToAddCollector->addNodeBeforeNode($expression, $currentStatement);
@@ -105,6 +105,6 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! isset($staticCall->args[0]);
+        return ! isset($staticCall->getArgs()[0]);
     }
 }

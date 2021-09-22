@@ -145,6 +145,6 @@ CODE_SAMPLE
 
     private function createProphesizeMethodCall(StaticCall $staticCall): MethodCall
     {
-        return $this->nodeFactory->createLocalMethodCall('prophesize', [$staticCall->args[0]]);
+        return $this->nodeFactory->createLocalMethodCall('prophesize', [$staticCall->getArgs()[0]]);
     }
 }

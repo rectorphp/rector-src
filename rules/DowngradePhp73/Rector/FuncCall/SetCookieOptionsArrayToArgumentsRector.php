@@ -98,11 +98,11 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! isset($funcCall->args[2])) {
+        if (! isset($funcCall->getArgs()[2])) {
             return true;
         }
 
-        return ! ($funcCall->args[2]->value instanceof Array_);
+        return ! ($funcCall->getArgs()[2]->value instanceof Array_);
     }
 
     /**
@@ -112,10 +112,10 @@ CODE_SAMPLE
     {
         $this->highestIndex = 1;
 
-        $newArgs = [$funcCall->args[0], $funcCall->args[1]];
+        $newArgs = [$funcCall->getArgs()[0], $funcCall->getArgs()[1]];
 
         /** @var Array_ $optionsArray */
-        $optionsArray = $funcCall->args[2]->value;
+        $optionsArray = $funcCall->getArgs()[2]->value;
         /** @var ArrayItem|null $arrayItem */
         foreach ($optionsArray->items as $arrayItem) {
             if ($arrayItem === null) {

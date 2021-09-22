@@ -133,7 +133,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $desiredArg = $methodCall->args[$replaceStringWithClassConstant->getArgPosition()] ?? null;
+        $desiredArg = $methodCall->getArgs()[$replaceStringWithClassConstant->getArgPosition()] ?? null;
         if (! $desiredArg instanceof Arg) {
             return null;
         }

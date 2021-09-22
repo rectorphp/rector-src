@@ -220,7 +220,7 @@ CODE_SAMPLE
             if ($this->nodeNameResolver->isName($funcCall, self::COUNT)) {
                 $this->countValueVariableExpr = $initExpr->var;
                 $this->countValueName = $this->getName($initExpr->var);
-                $this->iteratedExpr = $funcCall->args[0]->value;
+                $this->iteratedExpr = $funcCall->getArgs()[0]->value;
             }
         }
     }
@@ -250,7 +250,7 @@ CODE_SAMPLE
         }
 
         if ($this->nodeNameResolver->isName($funcCall, self::COUNT)) {
-            $this->iteratedExpr = $funcCall->args[0]->value;
+            $this->iteratedExpr = $funcCall->getArgs()[0]->value;
             return true;
         }
 

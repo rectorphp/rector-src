@@ -81,7 +81,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $countedNode = $node->args[0]->value;
+        $countedNode = $node->getArgs()[0]->value;
         if ($this->countableTypeAnalyzer->isCountableType($countedNode)) {
             return null;
         }
@@ -133,11 +133,11 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return true;
         }
 
-        if ($funcCall->args[0]->value instanceof ClassConstFetch) {
+        if ($funcCall->getArgs()[0]->value instanceof ClassConstFetch) {
             return true;
         }
 

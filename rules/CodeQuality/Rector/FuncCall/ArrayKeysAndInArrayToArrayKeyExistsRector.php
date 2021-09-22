@@ -66,7 +66,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $arrayVariable = $node->args[1]->value;
+        $arrayVariable = $node->getArgs()[1]->value;
 
         /** @var Assign|Node|null $previousAssignArraysKeysFuncCall */
         $previousAssignArraysKeysFuncCall = $this->betterNodeFinder->findFirstPreviousOfNode($node, function (
@@ -109,7 +109,7 @@ CODE_SAMPLE
 
     private function createArrayKeyExists(FuncCall $inArrayFuncCall, FuncCall $arrayKeysFuncCall): FuncCall
     {
-        $arguments = [$inArrayFuncCall->args[0], $arrayKeysFuncCall->args[0]];
+        $arguments = [$inArrayFuncCall->getArgs()[0], $arrayKeysFuncCall->getArgs()[0]];
 
         return new FuncCall(new Name('array_key_exists'), $arguments);
     }

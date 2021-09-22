@@ -64,16 +64,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if (isset($node->args[2])) {
+        if (isset($node->getArgs()[2])) {
             return null;
         }
 
-        $firstArgumentStaticType = $this->getStaticType($node->args[0]->value);
+        $firstArgumentStaticType = $this->getStaticType($node->getArgs()[0]->value);
         if (! $firstArgumentStaticType instanceof StringType) {
             return null;
         }
 
-        $node->args[2] = new Arg($this->nodeFactory->createTrue());
+        $node->getArgs()[2] = new Arg($this->nodeFactory->createTrue());
 
         return $node;
     }

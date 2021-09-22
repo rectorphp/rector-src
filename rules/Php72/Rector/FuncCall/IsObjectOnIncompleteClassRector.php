@@ -58,7 +58,7 @@ CODE_SAMPLE
         }
 
         $incompleteClassObjectType = new ObjectType('__PHP_Incomplete_Class');
-        if (! $this->isObjectType($node->args[0]->value, $incompleteClassObjectType)) {
+        if (! $this->isObjectType($node->getArgs()[0]->value, $incompleteClassObjectType)) {
             return null;
         }
 

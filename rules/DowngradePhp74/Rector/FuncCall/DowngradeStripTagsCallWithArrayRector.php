@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $allowableTagsParam = $node->args[1]->value;
+        $allowableTagsParam = $node->getArgs()[1]->value;
 
         if ($allowableTagsParam instanceof Array_) {
             // If it is an array, convert it to string
@@ -142,7 +142,7 @@ CODE_SAMPLE
         }
 
         // Process anything other than String and null (eg: variables, function calls)
-        $allowableTagsParam = $funcCall->args[1]->value;
+        $allowableTagsParam = $funcCall->getArgs()[1]->value;
 
         // Skip for string
         if ($allowableTagsParam instanceof String_) {

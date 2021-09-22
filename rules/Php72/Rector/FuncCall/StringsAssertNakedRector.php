@@ -69,12 +69,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->args[0]->value instanceof String_) {
+        if (! $node->getArgs()[0]->value instanceof String_) {
             return null;
         }
 
         /** @var String_ $stringNode */
-        $stringNode = $node->args[0]->value;
+        $stringNode = $node->getArgs()[0]->value;
 
         $phpCode = '<?php ' . $stringNode->value . ';';
         $contentNodes = $this->parser->parse($phpCode);
@@ -87,7 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args[0] = new Arg($contentNodes[0]->expr);
+        $node->getArgs()[0] = new Arg($contentNodes[0]->expr);
 
         return $node;
     }

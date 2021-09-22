@@ -103,7 +103,7 @@ final class CountManipulator
             return false;
         }
 
-        $countedExpr = $node->args[0]->value;
+        $countedExpr = $node->getArgs()[0]->value;
 
         return $this->nodeComparator->areNodesEqual($countedExpr, $expr);
     }

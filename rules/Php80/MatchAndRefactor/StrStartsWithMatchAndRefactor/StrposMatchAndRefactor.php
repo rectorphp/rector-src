@@ -40,8 +40,8 @@ final class StrposMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
 
             /** @var FuncCall $funcCall */
             $funcCall = $binaryOp->left;
-            $haystack = $funcCall->args[0]->value;
-            $needle = $funcCall->args[1]->value;
+            $haystack = $funcCall->getArgs()[0]->value;
+            $needle = $funcCall->getArgs()[1]->value;
 
             return new StrStartsWith($funcCall, $haystack, $needle, $isPositive);
         }
@@ -53,8 +53,8 @@ final class StrposMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
 
             /** @var FuncCall $funcCall */
             $funcCall = $binaryOp->right;
-            $haystack = $funcCall->args[0]->value;
-            $needle = $funcCall->args[1]->value;
+            $haystack = $funcCall->getArgs()[0]->value;
+            $needle = $funcCall->getArgs()[1]->value;
 
             return new StrStartsWith($funcCall, $haystack, $needle, $isPositive);
         }

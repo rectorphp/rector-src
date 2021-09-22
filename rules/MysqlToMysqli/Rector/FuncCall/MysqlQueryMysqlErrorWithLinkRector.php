@@ -133,7 +133,7 @@ CODE_SAMPLE
 
             if (
                 $node->args === []
-                || ! $this->isProbablyMysql($node->args[0]->value)
+                || ! $this->isProbablyMysql($node->getArgs()[0]->value)
             ) {
                 $connectionVariable = $this->findConnectionVariable($node);
 
@@ -204,7 +204,7 @@ CODE_SAMPLE
         }
 
         $connectionPosition = self::FUNCTION_CONNECTION_PARAMETER_POSITION_MAP[$functionName];
-        unset($funcCall->args[$connectionPosition]);
+        unset($funcCall->getArgs()[$connectionPosition]);
     }
 
     private function isUnionTypeWithResourceSubType(Type $staticType, ResourceType $resourceType): bool

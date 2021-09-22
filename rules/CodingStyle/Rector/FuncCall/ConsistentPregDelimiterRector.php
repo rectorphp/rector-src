@@ -124,7 +124,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $this->refactorArgument($node->args[$position]);
+                $this->refactorArgument($node->getArgs()[$position]);
 
                 return $node;
             }
@@ -145,7 +145,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->refactorArgument($funcCall->args[$position]);
+            $this->refactorArgument($funcCall->getArgs()[$position]);
 
             return $funcCall;
         }

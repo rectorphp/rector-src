@@ -124,26 +124,26 @@ CODE_SAMPLE
         }
 
         // exception is bundled
-        if (isset($new->args[$exceptionArgumentPosition])) {
+        if (isset($new->getArgs()[$exceptionArgumentPosition])) {
             return null;
         }
 
-        if (! isset($new->args[0])) {
+        if (! isset($new->getArgs()[0])) {
             // get previous message
-            $new->args[0] = new Arg(new MethodCall($catchedThrowableVariable, 'getMessage'));
+            $new->getArgs()[0] = new Arg(new MethodCall($catchedThrowableVariable, 'getMessage'));
         }
 
-        if (! isset($new->args[1])) {
+        if (! isset($new->getArgs()[1])) {
             // get previous code
-            $new->args[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
+            $new->getArgs()[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
         }
 
-        $arg1 = $new->args[1];
+        $arg1 = $new->getArgs()[1];
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
-            $new->args[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
-            $new->args[$exceptionArgumentPosition] = $arg1;
+            $new->getArgs()[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
+            $new->getArgs()[$exceptionArgumentPosition] = $arg1;
         } else {
-            $new->args[$exceptionArgumentPosition] = new Arg($catchedThrowableVariable);
+            $new->getArgs()[$exceptionArgumentPosition] = new Arg($catchedThrowableVariable);
         }
 
         // null the node, to fix broken format preserving printers, see https://github.com/rectorphp/rector/issues/5576

@@ -50,11 +50,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($node->args[2])) {
+        if (! isset($node->getArgs()[2])) {
             return null;
         }
 
-        unset($node->args[2]);
+        unset($node->getArgs()[2]);
 
         return $node;
     }

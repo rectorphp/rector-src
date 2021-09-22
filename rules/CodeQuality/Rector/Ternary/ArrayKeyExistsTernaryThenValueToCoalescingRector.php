@@ -95,8 +95,8 @@ CODE_SAMPLE
      */
     private function areArrayKeysExistsArgsMatchingDimFetch(FuncCall $funcCall, ArrayDimFetch $arrayDimFetch): bool
     {
-        $keyExpr = $funcCall->args[0]->value;
-        $valuesExpr = $funcCall->args[1]->value;
+        $keyExpr = $funcCall->getArgs()[0]->value;
+        $valuesExpr = $funcCall->getArgs()[1]->value;
 
         if (! $this->nodeComparator->areNodesEqual($arrayDimFetch->var, $valuesExpr)) {
             return false;

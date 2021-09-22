@@ -92,14 +92,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $typeNode = $this->valueResolver->getValue($node->args[1]->value);
+        $typeNode = $this->valueResolver->getValue($node->getArgs()[1]->value);
         if ($typeNode === null) {
             return null;
         }
 
         $typeNode = strtolower($typeNode);
 
-        $varNode = $node->args[0]->value;
+        $varNode = $node->getArgs()[0]->value;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used

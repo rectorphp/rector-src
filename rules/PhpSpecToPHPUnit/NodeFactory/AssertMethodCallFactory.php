@@ -40,13 +40,13 @@ final class AssertMethodCallFactory
         $assetMethodCall = $this->nodeFactory->createMethodCall('this', $name);
 
         if (! $this->isBoolAssert && $expected) {
-            $assetMethodCall->args[] = new Arg($this->thisToTestedObjectPropertyFetch(
+            $assetMethodCall->getArgs()[] = new Arg($this->thisToTestedObjectPropertyFetch(
                 $expected,
                 $testedObjectPropertyFetch
             ));
         }
 
-        $assetMethodCall->args[] = new Arg($this->thisToTestedObjectPropertyFetch($value, $testedObjectPropertyFetch));
+        $assetMethodCall->getArgs()[] = new Arg($this->thisToTestedObjectPropertyFetch($value, $testedObjectPropertyFetch));
 
         return $assetMethodCall;
     }

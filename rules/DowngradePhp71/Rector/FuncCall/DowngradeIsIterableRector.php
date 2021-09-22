@@ -68,7 +68,7 @@ CODE_SAMPLE
         }
 
         /** @var mixed $arg */
-        $arg = $node->args[0]->value;
+        $arg = $node->getArgs()[0]->value;
         $funcCall = $this->nodeFactory->createFuncCall('is_array', [$arg]);
         $instanceOf = new Instanceof_($arg, new FullyQualified('Traversable'));
 
