@@ -135,6 +135,11 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     private InfiniteLoopValidator $infiniteLoopValidator;
 
+    /**
+     * @var array<string, array<string, bool>>
+     */
+    private array $appliedRulesOnFile = [];
+
     #[Required]
     public function autowireAbstractRector(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -491,7 +496,16 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         $smartFileInfo = $this->file->getSmartFileInfo();
-        return $this->skipper->shouldSkipElementAndFileInfo($this, $smartFileInfo);
+        if ($this->skipper->shouldSkipElementAndFileInfo($this, $smartFileInfo)) {
+            return true;
+        }
+
+        if (isset($this->appliedRulesOnFile[$this::class][$this->file->getSmartFileInfo()->getRealPath()])) {
+            return true;
+        }
+
+        $this->appliedRulesOnFile[$this::class][$this->file->getSmartFileInfo()->getRealPath()] = true;
+        return false;
     }
 
     private function printDebugApplying(): void
