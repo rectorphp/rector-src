@@ -125,11 +125,11 @@ final class PropertyFetchFinder
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
         $propertyFetches = $this->betterNodeFinder->find($nodes, function (Node $node) use ($propertyName): bool {
             // property + static fetch
-            if ($node instanceof PropertyFetch) {
+            if ($node instanceof PropertyFetch && $this->nodeNameResolver->isName($node->var, 'this')) {
                 return $this->nodeNameResolver->isName($node, $propertyName);
             }
 
-            if ($node instanceof StaticPropertyFetch) {
+            if ($node instanceof StaticPropertyFetch && $this->nodeNameResolver->isNames($node->class, ['self', 'this', 'static'])) {
                 return $this->nodeNameResolver->isName($node, $propertyName);
             }
 
