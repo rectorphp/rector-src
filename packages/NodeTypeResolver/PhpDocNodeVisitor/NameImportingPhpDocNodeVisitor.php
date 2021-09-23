@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
@@ -21,6 +22,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -38,6 +40,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private ClassNameImportSkipper $classNameImportSkipper,
         private UseNodesToAddCollector $useNodesToAddCollector,
         private CurrentFileProvider $currentFileProvider,
+        private ClassLikeExistenceChecker $classLikeExistenceChecker,
         private BetterNodeFinder $betterNodeFinder
     ) {
     }
@@ -118,7 +121,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return null;
             }
 
-            if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
+            if ($this->shouldImport($file, $newNode, $identifierTypeNode, $phpParserNode)) {
                 $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
                 return $newNode;
             }
@@ -126,7 +129,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
+        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $phpParserNode)) {
             // do not import twice
             if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
                 return null;
@@ -142,7 +145,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     private function shouldImport(
         File $file,
         IdentifierTypeNode $newNode,
-        IdentifierTypeNode $identifierTypeNode
+        IdentifierTypeNode $identifierTypeNode,
+        PhpParserNode $phpParserNode
     ): bool
     {
         if ($newNode->name === $identifierTypeNode->name) {
@@ -153,17 +157,16 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return true;
         }
 
-        $firstPath = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
-        if ($firstPath === null) {
-            return true;
+        $namespace = $this->betterNodeFinder->findFirstPrevious($phpParserNode, fn(PhpParserNode $subNode): bool => $subNode instanceof Namespace_);
+
+        if ($namespace instanceof Namespace_ && $namespace->name instanceof Name) {
+            $className = $identifierTypeNode->name;
+            $fullName = $namespace->name->toString() . '\\' . $className;
+
+            return $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($fullName);
         }
 
-        if ($firstPath === '') {
-            return true;
-        }
-
-        $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
-        return ! $this->classNameImportSkipper->isFoundInUse(new Name($firstPath), $currentUses);
+        return true;
     }
 
     private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
