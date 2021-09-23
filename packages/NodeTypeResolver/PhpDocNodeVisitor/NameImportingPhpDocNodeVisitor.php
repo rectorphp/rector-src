@@ -157,13 +157,22 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return true;
         }
 
-        $namespace = $this->betterNodeFinder->findFirstPrevious($phpParserNode, fn(PhpParserNode $subNode): bool => $subNode instanceof Namespace_);
+        $firstPath = Strings::before($identifierTypeNode->name, '\\' . $newNode->name);
+        if ($firstPath === null) {
+            return true;
+        }
 
+        if ($firstPath === '') {
+            return true;
+        }
+
+        $namespace = $this->betterNodeFinder->findFirstPrevious($phpParserNode, fn(PhpParserNode $subNode): bool => $subNode instanceof Namespace_);
         if ($namespace instanceof Namespace_ && $namespace->name instanceof Name) {
             $className = $identifierTypeNode->name;
             $fullName = $namespace->name->toString() . '\\' . $className;
 
-            return $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($fullName);
+            $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
+            return ! $this->classNameImportSkipper->isFoundInUse(new Name($firstPath), $currentUses) && $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($fullName);
         }
 
         return true;
