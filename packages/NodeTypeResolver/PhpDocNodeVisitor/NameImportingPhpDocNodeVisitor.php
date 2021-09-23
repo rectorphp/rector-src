@@ -175,10 +175,9 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             fn (PhpParserNode $subNode): bool => $subNode instanceof Namespace_
         );
         if ($namespace instanceof Namespace_ && $namespace->name instanceof Name) {
-            $fullClassName = $namespace->name->toString() . $identifierTypeNode->name;
             $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
             if (! $this->classNameImportSkipper->isFoundInUse(new Name($className), $currentUses)) {
-                return $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($fullClassName);
+                return false;
             }
         }
 
