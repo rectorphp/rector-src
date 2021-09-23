@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6701\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-final class UnusedPrivateProperty
+class RemoveOnlyPrivateProperty
 {
     public \stdClass $dataProperty;
 
@@ -16,9 +16,9 @@ final class UnusedPrivateProperty
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6701\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-final class UnusedPrivateProperty
+class RemoveOnlyPrivateProperty
 {
     public \stdClass $dataProperty;
 
