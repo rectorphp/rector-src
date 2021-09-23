@@ -500,11 +500,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return true;
         }
 
-        if (isset($this->appliedRulesOnFile[$this::class][$this->file->getSmartFileInfo()->getRealPath()])) {
+        $hash = spl_object_hash($node);
+        if (isset($this->appliedRulesOnFile[static::class][$smartFileInfo->getRealPath()][$hash])) {
             return true;
         }
 
-        $this->appliedRulesOnFile[$this::class][$this->file->getSmartFileInfo()->getRealPath()] = true;
+        $this->appliedRulesOnFile[static::class][$smartFileInfo->getRealPath()][$hash] = true;
         return false;
     }
 
