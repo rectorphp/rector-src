@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
@@ -39,7 +38,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private ClassNameImportSkipper $classNameImportSkipper,
         private UseNodesToAddCollector $useNodesToAddCollector,
         private CurrentFileProvider $currentFileProvider,
-        private ClassLikeExistenceChecker $classLikeExistenceChecker,
         private BetterNodeFinder $betterNodeFinder
     ) {
     }
@@ -120,7 +118,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return null;
             }
 
-            if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
+            if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
                 $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
                 return $newNode;
             }
@@ -128,7 +126,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
+        if ($this->shouldImport($file, $newNode, $identifierTypeNode)) {
             // do not import twice
             if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
                 return null;
@@ -144,8 +142,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     private function shouldImport(
         File $file,
         IdentifierTypeNode $newNode,
-        IdentifierTypeNode $identifierTypeNode,
-        FullyQualifiedObjectType $fullyQualifiedObjectType
+        IdentifierTypeNode $identifierTypeNode
     ): bool
     {
         if ($newNode->name === $identifierTypeNode->name) {
