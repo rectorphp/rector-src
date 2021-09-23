@@ -7,6 +7,8 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -161,7 +163,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
-        return $this->classNameImportSkipper->isFoundInUse(new Name($firstPath), $currentUses);
+        return ! $this->classNameImportSkipper->isFoundInUse(new Name($firstPath), $currentUses);
     }
 
     private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
