@@ -133,12 +133,15 @@ final class PropertyFetchFinder
             if ($node instanceof PropertyFetch && $this->nodeNameResolver->isName($node->var, self::THIS)) {
                 return $this->nodeNameResolver->isName($node, $propertyName);
             }
+
             if (! $node instanceof StaticPropertyFetch) {
                 return false;
             }
+
             if (! $this->nodeNameResolver->isNames($node->class, ['self', self::THIS, 'static'])) {
                 return false;
             }
+
             return $this->nodeNameResolver->isName($node, $propertyName);
         });
 
