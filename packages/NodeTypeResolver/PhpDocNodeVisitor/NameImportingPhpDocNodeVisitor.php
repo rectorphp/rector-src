@@ -6,9 +6,6 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
 use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -19,7 +16,6 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -39,8 +35,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private ClassNameImportSkipper $classNameImportSkipper,
         private UseNodesToAddCollector $useNodesToAddCollector,
         private CurrentFileProvider $currentFileProvider,
-        private ClassLikeExistenceChecker $classLikeExistenceChecker,
-        private BetterNodeFinder $betterNodeFinder
+        private ClassLikeExistenceChecker $classLikeExistenceChecker
     ) {
     }
 
