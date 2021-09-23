@@ -121,7 +121,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return null;
             }
 
-            if ($this->shouldImport($file, $newNode, $identifierTypeNode, $phpParserNode)) {
+            if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType, $phpParserNode)) {
                 $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
                 return $newNode;
             }
@@ -129,7 +129,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $phpParserNode)) {
+        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType, $phpParserNode)) {
             // do not import twice
             if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
                 return null;
@@ -146,10 +146,16 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         File $file,
         IdentifierTypeNode $newNode,
         IdentifierTypeNode $identifierTypeNode,
+        FullyQualifiedObjectType $fullyQualifiedObjectType,
         PhpParserNode $phpParserNode
     ): bool
     {
         if ($newNode->name === $identifierTypeNode->name) {
+            return false;
+        }
+
+        $className = $fullyQualifiedObjectType->getClassName();
+        if (! $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($className)) {
             return false;
         }
 
@@ -168,11 +174,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $namespace = $this->betterNodeFinder->findFirstPrevious($phpParserNode, fn(PhpParserNode $subNode): bool => $subNode instanceof Namespace_);
         if ($namespace instanceof Namespace_ && $namespace->name instanceof Name) {
-            $className = $identifierTypeNode->name;
-            $fullName = $namespace->name->toString() . '\\' . $className;
-
+            $fullClassName = $namespace->name->toString() . $identifierTypeNode->name;
             $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
-            return ! $this->classNameImportSkipper->isFoundInUse(new Name($firstPath), $currentUses) && $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($fullName);
+            if (! $this->classNameImportSkipper->isFoundInUse(new Name($className), $currentUses)) {
+                return $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($fullClassName);
+            }
         }
 
         return true;
