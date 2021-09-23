@@ -22,7 +22,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -148,8 +147,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         IdentifierTypeNode $identifierTypeNode,
         FullyQualifiedObjectType $fullyQualifiedObjectType,
         PhpParserNode $phpParserNode
-    ): bool
-    {
+    ): bool {
         if ($newNode->name === $identifierTypeNode->name) {
             return false;
         }
@@ -172,7 +170,10 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return true;
         }
 
-        $namespace = $this->betterNodeFinder->findFirstPrevious($phpParserNode, fn(PhpParserNode $subNode): bool => $subNode instanceof Namespace_);
+        $namespace = $this->betterNodeFinder->findFirstPrevious(
+            $phpParserNode,
+            fn (PhpParserNode $subNode): bool => $subNode instanceof Namespace_
+        );
         if ($namespace instanceof Namespace_ && $namespace->name instanceof Name) {
             $fullClassName = $namespace->name->toString() . $identifierTypeNode->name;
             $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
