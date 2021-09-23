@@ -120,7 +120,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return null;
             }
 
-            if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType, $phpParserNode)) {
+            if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
                 $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
                 return $newNode;
             }
@@ -128,7 +128,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType, $phpParserNode)) {
+        if ($this->shouldImport($file, $newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
             // do not import twice
             if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
                 return null;
@@ -145,8 +145,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         File $file,
         IdentifierTypeNode $newNode,
         IdentifierTypeNode $identifierTypeNode,
-        FullyQualifiedObjectType $fullyQualifiedObjectType,
-        PhpParserNode $phpParserNode
+        FullyQualifiedObjectType $fullyQualifiedObjectType
     ): bool {
         if ($newNode->name === $identifierTypeNode->name) {
             return false;
@@ -170,18 +169,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return true;
         }
 
-        $namespace = $this->betterNodeFinder->findFirstPrevious(
-            $phpParserNode,
-            fn (PhpParserNode $subNode): bool => $subNode instanceof Namespace_
-        );
-        if ($namespace instanceof Namespace_ && $namespace->name instanceof Name) {
-            $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
-            if (! $this->classNameImportSkipper->isFoundInUse(new Name($className), $currentUses)) {
-                return false;
-            }
-        }
-
-        return true;
+        return count(explode('\\', $firstPath)) !== 1;
     }
 
     private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
