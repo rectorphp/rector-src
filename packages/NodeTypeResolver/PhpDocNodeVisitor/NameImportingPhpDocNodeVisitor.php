@@ -164,7 +164,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return true;
         }
 
-        return count(explode('\\', $firstPath)) !== 1;
+        $namespaceParts = explode('\\', ltrim($firstPath, '\\'));
+        return count($namespaceParts) > 1;
     }
 
     private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
