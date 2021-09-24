@@ -406,6 +406,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const STATIC_VISIBILITY_SET_STATE = PhpVersion::PHP_80;
+
+    /**
+     * @var int
+     */
     public const IS_ITERABLE = PhpVersion::PHP_71;
 
     /**
