@@ -215,7 +215,7 @@ final class PhpVersionFeature
     /**
      * @var int
      */
-    public const DEPRECATE_EACH = PhpVersion::PHP_71;
+    public const DEPRECATE_EACH = PhpVersion::PHP_72;
 
     /**
      * @var int
