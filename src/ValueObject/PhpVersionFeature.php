@@ -140,6 +140,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_MKTIME_WITHOUT_ARG = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
     public const ITERABLE_TYPE = PhpVersion::PHP_71;
 
     /**
