@@ -205,6 +205,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_EXTRA_PARAMETERS = PhpVersion::PHP_71;
+
+    /**
+     * @var int
+     */
     public const OBJECT_TYPE = PhpVersion::PHP_72;
 
     /**
