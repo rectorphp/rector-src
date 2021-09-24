@@ -125,6 +125,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_CALL_USER_METHOD = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
     public const ITERABLE_TYPE = PhpVersion::PHP_71;
 
     /**
