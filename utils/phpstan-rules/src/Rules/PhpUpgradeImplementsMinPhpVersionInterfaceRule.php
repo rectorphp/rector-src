@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanRules\Rules;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
@@ -26,7 +27,7 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSympl
      * @var string
      * @see https://regex101.com/r/9d3jGP/1/
      */
-    private const PREFIX_REGEX = '#\\Php\d+#';
+    private const PREFIX_REGEX = '#\\\\Php\d+#';
 
     /**
      * @return array<class-string<Node>>
@@ -48,8 +49,7 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSympl
             return [];
         }
 
-        [, $prefix] = explode('\\', $className);
-        if (! Strings::match($prefix, self::PREFIX_REGEX)) {
+        if (! Strings::match($className, self::PREFIX_REGEX)) {
             return [];
         }
 
