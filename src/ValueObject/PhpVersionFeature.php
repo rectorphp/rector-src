@@ -376,6 +376,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const EXPORT_TO_REFLECTION_FUNCTION = PhpVersion::PHP_74;
+
+    /**
+     * @var int
+     */
     public const UNION_TYPES = PhpVersion::PHP_80;
 
     /**
