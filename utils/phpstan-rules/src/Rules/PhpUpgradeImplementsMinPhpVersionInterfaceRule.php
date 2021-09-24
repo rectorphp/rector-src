@@ -12,9 +12,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\PHPStanRules\Tests\Rules\PhpUpgradeDowngradeImplementsMinPhpVersionInterfaceRule\PhpUpgradeDowngradeImplementsMinPhpVersionInterfaceRule
+ * @see \Rector\PHPStanRules\Tests\Rules\PhpUpgradeImplementsMinPhpVersionInterfaceRule\PhpUpgradeImplementsMinPhpVersionInterfaceRuleTest
  */
-final class PhpUpgradeDowngradeImplementsMinPhpVersionInterfaceRule extends AbstractSymplifyRule
+final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSymplifyRule
 {
     /**
      * @var string
