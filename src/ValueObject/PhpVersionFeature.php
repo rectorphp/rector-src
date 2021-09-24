@@ -260,6 +260,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_UNSET_CAST = PhpVersion::PHP_72;
+
+    /**
+     * @var int
+     */
     public const IS_COUNTABLE = PhpVersion::PHP_73;
 
     /**
