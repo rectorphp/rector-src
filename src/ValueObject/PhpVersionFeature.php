@@ -461,6 +461,11 @@ final class PhpVersionFeature
     public const STR_STARTS_WITH = PhpVersion::PHP_80;
 
     /**
+     * @var int
+     */
+    public const STR_CONTAINS = PhpVersion::PHP_80;
+
+    /**
      * @see https://wiki.php.net/rfc/noreturn_type
      * @var int
      */
