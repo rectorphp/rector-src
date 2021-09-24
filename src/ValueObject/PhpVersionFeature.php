@@ -230,6 +230,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const DEPRECATE_CREATE_FUNCTION = PhpVersion::PHP_72;
+
+    /**
+     * @var int
+     */
     public const IS_COUNTABLE = PhpVersion::PHP_73;
 
     /**
