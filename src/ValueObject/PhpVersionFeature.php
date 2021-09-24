@@ -361,6 +361,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const CHANGE_MB_STRPOS_ARG_POSITION = PhpVersion::PHP_74;
+
+    /**
+     * @var int
+     */
     public const UNION_TYPES = PhpVersion::PHP_80;
 
     /**
