@@ -39,6 +39,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_ZERO_BREAK = PhpVersion::PHP_54;
+
+    /**
+     * @var int
+     */
     public const DATE_TIME_INTERFACE = PhpVersion::PHP_55;
 
     /**
