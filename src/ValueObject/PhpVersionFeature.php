@@ -70,6 +70,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const REQUIRE_DEFAULT_VALUE = PhpVersion::PHP_56;
+
+    /**
+     * @var int
+     */
     public const SCALAR_TYPES = PhpVersion::PHP_70;
 
     /**
