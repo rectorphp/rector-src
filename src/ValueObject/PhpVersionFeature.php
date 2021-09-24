@@ -401,6 +401,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const DEPRECATE_REQUIRED_PARAMETER_AFTER_OPTIONAL = PhpVersion::PHP_80;
+
+    /**
+     * @var int
+     */
     public const IS_ITERABLE = PhpVersion::PHP_71;
 
     /**
