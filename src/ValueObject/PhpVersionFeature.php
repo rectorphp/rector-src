@@ -240,6 +240,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const INVERTED_BOOL_IS_OBJECT_INCOMPLETE_CLASS = PhpVersion::PHP_72;
+
+    /**
+     * @var int
+     */
     public const IS_COUNTABLE = PhpVersion::PHP_73;
 
     /**
