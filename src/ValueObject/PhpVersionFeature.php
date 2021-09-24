@@ -225,6 +225,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_EACH_OUTSIDE_LOOP = PhpVersion::PHP_72;
+
+    /**
+     * @var int
+     */
     public const IS_COUNTABLE = PhpVersion::PHP_73;
 
     /**
