@@ -58,9 +58,11 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSympl
             if (! $implement instanceof FullyQualified) {
                 continue;
             }
+
             if ($implement->toString() !== 'Rector\VersionBonding\Contract\MinPhpVersionInterface') {
                 continue;
             }
+
             return [];
         }
 
