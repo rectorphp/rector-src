@@ -441,6 +441,11 @@ final class PhpVersionFeature
     public const ATTRIBUTES = PhpVersion::PHP_80;
 
     /**
+     * @var int
+     */
+    public const STRINGABLE = PhpVersion::PHP_80;
+
+    /**
      * @see https://wiki.php.net/rfc/noreturn_type
      * @var int
      */
