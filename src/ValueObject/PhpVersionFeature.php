@@ -235,6 +235,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_NULL_ON_GET_CLASS = PhpVersion::PHP_72;
+
+    /**
+     * @var int
+     */
     public const IS_COUNTABLE = PhpVersion::PHP_73;
 
     /**
