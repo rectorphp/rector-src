@@ -356,6 +356,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const FILTER_VAR_TO_ADD_SLASHES = PhpVersion::PHP_74;
+
+    /**
+     * @var int
+     */
     public const UNION_TYPES = PhpVersion::PHP_80;
 
     /**
