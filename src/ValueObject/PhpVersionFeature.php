@@ -200,6 +200,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const BINARY_OP_NUMBER_STRING = PhpVersion::PHP_71;
+
+    /**
+     * @var int
+     */
     public const OBJECT_TYPE = PhpVersion::PHP_72;
 
     /**
