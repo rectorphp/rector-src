@@ -24,6 +24,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const SERVER_VAR = PhpVersion::PHP_53;
+
+    /**
+     * @var int
+     */
     public const DIR_CONSTANT = PhpVersion::PHP_53;
 
     /**
