@@ -195,6 +195,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_ASSIGN_ARRAY_TO_STRING = PhpVersion::PHP_71;
+
+    /**
+     * @var int
+     */
     public const OBJECT_TYPE = PhpVersion::PHP_72;
 
     /**
