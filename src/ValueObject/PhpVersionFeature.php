@@ -250,6 +250,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const STRING_IN_FIRST_DEFINE_ARG = PhpVersion::PHP_72;
+
+    /**
+     * @var int
+     */
     public const IS_COUNTABLE = PhpVersion::PHP_73;
 
     /**
