@@ -28,8 +28,8 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRuleTest extends AbstractS
      */
     public function provideData(): Iterator
     {
-//        yield [__DIR__ . '/Fixture/SkipDowngradeRector.php', []];
-  //      yield [__DIR__ . '/Fixture/SkipAlreadyImplementsMinPhpVersionRector.php', []];
+        yield [__DIR__ . '/Fixture/SkipDowngradeRector.php', []];
+        yield [__DIR__ . '/Fixture/SkipAlreadyImplementsMinPhpVersionRector.php', []];
         yield [__DIR__ . '/Fixture/SomePhpFeatureRector.php', [
             [sprintf(PhpUpgradeImplementsMinPhpVersionInterfaceRule::ERROR_MESSAGE, 'Rector\Php80\Rector\Class_\SomePhpFeatureRector'), 7]
         ]];
