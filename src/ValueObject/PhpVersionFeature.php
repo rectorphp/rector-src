@@ -396,6 +396,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_FINAL_PRIVATE = PhpVersion::PHP_80;
+
+    /**
+     * @var int
+     */
     public const IS_ITERABLE = PhpVersion::PHP_71;
 
     /**
