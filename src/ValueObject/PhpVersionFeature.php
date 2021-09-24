@@ -285,6 +285,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const DEPRECATE_INSENSITIVE_CONSTANT_NAME = PhpVersion::PHP_73;
+
+    /**
+     * @var int
+     */
     public const ARROW_FUNCTION = PhpVersion::PHP_74;
 
     /**
