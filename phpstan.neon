@@ -529,6 +529,3 @@ parameters:
                 - packages/FileFormatter/ValueObject/NewLine.php #15
                 - src/Application/VersionResolver.php #16
                 - utils/compiler/src/Unprefixer.php #9
-
-        # on purpose due polyfill usage
-        - '#Rule Rector\\Php73\\Rector\\BooleanOr\\IsCountableRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
