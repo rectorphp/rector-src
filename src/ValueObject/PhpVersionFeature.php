@@ -135,6 +135,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const VARIABLE_ON_FUNC_CALL = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
     public const ITERABLE_TYPE = PhpVersion::PHP_71;
 
     /**
