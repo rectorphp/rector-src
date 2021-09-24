@@ -9,6 +9,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const PROPERTY_MODIFIER = PhpVersion::PHP_52;
+
+    /**
+     * @var int
+     */
     public const DIR_CONSTANT = PhpVersion::PHP_53;
 
     /**
