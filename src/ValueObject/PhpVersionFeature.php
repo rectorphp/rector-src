@@ -165,6 +165,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const WRAP_VARIABLE_VARIABLE = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
     public const ITERABLE_TYPE = PhpVersion::PHP_71;
 
     /**
