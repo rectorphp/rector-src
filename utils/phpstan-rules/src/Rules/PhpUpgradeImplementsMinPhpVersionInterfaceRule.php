@@ -43,12 +43,16 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSympl
         return new RuleDefinition(self::ERROR_MESSAGE, [
             new CodeSample(
                 <<<'CODE_SAMPLE'
+namespace Rector\Php80\Rector\Switch_;
+
 final class ChangeSwitchToMatchRector extends AbstractRector
 {
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
+namespace Rector\Php80\Rector\Switch_;
+
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
 final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVersionInterface
