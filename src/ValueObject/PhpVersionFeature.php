@@ -160,6 +160,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_MULTIPLE_DEFAULT_SWITCH = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
     public const ITERABLE_TYPE = PhpVersion::PHP_71;
 
     /**
