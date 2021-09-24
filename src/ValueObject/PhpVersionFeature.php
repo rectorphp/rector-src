@@ -215,6 +215,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const DEPRECATE_EACH = PhpVersion::PHP_71;
+
+    /**
+     * @var int
+     */
     public const OBJECT_TYPE = PhpVersion::PHP_72;
 
     /**
