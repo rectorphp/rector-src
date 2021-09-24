@@ -371,6 +371,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const REFLECTION_TYPE_GETNAME = PhpVersion::PHP_74;
+
+    /**
+     * @var int
+     */
     public const UNION_TYPES = PhpVersion::PHP_80;
 
     /**
