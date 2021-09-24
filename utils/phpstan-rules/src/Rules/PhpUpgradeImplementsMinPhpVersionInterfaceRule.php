@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPStanRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use Symplify\PHPStanRules\Rules\AbstractSymplifyRule;
@@ -22,6 +23,12 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSympl
     public const ERROR_MESSAGE = 'Rule %s must implements Rector\VersionBonding\Contract\MinPhpVersionInterface';
 
     /**
+     * @var string
+     * @see https://regex101.com/r/9d3jGP/1/
+     */
+    private const PREFIX_REGEX = '#\\Php\d+#';
+
+    /**
      * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
@@ -35,7 +42,25 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSympl
      */
     public function process(Node $node, Scope $scope): array
     {
-        return [];
+        /** @var string $className */
+        $className = (string) $node->namespacedName;
+        if (! str_ends_with($className, 'Rector')) {
+            return [];
+        }
+
+        [, $prefix] = explode('\\', $className);
+        if (! Strings::match($prefix, self::PREFIX_REGEX)) {
+            return [];
+        }
+
+        $implements = $node->implements;
+        foreach ($implements as $implement) {
+            if ($implement instanceof FullyQualified && $implement->toString() === 'Rector\VersionBonding\Contract\MinPhpVersionInterface') {
+                return [];
+            }
+        }
+
+        return [sprintf(self::ERROR_MESSAGE, $className)];
     }
 
     public function getRuleDefinition(): RuleDefinition
