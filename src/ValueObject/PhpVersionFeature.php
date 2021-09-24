@@ -57,6 +57,11 @@ final class PhpVersionFeature
      */
     public const CLASSNAME_CONSTANT = PhpVersion::PHP_55;
 
+    /*
+    * @var int
+    */
+   public const PREG_REPLACE_CALLBACK_E_MODIFIER = PhpVersion::PHP_55;
+
     /**
      * @var int
      */
