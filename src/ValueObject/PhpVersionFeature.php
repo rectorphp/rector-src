@@ -130,6 +130,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_EREG_FUNCTION = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
     public const ITERABLE_TYPE = PhpVersion::PHP_71;
 
     /**
