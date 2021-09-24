@@ -210,6 +210,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const RESERVED_OBJECT_KEYWORD = PhpVersion::PHP_71;
+
+    /**
+     * @var int
+     */
     public const OBJECT_TYPE = PhpVersion::PHP_72;
 
     /**
