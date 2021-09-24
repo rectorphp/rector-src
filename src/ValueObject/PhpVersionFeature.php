@@ -19,6 +19,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const NO_REFERENCE_IN_NEW = PhpVersion::PHP_53;
+
+    /**
+     * @var int
+     */
     public const DIR_CONSTANT = PhpVersion::PHP_53;
 
     /**
