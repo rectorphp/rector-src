@@ -14,6 +14,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const CONTINUE_TO_BREAK = PhpVersion::PHP_52;
+
+    /**
+     * @var int
+     */
     public const DIR_CONSTANT = PhpVersion::PHP_53;
 
     /**
