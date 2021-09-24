@@ -55,9 +55,13 @@ final class PhpUpgradeImplementsMinPhpVersionInterfaceRule extends AbstractSympl
 
         $implements = $node->implements;
         foreach ($implements as $implement) {
-            if ($implement instanceof FullyQualified && $implement->toString() === 'Rector\VersionBonding\Contract\MinPhpVersionInterface') {
-                return [];
+            if (! $implement instanceof FullyQualified) {
+                continue;
             }
+            if ($implement->toString() !== 'Rector\VersionBonding\Contract\MinPhpVersionInterface') {
+                continue;
+            }
+            return [];
         }
 
         return [sprintf(self::ERROR_MESSAGE, $className)];
