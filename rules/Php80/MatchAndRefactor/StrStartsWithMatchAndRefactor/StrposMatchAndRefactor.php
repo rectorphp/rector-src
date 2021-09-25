@@ -67,6 +67,8 @@ final class StrposMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
         if (! $this->valueResolver->isValue($binaryOp->right, 0)) {
             return null;
         }
+
+        /** @var FuncCall $funcCall */
         $funcCall = $binaryOp->left;
         if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($funcCall->args, [0, 1])) {
             return null;
