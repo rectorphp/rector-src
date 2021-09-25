@@ -142,9 +142,11 @@ CODE_SAMPLE
         if (count($funcCall->args) < 2) {
             return true;
         }
+
         if (! isset($funcCall->args[1])) {
             return true;
         }
+
         if (! $funcCall->args[1] instanceof Arg) {
             return true;
         }
