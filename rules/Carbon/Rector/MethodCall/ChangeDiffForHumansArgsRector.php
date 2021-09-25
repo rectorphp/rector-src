@@ -78,9 +78,11 @@ CODE_SAMPLE
         if (! $this->isName($node->name, 'diffForHumans')) {
             return null;
         }
+
         if (! isset($node->args[1])) {
             return null;
         }
+
         if (! $node->args[1] instanceof Arg) {
             return null;
         }
