@@ -28,7 +28,7 @@ class SomeClass3
     public function run()
     {
         /**
-         * @var \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SecondNamespace\SomeServiceClass $someService
+         * @var SomeServiceClass $someService
          */
         $someService = new SomeServiceClass();
     }
