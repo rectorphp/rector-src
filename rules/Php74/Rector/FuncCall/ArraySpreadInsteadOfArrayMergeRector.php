@@ -149,8 +149,10 @@ CODE_SAMPLE
     private function resolveValue(Expr $expr): Expr
     {
         if ($expr instanceof FuncCall && $this->isIteratorToArrayFuncCall($expr)) {
+            /** @var Arg $arg */
+            $arg = $expr->args[0];
             /** @var FuncCall $expr */
-            $expr = $expr->args[0]->value;
+            $expr = $arg->value;
         }
 
         if (! $expr instanceof Ternary) {
@@ -199,6 +201,14 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->nodeNameResolver->isName($expr, 'iterator_to_array');
+        if (! $this->nodeNameResolver->isName($expr, 'iterator_to_array')) {
+            return false;
+        }
+
+        if (! isset($expr->args[0])) {
+            return false;
+        }
+
+        return $expr->args[0] instanceof Arg;
     }
 }
