@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -115,7 +116,7 @@ CODE_SAMPLE
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $varTagValueNode = $phpDocInfo->getVarTagValueNode();
 
-            if ($varTagValueNode instanceof VarTagValueNode && $varTagValueNode->type instanceof IdentifierTypeNode && ! str_contains(
+            if ($this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES) && $varTagValueNode instanceof VarTagValueNode && $varTagValueNode->type instanceof IdentifierTypeNode && ! str_contains(
                 $varTagValueNode->type->name,
                 '\\'
             )) {
