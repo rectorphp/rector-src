@@ -6,11 +6,15 @@ namespace Rector\Renaming\Rector\Name;
 
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Use_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -35,6 +39,8 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
      * @var string
      */
     public const CLASS_MAP_FILES = 'class_map_files';
+
+    private bool $classDocImported = false;
 
     public function __construct(
         private RenamedClassesDataCollector $renamedClassesDataCollector,
@@ -94,16 +100,51 @@ CODE_SAMPLE
             ClassLike::class,
             Namespace_::class,
             FileWithoutNamespace::class,
+            Use_::class,
         ];
     }
 
     /**
-     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace $node
+     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace|Use_ $node
      */
     public function refactor(Node $node): ?Node
     {
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
-        return $this->classRenamer->renameNode($node, $oldToNewClasses);
+
+        if (! $node instanceof Use_) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+            $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+
+            if ($varTagValueNode instanceof VarTagValueNode && $varTagValueNode->type instanceof IdentifierTypeNode && ! str_contains(
+                $varTagValueNode->type->name,
+                '\\'
+            )) {
+                $this->classDocImported = true;
+            }
+
+            return $this->classRenamer->renameNode($node, $oldToNewClasses);
+        }
+
+        if (! $this->classDocImported) {
+            return null;
+        }
+
+        return $this->processCleanUpUse($node, $oldToNewClasses);
+    }
+
+    /**
+     * @param array<string, string> $oldToNewClasses
+     */
+    private function processCleanUpUse(Use_ $node, array $oldToNewClasses): Use_
+    {
+        foreach ($node->uses as $useUse) {
+            if ($useUse->name instanceof Name && ! $useUse->alias instanceof Identifier && isset($oldToNewClasses[$useUse->name->toString()])) {
+                $this->removeNode($node);
+                break;
+            }
+        }
+
+        return $node;
     }
 
     /**
