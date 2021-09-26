@@ -17,6 +17,11 @@ class SomeClass4
          * @var SomeServiceClass $someService
          */
         $someService2 = get_service2();
+
+        /**
+         * @var SomeServiceClass $someService
+         */
+        $someService3 = get_service2();
     }
 }
 
@@ -41,6 +46,11 @@ class SomeClass4
          * @var SomeServiceClass $someService
          */
         $someService2 = get_service2();
+
+        /**
+         * @var SomeServiceClass $someService
+         */
+        $someService3 = get_service2();
     }
 }
 

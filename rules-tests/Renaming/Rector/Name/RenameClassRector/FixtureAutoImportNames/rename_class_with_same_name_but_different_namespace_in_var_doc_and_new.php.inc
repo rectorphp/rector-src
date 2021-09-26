@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\FirstNamespace\SomeServiceClass;
 
-class SomeClass3
+class RenameClassWithSameNameButDifferentNamespaceInVarDocAndNew
 {
     public function run()
     {
@@ -23,7 +23,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SecondNamespace\SomeServiceClass;
 
-class SomeClass3
+class RenameClassWithSameNameButDifferentNamespaceInVarDocAndNew
 {
     public function run()
     {
