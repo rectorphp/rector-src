@@ -79,7 +79,7 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         $strncmpFuncCall = $strStartsWith->getFuncCall();
         $needleExpr = $strStartsWith->getNeedleExpr();
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($strncmpFuncCall->args, [0, 2])) {
+        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($strncmpFuncCall->args, 2)) {
             return false;
         }
 
@@ -96,7 +96,7 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
 
         /** @var FuncCall $strlenFuncCall */
         $strlenFuncCall = $thirdArg->value;
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($strncmpFuncCall->args, 0)) {
+        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($strlenFuncCall->args, 0)) {
             return false;
         }
 
