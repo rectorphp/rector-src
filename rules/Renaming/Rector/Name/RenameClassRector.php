@@ -135,16 +135,16 @@ CODE_SAMPLE
     /**
      * @param array<string, string> $oldToNewClasses
      */
-    private function processCleanUpUse(Use_ $node, array $oldToNewClasses): Use_
+    private function processCleanUpUse(Use_ $node, array $oldToNewClasses): ?Use_
     {
         foreach ($node->uses as $useUse) {
             if ($useUse->name instanceof Name && ! $useUse->alias instanceof Identifier && isset($oldToNewClasses[$useUse->name->toString()])) {
                 $this->removeNode($node);
-                break;
+                return $node;
             }
         }
 
-        return $node;
+        return null;
     }
 
     /**
