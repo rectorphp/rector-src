@@ -113,13 +113,7 @@ CODE_SAMPLE
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
 
         if (! $node instanceof Use_) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-
-            if ($this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES) && $varTagValueNode instanceof VarTagValueNode && $varTagValueNode->type instanceof IdentifierTypeNode && ! str_contains(
-                $varTagValueNode->type->name,
-                '\\'
-            )) {
+            if ($this->shouldClassDocImported($node)) {
                 $this->classDocImported = true;
             }
 
@@ -131,21 +125,6 @@ CODE_SAMPLE
         }
 
         return $this->processCleanUpUse($node, $oldToNewClasses);
-    }
-
-    /**
-     * @param array<string, string> $oldToNewClasses
-     */
-    private function processCleanUpUse(Use_ $node, array $oldToNewClasses): ?Use_
-    {
-        foreach ($node->uses as $useUse) {
-            if ($useUse->name instanceof Name && ! $useUse->alias instanceof Identifier && isset($oldToNewClasses[$useUse->name->toString()])) {
-                $this->removeNode($node);
-                return $node;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -164,6 +143,43 @@ CODE_SAMPLE
             $oldToNewClasses = require_once $classMapFile;
             $this->addOldToNewClasses($oldToNewClasses);
         }
+    }
+
+    private function shouldClassDocImported(
+        FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace $node
+    ): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+
+        if (! $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
+            return false;
+        }
+
+        if (! $varTagValueNode instanceof VarTagValueNode) {
+            return false;
+        }
+
+        if (! $varTagValueNode->type instanceof IdentifierTypeNode) {
+            return false;
+        }
+
+        return ! str_contains($varTagValueNode->type->name, '\\');
+    }
+
+    /**
+     * @param array<string, string> $oldToNewClasses
+     */
+    private function processCleanUpUse(Use_ $use, array $oldToNewClasses): ?Use_
+    {
+        foreach ($use->uses as $useUse) {
+            if ($useUse->name instanceof Name && ! $useUse->alias instanceof Identifier && isset($oldToNewClasses[$useUse->name->toString()])) {
+                $this->removeNode($use);
+                return $use;
+            }
+        }
+
+        return null;
     }
 
     /**
