@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
@@ -90,9 +89,6 @@ CODE_SAMPLE
         }
 
         $firstArg = $node->args[0];
-        if (! $firstArg instanceof Arg) {
-            return null;
-        }
 
         $firstValue = $firstArg->value;
         $firstValueStaticType = $this->getStaticType($firstValue);
@@ -145,9 +141,6 @@ CODE_SAMPLE
         $this->arrayCompacter->compactStringToVariableArray($array);
 
         $firstArg = $funcCall->args[0];
-        if (! $firstArg instanceof Arg) {
-            return null;
-        }
 
         $assignVariable = $firstArg->value;
         $preAssign = new Assign($assignVariable, $array);
