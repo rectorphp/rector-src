@@ -124,6 +124,10 @@ CODE_SAMPLE
                     continue;
                 }
 
+                if (! $node->args[$position] instanceof Arg) {
+                    continue;
+                }
+
                 $this->refactorArgument($node->args[$position]);
 
                 return $node;
