@@ -149,6 +149,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (! $funcCall->args[$position] instanceof Arg) {
+                continue;
+            }
+
             $this->refactorArgument($funcCall->args[$position]);
 
             return $funcCall;
