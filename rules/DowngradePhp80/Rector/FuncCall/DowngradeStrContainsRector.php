@@ -22,9 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeStrContainsRector extends AbstractRector
 {
-    public function __construct(private ArgsAnalyzer $argsAnalizer)
-    {
-
+    public function __construct(
+        private ArgsAnalyzer $argsAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -77,7 +77,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalizer->isArgsInstanceInArgsPositions($funcCall->args, [0, 1])) {
+        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($funcCall->args, [0, 1])) {
             return null;
         }
 
