@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
@@ -140,6 +141,7 @@ CODE_SAMPLE
 
         $this->arrayCompacter->compactStringToVariableArray($array);
 
+        /** @var Arg $firstArg */
         $firstArg = $funcCall->args[0];
 
         $assignVariable = $firstArg->value;
