@@ -43,6 +43,10 @@ final class CompactConverter
         $array = new Array_();
 
         foreach ($funcCall->args as $arg) {
+            if (! $arg instanceof Arg) {
+                throw new ShouldNotHappenException();
+            }
+
             /** @var string|null $variableName */
             $variableName = $this->valueResolver->getValue($arg->value);
             if (! is_string($variableName)) {
