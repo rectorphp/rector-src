@@ -66,7 +66,7 @@ CODE_SAMPLE
             return $this->processMysqlDropDb($node);
         }
 
-        if ($this->isName($node, 'mysql_list_dbs') && $node->args[0] instanceof Arg) {
+        if ($this->isName($node, 'mysql_list_dbs')) {
             $node->name = new Name(self::MYSQLI_QUERY);
             $node->args[0] = new Arg(new String_('SHOW DATABASES'));
         }
