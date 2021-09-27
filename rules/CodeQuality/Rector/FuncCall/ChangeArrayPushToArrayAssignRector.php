@@ -80,6 +80,14 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! isset($node->args[0])) {
+            return null;
+        }
+
+        if (! $node->args[0] instanceof Arg) {
+            return null;
+        }
+
         $arrayDimFetch = new ArrayDimFetch($node->args[0]->value);
 
         $position = 1;
