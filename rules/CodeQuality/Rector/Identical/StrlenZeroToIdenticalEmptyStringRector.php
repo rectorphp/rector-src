@@ -20,8 +20,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class StrlenZeroToIdenticalEmptyStringRector extends AbstractRector
 {
-    public function __construct(private ArgsAnalyzer $argsAnalyzer)
-    {
+    public function __construct(
+        private ArgsAnalyzer $argsAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -67,7 +68,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $variable = null;
         if ($node->left instanceof FuncCall) {
             return $this->processLeftIdentical($node, $node->left);
         }
@@ -79,13 +79,13 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processLeftIdentical(Identical $node, FuncCall $funcCall): ?Identical
+    private function processLeftIdentical(Identical $identical, FuncCall $funcCall): ?Identical
     {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
         }
 
-        if (! $this->valueResolver->isValue($node->right, 0)) {
+        if (! $this->valueResolver->isValue($identical->right, 0)) {
             return null;
         }
 
@@ -95,19 +95,19 @@ CODE_SAMPLE
 
         /** @var Arg $firstArg */
         $firstArg = $funcCall->args[0];
+        /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        /** @var Expr $variable */
         return new Identical($variable, new String_(''));
     }
 
-    private function processRightIdentical(Identical $node, FuncCall $funcCall): ?Identical
+    private function processRightIdentical(Identical $identical, FuncCall $funcCall): ?Identical
     {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
         }
 
-        if (! $this->valueResolver->isValue($node->left, 0)) {
+        if (! $this->valueResolver->isValue($identical->left, 0)) {
             return null;
         }
 
@@ -117,9 +117,9 @@ CODE_SAMPLE
 
         /** @var Arg $firstArg */
         $firstArg = $funcCall->args[0];
+        /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        /** @var Expr $variable */
         return new Identical($variable, new String_(''));
     }
 }
