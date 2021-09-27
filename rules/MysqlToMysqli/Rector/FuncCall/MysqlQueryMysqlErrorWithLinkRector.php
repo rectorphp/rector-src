@@ -144,7 +144,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $node->args = array_merge([new Arg($connectionVariable)], $args);
+                $node->args = array_merge([new Arg($connectionVariable)], $node->getArgs());
             }
 
             $node->name = new Name($newFunction);
