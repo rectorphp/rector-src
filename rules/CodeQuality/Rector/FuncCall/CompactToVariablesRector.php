@@ -89,6 +89,7 @@ CODE_SAMPLE
             return $this->compactConverter->convertToArray($node);
         }
 
+        /** @var Arg $firstArg */
         $firstArg = $node->args[0];
 
         $firstValue = $firstArg->value;
