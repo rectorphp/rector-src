@@ -93,6 +93,10 @@ CODE_SAMPLE
         $assign = new Assign($messageVariable, $argValue);
         $this->nodesToAddCollector->addNodeBeforeNode($assign, $node);
 
+        if (! $node->args[0] instanceof Arg) {
+            return null;
+        }
+
         $node->args[0]->value = $messageVariable;
 
         return $node;
