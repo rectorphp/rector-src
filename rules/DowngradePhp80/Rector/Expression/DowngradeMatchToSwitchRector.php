@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\MatchArm;
@@ -84,10 +82,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
-            return null;
-        }
-
         if ($node instanceof Expression) {
             if (! $node->expr instanceof Assign) {
                 return null;
@@ -111,22 +105,6 @@ CODE_SAMPLE
 
         $switchCases = $this->createSwitchCasesFromMatchArms($node, $match->arms);
         return new Switch_($match->cond, $switchCases);
-    }
-
-    private function shouldSkip(Expression|Return_ $node): bool
-    {
-        if ($node->expr instanceof Expr) {
-            // to avoid assign removed when used with DowngradeArraySpreadRector
-            // @see https://github.com/rectorphp/rector-src/pull/928
-            $hasArraySpread = (bool) $this->betterNodeFinder->findFirst(
-                $node->expr,
-                fn (Node $subNode): bool => $subNode instanceof ArrayItem && $subNode->unpack
-            );
-
-            return $hasArraySpread;
-        }
-
-        return false;
     }
 
     /**
