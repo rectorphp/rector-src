@@ -85,6 +85,8 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->expr instanceof Expr) {
+            // to avoid assign removed when used with DowngradeArraySpreadRector
+            // @see https://github.com/rectorphp/rector-src/pull/928
             $hasArraySpread = (bool) $this->betterNodeFinder->findFirst($node->expr, function (Node $subNode): bool {
                 return $subNode instanceof ArrayItem && $subNode->unpack;
             });
