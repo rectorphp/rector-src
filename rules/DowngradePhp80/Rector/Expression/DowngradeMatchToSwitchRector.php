@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\MatchArm;
@@ -16,6 +18,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -82,6 +85,16 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->expr instanceof Expr) {
+            $hasArraySpread = (bool) $this->betterNodeFinder->findFirst($node->expr, function (Node $subNode): bool {
+                return $subNode instanceof ArrayItem && $subNode->unpack;
+            });
+
+            if ($hasArraySpread) {
+                return null;
+            }
+        }
+
         if ($node instanceof Expression) {
             if (! $node->expr instanceof Assign) {
                 return null;
