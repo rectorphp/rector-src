@@ -116,11 +116,10 @@ CODE_SAMPLE
     private function shouldSkip(Expression|Return_ $node): bool
     {
         if ($node->expr instanceof Expr) {
-            $hasArraySpread = (bool) $this->betterNodeFinder->findFirst($node->expr, function (Node $subNode): bool {
-                return $subNode instanceof ArrayItem && $subNode->unpack;
-            });
-
-            return $hasArraySpread;
+            return (bool) $this->betterNodeFinder->findFirst(
+                $node->expr,
+                fn (Node $subNode): bool => $subNode instanceof ArrayItem && $subNode->unpack
+            );
         }
 
         return false;
