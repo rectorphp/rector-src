@@ -112,8 +112,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            $subNodeCurrentStatement = $subNode->getAttribute(AttributeKey::CURRENT_STATEMENT);
-            return $subNodeCurrentStatement instanceof Node;
+            return $this->shouldRefactor($subNode);
         });
 
         return $this->refactorNode($node);
