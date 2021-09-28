@@ -33,6 +33,9 @@ use Traversable;
  */
 final class DowngradeArraySpreadRector extends AbstractRector
 {
+    private bool $shouldIncrement = false;
+    private int $lastPosition = 0;
+
     public function __construct(
         private VariableNaming $variableNaming
     ) {
@@ -103,6 +106,26 @@ CODE_SAMPLE
 
     private function shouldRefactor(Array_ $array): bool
     {
+        $currentStatement = $array->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStatement instanceof Node) {
+            return false;
+        }
+
+        $shouldIncrement = $this->betterNodeFinder->findFirstNext($array, function (Node $subNode) : bool {
+            if (! $subNode instanceof Array_) {
+                return false;
+            }
+
+            $subNodeCurrentStatement = $subNode->getAttribute(AttributeKey::CURRENT_STATEMENT);
+            return $subNodeCurrentStatement instanceof Node;
+        });
+
+        if ($shouldIncrement) {
+            $this->shouldIncrement = true;
+        } else {
+            $this->shouldIncrement = false;
+        }
+
         // Check that any item in the array is the spread
         foreach ($array->items as $item) {
             if (! $item instanceof ArrayItem) {
@@ -203,11 +226,21 @@ CODE_SAMPLE
         // depending on their position.
         // The number can't be at the end of the var name, or it would
         // conflict with the counter (for if that name is already taken)
+
+        if ($this->lastPosition > 0) {
+            $position = $this->lastPosition;
+        }
+
         $variableName = $this->variableNaming->resolveFromNodeWithScopeCountAndFallbackName(
             $array,
             $nodeScope,
             'item' . $position . 'Unpacked'
         );
+
+        if ($this->shouldIncrement) {
+            $this->lastPosition = ++$position;
+        }
+
         // Assign the value to the variable, and replace the element with the variable
         $newVariable = new Variable($variableName);
         $this->nodesToAddCollector->addNodeBeforeNode(new Assign($newVariable, $arrayItem->value), $array);
