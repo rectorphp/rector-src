@@ -48,19 +48,18 @@ PHP;
         // 1. fine php-parser file infos
         $fileInfos = $this->findPhpParserFiles($vendorDir);
 
+        $fileInfos[] = new SplFileInfo(__DIR__ . '/../vendor/symfony/dependency-injection/Loader/Configurator/AbstractConfigurator.php');
         $fileInfos[] = new SplFileInfo(__DIR__ . '/../vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php');
 
         // 2. put first-class usages first
         // @todo
 
-
         // 3. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos);
 
-        dump($preloadFileContent);
-        die;
-
         file_put_contents($buildDirectory . '/preload.php', $preloadFileContent);
+
+        // 4. test it?
     }
 
     /**
