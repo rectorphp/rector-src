@@ -38,7 +38,7 @@ final class DowngradeArraySpreadRector extends AbstractRector
     /**
      * Handle different result in CI
      *
-     * @var array<string, bool>
+     * @var array<string, int>
      */
     private array $lastPositionCurrentFile = [];
 
@@ -107,17 +107,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->refactorNode($node);
-    }
-
-    private function shouldRefactor(Array_ $array): bool
-    {
-        $currentStatement = $array->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStatement instanceof Node) {
-            return false;
-        }
-
-        $shouldIncrement = $this->betterNodeFinder->findFirstNext($array, function (Node $subNode) : bool {
+        $this->shouldIncrement = (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode): bool {
             if (! $subNode instanceof Array_) {
                 return false;
             }
@@ -126,12 +116,11 @@ CODE_SAMPLE
             return $subNodeCurrentStatement instanceof Node;
         });
 
-        if ($shouldIncrement) {
-            $this->shouldIncrement = true;
-        } else {
-            $this->shouldIncrement = false;
-        }
+        return $this->refactorNode($node);
+    }
 
+    private function shouldRefactor(Array_ $array): bool
+    {
         // Check that any item in the array is the spread
         foreach ($array->items as $item) {
             if (! $item instanceof ArrayItem) {
@@ -232,10 +221,9 @@ CODE_SAMPLE
         // depending on their position.
         // The number can't be at the end of the var name, or it would
         // conflict with the counter (for if that name is already taken)
-
-        if (isset($this->lastPositionCurrentFile[$this->file->getSmartFileInfo()->getRealPath()])) {
-            $position = $this->lastPositionCurrentFile[$this->file->getSmartFileInfo()->getRealPath()];
-        }
+        $smartFileInfo = $this->file->getSmartFileInfo();
+        $realPath = $smartFileInfo->getRealPath();
+        $position = $this->lastPositionCurrentFile[$realPath] ?? $position;
 
         $variableName = $this->variableNaming->resolveFromNodeWithScopeCountAndFallbackName(
             $array,
@@ -244,7 +232,7 @@ CODE_SAMPLE
         );
 
         if ($this->shouldIncrement) {
-            $this->lastPositionCurrentFile[$this->file->getSmartFileInfo()->getRealPath()] = ++$position;
+            $this->lastPositionCurrentFile[$realPath] = ++$position;
         }
 
         // Assign the value to the variable, and replace the element with the variable
