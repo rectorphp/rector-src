@@ -38,6 +38,49 @@ declare(strict_types=1);
 
 PHP;
 
+    /**
+     * @var int
+     */
+    private const PRIORITY_LESS_FILE_POSITION = -1;
+
+    /**
+     * These files are parent to another files, so they have to be included first
+     * See https://github.com/rectorphp/rector/issues/6709 for more
+     *
+     * @var string[]
+     */
+    private  const HIGH_PRIORITY_FILES = [
+        'Node.php',
+        'NodeAbstract.php',
+        'Expr.php',
+        'NodeVisitor.php',
+        'NodeVisitorAbstract.php',
+        'Lexer.php',
+        'TokenEmulator.php',
+        'KeywordEmulator.php',
+        'Comment.php',
+        'PrettyPrinterAbstract.php',
+        'Parser.php',
+        'ParserAbstract.php',
+        'ErrorHandler.php',
+        'Stmt.php',
+        'FunctionLike.php',
+        'ClassLike.php',
+        'Builder.php',
+        'TraitUseAdaptation.php',
+        'ComplexType.php',
+        'CallLike.php',
+        'AssignOp.php',
+        'BinaryOp.php',
+        'Name.php',
+        'Scalar.php',
+        'MagicConst.php',
+        'NodeTraverserInterface.php',
+        'Declaration.php',
+        'Builder/FunctionLike.php',
+        'Stmt/FunctionLike.php',
+    ];
+
     public function buildPreloadScript(string $buildDirectory): void
     {
         $vendorDir = $buildDirectory . '/vendor';
@@ -48,18 +91,23 @@ PHP;
         // 1. fine php-parser file infos
         $fileInfos = $this->findPhpParserFiles($vendorDir);
 
+
+        // append ContainerConfiguration to avoid accidental load of prefixed one from another tool
         $fileInfos[] = new SplFileInfo(__DIR__ . '/../vendor/symfony/dependency-injection/Loader/Configurator/AbstractConfigurator.php');
         $fileInfos[] = new SplFileInfo(__DIR__ . '/../vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php');
 
         // 2. put first-class usages first
-        // @todo
+        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo) {
+            $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
+            $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
+
+            return $secondFilePosition <=> $firstFilePosition;
+        });
 
         // 3. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos);
 
         file_put_contents($buildDirectory . '/preload.php', $preloadFileContent);
-
-        // 4. test it?
     }
 
     /**
@@ -103,5 +151,21 @@ PHP;
     {
         $filePath = '/vendor/' . Strings::after($realPath, 'vendor/');
         return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
+    }
+
+    private function matchFilePriorityPosition(SplFileInfo $splFileInfo): int
+    {
+        // to make <=> operator work
+        $highPriorityFiles = array_reverse(self::HIGH_PRIORITY_FILES);
+
+        $fileRealPath = $splFileInfo->getRealPath();
+
+        foreach ($highPriorityFiles as $position => $highPriorityFile) {
+            if (str_ends_with($fileRealPath, '/' . $highPriorityFile)) {
+                return $position;
+            }
+        }
+
+        return self::PRIORITY_LESS_FILE_POSITION;
     }
 }
