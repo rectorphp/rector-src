@@ -34,7 +34,13 @@ use Traversable;
 final class DowngradeArraySpreadRector extends AbstractRector
 {
     private bool $shouldIncrement = false;
-    private int $lastPosition = 0;
+
+    /**
+     * Handle different result in CI
+     *
+     * @var array<string, bool>
+     */
+    private array $lastPositionCurrentFile = [];
 
     public function __construct(
         private VariableNaming $variableNaming
@@ -227,8 +233,8 @@ CODE_SAMPLE
         // The number can't be at the end of the var name, or it would
         // conflict with the counter (for if that name is already taken)
 
-        if ($this->lastPosition > 0) {
-            $position = $this->lastPosition;
+        if (isset($this->lastPositionCurrentFile[$this->file->getSmartFileInfo()->getRealPath()])) {
+            $position = $this->lastPositionCurrentFile[$this->file->getSmartFileInfo()->getRealPath()];
         }
 
         $variableName = $this->variableNaming->resolveFromNodeWithScopeCountAndFallbackName(
@@ -238,7 +244,7 @@ CODE_SAMPLE
         );
 
         if ($this->shouldIncrement) {
-            $this->lastPosition = ++$position;
+            $this->lastPositionCurrentFile[$this->file->getSmartFileInfo()->getRealPath()] = ++$position;
         }
 
         // Assign the value to the variable, and replace the element with the variable
