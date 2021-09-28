@@ -33,13 +33,13 @@ class Fixture3
 
     public function run($operation)
     {
-        $item2Unpacked = $this->getFirstArray();
-        $item3Unpacked = $this->getSecondArray();
         switch ($operation) {
             case 'fruits':
+                $item2Unpacked = $this->getFirstArray();
                 return array_merge(['banana', 'orange'], $item2Unpacked);
             case 'veggies':
-                return array_merge(['tomato', 'lettuce'], $item3Unpacked);
+                $item2Unpacked = $this->getSecondArray();
+                return array_merge(['tomato', 'lettuce'], $item2Unpacked);
         }
     }
 }
