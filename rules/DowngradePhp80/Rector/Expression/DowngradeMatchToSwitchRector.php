@@ -84,14 +84,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->expr instanceof Expr) {
-            $hasArraySpread = (bool) $this->betterNodeFinder->findFirst($node->expr, function (Node $subNode): bool {
-                return $subNode instanceof ArrayItem && $subNode->unpack;
-            });
-
-            if ($hasArraySpread) {
-                return null;
-            }
+        if ($this->shouldSkip($node)) {
+            return null;
         }
 
         if ($node instanceof Expression) {
@@ -117,6 +111,19 @@ CODE_SAMPLE
 
         $switchCases = $this->createSwitchCasesFromMatchArms($node, $match->arms);
         return new Switch_($match->cond, $switchCases);
+    }
+
+    private function shouldSkip(Expression|Return_ $node): bool
+    {
+        if ($node->expr instanceof Expr) {
+            $hasArraySpread = (bool) $this->betterNodeFinder->findFirst($node->expr, function (Node $subNode): bool {
+                return $subNode instanceof ArrayItem && $subNode->unpack;
+            });
+
+            return $hasArraySpread;
+        }
+
+        return false;
     }
 
     /**
