@@ -12,8 +12,8 @@ foo(fn() => false);
 
 function foo($foo) { $foo(); }
 
-foo(static fn(): ?bool => 1 == 1 ? false : null);
+foo(static fn(): ?string => 1 == 1 ? false : null);
 
-foo(fn(): bool => false);
+foo(fn(): int => false);
 
 ?>
