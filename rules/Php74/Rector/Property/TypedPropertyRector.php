@@ -210,6 +210,12 @@ CODE_SAMPLE
         // unwrap nullable type
         if ($node instanceof NullableType) {
             $node = $node->type;
+            if ($type instanceof UnionType) {
+                $types = $type->getTypes();
+                $type = $types[0] instanceof NullType
+                    ? $types[1]
+                    : $types[0];
+            }
         }
 
         $typeName = $this->getName($node);
