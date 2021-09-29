@@ -12,7 +12,7 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\Type;
 
-final class NullableIdentifierTypeMapper extends IdentifierTypeMapper
+final class NullableTypeMapper extends IdentifierTypeMapper
 {
     /**
      * @return class-string<TypeNode>
