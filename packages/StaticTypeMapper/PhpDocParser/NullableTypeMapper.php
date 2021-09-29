@@ -12,13 +12,14 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
+use PHPStan\PhpDoc\TypeNodeResolver;
 
 final class NullableTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
-        private IdentifierTypeMapper $identifierTypeMapper
+        private IdentifierTypeMapper $identifierTypeMapper,
+        private TypeNodeResolver $typeNodeResolver
     ) {
     }
 
@@ -36,11 +37,12 @@ final class NullableTypeMapper implements PhpDocTypeMapperInterface
     public function mapToPHPStanType(TypeNode $typeNode, Node $node, NameScope $nameScope): Type
     {
         $type = $typeNode->type;
-        if (! $type instanceof IdentifierTypeNode) {
-            throw new ShouldNotHappenException();
+        if ($type instanceof IdentifierTypeNode) {
+            $type = $this->identifierTypeMapper->mapToPHPStanType($type, $node, $nameScope);
+            return new UnionType([new NullType(), $type]);
         }
 
-        $type = $this->identifierTypeMapper->mapToPHPStanType($type, $node, $nameScope);
-        return new UnionType([new NullType(), $type]);
+        // fallback to PHPStan resolver
+        return $this->typeNodeResolver->resolve($typeNode, $nameScope);
     }
 }
