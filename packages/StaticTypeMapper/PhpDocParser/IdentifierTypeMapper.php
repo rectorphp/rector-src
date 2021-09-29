@@ -22,7 +22,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\TypeDeclaration\PHPStan\Type\ObjectTypeSpecifier;
 
-class IdentifierTypeMapper implements PhpDocTypeMapperInterface
+final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
         private ObjectTypeSpecifier $objectTypeSpecifier,
