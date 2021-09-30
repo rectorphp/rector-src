@@ -124,6 +124,10 @@ final class ClassRenamer
             return null;
         }
 
+        if ($parentNode instanceof Namespace_) {
+            return null;
+        }
+
         $last = $name->getLast();
         $newFullyQualified = new FullyQualified($newName);
         $newNameLastName = $newFullyQualified->getLast();
