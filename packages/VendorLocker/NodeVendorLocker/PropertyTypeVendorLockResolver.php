@@ -54,9 +54,11 @@ final class PropertyTypeVendorLockResolver
             if (! $parentClassReflection->hasProperty($propertyName)) {
                 continue;
             }
+
             if ($parentClassReflection->getfileName() === $fileName) {
                 continue;
             }
+
             // validate type is conflicting
             // parent class property in external scope → it's not ok
             return true;
