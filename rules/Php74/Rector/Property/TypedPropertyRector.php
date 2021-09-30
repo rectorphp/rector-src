@@ -188,6 +188,7 @@ CODE_SAMPLE
             return true;
         }
 
+        $type = $this->resolveTypePossibleUnionNullableType($type);
         // is not class-type and should be skipped
         if ($this->shouldSkipNonClassLikeType($node, $type)) {
             return true;
@@ -205,17 +206,31 @@ CODE_SAMPLE
         return true;
     }
 
+    private function resolveTypePossibleUnionNullableType(Type $possibleUnionType): Type
+    {
+        if (! $possibleUnionType instanceof UnionType) {
+            return $possibleUnionType;
+        }
+
+        $types = $possibleUnionType->getTypes();
+        if (count($types) !== 2) {
+            return $possibleUnionType;
+        }
+
+        foreach ($types as $type) {
+            if (! $type instanceof NullType) {
+                return $type;
+            }
+        }
+
+        return $possibleUnionType;
+    }
+
     private function shouldSkipNonClassLikeType(Name | NullableType | PhpParserUnionType $node, Type $type): bool
     {
         // unwrap nullable type
         if ($node instanceof NullableType) {
             $node = $node->type;
-            if ($type instanceof UnionType) {
-                $types = $type->getTypes();
-                $type = $types[0] instanceof NullType
-                    ? $types[1]
-                    : $types[0];
-            }
         }
 
         $typeName = $this->getName($node);
