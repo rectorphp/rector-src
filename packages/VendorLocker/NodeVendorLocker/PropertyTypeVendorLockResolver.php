@@ -48,9 +48,10 @@ final class PropertyTypeVendorLockResolver
 
     private function isParentClassLocked(ClassReflection $classReflection, string $propertyName): bool
     {
+        $fileName = $classReflection->getFileName();
         // extract to some "inherited parent method" service
         foreach ($classReflection->getParents() as $parentClassReflection) {
-            if ($parentClassReflection->hasProperty($propertyName)) {
+            if ($parentClassReflection->hasProperty($propertyName) && $parentClassReflection->getfileName() !== $fileName) {
                 // validate type is conflicting
                 // parent class property in external scope → it's not ok
                 return true;
