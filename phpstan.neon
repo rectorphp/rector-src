@@ -12,15 +12,6 @@ includes:
     - vendor/symplify/phpstan-rules/config/symfony-rules.neon
     - vendor/symplify/phpstan-rules/config/test-rules.neon
 
-services:
-    -
-        class: Rector\PHPStanRules\Rules\PhpUpgradeDowngradeRegisteredInSetRule
-        tags: [phpstan.rules.rule]
-
-    -
-        class: Rector\PHPStanRules\Rules\PhpUpgradeImplementsMinPhpVersionInterfaceRule
-        tags: [phpstan.rules.rule]
-
 parameters:
     level: max
 
