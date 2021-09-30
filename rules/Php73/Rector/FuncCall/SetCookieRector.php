@@ -122,7 +122,7 @@ CODE_SAMPLE
     {
         $items = [];
 
-        $args = $funcCall->getArgs();
+        $args = $funcCall->args;
 
         $newArgs = [];
         $newArgs[] = $args[0];
