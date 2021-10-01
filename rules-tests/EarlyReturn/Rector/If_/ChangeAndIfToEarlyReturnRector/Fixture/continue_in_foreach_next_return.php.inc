@@ -7,7 +7,7 @@ class ContinueInForeachNextReturn
     public function run(array $data, bool $a, bool $b)
     {
         foreach ($data as $value) {
-            if ($a === $b && $value === $a) {
+            if ($a === $b && ! $value) {
                 continue;
             }
 
@@ -32,7 +32,7 @@ class ContinueInForeachNextReturn
             if ($a !== $b) {
                 return true;
             }
-            if ($value !== $a) {
+            if ($value) {
                 return true;
             }
             continue;
