@@ -100,15 +100,15 @@ final class ClassRenamer
         $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses);
     }
 
-    private function shouldSkip(string $newName, ?Node $node = null): bool
+    private function shouldSkip(string $newName, ?Node $parentNode = null): bool
     {
         // parent is not a Node, possibly removed by other rule
         // skip change it
-        if (! $node instanceof Node) {
+        if (! $parentNode instanceof Node) {
             return true;
         }
 
-        if (! $node instanceof Namespace_) {
+        if (! $parentNode instanceof Namespace_) {
             return false;
         }
 
@@ -117,7 +117,7 @@ final class ClassRenamer
             return false;
         }
 
-        return $this->nodeNameResolver->isName($node, $namespaceNewName);
+        return $this->nodeNameResolver->isName($parentNode, $namespaceNewName);
     }
 
     /**
