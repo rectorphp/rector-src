@@ -63,8 +63,7 @@ final class PropertyTypeVendorLockResolver
 
             $property = $parentClassReflection->getProperty($propertyName, $scope);
             if (! $property instanceof PhpPropertyReflection) {
-                // validate type is conflicting
-                // parent class property in external scope → it's not ok
+                // property somehow not reachable as a PhpPropertyReflection, lock
                 return true;
             }
 
