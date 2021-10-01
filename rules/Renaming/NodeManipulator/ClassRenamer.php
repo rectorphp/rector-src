@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\NodeManipulator;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
@@ -99,6 +100,16 @@ final class ClassRenamer
         $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses);
     }
 
+    private function shouldSkip(string $newName, ?Node $node = null): bool
+    {
+        if (! $node instanceof Namespace_) {
+            return false;
+        }
+
+        $namespaceNewName = Strings::before($newName, '\\', -1);
+        return $this->nodeNameResolver->isName($node, $namespaceNewName);
+    }
+
     /**
      * @param array<string, string> $oldToNewClasses
      */
@@ -116,15 +127,15 @@ final class ClassRenamer
         }
 
         $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
+        if ($this->shouldSkip($newName, $parentNode)) {
+            return null;
+        }
+
         // no need to preslash "use \SomeNamespace" of imported namespace
         if ($parentNode instanceof UseUse && ($parentNode->type === Use_::TYPE_NORMAL || $parentNode->type === Use_::TYPE_UNKNOWN)) {
 
             // no need to rename imports, they will be handled by autoimport and coding standard
             // also they might cause some rename
-            return null;
-        }
-
-        if ($parentNode instanceof Namespace_) {
             return null;
         }
 
