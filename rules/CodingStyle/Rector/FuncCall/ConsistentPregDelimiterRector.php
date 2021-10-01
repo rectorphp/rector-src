@@ -38,9 +38,9 @@ final class ConsistentPregDelimiterRector extends AbstractRector implements Conf
 
     /**
      * @var string
-     * @see https://regex101.com/r/EyXsV6/4/
+     * @see https://regex101.com/r/EyXsV6/5
      */
-    private const END_ANCHOR_DOUBLE_QUOTED_REGEX = '#^"(?<delimiter>.{1}).{1,}[^\\\\]\\\\\$\k<delimiter>"$#';
+    private const END_ANCHOR_DOUBLE_QUOTED_REGEX = '#^"(?<delimiter>.{1}).{1,}[^\\\\]\\\\\$\k<delimiter>[imsxeADSUXJu]*"$#';
 
     /**
      * All with pattern as 1st argument

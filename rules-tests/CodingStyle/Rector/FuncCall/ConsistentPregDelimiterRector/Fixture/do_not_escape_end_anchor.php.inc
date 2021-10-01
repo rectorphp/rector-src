@@ -7,6 +7,7 @@ class DoNotEscapeEndAnchor
     public function run($value)
     {
         preg_match("/^value$/", $value);
+        preg_match("/^value$/u", $value);
     }
 }
 
@@ -21,6 +22,7 @@ class DoNotEscapeEndAnchor
     public function run($value)
     {
         preg_match("#^value$#", $value);
+        preg_match("#^value$#u", $value);
     }
 }
 
