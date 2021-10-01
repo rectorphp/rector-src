@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
@@ -148,8 +149,12 @@ final class ArrayCallableMethodMatcher
             return new MixedType();
         }
 
-        $classReflection = $this->reflectionProvider->getClass($classConstantReference);
         $scope = $classConstFetch->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return new MixedType();
+        }
+
+        $classReflection = $this->reflectionProvider->getClass($classConstantReference);
         $hasConstruct = $classReflection->hasMethod(MethodName::CONSTRUCT);
 
         if ($hasConstruct) {
