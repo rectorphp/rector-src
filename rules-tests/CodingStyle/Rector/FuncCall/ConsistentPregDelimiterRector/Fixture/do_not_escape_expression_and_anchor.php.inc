@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector\Fixture;
 
-class DoNotEscapeEndAnchor
+class DoNotEscapedExpressionAndAnchor
 {
     public function run($value)
     {
@@ -17,7 +17,7 @@ class DoNotEscapeEndAnchor
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector\Fixture;
 
-class DoNotEscapeEndAnchor
+class DoNotEscapedExpressionAndAnchor
 {
     public function run($value)
     {
