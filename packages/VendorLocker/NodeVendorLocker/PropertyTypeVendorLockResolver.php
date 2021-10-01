@@ -63,13 +63,13 @@ final class PropertyTypeVendorLockResolver
 
             $property = $parentClassReflection->getProperty($propertyName, $scope);
             if (! $property instanceof PhpPropertyReflection) {
-                // property somehow not reachable as a PhpPropertyReflection, lock
+                // validate type is conflicting
+                // parent class property in external scope → it's not ok
                 return true;
             }
 
             if ($property->getNativeType() instanceof MixedType) {
-                // validate type is conflicting
-                // parent class property in external scope → it's not ok
+                // validate parent not typed yet → it's not ok
                 return true;
             }
 
