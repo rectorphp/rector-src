@@ -102,6 +102,12 @@ final class ClassRenamer
 
     private function shouldSkip(string $newName, ?Node $node = null): bool
     {
+        // parent is not a Node, possibly removed by other rule
+        // skip change it
+        if (! $node instanceof Node) {
+            return true;
+        }
+
         if (! $node instanceof Namespace_) {
             return false;
         }
