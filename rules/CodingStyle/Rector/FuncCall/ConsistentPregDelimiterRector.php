@@ -176,13 +176,12 @@ CODE_SAMPLE
 
         /** @var String_ $string */
         $string = $arg->value;
+        $string->value = Strings::replace($string->value, self::INNER_REGEX, function (array $match) use (&$string): string {
+            $printedString = $this->betterStandardPrinter->print($string);
+            if (Strings::match($printedString, self::END_ANCHOR_DOUBLE_QUOTED_REGEX)) {
+                $string->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);
+            }
 
-        $printedString = $this->betterStandardPrinter->print($string);
-        if (Strings::match($printedString, self::END_ANCHOR_DOUBLE_QUOTED_REGEX)) {
-            $string->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);
-        }
-
-        $string->value = Strings::replace($string->value, self::INNER_REGEX, function (array $match): string {
             $innerPattern = $match['content'];
             $positionDelimiter = strpos($innerPattern, $this->delimiter);
 
