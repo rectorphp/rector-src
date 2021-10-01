@@ -106,7 +106,11 @@ final class ClassRenamer
             return false;
         }
 
-        $namespaceNewName = (string) Strings::before($newName, '\\', -1);
+        $namespaceNewName = Strings::before($newName, '\\', -1);
+        if ($namespaceNewName === null) {
+            return null;
+        }
+
         return $this->nodeNameResolver->isName($node, $namespaceNewName);
     }
 
