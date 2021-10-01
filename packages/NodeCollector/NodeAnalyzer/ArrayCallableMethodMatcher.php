@@ -157,14 +157,16 @@ final class ArrayCallableMethodMatcher
         $classReflection = $this->reflectionProvider->getClass($classConstantReference);
         $hasConstruct = $classReflection->hasMethod(MethodName::CONSTRUCT);
 
-        if ($hasConstruct) {
-            $methodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        if (! $hasConstruct) {
+            return new ObjectType($classConstantReference, null, $classReflection);
+        }
 
-            foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
-                if ($parameterReflection->getDefaultValue() === null) {
-                    return new MixedType();
-                }
+        $methodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+
+        foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
+            if ($parameterReflection->getDefaultValue() === null) {
+                return new MixedType();
             }
         }
 
