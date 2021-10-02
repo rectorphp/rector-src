@@ -112,12 +112,18 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
             return null;
         }
 
+        return $this->processFullyQualified($node, $renamedNamespaceValueObject);
+    }
+
+    private function processFullyQualified(Name $node, RenamedNamespace $renamedNamespaceValueObject): ?FullyQualified
+    {
         $newName = $this->isPartialNamespace($node) ? $this->resolvePartialNewName(
             $node,
             $renamedNamespaceValueObject
         ) : $renamedNamespaceValueObject->getNameInNewNamespace();
 
-        if (isset($this->isChangedInNamespaces[$newName]) && in_array($newName, array_values($this->oldToNewNamespaces), true)) {
+        $values = array_values($this->oldToNewNamespaces);
+        if (isset($this->isChangedInNamespaces[$newName]) && in_array($newName, $values, true)) {
             return null;
         }
 
