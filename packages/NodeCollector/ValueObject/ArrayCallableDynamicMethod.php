@@ -14,7 +14,7 @@ final class ArrayCallableDynamicMethod
     public function __construct(
         private Expr $callerExpr,
         private string $class,
-        private $method
+        private Expr $method
     ) {
     }
 
@@ -24,7 +24,7 @@ final class ArrayCallableDynamicMethod
     }
 
     /**
-     * @return mixed
+     * @return Expr
      */
     public function getMethod()
     {
