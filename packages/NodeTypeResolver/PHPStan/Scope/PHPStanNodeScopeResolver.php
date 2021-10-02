@@ -36,6 +36,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallN
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
+use Throwable;
 
 /**
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
@@ -135,7 +136,11 @@ final class PHPStanNodeScopeResolver
 
         try {
             $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
-        } catch (NotAnInterfaceReflection $e) {
+        } catch (Throwable $e) {
+            if (! $e instanceof NotAnInterfaceReflection) {
+                throw $e;
+            }
+
             if (! Strings::match($e->getMessage(), self::NOT_AN_INTERFACE_EXCEPTION_REGEX)) {
                 throw $e;
             }
