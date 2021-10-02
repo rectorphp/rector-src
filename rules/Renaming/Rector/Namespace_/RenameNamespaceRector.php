@@ -107,12 +107,15 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         if ($parent instanceof Namespace_) {
             return null;
         }
+
         if (! $parent instanceof UseUse) {
             return $this->processFullyQualified($node, $renamedNamespaceValueObject);
         }
+
         if ($parent->type !== Use_::TYPE_UNKNOWN) {
             return $this->processFullyQualified($node, $renamedNamespaceValueObject);
         }
+
         return null;
     }
 
@@ -135,9 +138,11 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         if (! isset($this->isChangedInNamespaces[$newName])) {
             return new FullyQualified($newName);
         }
+
         if (! in_array($newName, $values, true)) {
             return new FullyQualified($newName);
         }
+
         return null;
     }
 
