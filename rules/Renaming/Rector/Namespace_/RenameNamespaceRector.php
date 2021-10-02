@@ -35,6 +35,11 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
      */
     private array $oldToNewNamespaces = [];
 
+    /**
+     * @var array<string, bool>
+     */
+    private array $isChangedInNamespaces = [];
+
     public function __construct(
         private NamespaceMatcher $namespaceMatcher
     ) {
@@ -85,6 +90,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         if ($node instanceof Namespace_) {
             $newName = $renamedNamespaceValueObject->getNameInNewNamespace();
             $node->name = new Name($newName);
+            $this->isChangedInNamespaces[$newName] = true;
 
             return $node;
         }
@@ -110,6 +116,10 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
             $node,
             $renamedNamespaceValueObject
         ) : $renamedNamespaceValueObject->getNameInNewNamespace();
+
+        if (isset($this->isChangedInNamespaces[$newName]) && in_array($newName, array_values($this->oldToNewNamespaces), true)) {
+            return null;
+        }
 
         return new FullyQualified($newName);
     }

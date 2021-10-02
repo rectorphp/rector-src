@@ -10,6 +10,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
@@ -125,7 +126,10 @@ final class PHPStanNodeScopeResolver
             return $nodes;
         }
 
-        $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
+        $namespaces = $this->betterNodeFinder->findInstanceOf($nodes, Namespace_::class);
+        if (count($namespaces) <= 1) {
+            $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
+        }
 
         $this->resolveAndSaveDependentFiles($nodes, $mutatingScope, $smartFileInfo);
 

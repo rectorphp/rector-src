@@ -22,7 +22,6 @@ namespace Foo\Bar {
 <?php
 
 namespace Foo {
-
 	interface Bar
 	{
     	public function run();
