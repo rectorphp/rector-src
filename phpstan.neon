@@ -505,4 +505,3 @@ parameters:
         - '#(.*?) but returns array<int, PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\>#'
 
         - '#Parameter "\w+" cannot have default value#'
-        - '#Method .*\:\:.*\(\) invoked with \d+ parameters?, \d+ required#'
