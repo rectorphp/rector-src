@@ -35,6 +35,7 @@ use Rector\NodeTypeResolver\PHPStan\Collector\TraitNodeScopeCollector;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
+use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
 
 /**
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
@@ -47,6 +48,12 @@ final class PHPStanNodeScopeResolver
      * @see https://regex101.com/r/aXsCkK/1
      */
     private const ANONYMOUS_CLASS_START_REGEX = '#^AnonymousClass(\w+)#';
+
+    /**
+     * @var string
+     * @see https://regex101.com/r/AIA24M/1
+     */
+    private const NOT_AN_INTERFACE_EXCEPTION_REGEX = '#^Provided node ".*" is not interface, but "class"$#';
 
     public function __construct(
         private ChangedFilesDetector $changedFilesDetector,
@@ -126,9 +133,12 @@ final class PHPStanNodeScopeResolver
             return $nodes;
         }
 
-        $namespaces = $this->betterNodeFinder->findInstanceOf($nodes, Namespace_::class);
-        if (count($namespaces) <= 1) {
+        try {
             $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
+        } catch (NotAnInterfaceReflection $e) {
+            if (! Strings::match($e->getMessage(), self::NOT_AN_INTERFACE_EXCEPTION_REGEX)) {
+                throw $e;
+            }
         }
 
         $this->resolveAndSaveDependentFiles($nodes, $mutatingScope, $smartFileInfo);
