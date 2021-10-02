@@ -79,6 +79,7 @@ final class GenericClassMethodParamRector extends AbstractRector implements Conf
             if (! $node->isPublic()) {
                 $this->visibilityManipulator->makePublic($node);
             }
+
             $this->refactorParam($node, $genericClassMethodParam);
         }
 
@@ -130,19 +131,19 @@ CODE_SAMPLE
         $this->genericClassMethodParams = $makeClassMethodGenerics;
     }
 
-    private function refactorParam(ClassMethod $classMethod, GenericClassMethodParam $makeClassMethodGeneric): void
+    private function refactorParam(ClassMethod $classMethod, GenericClassMethodParam $genericClassMethodParam): void
     {
-        $genericParam = $classMethod->params[$makeClassMethodGeneric->getParamPosition()] ?? null;
+        $genericParam = $classMethod->params[$genericClassMethodParam->getParamPosition()] ?? null;
 
-        if ($genericParam === null) {
+        if (! $genericParam instanceof Param) {
             $paramName = $this->propertyNaming->fqnToVariableName(
-                new ObjectType($makeClassMethodGeneric->getParamGenericType())
+                new ObjectType($genericClassMethodParam->getParamGenericType())
             );
 
             $param = new Param(new Variable($paramName));
-            $param->type = new FullyQualified($makeClassMethodGeneric->getParamGenericType());
+            $param->type = new FullyQualified($genericClassMethodParam->getParamGenericType());
 
-            $classMethod->params[$makeClassMethodGeneric->getParamPosition()] = $param;
+            $classMethod->params[$genericClassMethodParam->getParamPosition()] = $param;
 
         // 2. has a parameter?
         } else {
@@ -151,19 +152,20 @@ CODE_SAMPLE
             // change type to generic
             if ($genericParam->type !== null) {
                 $oldParamClassName = $this->getName($genericParam->type);
-                if ($oldParamClassName === $makeClassMethodGeneric->getParamGenericType()) {
+                if ($oldParamClassName === $genericClassMethodParam->getParamGenericType()) {
                     // if the param type is correct, skip it
                     return;
                 }
             }
 
             // change type to generic
-            $genericParam->type = new FullyQualified($makeClassMethodGeneric->getParamGenericType());
+            $genericParam->type = new FullyQualified($genericClassMethodParam->getParamGenericType());
 
             // update phpdoc
             if ($oldParamClassName === null) {
                 return;
             }
+
             $this->refactorPhpDocInfo($classMethod, $genericParam, $oldParamClassName);
         }
     }
