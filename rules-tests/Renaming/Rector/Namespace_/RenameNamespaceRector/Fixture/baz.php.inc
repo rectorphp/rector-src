@@ -16,11 +16,10 @@ namespace Foo\Bar {
 	    }
 	}
 }
+
 ?>
 -----
 <?php
-
-namespace Rector\Tests\Renaming\Rector\Namespace_\RenameNamespaceRector\Fixture;
 
 namespace Foo {
 
@@ -39,4 +38,5 @@ namespace Foo\Tmp {
 	    }
 	}
 }
+
 ?>
