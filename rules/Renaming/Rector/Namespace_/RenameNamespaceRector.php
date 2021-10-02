@@ -107,27 +107,13 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         if ($parent instanceof Namespace_) {
             return null;
         }
-
-        if ($parent instanceof UseUse && $parent->type === Use_::TYPE_UNKNOWN) {
-            return null;
+        if (! $parent instanceof UseUse) {
+            return $this->processFullyQualified($node, $renamedNamespaceValueObject);
         }
-
-        return $this->processFullyQualified($node, $renamedNamespaceValueObject);
-    }
-
-    private function processFullyQualified(Name $node, RenamedNamespace $renamedNamespaceValueObject): ?FullyQualified
-    {
-        $newName = $this->isPartialNamespace($node) ? $this->resolvePartialNewName(
-            $node,
-            $renamedNamespaceValueObject
-        ) : $renamedNamespaceValueObject->getNameInNewNamespace();
-
-        $values = array_values($this->oldToNewNamespaces);
-        if (isset($this->isChangedInNamespaces[$newName]) && in_array($newName, $values, true)) {
-            return null;
+        if ($parent->type !== Use_::TYPE_UNKNOWN) {
+            return $this->processFullyQualified($node, $renamedNamespaceValueObject);
         }
-
-        return new FullyQualified($newName);
+        return null;
     }
 
     /**
@@ -136,6 +122,23 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
     public function configure(array $configuration): void
     {
         $this->oldToNewNamespaces = $configuration[self::OLD_TO_NEW_NAMESPACES] ?? [];
+    }
+
+    private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
+    {
+        $newName = $this->isPartialNamespace($name) ? $this->resolvePartialNewName(
+            $name,
+            $renamedNamespace
+        ) : $renamedNamespace->getNameInNewNamespace();
+
+        $values = array_values($this->oldToNewNamespaces);
+        if (! isset($this->isChangedInNamespaces[$newName])) {
+            return new FullyQualified($newName);
+        }
+        if (! in_array($newName, $values, true)) {
+            return new FullyQualified($newName);
+        }
+        return null;
     }
 
     /**
