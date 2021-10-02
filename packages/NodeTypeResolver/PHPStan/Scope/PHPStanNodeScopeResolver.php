@@ -10,13 +10,13 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\Scope;
+use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
 use PHPStan\BetterReflection\Reflector\ClassReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
@@ -35,7 +35,6 @@ use Rector\NodeTypeResolver\PHPStan\Collector\TraitNodeScopeCollector;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
 use Throwable;
 
 /**
@@ -136,13 +135,13 @@ final class PHPStanNodeScopeResolver
 
         try {
             $this->nodeScopeResolver->processNodes($nodes, $mutatingScope, $nodeCallback);
-        } catch (Throwable $e) {
-            if (! $e instanceof NotAnInterfaceReflection) {
-                throw $e;
+        } catch (Throwable $throwable) {
+            if (! $throwable instanceof NotAnInterfaceReflection) {
+                throw $throwable;
             }
 
-            if (! Strings::match($e->getMessage(), self::NOT_AN_INTERFACE_EXCEPTION_REGEX)) {
-                throw $e;
+            if (! Strings::match($throwable->getMessage(), self::NOT_AN_INTERFACE_EXCEPTION_REGEX)) {
+                throw $throwable;
             }
         }
 
