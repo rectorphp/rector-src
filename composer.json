@@ -56,7 +56,7 @@
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-nette": "^0.12.19",
         "phpunit/phpunit": "^9.5",
-        "rector/phpstan-rules": "dev-patch-1 as 0.4.1",
+        "rector/phpstan-rules": "^0.4.2",
         "rector/rector-generator": "^0.3",
         "spatie/enum": "^3.9",
         "symplify/coding-standard": "^9.4.65",
@@ -150,11 +150,5 @@
         "platform-check": false
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "repositories" : [
-        {
-            "type" : "vcs",
-            "url" : "https://github.com/samsonasik/phpstan-rules"
-        }
-    ]
+    "prefer-stable": true
 }
