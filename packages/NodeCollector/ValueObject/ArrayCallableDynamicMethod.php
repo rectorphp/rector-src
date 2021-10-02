@@ -20,10 +20,7 @@ final class ArrayCallableDynamicMethod
         return $this->class;
     }
 
-    /**
-     * @return Expr
-     */
-    public function getMethod()
+    public function getMethod(): Expr
     {
         return $this->method;
     }
