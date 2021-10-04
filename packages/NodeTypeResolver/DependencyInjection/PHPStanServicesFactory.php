@@ -18,6 +18,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use ReflectionClass;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 /**
@@ -128,8 +129,8 @@ final class PHPStanServicesFactory
             return [];
         }
 
-        $generatedConfigReflection = new \ReflectionClass(GeneratedConfig::class);
-        $generatedConfigClassFileName = $generatedConfigReflection->getFileName();
+        $reflectionClass = new ReflectionClass(GeneratedConfig::class);
+        $generatedConfigClassFileName = $reflectionClass->getFileName();
         if ($generatedConfigClassFileName === false) {
             throw new ShouldNotHappenException();
         }
