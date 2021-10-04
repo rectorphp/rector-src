@@ -31,7 +31,9 @@ trait MultipleFilesChangedTrait
         $fixtureContent = $originalContent;
 
         /** @var string $expectedContent */
-        if (trim($expectedContent)) {
+        $trimmedExpectedContent = trim($expectedContent);
+
+        if ($trimmedExpectedContent !== '') {
             $fixtureContent .= $separator . $expectedContent;
         }
 
