@@ -29,6 +29,8 @@ trait MultipleFilesChangedTrait
         $fixturePath = $this->getFixtureTempDirectory() . '/' . $fixtureFileInfo->getFilename();
         $this->createFixtureDir($fixturePath);
         $fixtureContent = $originalContent;
+
+        /** @var string $expectedContent */
         if (trim($expectedContent)) {
             $fixtureContent .= $separator . $expectedContent;
         }

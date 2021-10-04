@@ -15,7 +15,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
-use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
 use PHPStan\BetterReflection\Reflector\ClassReflector;
@@ -90,7 +89,6 @@ final class PHPStanNodeScopeResolver
                 $traitScope = clone $scope;
                 $this->privatesAccessor->setPrivateProperty($traitScope, 'context', $scopeContext);
 
-                /** @var MutatingScope $scope */
                 $traitScope = $traitScope->enterTrait($traitReflectionClass);
 
                 $this->nodeScopeResolver->processStmtNodes($node, $node->stmts, $traitScope, $nodeCallback);
@@ -217,8 +215,10 @@ final class PHPStanNodeScopeResolver
         $nodeTraverser->traverse($nodes);
     }
 
-    private function resolveClassOrInterfaceScope(Class_ | Interface_ $classLike, MutatingScope $mutatingScope): Scope
-    {
+    private function resolveClassOrInterfaceScope(
+        Class_ | Interface_ $classLike,
+        MutatingScope $mutatingScope
+    ): Scope {
         $className = $this->resolveClassName($classLike);
 
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
@@ -293,11 +293,11 @@ final class PHPStanNodeScopeResolver
         $this->privatesAccessor->setPrivateProperty($classReflector, 'sourceLocator', $aggregateSourceLocator);
     }
 
-    private function createDummyClassScopeContext(MutatingScope $scope): ScopeContext
+    private function createDummyClassScopeContext(MutatingScope $mutatingScope): ScopeContext
     {
         // this has to be faked, because trait PHPStan does not traverse trait without a class
         /** @var ScopeContext $scopeContext */
-        $scopeContext = $this->privatesAccessor->getPrivateProperty($scope, 'context');
+        $scopeContext = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
         $dummyClassReflection = $this->reflectionProvider->getClass(DummyTraitClass::class);
 
         // faking a class reflection
