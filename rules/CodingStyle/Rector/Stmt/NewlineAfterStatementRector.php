@@ -111,6 +111,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        $node = $currentStatement instanceof Stmt
+            ? $currentStatement
+            : $node;
+
         if (! in_array($node::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
             return null;
         }
