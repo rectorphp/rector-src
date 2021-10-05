@@ -23,11 +23,11 @@ final class TreatAsNonEmptyRectorTest extends AbstractRectorTestCase
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureTreatAsNonEmpty');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/configured_rule.php';
+        return __DIR__ . '/config/treat_as_non_empty.php';
     }
 }

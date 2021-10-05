@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name;
@@ -56,7 +57,7 @@ final class ExactCompareFactory
         return $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty);
     }
 
-    public function createNotIdenticalFalsyCompare(Type $exprType, Expr $expr): NotIdentical|Identical|Instanceof_|null
+    public function createNotIdenticalFalsyCompare(Type $exprType, Expr $expr): Expr|null
     {
         if ($exprType instanceof StringType) {
             return new NotIdentical($expr, new String_(''));
@@ -139,6 +140,11 @@ final class ExactCompareFactory
         if ($unionType instanceof BooleanType) {
             $trueConstFetch = new ConstFetch(new Name('true'));
             return new Identical($expr, $trueConstFetch);
+        }
+
+        if ($unionType instanceof TypeWithClassName) {
+            $instanceOf = new Instanceof_($expr, new FullyQualified($unionType->getClassName()));
+            return new BooleanNot($instanceOf);
         }
 
         $nullConstFetch = new ConstFetch(new Name('null'));

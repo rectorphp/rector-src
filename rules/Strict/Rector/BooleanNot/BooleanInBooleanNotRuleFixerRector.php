@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
 use PHPStan\Analyser\Scope;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
 use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
@@ -21,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRector\BooleanInBooleanNotRuleFixerRectorTest
  */
-final class BooleanInBooleanNotRuleFixerRector extends AbstractFalsyScalarRuleFixerRector implements ConfigurableRectorInterface
+final class BooleanInBooleanNotRuleFixerRector extends AbstractFalsyScalarRuleFixerRector
 {
     public function __construct(
         private ExactCompareFactory $exactCompareFactory

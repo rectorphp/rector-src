@@ -506,3 +506,8 @@ parameters:
         -
             message: '#Instead of abstract class, use specific service with composition#'
             path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
+
+        # false positive - configured parmaeter
+        -
+            message: '#Property with protected modifier is not allowed\. Use interface contract method instead#'
+            path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php

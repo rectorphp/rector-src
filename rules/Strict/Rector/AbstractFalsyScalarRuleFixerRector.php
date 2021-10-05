@@ -28,6 +28,6 @@ abstract class AbstractFalsyScalarRuleFixerRector extends AbstractRector impleme
         $treatAsNonEmpty = $configuration[self::TREAT_AS_NON_EMPTY] ?? false;
         Assert::boolean($treatAsNonEmpty);
 
-        $this->treatAsNonEmpty = false;
+        $this->treatAsNonEmpty = $treatAsNonEmpty;
     }
 }

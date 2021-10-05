@@ -6,16 +6,13 @@ namespace Rector\Strict\Rector\Empty_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Empty_;
-use PhpParser\Node\Expr\Instanceof_;
 use PHPStan\Analyser\Scope;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
 use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -35,7 +32,7 @@ final class DisallowedEmptyRuleFixerRector extends AbstractFalsyScalarRuleFixerR
             'PHPStan\Rules\DisallowedConstructs\DisallowedEmptyRule'
         );
         return new RuleDefinition($errorMessage, [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeEmptyArray
 {
@@ -55,6 +52,10 @@ final class SomeEmptyArray
     }
 }
 CODE_SAMPLE
+                ,
+                [
+                    self::TREAT_AS_NON_EMPTY => false,
+                ]
             ),
         ]);
     }
@@ -84,7 +85,7 @@ CODE_SAMPLE
         return $this->refactorEmpty($node, $scope);
     }
 
-    private function refactorBooleanNot(BooleanNot $booleanNot, Scope $scope): NotIdentical|Identical|Instanceof_|null
+    private function refactorBooleanNot(BooleanNot $booleanNot, Scope $scope): Expr|null
     {
         if (! $booleanNot->expr instanceof Empty_) {
             return null;
