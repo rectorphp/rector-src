@@ -69,7 +69,7 @@ CODE_SAMPLE
     /**
      * @param Ternary $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?Ternary
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {

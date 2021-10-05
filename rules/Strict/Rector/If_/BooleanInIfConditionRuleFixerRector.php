@@ -77,7 +77,7 @@ CODE_SAMPLE
     /**
      * @param If_ $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?If_
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {

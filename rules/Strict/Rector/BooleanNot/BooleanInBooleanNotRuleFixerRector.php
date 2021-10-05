@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector\BooleanNot;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
@@ -76,7 +77,7 @@ CODE_SAMPLE
     /**
      * @param BooleanNot $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?Identical
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
@@ -85,11 +86,6 @@ CODE_SAMPLE
 
         $exprType = $scope->getType($node->expr);
 
-        $identicalFalsyExpr = $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $node->expr);
-        if ($identicalFalsyExpr === null) {
-            return null;
-        }
-
-        return $identicalFalsyExpr;
+        return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $node->expr);
     }
 }

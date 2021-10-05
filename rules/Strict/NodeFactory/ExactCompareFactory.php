@@ -40,11 +40,15 @@ final class ExactCompareFactory
             return new Identical($expr, new Array_([]));
         }
 
-        if ($exprType instanceof UnionType && TypeCombinator::containsNull($exprType)) {
-            return $this->createTruthyFromUnionType($exprType, $expr);
+        if (! $exprType instanceof UnionType) {
+            return null;
         }
 
-        return null;
+        if (! TypeCombinator::containsNull($exprType)) {
+            return null;
+        }
+
+        return $this->createTruthyFromUnionType($exprType, $expr);
     }
 
     public function createNotIdenticalFalsyCompare(Type $exprType, Expr $expr): NotIdentical|Identical|Instanceof_|null
@@ -61,11 +65,15 @@ final class ExactCompareFactory
             return new NotIdentical($expr, new Array_([]));
         }
 
-        if ($exprType instanceof UnionType && TypeCombinator::containsNull($exprType)) {
-            return $this->createFromUnionType($exprType, $expr);
+        if (! $exprType instanceof UnionType) {
+            return null;
         }
 
-        return null;
+        if (! TypeCombinator::containsNull($exprType)) {
+            return null;
+        }
+
+        return $this->createFromUnionType($exprType, $expr);
     }
 
     private function createFromUnionType(Type|UnionType $exprType, Expr $expr): Identical|Instanceof_|NotIdentical
