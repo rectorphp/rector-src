@@ -145,9 +145,9 @@ final class ExactCompareFactory
         $toNullIdentical = new Identical($expr, $nullConstFetch);
 
         // assume we have to check empty string, integer and bools
-        if ($treatAsNonEmpty === false) {
+        if (! $treatAsNonEmpty) {
             $scalarFalsyIdentical = $this->createIdenticalFalsyCompare($unionType, $expr);
-            if ($scalarFalsyIdentical === null) {
+            if (! $scalarFalsyIdentical instanceof Expr) {
                 return null;
             }
 
