@@ -11,9 +11,7 @@ use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Instanceof_;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
@@ -25,12 +23,14 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Strict\TypeAnalyzer\FalsyUnionTypeAnalyzer;
 
 final class ExactCompareFactory
 {
     public function __construct(
-        private FalsyUnionTypeAnalyzer $falsyUnionTypeAnalyzer
+        private FalsyUnionTypeAnalyzer $falsyUnionTypeAnalyzer,
+        private NodeFactory $nodeFactory
     ) {
     }
 
@@ -45,7 +45,7 @@ final class ExactCompareFactory
         }
 
         if ($exprType instanceof BooleanType) {
-            return new Identical($expr, new ConstFetch(new Name('false')));
+            return new Identical($expr, $this->nodeFactory->createFalse());
         }
 
         if ($exprType instanceof ArrayType) {
@@ -93,15 +93,14 @@ final class ExactCompareFactory
         $exprType = TypeCombinator::removeNull($exprType);
 
         if ($exprType instanceof BooleanType) {
-            $trueConstFetch = new ConstFetch(new Name('true'));
-            return new Identical($expr, $trueConstFetch);
+            return new Identical($expr, $this->nodeFactory->createTrue());
         }
 
         if ($exprType instanceof TypeWithClassName) {
             return new Instanceof_($expr, new FullyQualified($exprType->getClassName()));
         }
 
-        $nullConstFetch = new ConstFetch(new Name('null'));
+        $nullConstFetch = $this->nodeFactory->createNull();
         $toNullNotIdentical = new NotIdentical($expr, $nullConstFetch);
 
         if (! $treatAsNotEmpty) {
@@ -130,8 +129,7 @@ final class ExactCompareFactory
         }
 
         if ($unionType instanceof BooleanType) {
-            $trueConstFetch = new ConstFetch(new Name('true'));
-            return new Identical($expr, $trueConstFetch);
+            return new Identical($expr, $this->nodeFactory->createTrue());
         }
 
         if ($unionType instanceof TypeWithClassName) {
@@ -139,8 +137,7 @@ final class ExactCompareFactory
             return new BooleanNot($instanceOf);
         }
 
-        $nullConstFetch = new ConstFetch(new Name('null'));
-        $toNullIdentical = new Identical($expr, $nullConstFetch);
+        $toNullIdentical = new Identical($expr, $this->nodeFactory->createNull());
 
         // assume we have to check empty string, integer and bools
         if (! $treatAsNonEmpty) {
