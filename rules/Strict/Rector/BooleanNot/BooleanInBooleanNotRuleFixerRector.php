@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector\BooleanNot;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
 use PHPStan\Analyser\Scope;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * Fixer Rector for PHPStan rule:
@@ -20,8 +22,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRector\BooleanInBooleanNotRuleFixerRectorTest
  */
-final class BooleanInBooleanNotRuleFixerRector extends AbstractRector
+final class BooleanInBooleanNotRuleFixerRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const TREAT_AS_NON_EMPTY = 'treat_as_non_empty';
+
+    private bool $treatAsNonEmpty = false;
+
     public function __construct(
         private ExactCompareFactory $exactCompareFactory
     ) {
@@ -34,7 +43,7 @@ final class BooleanInBooleanNotRuleFixerRector extends AbstractRector
             'PHPStan\Rules\BooleansInConditions\BooleanInBooleanNotRule'
         );
         return new RuleDefinition($errorMessage, [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -62,6 +71,10 @@ class SomeClass
     }
 }
 CODE_SAMPLE
+                ,
+                [
+                    self::TREAT_AS_NON_EMPTY => false,
+                ]
             ),
         ]);
     }
@@ -77,7 +90,7 @@ CODE_SAMPLE
     /**
      * @param BooleanNot $node
      */
-    public function refactor(Node $node): ?Identical
+    public function refactor(Node $node): ?Expr
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
@@ -86,6 +99,17 @@ CODE_SAMPLE
 
         $exprType = $scope->getType($node->expr);
 
-        return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $node->expr);
+        return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $node->expr, $this->treatAsNonEmpty);
+    }
+
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $treatAsNonEmpty = $configuration[self::TREAT_AS_NON_EMPTY] ?? false;
+        Assert::boolean($treatAsNonEmpty);
+
+        $this->treatAsNonEmpty = false;
     }
 }

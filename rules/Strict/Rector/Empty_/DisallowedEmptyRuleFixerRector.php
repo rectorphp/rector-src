@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector\Empty_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
@@ -95,7 +96,7 @@ CODE_SAMPLE
         return $this->exactCompareFactory->createNotIdenticalFalsyCompare($emptyExprType, $empty->expr);
     }
 
-    private function refactorEmpty(Empty_ $empty, Scope $scope): ?Identical
+    private function refactorEmpty(Empty_ $empty, Scope $scope): Expr|null
     {
         $exprType = $scope->getType($empty->expr);
         return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr);
