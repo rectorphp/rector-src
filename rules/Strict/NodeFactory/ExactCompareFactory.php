@@ -18,7 +18,6 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
-use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
@@ -28,6 +27,11 @@ use PHPStan\Type\UnionType;
 
 final class ExactCompareFactory
 {
+    public function __construct(
+        private \Rector\Strict\TypeAnalyzer\FalsyUnionTypeAnalyzer $falsyUnionTypeAnalyzer
+    ) {
+    }
+
     public function createIdenticalFalsyCompare(Type $exprType, Expr $expr, bool $treatAsNonEmpty): Expr|null
     {
         if ($exprType instanceof StringType) {
@@ -57,7 +61,7 @@ final class ExactCompareFactory
         return $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty);
     }
 
-    public function createNotIdenticalFalsyCompare(Type $exprType, Expr $expr): Expr|null
+    public function createNotIdenticalFalsyCompare(Type $exprType, Expr $expr, bool $treatAsNotEmpty): Expr|null
     {
         if ($exprType instanceof StringType) {
             return new NotIdentical($expr, new String_(''));
@@ -79,10 +83,10 @@ final class ExactCompareFactory
             return null;
         }
 
-        return $this->createFromUnionType($exprType, $expr);
+        return $this->createFromUnionType($exprType, $expr, $treatAsNotEmpty);
     }
 
-    private function createFromUnionType(Type|UnionType $exprType, Expr $expr): Identical|Instanceof_|NotIdentical
+    private function createFromUnionType(Type|UnionType $exprType, Expr $expr, bool $treatAsNotEmpty): Expr|null
     {
         $exprType = TypeCombinator::removeNull($exprType);
 
@@ -96,32 +100,18 @@ final class ExactCompareFactory
         }
 
         $nullConstFetch = new ConstFetch(new Name('null'));
-        return new NotIdentical($expr, $nullConstFetch);
-    }
+        $toNullNotIdentical = new NotIdentical($expr, $nullConstFetch);
 
-    private function resolveFalsyTypesCount(UnionType $unionType): int
-    {
-        $falsyTypesCount = 0;
-
-        foreach ($unionType->getTypes() as $unionedType) {
-            if ($unionedType instanceof StringType) {
-                ++$falsyTypesCount;
+        if (! $treatAsNotEmpty) {
+            $scalarFalsyIdentical = $this->createNotIdenticalFalsyCompare($exprType, $expr, $treatAsNotEmpty);
+            if (! $scalarFalsyIdentical instanceof Expr) {
+                return null;
             }
 
-            if ($unionedType instanceof IntegerType) {
-                ++$falsyTypesCount;
-            }
-
-            if ($unionedType instanceof FloatType) {
-                ++$falsyTypesCount;
-            }
-
-            if ($unionedType instanceof ArrayType) {
-                ++$falsyTypesCount;
-            }
+            return new Expr\BinaryOp\BooleanAnd($toNullNotIdentical, $scalarFalsyIdentical);
         }
 
-        return $falsyTypesCount;
+        return $toNullNotIdentical;
     }
 
     private function createTruthyFromUnionType(UnionType $unionType, Expr $expr, bool $treatAsNonEmpty): Expr|null
@@ -129,7 +119,7 @@ final class ExactCompareFactory
         $unionType = TypeCombinator::removeNull($unionType);
 
         if ($unionType instanceof UnionType) {
-            $falsyTypesCount = $this->resolveFalsyTypesCount($unionType);
+            $falsyTypesCount = $this->falsyUnionTypeAnalyzer->count($unionType);
 
             // impossible to refactor to string value compare, as many falsy values can be provided
             if ($falsyTypesCount > 1) {

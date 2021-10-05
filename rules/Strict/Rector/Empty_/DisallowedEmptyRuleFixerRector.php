@@ -94,7 +94,11 @@ CODE_SAMPLE
         $empty = $booleanNot->expr;
         $emptyExprType = $scope->getType($empty->expr);
 
-        return $this->exactCompareFactory->createNotIdenticalFalsyCompare($emptyExprType, $empty->expr);
+        return $this->exactCompareFactory->createNotIdenticalFalsyCompare(
+            $emptyExprType,
+            $empty->expr,
+            $this->treatAsNonEmpty
+        );
     }
 
     private function refactorEmpty(Empty_ $empty, Scope $scope, bool $treatAsNonEmpty): Expr|null

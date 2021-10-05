@@ -91,7 +91,11 @@ CODE_SAMPLE
 
         // 1. if
         $ifCondExprType = $scope->getType($node->cond);
-        $notIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare($ifCondExprType, $node->cond);
+        $notIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
+            $ifCondExprType,
+            $node->cond,
+            $this->treatAsNonEmpty
+        );
         if ($notIdentical !== null) {
             $node->cond = $notIdentical;
         }
@@ -101,8 +105,10 @@ CODE_SAMPLE
             $elseifCondExprType = $scope->getType($elseif->cond);
             $notIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
                 $elseifCondExprType,
-                $elseif->cond
+                $elseif->cond,
+                $this->treatAsNonEmpty
             );
+
             if (! $notIdentical instanceof Expr) {
                 continue;
             }
