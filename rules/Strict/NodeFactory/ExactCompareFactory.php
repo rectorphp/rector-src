@@ -28,7 +28,7 @@ use PHPStan\Type\UnionType;
 
 final class ExactCompareFactory
 {
-    public function createIdenticalFalsyCompare(Type $exprType, Expr $expr, bool $treatAsNonEmpty = false): Expr|null
+    public function createIdenticalFalsyCompare(Type $exprType, Expr $expr, bool $treatAsNonEmpty): Expr|null
     {
         if ($exprType instanceof StringType) {
             return new Identical($expr, new String_(''));
@@ -152,7 +152,7 @@ final class ExactCompareFactory
 
         // assume we have to check empty string, integer and bools
         if (! $treatAsNonEmpty) {
-            $scalarFalsyIdentical = $this->createIdenticalFalsyCompare($unionType, $expr);
+            $scalarFalsyIdentical = $this->createIdenticalFalsyCompare($unionType, $expr, $treatAsNonEmpty);
             if (! $scalarFalsyIdentical instanceof Expr) {
                 return null;
             }

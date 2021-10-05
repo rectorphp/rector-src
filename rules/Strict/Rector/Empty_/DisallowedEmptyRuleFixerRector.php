@@ -82,7 +82,7 @@ CODE_SAMPLE
             return $this->refactorBooleanNot($node, $scope);
         }
 
-        return $this->refactorEmpty($node, $scope);
+        return $this->refactorEmpty($node, $scope, $this->treatAsNonEmpty);
     }
 
     private function refactorBooleanNot(BooleanNot $booleanNot, Scope $scope): Expr|null
@@ -97,9 +97,9 @@ CODE_SAMPLE
         return $this->exactCompareFactory->createNotIdenticalFalsyCompare($emptyExprType, $empty->expr);
     }
 
-    private function refactorEmpty(Empty_ $empty, Scope $scope): Expr|null
+    private function refactorEmpty(Empty_ $empty, Scope $scope, bool $treatAsNonEmpty): Expr|null
     {
         $exprType = $scope->getType($empty->expr);
-        return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr);
+        return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr, $treatAsNonEmpty);
     }
 }

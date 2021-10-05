@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -20,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector\BooleanInIfConditionRuleFixerRectorTest
  */
-final class BooleanInIfConditionRuleFixerRector extends AbstractRector
+final class BooleanInIfConditionRuleFixerRector extends AbstractFalsyScalarRuleFixerRector
 {
     public function __construct(
         private ExactCompareFactory $exactCompareFactory
@@ -34,7 +35,7 @@ final class BooleanInIfConditionRuleFixerRector extends AbstractRector
             'PHPStan\Rules\BooleansInConditions\BooleanInIfConditionRule'
         );
         return new RuleDefinition($errorMessage, [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 final class NegatedString
 {
@@ -62,6 +63,10 @@ final class NegatedString
     }
 }
 CODE_SAMPLE
+                ,
+                [
+                    self::TREAT_AS_NON_EMPTY => false,
+                ]
             ),
         ]);
     }
@@ -98,7 +103,7 @@ CODE_SAMPLE
                 $elseifCondExprType,
                 $elseif->cond
             );
-            if ($notIdentical === null) {
+            if (! $notIdentical instanceof Expr) {
                 continue;
             }
 
