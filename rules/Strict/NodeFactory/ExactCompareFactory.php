@@ -6,6 +6,7 @@ namespace Rector\Strict\NodeFactory;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
@@ -24,11 +25,12 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use Rector\Strict\TypeAnalyzer\FalsyUnionTypeAnalyzer;
 
 final class ExactCompareFactory
 {
     public function __construct(
-        private \Rector\Strict\TypeAnalyzer\FalsyUnionTypeAnalyzer $falsyUnionTypeAnalyzer
+        private FalsyUnionTypeAnalyzer $falsyUnionTypeAnalyzer
     ) {
     }
 
@@ -108,7 +110,7 @@ final class ExactCompareFactory
                 return null;
             }
 
-            return new Expr\BinaryOp\BooleanAnd($toNullNotIdentical, $scalarFalsyIdentical);
+            return new BooleanAnd($toNullNotIdentical, $scalarFalsyIdentical);
         }
 
         return $toNullNotIdentical;

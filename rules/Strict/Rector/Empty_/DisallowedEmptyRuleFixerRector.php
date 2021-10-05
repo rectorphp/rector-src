@@ -71,7 +71,7 @@ CODE_SAMPLE
     /**
      * @param Empty_|BooleanNot $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): Expr|null
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {

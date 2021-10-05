@@ -38,7 +38,7 @@ final class BooleanInBooleanNotRuleFixerRector extends AbstractFalsyScalarRuleFi
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run(string $name)
+    public function run(string|null $name)
     {
         if (! $name) {
             return 'no name';
@@ -54,7 +54,7 @@ class SomeClass
 {
     public function run(string $name)
     {
-        if ($name === '') {
+        if ($name === null) {
             return 'no name';
         }
 
@@ -64,7 +64,7 @@ class SomeClass
 CODE_SAMPLE
                 ,
                 [
-                    self::TREAT_AS_NON_EMPTY => false,
+                    self::TREAT_AS_NON_EMPTY => true,
                 ]
             ),
         ]);
