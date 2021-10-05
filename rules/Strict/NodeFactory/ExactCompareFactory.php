@@ -24,12 +24,10 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\Strict\TypeAnalyzer\FalsyUnionTypeAnalyzer;
 
 final class ExactCompareFactory
 {
     public function __construct(
-        private FalsyUnionTypeAnalyzer $falsyUnionTypeAnalyzer,
         private NodeFactory $nodeFactory
     ) {
     }
@@ -56,10 +54,6 @@ final class ExactCompareFactory
             return null;
         }
 
-        if (! TypeCombinator::containsNull($exprType)) {
-            return null;
-        }
-
         return $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty);
     }
 
@@ -81,38 +75,47 @@ final class ExactCompareFactory
             return null;
         }
 
-        if (! TypeCombinator::containsNull($exprType)) {
-            return null;
-        }
-
         return $this->createFromUnionType($exprType, $expr, $treatAsNotEmpty);
     }
 
-    private function createFromUnionType(Type|UnionType $exprType, Expr $expr, bool $treatAsNotEmpty): Expr|null
+    private function createFromUnionType(UnionType $unionType, Expr $expr, bool $treatAsNotEmpty): Expr|null
     {
-        $exprType = TypeCombinator::removeNull($exprType);
+        $unionType = TypeCombinator::removeNull($unionType);
 
-        if ($exprType instanceof BooleanType) {
+        if ($unionType instanceof BooleanType) {
             return new Identical($expr, $this->nodeFactory->createTrue());
         }
 
-        if ($exprType instanceof TypeWithClassName) {
-            return new Instanceof_($expr, new FullyQualified($exprType->getClassName()));
+        if ($unionType instanceof TypeWithClassName) {
+            return new Instanceof_($expr, new FullyQualified($unionType->getClassName()));
         }
 
         $nullConstFetch = $this->nodeFactory->createNull();
         $toNullNotIdentical = new NotIdentical($expr, $nullConstFetch);
 
-        if (! $treatAsNotEmpty) {
-            $scalarFalsyIdentical = $this->createNotIdenticalFalsyCompare($exprType, $expr, $treatAsNotEmpty);
-            if (! $scalarFalsyIdentical instanceof Expr) {
-                return null;
+        if ($unionType instanceof UnionType) {
+            $compareExprs = [];
+
+            foreach ($unionType->getTypes() as $unionedType) {
+                $compareExprs[] = $this->createNotIdenticalFalsyCompare($unionedType, $expr, $treatAsNotEmpty);
             }
 
-            return new BooleanAnd($toNullNotIdentical, $scalarFalsyIdentical);
+            /** @var Expr $truthyExpr */
+            $truthyExpr = array_shift($compareExprs);
+            foreach ($compareExprs as $compareExpr) {
+                /** @var Expr $compareExpr */
+                $truthyExpr = new BooleanOr($truthyExpr, $compareExpr);
+            }
+
+            return $truthyExpr;
         }
 
-        return $toNullNotIdentical;
+        $compareExpr = $this->createNotIdenticalFalsyCompare($unionType, $expr, $treatAsNotEmpty);
+        if (! $compareExpr instanceof Expr) {
+            return null;
+        }
+
+        return new BooleanAnd($toNullNotIdentical, $compareExpr);
     }
 
     private function createTruthyFromUnionType(UnionType $unionType, Expr $expr, bool $treatAsNonEmpty): Expr|null
@@ -120,12 +123,19 @@ final class ExactCompareFactory
         $unionType = TypeCombinator::removeNull($unionType);
 
         if ($unionType instanceof UnionType) {
-            $falsyTypesCount = $this->falsyUnionTypeAnalyzer->count($unionType);
-
-            // impossible to refactor to string value compare, as many falsy values can be provided
-            if ($falsyTypesCount > 1) {
-                return null;
+            $compareExprs = [];
+            foreach ($unionType->getTypes() as $unionedType) {
+                $compareExprs[] = $this->createIdenticalFalsyCompare($unionedType, $expr, $treatAsNonEmpty);
             }
+
+            /** @var Expr $truthyExpr */
+            $truthyExpr = array_shift($compareExprs);
+            foreach ($compareExprs as $compareExpr) {
+                /** @var Expr $compareExpr */
+                $truthyExpr = new BooleanOr($truthyExpr, $compareExpr);
+            }
+
+            return $truthyExpr;
         }
 
         if ($unionType instanceof BooleanType) {

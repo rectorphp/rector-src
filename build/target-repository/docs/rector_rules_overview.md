@@ -113,10 +113,6 @@ This Rector adds new default arguments in calls of defined methods and class typ
 - class: [`Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector`](../rules/Arguments/Rector/ClassMethod/ArgumentAdderRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use PHPStan\Type\ObjectType;
 use Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
@@ -127,7 +123,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ArgumentAdderRector::class)
-        ->call('configure', [[ArgumentAdderRector::ADDED_ARGUMENTS => ValueObjectInliner::inline([new ArgumentAdder('SomeExampleClass', 'someMethod', 0, 'someArgument', true, new ObjectType('SomeType'))])]]);
+        ->call('configure', [[
+            ArgumentAdderRector::ADDED_ARGUMENTS => ValueObjectInliner::inline([
+                new ArgumentAdder('SomeExampleClass', 'someMethod', 0, 'someArgument', true, new ObjectType('SomeType')),
+            ]),
+        ]]);
 };
 ```
 
@@ -158,10 +158,6 @@ Streamline the operator arguments of version_compare function
 - class: [`Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector`](../rules/Arguments/Rector/FuncCall/FunctionArgumentDefaultValueReplacerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
 use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -171,7 +167,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(FunctionArgumentDefaultValueReplacerRector::class)
-        ->call('configure', [[FunctionArgumentDefaultValueReplacerRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge')])]]);
+        ->call('configure', [[
+            FunctionArgumentDefaultValueReplacerRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
+                new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge'),
+            ]),
+        ]]);
 };
 ```
 
@@ -193,10 +193,6 @@ Replaces defined map of arguments in defined methods and their calls.
 - class: [`Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector`](../rules/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -206,7 +202,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ReplaceArgumentDefaultValueRector::class)
-        ->call('configure', [[ReplaceArgumentDefaultValueRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([new ReplaceArgumentDefaultValue('SomeClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false)])]]);
+        ->call('configure', [[
+            ReplaceArgumentDefaultValueRector::REPLACED_ARGUMENTS => ValueObjectInliner::inline([
+                new ReplaceArgumentDefaultValue('SomeClass', 'someMethod', 0, 'SomeClass::OLD_CONSTANT', false),
+            ]),
+        ]]);
 };
 ```
 
@@ -229,10 +229,6 @@ Swap arguments in function calls
 - class: [`Rector\Arguments\Rector\FuncCall\SwapFuncCallArgumentsRector`](../rules/Arguments/Rector/FuncCall/SwapFuncCallArgumentsRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Arguments\Rector\FuncCall\SwapFuncCallArgumentsRector;
 use Rector\Arguments\ValueObject\SwapFuncCallArguments;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -242,7 +238,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(SwapFuncCallArgumentsRector::class)
-        ->call('configure', [[SwapFuncCallArgumentsRector::FUNCTION_ARGUMENT_SWAPS => ValueObjectInliner::inline([new SwapFuncCallArguments('some_function', [1, 0])])]]);
+        ->call('configure', [[
+            SwapFuncCallArgumentsRector::FUNCTION_ARGUMENT_SWAPS => ValueObjectInliner::inline([
+                new SwapFuncCallArguments('some_function', [1, 0]), ]
+            ),
+        ]]);
 };
 ```
 
@@ -317,10 +317,6 @@ Move classes by their suffix to their own group/directory
 - class: [`Rector\Autodiscovery\Rector\Class_\MoveServicesBySuffixToDirectoryRector`](../rules/Autodiscovery/Rector/Class_/MoveServicesBySuffixToDirectoryRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Autodiscovery\Rector\Class_\MoveServicesBySuffixToDirectoryRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -328,7 +324,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MoveServicesBySuffixToDirectoryRector::class)
-        ->call('configure', [[MoveServicesBySuffixToDirectoryRector::GROUP_NAMES_BY_SUFFIX => ['Repository']]]);
+        ->call('configure', [[
+            MoveServicesBySuffixToDirectoryRector::GROUP_NAMES_BY_SUFFIX => ['Repository'],
+        ]]);
 };
 ```
 
@@ -357,10 +355,6 @@ Move value object to ValueObject namespace/directory
 - class: [`Rector\Autodiscovery\Rector\Class_\MoveValueObjectsToValueObjectDirectoryRector`](../rules/Autodiscovery/Rector/Class_/MoveValueObjectsToValueObjectDirectoryRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Autodiscovery\Rector\Class_\MoveValueObjectsToValueObjectDirectoryRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -368,7 +362,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MoveValueObjectsToValueObjectDirectoryRector::class)
-        ->call('configure', [[MoveValueObjectsToValueObjectDirectoryRector::TYPES => ['ValueObjectInterfaceClassName'], MoveValueObjectsToValueObjectDirectoryRector::SUFFIXES => ['Search'], MoveValueObjectsToValueObjectDirectoryRector::ENABLE_VALUE_OBJECT_GUESSING => true]]);
+        ->call('configure', [[
+            MoveValueObjectsToValueObjectDirectoryRector::TYPES => ['ValueObjectInterfaceClassName'],
+            MoveValueObjectsToValueObjectDirectoryRector::SUFFIXES => ['Search'],
+            MoveValueObjectsToValueObjectDirectoryRector::ENABLE_VALUE_OBJECT_GUESSING => true,
+        ]]);
 };
 ```
 
@@ -1957,10 +1955,6 @@ Replace PREG delimiter with configured one
 - class: [`Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector`](../rules/CodingStyle/Rector/FuncCall/ConsistentPregDelimiterRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -1968,7 +1962,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ConsistentPregDelimiterRector::class)
-        ->call('configure', [[ConsistentPregDelimiterRector::DELIMITER => '#']]);
+        ->call('configure', [[
+            ConsistentPregDelimiterRector::DELIMITER => '#',
+        ]]);
 };
 ```
 
@@ -2181,10 +2177,6 @@ Order attributes by desired names
 - class: [`Rector\CodingStyle\Rector\ClassMethod\OrderAttributesRector`](../rules/CodingStyle/Rector/ClassMethod/OrderAttributesRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\CodingStyle\Rector\ClassMethod\OrderAttributesRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -2192,7 +2184,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(OrderAttributesRector::class)
-        ->call('configure', [[OrderAttributesRector::ATTRIBUTES_ORDER => ['First', 'Second']]]);
+        ->call('configure', [[
+            OrderAttributesRector::ATTRIBUTES_ORDER => ['First', 'Second'],
+        ]]);
 };
 ```
 
@@ -2254,10 +2248,6 @@ Changes `$this->...` and static:: to self:: or vise versa for given types
 - class: [`Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector`](../rules/CodingStyle/Rector/MethodCall/PreferThisOrSelfMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use PHPUnit\Framework\TestCase;
 use Rector\CodingStyle\Enum\PreferenceSelfThis;
 use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
@@ -2268,7 +2258,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(PreferThisOrSelfMethodCallRector::class)
-        ->call('configure', [[PreferThisOrSelfMethodCallRector::TYPE_TO_PREFERENCE => [TestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF())]]]);
+        ->call('configure', [[
+            PreferThisOrSelfMethodCallRector::TYPE_TO_PREFERENCE => [
+                TestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
+
+            ], ]]);
 };
 ```
 
@@ -2353,10 +2347,6 @@ Turns array return to yield return in specific type and method
 - class: [`Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector`](../rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -2366,7 +2356,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ReturnArrayClassMethodToYieldRector::class)
-        ->call('configure', [[ReturnArrayClassMethodToYieldRector::METHODS_TO_YIELDS => ValueObjectInliner::inline([new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*')])]]);
+        ->call('configure', [[
+            ReturnArrayClassMethodToYieldRector::METHODS_TO_YIELDS => ValueObjectInliner::inline([
+                new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
+            ]),
+        ]]);
 };
 ```
 
@@ -2672,10 +2666,6 @@ Add package to "require" in `composer.json`
 - class: [`Rector\Composer\Rector\AddPackageToRequireComposerRector`](../rules/Composer/Rector/AddPackageToRequireComposerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Composer\Rector\AddPackageToRequireComposerRector;
 use Rector\Composer\ValueObject\PackageAndVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -2685,7 +2675,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddPackageToRequireComposerRector::class)
-        ->call('configure', [[AddPackageToRequireComposerRector::PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([new PackageAndVersion('symfony/console', '^3.4')])]]);
+        ->call('configure', [[
+            AddPackageToRequireComposerRector::PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([
+                new PackageAndVersion('symfony/console', '^3.4'),
+            ]),
+        ]]);
 };
 ```
 
@@ -2710,10 +2704,6 @@ Add package to "require-dev" in `composer.json`
 - class: [`Rector\Composer\Rector\AddPackageToRequireDevComposerRector`](../rules/Composer/Rector/AddPackageToRequireDevComposerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Composer\Rector\AddPackageToRequireDevComposerRector;
 use Rector\Composer\ValueObject\PackageAndVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -2723,7 +2713,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddPackageToRequireDevComposerRector::class)
-        ->call('configure', [[AddPackageToRequireDevComposerRector::PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([new PackageAndVersion('symfony/console', '^3.4')])]]);
+        ->call('configure', [[
+            AddPackageToRequireDevComposerRector::PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([
+                new PackageAndVersion('symfony/console', '^3.4'),
+            ]),
+        ]]);
 };
 ```
 
@@ -2748,10 +2742,6 @@ Change package version `composer.json`
 - class: [`Rector\Composer\Rector\ChangePackageVersionComposerRector`](../rules/Composer/Rector/ChangePackageVersionComposerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Composer\Rector\ChangePackageVersionComposerRector;
 use Rector\Composer\ValueObject\PackageAndVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -2761,7 +2751,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ChangePackageVersionComposerRector::class)
-        ->call('configure', [[ChangePackageVersionComposerRector::PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([new PackageAndVersion('symfony/console', '^4.4')])]]);
+        ->call('configure', [[
+            ChangePackageVersionComposerRector::PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([
+                new PackageAndVersion('symfony/console', '^4.4'),
+            ]),
+        ]]);
 };
 ```
 
@@ -2788,10 +2782,6 @@ Remove package from "require" and "require-dev" in `composer.json`
 - class: [`Rector\Composer\Rector\RemovePackageComposerRector`](../rules/Composer/Rector/RemovePackageComposerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Composer\Rector\RemovePackageComposerRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -2799,7 +2789,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemovePackageComposerRector::class)
-        ->call('configure', [[RemovePackageComposerRector::PACKAGE_NAMES => ['symfony/console']]]);
+        ->call('configure', [[
+            RemovePackageComposerRector::PACKAGE_NAMES => ['symfony/console'],
+        ]]);
 };
 ```
 
@@ -2824,10 +2816,6 @@ Change package name in `composer.json`
 - class: [`Rector\Composer\Rector\RenamePackageComposerRector`](../rules/Composer/Rector/RenamePackageComposerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Composer\Rector\RenamePackageComposerRector;
 use Rector\Composer\ValueObject\RenamePackage;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -2837,7 +2825,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenamePackageComposerRector::class)
-        ->call('configure', [[RenamePackageComposerRector::RENAME_PACKAGES => ValueObjectInliner::inline([new RenamePackage('rector/rector', 'rector/rector-src')])]]);
+        ->call('configure', [[
+            RenamePackageComposerRector::RENAME_PACKAGES => ValueObjectInliner::inline([
+                new RenamePackage('rector/rector', 'rector/rector-src'),
+            ]),
+        ]]);
 };
 ```
 
@@ -2863,10 +2855,6 @@ Change package name and version `composer.json`
 - class: [`Rector\Composer\Rector\ReplacePackageAndVersionComposerRector`](../rules/Composer/Rector/ReplacePackageAndVersionComposerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Composer\Rector\ReplacePackageAndVersionComposerRector;
 use Rector\Composer\ValueObject\ReplacePackageAndVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -2876,7 +2864,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ReplacePackageAndVersionComposerRector::class)
-        ->call('configure', [[ReplacePackageAndVersionComposerRector::REPLACE_PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([new ReplacePackageAndVersion('symfony/console', 'symfony/http-kernel', '^4.4')])]]);
+        ->call('configure', [[
+            ReplacePackageAndVersionComposerRector::REPLACE_PACKAGES_AND_VERSIONS => ValueObjectInliner::inline([
+                new ReplacePackageAndVersion('symfony/console', 'symfony/http-kernel', '^4.4'),
+            ]),
+        ]]);
 };
 ```
 
@@ -2964,10 +2956,6 @@ Remove annotation by names
 - class: [`Rector\DeadCode\Rector\ClassLike\RemoveAnnotationRector`](../rules/DeadCode/Rector/ClassLike/RemoveAnnotationRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\DeadCode\Rector\ClassLike\RemoveAnnotationRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -2975,7 +2963,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemoveAnnotationRector::class)
-        ->call('configure', [[RemoveAnnotationRector::ANNOTATIONS_TO_REMOVE => ['method']]]);
+        ->call('configure', [[
+            RemoveAnnotationRector::ANNOTATIONS_TO_REMOVE => ['method'],
+        ]]);
 };
 ```
 
@@ -3506,10 +3496,6 @@ Remove unneded PHP_VERSION_ID check
 - class: [`Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector`](../rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -3517,7 +3503,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemovePhpVersionIdCheckRector::class)
-        ->call('configure', [[RemovePhpVersionIdCheckRector::PHP_VERSION_CONSTRAINT => 80000]]);
+        ->call('configure', [[
+            RemovePhpVersionIdCheckRector::PHP_VERSION_CONSTRAINT => 80000,
+        ]]);
 };
 ```
 
@@ -4036,10 +4024,6 @@ Turns fluent interface calls to classic ones.
 - class: [`Rector\Defluent\Rector\ClassMethod\NormalToFluentRector`](../rules/Defluent/Rector/ClassMethod/NormalToFluentRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Defluent\Rector\ClassMethod\NormalToFluentRector;
 use Rector\Defluent\ValueObject\NormalToFluent;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -4049,7 +4033,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(NormalToFluentRector::class)
-        ->call('configure', [[NormalToFluentRector::CALLS_TO_FLUENT => ValueObjectInliner::inline([new NormalToFluent('SomeClass', ['someFunction', 'otherFunction'])])]]);
+        ->call('configure', [[
+            NormalToFluentRector::CALLS_TO_FLUENT => ValueObjectInliner::inline([
+                new NormalToFluent('SomeClass', ['someFunction', 'otherFunction']), ]
+            ),
+        ]]);
 };
 ```
 
@@ -4163,10 +4151,6 @@ Add method parent call, in case new parent method is added
 - class: [`Rector\DependencyInjection\Rector\ClassMethod\AddMethodParentCallRector`](../rules/DependencyInjection/Rector/ClassMethod/AddMethodParentCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\DependencyInjection\Rector\ClassMethod\AddMethodParentCallRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -4174,7 +4158,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddMethodParentCallRector::class)
-        ->call('configure', [[AddMethodParentCallRector::METHODS_BY_PARENT_TYPES => ['ParentClassWithNewConstructor' => '__construct']]]);
+        ->call('configure', [[
+            AddMethodParentCallRector::METHODS_BY_PARENT_TYPES => [
+                'ParentClassWithNewConstructor' => '__construct',
+
+            ], ]]);
 };
 ```
 
@@ -4688,10 +4676,6 @@ Change param type to match the lowest type in whole family tree
 - class: [`Rector\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector`](../rules/DowngradePhp72/Rector/ClassMethod/DowngradeParameterTypeWideningRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -4699,7 +4683,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(DowngradeParameterTypeWideningRector::class)
-        ->call('configure', [[DowngradeParameterTypeWideningRector::SAFE_TYPES => [], DowngradeParameterTypeWideningRector::SAFE_TYPES_TO_METHODS => []]]);
+        ->call('configure', [[
+            DowngradeParameterTypeWideningRector::SAFE_TYPES => [],
+            DowngradeParameterTypeWideningRector::SAFE_TYPES_TO_METHODS => [],
+        ]]);
 };
 ```
 
@@ -5169,10 +5156,6 @@ Refactor PHP attribute markers to annotations notation
 - class: [`Rector\DowngradePhp80\Rector\Class_\DowngradeAttributeToAnnotationRector`](../rules/DowngradePhp80/Rector/Class_/DowngradeAttributeToAnnotationRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\DowngradePhp80\Rector\Class_\DowngradeAttributeToAnnotationRector;
 use Rector\DowngradePhp80\ValueObject\DowngradeAttributeToAnnotation;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -5182,7 +5165,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(DowngradeAttributeToAnnotationRector::class)
-        ->call('configure', [[DowngradeAttributeToAnnotationRector::ATTRIBUTE_TO_ANNOTATION => ValueObjectInliner::inline([new DowngradeAttributeToAnnotation('Symfony\Component\Routing\Annotation\Route')])]]);
+        ->call('configure', [[
+            DowngradeAttributeToAnnotationRector::ATTRIBUTE_TO_ANNOTATION => ValueObjectInliner::inline([
+                new DowngradeAttributeToAnnotation('Symfony\Component\Routing\Annotation\Route'),
+            ]),
+        ]]);
 };
 ```
 
@@ -5876,10 +5863,6 @@ Make class methods generic based on implemented interface
 - class: [`Rector\Generics\Rector\ClassMethod\GenericClassMethodParamRector`](../rules/Generics/Rector/ClassMethod/GenericClassMethodParamRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Generics\Rector\ClassMethod\GenericClassMethodParamRector;
 use Rector\Generics\ValueObject\GenericClassMethodParam;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -5889,7 +5872,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(GenericClassMethodParamRector::class)
-        ->call('configure', [[GenericClassMethodParamRector::GENERIC_CLASS_METHOD_PARAMS => ValueObjectInliner::inline([new GenericClassMethodParam('SomeInterface', 'getParams', 0, 'ParamInterface')])]]);
+        ->call('configure', [[
+            GenericClassMethodParamRector::GENERIC_CLASS_METHOD_PARAMS => ValueObjectInliner::inline([
+                new GenericClassMethodParam('SomeInterface', 'getParams', 0, 'ParamInterface'),
+            ]),
+        ]]);
 };
 ```
 
@@ -6484,10 +6471,6 @@ Replace string class names by <class>::class constant
 - class: [`Rector\Php55\Rector\String_\StringClassNameToClassConstantRector`](../rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -6495,7 +6478,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(StringClassNameToClassConstantRector::class)
-        ->call('configure', [[StringClassNameToClassConstantRector::CLASSES_TO_SKIP => ['ClassName', 'AnotherClassName']]]);
+        ->call('configure', [[
+            StringClassNameToClassConstantRector::CLASSES_TO_SKIP => ['ClassName', 'AnotherClassName'],
+        ]]);
 };
 ```
 
@@ -7024,10 +7009,6 @@ Changes reserved "Object" name to "<Smart>Object" where <Smart> can be configure
 - class: [`Rector\Php71\Rector\Name\ReservedObjectRector`](../rules/Php71/Rector/Name/ReservedObjectRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Php71\Rector\Name\ReservedObjectRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -7035,7 +7016,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ReservedObjectRector::class)
-        ->call('configure', [[ReservedObjectRector::RESERVED_KEYWORDS_TO_REPLACEMENTS => ['ReservedObject' => 'SmartObject', 'Object' => 'AnotherSmartObject']]]);
+        ->call('configure', [[
+            ReservedObjectRector::RESERVED_KEYWORDS_TO_REPLACEMENTS => [
+                'ReservedObject' => 'SmartObject',
+                'Object' => 'AnotherSmartObject',
+
+            ], ]]);
 };
 ```
 
@@ -7387,10 +7373,6 @@ Add "_" as thousands separator in numbers for higher or equals to limitValue con
 - class: [`Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector`](../rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -7398,7 +7380,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddLiteralSeparatorToNumberRector::class)
-        ->call('configure', [[AddLiteralSeparatorToNumberRector::LIMIT_VALUE => 1000000]]);
+        ->call('configure', [[
+            AddLiteralSeparatorToNumberRector::LIMIT_VALUE => 1000000,
+        ]]);
 };
 ```
 
@@ -7634,10 +7618,6 @@ Change `fn()` function name, since it will be reserved keyword
 - class: [`Rector\Php74\Rector\Function_\ReservedFnFunctionRector`](../rules/Php74/Rector/Function_/ReservedFnFunctionRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Php74\Rector\Function_\ReservedFnFunctionRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -7645,7 +7625,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ReservedFnFunctionRector::class)
-        ->call('configure', [[ReservedFnFunctionRector::RESERVED_NAMES_TO_NEW_ONES => ['fn' => 'someFunctionName']]]);
+        ->call('configure', [[
+            ReservedFnFunctionRector::RESERVED_NAMES_TO_NEW_ONES => [
+                'fn' => 'someFunctionName',
+
+            ], ]]);
 };
 ```
 
@@ -7695,10 +7679,6 @@ Changes property `@var` annotations from annotation to type.
 - class: [`Rector\Php74\Rector\Property\TypedPropertyRector`](../rules/Php74/Rector/Property/TypedPropertyRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -7706,7 +7686,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(TypedPropertyRector::class)
-        ->call('configure', [[TypedPropertyRector::CLASS_LIKE_TYPE_ONLY => false, TypedPropertyRector::PRIVATE_PROPERTY_ONLY => false]]);
+        ->call('configure', [[
+            TypedPropertyRector::CLASS_LIKE_TYPE_ONLY => false,
+            TypedPropertyRector::PRIVATE_PROPERTY_ONLY => false,
+        ]]);
 };
 ```
 
@@ -7736,10 +7719,6 @@ Change annotation to attribute
 - class: [`Rector\Php80\Rector\Class_\AnnotationToAttributeRector`](../rules/Php80/Rector/Class_/AnnotationToAttributeRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -7749,7 +7728,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AnnotationToAttributeRector::class)
-        ->call('configure', [[AnnotationToAttributeRector::ANNOTATION_TO_ATTRIBUTE => ValueObjectInliner::inline([new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route')])]]);
+        ->call('configure', [[
+            AnnotationToAttributeRector::ANNOTATION_TO_ATTRIBUTE => ValueObjectInliner::inline([
+                new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
+            ]),
+        ]]);
 };
 ```
 
@@ -7847,10 +7830,6 @@ Refactor Doctrine `@annotation` annotated class to a PHP 8.0 attribute class
 - class: [`Rector\Php80\Rector\Class_\DoctrineAnnotationClassToAttributeRector`](../rules/Php80/Rector/Class_/DoctrineAnnotationClassToAttributeRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Php80\Rector\Class_\DoctrineAnnotationClassToAttributeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -7858,7 +7837,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(DoctrineAnnotationClassToAttributeRector::class)
-        ->call('configure', [[DoctrineAnnotationClassToAttributeRector::REMOVE_ANNOTATIONS => true]]);
+        ->call('configure', [[
+            DoctrineAnnotationClassToAttributeRector::REMOVE_ANNOTATIONS => true,
+        ]]);
 };
 ```
 
@@ -8816,10 +8797,6 @@ Replace string values in specific method call by constant of provided class
 - class: [`Rector\Privatization\Rector\MethodCall\ReplaceStringWithClassConstantRector`](../rules/Privatization/Rector/MethodCall/ReplaceStringWithClassConstantRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Privatization\Rector\MethodCall\ReplaceStringWithClassConstantRector;
 use Rector\Privatization\ValueObject\ReplaceStringWithClassConstant;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -8829,7 +8806,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ReplaceStringWithClassConstantRector::class)
-        ->call('configure', [[ReplaceStringWithClassConstantRector::REPLACE_STRING_WITH_CLASS_CONSTANT => ValueObjectInliner::inline([new ReplaceStringWithClassConstant('SomeClass', 'call', 0, 'Placeholder')])]]);
+        ->call('configure', [[
+            ReplaceStringWithClassConstantRector::REPLACE_STRING_WITH_CLASS_CONSTANT => ValueObjectInliner::inline([
+                new ReplaceStringWithClassConstant('SomeClass', 'call', 0, 'Placeholder'),
+            ]),
+        ]]);
 };
 ```
 
@@ -8859,10 +8840,6 @@ Removes defined arguments in defined methods and their calls.
 - class: [`Rector\Removing\Rector\ClassMethod\ArgumentRemoverRector`](../rules/Removing/Rector/ClassMethod/ArgumentRemoverRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Removing\Rector\ClassMethod\ArgumentRemoverRector;
 use Rector\Removing\ValueObject\ArgumentRemover;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -8872,7 +8849,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ArgumentRemoverRector::class)
-        ->call('configure', [[ArgumentRemoverRector::REMOVED_ARGUMENTS => ValueObjectInliner::inline([new ArgumentRemover('ExampleClass', 'someMethod', 0, [true])])]]);
+        ->call('configure', [[
+            ArgumentRemoverRector::REMOVED_ARGUMENTS => ValueObjectInliner::inline([
+                new ArgumentRemover('ExampleClass', 'someMethod', 0, [true]), ]
+            ),
+        ]]);
 };
 ```
 
@@ -8895,10 +8876,6 @@ Remove argument by position by function name
 - class: [`Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector`](../rules/Removing/Rector/FuncCall/RemoveFuncCallArgRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -8908,7 +8885,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemoveFuncCallArgRector::class)
-        ->call('configure', [[RemoveFuncCallArgRector::REMOVED_FUNCTION_ARGUMENTS => ValueObjectInliner::inline([new RemoveFuncCallArg('remove_last_arg', 1)])]]);
+        ->call('configure', [[
+            RemoveFuncCallArgRector::REMOVED_FUNCTION_ARGUMENTS => ValueObjectInliner::inline([
+                new RemoveFuncCallArg('remove_last_arg', 1),
+            ]),
+        ]]);
 };
 ```
 
@@ -8930,10 +8911,6 @@ Remove ini_get by configuration
 - class: [`Rector\Removing\Rector\FuncCall\RemoveFuncCallRector`](../rules/Removing/Rector/FuncCall/RemoveFuncCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Removing\Rector\FuncCall\RemoveFuncCallRector;
 use Rector\Removing\ValueObject\RemoveFuncCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -8943,7 +8920,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemoveFuncCallRector::class)
-        ->call('configure', [[RemoveFuncCallRector::REMOVE_FUNC_CALLS => ValueObjectInliner::inline([new RemoveFuncCall('ini_get', [['y2k_compliance']])])]]);
+        ->call('configure', [[
+            RemoveFuncCallRector::REMOVE_FUNC_CALLS => ValueObjectInliner::inline([
+                new RemoveFuncCall('ini_get', [['y2k_compliance']]), ]
+            ),
+        ]]);
 };
 ```
 
@@ -8965,10 +8946,6 @@ Removes interfaces usage from class.
 - class: [`Rector\Removing\Rector\Class_\RemoveInterfacesRector`](../rules/Removing/Rector/Class_/RemoveInterfacesRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Removing\Rector\Class_\RemoveInterfacesRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -8976,7 +8953,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemoveInterfacesRector::class)
-        ->call('configure', [[RemoveInterfacesRector::INTERFACES_TO_REMOVE => ['SomeInterface']]]);
+        ->call('configure', [[
+            RemoveInterfacesRector::INTERFACES_TO_REMOVE => ['SomeInterface'],
+        ]]);
 };
 ```
 
@@ -9000,10 +8979,6 @@ Removes extends class by name
 - class: [`Rector\Removing\Rector\Class_\RemoveParentRector`](../rules/Removing/Rector/Class_/RemoveParentRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Removing\Rector\Class_\RemoveParentRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9011,7 +8986,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemoveParentRector::class)
-        ->call('configure', [[RemoveParentRector::PARENT_TYPES_TO_REMOVE => ['SomeParentClass']]]);
+        ->call('configure', [[
+            RemoveParentRector::PARENT_TYPES_TO_REMOVE => ['SomeParentClass'],
+        ]]);
 };
 ```
 
@@ -9035,10 +9012,6 @@ Remove specific traits from code
 - class: [`Rector\Removing\Rector\Class_\RemoveTraitUseRector`](../rules/Removing/Rector/Class_/RemoveTraitUseRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Removing\Rector\Class_\RemoveTraitUseRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9046,7 +9019,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RemoveTraitUseRector::class)
-        ->call('configure', [[RemoveTraitUseRector::TRAITS_TO_REMOVE => ['TraitNameToRemove']]]);
+        ->call('configure', [[
+            RemoveTraitUseRector::TRAITS_TO_REMOVE => ['TraitNameToRemove'],
+        ]]);
 };
 ```
 
@@ -9200,10 +9175,6 @@ Replaces defined Pseudo_Namespaces by Namespace\Ones.
 - class: [`Rector\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNamespaceRector`](../rules/Renaming/Rector/FileWithoutNamespace/PseudoNamespaceToNamespaceRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNamespaceRector;
 use Rector\Renaming\ValueObject\PseudoNamespaceToNamespace;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9213,7 +9184,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(PseudoNamespaceToNamespaceRector::class)
-        ->call('configure', [[PseudoNamespaceToNamespaceRector::NAMESPACE_PREFIXES_WITH_EXCLUDED_CLASSES => ValueObjectInliner::inline([new PseudoNamespaceToNamespace('Some_', ['Some_Class_To_Keep'])])]]);
+        ->call('configure', [[
+            PseudoNamespaceToNamespaceRector::NAMESPACE_PREFIXES_WITH_EXCLUDED_CLASSES => ValueObjectInliner::inline([
+                new PseudoNamespaceToNamespace('Some_', ['Some_Class_To_Keep']), ]
+            ),
+        ]]);
 };
 ```
 
@@ -9238,10 +9213,6 @@ Turns defined annotations above properties and methods to their new values.
 - class: [`Rector\Renaming\Rector\ClassMethod\RenameAnnotationRector`](../rules/Renaming/Rector/ClassMethod/RenameAnnotationRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\ClassMethod\RenameAnnotationRector;
 use Rector\Renaming\ValueObject\RenameAnnotation;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9251,7 +9222,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameAnnotationRector::class)
-        ->call('configure', [[RenameAnnotationRector::RENAMED_ANNOTATIONS_IN_TYPES => ValueObjectInliner::inline([new RenameAnnotation('PHPUnit\Framework\TestCase', 'test', 'scenario')])]]);
+        ->call('configure', [[
+            RenameAnnotationRector::RENAMED_ANNOTATIONS_IN_TYPES => ValueObjectInliner::inline([
+                new RenameAnnotation('PHPUnit\Framework\TestCase', 'test', 'scenario'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9281,10 +9256,6 @@ Replaces defined class constants in their calls.
 - class: [`Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector`](../rules/Renaming/Rector/ClassConstFetch/RenameClassConstFetchRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9294,7 +9265,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameClassConstFetchRector::class)
-        ->call('configure', [[RenameClassConstFetchRector::CLASS_CONSTANT_RENAME => ValueObjectInliner::inline([new RenameClassAndConstFetch('SomeClass', 'OTHER_OLD_CONSTANT', 'DifferentClass', 'NEW_CONSTANT')])]]);
+        ->call('configure', [[
+            RenameClassConstFetchRector::CLASS_CONSTANT_RENAME => ValueObjectInliner::inline([
+                new RenameClassAndConstFetch('SomeClass', 'OTHER_OLD_CONSTANT', 'DifferentClass', 'NEW_CONSTANT'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9318,10 +9293,6 @@ Replaces defined classes by new ones.
 - class: [`Rector\Renaming\Rector\Name\RenameClassRector`](../rules/Renaming/Rector/Name/RenameClassRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9329,7 +9300,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameClassRector::class)
-        ->call('configure', [[RenameClassRector::OLD_TO_NEW_CLASSES => ['App\SomeOldClass' => 'App\SomeNewClass']]]);
+        ->call('configure', [[
+            RenameClassRector::OLD_TO_NEW_CLASSES => [
+                'App\SomeOldClass' => 'App\SomeNewClass',
+
+            ], ]]);
 };
 ```
 
@@ -9363,10 +9338,6 @@ Replace constant by new ones
 - class: [`Rector\Renaming\Rector\ConstFetch\RenameConstantRector`](../rules/Renaming/Rector/ConstFetch/RenameConstantRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\ConstFetch\RenameConstantRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9374,7 +9345,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameConstantRector::class)
-        ->call('configure', [[RenameConstantRector::OLD_TO_NEW_CONSTANTS => ['MYSQL_ASSOC' => 'MYSQLI_ASSOC', 'OLD_CONSTANT' => 'NEW_CONSTANT']]]);
+        ->call('configure', [[
+            RenameConstantRector::OLD_TO_NEW_CONSTANTS => [
+                'MYSQL_ASSOC' => 'MYSQLI_ASSOC',
+                'OLD_CONSTANT' => 'NEW_CONSTANT',
+
+            ], ]]);
 };
 ```
 
@@ -9402,10 +9378,6 @@ Turns defined function call new one.
 - class: [`Rector\Renaming\Rector\FuncCall\RenameFunctionRector`](../rules/Renaming/Rector/FuncCall/RenameFunctionRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9413,7 +9385,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameFunctionRector::class)
-        ->call('configure', [[RenameFunctionRector::OLD_FUNCTION_TO_NEW_FUNCTION => ['view' => 'Laravel\Templating\render']]]);
+        ->call('configure', [[
+            RenameFunctionRector::OLD_FUNCTION_TO_NEW_FUNCTION => [
+                'view' => 'Laravel\Templating\render',
+
+            ], ]]);
 };
 ```
 
@@ -9435,10 +9411,6 @@ Turns method names to new ones.
 - class: [`Rector\Renaming\Rector\MethodCall\RenameMethodRector`](../rules/Renaming/Rector/MethodCall/RenameMethodRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9448,7 +9420,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameMethodRector::class)
-        ->call('configure', [[RenameMethodRector::METHOD_CALL_RENAMES => ValueObjectInliner::inline([new MethodCallRename('SomeExampleClass', 'oldMethod', 'newMethod')])]]);
+        ->call('configure', [[
+            RenameMethodRector::METHOD_CALL_RENAMES => ValueObjectInliner::inline([
+                new MethodCallRename('SomeExampleClass', 'oldMethod', 'newMethod'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9471,10 +9447,6 @@ Replaces old namespace by new one.
 - class: [`Rector\Renaming\Rector\Namespace_\RenameNamespaceRector`](../rules/Renaming/Rector/Namespace_/RenameNamespaceRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\Namespace_\RenameNamespaceRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9482,7 +9454,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameNamespaceRector::class)
-        ->call('configure', [[RenameNamespaceRector::OLD_TO_NEW_NAMESPACES => ['SomeOldNamespace' => 'SomeNewNamespace']]]);
+        ->call('configure', [[
+            RenameNamespaceRector::OLD_TO_NEW_NAMESPACES => [
+                'SomeOldNamespace' => 'SomeNewNamespace',
+
+            ], ]]);
 };
 ```
 
@@ -9504,10 +9480,6 @@ Replaces defined old properties by new ones.
 - class: [`Rector\Renaming\Rector\PropertyFetch\RenamePropertyRector`](../rules/Renaming/Rector/PropertyFetch/RenamePropertyRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\PropertyFetch\RenamePropertyRector;
 use Rector\Renaming\ValueObject\RenameProperty;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9517,7 +9489,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenamePropertyRector::class)
-        ->call('configure', [[RenamePropertyRector::RENAMED_PROPERTIES => ValueObjectInliner::inline([new RenameProperty('SomeClass', 'someOldProperty', 'someNewProperty')])]]);
+        ->call('configure', [[
+            RenamePropertyRector::RENAMED_PROPERTIES => ValueObjectInliner::inline([
+                new RenameProperty('SomeClass', 'someOldProperty', 'someNewProperty'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9539,10 +9515,6 @@ Turns method names to new ones.
 - class: [`Rector\Renaming\Rector\StaticCall\RenameStaticMethodRector`](../rules/Renaming/Rector/StaticCall/RenameStaticMethodRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\StaticCall\RenameStaticMethodRector;
 use Rector\Renaming\ValueObject\RenameStaticMethod;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9552,7 +9524,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameStaticMethodRector::class)
-        ->call('configure', [[RenameStaticMethodRector::OLD_TO_NEW_METHODS_BY_CLASSES => ValueObjectInliner::inline([new RenameStaticMethod('SomeClass', 'oldMethod', 'AnotherExampleClass', 'newStaticMethod')])]]);
+        ->call('configure', [[
+            RenameStaticMethodRector::OLD_TO_NEW_METHODS_BY_CLASSES => ValueObjectInliner::inline([
+                new RenameStaticMethod('SomeClass', 'oldMethod', 'AnotherExampleClass', 'newStaticMethod'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9566,10 +9542,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 <br>
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\StaticCall\RenameStaticMethodRector;
 use Rector\Renaming\ValueObject\RenameStaticMethod;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9579,7 +9551,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameStaticMethodRector::class)
-        ->call('configure', [[RenameStaticMethodRector::OLD_TO_NEW_METHODS_BY_CLASSES => ValueObjectInliner::inline([new RenameStaticMethod('SomeClass', 'oldMethod', 'SomeClass', 'newStaticMethod')])]]);
+        ->call('configure', [[
+            RenameStaticMethodRector::OLD_TO_NEW_METHODS_BY_CLASSES => ValueObjectInliner::inline([
+                new RenameStaticMethod('SomeClass', 'oldMethod', 'SomeClass', 'newStaticMethod'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9601,10 +9577,6 @@ Change string value
 - class: [`Rector\Renaming\Rector\String_\RenameStringRector`](../rules/Renaming/Rector/String_/RenameStringRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Renaming\Rector\String_\RenameStringRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9612,7 +9584,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(RenameStringRector::class)
-        ->call('configure', [[RenameStringRector::STRING_CHANGES => ['ROLE_PREVIOUS_ADMIN' => 'IS_IMPERSONATOR']]]);
+        ->call('configure', [[
+            RenameStringRector::STRING_CHANGES => [
+                'ROLE_PREVIOUS_ADMIN' => 'IS_IMPERSONATOR',
+
+            ], ]]);
 };
 ```
 
@@ -9642,10 +9618,6 @@ In case you have accidentally removed use imports but code still contains partia
 - class: [`Rector\Restoration\Rector\Namespace_\CompleteImportForPartialAnnotationRector`](../rules/Restoration/Rector/Namespace_/CompleteImportForPartialAnnotationRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Restoration\Rector\Namespace_\CompleteImportForPartialAnnotationRector;
 use Rector\Restoration\ValueObject\CompleteImportForPartialAnnotation;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9655,7 +9627,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(CompleteImportForPartialAnnotationRector::class)
-        ->call('configure', [[CompleteImportForPartialAnnotationRector::USE_IMPORTS_TO_RESTORE => ValueObjectInliner::inline([new CompleteImportForPartialAnnotation('Doctrine\ORM\Mapping', 'ORM')])]]);
+        ->call('configure', [[
+            CompleteImportForPartialAnnotationRector::USE_IMPORTS_TO_RESTORE => ValueObjectInliner::inline([
+                new CompleteImportForPartialAnnotation('Doctrine\ORM\Mapping', 'ORM'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9684,10 +9660,6 @@ Change `@param` doc based on another method return type
 - class: [`Rector\Restoration\Rector\ClassMethod\InferParamFromClassMethodReturnRector`](../rules/Restoration/Rector/ClassMethod/InferParamFromClassMethodReturnRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Restoration\Rector\ClassMethod\InferParamFromClassMethodReturnRector;
 use Rector\Restoration\ValueObject\InferParamFromClassMethodReturn;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9697,7 +9669,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(InferParamFromClassMethodReturnRector::class)
-        ->call('configure', [[InferParamFromClassMethodReturnRector::INFER_PARAMS_FROM_CLASS_METHOD_RETURNS => ValueObjectInliner::inline([new InferParamFromClassMethodReturn('SomeClass', 'process', 'getNodeTypes')])]]);
+        ->call('configure', [[
+            InferParamFromClassMethodReturnRector::INFER_PARAMS_FROM_CLASS_METHOD_RETURNS => ValueObjectInliner::inline([
+                new InferParamFromClassMethodReturn('SomeClass', 'process', 'getNodeTypes'),
+            ]),
+        ]]);
 };
 ```
 
@@ -9811,10 +9787,6 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\BooleansInConditi
 - class: [`Rector\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRector`](../rules/Strict/Rector/BooleanNot/BooleanInBooleanNotRuleFixerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9822,7 +9794,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(BooleanInBooleanNotRuleFixerRector::class)
-        ->call('configure', [[BooleanInBooleanNotRuleFixerRector::TREAT_AS_NON_EMPTY => true]]);
+        ->call('configure', [[
+            BooleanInBooleanNotRuleFixerRector::TREAT_AS_NON_EMPTY => true,
+        ]]);
 };
 ```
 
@@ -9855,10 +9829,6 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\BooleansInConditi
 - class: [`Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector`](../rules/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9866,7 +9836,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(BooleanInIfConditionRuleFixerRector::class)
-        ->call('configure', [[BooleanInIfConditionRuleFixerRector::TREAT_AS_NON_EMPTY => false]]);
+        ->call('configure', [[
+            BooleanInIfConditionRuleFixerRector::TREAT_AS_NON_EMPTY => false,
+        ]]);
 };
 ```
 
@@ -9898,10 +9870,6 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\BooleansInConditi
 - class: [`Rector\Strict\Rector\Ternary\BooleanInTernaryOperatorRuleFixerRector`](../rules/Strict/Rector/Ternary/BooleanInTernaryOperatorRuleFixerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Strict\Rector\Ternary\BooleanInTernaryOperatorRuleFixerRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9909,7 +9877,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(BooleanInTernaryOperatorRuleFixerRector::class)
-        ->call('configure', [[BooleanInTernaryOperatorRuleFixerRector::TREAT_AS_NON_EMPTY => false]]);
+        ->call('configure', [[
+            BooleanInTernaryOperatorRuleFixerRector::TREAT_AS_NON_EMPTY => false,
+        ]]);
 };
 ```
 
@@ -9937,10 +9907,6 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\DisallowedConstru
 - class: [`Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector`](../rules/Strict/Rector/Empty_/DisallowedEmptyRuleFixerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9948,7 +9914,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(DisallowedEmptyRuleFixerRector::class)
-        ->call('configure', [[DisallowedEmptyRuleFixerRector::TREAT_AS_NON_EMPTY => false]]);
+        ->call('configure', [[
+            DisallowedEmptyRuleFixerRector::TREAT_AS_NON_EMPTY => false,
+        ]]);
 };
 ```
 
@@ -9976,10 +9944,6 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\DisallowedConstru
 - class: [`Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector`](../rules/Strict/Rector/Ternary/DisallowedShortTernaryRuleFixerRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -9987,7 +9951,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(DisallowedShortTernaryRuleFixerRector::class)
-        ->call('configure', [[DisallowedShortTernaryRuleFixerRector::TREAT_AS_NON_EMPTY => false]]);
+        ->call('configure', [[
+            DisallowedShortTernaryRuleFixerRector::TREAT_AS_NON_EMPTY => false,
+        ]]);
 };
 ```
 
@@ -10017,10 +9983,6 @@ Add interface by parent
 - class: [`Rector\Transform\Rector\Class_\AddInterfaceByParentRector`](../rules/Transform/Rector/Class_/AddInterfaceByParentRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Class_\AddInterfaceByParentRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -10028,7 +9990,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddInterfaceByParentRector::class)
-        ->call('configure', [[AddInterfaceByParentRector::INTERFACE_BY_PARENT => ['SomeParent' => 'SomeInterface']]]);
+        ->call('configure', [[
+            AddInterfaceByParentRector::INTERFACE_BY_PARENT => [
+                'SomeParent' => 'SomeInterface',
+
+            ], ]]);
 };
 ```
 
@@ -10053,10 +10019,6 @@ Add interface by used trait
 - class: [`Rector\Transform\Rector\Class_\AddInterfaceByTraitRector`](../rules/Transform/Rector/Class_/AddInterfaceByTraitRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Class_\AddInterfaceByTraitRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -10064,7 +10026,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddInterfaceByTraitRector::class)
-        ->call('configure', [[AddInterfaceByTraitRector::INTERFACE_BY_TRAIT => ['SomeTrait' => 'SomeInterface']]]);
+        ->call('configure', [[
+            AddInterfaceByTraitRector::INTERFACE_BY_TRAIT => [
+                'SomeTrait' => 'SomeInterface',
+
+            ], ]]);
 };
 ```
 
@@ -10089,10 +10055,6 @@ Move help facade-like function calls to constructor injection
 - class: [`Rector\Transform\Rector\FuncCall\ArgumentFuncCallToMethodCallRector`](../rules/Transform/Rector/FuncCall/ArgumentFuncCallToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\FuncCall\ArgumentFuncCallToMethodCallRector;
 use Rector\Transform\ValueObject\ArgumentFuncCallToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10102,7 +10064,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ArgumentFuncCallToMethodCallRector::class)
-        ->call('configure', [[ArgumentFuncCallToMethodCallRector::FUNCTIONS_TO_METHOD_CALLS => ValueObjectInliner::inline([new ArgumentFuncCallToMethodCall('view', 'Illuminate\Contracts\View\Factory', 'make')])]]);
+        ->call('configure', [[
+            ArgumentFuncCallToMethodCallRector::FUNCTIONS_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new ArgumentFuncCallToMethodCall('view', 'Illuminate\Contracts\View\Factory', 'make'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10142,10 +10108,6 @@ Change a callable in method call to standalone variable assign
 - class: [`Rector\Transform\Rector\MethodCall\CallableInMethodCallToVariableRector`](../rules/Transform/Rector/MethodCall/CallableInMethodCallToVariableRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\MethodCall\CallableInMethodCallToVariableRector;
 use Rector\Transform\ValueObject\CallableInMethodCallToVariable;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10155,7 +10117,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(CallableInMethodCallToVariableRector::class)
-        ->call('configure', [[CallableInMethodCallToVariableRector::CALLABLE_IN_METHOD_CALL_TO_VARIABLE => ValueObjectInliner::inline([new CallableInMethodCallToVariable('Nette\Caching\Cache', 'save', 1)])]]);
+        ->call('configure', [[
+            CallableInMethodCallToVariableRector::CALLABLE_IN_METHOD_CALL_TO_VARIABLE => ValueObjectInliner::inline([
+                new CallableInMethodCallToVariable('Nette\Caching\Cache', 'save', 1),
+            ]),
+        ]]);
 };
 ```
 
@@ -10216,10 +10182,6 @@ Replaces constant by value
 - class: [`Rector\Transform\Rector\ClassConstFetch\ClassConstFetchToValueRector`](../rules/Transform/Rector/ClassConstFetch/ClassConstFetchToValueRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\ClassConstFetch\ClassConstFetchToValueRector;
 use Rector\Transform\ValueObject\ClassConstFetchToValue;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10229,7 +10191,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ClassConstFetchToValueRector::class)
-        ->call('configure', [[ClassConstFetchToValueRector::CLASS_CONST_FETCHES_TO_VALUES => ValueObjectInliner::inline([new ClassConstFetchToValue('Nette\Configurator', 'PRODUCTION', 'production')])]]);
+        ->call('configure', [[
+            ClassConstFetchToValueRector::CLASS_CONST_FETCHES_TO_VALUES => ValueObjectInliner::inline([
+                new ClassConstFetchToValue('Nette\Configurator', 'PRODUCTION', 'production'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10251,10 +10217,6 @@ Change magic array access add to `$list[],` to explicit `$list->addMethod(...)`
 - class: [`Rector\Transform\Rector\Assign\DimFetchAssignToMethodCallRector`](../rules/Transform/Rector/Assign/DimFetchAssignToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Assign\DimFetchAssignToMethodCallRector;
 use Rector\Transform\ValueObject\DimFetchAssignToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10264,7 +10226,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(DimFetchAssignToMethodCallRector::class)
-        ->call('configure', [[DimFetchAssignToMethodCallRector::DIM_FETCH_ASSIGN_TO_METHOD_CALL => ValueObjectInliner::inline([new DimFetchAssignToMethodCall('Nette\Application\Routers\RouteList', 'Nette\Application\Routers\Route', 'addRoute')])]]);
+        ->call('configure', [[
+            DimFetchAssignToMethodCallRector::DIM_FETCH_ASSIGN_TO_METHOD_CALL => ValueObjectInliner::inline([
+                new DimFetchAssignToMethodCall(
+                    'Nette\Application\Routers\RouteList',
+                    'Nette\Application\Routers\Route',
+                    'addRoute'
+                ),
+            ]),
+        ]]);
 };
 ```
 
@@ -10296,10 +10266,6 @@ Changes use of function calls to use constants
 - class: [`Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector`](../rules/Transform/Rector/FuncCall/FuncCallToConstFetchRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -10307,7 +10273,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(FuncCallToConstFetchRector::class)
-        ->call('configure', [[FuncCallToConstFetchRector::FUNCTIONS_TO_CONSTANTS => ['php_sapi_name' => 'PHP_SAPI']]]);
+        ->call('configure', [[
+            FuncCallToConstFetchRector::FUNCTIONS_TO_CONSTANTS => [
+                'php_sapi_name' => 'PHP_SAPI',
+
+            ], ]]);
 };
 ```
 
@@ -10335,10 +10305,6 @@ Turns defined function calls to local method calls.
 - class: [`Rector\Transform\Rector\FuncCall\FuncCallToMethodCallRector`](../rules/Transform/Rector/FuncCall/FuncCallToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\FuncCall\FuncCallToMethodCallRector;
 use Rector\Transform\ValueObject\FuncCallToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10348,7 +10314,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(FuncCallToMethodCallRector::class)
-        ->call('configure', [[FuncCallToMethodCallRector::FUNC_CALL_TO_CLASS_METHOD_CALL => ValueObjectInliner::inline([new FuncCallToMethodCall('view', 'Namespaced\SomeRenderer', 'render')])]]);
+        ->call('configure', [[
+            FuncCallToMethodCallRector::FUNC_CALL_TO_CLASS_METHOD_CALL => ValueObjectInliner::inline([
+                new FuncCallToMethodCall('view', 'Namespaced\SomeRenderer', 'render'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10386,10 +10356,6 @@ Change configured function calls to new Instance
 - class: [`Rector\Transform\Rector\FuncCall\FuncCallToNewRector`](../rules/Transform/Rector/FuncCall/FuncCallToNewRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\FuncCall\FuncCallToNewRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -10397,7 +10363,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(FuncCallToNewRector::class)
-        ->call('configure', [[FuncCallToNewRector::FUNCTIONS_TO_NEWS => ['collection' => ['Collection']]]]);
+        ->call('configure', [[
+            FuncCallToNewRector::FUNCTIONS_TO_NEWS => [
+                'collection' => ['Collection'],
+
+            ], ]]);
 };
 ```
 
@@ -10425,10 +10395,6 @@ Turns defined function call to static method call.
 - class: [`Rector\Transform\Rector\FuncCall\FuncCallToStaticCallRector`](../rules/Transform/Rector/FuncCall/FuncCallToStaticCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\FuncCall\FuncCallToStaticCallRector;
 use Rector\Transform\ValueObject\FuncCallToStaticCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10438,7 +10404,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(FuncCallToStaticCallRector::class)
-        ->call('configure', [[FuncCallToStaticCallRector::FUNC_CALLS_TO_STATIC_CALLS => ValueObjectInliner::inline([new FuncCallToStaticCall('view', 'SomeStaticClass', 'render')])]]);
+        ->call('configure', [[
+            FuncCallToStaticCallRector::FUNC_CALLS_TO_STATIC_CALLS => ValueObjectInliner::inline([
+                new FuncCallToStaticCall('view', 'SomeStaticClass', 'render'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10460,10 +10430,6 @@ Turns defined `__get`/`__set` to specific method calls.
 - class: [`Rector\Transform\Rector\Assign\GetAndSetToMethodCallRector`](../rules/Transform/Rector/Assign/GetAndSetToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Assign\GetAndSetToMethodCallRector;
 use Rector\Transform\ValueObject\GetAndSetToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10473,7 +10439,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(GetAndSetToMethodCallRector::class)
-        ->call('configure', [[GetAndSetToMethodCallRector::TYPE_TO_METHOD_CALLS => ValueObjectInliner::inline([new GetAndSetToMethodCall('SomeContainer', 'addService', 'getService')])]]);
+        ->call('configure', [[
+            GetAndSetToMethodCallRector::TYPE_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new GetAndSetToMethodCall('SomeContainer', 'addService', 'getService'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10496,10 +10466,6 @@ Merges old interface to a new one, that already has its methods
 - class: [`Rector\Transform\Rector\Class_\MergeInterfacesRector`](../rules/Transform/Rector/Class_/MergeInterfacesRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Class_\MergeInterfacesRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -10507,7 +10473,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MergeInterfacesRector::class)
-        ->call('configure', [[MergeInterfacesRector::OLD_TO_NEW_INTERFACES => ['SomeOldInterface' => 'SomeInterface']]]);
+        ->call('configure', [[
+            MergeInterfacesRector::OLD_TO_NEW_INTERFACES => [
+                'SomeOldInterface' => 'SomeInterface',
+
+            ], ]]);
 };
 ```
 
@@ -10531,10 +10501,6 @@ Turns old method call with specific types to new one with arguments
 - class: [`Rector\Transform\Rector\MethodCall\MethodCallToAnotherMethodCallWithArgumentsRector`](../rules/Transform/Rector/MethodCall/MethodCallToAnotherMethodCallWithArgumentsRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\MethodCall\MethodCallToAnotherMethodCallWithArgumentsRector;
 use Rector\Transform\ValueObject\MethodCallToAnotherMethodCallWithArguments;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10544,7 +10510,13 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MethodCallToAnotherMethodCallWithArgumentsRector::class)
-        ->call('configure', [[MethodCallToAnotherMethodCallWithArgumentsRector::METHOD_CALL_RENAMES_WITH_ADDED_ARGUMENTS => ValueObjectInliner::inline([new MethodCallToAnotherMethodCallWithArguments('Nette\DI\ServiceDefinition', 'setInject', 'addTag', ['inject'])])]]);
+        ->call('configure', [[
+            MethodCallToAnotherMethodCallWithArgumentsRector::METHOD_CALL_RENAMES_WITH_ADDED_ARGUMENTS => ValueObjectInliner::inline([
+                new MethodCallToAnotherMethodCallWithArguments('Nette\DI\ServiceDefinition', 'setInject', 'addTag', [
+                    'inject',
+                ]), ]
+            ),
+        ]]);
 };
 ```
 
@@ -10567,10 +10539,6 @@ Change method one method from one service to a method call to in another service
 - class: [`Rector\Transform\Rector\MethodCall\MethodCallToMethodCallRector`](../rules/Transform/Rector/MethodCall/MethodCallToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\MethodCall\MethodCallToMethodCallRector;
 use Rector\Transform\ValueObject\MethodCallToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10580,7 +10548,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MethodCallToMethodCallRector::class)
-        ->call('configure', [[MethodCallToMethodCallRector::METHOD_CALLS_TO_METHOD_CALLS => ValueObjectInliner::inline([new MethodCallToMethodCall('FirstDependency', 'go', 'SecondDependency', 'away')])]]);
+        ->call('configure', [[
+            MethodCallToMethodCallRector::METHOD_CALLS_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new MethodCallToMethodCall('FirstDependency', 'go', 'SecondDependency', 'away'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10614,10 +10586,6 @@ Turns method call `"$this->something()"` to property fetch "$this->something"
 - class: [`Rector\Transform\Rector\MethodCall\MethodCallToPropertyFetchRector`](../rules/Transform/Rector/MethodCall/MethodCallToPropertyFetchRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\MethodCall\MethodCallToPropertyFetchRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -10625,7 +10593,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MethodCallToPropertyFetchRector::class)
-        ->call('configure', [[MethodCallToPropertyFetchRector::METHOD_CALL_TO_PROPERTY_FETCHES => ['someMethod' => 'someProperty']]]);
+        ->call('configure', [[
+            MethodCallToPropertyFetchRector::METHOD_CALL_TO_PROPERTY_FETCHES => [
+                'someMethod' => 'someProperty',
+
+            ], ]]);
 };
 ```
 
@@ -10653,10 +10625,6 @@ Change method call to desired static call
 - class: [`Rector\Transform\Rector\MethodCall\MethodCallToStaticCallRector`](../rules/Transform/Rector/MethodCall/MethodCallToStaticCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\MethodCall\MethodCallToStaticCallRector;
 use Rector\Transform\ValueObject\MethodCallToStaticCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10666,7 +10634,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MethodCallToStaticCallRector::class)
-        ->call('configure', [[MethodCallToStaticCallRector::METHOD_CALLS_TO_STATIC_CALLS => ValueObjectInliner::inline([new MethodCallToStaticCall('AnotherDependency', 'process', 'StaticCaller', 'anotherMethod')])]]);
+        ->call('configure', [[
+            MethodCallToStaticCallRector::METHOD_CALLS_TO_STATIC_CALLS => ValueObjectInliner::inline([
+                new MethodCallToStaticCall('AnotherDependency', 'process', 'StaticCaller', 'anotherMethod'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10701,10 +10673,6 @@ Change new with specific argument to method call
 - class: [`Rector\Transform\Rector\New_\NewArgToMethodCallRector`](../rules/Transform/Rector/New_/NewArgToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\New_\NewArgToMethodCallRector;
 use Rector\Transform\ValueObject\NewArgToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10714,7 +10682,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(NewArgToMethodCallRector::class)
-        ->call('configure', [[NewArgToMethodCallRector::NEW_ARGS_TO_METHOD_CALLS => ValueObjectInliner::inline([new NewArgToMethodCall('Dotenv', true, 'usePutenv')])]]);
+        ->call('configure', [[
+            NewArgToMethodCallRector::NEW_ARGS_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new NewArgToMethodCall('Dotenv', true, 'usePutenv'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10743,10 +10715,6 @@ Change defined new type to constructor injection
 - class: [`Rector\Transform\Rector\New_\NewToConstructorInjectionRector`](../rules/Transform/Rector/New_/NewToConstructorInjectionRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\New_\NewToConstructorInjectionRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -10754,7 +10722,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(NewToConstructorInjectionRector::class)
-        ->call('configure', [[NewToConstructorInjectionRector::TYPES_TO_CONSTRUCTOR_INJECTION => ['Validator']]]);
+        ->call('configure', [[
+            NewToConstructorInjectionRector::TYPES_TO_CONSTRUCTOR_INJECTION => ['Validator'],
+        ]]);
 };
 ```
 
@@ -10793,10 +10763,6 @@ Replaces creating object instances with "new" keyword with factory method.
 - class: [`Rector\Transform\Rector\New_\NewToMethodCallRector`](../rules/Transform/Rector/New_/NewToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\New_\NewToMethodCallRector;
 use Rector\Transform\ValueObject\NewToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10806,7 +10772,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(NewToMethodCallRector::class)
-        ->call('configure', [[NewToMethodCallRector::NEWS_TO_METHOD_CALLS => ValueObjectInliner::inline([new NewToMethodCall('MyClass', 'MyClassFactory', 'create')])]]);
+        ->call('configure', [[
+            NewToMethodCallRector::NEWS_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new NewToMethodCall('MyClass', 'MyClassFactory', 'create'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10838,10 +10808,6 @@ Change new Object to static call
 - class: [`Rector\Transform\Rector\New_\NewToStaticCallRector`](../rules/Transform/Rector/New_/NewToStaticCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\New_\NewToStaticCallRector;
 use Rector\Transform\ValueObject\NewToStaticCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10851,7 +10817,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(NewToStaticCallRector::class)
-        ->call('configure', [[NewToStaticCallRector::TYPE_TO_STATIC_CALLS => ValueObjectInliner::inline([new NewToStaticCall('Cookie', 'Cookie', 'create')])]]);
+        ->call('configure', [[
+            NewToStaticCallRector::TYPE_TO_STATIC_CALLS => ValueObjectInliner::inline([
+                new NewToStaticCall('Cookie', 'Cookie', 'create'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10879,10 +10849,6 @@ Replaces parent class to specific traits
 - class: [`Rector\Transform\Rector\Class_\ParentClassToTraitsRector`](../rules/Transform/Rector/Class_/ParentClassToTraitsRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Class_\ParentClassToTraitsRector;
 use Rector\Transform\ValueObject\ParentClassToTraits;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10892,7 +10858,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ParentClassToTraitsRector::class)
-        ->call('configure', [[ParentClassToTraitsRector::PARENT_CLASS_TO_TRAITS => ValueObjectInliner::inline([new ParentClassToTraits('Nette\Object', ['Nette\SmartObject'])])]]);
+        ->call('configure', [[
+            ParentClassToTraitsRector::PARENT_CLASS_TO_TRAITS => ValueObjectInliner::inline([
+                new ParentClassToTraits('Nette\Object', ['Nette\SmartObject']), ]
+            ),
+        ]]);
 };
 ```
 
@@ -10917,10 +10887,6 @@ Turns property assign of specific type and property name to method call
 - class: [`Rector\Transform\Rector\Assign\PropertyAssignToMethodCallRector`](../rules/Transform/Rector/Assign/PropertyAssignToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Assign\PropertyAssignToMethodCallRector;
 use Rector\Transform\ValueObject\PropertyAssignToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10930,7 +10896,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(PropertyAssignToMethodCallRector::class)
-        ->call('configure', [[PropertyAssignToMethodCallRector::PROPERTY_ASSIGNS_TO_METHODS_CALLS => ValueObjectInliner::inline([new PropertyAssignToMethodCall('SomeClass', 'oldProperty', 'newMethodCall')])]]);
+        ->call('configure', [[
+            PropertyAssignToMethodCallRector::PROPERTY_ASSIGNS_TO_METHODS_CALLS => ValueObjectInliner::inline([
+                new PropertyAssignToMethodCall('SomeClass', 'oldProperty', 'newMethodCall'),
+            ]),
+        ]]);
 };
 ```
 
@@ -10953,10 +10923,6 @@ Replaces properties assign calls be defined methods.
 - class: [`Rector\Transform\Rector\Assign\PropertyFetchToMethodCallRector`](../rules/Transform/Rector/Assign/PropertyFetchToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Assign\PropertyFetchToMethodCallRector;
 use Rector\Transform\ValueObject\PropertyFetchToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10966,7 +10932,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(PropertyFetchToMethodCallRector::class)
-        ->call('configure', [[PropertyFetchToMethodCallRector::PROPERTIES_TO_METHOD_CALLS => ValueObjectInliner::inline([new PropertyFetchToMethodCall('SomeObject', 'property', 'getProperty', 'setProperty', [])])]]);
+        ->call('configure', [[
+            PropertyFetchToMethodCallRector::PROPERTIES_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new PropertyFetchToMethodCall('SomeObject', 'property', 'getProperty', 'setProperty', []), ]
+            ),
+        ]]);
 };
 ```
 
@@ -10982,10 +10952,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 <br>
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Assign\PropertyFetchToMethodCallRector;
 use Rector\Transform\ValueObject\PropertyFetchToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -10995,7 +10961,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(PropertyFetchToMethodCallRector::class)
-        ->call('configure', [[PropertyFetchToMethodCallRector::PROPERTIES_TO_METHOD_CALLS => ValueObjectInliner::inline([new PropertyFetchToMethodCall('SomeObject', 'property', 'getConfig', ['someArg'])])]]);
+        ->call('configure', [[
+            PropertyFetchToMethodCallRector::PROPERTIES_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new PropertyFetchToMethodCall('SomeObject', 'property', 'getConfig', ['someArg']), ]
+            ),
+        ]]);
 };
 ```
 
@@ -11017,10 +10987,6 @@ Changes method calls in child of specific types to defined property method call
 - class: [`Rector\Transform\Rector\MethodCall\ReplaceParentCallByPropertyCallRector`](../rules/Transform/Rector/MethodCall/ReplaceParentCallByPropertyCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\MethodCall\ReplaceParentCallByPropertyCallRector;
 use Rector\Transform\ValueObject\ReplaceParentCallByPropertyCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11030,7 +10996,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ReplaceParentCallByPropertyCallRector::class)
-        ->call('configure', [[ReplaceParentCallByPropertyCallRector::PARENT_CALLS_TO_PROPERTIES => ValueObjectInliner::inline([new ReplaceParentCallByPropertyCall('SomeTypeToReplace', 'someMethodCall', 'someProperty')])]]);
+        ->call('configure', [[
+            ReplaceParentCallByPropertyCallRector::PARENT_CALLS_TO_PROPERTIES => ValueObjectInliner::inline([
+                new ReplaceParentCallByPropertyCall('SomeTypeToReplace', 'someMethodCall', 'someProperty'),
+            ]),
+        ]]);
 };
 ```
 
@@ -11058,10 +11028,6 @@ Get service call to constructor injection
 - class: [`Rector\Transform\Rector\MethodCall\ServiceGetterToConstructorInjectionRector`](../rules/Transform/Rector/MethodCall/ServiceGetterToConstructorInjectionRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\MethodCall\ServiceGetterToConstructorInjectionRector;
 use Rector\Transform\ValueObject\ServiceGetterToConstructorInjection;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11071,7 +11037,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ServiceGetterToConstructorInjectionRector::class)
-        ->call('configure', [[ServiceGetterToConstructorInjectionRector::METHOD_CALL_TO_SERVICES => ValueObjectInliner::inline([new ServiceGetterToConstructorInjection('FirstService', 'getAnotherService', 'AnotherService')])]]);
+        ->call('configure', [[
+            ServiceGetterToConstructorInjectionRector::METHOD_CALL_TO_SERVICES => ValueObjectInliner::inline([
+                new ServiceGetterToConstructorInjection('FirstService', 'getAnotherService', 'AnotherService'),
+            ]),
+        ]]);
 };
 ```
 
@@ -11132,10 +11102,6 @@ Change method that returns single value to multiple values
 - class: [`Rector\Transform\Rector\ClassMethod\SingleToManyMethodRector`](../rules/Transform/Rector/ClassMethod/SingleToManyMethodRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\ClassMethod\SingleToManyMethodRector;
 use Rector\Transform\ValueObject\SingleToManyMethod;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11145,7 +11111,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(SingleToManyMethodRector::class)
-        ->call('configure', [[SingleToManyMethodRector::SINGLES_TO_MANY_METHODS => ValueObjectInliner::inline([new SingleToManyMethod('SomeClass', 'getNode', 'getNodes')])]]);
+        ->call('configure', [[
+            SingleToManyMethodRector::SINGLES_TO_MANY_METHODS => ValueObjectInliner::inline([
+                new SingleToManyMethod('SomeClass', 'getNode', 'getNodes'),
+            ]),
+        ]]);
 };
 ```
 
@@ -11177,10 +11147,6 @@ Turns static call to function call.
 - class: [`Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector`](../rules/Transform/Rector/StaticCall/StaticCallToFuncCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector;
 use Rector\Transform\ValueObject\StaticCallToFuncCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11190,7 +11156,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(StaticCallToFuncCallRector::class)
-        ->call('configure', [[StaticCallToFuncCallRector::STATIC_CALLS_TO_FUNCTIONS => ValueObjectInliner::inline([new StaticCallToFuncCall('OldClass', 'oldMethod', 'new_function')])]]);
+        ->call('configure', [[
+            StaticCallToFuncCallRector::STATIC_CALLS_TO_FUNCTIONS => ValueObjectInliner::inline([
+                new StaticCallToFuncCall('OldClass', 'oldMethod', 'new_function'),
+            ]),
+        ]]);
 };
 ```
 
@@ -11212,10 +11182,6 @@ Change static call to service method via constructor injection
 - class: [`Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector`](../rules/Transform/Rector/StaticCall/StaticCallToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector;
 use Rector\Transform\ValueObject\StaticCallToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11225,7 +11191,16 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(StaticCallToMethodCallRector::class)
-        ->call('configure', [[StaticCallToMethodCallRector::STATIC_CALLS_TO_METHOD_CALLS => ValueObjectInliner::inline([new StaticCallToMethodCall('Nette\Utils\FileSystem', 'write', 'Symplify\SmartFileSystem\SmartFileSystem', 'dumpFile')])]]);
+        ->call('configure', [[
+            StaticCallToMethodCallRector::STATIC_CALLS_TO_METHOD_CALLS => ValueObjectInliner::inline([
+                new StaticCallToMethodCall(
+                    'Nette\Utils\FileSystem',
+                    'write',
+                    'Symplify\SmartFileSystem\SmartFileSystem',
+                    'dumpFile'
+                ),
+            ]),
+        ]]);
 };
 ```
 
@@ -11266,10 +11241,6 @@ Change static call to new instance
 - class: [`Rector\Transform\Rector\StaticCall\StaticCallToNewRector`](../rules/Transform/Rector/StaticCall/StaticCallToNewRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\StaticCall\StaticCallToNewRector;
 use Rector\Transform\ValueObject\StaticCallToNew;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11279,7 +11250,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(StaticCallToNewRector::class)
-        ->call('configure', [[StaticCallToNewRector::STATIC_CALLS_TO_NEWS => ValueObjectInliner::inline([new StaticCallToNew('JsonResponse', 'create')])]]);
+        ->call('configure', [[
+            StaticCallToNewRector::STATIC_CALLS_TO_NEWS => ValueObjectInliner::inline([
+                new StaticCallToNew('JsonResponse', 'create'),
+            ]),
+        ]]);
 };
 ```
 
@@ -11307,10 +11282,6 @@ Changes strings to specific constants
 - class: [`Rector\Transform\Rector\String_\StringToClassConstantRector`](../rules/Transform/Rector/String_/StringToClassConstantRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\String_\StringToClassConstantRector;
 use Rector\Transform\ValueObject\StringToClassConstant;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11320,7 +11291,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(StringToClassConstantRector::class)
-        ->call('configure', [[StringToClassConstantRector::STRINGS_TO_CLASS_CONSTANTS => ValueObjectInliner::inline([new StringToClassConstant('compiler.post_dump', 'Yet\AnotherClass', 'CONSTANT')])]]);
+        ->call('configure', [[
+            StringToClassConstantRector::STRINGS_TO_CLASS_CONSTANTS => ValueObjectInliner::inline([
+                new StringToClassConstant('compiler.post_dump', 'Yet\AnotherClass', 'CONSTANT'),
+            ]),
+        ]]);
 };
 ```
 
@@ -11348,10 +11323,6 @@ Turns defined code uses of `"__toString()"` method  to specific method calls.
 - class: [`Rector\Transform\Rector\String_\ToStringToMethodCallRector`](../rules/Transform/Rector/String_/ToStringToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\String_\ToStringToMethodCallRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -11359,7 +11330,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ToStringToMethodCallRector::class)
-        ->call('configure', [[ToStringToMethodCallRector::METHOD_NAMES_BY_TYPE => ['SomeObject' => 'getPath']]]);
+        ->call('configure', [[
+            ToStringToMethodCallRector::METHOD_NAMES_BY_TYPE => [
+                'SomeObject' => 'getPath',
+
+            ], ]]);
 };
 ```
 
@@ -11384,10 +11359,6 @@ Turns defined `__isset`/`__unset` calls to specific method calls.
 - class: [`Rector\Transform\Rector\Isset_\UnsetAndIssetToMethodCallRector`](../rules/Transform/Rector/Isset_/UnsetAndIssetToMethodCallRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\Isset_\UnsetAndIssetToMethodCallRector;
 use Rector\Transform\ValueObject\UnsetAndIssetToMethodCall;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11397,7 +11368,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(UnsetAndIssetToMethodCallRector::class)
-        ->call('configure', [[UnsetAndIssetToMethodCallRector::ISSET_UNSET_TO_METHOD_CALL => ValueObjectInliner::inline([new UnsetAndIssetToMethodCall('SomeContainer', 'hasService', 'removeService')])]]);
+        ->call('configure', [[
+            UnsetAndIssetToMethodCallRector::ISSET_UNSET_TO_METHOD_CALL => ValueObjectInliner::inline([
+                new UnsetAndIssetToMethodCall('SomeContainer', 'hasService', 'removeService'),
+            ]),
+        ]]);
 };
 ```
 
@@ -11422,10 +11397,6 @@ Wrap return value of specific method
 - class: [`Rector\Transform\Rector\ClassMethod\WrapReturnRector`](../rules/Transform/Rector/ClassMethod/WrapReturnRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Transform\Rector\ClassMethod\WrapReturnRector;
 use Rector\Transform\ValueObject\WrapReturn;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -11435,7 +11406,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(WrapReturnRector::class)
-        ->call('configure', [[WrapReturnRector::TYPE_METHOD_WRAPS => ValueObjectInliner::inline([new WrapReturn('SomeClass', 'getItem', true)])]]);
+        ->call('configure', [[
+            WrapReturnRector::TYPE_METHOD_WRAPS => ValueObjectInliner::inline([
+                new WrapReturn('SomeClass', 'getItem', true),
+            ]),
+        ]]);
 };
 ```
 
@@ -11538,10 +11513,6 @@ Change param type to strict type of passed expression
 - class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddMethodCallBasedStrictParamTypeRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -11549,7 +11520,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddMethodCallBasedStrictParamTypeRector::class)
-        ->call('configure', [[AddMethodCallBasedStrictParamTypeRector::TRUST_DOC_BLOCKS => false]]);
+        ->call('configure', [[
+            AddMethodCallBasedStrictParamTypeRector::TRUST_DOC_BLOCKS => false,
+        ]]);
 };
 ```
 
@@ -11589,10 +11562,6 @@ Add param types where needed
 - class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeDeclarationRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use PHPStan\Type\StringType;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
@@ -11603,7 +11572,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddParamTypeDeclarationRector::class)
-        ->call('configure', [[AddParamTypeDeclarationRector::PARAMETER_TYPEHINTS => ValueObjectInliner::inline([new AddParamTypeDeclaration('SomeClass', 'process', 0, new StringType())])]]);
+        ->call('configure', [[
+            AddParamTypeDeclarationRector::PARAMETER_TYPEHINTS => ValueObjectInliner::inline([
+                new AddParamTypeDeclaration('SomeClass', 'process', 0, new StringType()),
+            ]),
+        ]]);
 };
 ```
 
@@ -11630,10 +11603,6 @@ Changes defined return typehint of method and class.
 - class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
@@ -11645,7 +11614,13 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddReturnTypeDeclarationRector::class)
-        ->call('configure', [[AddReturnTypeDeclarationRector::METHOD_RETURN_TYPES => ValueObjectInliner::inline([new AddReturnTypeDeclaration('SomeClass', 'getData', new ArrayType(new MixedType(false), new MixedType(false)))])]]);
+        ->call('configure', [[
+            AddReturnTypeDeclarationRector::METHOD_RETURN_TYPES => ValueObjectInliner::inline([
+                new AddReturnTypeDeclaration('SomeClass', 'getData', new ArrayType(new MixedType(false), new MixedType(
+                    false
+                ))),
+            ]),
+        ]]);
 };
 ```
 
@@ -12006,10 +11981,6 @@ Change visibility of constant from parent class.
 - class: [`Rector\Visibility\Rector\ClassConst\ChangeConstantVisibilityRector`](../rules/Visibility/Rector/ClassConst/ChangeConstantVisibilityRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Visibility\Rector\ClassConst\ChangeConstantVisibilityRector;
 use Rector\Visibility\ValueObject\ChangeConstantVisibility;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -12019,7 +11990,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ChangeConstantVisibilityRector::class)
-        ->call('configure', [[ChangeConstantVisibilityRector::CLASS_CONSTANT_VISIBILITY_CHANGES => ValueObjectInliner::inline([new ChangeConstantVisibility('ParentObject', 'SOME_CONSTANT', 2)])]]);
+        ->call('configure', [[
+            ChangeConstantVisibilityRector::CLASS_CONSTANT_VISIBILITY_CHANGES => ValueObjectInliner::inline([
+                new ChangeConstantVisibility('ParentObject', 'SOME_CONSTANT', 2),
+            ]),
+        ]]);
 };
 ```
 
@@ -12049,10 +12024,6 @@ Change visibility of method from parent class.
 - class: [`Rector\Visibility\Rector\ClassMethod\ChangeMethodVisibilityRector`](../rules/Visibility/Rector/ClassMethod/ChangeMethodVisibilityRector.php)
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use Rector\Visibility\Rector\ClassMethod\ChangeMethodVisibilityRector;
 use Rector\Visibility\ValueObject\ChangeMethodVisibility;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -12062,7 +12033,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(ChangeMethodVisibilityRector::class)
-        ->call('configure', [[ChangeMethodVisibilityRector::METHOD_VISIBILITIES => ValueObjectInliner::inline([new ChangeMethodVisibility('FrameworkClass', 'someMethod', 2)])]]);
+        ->call('configure', [[
+            ChangeMethodVisibilityRector::METHOD_VISIBILITIES => ValueObjectInliner::inline([
+                new ChangeMethodVisibility('FrameworkClass', 'someMethod', 2),
+            ]),
+        ]]);
 };
 ```
 
