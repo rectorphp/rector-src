@@ -46,7 +46,8 @@ final class PostFileProcessor
             }
 
             $file = new File(
-                $this->currentFileProvider->getFile()->getSmartFileInfo(),
+                $this->currentFileProvider->getFile()
+                    ->getSmartFileInfo(),
                 $this->betterStandardPrinter->print($nodes)
             );
             $this->currentFileProvider->setFile($file);
