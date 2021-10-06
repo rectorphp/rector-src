@@ -518,3 +518,6 @@ parameters:
         -
             message: '#Class cognitive complexity is 31, keep it under 30#'
             path: rules/Php74/Rector/Property/TypedPropertyRector.php
+        -
+            message: '#Cognitive complexity for "Rector\\Core\\Validation\\EmptyConfigurableRectorChecker\:\:resolveEmptyConfigurable\(\)" is 16, keep it under 9#'
+            path: src/Validation/EmptyConfigurableRectorChecker.php
