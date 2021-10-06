@@ -8,6 +8,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
-    //$services->set(ChangeAndIfToEarlyReturnRector::class);
+    $services->set(ChangeAndIfToEarlyReturnRector::class);
     $services->set(RemoveAlwaysElseRector::class);
 };
