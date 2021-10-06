@@ -11,6 +11,7 @@ use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Core\Configuration\Option;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -51,6 +52,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
             ]),
         ]]);
+
+    $services->set(AnnotationToAttributeRector::class);
 
     $parameters = $containerConfigurator->parameters();
 
