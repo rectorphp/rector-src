@@ -178,18 +178,7 @@ final class AnonymousFunctionFactory
             $paramNames[] = $this->nodeNameResolver->getName($paramNode);
         }
 
-        $variableNodes = $this->betterNodeFinder->find($nodes, function (Node $subNode): bool {
-            if (! $subNode instanceof Variable) {
-                return false;
-            }
-
-            $parentArrowFunction = $this->betterNodeFinder->findParentType($subNode, ArrowFunction::class);
-            if ($parentArrowFunction instanceof ArrowFunction) {
-                return ! (bool) $this->betterNodeFinder->findParentType($parentArrowFunction, ArrowFunction::class);
-            }
-
-            return true;
-        });
+        $variableNodes = $this->resolveVariableNodes($nodes);
 
         /** @var Variable[] $filteredVariables */
         $filteredVariables = [];
@@ -222,6 +211,26 @@ final class AnonymousFunctionFactory
         }
 
         return $filteredVariables;
+    }
+
+    /**
+     * @param Node[] $nodes
+     * @return Variable[]
+     */
+    private function resolveVariableNodes(array $nodes): array
+    {
+        return $this->betterNodeFinder->find($nodes, function (Node $subNode): bool {
+            if (! $subNode instanceof Variable) {
+                return false;
+            }
+
+            $parentArrowFunction = $this->betterNodeFinder->findParentType($subNode, ArrowFunction::class);
+            if ($parentArrowFunction instanceof ArrowFunction) {
+                return ! (bool) $this->betterNodeFinder->findParentType($parentArrowFunction, ArrowFunction::class);
+            }
+
+            return true;
+        });
     }
 
     /**
