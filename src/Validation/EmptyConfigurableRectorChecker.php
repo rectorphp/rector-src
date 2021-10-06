@@ -72,7 +72,7 @@ final class EmptyConfigurableRectorChecker
     private function reportWarningMessage(array $emptyConfigurableRectors): void
     {
         $warningMessage = sprintf(
-                'Your project requires %d configurable rector rules that needs to be configured',
+                'Your project requires %d configurable rector rules that needs to be configured, use -vvv for detailed info.',
                 count($emptyConfigurableRectors)
         );
 
