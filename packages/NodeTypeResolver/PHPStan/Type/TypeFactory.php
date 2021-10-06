@@ -98,6 +98,10 @@ final class TypeFactory
                 if ($flattenType instanceof ConstantArrayType) {
                     $unwrappedTypes = array_merge($unwrappedTypes, $this->unwrapConstantArrayTypes($flattenType));
                 } else {
+                    if ($flattenType instanceof FullyQualifiedObjectType && $flattenType->getClassName() === 'Rector\Core\Stubs\DummyTraitClass') {
+                        continue;
+                    }
+
                     $unwrappedTypes[] = $flattenType;
                 }
             }
