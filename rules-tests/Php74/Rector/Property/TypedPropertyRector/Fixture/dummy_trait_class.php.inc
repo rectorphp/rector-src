@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
+
 trait MaterializedPathEntity
 {
     /** @var self */
@@ -17,8 +19,6 @@ trait MaterializedPathEntity
         return $this->parent;
     }
 }
-
-namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
 final class DemoFile
 {
