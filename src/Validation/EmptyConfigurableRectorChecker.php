@@ -16,8 +16,11 @@ use Throwable;
 
 final class EmptyConfigurableRectorChecker
 {
-    public function __construct(private PrivatesAccessor $privatesAccessor, private PropertyNaming $propertyNaming, private SymfonyStyle $symfonyStyle)
-    {
+    public function __construct(
+        private PrivatesAccessor $privatesAccessor,
+        private PropertyNaming $propertyNaming,
+        private SymfonyStyle $symfonyStyle
+    ) {
     }
 
     /**
@@ -50,7 +53,7 @@ final class EmptyConfigurableRectorChecker
             $ruleDefinition = $rector->getRuleDefinition();
 
             /** @var CodeSampleInterface[] $codeSamples */
-            $codeSamples    = $ruleDefinition->getCodeSamples();
+            $codeSamples = $ruleDefinition->getCodeSamples();
             foreach ($codeSamples as $codeSample) {
                 $configuration = $codeSample->getConfiguration();
                 if (! is_array($configuration)) {
@@ -63,7 +66,7 @@ final class EmptyConfigurableRectorChecker
                     }
 
                     try {
-                        $key   = $this->propertyNaming->underscoreToName($key);
+                        $key = $this->propertyNaming->underscoreToName($key);
                         $value = $this->privatesAccessor->getPrivateProperty($rector, $key);
 
                         if (is_array($value) && $value === []) {
@@ -96,8 +99,8 @@ final class EmptyConfigurableRectorChecker
     private function reportWarningMessage(array $emptyConfigurableRectors): void
     {
         $warningMessage = sprintf(
-                'Your project requires %d configurable rector rules that needs to be configured, use -vvv for detailed info.',
-                count($emptyConfigurableRectors)
+            'Your project requires %d configurable rector rules that needs to be configured, use -vvv for detailed info.',
+            count($emptyConfigurableRectors)
         );
 
         $this->symfonyStyle->warning($warningMessage);
