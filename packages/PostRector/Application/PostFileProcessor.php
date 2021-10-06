@@ -8,6 +8,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
@@ -27,6 +28,7 @@ final class PostFileProcessor
         private Skipper $skipper,
         private CurrentFileProvider $currentFileProvider,
         private CurrentRectorProvider $currentRectorProvider,
+        private BetterStandardPrinter $betterStandardPrinter,
         array $postRectors
     ) {
         $this->postRectors = $this->sortByPriority($postRectors);
@@ -43,10 +45,17 @@ final class PostFileProcessor
                 continue;
             }
 
+            $file = new File(
+                $this->currentFileProvider->getFile()->getSmartFileInfo(),
+                $this->betterStandardPrinter->print($nodes)
+            );
+            $this->currentFileProvider->setFile($file);
+
             $this->currentRectorProvider->changeCurrentRector($postRector);
 
             $nodeTraverser = new NodeTraverser();
             $nodeTraverser->addVisitor($postRector);
+
             $nodes = $nodeTraverser->traverse($nodes);
         }
 

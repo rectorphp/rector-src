@@ -78,10 +78,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($node)) {
-            return null;
-        }
-
         if ($node->elseifs !== []) {
             $originalNode = clone $node;
             $if = new If_($node->cond);
@@ -116,13 +112,6 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    private function shouldSkip(If_ $if): bool
-    {
-        // to avoid repetitive flipped elseif above return when used along with ChangeAndIfReturnToEarlyReturnRector
-        // @see https://github.com/rectorphp/rector-src/pull/654
-        return $if->cond instanceof BooleanAnd && count($if->elseifs) > 1;
     }
 
     /**
