@@ -103,6 +103,10 @@ final class ExactCompareFactory
             /** @var Expr $truthyExpr */
             $truthyExpr = array_shift($compareExprs);
             foreach ($compareExprs as $compareExpr) {
+                if (! $compareExpr instanceof Expr) {
+                    return null;
+                }
+
                 /** @var Expr $compareExpr */
                 $truthyExpr = new BooleanOr($truthyExpr, $compareExpr);
             }
