@@ -106,6 +106,10 @@ final class TypeFactory
         return $unwrappedTypes;
     }
 
+    /**
+     * @param Type[] $unwrappedTypes
+     * @return Type[]
+     */
     private function resolveNonConstantArrayType(Type $type, array $unwrappedTypes): array
     {
         if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === 'Rector\Core\Stubs\DummyTraitClass') {
