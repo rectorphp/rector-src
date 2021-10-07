@@ -74,24 +74,26 @@ final class DeadParamTagValueNodeAnalyzer
         }
 
         $parent = $paramTagValueNode->getAttribute('parent');
-        while ($parent instanceof PhpDocTagNode) {
-            $parent = $parent->getAttribute('parent');
-            if ($parent instanceof PhpDocNode) {
-                $children = $parent->children;
-
-                if (! isset($children[1])) {
-                    return true;
-                }
-
-                if (! $children[1] instanceof PhpDocTextNode) {
-                    return true;
-                }
-
-                return (string) $children[1] === '';
-            }
+        if (! $parent instanceof PhpDocTagNode) {
+            return true;
         }
 
-        return true;
+        $parent = $parent->getAttribute('parent');
+        if (! $parent instanceof PhpDocNode) {
+            return true;
+        }
+
+        $children = $parent->children;
+
+        if (! isset($children[1])) {
+            return true;
+        }
+
+        if (! $children[1] instanceof PhpDocTextNode) {
+            return true;
+        }
+
+        return (string) $children[1] === '';
     }
 
     private function hasGenericType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
