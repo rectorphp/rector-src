@@ -49,9 +49,6 @@ final class PropertyTypeInferer
         $resolvedTypes = $this->getResolvedTypes($property);
         $resolvedTypes = $this->typeFactory->uniquateTypes($resolvedTypes);
 
-        dump($resolvedTypes);
-        die;
-
         // if nothing is clear from variable use, we use @var doc as fallback
         if ($resolvedTypes !== []) {
             $resolvedType = $this->typeFactory->createMixedPassedOrUnionType($resolvedTypes);

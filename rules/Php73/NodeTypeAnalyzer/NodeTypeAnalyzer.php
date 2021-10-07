@@ -19,13 +19,13 @@ final class NodeTypeAnalyzer
     ) {
     }
 
-    public function isStringTypeExpr(Expr $expr): bool
-    {
-        $staticType = $this->nodeTypeResolver->getType($expr);
-        return $this->isStringType($staticType);
-    }
+//    public function isStringTypeExpr(Expr $expr): bool
+//    {
+//        $staticType = $this->nodeTypeResolver->getType($expr);
+//        return $this->isStringType($staticType);
+//    }
 
-    private function isStringType(Type $type): bool
+    public function isStringyType(Type $type): bool
     {
         if ($type instanceof StringType) {
             return true;
@@ -37,7 +37,7 @@ final class NodeTypeAnalyzer
 
         if ($type instanceof IntersectionType || $type instanceof UnionType) {
             foreach ($type->getTypes() as $innerType) {
-                if (! $this->isStringType($innerType)) {
+                if (! $this->isStringyType($innerType)) {
                     return false;
                 }
             }
