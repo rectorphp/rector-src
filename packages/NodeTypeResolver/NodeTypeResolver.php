@@ -281,17 +281,8 @@ final class NodeTypeResolver
             return false;
         }
 
-        if (count($nodeType->getTypes()) !== 2) {
-            return false;
-        }
-
-        foreach ($nodeType->getTypes() as $type) {
-            if (is_a($type, $desiredType, true)) {
-                return true;
-            }
-        }
-
-        return false;
+        $bareType = TypeCombinator::removeNull($nodeType);
+        return is_a($bareType, $desiredType, true);
     }
 
     /**
