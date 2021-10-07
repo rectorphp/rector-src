@@ -327,22 +327,6 @@ final class NodeTypeResolver
         return $typeWithClassName->getClassName();
     }
 
-    // @todo possibly unused
-//    /**
-//     * @param Type[] $desiredTypes
-//     */
-//    public function isSameObjectTypes(ObjectType $objectType, array $desiredTypes): bool
-//    {
-//        foreach ($desiredTypes as $desiredType) {
-//            $desiredTypeEquals = $desiredType->equals($objectType);
-//            if ($desiredTypeEquals) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
     public function isMethodStaticCallOrClassMethodObjectType(Node $node, ObjectType $objectType): bool
     {
         if ($node instanceof MethodCall) {
@@ -361,22 +345,6 @@ final class NodeTypeResolver
 
         return $this->isObjectType($classLike, $objectType);
     }
-
-    // @note possibly unused
-//    public function resolveObjectTypeFromScope(Scope $scope): ?ObjectType
-//    {
-//        $classReflection = $scope->getClassReflection();
-//        if (! $classReflection instanceof ClassReflection) {
-//            return null;
-//        }
-//
-//        $className = $classReflection->getName();
-//        if (! $this->reflectionProvider->hasClass($className)) {
-//            return null;
-//        }
-//
-//        return new ObjectType($className, null, $classReflection);
-//    }
 
     private function isUnionTypeable(Type $first, Type $second): bool
     {
