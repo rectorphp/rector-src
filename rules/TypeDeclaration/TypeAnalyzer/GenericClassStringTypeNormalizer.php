@@ -49,7 +49,8 @@ final class GenericClassStringTypeNormalizer
         });
 
         if ($type instanceof UnionType) {
-            return $this->resolveClassStringInUnionType($type);
+            return $type;
+//            Oreturn $this->resolveClassStringInUnionType($type);
         }
 
         if ($type instanceof ArrayType && $type->getKeyType() instanceof UnionType) {

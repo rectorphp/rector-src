@@ -69,6 +69,8 @@ final class ConstantReturnToParamTypeConverter
             return $this->unwrapUnionType($type);
         }
 
+        dump($type);die;
+
         return new MixedType();
     }
 

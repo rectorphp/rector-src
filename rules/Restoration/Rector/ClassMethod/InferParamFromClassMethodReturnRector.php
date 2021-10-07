@@ -119,11 +119,14 @@ CODE_SAMPLE
 
             $returnType = $this->returnTypeInferer->inferFunctionLike($returnClassMethod);
 
-            dump($returnType);
-
             $currentPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
             $paramType = $this->constantReturnToParamTypeConverter->convert($returnType);
+
+            // here is something broken
+            dump($paramType);
+            die;
+
             if ($paramType instanceof MixedType) {
                 continue;
             }

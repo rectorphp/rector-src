@@ -108,7 +108,7 @@ final class NodeTypeResolver
             return false;
         }
 
-        $resolvedType = $this->resolve($node);
+        $resolvedType = $this->getType($node);
         if ($resolvedType instanceof MixedType) {
             return false;
         }
@@ -130,7 +130,7 @@ final class NodeTypeResolver
      */
     public function resolve(Node $node): Type
     {
-       return $this->getType($node);
+        return $this->getType($node);
     }
 
     public function getType(Node $node): Type
@@ -143,8 +143,8 @@ final class NodeTypeResolver
         }
 
         if ($node instanceof Coalesce) {
-            $first = $this->resolve($node->left);
-            $second = $this->resolve($node->right);
+            $first = $this->getType($node->left);
+            $second = $this->getType($node->right);
 
             if ($this->isUnionTypeable($first, $second)) {
                 return new UnionType([$first, $second]);
@@ -202,7 +202,7 @@ final class NodeTypeResolver
             return $type;
         }
 
-        return $this->resolve($node->var);
+        return $this->getType($node->var);
     }
 
     /**
@@ -210,7 +210,7 @@ final class NodeTypeResolver
      */
     public function isNullableType(Node $node): bool
     {
-        $nodeType = $this->resolve($node);
+        $nodeType = $this->getType($node);
         return TypeCombinator::containsNull($nodeType);
     }
 
@@ -227,7 +227,7 @@ final class NodeTypeResolver
     public function getStaticType(Node $node): Type
     {
         if ($node instanceof Param || $node instanceof New_ || $node instanceof Return_) {
-            return $this->resolve($node);
+            return $this->getType($node);
         }
 
         if (! $node instanceof Expr) {
@@ -239,7 +239,7 @@ final class NodeTypeResolver
         }
 
         if ($node instanceof Scalar) {
-            return $this->resolve($node);
+            return $this->getType($node);
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
@@ -285,7 +285,7 @@ final class NodeTypeResolver
             ));
         }
 
-        return is_a($this->resolve($node), $staticTypeClass);
+        return is_a($this->getType($node), $staticTypeClass);
     }
 
     /**
@@ -293,7 +293,7 @@ final class NodeTypeResolver
      */
     public function isNullableTypeOfSpecificType(Node $node, string $desiredType): bool
     {
-        $nodeType = $this->resolve($node);
+        $nodeType = $this->getType($node);
         if (! $nodeType instanceof UnionType) {
             return false;
         }
@@ -503,18 +503,18 @@ final class NodeTypeResolver
     private function resolveTernaryType(Ternary $ternary): MixedType|UnionType
     {
         if ($ternary->if !== null) {
-            $first = $this->resolve($ternary->if);
-            $second = $this->resolve($ternary->else);
+            $first = $this->getType($ternary->if);
+            $second = $this->getType($ternary->else);
 
             if ($this->isUnionTypeable($first, $second)) {
                 return new UnionType([$first, $second]);
             }
         }
 
-        $condType = $this->resolve($ternary->cond);
+        $condType = $this->getType($ternary->cond);
         if ($this->isNullableType($ternary->cond) && $condType instanceof UnionType) {
             $first = $condType->getTypes()[0];
-            $second = $this->resolve($ternary->else);
+            $second = $this->getType($ternary->else);
 
             if ($this->isUnionTypeable($first, $second)) {
                 return new UnionType([$first, $second]);
