@@ -8,6 +8,9 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
@@ -54,14 +57,39 @@ final class DeadParamTagValueNodeAnalyzer
         }
 
         if (! $paramTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
-            return $paramTagValueNode->description === '';
+            return $this->isEmptyDescription($paramTagValueNode);
         }
 
         if (! $this->hasGenericType($paramTagValueNode->type)) {
-            return $paramTagValueNode->description === '';
+            return $this->isEmptyDescription($paramTagValueNode);
         }
 
         return false;
+    }
+
+    private function isEmptyDescription(ParamTagValueNode $paramTagValueNode): bool
+    {
+        if ($paramTagValueNode->description !== '') {
+            return false;
+        }
+
+        $parent = $paramTagValueNode->getAttribute('parent');
+        while ($parent instanceof PhpDocTagNode) {
+            $parent = $parent->getAttribute('parent');
+            if ($parent instanceof PhpDocNode) {
+                $children = $parent->children;
+
+                if (! isset($children[1])) {
+                    return true;
+                }
+
+                if ($children[1] instanceof PhpDocTextNode && (string) $children[1] !== '') {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private function hasGenericType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool

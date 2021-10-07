@@ -6,9 +6,9 @@ final class DemoFile
 {
     /**
      * @param int $foo
-     *   My description
+     *   My description1
      * @param int $foo2 a
-     *   My description
+     *   My description2
      */
     public function run($foo, $foo2)
     {
@@ -25,9 +25,9 @@ final class DemoFile
 {
     /**
      * @param int $foo
-     *   My description
+     *   My description1
      * @param int $foo2 a
-     *   My description
+     *   My description2
      */
     public function run(int $foo, int $foo2)
     {
