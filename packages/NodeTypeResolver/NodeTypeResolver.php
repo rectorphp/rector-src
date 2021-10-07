@@ -129,7 +129,11 @@ final class NodeTypeResolver
     public function resolve(Node $node): Type
     {
         $errorMessage = sprintf('Method "%s" is deprecated. Use "getType()" instead', __METHOD__);
+<<<<<<< HEAD
         trigger_error($errorMessage, E_USER_WARNING);
+=======
+        trigger_error($errorMessage);
+>>>>>>> add trigger warning about deprecated method
         sleep(3);
 
         return $this->getType($node);
@@ -236,7 +240,11 @@ final class NodeTypeResolver
     public function getStaticType(Node $node): Type
     {
         $errorMessage = sprintf('Method "%s" is deprecated. Use "getType()" instead', __METHOD__);
+<<<<<<< HEAD
         trigger_error($errorMessage, E_USER_WARNING);
+=======
+        trigger_error($errorMessage);
+>>>>>>> add trigger warning about deprecated method
         sleep(3);
 
         if ($node instanceof Param || $node instanceof New_ || $node instanceof Return_) {
