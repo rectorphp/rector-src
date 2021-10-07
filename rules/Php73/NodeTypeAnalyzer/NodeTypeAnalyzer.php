@@ -21,7 +21,7 @@ final class NodeTypeAnalyzer
 
     public function isStringTypeExpr(Expr $expr): bool
     {
-        $staticType = $this->nodeTypeResolver->getStaticType($expr);
+        $staticType = $this->nodeTypeResolver->getType($expr);
         return $this->isStringType($staticType);
     }
 
