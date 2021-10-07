@@ -38,7 +38,6 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -266,26 +265,6 @@ final class NodeTypeResolver
         }
 
         return $nodeType instanceof FloatType;
-    }
-
-    /**
-     * @deprecated
-     * Use @see NodeTypeResolver::resolve() instead and instanceof directly
-     *
-     * @param class-string<Type> $staticTypeClass
-     */
-    public function isStaticType(Node $node, string $staticTypeClass): bool
-    {
-        if (! is_a($staticTypeClass, Type::class, true)) {
-            throw new ShouldNotHappenException(sprintf(
-                '"%s" in "%s()" must be type of "%s"',
-                $staticTypeClass,
-                __METHOD__,
-                Type::class
-            ));
-        }
-
-        return is_a($this->getType($node), $staticTypeClass);
     }
 
     /**

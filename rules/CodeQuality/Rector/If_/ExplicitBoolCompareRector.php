@@ -161,7 +161,7 @@ CODE_SAMPLE
             return $this->resolveFloat($isNegated, $expr);
         }
 
-        if ($exprType instanceof ObjectType) {
+        if ($this->nodeTypeResolver->isNullableTypeOfSpecificType($expr, ObjectType::class)) {
             return $this->resolveNullable($isNegated, $expr);
         }
 
