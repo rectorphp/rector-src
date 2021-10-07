@@ -127,7 +127,10 @@ final class NodeTypeResolver
     public function resolve(Node $node): Type
     {
         if ($node instanceof Ternary) {
-            return $this->resolveTernaryType($node);
+            $ternaryType = $this->resolveTernaryType($node);
+            if (! $ternaryType instanceof MixedType) {
+                return $ternaryType;
+            }
         }
 
         if ($node instanceof Coalesce) {

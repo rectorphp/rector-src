@@ -95,7 +95,7 @@ CODE_SAMPLE
         }
 
         // this can lead to false positive by phpstan, but that's best we can do
-        $onlyValueType = $this->getStaticType($countedNode);
+        $onlyValueType = $this->getType($countedNode);
         if ($onlyValueType instanceof ArrayType) {
             if (! $this->countableAnalyzer->isCastableArrayType($countedNode)) {
                 return null;

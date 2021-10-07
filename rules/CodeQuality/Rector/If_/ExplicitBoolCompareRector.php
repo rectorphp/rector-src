@@ -112,7 +112,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $conditionStaticType = $this->getStaticType($conditionNode);
+        $conditionStaticType = $this->getType($conditionNode);
         if ($conditionStaticType instanceof BooleanType || $conditionStaticType instanceof ConstantIntegerType) {
             return null;
         }
