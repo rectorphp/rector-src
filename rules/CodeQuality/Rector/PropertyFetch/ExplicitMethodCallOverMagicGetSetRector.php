@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\PropertyFetch;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
@@ -106,7 +108,7 @@ CODE_SAMPLE
         return $this->refactorPropertyFetch($node);
     }
 
-    private function refactorPropertyFetch(PropertyFetch $propertyFetch): Node\Expr\MethodCall|null
+    private function refactorPropertyFetch(PropertyFetch $propertyFetch): MethodCall|null
     {
         $callerType = $this->getObjectType($propertyFetch->var);
         if (! $callerType instanceof TypeWithClassName) {
@@ -139,7 +141,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorMagicSet(Node\Expr $expr, PropertyFetch $propertyFetch): Node\Expr\MethodCall|null
+    private function refactorMagicSet(Expr $expr, PropertyFetch $propertyFetch): MethodCall|null
     {
         $propertyCallerType = $this->getObjectType($propertyFetch->var);
         if (! $propertyCallerType instanceof ObjectType) {
