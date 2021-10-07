@@ -77,6 +77,9 @@ CODE_SAMPLE
         }
 
         $constType = $this->getType($node->consts[0]->value);
+
+        $beforeConstantType = $this->nodeTypeResolver->getStaticType($node->consts[0]->value);
+
         if ($constType instanceof MixedType) {
             return null;
         }

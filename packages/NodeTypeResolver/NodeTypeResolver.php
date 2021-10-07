@@ -145,6 +145,9 @@ final class NodeTypeResolver
         $type = $this->resolveByNodeTypeResolvers($node);
         if ($type !== null) {
             $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
+
+            $type = $this->genericClassStringTypeCorrector->correct($type);
+
             return $this->hasOffsetTypeCorrector->correct($type);
         }
 
@@ -177,6 +180,7 @@ final class NodeTypeResolver
 
         $type = $scope->getType($node);
         $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
+        $type = $this->genericClassStringTypeCorrector->correct($type);
 
         // hot fix for phpstan not resolving chain method calls
         if (! $node instanceof MethodCall) {

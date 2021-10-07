@@ -324,6 +324,14 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     }
 
     /**
+     * Use this method for getting expr|node type
+     */
+    protected function getType(Node $node): Type
+    {
+        return $this->nodeTypeResolver->resolve($node);
+    }
+
+    /**
      * @deprecated
      * Use @see AbstractRector::getType() instead, as single method to get types
      */
@@ -342,14 +350,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     }
 
     /**
-     * Use this method for getting expr|node type
-     */
-    protected function getType(Node $node): Type
-    {
-        return $this->nodeTypeResolver->resolve($node);
-    }
-
-    /**
      * @param Node|Node[] $nodes
      */
     protected function traverseNodesWithCallable(Node | array $nodes, callable $callable): void
@@ -363,15 +363,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function print(Node | array | null $node): string
     {
         return $this->betterStandardPrinter->print($node);
-    }
-
-    /**
-     * @deprecated Use FQN PhpVersionProvider service directly instead or implements provideMinPhpVersion, this method will be removed soon
-     * Or implement \Rector\VersionBonding\Contract\MinPhpVersionInterface
-     */
-    protected function isAtLeastPhpVersion(int $version): bool
-    {
-        return $this->phpVersionProvider->isAtLeastPhpVersion($version);
     }
 
     protected function mirrorComments(Node $newNode, Node $oldNode): void
