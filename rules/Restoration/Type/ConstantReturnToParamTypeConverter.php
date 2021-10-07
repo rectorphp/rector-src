@@ -24,20 +24,7 @@ final class ConstantReturnToParamTypeConverter
     public function convert(Type $type): Type
     {
         if ($type instanceof UnionType) {
-            $flattenReturnTypes = TypeUtils::flattenTypes($type);
-            $unionedTypes = [];
-            foreach ($flattenReturnTypes as $flattenReturnType) {
-                if ($flattenReturnType instanceof ArrayType) {
-                    $unionedTypes[] = $flattenReturnType->getItemType();
-                }
-            }
-
-            $resolvedTypes = [];
-            foreach ($unionedTypes as $unionedType) {
-                $resolvedTypes[] = $this->convert($unionedType);
-            }
-
-            return new UnionType($resolvedTypes);
+            return $this->convertUnionType($type);
         }
 
         if ($type instanceof ConstantStringType) {
@@ -46,6 +33,11 @@ final class ConstantReturnToParamTypeConverter
 
         if ($type instanceof ArrayType) {
             return $this->unwrapConstantTypeToObjectType($type);
+        }
+
+        // making generic class stirng type to object type
+        if ($type instanceof GenericClassStringType) {
+            return $type->getGenericType();
         }
 
         return new MixedType();
@@ -69,8 +61,6 @@ final class ConstantReturnToParamTypeConverter
             return $this->unwrapUnionType($type);
         }
 
-        dump($type);die;
-
         return new MixedType();
     }
 
@@ -85,5 +75,25 @@ final class ConstantReturnToParamTypeConverter
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($types);
+    }
+
+    private function convertUnionType(UnionType $unionType): UnionType
+    {
+        $flattenReturnTypes = TypeUtils::flattenTypes($unionType);
+
+        $unionedTypes = [];
+        foreach ($flattenReturnTypes as $flattenReturnType) {
+            if ($flattenReturnType instanceof ArrayType) {
+                $unionedTypes[] = $flattenReturnType->getItemType();
+            }
+        }
+
+        $resolvedTypes = [];
+
+        foreach ($unionedTypes as $unionedType) {
+            $resolvedTypes[] = $this->convert($unionedType);
+        }
+
+        return new UnionType($resolvedTypes);
     }
 }

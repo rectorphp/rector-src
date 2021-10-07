@@ -124,9 +124,6 @@ CODE_SAMPLE
             $paramType = $this->constantReturnToParamTypeConverter->convert($returnType);
 
             // here is something broken
-            dump($paramType);
-            die;
-
             if ($paramType instanceof MixedType) {
                 continue;
             }
