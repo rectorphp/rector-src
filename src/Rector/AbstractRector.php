@@ -328,16 +328,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
      */
     protected function getType(Node $node): Type
     {
-        return $this->nodeTypeResolver->resolve($node);
-    }
-
-    /**
-     * @deprecated
-     * Use @see AbstractRector::getType() instead, as single method to get types
-     */
-    protected function getStaticType(Node $node): Type
-    {
-        return $this->nodeTypeResolver->getStaticType($node);
+        return $this->nodeTypeResolver->getType($node);
     }
 
     /**
@@ -346,7 +337,16 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
      */
     protected function getObjectType(Node $node): Type
     {
-        return $this->getType($node);
+        return $this->nodeTypeResolver->getType($node);
+    }
+
+    /**
+     * @deprecated
+     * Use @see AbstractRector::getType() instead, as single method to get types
+     */
+    protected function getStaticType(Node $node): Type
+    {
+        return $this->nodeTypeResolver->getType($node);
     }
 
     /**
