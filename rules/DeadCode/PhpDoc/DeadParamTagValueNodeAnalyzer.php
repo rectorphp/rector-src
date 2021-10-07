@@ -83,9 +83,11 @@ final class DeadParamTagValueNodeAnalyzer
                     return true;
                 }
 
-                if ($children[1] instanceof PhpDocTextNode && (string) $children[1] !== '') {
-                    return false;
+                if (! $children[1] instanceof PhpDocTextNode) {
+                    return true;
                 }
+
+                return (string) $children[1] === '';
             }
         }
 
