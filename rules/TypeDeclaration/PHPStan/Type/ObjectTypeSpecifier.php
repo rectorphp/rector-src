@@ -18,6 +18,7 @@ use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
@@ -63,7 +64,7 @@ final class ObjectTypeSpecifier
         }
 
         // invalid type
-        return new MixedType();
+        return new NonExistingObjectType($className);
     }
 
     private function matchAliasedObjectType(Node $node, ObjectType $objectType): ?AliasedObjectType

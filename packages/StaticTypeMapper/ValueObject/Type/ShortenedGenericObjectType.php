@@ -23,8 +23,8 @@ final class ShortenedGenericObjectType extends GenericObjectType
 
     public function isSuperTypeOf(Type $type): TrinaryLogic
     {
-        $fullyQualifiedObjectType = new GenericObjectType($this->fullyQualifiedName, $this->getTypes());
-        return $fullyQualifiedObjectType->isSuperTypeOf($type);
+        $genericObjectType = new GenericObjectType($this->fullyQualifiedName, $this->getTypes());
+        return $genericObjectType->isSuperTypeOf($type);
     }
 
     public function getShortName(): string
