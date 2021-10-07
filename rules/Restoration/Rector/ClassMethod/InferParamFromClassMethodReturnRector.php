@@ -119,6 +119,8 @@ CODE_SAMPLE
 
             $returnType = $this->returnTypeInferer->inferFunctionLike($returnClassMethod);
 
+            dump($returnType);
+
             $currentPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
             $paramType = $this->constantReturnToParamTypeConverter->convert($returnType);
