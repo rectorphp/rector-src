@@ -4,27 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Php73\NodeTypeAnalyzer;
 
-use PhpParser\Node\Expr;
 use PHPStan\Type\Accessory\AccessoryNumericStringType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class NodeTypeAnalyzer
 {
-    public function __construct(
-        private NodeTypeResolver $nodeTypeResolver
-    ) {
-    }
-
-//    public function isStringTypeExpr(Expr $expr): bool
-//    {
-//        $staticType = $this->nodeTypeResolver->getType($expr);
-//        return $this->isStringType($staticType);
-//    }
-
     public function isStringyType(Type $type): bool
     {
         if ($type instanceof StringType) {

@@ -132,8 +132,7 @@ final class ObjectTypeSpecifier
     private function matchShortenedObjectType(
         Node $node,
         ObjectType $objectType
-    ): ShortenedObjectType|ShortenedGenericObjectType|null
-    {
+    ): ShortenedObjectType|ShortenedGenericObjectType|null {
         /** @var Use_[]|null $uses */
         $uses = $node->getAttribute(AttributeKey::USE_NODES);
         if ($uses === null) {

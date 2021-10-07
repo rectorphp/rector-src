@@ -514,3 +514,4 @@ parameters:
 
         # internal tag
         - '#Unknown PHPDoc tag\: @phpstan\-rule#'
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\Type\\ObjectTypeSpecifier\:\:matchShortenedObjectType\(\)" is 14, keep it under 9#'
