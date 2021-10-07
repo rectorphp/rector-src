@@ -127,24 +127,7 @@ final class NodeTypeResolver
     public function resolve(Node $node): Type
     {
         if ($node instanceof Ternary) {
-            if ($node->if !== null) {
-                $first = $this->resolve($node->if);
-                $second = $this->resolve($node->else);
-
-                if ($this->isUnionTypeable($first, $second)) {
-                    return new UnionType([$first, $second]);
-                }
-            }
-
-            $condType = $this->resolve($node->cond);
-            if ($this->isNullableType($node->cond) && $condType instanceof UnionType) {
-                $first = $condType->getTypes()[0];
-                $second = $this->resolve($node->else);
-
-                if ($this->isUnionTypeable($first, $second)) {
-                    return new UnionType([$first, $second]);
-                }
-            }
+            return $this->resolveTernaryType($node);
         }
 
         if ($node instanceof Coalesce) {
@@ -500,5 +483,29 @@ final class NodeTypeResolver
         }
 
         return true;
+    }
+
+    private function resolveTernaryType(Ternary $ternary): MixedType|UnionType
+    {
+        if ($ternary->if !== null) {
+            $first = $this->resolve($ternary->if);
+            $second = $this->resolve($ternary->else);
+
+            if ($this->isUnionTypeable($first, $second)) {
+                return new UnionType([$first, $second]);
+            }
+        }
+
+        $condType = $this->resolve($ternary->cond);
+        if ($this->isNullableType($ternary->cond) && $condType instanceof UnionType) {
+            $first = $condType->getTypes()[0];
+            $second = $this->resolve($ternary->else);
+
+            if ($this->isUnionTypeable($first, $second)) {
+                return new UnionType([$first, $second]);
+            }
+        }
+
+        return new MixedType();
     }
 }
