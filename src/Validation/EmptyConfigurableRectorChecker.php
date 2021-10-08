@@ -12,7 +12,6 @@ use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
 use Rector\Naming\Naming\PropertyNaming;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
-use Throwable;
 
 final class EmptyConfigurableRectorChecker
 {
@@ -65,16 +64,15 @@ final class EmptyConfigurableRectorChecker
                         continue;
                     }
 
-                    try {
-                        $key = $this->propertyNaming->underscoreToName($key);
-                        $value = $this->privatesAccessor->getPrivateProperty($rector, $key);
-
-                        if (is_array($value) && $value === []) {
-                            $emptyConfigurableRectors[] = $rector;
-                            continue 3;
-                        }
-                    } catch (Throwable) {
+                    $key = $this->propertyNaming->underscoreToName($key);
+                    if (! property_exists($rector, $key)) {
                         continue;
+                    }
+
+                    $value = $this->privatesAccessor->getPrivateProperty($rector, $key);
+                    if (is_array($value) && $value === []) {
+                        $emptyConfigurableRectors[] = $rector;
+                        continue 3;
                     }
                 }
             }
