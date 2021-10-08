@@ -9,6 +9,7 @@ use PhpCsFixer\FixerDefinition\CodeSampleInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
+use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Naming\Naming\PropertyNaming;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -16,82 +17,24 @@ use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 final class EmptyConfigurableRectorChecker
 {
     public function __construct(
-        private PrivatesAccessor $privatesAccessor,
-        private PropertyNaming $propertyNaming,
+        private EmptyConfigurableRectorCollector $emptyConfigurableRectorCollector,
         private SymfonyStyle $symfonyStyle
     ) {
     }
 
     /**
      * @param RectorInterface[] $rectors
-     * @return RectorInterface[]
      */
-    public function check(array $rectors): array
+    public function check(array $rectors): void
     {
-        $emptyConfigurableRectors = $this->resolveEmptyConfigurable($rectors);
+        $emptyConfigurableRectors = $this->emptyConfigurableRectorCollector->resolveEmptyConfigurable($rectors);
 
         if ($emptyConfigurableRectors === []) {
-            return [];
+            return;
         }
 
         $this->reportWarningMessage($emptyConfigurableRectors);
         $this->reportEmptyConfigurableMessage($emptyConfigurableRectors);
-
-        return $emptyConfigurableRectors;
-    }
-
-    /**
-     * @param RectorInterface[] $rectors
-     * @return RectorInterface[]
-     */
-    private function resolveEmptyConfigurable(array $rectors): array
-    {
-        $emptyConfigurableRectors = [];
-        foreach ($rectors as $rector) {
-            if ($this->shouldSkip($rector)) {
-                continue;
-            }
-
-            $ruleDefinition = $rector->getRuleDefinition();
-
-            /** @var CodeSampleInterface[] $codeSamples */
-            $codeSamples = $ruleDefinition->getCodeSamples();
-            foreach ($codeSamples as $codeSample) {
-                $configuration = $codeSample->getConfiguration();
-                if (! is_array($configuration)) {
-                    continue;
-                }
-
-                foreach ($configuration as $key => $config) {
-                    if (! is_array($config)) {
-                        continue;
-                    }
-
-                    $key = $this->propertyNaming->underscoreToName($key);
-                    if (! property_exists($rector, $key)) {
-                        continue;
-                    }
-
-                    $value = $this->privatesAccessor->getPrivateProperty($rector, $key);
-                    if (is_array($value) && $value === []) {
-                        $emptyConfigurableRectors[] = $rector;
-                        continue 3;
-                    }
-                }
-            }
-        }
-
-        return $emptyConfigurableRectors;
-    }
-
-    private function shouldSkip(RectorInterface $rector): bool
-    {
-        if (! $rector instanceof ConfigurableRectorInterface) {
-            return true;
-        }
-
-        // it seems always loaded
-        return $rector instanceof RenameClassNonPhpRector;
     }
 
     /**

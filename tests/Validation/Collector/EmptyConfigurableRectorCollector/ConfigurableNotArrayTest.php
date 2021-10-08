@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Validation\EmptyConfigurableRectorChecker;
+namespace Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollector;
 
+use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Core\Validation\EmptyConfigurableRectorChecker;
 use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -16,17 +17,17 @@ use Symplify\SmartFileSystem\SmartFileInfo;
  */
 final class ConfigurableNotArrayTest extends AbstractTestCase
 {
-    private EmptyConfigurableRectorChecker $validator;
+    private EmptyConfigurableRectorCollector $collector;
 
     protected function setUp(): void
     {
         $this->bootFromConfigFileInfos([new SmartFileInfo(__DIR__ . '/config/configurable_not_array.php')]);
-        $this->validator = $this->getService(EmptyConfigurableRectorChecker::class);
+        $this->collector = $this->getService(EmptyConfigurableRectorCollector::class);
     }
 
     public function test(): void
     {
-        $emptyConfigurableRectors = $this->validator->check([$this->getService(TypedPropertyRector::class)]);
+        $emptyConfigurableRectors = $this->collector->resolveEmptyConfigurable([$this->getService(TypedPropertyRector::class)]);
         $this->assertCount(0, $emptyConfigurableRectors);
     }
 }
