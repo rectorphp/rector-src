@@ -11,7 +11,7 @@ use Rector\Naming\Naming\PropertyNaming;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 
-class EmptyConfigurableRectorCollector
+final class EmptyConfigurableRectorCollector
 {
     public function __construct(
         private PrivatesAccessor $privatesAccessor,
