@@ -30,6 +30,14 @@ final class EmptyConfigurableRectorChecker
 
         $this->reportWarningMessage($emptyConfigurableRectors);
         $this->reportEmptyConfigurableMessage($emptyConfigurableRectors);
+
+        $solutionMessage = 'Do you want to run them? Ensure configure them in your `rector.php`.';
+        $this->symfonyStyle->note($solutionMessage);
+
+        if (! $this->symfonyStyle->isVerbose()) {
+            // ensure there is new line after progress bar and report : "[OK] Rector is done!" with add a space
+            $this->symfonyStyle->write(' ');
+        }
     }
 
     /**
