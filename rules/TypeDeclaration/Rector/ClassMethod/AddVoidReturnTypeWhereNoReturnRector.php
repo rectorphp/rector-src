@@ -19,6 +19,7 @@ use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector\AddVoidReturnTypeWhereNoReturnRectorTest
@@ -98,15 +99,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnVendorLockResolver->isVendorLocked($node)) {
-            return null;
-        }
-
         if ($this->usePhpdoc) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new VoidType());
 
             return $node;
+        }
+
+        if ($node instanceof ClassMethod && $this->classMethodReturnVendorLockResolver->isVendorLocked($node)) {
+            return null;
         }
 
         $node->returnType = new Identifier('void');
@@ -123,6 +124,8 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->usePhpdoc = $configuration[self::USE_PHPDOC] ?? false;
+        $usePhpdoc = $configuration[self::USE_PHPDOC] ?? false;
+        Assert::boolean($usePhpdoc);
+        $this->usePhpdoc = $usePhpdoc;
     }
 }
