@@ -18,7 +18,7 @@ final class EmptyConfigurableRectorChecker
     /**
      * @var RectorInterface[]
      */
-    private $emptyConfigurableRectors = [];
+    private array $emptyConfigurableRectors = [];
 
     public function __construct(
         private PrivatesAccessor $privatesAccessor,
