@@ -15,11 +15,6 @@ use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 final class EmptyConfigurableRectorChecker
 {
-    /**
-     * @var RectorInterface[]
-     */
-    private array $emptyConfigurableRectors = [];
-
     public function __construct(
         private PrivatesAccessor $privatesAccessor,
         private PropertyNaming $propertyNaming,
@@ -29,17 +24,20 @@ final class EmptyConfigurableRectorChecker
 
     /**
      * @param RectorInterface[] $rectors
+     * @return RectorInterface[]
      */
-    public function check(array $rectors): void
+    public function check(array $rectors): array
     {
-        $this->emptyConfigurableRectors = $this->resolveEmptyConfigurable($rectors);
+        $emptyConfigurableRectors = $this->resolveEmptyConfigurable($rectors);
 
-        if ($this->emptyConfigurableRectors === []) {
-            return;
+        if ($emptyConfigurableRectors === []) {
+            return [];
         }
 
-        $this->reportWarningMessage($this->emptyConfigurableRectors);
-        $this->reportEmptyConfigurableMessage($this->emptyConfigurableRectors);
+        $this->reportWarningMessage($emptyConfigurableRectors);
+        $this->reportEmptyConfigurableMessage($emptyConfigurableRectors);
+
+        return $emptyConfigurableRectors;
     }
 
     /**
