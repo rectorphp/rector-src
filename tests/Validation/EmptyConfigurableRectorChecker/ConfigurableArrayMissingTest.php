@@ -15,6 +15,9 @@ use Symplify\SmartFileSystem\SmartFileInfo;
  */
 final class ConfigurableArrayMissingTest extends AbstractTestCase
 {
+    private EmptyConfigurableRectorChecker $validator;
+    private PrivatesAccessor $privateAccessor;
+
     protected function setUp(): void
     {
         $this->bootFromConfigFileInfos([new SmartFileInfo(__DIR__ . '/config/configurable_array_missing.php')]);
@@ -25,6 +28,7 @@ final class ConfigurableArrayMissingTest extends AbstractTestCase
     public function test(): void
     {
         $this->validator->check([$this->getService(AnnotationToAttributeRector::class)]);
-        $this->assertCount(1, $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors'));
+        $countWarning = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
+        $this->assertCount(1, $countWarning);
     }
 }

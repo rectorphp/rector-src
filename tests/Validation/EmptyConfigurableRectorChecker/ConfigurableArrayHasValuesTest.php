@@ -15,6 +15,9 @@ use Symplify\SmartFileSystem\SmartFileInfo;
  */
 final class ConfigurableArrayHasValuesTest extends AbstractTestCase
 {
+    private EmptyConfigurableRectorChecker $validator;
+    private PrivatesAccessor $privateAccessor;
+
     protected function setUp(): void
     {
         $this->bootFromConfigFileInfos([new SmartFileInfo(__DIR__ . '/config/configurable_array_has_values.php')]);
@@ -25,6 +28,7 @@ final class ConfigurableArrayHasValuesTest extends AbstractTestCase
     public function test(): void
     {
         $this->validator->check([$this->getService(AnnotationToAttributeRector::class)]);
-        $this->assertCount(0, $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors'));
+        $countWarning = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
+        $this->assertCount(0, $countWarning);
     }
 }
