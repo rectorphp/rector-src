@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollector;
 
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
-use Rector\Core\Validation\EmptyConfigurableRectorChecker;
 use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -27,7 +26,9 @@ final class ConfigurableNotArrayTest extends AbstractTestCase
 
     public function test(): void
     {
-        $emptyConfigurableRectors = $this->collector->resolveEmptyConfigurable([$this->getService(TypedPropertyRector::class)]);
+        $emptyConfigurableRectors = $this->collector->resolveEmptyConfigurable(
+            [$this->getService(TypedPropertyRector::class)]
+        );
         $this->assertCount(0, $emptyConfigurableRectors);
     }
 }

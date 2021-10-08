@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollector;
 
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
-use Rector\Core\Validation\EmptyConfigurableRectorChecker;
 use Rector\Privatization\Rector\Class_\ChangeLocalPropertyToVariableRector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;

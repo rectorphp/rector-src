@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollector;
 
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
-use Rector\Core\Validation\EmptyConfigurableRectorChecker;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -25,7 +24,9 @@ final class ConfigurableArrayHasValuesTest extends AbstractTestCase
 
     public function test(): void
     {
-        $emptyConfigurableRectors = $this->collector->resolveEmptyConfigurable([$this->getService(AnnotationToAttributeRector::class)]);
+        $emptyConfigurableRectors = $this->collector->resolveEmptyConfigurable(
+            [$this->getService(AnnotationToAttributeRector::class)]
+        );
         $this->assertCount(0, $emptyConfigurableRectors);
     }
 }

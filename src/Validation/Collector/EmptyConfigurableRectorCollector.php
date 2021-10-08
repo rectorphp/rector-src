@@ -9,7 +9,6 @@ use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
 use Rector\Naming\Naming\PropertyNaming;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
-use Symplify\RuleDocGenerator\Contract\CodeSampleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 
 class EmptyConfigurableRectorCollector

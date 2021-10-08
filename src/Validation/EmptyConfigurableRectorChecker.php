@@ -5,14 +5,9 @@ declare(strict_types=1);
 namespace Rector\Core\Validation;
 
 use Nette\Utils\Strings;
-use PhpCsFixer\FixerDefinition\CodeSampleInterface;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
-use Rector\Naming\Naming\PropertyNaming;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 final class EmptyConfigurableRectorChecker
 {
