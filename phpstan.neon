@@ -266,7 +266,7 @@ parameters:
                 - packages/NodeNameResolver/NodeNameResolver.php
                 - packages/NodeNameResolver/NodeNameResolver/ClassNameResolver.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
-                - src/Validation/EmptyConfigurableRectorChecker.php #69
+                - src/Validation/Collector/EmptyConfigurableRectorCollector.php
 
         # known types
         - '#Call to an undefined method PHPStan\\Type\\ConstantType\:\:getValue\(\)#'
@@ -519,6 +519,3 @@ parameters:
         -
             message: '#Class cognitive complexity is 31, keep it under 30#'
             path: rules/Php74/Rector/Property/TypedPropertyRector.php
-        -
-            message: '#Cognitive complexity for "Rector\\Core\\Validation\\EmptyConfigurableRectorChecker\:\:resolveEmptyConfigurable\(\)" is 16, keep it under 9#'
-            path: src/Validation/EmptyConfigurableRectorChecker.php
