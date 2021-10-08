@@ -29,7 +29,7 @@ final class NotConfigurableRectorTest extends AbstractTestCase
     public function test(): void
     {
         $this->validator->check([$this->getService(ChangeLocalPropertyToVariableRector::class)]);
-        $countEmptyConfigurableRectors = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
-        $this->assertCount(0, $countEmptyConfigurableRectors);
+        $emptyConfigurableRectors = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
+        $this->assertCount(0, $emptyConfigurableRectors);
     }
 }

@@ -29,7 +29,7 @@ final class ConfigurableArrayMissingTest extends AbstractTestCase
     public function test(): void
     {
         $this->validator->check([$this->getService(AnnotationToAttributeRector::class)]);
-        $countEmptyConfigurableRectors = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
-        $this->assertCount(1, $countEmptyConfigurableRectors);
+        $emptyConfigurableRectors = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
+        $this->assertCount(1, $emptyConfigurableRectors);
     }
 }
