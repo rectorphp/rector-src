@@ -102,7 +102,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->usePhpdoc) {
+        if (false && $this->usePhpdoc) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new VoidType());
 
