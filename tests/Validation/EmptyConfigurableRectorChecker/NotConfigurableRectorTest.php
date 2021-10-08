@@ -16,6 +16,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 final class NotConfigurableRectorTest extends AbstractTestCase
 {
     private EmptyConfigurableRectorChecker $validator;
+
     private PrivatesAccessor $privateAccessor;
 
     protected function setUp(): void
