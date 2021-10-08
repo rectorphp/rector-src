@@ -29,7 +29,7 @@ final class ConfigurableArrayHasValuesTest extends AbstractTestCase
     public function test(): void
     {
         $this->validator->check([$this->getService(AnnotationToAttributeRector::class)]);
-        $countWarning = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
-        $this->assertCount(0, $countWarning);
+        $countEmptyConfigurableRectors = $this->privateAccessor->getPrivateProperty($this->validator, 'emptyConfigurableRectors');
+        $this->assertCount(0, $countEmptyConfigurableRectors);
     }
 }
