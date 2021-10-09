@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Php;
 
 use Rector\Core\Configuration\Option;
+use Rector\Core\Exception\Configuration\InvalidConfigurationException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\Core\ValueObject\PhpVersion;
@@ -73,6 +74,6 @@ final class PhpVersionProvider
             PhpVersion::class,
             'PHP_80'
         );
-        throw new ShouldNotHappenException($errorMessage);
+        throw new InvalidConfigurationException($errorMessage);
     }
 }
