@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObject;
 
+use Webmozart\Assert\Assert;
+
 final class PhpVersion
 {
     /**
@@ -83,4 +85,8 @@ final class PhpVersion
      * @var int
      */
     public const PHP_10 = 100000;
+    
+    static public function validate(int $phpVersionId) {
+        Assert::regex($phpVersionId, '{^\d{5,6}$}');
+    }
 }
