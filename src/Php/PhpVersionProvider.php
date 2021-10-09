@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\Core\Php;
 
 use Rector\Core\Configuration\Option;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
+use Rector\Core\ValueObject\PhpVersion;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
@@ -22,7 +24,9 @@ final class PhpVersionProvider
 
     public function provide(): int
     {
-        $phpVersionFeatures = $this->parameterProvider->provideIntParameter(Option::PHP_VERSION_FEATURES);
+        $phpVersionFeatures = $this->parameterProvider->provideParameter(Option::PHP_VERSION_FEATURES);
+        $this->validatePhpVersionFeaturesParameter($phpVersionFeatures);
+
         if ($phpVersionFeatures > 0) {
             return $phpVersionFeatures;
         }
@@ -47,5 +51,28 @@ final class PhpVersionProvider
     public function isAtLeastPhpVersion(int $phpVersion): bool
     {
         return $phpVersion <= $this->provide();
+    }
+
+    private function validatePhpVersionFeaturesParameter(mixed $phpVersionFeatures): void
+    {
+        if ($phpVersionFeatures === null) {
+            return;
+        }
+
+        if (is_int($phpVersionFeatures)) {
+            return;
+        }
+
+        $errorMessage = sprintf(
+            'Parameter "%s::%s" must be int, "%s" given.%sUse constant from "%s" to provide it, e.g. "%s::%s"',
+            Option::class,
+            'PHP_VERSION_FEATURES',
+            (string) $phpVersionFeatures,
+            PHP_EOL,
+            PhpVersion::class,
+            PhpVersion::class,
+            'PHP_80'
+        );
+        throw new ShouldNotHappenException($errorMessage);
     }
 }
