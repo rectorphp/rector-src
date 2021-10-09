@@ -7,5 +7,5 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PHP_VERSION_FEATURES, '10000');
+    $parameters->set(Option::PHP_VERSION_FEATURES, 291084902184);
 };
