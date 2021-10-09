@@ -6,7 +6,6 @@ namespace Rector\Core\Php;
 
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\Configuration\InvalidConfigurationException;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
@@ -60,7 +59,7 @@ final class PhpVersionProvider
             return;
         }
 
-        if (is_int($phpVersionFeatures)) {
+        if (PhpVersion::isValid($phpVersionFeatures)) {
             return;
         }
 

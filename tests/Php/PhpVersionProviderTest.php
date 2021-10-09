@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Php;
 
-use Hoa\Iterator\Recursive\Iterator;
 use Rector\Core\Exception\Configuration\InvalidConfigurationException;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Testing\PHPUnit\AbstractTestCase;
