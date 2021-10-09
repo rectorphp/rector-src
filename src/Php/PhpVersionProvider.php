@@ -24,6 +24,7 @@ final class PhpVersionProvider
     {
         $phpVersionFeatures = $this->parameterProvider->provideIntParameter(Option::PHP_VERSION_FEATURES);
         if ($phpVersionFeatures > 0) {
+            PhpVersion::validate($phpVersionFeatures);
             return $phpVersionFeatures;
         }
 
