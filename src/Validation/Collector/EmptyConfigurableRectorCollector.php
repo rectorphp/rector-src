@@ -53,13 +53,14 @@ final class EmptyConfigurableRectorCollector
                 continue;
             }
 
-            foreach ($configuration as $key => $config) {
-                if (! is_array($config)) {
+            foreach (array_keys($configuration) as $key) {
+                $key = $this->propertyNaming->underscoreToName($key);
+                if (! property_exists($rector, $key)) {
                     continue;
                 }
 
-                $key = $this->propertyNaming->underscoreToName($key);
-                if (! property_exists($rector, $key)) {
+                // @see https://github.com/rectorphp/rector-laravel/pull/19
+                if (str_starts_with($key, 'exclude')) {
                     continue;
                 }
 
