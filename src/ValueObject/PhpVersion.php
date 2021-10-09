@@ -85,8 +85,9 @@ final class PhpVersion
      * @var int
      */
     public const PHP_10 = 100000;
-    
-    static public function validate(int $phpVersionId) {
+
+    public static function validate(int $phpVersionId)
+    {
         Assert::regex($phpVersionId, '{^\d{5,6}$}');
     }
 }
