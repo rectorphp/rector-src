@@ -11,6 +11,8 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
+use PhpParser\Node\Expr\BinaryOp\Equal;
+use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -34,7 +36,7 @@ final class StrlenZeroToIdenticalEmptyStringRector extends AbstractRector
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value)
+    public function run(string $value)
     {
         $empty = strlen($value) === 0;
     }
@@ -44,7 +46,7 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($value)
+    public function run(string $value)
     {
         $empty = $value === '';
     }
@@ -101,7 +103,7 @@ CODE_SAMPLE
         return new Identical($variable, new String_(''));
     }
 
-    private function processRightIdentical(Identical $identical, FuncCall $funcCall): ?Identical
+    private function processRightIdentical(Identical $identical, FuncCall $funcCall): Identical|Equal|null
     {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
@@ -120,6 +122,8 @@ CODE_SAMPLE
         /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        return new Identical($variable, new String_(''));
+        return $this->nodeTypeResolver->getType($variable) instanceof StringType ?
+            new Identical($variable, new String_('')) :
+            new Equal($variable, new String_(''));
     }
 }
