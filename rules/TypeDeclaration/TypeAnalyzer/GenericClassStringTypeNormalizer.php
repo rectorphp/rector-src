@@ -12,12 +12,12 @@ use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\NullType;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
 
 final class GenericClassStringTypeNormalizer
@@ -60,6 +60,19 @@ final class GenericClassStringTypeNormalizer
         return $type;
     }
 
+    public function isAllGenericClassStringType(UnionType $unionType): bool
+    {
+        $types = $unionType->getTypes();
+
+        foreach ($types as $type) {
+            if (! $type instanceof GenericClassStringType) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function isNullableType(UnionType $unionType): bool
     {
         $types = $unionType->getTypes();
@@ -74,19 +87,6 @@ final class GenericClassStringTypeNormalizer
         }
 
         return false;
-    }
-
-    public function isAllGenericClassStringType(UnionType $unionType): bool
-    {
-        $types = $unionType->getTypes();
-
-        foreach ($types as $type) {
-            if (! $type instanceof GenericClassStringType) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private function resolveArrayTypeWithUnionKeyType(ArrayType $arrayType): ArrayType
