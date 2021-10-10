@@ -17,6 +17,7 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\NullType;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
 
 final class GenericClassStringTypeNormalizer
@@ -48,7 +49,7 @@ final class GenericClassStringTypeNormalizer
             return $this->resolveStringType($value);
         });
 
-        if ($type instanceof UnionType) {
+        if ($type instanceof UnionType && ! $this->isNullableType($type)) {
             return $this->resolveClassStringInUnionType($type);
         }
 
@@ -57,6 +58,22 @@ final class GenericClassStringTypeNormalizer
         }
 
         return $type;
+    }
+
+    private function isNullableType(UnionType $unionType): bool
+    {
+        $types = $unionType->getTypes();
+        if (count($types) > 2) {
+            return false;
+        }
+
+        foreach ($types as $type) {
+            if ($type instanceof NullType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function isAllGenericClassStringType(UnionType $unionType): bool
