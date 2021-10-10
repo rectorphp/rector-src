@@ -100,7 +100,7 @@ CODE_SAMPLE
         /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        return $this->nodeTypeResolver->getType($variable) instanceof StringType ?
+        return $this->nodeTypeResolver->getNativeType($variable) instanceof StringType ?
             new Identical($variable, new String_('')) :
             new Equal($variable, new String_(''));
     }
@@ -124,7 +124,7 @@ CODE_SAMPLE
         /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        return $this->nodeTypeResolver->getType($variable) instanceof StringType ?
+        return $this->nodeTypeResolver->getNativeType($variable) instanceof StringType ?
             new Identical($variable, new String_('')) :
             new Equal($variable, new String_(''));
     }
