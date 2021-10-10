@@ -81,7 +81,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processLeftIdentical(Identical $identical, FuncCall $funcCall): ?Identical
+    private function processLeftIdentical(Identical $identical, FuncCall $funcCall): Identical|Equal|null
     {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
@@ -100,7 +100,9 @@ CODE_SAMPLE
         /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        return new Identical($variable, new String_(''));
+        return $this->nodeTypeResolver->getType($variable) instanceof StringType ?
+            new Identical($variable, new String_('')) :
+            new Equal($variable, new String_(''));
     }
 
     private function processRightIdentical(Identical $identical, FuncCall $funcCall): Identical|Equal|null
