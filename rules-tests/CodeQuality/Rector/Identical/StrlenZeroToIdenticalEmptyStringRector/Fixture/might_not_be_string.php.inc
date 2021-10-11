@@ -22,9 +22,9 @@ class MightNotBeString
 {
     public function run($value)
     {
-        $empty = $value == '';
+        $empty = (string) $value === '';
 
-        $empty = $value == '';
+        $empty = (string) $value === '';
     }
 }
 

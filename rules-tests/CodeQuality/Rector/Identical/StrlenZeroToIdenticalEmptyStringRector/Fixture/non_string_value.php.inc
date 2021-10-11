@@ -26,9 +26,9 @@ class NonStringValue
     {
         $value = null;
 
-        $empty = $value == '';
+        $empty = (string) $value === '';
 
-        $empty = $value == '';
+        $empty = (string) $value === '';
     }
 }
 

@@ -100,9 +100,13 @@ CODE_SAMPLE
         /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        return $this->nodeTypeResolver->getNativeType($variable) instanceof StringType ?
-            new Identical($variable, new String_('')) :
-            new Equal($variable, new String_(''));
+        // Needs string cast if variable type is not string
+        // see https://github.com/rectorphp/rector/issues/6700
+        if (!$this->nodeTypeResolver->getNativeType($variable) instanceof StringType) {
+            $variable = new Expr\Cast\String_($variable);
+        }
+
+        return new Identical($variable, new String_(''));
     }
 
     private function processRightIdentical(Identical $identical, FuncCall $funcCall): Identical|Equal|null
@@ -124,8 +128,12 @@ CODE_SAMPLE
         /** @var Expr $variable */
         $variable = $firstArg->value;
 
-        return $this->nodeTypeResolver->getNativeType($variable) instanceof StringType ?
-            new Identical($variable, new String_('')) :
-            new Equal($variable, new String_(''));
+        // Needs string cast if variable type is not string
+        // see https://github.com/rectorphp/rector/issues/6700
+        if (!$this->nodeTypeResolver->getNativeType($variable) instanceof StringType) {
+            $variable = new Expr\Cast\String_($variable);
+        }
+
+        return new Identical($variable, new String_(''));
     }
 }

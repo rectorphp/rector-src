@@ -42,9 +42,9 @@ class StringableObject
     {
         $value = new Stringable();
 
-        $empty = $value == '';
+        $empty = (string) $value === '';
 
-        $empty = $value == '';
+        $empty = (string) $value === '';
     }
 }
 
