@@ -124,4 +124,16 @@ final class UnionTypeAnalyzer
 
         return true;
     }
+
+    public function isNullable(UnionType $unionType): bool
+    {
+        $types = $unionType->getTypes();
+        foreach ($types as $type) {
+            if ($type instanceof NullType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

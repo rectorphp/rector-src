@@ -18,13 +18,15 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
+use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
 
 final class GenericClassStringTypeNormalizer
 {
     public function __construct(
         private ReflectionProvider $reflectionProvider,
-        private DetailedTypeAnalyzer $detailedTypeAnalyzer
+        private DetailedTypeAnalyzer $detailedTypeAnalyzer,
+        private UnionTypeAnalyzer $unionTypeAnalyzer
     ) {
     }
 
@@ -49,7 +51,7 @@ final class GenericClassStringTypeNormalizer
             return $this->resolveStringType($value);
         });
 
-        if ($type instanceof UnionType && ! $this->isNullableType($type)) {
+        if ($type instanceof UnionType && ! $this->unionTypeAnalyzer->isNullable($type)) {
             return $this->resolveClassStringInUnionType($type);
         }
 
@@ -71,22 +73,6 @@ final class GenericClassStringTypeNormalizer
         }
 
         return true;
-    }
-
-    private function isNullableType(UnionType $unionType): bool
-    {
-        $types = $unionType->getTypes();
-        if (count($types) > 2) {
-            return false;
-        }
-
-        foreach ($types as $type) {
-            if ($type instanceof NullType) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function resolveArrayTypeWithUnionKeyType(ArrayType $arrayType): ArrayType
