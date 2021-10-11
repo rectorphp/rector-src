@@ -103,9 +103,14 @@ CODE_SAMPLE
         // Needs string cast if variable type is not string
         // see https://github.com/rectorphp/rector/issues/6700
         if (!$this->nodeTypeResolver->getNativeType($variable) instanceof StringType) {
-            $variable = new Expr\Cast\String_($variable);
+            return $this->processEqual($variable);
         }
 
         return new Identical($variable, new String_(''));
+    }
+
+    private function processEqual(Expr $variable): ?Identical
+    {
+        return new Identical(new Expr\Cast\String_($variable), new String_(''));
     }
 }
