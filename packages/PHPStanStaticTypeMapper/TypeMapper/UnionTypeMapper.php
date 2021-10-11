@@ -196,7 +196,7 @@ final class UnionTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @return Name|FullyQualified|PhpParserUnionType|null
+     * @return Name|FullyQualified|PhpParserUnionType|NullableType|null
      */
     private function matchTypeForUnionedObjectTypes(UnionType $unionType, TypeKind $typeKind): ?Node
     {
@@ -222,15 +222,18 @@ final class UnionTypeMapper implements TypeMapperInterface
             return new Name('bool');
         }
 
+        return $this->processResolveCompatibleObjectCandidates($unionType);
+    }
+
+    private function processResolveCompatibleObjectCandidates(UnionType $unionType): ?Node
+    {
         // the type should be compatible with all other types, e.g. A extends B, B
         $compatibleObjectType = $this->resolveCompatibleObjectCandidate($unionType);
         if ($compatibleObjectType instanceof UnionType) {
-            $types = $compatibleObjectType->getTypes();
-            $className = $types[0] instanceof NullType
-                ? $types[1]->getClassName()
-                : $types[0]->getClassName();
-
-            return new NullableType(new FullyQualified($className));
+            $type = $this->matchTypeForNullableUnionType($compatibleObjectType);
+            if ($type instanceof ObjectType) {
+                return new NullableType(new FullyQualified($type->getClassName()));
+            }
         }
 
         if (! $compatibleObjectType instanceof ObjectType) {
