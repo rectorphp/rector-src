@@ -20,8 +20,9 @@ use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 
 final class StaticTypeAnalyzer
 {
-    public function __construct(private UnionTypeAnalyzer $unionTypeAnalyzer)
-    {
+    public function __construct(
+        private UnionTypeAnalyzer $unionTypeAnalyzer
+    ) {
     }
 
     public function isAlwaysTruableType(Type $type): bool
