@@ -71,51 +71,23 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->left instanceof FuncCall) {
-            return $this->processLeftIdentical($node, $node->left);
+            return $this->processIdentical($node->right, $node->left);
         }
 
         if ($node->right instanceof FuncCall) {
-            return $this->processRightIdentical($node, $node->right);
+            return $this->processIdentical($node->left, $node->right);
         }
 
         return null;
     }
 
-    private function processLeftIdentical(Identical $identical, FuncCall $funcCall): ?Identical
+    private function processIdentical(Expr $value, FuncCall $funcCall): ?Identical
     {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
         }
 
-        if (! $this->valueResolver->isValue($identical->right, 0)) {
-            return null;
-        }
-
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($funcCall->args, 0)) {
-            return null;
-        }
-
-        /** @var Arg $firstArg */
-        $firstArg = $funcCall->args[0];
-        /** @var Expr $variable */
-        $variable = $firstArg->value;
-
-        // Needs string cast if variable type is not string
-        // see https://github.com/rectorphp/rector/issues/6700
-        if (!$this->nodeTypeResolver->getNativeType($variable) instanceof StringType) {
-            $variable = new Expr\Cast\String_($variable);
-        }
-
-        return new Identical($variable, new String_(''));
-    }
-
-    private function processRightIdentical(Identical $identical, FuncCall $funcCall): ?Identical
-    {
-        if (! $this->isName($funcCall, 'strlen')) {
-            return null;
-        }
-
-        if (! $this->valueResolver->isValue($identical->left, 0)) {
+        if (! $this->valueResolver->isValue($value, 0)) {
             return null;
         }
 
