@@ -20,6 +20,8 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\ArrayType;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
@@ -167,14 +169,36 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new Name($type);
     }
 
+    /**
+     * @return Type[]
+     */
+    private function cleanMixedAndArrayMixedKeyType(UnionType $unionType): array
+    {
+        $types = $unionType->getTypes();
+        if (count($types) === 2) {
+            return $types;
+        }
+
+        foreach ($types as $key => $type) {
+            if ($type instanceof MixedType || ($type instanceof ArrayType && $type->getKeyType() instanceof MixedType)) {
+                unset($types[$key]);
+            }
+        }
+
+        return $types;
+    }
+
     private function matchTypeForNullableUnionType(UnionType $unionType): ?Type
     {
-        if (count($unionType->getTypes()) !== 2) {
+        $types = $this->cleanMixedAndArrayMixedKeyType($unionType);
+        sort($types);
+
+        if (count($types) !== 2) {
             return null;
         }
 
-        $firstType = $unionType->getTypes()[0];
-        $secondType = $unionType->getTypes()[1];
+        $firstType = $types[0];
+        $secondType = $types[1];
 
         if ($firstType instanceof NullType) {
             return $secondType;
