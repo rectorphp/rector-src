@@ -36,6 +36,7 @@ use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -180,7 +181,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         foreach ($types as $key => $type) {
-            if ($type instanceof MixedType || ($type instanceof ArrayType && $type->getKeyType() instanceof MixedType)) {
+            if ($type instanceof MixedType || ($type instanceof ArrayType && $type->getItemType() instanceof FullyQualifiedObjectType)) {
                 unset($types[$key]);
             }
         }
