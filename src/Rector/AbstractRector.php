@@ -234,18 +234,22 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             $currentFile = $this->currentFileProvider->getFile();
             if ($currentFile instanceof File) {
                 $currentFilePath = $currentFile->getSmartFileInfo()->getRealPath();
-                if (! isset(self::$previousFileWithNodes[$currentFilePath])) {
-                    // ensure clean others
-                    self::$previousFileWithNodes = [];
+                $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
-                    self::$previousFileWithNodes[$currentFilePath][] = [
-                        'rectorClass' => static::class,
-                        'node' => $node
-                    ];
-                } else {
-                    foreach (self::$previousFileWithNodes[$currentFilePath] as $prev) {
-                        if ($prev['rectorClass'] === static::class && $prev['node'] === $node) {
-                            return null;
+                if (! $phpDocInfo->hasChanged()) {
+                    if (! isset(self::$previousFileWithNodes[$currentFilePath])) {
+                        // ensure clean others
+                        self::$previousFileWithNodes = [];
+
+                        self::$previousFileWithNodes[$currentFilePath][] = [
+                            'rectorClass' => static::class,
+                            'node' => $node
+                        ];
+                    } else {
+                        foreach (self::$previousFileWithNodes[$currentFilePath] as $prev) {
+                            if ($prev['rectorClass'] === static::class && $prev['node'] === $node) {
+                                return null;
+                            }
                         }
                     }
                 }
