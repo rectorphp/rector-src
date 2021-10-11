@@ -81,7 +81,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processLeftIdentical(Identical $identical, FuncCall $funcCall): Identical|Equal|null
+    private function processLeftIdentical(Identical $identical, FuncCall $funcCall): ?Identical
     {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
@@ -109,7 +109,7 @@ CODE_SAMPLE
         return new Identical($variable, new String_(''));
     }
 
-    private function processRightIdentical(Identical $identical, FuncCall $funcCall): Identical|Equal|null
+    private function processRightIdentical(Identical $identical, FuncCall $funcCall): ?Identical
     {
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
