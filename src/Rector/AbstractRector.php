@@ -10,6 +10,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
@@ -135,6 +136,11 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     private InfiniteLoopValidator $infiniteLoopValidator;
 
+    /**
+     * @var array<string, array<RectorInterface, Node>>
+     */
+    private static $previousFileWithNodes = [];
+
     #[Required]
     public function autowireAbstractRector(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -222,6 +228,28 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         if ($this->shouldSkipCurrentNode($node)) {
             return null;
+        }
+
+        if ($node instanceof Stmt && ! $node instanceof ClassLike) {
+            $currentFile = $this->currentFileProvider->getFile();
+            if ($currentFile instanceof File) {
+                $currentFilePath = $currentFile->getSmartFileInfo()->getRealPath();
+                if (! isset(self::$previousFileWithNodes[$currentFilePath])) {
+                    // ensure clean others
+                    self::$previousFileWithNodes = [];
+
+                    self::$previousFileWithNodes[$currentFilePath][] = [
+                        'rectorClass' => static::class,
+                        'node' => $node
+                    ];
+                } else {
+                    foreach (self::$previousFileWithNodes[$currentFilePath] as $prev) {
+                        if ($prev['rectorClass'] === static::class && $prev['node'] === $node) {
+                            return null;
+                        }
+                    }
+                }
+            }
         }
 
         $this->currentRectorProvider->changeCurrentRector($this);
