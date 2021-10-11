@@ -225,7 +225,12 @@ final class UnionTypeMapper implements TypeMapperInterface
         // the type should be compatible with all other types, e.g. A extends B, B
         $compatibleObjectType = $this->resolveCompatibleObjectCandidate($unionType);
         if ($compatibleObjectType instanceof UnionType) {
-            return new NullableType(new FullyQualified('Doctrine\Common\Collections\Collection'));
+            $types = $compatibleObjectType->getTypes();
+            $className = $types[0] instanceof NullType
+                ? $types[1]->getClassName()
+                : $types[0]->getClassName();
+
+            return new NullableType(new FullyQualified($className));
         }
 
         if (! $compatibleObjectType instanceof ObjectType) {
