@@ -12,10 +12,8 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PhpParser\NodeAbstract;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\IterableType;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -36,7 +34,6 @@ use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -170,36 +167,14 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new Name($type);
     }
 
-    /**
-     * @return Type[]
-     */
-    private function cleanMixedAndArrayMixedKeyType(UnionType $unionType): array
-    {
-        $types = $unionType->getTypes();
-        if (count($types) === 2) {
-            return $types;
-        }
-
-        foreach ($types as $key => $type) {
-            if ($type instanceof MixedType || ($type instanceof ArrayType && $type->getItemType() instanceof FullyQualifiedObjectType)) {
-                unset($types[$key]);
-            }
-        }
-
-        return $types;
-    }
-
     private function matchTypeForNullableUnionType(UnionType $unionType): ?Type
     {
-        $types = $this->cleanMixedAndArrayMixedKeyType($unionType);
-        sort($types);
-
-        if (count($types) !== 2) {
+        if (count($unionType->getTypes()) !== 2) {
             return null;
         }
 
-        $firstType = $types[0];
-        $secondType = $types[1];
+        $firstType = $unionType->getTypes()[0];
+        $secondType = $unionType->getTypes()[1];
 
         if ($firstType instanceof NullType) {
             return $secondType;
@@ -249,6 +224,10 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         // the type should be compatible with all other types, e.g. A extends B, B
         $compatibleObjectType = $this->resolveCompatibleObjectCandidate($unionType);
+        if ($compatibleObjectType instanceof UnionType) {
+            return new NullableType(new FullyQualified('Doctrine\Common\Collections\Collection'));
+        }
+
         if (! $compatibleObjectType instanceof ObjectType) {
             return null;
         }
@@ -283,10 +262,24 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new PhpParserUnionType($phpParserUnionedTypes);
     }
 
-    private function resolveCompatibleObjectCandidate(UnionType $unionType): ?TypeWithClassName
+    private function isNullable(UnionType $unionType): bool
+    {
+        foreach ($unionType->getTypes() as $type) {
+            if ($type instanceof NullType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function resolveCompatibleObjectCandidate(UnionType $unionType): UnionType|TypeWithClassName|null
     {
         if ($this->doctrineTypeAnalyzer->isDoctrineCollectionWithIterableUnionType($unionType)) {
-            return new ObjectType('Doctrine\Common\Collections\Collection');
+            $objectType = new ObjectType('Doctrine\Common\Collections\Collection');
+            return $this->isNullable($unionType)
+                ? new UnionType([new NullType(), $objectType])
+                : $objectType;
         }
 
         if (! $this->unionTypeAnalyzer->hasTypeClassNameOnly($unionType)) {
