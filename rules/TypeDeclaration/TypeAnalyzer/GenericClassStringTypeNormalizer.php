@@ -51,7 +51,7 @@ final class GenericClassStringTypeNormalizer
             return $this->resolveStringType($value);
         });
 
-        if ($type instanceof UnionType && ! $this->unionTypeAnalyzer->isNullable($type)) {
+        if ($type instanceof UnionType && ! $this->unionTypeAnalyzer->isNullable($type, true)) {
             return $this->resolveClassStringInUnionType($type);
         }
 
