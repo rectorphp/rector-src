@@ -38,21 +38,6 @@ final class UndefinedVariableResolver
     /**
      * @return string[]
      */
-    private function collectVariableNamesFromParam(ClassMethod | Function_ | Closure $node): array
-    {
-        $variableNames = [];
-        foreach ($node->getParams() as $param) {
-            if ($param->var instanceof Variable) {
-                $variableNames[] = (string) $this->nodeNameResolver->getName($param->var);
-            }
-        }
-
-        return $variableNames;
-    }
-
-    /**
-     * @return string[]
-     */
     public function resolve(ClassMethod | Function_ | Closure $node): array
     {
         $undefinedVariables = [];
@@ -100,6 +85,21 @@ final class UndefinedVariableResolver
         });
 
         return array_unique($undefinedVariables);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function collectVariableNamesFromParam(ClassMethod | Function_ | Closure $node): array
+    {
+        $variableNames = [];
+        foreach ($node->getParams() as $param) {
+            if ($param->var instanceof Variable) {
+                $variableNames[] = (string) $this->nodeNameResolver->getName($param->var);
+            }
+        }
+
+        return $variableNames;
     }
 
     private function shouldSkipVariable(Variable $variable): bool
