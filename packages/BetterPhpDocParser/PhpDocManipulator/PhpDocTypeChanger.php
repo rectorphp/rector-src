@@ -6,6 +6,7 @@ namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
@@ -151,7 +152,7 @@ final class PhpDocTypeChanger
 
         $functionLike = $param->getAttribute(AttributeKey::PARENT_NODE);
         $paramVarName = $this->nodeNameResolver->getName($param->var);
-        if ($functionLike instanceof FunctionLike && $varTag->type instanceof GenericTypeNode && is_string(
+        if ($functionLike instanceof ClassMethod && $varTag->type instanceof GenericTypeNode && is_string(
             $paramVarName
         )) {
             $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
