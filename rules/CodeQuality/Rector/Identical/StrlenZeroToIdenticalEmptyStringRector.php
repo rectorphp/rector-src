@@ -82,7 +82,6 @@ CODE_SAMPLE
 
     private function processIdentical(Expr $expr, FuncCall $funcCall): ?Identical
     {
-        $expr = null;
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
         }
