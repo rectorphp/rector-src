@@ -42,7 +42,7 @@ final class UndefinedVariableResolver
     {
         $undefinedVariables = [];
 
-        $variableNamesFromParam = $this->collectVariableNamesFromParam($node);
+        $variableNamesFromParam = $this->collectVariableNamesFromParams($node);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (
             &$undefinedVariables,
             $variableNamesFromParam
@@ -90,7 +90,7 @@ final class UndefinedVariableResolver
     /**
      * @return string[]
      */
-    private function collectVariableNamesFromParam(ClassMethod | Function_ | Closure $node): array
+    private function collectVariableNamesFromParams(ClassMethod | Function_ | Closure $node): array
     {
         $variableNames = [];
         foreach ($node->getParams() as $param) {
