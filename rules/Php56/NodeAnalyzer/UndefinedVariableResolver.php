@@ -42,10 +42,10 @@ final class UndefinedVariableResolver
     {
         $undefinedVariables = [];
 
-        $variableNamesFromParam = $this->collectVariableNamesFromParams($node);
+        $variableNamesFromParams = $this->collectVariableNamesFromParams($node);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (
             &$undefinedVariables,
-            $variableNamesFromParam
+            $variableNamesFromParams
         ): ?int {
             // entering new scope - break!
             if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
@@ -75,7 +75,7 @@ final class UndefinedVariableResolver
                 return null;
             }
 
-            if (in_array($variableName, $variableNamesFromParam, true)) {
+            if (in_array($variableName, $variableNamesFromParams, true)) {
                 return null;
             }
 
