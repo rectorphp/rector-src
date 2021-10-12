@@ -80,13 +80,14 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processIdentical(Expr $value, FuncCall $funcCall): ?Identical
+    private function processIdentical(Expr $expr, FuncCall $funcCall): ?Identical
     {
+        $expr = null;
         if (! $this->isName($funcCall, 'strlen')) {
             return null;
         }
 
-        if (! $this->valueResolver->isValue($value, 0)) {
+        if (! $this->valueResolver->isValue($expr, 0)) {
             return null;
         }
 
