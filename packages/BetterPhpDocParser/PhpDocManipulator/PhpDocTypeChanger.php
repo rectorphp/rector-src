@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
@@ -16,6 +15,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
@@ -27,7 +27,8 @@ final class PhpDocTypeChanger
     public function __construct(
         private StaticTypeMapper $staticTypeMapper,
         private TypeComparator $typeComparator,
-        private ParamPhpDocNodeFactory $paramPhpDocNodeFactory
+        private ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -149,10 +150,14 @@ final class PhpDocTypeChanger
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
 
         $functionLike = $param->getAttribute(AttributeKey::PARENT_NODE);
-        if ($functionLike instanceof FunctionLike && $varTag->type instanceof GenericTypeNode && $param->var instanceof Variable) {
+        $paramVarName = $this->nodeNameResolver->getName($param->var);
+        if ($functionLike instanceof FunctionLike && $varTag->type instanceof GenericTypeNode && is_string(
+            $paramVarName
+        )) {
             $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
             $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTag, $property);
-            $this->changeParamType($phpDocInfo, $paramType, $param, $param->var->name);
+
+            $this->changeParamType($phpDocInfo, $paramType, $param, $paramVarName);
         }
     }
 }
