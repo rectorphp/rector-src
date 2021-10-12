@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -18,6 +20,7 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 
 final class PhpDocTypeChanger
 {
@@ -144,5 +147,12 @@ final class PhpDocTypeChanger
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
+
+        $functionLike = $param->getAttribute(AttributeKey::PARENT_NODE);
+        if ($functionLike instanceof FunctionLike && $varTag->type instanceof GenericTypeNode && $param->var instanceof Variable) {
+            $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
+            $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTag, $property);
+            $this->changeParamType($phpDocInfo, $paramType, $param, $param->var->name);
+        }
     }
 }

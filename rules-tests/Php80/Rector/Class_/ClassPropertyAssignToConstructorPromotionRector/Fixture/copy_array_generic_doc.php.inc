@@ -24,10 +24,12 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class CopyArrayGenericDoc
 {
+    /**
+     * @param array<string, string> $map
+     */
     public function __construct(
         /**
          * Comment
-         * @param array<string, string>
          */
         private array $map
     )
