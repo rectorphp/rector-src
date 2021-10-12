@@ -38,12 +38,29 @@ final class UndefinedVariableResolver
     /**
      * @return string[]
      */
+    private function collectVariableNamesFromParam(ClassMethod | Function_ | Closure $node): array
+    {
+        $variableNames = [];
+        foreach ($node->getParams() as $param) {
+            if ($param->var instanceof Variable) {
+                $variableNames[] = (string) $this->nodeNameResolver->getName($param->var);
+            }
+        }
+
+        return $variableNames;
+    }
+
+    /**
+     * @return string[]
+     */
     public function resolve(ClassMethod | Function_ | Closure $node): array
     {
         $undefinedVariables = [];
 
+        $variableNamesFromParam = $this->collectVariableNamesFromParam($node);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (
-            &$undefinedVariables
+            &$undefinedVariables,
+            $variableNamesFromParam
         ): ?int {
             // entering new scope - break!
             if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
@@ -70,6 +87,10 @@ final class UndefinedVariableResolver
             /** @var Scope $scope */
             $scope = $node->getAttribute(AttributeKey::SCOPE);
             if ($scope->hasVariableType($variableName)->yes()) {
+                return null;
+            }
+
+            if (in_array($variableName, $variableNamesFromParam, true)) {
                 return null;
             }
 
