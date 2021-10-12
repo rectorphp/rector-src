@@ -24,6 +24,9 @@ final class PhpVersionProviderTest extends AbstractTestCase
         $phpVersionProvider->provide();
     }
 
+    /**
+     * @return Iterator<SmartFileInfo[]>
+     */
     public function provideValidConfigData(): Iterator
     {
         yield [new SmartFileInfo(__DIR__ . '/config/valid_explicit_value.php')];
@@ -43,6 +46,9 @@ final class PhpVersionProviderTest extends AbstractTestCase
         $phpVersionProvider->provide();
     }
 
+    /**
+     * @return Iterator<SmartFileInfo[]>
+     */
     public function provideInvalidConfigData(): Iterator
     {
         yield [new SmartFileInfo(__DIR__ . '/config/invalid_input.php')];
