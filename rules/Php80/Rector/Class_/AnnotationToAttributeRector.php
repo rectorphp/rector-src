@@ -259,7 +259,10 @@ CODE_SAMPLE
                     );
 
                     /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
-                    $doctrineTagAndAnnotationToAttributes = $this->addNestedDoctrineTagAndAnnotationToAttribute($doctrineAnnotationTagValueNode, $doctrineTagAndAnnotationToAttributes);
+                    $doctrineTagAndAnnotationToAttributes = $this->addNestedDoctrineTagAndAnnotationToAttribute(
+                        $doctrineAnnotationTagValueNode,
+                        $doctrineTagAndAnnotationToAttributes
+                    );
                 } else {
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                         $doctrineAnnotationTagValueNode,
@@ -283,7 +286,10 @@ CODE_SAMPLE
      * @param DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
      * @return DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
      */
-    private function addNestedDoctrineTagAndAnnotationToAttribute(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $doctrineTagAndAnnotationToAttributes): array
+    private function addNestedDoctrineTagAndAnnotationToAttribute(
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
+        array $doctrineTagAndAnnotationToAttributes
+    ): array
     {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $value) {
