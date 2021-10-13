@@ -16,10 +16,10 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use Rector\BetterPhpDocParser\PhpDoc\Analyzer\DoctrineAnnotationTagValueNodeAnalyzer;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -65,7 +65,8 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
     public function __construct(
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private ConvertedAnnotationToAttributeParentRemover $convertedAnnotationToAttributeParentRemover,
-        private AttrGroupsFactory $attrGroupsFactory
+        private AttrGroupsFactory $attrGroupsFactory,
+        private DoctrineAnnotationTagValueNodeAnalyzer $doctrineAnnotationTagValueNodeAnalyzer
     ) {
     }
 
@@ -245,7 +246,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($this->isNested($doctrineAnnotationTagValueNode)) {
+                if ($this->doctrineAnnotationTagValueNodeAnalyzer->isNested($doctrineAnnotationTagValueNode, $this->annotationsToAttributes)) {
                     $newDoctrineTagValueNode = new DoctrineAnnotationTagValueNode(
                         $doctrineAnnotationTagValueNode->identifierTypeNode
                     );
@@ -288,34 +289,5 @@ CODE_SAMPLE
         });
 
         return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
-    }
-
-    private function isNested(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode): bool
-    {
-        $values = $doctrineAnnotationTagValueNode->getValues();
-        foreach ($values as $value) {
-            // early mark as not nested to avoid false positive
-            if (! $value instanceof CurlyListNode) {
-                return false;
-            }
-
-            $originalValues = $value->getOriginalValues();
-            foreach ($originalValues as $originalValue) {
-                foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-                    // early mark as not nested to avoid false positive
-                    if (! $originalValue instanceof DoctrineAnnotationTagValueNode) {
-                        return false;
-                    }
-
-                    if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
-                        continue;
-                    }
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }
