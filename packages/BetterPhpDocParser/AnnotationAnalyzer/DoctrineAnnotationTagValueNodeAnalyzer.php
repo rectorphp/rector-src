@@ -5,11 +5,20 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\AnnotationAnalyzer;
 
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
+use PHPStan\PhpDocParser\Ast\Node;
 
 final class DoctrineAnnotationTagValueNodeAnalyzer
 {
+    public function resolveDoctrineAnnotationTagValueNode(Node $node): Node|DoctrineAnnotationTagValueNode
+    {
+        return $node instanceof SpacelessPhpDocTagNode && $node->value instanceof DoctrineAnnotationTagValueNode
+            ? $node->value
+            : $node;
+    }
+
     /**
      * @param AnnotationToAttribute[] $annotationToAttributes
      */

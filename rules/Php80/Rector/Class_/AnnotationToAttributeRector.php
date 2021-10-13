@@ -229,11 +229,9 @@ CODE_SAMPLE
             &$doctrineTagAndAnnotationToAttributes,
             $phpDocInfo
         ): ?int {
-            if ($node instanceof SpacelessPhpDocTagNode && $node->value instanceof DoctrineAnnotationTagValueNode) {
-                $doctrineAnnotationTagValueNode = $node->value;
-            } elseif ($node instanceof DoctrineAnnotationTagValueNode) {
-                $doctrineAnnotationTagValueNode = $node;
-            } else {
+            $doctrineAnnotationTagValueNode = $this->doctrineAnnotationTagValueNodeAnalyzer->resolveDoctrineAnnotationTagValueNode($node);
+
+            if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
                 return null;
             }
 
