@@ -244,10 +244,17 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                    $doctrineAnnotationTagValueNode,
-                    $annotationToAttribute
-                );
+                /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
+                $values = $doctrineAnnotationTagValueNode->getValues();
+                foreach ($values as $value) {
+                    $originalValues = $value->getOriginalValues();
+                    foreach ($originalValues as $originalValue) {
+                        $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                            $originalValue,
+                            $annotationToAttribute
+                        );
+                    }
+                }
 
                 $phpDocInfo->markAsChanged();
 
@@ -257,6 +264,8 @@ CODE_SAMPLE
 
             return null;
         });
+
+        dump($doctrineTagAndAnnotationToAttributes);
 
         return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
     }
