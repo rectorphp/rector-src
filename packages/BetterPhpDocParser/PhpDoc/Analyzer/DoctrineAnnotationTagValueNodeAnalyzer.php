@@ -12,8 +12,7 @@ class DoctrineAnnotationTagValueNodeAnalyzer
     public function isNested(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
         array $annotationToAttributes
-    ): bool
-    {
+    ): bool {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $value) {
             // early mark as not nested to avoid false positive
