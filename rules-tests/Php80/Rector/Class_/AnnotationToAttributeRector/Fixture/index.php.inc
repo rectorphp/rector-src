@@ -3,10 +3,10 @@
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\Index;
 
 /**
- * @Entity(uniqueConstraints={@UniqueConstraint(name="ean", columns={"ean"})})
+ * @Entity(indexes={@Index(name="search_idx", columns={"name", "c"})}]
  */
 class ECommerceProduct
 {
@@ -19,10 +19,10 @@ class ECommerceProduct
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\Index;
 
 #[\Doctrine\ORM\Mapping\Entity]
-#[\Doctrine\ORM\Mapping\UniqueConstraint(name: 'ean', columns: ['ean'])]
+#[\Doctrine\ORM\Mapping\Index(name: 'search_idx', columns: ['name', 'c'])]
 class ECommerceProduct
 {
 }

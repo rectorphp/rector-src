@@ -23,6 +23,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new AnnotationToAttribute(Response::class),
                 new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
+                new AnnotationToAttribute('Doctrine\ORM\Mapping\Index'),
                 new AnnotationToAttribute('Doctrine\ORM\Mapping\UniqueConstraint'),
             ]),
         ]]);
