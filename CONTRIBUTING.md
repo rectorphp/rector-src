@@ -2,6 +2,19 @@
 
 Contributions here are more than welcomed! You can contribute to [rector-src](https://github.com/rectorphp/rector-src) repository.
 
+### Preparing local environment
+
+If you have PHP8 and Composer installed locally you can use it straight away
+if `composer check-platform-reqs` results with success.
+
+Alternatively you can use Docker runtime. All you need to do is wrap every command
+with `docker-compose run php`, so commands will be executed inside Docker container.
+
+For example `docker-compose run php composer install` will download PHP dependencies,
+so you can start using all scripts and work with the code.
+
+### Preparing pull request
+
 There 3 rules will highly increase changes to get your PR merged:
 
 - **1 feature per pull-request**
