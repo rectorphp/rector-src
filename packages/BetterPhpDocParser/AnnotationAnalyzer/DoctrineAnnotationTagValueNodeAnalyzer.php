@@ -33,12 +33,12 @@ final class DoctrineAnnotationTagValueNodeAnalyzer
             $originalValues = $value->getOriginalValues();
 
             foreach ($originalValues as $originalValue) {
-                foreach ($annotationToAttributes as $annotationToAttribute) {
-                    // early mark as not nested to avoid false positive
-                    if (! $originalValue instanceof DoctrineAnnotationTagValueNode) {
-                        return false;
-                    }
+                // early mark as not nested to avoid false positive
+                if (! $originalValue instanceof DoctrineAnnotationTagValueNode) {
+                    return false;
+                }
 
+                foreach ($annotationToAttributes as $annotationToAttribute) {
                     if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
                         continue;
                     }
