@@ -306,13 +306,8 @@ CODE_SAMPLE
                     if (! $originalValue instanceof DoctrineAnnotationTagValueNode) {
                         return false;
                     }
-
                     // early mark as not nested to avoid false positive
-                    if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
-                        return false;
-                    }
-
-                    return true;
+                    return $originalValue->hasClassName($annotationToAttribute->getTag());
                 }
             }
         }
