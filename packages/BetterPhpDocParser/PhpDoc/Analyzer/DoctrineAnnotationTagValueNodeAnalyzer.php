@@ -7,7 +7,7 @@ namespace Rector\BetterPhpDocParser\PhpDoc\Analyzer;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 
-class DoctrineAnnotationTagValueNodeAnalyzer
+final class DoctrineAnnotationTagValueNodeAnalyzer
 {
     public function isNested(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
