@@ -246,8 +246,9 @@ CODE_SAMPLE
                 }
 
                 if ($this->isNested($doctrineAnnotationTagValueNode)) {
+                    $newDoctrineTagValueNode =  new DoctrineAnnotationTagValueNode($doctrineAnnotationTagValueNode->identifierTypeNode);
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                        new DoctrineAnnotationTagValueNode($doctrineAnnotationTagValueNode->identifierTypeNode),
+                        $newDoctrineTagValueNode,
                         $annotationToAttribute
                     );
 
@@ -258,14 +259,13 @@ CODE_SAMPLE
                         foreach ($originalValues as $originalValue) {
                             $annotationsToAttributesInNested = $this->annotationsToAttributes;
                             foreach ($annotationsToAttributesInNested as $annotationToAttributeInNested) {
-                                if (! $originalValue->hasClassName($annotationToAttributeInNested->getTag())) {
-                                    continue;
+                                $tag = $annotationToAttributeInNested->getTag();
+                                if ($originalValue->hasClassName($tag)) {
+                                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                                        $originalValue,
+                                        $annotationToAttributeInNested
+                                    );
                                 }
-
-                                $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                                    $originalValue,
-                                    $annotationToAttributeInNested
-                                );
                             }
                         }
                     }
@@ -292,6 +292,7 @@ CODE_SAMPLE
     {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $value) {
+            // early mark as not nested to avoid false positive
             if (! $value instanceof CurlyListNode) {
                 return false;
             }
@@ -299,12 +300,14 @@ CODE_SAMPLE
             $originalValues = $value->getOriginalValues();
             foreach ($originalValues as $originalValue) {
                 foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+                    // early mark as not nested to avoid false positive
                     if (! $originalValue instanceof DoctrineAnnotationTagValueNode) {
                         return false;
                     }
 
+                    // early mark as not nested to avoid false positive
                     if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
-                        continue;
+                        return false;
                     }
 
                     return true;
