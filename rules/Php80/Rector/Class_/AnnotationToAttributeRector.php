@@ -289,18 +289,29 @@ CODE_SAMPLE
         foreach ($values as $value) {
             $originalValues = $value->getOriginalValues();
             foreach ($originalValues as $originalValue) {
-                foreach ($this->annotationsToAttributes as $annotationsToAttribute) {
-                    $tag = $annotationsToAttribute->getTag();
-                    if (! $originalValue->hasClassName($tag)) {
-                        continue;
-                    }
-
-                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                        $originalValue,
-                        $annotationsToAttribute
-                    );
-                }
+                $doctrineTagAndAnnotationToAttributes = $this->collectDoctrineTagAndAnnotationToAttributes($originalValue, $doctrineTagAndAnnotationToAttributes);
             }
+        }
+
+        return $doctrineTagAndAnnotationToAttributes;
+    }
+
+    /**
+     * @param DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
+     * @return DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
+     */
+    private function collectDoctrineTagAndAnnotationToAttributes(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $doctrineTagAndAnnotationToAttributes): array
+    {
+        foreach ($this->annotationsToAttributes as $annotationsToAttribute) {
+            $tag = $annotationsToAttribute->getTag();
+            if (! $doctrineAnnotationTagValueNode->hasClassName($tag)) {
+                continue;
+            }
+
+            $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                $doctrineAnnotationTagValueNode,
+                $annotationsToAttribute
+            );
         }
 
         return $doctrineTagAndAnnotationToAttributes;
