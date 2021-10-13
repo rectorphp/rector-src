@@ -2,7 +2,7 @@
 
 Contributions here are more than welcomed! You can contribute to [rector-src](https://github.com/rectorphp/rector-src) repository.
 
-### Preparing local environment
+### Preparing Local Environment
 
 If you have PHP8 and Composer installed locally you can use it straight away if `composer check-platform-reqs` results with success.
 
