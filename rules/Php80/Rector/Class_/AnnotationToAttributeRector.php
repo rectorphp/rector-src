@@ -227,10 +227,7 @@ CODE_SAMPLE
 
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (
             PhpDocParserAstNode $node
-        ) use (
-            &$doctrineTagAndAnnotationToAttributes,
-            $phpDocInfo
-        ): ?int {
+        ) use (&$doctrineTagAndAnnotationToAttributes, $phpDocInfo): ?int {
             $docNode = $this->doctrineAnnotationTagValueNodeAnalyzer->resolveDoctrineAnnotationTagValueNode($node);
 
             if (! $docNode instanceof DoctrineAnnotationTagValueNode) {
