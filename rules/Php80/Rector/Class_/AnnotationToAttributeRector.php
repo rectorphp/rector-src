@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
+use PHPStan\PhpDocParser\Ast\Node as PhpDocParserAstNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\AnnotationAnalyzer\DoctrineAnnotationTagValueNodeAnalyzer;
@@ -32,7 +33,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\SimplePhpDocParser\PhpDocNodeTraverser;
 use Webmozart\Assert\Assert;
-use PHPStan\PhpDocParser\Ast\Node as PhpDocParserAstNode;
 
 /**
  * @changelog https://wiki.php.net/rfc/attributes_v2
@@ -225,7 +225,9 @@ CODE_SAMPLE
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
 
-        $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (PhpDocParserAstNode $node) use (
+        $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (
+            PhpDocParserAstNode $node
+        ) use (
             &$doctrineTagAndAnnotationToAttributes,
             $phpDocInfo
         ): ?int {
