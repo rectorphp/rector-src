@@ -259,22 +259,7 @@ CODE_SAMPLE
                     );
 
                     /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
-                    $values = $doctrineAnnotationTagValueNode->getValues();
-                    foreach ($values as $value) {
-                        $originalValues = $value->getOriginalValues();
-                        foreach ($originalValues as $originalValue) {
-                            $annotationsToAttributesInNested = $this->annotationsToAttributes;
-                            foreach ($annotationsToAttributesInNested as $annotationToAttributeInNested) {
-                                $tag = $annotationToAttributeInNested->getTag();
-                                if ($originalValue->hasClassName($tag)) {
-                                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                                        $originalValue,
-                                        $annotationToAttributeInNested
-                                    );
-                                }
-                            }
-                        }
-                    }
+                    $doctrineTagAndAnnotationToAttributes = $this->addNestedDoctrineTagAndAnnotationToAttribute($doctrineAnnotationTagValueNode, $doctrineTagAndAnnotationToAttributes);
                 } else {
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                         $doctrineAnnotationTagValueNode,
@@ -292,5 +277,33 @@ CODE_SAMPLE
         });
 
         return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
+    }
+
+    /**
+     * @param DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
+     * @return DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
+     */
+    private function addNestedDoctrineTagAndAnnotationToAttribute(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $doctrineTagAndAnnotationToAttributes): array
+    {
+        $values = $doctrineAnnotationTagValueNode->getValues();
+        foreach ($values as $value) {
+            $originalValues = $value->getOriginalValues();
+            foreach ($originalValues as $originalValue) {
+                $annotationsToAttributesInNested = $this->annotationsToAttributes;
+                foreach ($annotationsToAttributesInNested as $annotationToAttributeInNested) {
+                    $tag = $annotationToAttributeInNested->getTag();
+                    if (! $originalValue->hasClassName($tag)) {
+                        continue;
+                    }
+
+                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                        $originalValue,
+                        $annotationToAttributeInNested
+                    );
+                }
+            }
+        }
+
+        return $doctrineTagAndAnnotationToAttributes;
     }
 }
