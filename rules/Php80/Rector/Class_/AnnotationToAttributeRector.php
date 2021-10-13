@@ -307,15 +307,15 @@ CODE_SAMPLE
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
         array $doctrineTagAndAnnotationToAttributes
     ): array {
-        foreach ($this->annotationsToAttributes as $annotationsToAttribute) {
-            $tag = $annotationsToAttribute->getTag();
+        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+            $tag = $annotationToAttribute->getTag();
             if (! $doctrineAnnotationTagValueNode->hasClassName($tag)) {
                 continue;
             }
 
             $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                 $doctrineAnnotationTagValueNode,
-                $annotationsToAttribute
+                $annotationToAttribute
             );
         }
 
