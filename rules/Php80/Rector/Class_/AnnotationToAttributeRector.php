@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use PhpCsFixer\RuleSet\Sets\DoctrineAnnotationSet;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -19,6 +20,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -244,22 +246,37 @@ CODE_SAMPLE
                     continue;
                 }
 
-                /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
-                $values = $doctrineAnnotationTagValueNode->getValues();
-                foreach ($values as $value) {
-                    $originalValues = $value->getOriginalValues();
-                    foreach ($originalValues as $originalValue) {
-                        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-                            if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
-                                continue;
-                            }
+                if ($this->isNested($doctrineAnnotationTagValueNode)) {
+                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                        new DoctrineAnnotationTagValueNode(
+                            $doctrineAnnotationTagValueNode->identifierTypeNode
+                        ),
+                        $annotationToAttribute
+                    );
 
-                            $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                                $originalValue,
-                                $annotationToAttribute
-                            );
+                    /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
+                    $values = $doctrineAnnotationTagValueNode->getValues();
+                    foreach ($values as $value) {
+                        $originalValues = $value->getOriginalValues();
+                        foreach ($originalValues as $originalValue) {
+                            $annotationsToAttributesInNested = $this->annotationsToAttributes;
+                            foreach ($annotationsToAttributesInNested as $annotationsToAttributeInNested) {
+                                if (! $originalValue->hasClassName($annotationsToAttributeInNested->getTag())) {
+                                    continue;
+                                }
+
+                                $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                                    $originalValue,
+                                    $annotationsToAttributeInNested
+                                );
+                            }
                         }
                     }
+                } else {
+                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                        $doctrineAnnotationTagValueNode,
+                        $annotationToAttribute
+                    );
                 }
 
                 $phpDocInfo->markAsChanged();
@@ -271,8 +288,33 @@ CODE_SAMPLE
             return null;
         });
 
-        dump($doctrineTagAndAnnotationToAttributes);
-
         return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
+    }
+
+    private function isNested(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode): bool
+    {
+        $values = $doctrineAnnotationTagValueNode->getValues();
+        foreach ($values as $value) {
+            if (! $value instanceof CurlyListNode) {
+                return false;
+            }
+
+            $originalValues = $value->getOriginalValues();
+            foreach ($originalValues as $originalValue) {
+                foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+                    if (! $originalValue instanceof DoctrineAnnotationTagValueNode) {
+                        return false;
+                    }
+
+                    if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
+                        continue;
+                    }
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
