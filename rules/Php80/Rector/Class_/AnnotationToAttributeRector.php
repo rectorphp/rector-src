@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
-use PHPStan\PhpDocParser\Ast\Node as PhpDocParserAstNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\AnnotationAnalyzer\DoctrineAnnotationTagValueNodeAnalyzer;
@@ -226,7 +225,7 @@ CODE_SAMPLE
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
 
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (
-            PhpDocParserAstNode $node
+            DocNode $node
         ) use (&$doctrineTagAndAnnotationToAttributes, $phpDocInfo): ?int {
             $docNode = $this->doctrineAnnotationTagValueNodeAnalyzer->resolveDoctrineAnnotationTagValueNode($node);
 
