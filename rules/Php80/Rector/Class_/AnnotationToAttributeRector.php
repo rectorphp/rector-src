@@ -228,43 +228,39 @@ CODE_SAMPLE
             &$doctrineTagAndAnnotationToAttributes,
             $phpDocInfo
         ): ?int {
-            $doctrineAnnotationTagValueNode = $this->doctrineAnnotationTagValueNodeAnalyzer->resolveDoctrineAnnotationTagValueNode(
-                $node
-            );
+            $docNode = $this->doctrineAnnotationTagValueNodeAnalyzer->resolveDoctrineAnnotationTagValueNode($node);
 
-            if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
+            if (! $docNode instanceof DoctrineAnnotationTagValueNode) {
                 return null;
             }
 
-            if ($doctrineAnnotationTagValueNode->hasClassNames(self::SKIP_UNWRAP_ANNOTATIONS)) {
+            if ($docNode->hasClassNames(self::SKIP_UNWRAP_ANNOTATIONS)) {
                 return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
-                if (! $doctrineAnnotationTagValueNode->hasClassName($annotationToAttribute->getTag())) {
+                if (! $docNode->hasClassName($annotationToAttribute->getTag())) {
                     continue;
                 }
 
                 if ($this->doctrineAnnotationTagValueNodeAnalyzer->isNested(
-                    $doctrineAnnotationTagValueNode,
+                    $docNode,
                     $this->annotationsToAttributes
                 )) {
-                    $newDoctrineTagValueNode = new DoctrineAnnotationTagValueNode(
-                        $doctrineAnnotationTagValueNode->identifierTypeNode
-                    );
+                    $newDoctrineTagValueNode = new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode);
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                         $newDoctrineTagValueNode,
                         $annotationToAttribute
                     );
 
-                    /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
+                    /** @var DoctrineAnnotationTagValueNode $docNode */
                     $doctrineTagAndAnnotationToAttributes = $this->addNestedDoctrineTagAndAnnotationToAttribute(
-                        $doctrineAnnotationTagValueNode,
+                        $docNode,
                         $doctrineTagAndAnnotationToAttributes
                     );
                 } else {
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                        $doctrineAnnotationTagValueNode,
+                        $docNode,
                         $annotationToAttribute
                     );
                 }
