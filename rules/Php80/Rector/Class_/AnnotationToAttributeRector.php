@@ -246,7 +246,10 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($this->doctrineAnnotationTagValueNodeAnalyzer->isNested($doctrineAnnotationTagValueNode, $this->annotationsToAttributes)) {
+                if ($this->doctrineAnnotationTagValueNodeAnalyzer->isNested(
+                    $doctrineAnnotationTagValueNode,
+                    $this->annotationsToAttributes
+                )) {
                     $newDoctrineTagValueNode = new DoctrineAnnotationTagValueNode(
                         $doctrineAnnotationTagValueNode->identifierTypeNode
                     );

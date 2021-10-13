@@ -9,7 +9,10 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNod
 
 class DoctrineAnnotationTagValueNodeAnalyzer
 {
-    public function isNested(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $annotationToAttributes): bool
+    public function isNested(
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
+        array $annotationToAttributes
+    ): bool
     {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $value) {
