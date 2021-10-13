@@ -16,7 +16,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use Rector\BetterPhpDocParser\PhpDoc\Analyzer\DoctrineAnnotationTagValueNodeAnalyzer;
+use Rector\BetterPhpDocParser\AnnotationAnalyzer\DoctrineAnnotationTagValueNodeAnalyzer;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
