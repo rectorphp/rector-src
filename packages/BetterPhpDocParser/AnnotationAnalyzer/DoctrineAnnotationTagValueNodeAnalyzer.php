@@ -38,14 +38,28 @@ final class DoctrineAnnotationTagValueNodeAnalyzer
                     return false;
                 }
 
-                foreach ($annotationToAttributes as $annotationToAttribute) {
-                    if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
-                        continue;
-                    }
-
-                    return true;
+                if (! $this->hasAnnotationToAttribute($originalValue, $annotationToAttributes)) {
+                    continue;
                 }
+
+                return true;
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param AnnotationToAttribute[] $annotationToAttributes
+     */
+    private function hasAnnotationToAttribute(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $annotationToAttributes): bool
+    {
+        foreach ($annotationToAttributes as $annotationToAttribute) {
+            if (! $doctrineAnnotationTagValueNode->hasClassName($annotationToAttribute->getTag())) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;

@@ -523,7 +523,3 @@ parameters:
         -   # possibly bug in phpstan rule in deep foreach
             message: '#foreach\(\), while\(\), for\(\) or if\(\) cannot contain a complex expression\. Extract it to a new variable on a line before#'
             path: rules/Php80/Rector/Class_/AnnotationToAttributeRector.php
-
-        -
-            message: '#Cognitive complexity for "Rector\\BetterPhpDocParser\\AnnotationAnalyzer\\DoctrineAnnotationTagValueNodeAnalyzer\:\:isNested\(\)" is 11, keep it under 9#'
-            path: packages/BetterPhpDocParser/AnnotationAnalyzer/DoctrineAnnotationTagValueNodeAnalyzer.php
