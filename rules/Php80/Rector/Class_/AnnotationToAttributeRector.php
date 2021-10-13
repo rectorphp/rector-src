@@ -307,8 +307,11 @@ CODE_SAMPLE
                         return false;
                     }
 
-                    // early mark as not nested to avoid false positive
-                    return $originalValue->hasClassName($annotationToAttribute->getTag());
+                    if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
+                        continue;
+                    }
+
+                    return true;
                 }
             }
         }
