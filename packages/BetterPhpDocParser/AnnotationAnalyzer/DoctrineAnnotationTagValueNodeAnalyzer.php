@@ -18,9 +18,7 @@ final class DoctrineAnnotationTagValueNodeAnalyzer
         array $annotationToAttributes
     ): bool {
         $values = $doctrineAnnotationTagValueNode->getValues();
-        $values = array_filter($values, function ($v, $k) {
-            return $v instanceof CurlyListNode;
-        }, ARRAY_FILTER_USE_BOTH);
+        $values = array_filter($values, fn ($v, $k): bool => $v instanceof CurlyListNode, ARRAY_FILTER_USE_BOTH);
 
         foreach ($values as $value) {
             $originalValues = $value->getOriginalValues();
