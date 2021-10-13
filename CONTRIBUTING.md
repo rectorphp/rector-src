@@ -6,8 +6,8 @@ Contributions here are more than welcomed! You can contribute to [rector-src](ht
 
 If you have PHP 8 and Composer installed locally you can use it straight away. You can validate your environment with:
 
-   ```bash
-   composer check-platform-reqs
+```bash
+composer check-platform-reqs
 
 Alternatively you can use Docker runtime. All you need to do is wrap every command with `docker-compose run php`, so commands will be executed inside Docker container.
 
