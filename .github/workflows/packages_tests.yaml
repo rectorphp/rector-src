@@ -24,9 +24,7 @@ jobs:
                     # must be repository name, e.g. https://github.com/rectorphp/rector-nette
                     - rectorphp/rector-symfony
                     - rectorphp/rector-phpunit
-                    # temporary disable "rectorphp/rector-doctrine" so when it fixed, we need to
-                    # update "rectorphp/rector-doctrine" first, then re-enable it to avoid error in packages_tests CI
-                    # - rectorphp/rector-doctrine
+                    - rectorphp/rector-doctrine
                     - rectorphp/rector-laravel
                     - rectorphp/rector-nette
                     - rectorphp/rector-cakephp
@@ -57,3 +55,6 @@ jobs:
             -   run: composer install --ansi
 
             -   run: vendor/bin/phpunit
+                # temporary disable "rectorphp/rector-doctrine" so when it fixed, we need to
+                # update "rectorphp/rector-doctrine" first, then re-enable it to avoid error in packages_tests CI
+                if: ${{ matrix.repository_name != 'rectorphp/rector-doctrine' }}
