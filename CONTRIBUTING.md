@@ -12,7 +12,7 @@ For example `docker-compose run php composer install` will download PHP dependen
 
 ### Preparing Pull Request
 
-There 3 rules will highly increase changes to get your PR merged:
+There 3 rules will highly increase chance to get your PR merged:
 
 - **1 feature per pull-request**
 - **new features need tests**
