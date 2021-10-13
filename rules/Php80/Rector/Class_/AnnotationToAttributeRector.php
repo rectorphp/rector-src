@@ -249,14 +249,14 @@ CODE_SAMPLE
                 foreach ($values as $value) {
                     $originalValues = $value->getOriginalValues();
                     foreach ($originalValues as $originalValue) {
-                        foreach ($this->annotationsToAttributes as $annotationToAttribute2) {
-                            if (! $originalValue->hasClassName($annotationToAttribute2->getTag())) {
+                        foreach ($this->annotationsToAttributes as $annotationToAttribute) {
+                            if (! $originalValue->hasClassName($annotationToAttribute->getTag())) {
                                 continue;
                             }
 
                             $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                                 $originalValue,
-                                $annotationToAttribute2
+                                $annotationToAttribute
                             );
                         }
                     }
