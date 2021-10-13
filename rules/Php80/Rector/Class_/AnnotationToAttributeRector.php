@@ -289,8 +289,7 @@ CODE_SAMPLE
     private function addNestedDoctrineTagAndAnnotationToAttribute(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
         array $doctrineTagAndAnnotationToAttributes
-    ): array
-    {
+    ): array {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $value) {
             $originalValues = $value->getOriginalValues();
