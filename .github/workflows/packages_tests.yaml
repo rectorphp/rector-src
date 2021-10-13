@@ -55,6 +55,3 @@ jobs:
             -   run: composer install --ansi
 
             -   run: vendor/bin/phpunit
-                # temporary disable "rectorphp/rector-doctrine" so when it fixed, we need to
-                # update "rectorphp/rector-doctrine" first, then re-enable it to avoid error in packages_tests CI
-                # if: ${{ matrix.repository_name != 'rectorphp/rector-doctrine' }}
