@@ -10,7 +10,7 @@ Alternatively you can use Docker runtime. All you need to do is wrap every comma
 
 For example `docker-compose run php composer install` will download PHP dependencies, so you can start using all scripts and work with the code.
 
-### Preparing pull request
+### Preparing Pull Request
 
 There 3 rules will highly increase changes to get your PR merged:
 
