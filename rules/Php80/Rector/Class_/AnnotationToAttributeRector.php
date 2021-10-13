@@ -289,16 +289,15 @@ CODE_SAMPLE
         foreach ($values as $value) {
             $originalValues = $value->getOriginalValues();
             foreach ($originalValues as $originalValue) {
-                $annotationsToAttributesInNested = $this->annotationsToAttributes;
-                foreach ($annotationsToAttributesInNested as $annotationToAttributeInNested) {
-                    $tag = $annotationToAttributeInNested->getTag();
+                foreach ($this->annotationsToAttributes as $annotationsToAttribute) {
+                    $tag = $annotationsToAttribute->getTag();
                     if (! $originalValue->hasClassName($tag)) {
                         continue;
                     }
 
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                         $originalValue,
-                        $annotationToAttributeInNested
+                        $annotationsToAttribute
                     );
                 }
             }
