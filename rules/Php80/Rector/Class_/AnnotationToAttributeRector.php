@@ -246,7 +246,9 @@ CODE_SAMPLE
                 }
 
                 if ($this->isNested($doctrineAnnotationTagValueNode)) {
-                    $newDoctrineTagValueNode =  new DoctrineAnnotationTagValueNode($doctrineAnnotationTagValueNode->identifierTypeNode);
+                    $newDoctrineTagValueNode = new DoctrineAnnotationTagValueNode(
+                        $doctrineAnnotationTagValueNode->identifierTypeNode
+                    );
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                         $newDoctrineTagValueNode,
                         $annotationToAttribute
