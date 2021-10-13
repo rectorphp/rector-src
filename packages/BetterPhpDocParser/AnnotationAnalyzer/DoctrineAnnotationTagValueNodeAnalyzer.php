@@ -55,8 +55,7 @@ final class DoctrineAnnotationTagValueNodeAnalyzer
     private function hasAnnotationToAttribute(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
         array $annotationToAttributes
-    ): bool
-    {
+    ): bool {
         foreach ($annotationToAttributes as $annotationToAttribute) {
             if (! $doctrineAnnotationTagValueNode->hasClassName($annotationToAttribute->getTag())) {
                 continue;
