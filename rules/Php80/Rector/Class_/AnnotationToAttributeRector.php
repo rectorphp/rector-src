@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
-use PhpCsFixer\RuleSet\Sets\DoctrineAnnotationSet;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -248,9 +247,7 @@ CODE_SAMPLE
 
                 if ($this->isNested($doctrineAnnotationTagValueNode)) {
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                        new DoctrineAnnotationTagValueNode(
-                            $doctrineAnnotationTagValueNode->identifierTypeNode
-                        ),
+                        new DoctrineAnnotationTagValueNode($doctrineAnnotationTagValueNode->identifierTypeNode),
                         $annotationToAttribute
                     );
 
