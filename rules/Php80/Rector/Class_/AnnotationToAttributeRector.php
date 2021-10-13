@@ -289,7 +289,10 @@ CODE_SAMPLE
         foreach ($values as $value) {
             $originalValues = $value->getOriginalValues();
             foreach ($originalValues as $originalValue) {
-                $doctrineTagAndAnnotationToAttributes = $this->collectDoctrineTagAndAnnotationToAttributes($originalValue, $doctrineTagAndAnnotationToAttributes);
+                $doctrineTagAndAnnotationToAttributes = $this->collectDoctrineTagAndAnnotationToAttributes(
+                    $originalValue,
+                    $doctrineTagAndAnnotationToAttributes
+                );
             }
         }
 
@@ -300,7 +303,10 @@ CODE_SAMPLE
      * @param DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
      * @return DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
      */
-    private function collectDoctrineTagAndAnnotationToAttributes(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $doctrineTagAndAnnotationToAttributes): array
+    private function collectDoctrineTagAndAnnotationToAttributes(
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
+        array $doctrineTagAndAnnotationToAttributes
+    ): array
     {
         foreach ($this->annotationsToAttributes as $annotationsToAttribute) {
             $tag = $annotationsToAttribute->getTag();
