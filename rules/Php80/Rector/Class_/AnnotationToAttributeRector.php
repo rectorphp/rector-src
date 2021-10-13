@@ -306,8 +306,7 @@ CODE_SAMPLE
     private function collectDoctrineTagAndAnnotationToAttributes(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
         array $doctrineTagAndAnnotationToAttributes
-    ): array
-    {
+    ): array {
         foreach ($this->annotationsToAttributes as $annotationsToAttribute) {
             $tag = $annotationsToAttribute->getTag();
             if (! $doctrineAnnotationTagValueNode->hasClassName($tag)) {
