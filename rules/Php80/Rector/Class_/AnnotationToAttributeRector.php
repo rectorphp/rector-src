@@ -257,14 +257,14 @@ CODE_SAMPLE
                         $originalValues = $value->getOriginalValues();
                         foreach ($originalValues as $originalValue) {
                             $annotationsToAttributesInNested = $this->annotationsToAttributes;
-                            foreach ($annotationsToAttributesInNested as $annotationsToAttributeInNested) {
-                                if (! $originalValue->hasClassName($annotationsToAttributeInNested->getTag())) {
+                            foreach ($annotationsToAttributesInNested as $annotationToAttributeInNested) {
+                                if (! $originalValue->hasClassName($annotationToAttributeInNested->getTag())) {
                                     continue;
                                 }
 
                                 $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                                     $originalValue,
-                                    $annotationsToAttributeInNested
+                                    $annotationToAttributeInNested
                                 );
                             }
                         }
