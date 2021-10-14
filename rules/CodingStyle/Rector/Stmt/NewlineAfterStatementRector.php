@@ -184,6 +184,6 @@ CODE_SAMPLE
 
     private function shouldSkip(Node $nextNode): bool
     {
-        return $nextNode instanceof Else_ || $nextNode instanceof ElseIf_ || $nextNode instanceof Catch_ || $nextNode instanceof Finally_;
+        return $nextNode instanceof Else_ || $nextNode instanceof ElseIf_ || $nextNode instanceof Catch_ || $nextNode instanceof Finally_ || ! $nextNode instanceof Stmt;
     }
 }

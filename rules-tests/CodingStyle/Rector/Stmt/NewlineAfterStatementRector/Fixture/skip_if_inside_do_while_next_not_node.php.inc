@@ -10,6 +10,6 @@ final class SkipInsideDoWhileNextNotNode
             if ($foo) {
 
             }
-        } while ($foo);
+        } while ($this->foo);
     }
 }
