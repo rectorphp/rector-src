@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Stmt\NewlineAfterStatementRector\Fixture;
 
-final class SkipInsideDoWhileNextNotNode
+final class SkipInsideDoWhileNextNotStmt
 {
     public function run($foo)
     {
