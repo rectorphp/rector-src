@@ -106,26 +106,30 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentAssign = $this->betterNodeFinder->findParentType($node, Assign::class);
-        if ($parentAssign instanceof Assign && $this->betterNodeFinder->findFirst(
-            $parentAssign->var,
-            fn (Node $subNode): bool => $subNode === $node
-        )) {
-            return null;
-        }
-
-        $varType = $this->nodeTypeResolver->getType($node->var);
-        if ($varType instanceof ThisType) {
+        if ($this->shouldSkipPropertyFetch($node)) {
             return null;
         }
 
         return $this->refactorPropertyFetch($node);
     }
 
+    private function shouldSkipPropertyFetch(PropertyFetch $propertyFetch): bool
+    {
+        $parentAssign = $this->betterNodeFinder->findParentType($propertyFetch, Assign::class);
+        if (! $parentAssign instanceof Assign) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst(
+            $parentAssign->var,
+            fn (Node $subNode): bool => $subNode === $propertyFetch
+        );
+    }
+
     private function refactorPropertyFetch(PropertyFetch $propertyFetch): MethodCall|null
     {
         $callerType = $this->getType($propertyFetch->var);
-        if (! $callerType instanceof TypeWithClassName) {
+        if (! $callerType instanceof ObjectType) {
             return null;
         }
 
