@@ -107,7 +107,10 @@ CODE_SAMPLE
         }
 
         $parentAssign = $this->betterNodeFinder->findParentType($node, Assign::class);
-        if ($parentAssign instanceof Assign && $this->betterNodeFinder->findFirst($parentAssign->var, fn (Node $subNode): bool => $subNode === $node)) {
+        if ($parentAssign instanceof Assign && $this->betterNodeFinder->findFirst(
+            $parentAssign->var,
+            fn (Node $subNode): bool => $subNode === $node
+        )) {
             return null;
         }
 
