@@ -180,6 +180,10 @@ CODE_SAMPLE
 
     private function shouldSkip(?Node $nextNode): bool
     {
-        return $nextNode instanceof Else_ || $nextNode instanceof ElseIf_ || $nextNode instanceof Catch_ || $nextNode instanceof Finally_ || ! $nextNode instanceof Stmt;
+        if (! $nextNode instanceof Stmt) {
+            return true;
+        }
+
+        return in_array($nextNode::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true);
     }
 }
