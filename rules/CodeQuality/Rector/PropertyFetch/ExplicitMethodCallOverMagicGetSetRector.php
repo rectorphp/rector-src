@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ThisType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -102,6 +103,16 @@ CODE_SAMPLE
                 return $this->refactorMagicSet($node->expr, $node->var);
             }
 
+            return null;
+        }
+
+        $parentAssign = $this->betterNodeFinder->findParentType($node, Assign::class);
+        if ($parentAssign instanceof Assign && $this->betterNodeFinder->findFirst($parentAssign->var, fn (Node $subNode): bool => $subNode === $node)) {
+            return null;
+        }
+
+        $varType = $this->nodeTypeResolver->getType($node->var);
+        if ($varType instanceof ThisType) {
             return null;
         }
 
