@@ -4,26 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector;
 
-use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ArgumentAdderRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
-    public function test(SmartFileInfo $fileInfo): void
+    public function provideFixtureDirectory(): string
     {
-        $this->doTestFileInfo($fileInfo);
-    }
-
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
-    public function provideData(): Iterator
-    {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return __DIR__ . '/Fixture';
     }
 
     public function provideConfigFilePath(): string

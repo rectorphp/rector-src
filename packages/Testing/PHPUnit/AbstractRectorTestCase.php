@@ -42,6 +42,22 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     private ApplicationFileProcessor $applicationFileProcessor;
 
+    /**
+     * @dataProvider provideData()
+     */
+    public function test(SmartFileInfo $fileInfo): void
+    {
+        $this->doTestFileInfo($fileInfo);
+    }
+
+    /**
+     * @return Iterator<SmartFileInfo>
+     */
+    public function provideData(): Iterator
+    {
+        return $this->yieldFilesFromDirectory($this->provideFixtureDirectory());
+    }
+
     protected function setUp(): void
     {
         // speed up
