@@ -10,7 +10,8 @@ class SkipDoubleEscapeMoreQuantifiers
         preg_match('#^\-\s+[0-9]+$#', $string);
         preg_match('#^\-\s{1,10}[0-9]+$#', $string);
         preg_match('#^\-\s{1,}[0-9]+$#', $string);
-        preg_match('#^\-\s(a)[0-9]+$#', $string);
+        preg_match('#^\-\s(ab)*[0-9]+$#', $string);
+        preg_match('#^\-\s(ab){1,10}[0-9]+$#', $string);
     }
 }
 
