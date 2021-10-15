@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php73\Rector\FuncCall\RegexDashEscapeRector\Fixture;
 
-class SkipDash
+class SkipDashOutsideBracket
 {
     public function run(string $string)
     {
