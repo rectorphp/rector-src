@@ -14,7 +14,7 @@ final class Fixture
 {
     public function check(DoctrineAnnotationTagValueNodeAnalyzer $analyzer, PhpDocNode $docNode)
     {
-        $doctrineAnnotationTagValueNode = $analyzer->resolveDoctrineAnnotationTagValueNode($node);
+        $doctrineAnnotationTagValueNode = $analyzer->resolveDoctrineAnnotationTagValueNode($docNode);
 
         if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return null;
