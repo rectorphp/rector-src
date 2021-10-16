@@ -10,7 +10,7 @@ use PHPStan\PhpDocParser\Ast\Node as PhpDocNode;
 use Rector\BetterPhpDocParser\AnnotationAnalyzer\DoctrineAnnotationTagValueNodeAnalyzer;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 
-final class Fixture
+final class SkipUsedFromParam
 {
     public function check(DoctrineAnnotationTagValueNodeAnalyzer $analyzer, PhpDocNode $docNode)
     {
