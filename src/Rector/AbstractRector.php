@@ -138,7 +138,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     private InfiniteLoopValidator $infiniteLoopValidator;
 
     /**
-     * @var array<string, RectifiedNode>
+     * @var array<string, RectifiedNode|null>
      */
     private static array $previousFileWithNodes = [];
 
@@ -520,6 +520,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
+        // re-set to refill next
+        self::$previousFileWithNodes[$realPath] = null;
         return $rectifiedNode;
     }
 
