@@ -38,6 +38,7 @@ use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Validation\InfiniteLoopValidator;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\RectifiedNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -137,7 +138,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     private InfiniteLoopValidator $infiniteLoopValidator;
 
     /**
-     * @var array<string, array<RectorInterface, Node>>
+     * @var array<string, RectifiedNode[]>
      */
     private static array $previousFileWithNodes = [];
 
@@ -233,22 +234,18 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         if ($node instanceof Stmt && ! $node instanceof ClassLike) {
             $currentFile = $this->currentFileProvider->getFile();
             if ($currentFile instanceof File) {
-                $realPath = $currentFile->getSmartFileInfo()
-                    ->getRealPath();
+                $smartFileInfo = $currentFile->getSmartFileInfo();
+                $realPath = $smartFileInfo->getRealPath();
                 $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
                 if (! $phpDocInfo->hasChanged()) {
                     if (! isset(self::$previousFileWithNodes[$realPath])) {
-                        // ensure clean others
-                        self::$previousFileWithNodes = [];
-
-                        self::$previousFileWithNodes[$realPath][] = [
-                            'rectorClass' => static::class,
-                            'node' => $node,
-                        ];
+                        self::$previousFileWithNodes[$realPath][] = new RectifiedNode(static::class, $node);
                     } else {
-                        foreach (self::$previousFileWithNodes[$realPath] as $prev) {
-                            if ($prev['rectorClass'] === static::class && $prev['node'] === $node) {
+                        /** @var RectifiedNode[] $rectifiedNodes  */
+                        $rectifiedNodes = self::$previousFileWithNodes[$realPath];
+                        foreach ($rectifiedNodes as $prev) {
+                            if ($prev->getRectorClass() === static::class && $prev->getNode() === $node) {
                                 return null;
                             }
                         }
