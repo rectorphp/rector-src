@@ -231,8 +231,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
-        $node = $this->verifyRectified($node);
-        if (! $node instanceof Node) {
+        $rectifiedNode = $this->verifyRectified($node);
+        if ($rectifiedNode instanceof RectifiedNode) {
             return null;
         }
 
@@ -295,44 +295,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         // if Stmt ("$value;") was replaced by Expr ("$value"), add Expression (the ending ";") to prevent breaking the code
         if ($originalNode instanceof Stmt && $node instanceof Expr) {
             $node = new Expression($node);
-        }
-
-        return $node;
-    }
-
-    private function verifyRectified(Node $node): ?Node
-    {
-        if (! $node instanceof Stmt) {
-            return $node;
-        }
-
-        if ($node instanceof ClassLike) {
-            return $node;
-        }
-
-        $currentFile = $this->currentFileProvider->getFile();
-        if (! $currentFile instanceof File) {
-            return $node;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        if ($phpDocInfo->hasChanged()) {
-            return $node;
-        }
-
-        $smartFileInfo = $currentFile->getSmartFileInfo();
-        $realPath = $smartFileInfo->getRealPath();
-
-        if (! isset(self::$previousFileWithNodes[$realPath])) {
-            static::$previousFileWithNodes[$realPath] = new RectifiedNode(static::class, $node);
-            return $node;
-        }
-
-        /** @var RectifiedNode $rectifiedNode  */
-        $rectifiedNode = self::$previousFileWithNodes[$realPath];
-        if ($rectifiedNode->getRectorClass() === static::class && $rectifiedNode->getNode() === $node) {
-            return null;
         }
 
         return $node;
@@ -517,6 +479,48 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function removeNodes(array $nodes): void
     {
         $this->nodeRemover->removeNodes($nodes);
+    }
+
+    private function verifyRectified(Node $node): ?RectifiedNode
+    {
+        if (! $node instanceof Stmt) {
+            return null;
+        }
+
+        if ($node instanceof ClassLike) {
+            return null;
+        }
+
+        $currentFile = $this->currentFileProvider->getFile();
+        if (! $currentFile instanceof File) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        if ($phpDocInfo->hasChanged()) {
+            return null;
+        }
+
+        $smartFileInfo = $currentFile->getSmartFileInfo();
+        $realPath = $smartFileInfo->getRealPath();
+
+        if (! isset(self::$previousFileWithNodes[$realPath])) {
+            static::$previousFileWithNodes[$realPath] = new RectifiedNode(static::class, $node);
+            return null;
+        }
+
+        /** @var RectifiedNode $rectifiedNode */
+        $rectifiedNode = self::$previousFileWithNodes[$realPath];
+        if ($rectifiedNode->getRectorClass() !== static::class) {
+            return null;
+        }
+
+        if ($rectifiedNode->getNode() !== $node) {
+            return null;
+        }
+
+        return $rectifiedNode;
     }
 
     /**
