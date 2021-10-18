@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
 
@@ -33,7 +32,6 @@ final class RectifiedAnalyzer
     private array $previousFileWithNodes = [];
 
     public function __construct(
-        private CurrentFileProvider $currentFileProvider,
         private PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
