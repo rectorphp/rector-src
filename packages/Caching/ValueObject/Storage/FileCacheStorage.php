@@ -111,18 +111,18 @@ final class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        if (! $this->isDirectoryEmpty($directory)) {
+        if ($this->isNotEmptyDirectory($directory)) {
             return;
         }
 
         $this->smartFileSystem->remove($directory);
     }
 
-    private function isDirectoryEmpty(string $directory): bool
+    private function isNotEmptyDirectory(string $directory): bool
     {
         // FilesystemIterator will initially point to the first file in the folder - if there are no files in the folder, valid() will return false
         $firstDirectoryFileSystemIterator = new FilesystemIterator($directory);
-        return ! $firstDirectoryFileSystemIterator->valid();
+        return $firstDirectoryFileSystemIterator->valid();
     }
 
     private function getCacheFilePaths(string $key): CacheFilePaths
