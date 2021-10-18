@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
+use PhpParser\Node\Expr\Throw_;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -163,7 +164,9 @@ CODE_SAMPLE
     {
         $stmts = [];
 
-        if ($node instanceof Expression) {
+        if ($matchArm->body instanceof Throw_) {
+            $stmts[] = new Expression($matchArm->body);
+        } elseif ($node instanceof Expression) {
             /** @var Assign $assign */
             $assign = $node->expr;
             $stmts[] = new Expression(new Assign($assign->var, $matchArm->body));
