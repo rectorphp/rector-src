@@ -1,0 +1,10 @@
+<?php
+
+namespace Rector\Tests\Php73\Rector\FuncCall\JsonThrowOnErrorRector\Fixture;
+
+function SkipNamedArgumentValueOrJson($str, array $data){
+    json_decode(json: $str);
+    json_encode(value: $data);
+}
+
+?>
