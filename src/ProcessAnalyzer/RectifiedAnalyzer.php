@@ -32,8 +32,10 @@ final class RectifiedAnalyzer
      */
     private array $previousFileWithNodes = [];
 
-    public function __construct(private CurrentFileProvider $currentFileProvider, private PhpDocInfoFactory $phpDocInfoFactory)
-    {
+    public function __construct(
+        private CurrentFileProvider $currentFileProvider,
+        private PhpDocInfoFactory $phpDocInfoFactory
+    ) {
     }
 
     public function verify(RectorInterface $rector, Node $node, File $currentFile): ?RectifiedNode
