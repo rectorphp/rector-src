@@ -13,21 +13,26 @@ final class DemoFile
         };
     }
 }
+
 ?>
 -----
 <?php
 
 namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeMatchToSwitchRector\Fixture;
 
-public function run($param)
+final class DemoFile
 {
-    switch ($param) {
-        case 'a':
-            return 'hi';
-        case 'b':
-            return 'bye';
-        default:
-            throw new Exception('no salutation');
+    public function run($param)
+    {
+        switch ($param) {
+            case 'a':
+                return 'hi';
+            case 'b':
+                return 'bye';
+            default:
+                throw new Exception('no salutation');
+        }
     }
 }
+
 ?>
