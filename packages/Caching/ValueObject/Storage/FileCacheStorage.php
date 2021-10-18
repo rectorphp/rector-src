@@ -121,8 +121,8 @@ final class FileCacheStorage implements CacheStorageInterface
     private function isNotEmptyDirectory(string $directory): bool
     {
         // FilesystemIterator will initially point to the first file in the folder - if there are no files in the folder, valid() will return false
-        $firstDirectoryFileSystemIterator = new FilesystemIterator($directory);
-        return $firstDirectoryFileSystemIterator->valid();
+        $filesystemIterator = new FilesystemIterator($directory);
+        return $filesystemIterator->valid();
     }
 
     private function getCacheFilePaths(string $key): CacheFilePaths
