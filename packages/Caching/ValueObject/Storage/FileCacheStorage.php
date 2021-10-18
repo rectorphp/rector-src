@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Caching\ValueObject\Storage;
 
 use FilesystemIterator;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Random;
 use Nette\Utils\Strings;
 use PHPStan\File\FileWriter;
