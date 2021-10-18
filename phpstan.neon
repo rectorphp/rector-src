@@ -373,7 +373,7 @@ parameters:
         - '#Cognitive complexity for "Rector\\Core\\Rector\\AbstractRector\:\:enterNode\(\)" is \d+, keep it under 9#'
 
         -
-            message: '#Class cognitive complexity is 41, keep it under 30#'
+            message: '#Class cognitive complexity is 34, keep it under 30#'
             path: src/Rector/AbstractRector.php
 
         # deserves better architecture
@@ -522,7 +522,3 @@ parameters:
         -
             message: '#Class cognitive complexity is 31, keep it under 30#'
             path: rules/Php74/Rector/Property/TypedPropertyRector.php
-
-        -
-            message: '#Do not use static property#'
-            path: src/Rector/AbstractRector.php

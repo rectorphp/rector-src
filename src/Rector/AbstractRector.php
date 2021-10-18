@@ -35,6 +35,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
+use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Validation\InfiniteLoopValidator;
 use Rector\Core\ValueObject\Application\File;
@@ -137,10 +138,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     private InfiniteLoopValidator $infiniteLoopValidator;
 
-    /**
-     * @var array<string, RectifiedNode|null>
-     */
-    private static array $previousFileWithNodes = [];
+    private RectifiedAnalyzer $rectifiedAnalyzer;
 
     #[Required]
     public function autowireAbstractRector(
@@ -169,7 +167,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         NodeComparator $nodeComparator,
         CurrentFileProvider $currentFileProvider,
         ChangedNodeAnalyzer $changedNodeAnalyzer,
-        InfiniteLoopValidator $infiniteLoopValidator
+        InfiniteLoopValidator $infiniteLoopValidator,
+        RectifiedAnalyzer $rectifiedAnalyzer
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -197,6 +196,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->currentFileProvider = $currentFileProvider;
         $this->changedNodeAnalyzer = $changedNodeAnalyzer;
         $this->infiniteLoopValidator = $infiniteLoopValidator;
+        $this->rectifiedAnalyzer = $rectifiedAnalyzer;
     }
 
     /**
@@ -228,11 +228,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         if ($this->shouldSkipCurrentNode($node)) {
-            return null;
-        }
-
-        $rectifiedNode = $this->verifyRectified($node);
-        if ($rectifiedNode instanceof RectifiedNode) {
             return null;
         }
 
@@ -481,50 +476,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->nodeRemover->removeNodes($nodes);
     }
 
-    private function verifyRectified(Node $node): ?RectifiedNode
-    {
-        if (! $node instanceof Stmt) {
-            return null;
-        }
-
-        if ($node instanceof ClassLike) {
-            return null;
-        }
-
-        $currentFile = $this->currentFileProvider->getFile();
-        if (! $currentFile instanceof File) {
-            return null;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        if ($phpDocInfo->hasChanged()) {
-            return null;
-        }
-
-        $smartFileInfo = $currentFile->getSmartFileInfo();
-        $realPath = $smartFileInfo->getRealPath();
-
-        if (! isset(self::$previousFileWithNodes[$realPath])) {
-            static::$previousFileWithNodes[$realPath] = new RectifiedNode(static::class, $node);
-            return null;
-        }
-
-        /** @var RectifiedNode $rectifiedNode */
-        $rectifiedNode = self::$previousFileWithNodes[$realPath];
-        if ($rectifiedNode->getRectorClass() !== static::class) {
-            return null;
-        }
-
-        if ($rectifiedNode->getNode() !== $node) {
-            return null;
-        }
-
-        // re-set to refill next
-        self::$previousFileWithNodes[$realPath] = null;
-        return $rectifiedNode;
-    }
-
     /**
      * @param class-string<Node> $nodeClass
      */
@@ -550,7 +501,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         $smartFileInfo = $this->file->getSmartFileInfo();
-        return $this->skipper->shouldSkipElementAndFileInfo($this, $smartFileInfo);
+        if ($this->skipper->shouldSkipElementAndFileInfo($this, $smartFileInfo)) {
+            return true;
+        }
+
+        $rectifiedNode = $this->rectifiedAnalyzer->verify($this, $node, $this->file);
+        return $rectifiedNode instanceof RectifiedNode;
     }
 
     private function printDebugApplying(): void
