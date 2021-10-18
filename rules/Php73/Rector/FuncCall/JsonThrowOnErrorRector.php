@@ -85,7 +85,7 @@ CODE_SAMPLE
 
         $args = $funcCall->getArgs();
         foreach ($args as $arg) {
-            if ($arg->name instanceof Identifier) {
+            if ($arg->name instanceof Identifier && ! $this->nodeNameResolver->isNames($arg->name, ['value', 'json'])) {
                 return true;
             }
         }
