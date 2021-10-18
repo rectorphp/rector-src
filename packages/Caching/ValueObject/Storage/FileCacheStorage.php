@@ -90,25 +90,6 @@ final class FileCacheStorage implements CacheStorageInterface
         $this->processRemoveCacheFilePath($cacheFilePaths);
         $this->processRemoveSecondaryPath($cacheFilePaths);
         $this->processRemoveFirstPath($cacheFilePaths);
-
-        if (! $this->smartFileSystem->exists($cacheFilePaths->getSecondDirectory())) {
-            return;
-        }
-
-        // FilesystemIterator will initially point to the first file in the folder - if there are no files in the folder, valid() will return false
-        $secondDirectoryFileSystemIterator = new FilesystemIterator($cacheFilePaths->getSecondDirectory());
-        if (! $secondDirectoryFileSystemIterator->valid()) {
-            $this->smartFileSystem->remove($cacheFilePaths->getSecondDirectory());
-        }
-
-        if (! $this->smartFileSystem->exists($cacheFilePaths->getFirstDirectory())) {
-            return;
-        }
-
-        $firstDirectoryFileSystemIterator = new FilesystemIterator($cacheFilePaths->getFirstDirectory());
-        if (! $firstDirectoryFileSystemIterator->valid()) {
-            $this->smartFileSystem->remove($cacheFilePaths->getFirstDirectory());
-        }
     }
 
     public function clear(): void
