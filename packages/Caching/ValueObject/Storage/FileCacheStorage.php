@@ -114,7 +114,7 @@ final class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        if ($this->isDirectoryEmpty($directory)) {
+        if (! $this->isDirectoryEmpty($directory)) {
             return;
         }
 
@@ -128,7 +128,7 @@ final class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        if ($this->isDirectoryEmpty($directory)) {
+        if (! $this->isDirectoryEmpty($directory)) {
             return;
         }
 
