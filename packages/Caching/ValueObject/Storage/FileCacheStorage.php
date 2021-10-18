@@ -6,7 +6,6 @@ namespace Rector\Caching\ValueObject\Storage;
 
 use FilesystemIterator;
 use Nette\Utils\Random;
-use Nette\Utils\Strings;
 use PHPStan\File\FileWriter;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Caching\ValueObject\CacheFilePaths;
@@ -129,8 +128,8 @@ final class FileCacheStorage implements CacheStorageInterface
     private function getCacheFilePaths(string $key): CacheFilePaths
     {
         $keyHash = sha1($key);
-        $firstDirectory = sprintf('%s/%s', $this->directory, Strings::substring($keyHash, 0, 2));
-        $secondDirectory = sprintf('%s/%s', $firstDirectory, Strings::substring($keyHash, 2, 2));
+        $firstDirectory = sprintf('%s/%s', $this->directory, substr($keyHash, 0, 2));
+        $secondDirectory = sprintf('%s/%s', $firstDirectory, substr($keyHash, 2, 2));
         $filePath = sprintf('%s/%s.php', $secondDirectory, $keyHash);
 
         return new CacheFilePaths($firstDirectory, $secondDirectory, $filePath);
