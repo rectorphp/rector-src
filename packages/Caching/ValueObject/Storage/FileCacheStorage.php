@@ -78,7 +78,7 @@ final class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        @FileSystem::delete($tmpPath);
+        @\unlink($tmpPath);
         if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($path)) {
             throw new CachingException(\sprintf('Could not write data to cache file %s.', $path));
         }
@@ -88,8 +88,8 @@ final class FileCacheStorage implements CacheStorageInterface
     {
         $cacheFilePaths = $this->getCacheFilePaths($key);
         $this->processRemoveCacheFilePath($cacheFilePaths);
-        $this->processRemoveSecondaryPath($cacheFilePaths);
-        $this->processRemoveFirstPath($cacheFilePaths);
+        $this->processRemoveEmptyDirectory($cacheFilePaths->getSecondDirectory());
+        $this->processRemoveEmptyDirectory($cacheFilePaths->getFirstDirectory());
     }
 
     public function clear(): void
@@ -107,23 +107,8 @@ final class FileCacheStorage implements CacheStorageInterface
         $this->smartFileSystem->remove($filePath);
     }
 
-    private function processRemoveSecondaryPath(CacheFilePaths $cacheFilePaths): void
+    private function processRemoveEmptyDirectory(string $directory): void
     {
-        $directory = $cacheFilePaths->getSecondDirectory();
-        if (! $this->smartFileSystem->exists($directory)) {
-            return;
-        }
-
-        if (! $this->isDirectoryEmpty($directory)) {
-            return;
-        }
-
-        $this->smartFileSystem->remove($directory);
-    }
-
-    private function processRemoveFirstPath(CacheFilePaths $cacheFilePaths): void
-    {
-        $directory = $cacheFilePaths->getFirstDirectory();
         if (! $this->smartFileSystem->exists($directory)) {
             return;
         }
@@ -137,6 +122,7 @@ final class FileCacheStorage implements CacheStorageInterface
 
     private function isDirectoryEmpty(string $directory): bool
     {
+        // FilesystemIterator will initially point to the first file in the folder - if there are no files in the folder, valid() will return false
         $firstDirectoryFileSystemIterator = new FilesystemIterator($directory);
         return ! $firstDirectoryFileSystemIterator->valid();
     }
