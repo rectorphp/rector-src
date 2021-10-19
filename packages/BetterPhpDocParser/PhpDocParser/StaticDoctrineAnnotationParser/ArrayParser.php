@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
+use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 
@@ -110,7 +111,7 @@ final class ArrayParser
         foreach ($values as $value) {
             [$key, $val] = $value;
 
-            if ($key instanceof \PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode) {
+            if ($key instanceof ConstExprIntegerNode) {
                 $key = $key->value;
             }
 
