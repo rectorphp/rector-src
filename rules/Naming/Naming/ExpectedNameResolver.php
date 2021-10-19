@@ -168,8 +168,8 @@ final class ExpectedNameResolver
 
         $expectedNameFromType = $this->propertyNaming->getExpectedNameFromType($returnedType);
 
-        if ($returnedType->isIterable()->no() && $expectedNameFromType !== null) {
-            return $expectedNameFromType->getSingularized();
+        if ($this->isNotIterableAndExpectedNameFromTypeNotNull($returnedType, $expectedNameFromType)) {
+            return $expectedNameFromType?->getSingularized();
         }
 
         $expectedNameFromMethodName = $this->propertyNaming->getExpectedNameFromMethodName($name);
@@ -182,6 +182,14 @@ final class ExpectedNameResolver
         }
 
         return $expectedNameFromMethodName->getSingularized();
+    }
+
+    private function isNotIterableAndExpectedNameFromTypeNotNull(
+        Type $returnedType,
+        ?ExpectedName $expectedNameFromType
+    ): bool {
+        return $returnedType->isIterable()
+            ->no() && $expectedNameFromType !== null;
     }
 
     private function isDynamicNameCall(MethodCall | StaticCall | FuncCall $expr): bool
