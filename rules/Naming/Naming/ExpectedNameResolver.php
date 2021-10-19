@@ -168,17 +168,17 @@ final class ExpectedNameResolver
 
         $expectedNameFromType = $this->propertyNaming->getExpectedNameFromType($returnedType);
 
-        if ($expectedNameFromType !== null) {
+        if ($returnedType->isIterable()->no() && $expectedNameFromType !== null) {
             return $expectedNameFromType->getSingularized();
         }
 
         $expectedNameFromMethodName = $this->propertyNaming->getExpectedNameFromMethodName($name);
         if (! $expectedNameFromMethodName instanceof ExpectedName) {
-            return null;
+            return $expectedNameFromType?->getSingularized();
         }
 
         if ($expectedNameFromMethodName->isSingular()) {
-            return null;
+            return $expectedNameFromType?->getSingularized();
         }
 
         return $expectedNameFromMethodName->getSingularized();
