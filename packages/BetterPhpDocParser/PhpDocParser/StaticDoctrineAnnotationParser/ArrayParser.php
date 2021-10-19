@@ -110,6 +110,10 @@ final class ArrayParser
         foreach ($values as $value) {
             [$key, $val] = $value;
 
+            if ($key instanceof \PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode) {
+                $key = $key->value;
+            }
+
             if ($key !== null) {
                 $array[$key] = $val;
             } else {
