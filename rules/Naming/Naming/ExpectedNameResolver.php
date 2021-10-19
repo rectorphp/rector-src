@@ -159,16 +159,17 @@ final class ExpectedNameResolver
             return null;
         }
 
+        $innerReturnedType = null;
         if ($returnedType instanceof ArrayType) {
-            $returnedType = $this->resolveReturnTypeFromArrayType($expr, $returnedType);
-            if (! $returnedType instanceof Type) {
+            $innerReturnedType = $this->resolveReturnTypeFromArrayType($expr, $returnedType);
+            if (! $innerReturnedType instanceof Type) {
                 return null;
             }
         }
 
-        $expectedNameFromType = $this->propertyNaming->getExpectedNameFromType($returnedType);
+        $expectedNameFromType = $this->propertyNaming->getExpectedNameFromType($innerReturnedType ?? $returnedType);
 
-        if ($this->isNotIterableAndExpectedNameFromTypeNotNull($returnedType, $expectedNameFromType)) {
+        if ($this->isReturnedTypeAnArrayAndExpectedNameFromTypeNotNull($returnedType, $expectedNameFromType)) {
             return $expectedNameFromType?->getSingularized();
         }
 
@@ -184,12 +185,11 @@ final class ExpectedNameResolver
         return $expectedNameFromMethodName->getSingularized();
     }
 
-    private function isNotIterableAndExpectedNameFromTypeNotNull(
+    private function isReturnedTypeAnArrayAndExpectedNameFromTypeNotNull(
         Type $returnedType,
-        ?ExpectedName $expectedNameFromType
+        ?ExpectedName $expectedName
     ): bool {
-        return $returnedType->isIterable()
-            ->no() && $expectedNameFromType !== null;
+        return ($returnedType instanceof ArrayType) && $expectedName !== null;
     }
 
     private function isDynamicNameCall(MethodCall | StaticCall | FuncCall $expr): bool
