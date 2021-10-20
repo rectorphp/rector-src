@@ -7,7 +7,6 @@ namespace Rector\FamilyTree\ValueObject;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
-use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Type\Type;
 
 final class PropertyType

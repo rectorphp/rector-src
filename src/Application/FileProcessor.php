@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use PhpParser\Lexer;
+use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -56,7 +57,7 @@ final class FileProcessor
 
     private function isTemplateExtendsInSource(array $nodes): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (\PhpParser\Node $subNode): bool {
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $subNode): bool {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($subNode);
             return (bool) $phpDocInfo->getTagsByName('@template-extends');
         });
