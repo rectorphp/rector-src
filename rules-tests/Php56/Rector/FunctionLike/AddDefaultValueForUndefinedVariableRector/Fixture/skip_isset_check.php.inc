@@ -14,4 +14,13 @@ class SkipIssetCheck
             ? $data
             : 'default';
     }
+
+    public function run2()
+    {
+        if (!isset($data)) {
+            $data[] = 'test';
+        }
+
+        return $data;
+    }
 }
