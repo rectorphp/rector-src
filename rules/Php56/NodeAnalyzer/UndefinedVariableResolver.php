@@ -109,7 +109,7 @@ final class UndefinedVariableResolver
 
     private function issetOrUnsetParent(Node $parentNode): bool
     {
-        return $parentNode instanceof Unset_ || $parentNode instanceof UnsetCast || $parentNode instanceof Isset_;
+        return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class], true);
     }
 
     private function shouldSkipVariable(Variable $variable): bool
@@ -123,7 +123,9 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($parentNode instanceof Assign || $parentNode instanceof AssignRef || $this->isStaticVariable($parentNode)) {
+        if (in_array($parentNode::class, [Assign::class, AssignRef::class], true) || $this->isStaticVariable(
+            $parentNode
+        )) {
             return true;
         }
 
