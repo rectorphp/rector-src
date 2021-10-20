@@ -95,8 +95,8 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
         $renamePropertyObjectType = $renameProperty->getObjectType();
         $className = $renamePropertyObjectType->getClassName();
 
-        $classLikeNameObjectType = new ObjectType($classLikeName);
-        $classNameObjectType = new ObjectType($className);
+        $classLikeNameObjectType = new ObjectType((string) $classLikeName);
+        $classNameObjectType = new ObjectType((string) $className);
 
         $isSuperType = $classNameObjectType->isSuperTypeOf($classLikeNameObjectType)
             ->yes();
