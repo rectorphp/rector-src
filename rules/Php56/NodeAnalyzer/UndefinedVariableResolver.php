@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\Unset_;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
@@ -34,7 +35,8 @@ final class UndefinedVariableResolver
     public function __construct(
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private NodeNameResolver $nodeNameResolver,
-        private NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -151,7 +153,29 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        return $variableName === null;
+        if ($variableName === null) {
+            return true;
+        }
+
+        return $this->hasPreviousCheckedWithIsset($variable);
+    }
+
+    private function hasPreviousCheckedWithIsset(Variable $variable): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $subNode) use ($variable) {
+            if (! $subNode instanceof Isset_) {
+                return false;
+            }
+
+            $vars = $subNode->vars;
+            foreach ($vars as $var) {
+                if ($this->nodeComparator->areNodesEqual($variable, $var)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
     }
 
     private function isStaticVariable(Node $parentNode): bool
