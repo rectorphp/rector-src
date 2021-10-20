@@ -115,10 +115,6 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
             return;
         }
 
-        if ($isSuperType && $property->isPrivate()) {
-            return;
-        }
-
         $property->props[0]->name = new VarLikeIdentifier($newProperty);
     }
 
