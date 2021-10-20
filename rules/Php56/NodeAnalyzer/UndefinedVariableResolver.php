@@ -122,8 +122,10 @@ final class UndefinedVariableResolver
         if ($parentNode instanceof Global_) {
             return true;
         }
-
-        if (in_array($parentNode::class, [Assign::class, AssignRef::class], true) || $this->isStaticVariable(
+        if (in_array($parentNode::class, [Assign::class, AssignRef::class], true)) {
+            return true;
+        }
+        if ($this->isStaticVariable(
             $parentNode
         )) {
             return true;
@@ -166,7 +168,7 @@ final class UndefinedVariableResolver
     {
         return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $subNode) use (
             $variable
-        ) {
+        ): bool {
             if (! $subNode instanceof Isset_) {
                 return false;
             }
