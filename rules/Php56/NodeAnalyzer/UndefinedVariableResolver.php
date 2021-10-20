@@ -107,6 +107,11 @@ final class UndefinedVariableResolver
         return $variableNames;
     }
 
+    private function issetOrUnsetParent(Node $parentNode): bool
+    {
+        return $parentNode instanceof Unset_ || $parentNode instanceof UnsetCast || $parentNode instanceof Isset_;
+    }
+
     private function shouldSkipVariable(Variable $variable): bool
     {
         $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
@@ -127,7 +132,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($parentNode instanceof Unset_ || $parentNode instanceof UnsetCast || $parentNode instanceof Isset_) {
+        if ($this->issetOrUnsetParent($parentNode)) {
             return true;
         }
 
