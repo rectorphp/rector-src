@@ -26,14 +26,6 @@ final class FileProcessor
     ) {
     }
 
-    private function isTemplateExtendsInSource(array $nodes): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (\PhpParser\Node $subNode): bool {
-            $phpDocInfo =$this->phpDocInfoFactory->createFromNodeOrEmpty($subNode);
-            return (bool) $phpDocInfo->getTagsByName('@template-extends');
-        });
-    }
-
     public function parseFileInfoToLocalCache(File $file): void
     {
         // store tokens by absolute path, so we don't have to print them right now
@@ -60,5 +52,13 @@ final class FileProcessor
         while ($otherTouchedFile = $this->affectedFilesCollector->getNext()) {
             $this->refactor($otherTouchedFile);
         }
+    }
+
+    private function isTemplateExtendsInSource(array $nodes): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (\PhpParser\Node $subNode): bool {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($subNode);
+            return (bool) $phpDocInfo->getTagsByName('@template-extends');
+        });
     }
 }
