@@ -162,7 +162,9 @@ final class UndefinedVariableResolver
 
     private function hasPreviousCheckedWithIsset(Variable $variable): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $subNode) use ($variable) {
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $subNode) use (
+            $variable
+        ) {
             if (! $subNode instanceof Isset_) {
                 return false;
             }
