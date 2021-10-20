@@ -114,6 +114,11 @@ final class File
             throw new ShouldNotHappenException('Double stmts override');
         }
 
+        if ($newStmts === $oldStmts) {
+            $this->oldTokens = $oldTokens;
+            return;
+        }
+
         $this->oldStmts = $oldStmts;
         $this->newStmts = $newStmts;
         $this->oldTokens = $oldTokens;

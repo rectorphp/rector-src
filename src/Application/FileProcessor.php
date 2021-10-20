@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use PhpParser\Lexer;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\PhpParser\Parser\Parser;
 use Rector\Core\ValueObject\Application\File;
@@ -18,8 +20,18 @@ final class FileProcessor
         private Lexer $lexer,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private Parser $parser,
-        private RectorNodeTraverser $rectorNodeTraverser
+        private RectorNodeTraverser $rectorNodeTraverser,
+        private BetterNodeFinder $betterNodeFinder,
+        private PhpDocInfoFactory $phpDocInfoFactory
     ) {
+    }
+
+    private function isTemplateExtendsInSource(array $nodes): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (\PhpParser\Node $subNode): bool {
+            $phpDocInfo =$this->phpDocInfoFactory->createFromNodeOrEmpty($subNode);
+            return (bool) $phpDocInfo->getTagsByName('@template-extends');
+        });
     }
 
     public function parseFileInfoToLocalCache(File $file): void
@@ -28,6 +40,11 @@ final class FileProcessor
         $smartFileInfo = $file->getSmartFileInfo();
         $oldStmts = $this->parser->parseFileInfo($smartFileInfo);
         $oldTokens = $this->lexer->getTokens();
+
+        if ($this->isTemplateExtendsInSource($oldStmts)) {
+            $file->hydrateStmtsAndTokens($oldStmts, $oldStmts, $oldTokens);
+            return;
+        }
 
         // @todo may need tweak to refresh PHPStan types to avoid issue like in https://github.com/rectorphp/rector/issues/6561
         $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $oldStmts);
