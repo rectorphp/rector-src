@@ -162,7 +162,7 @@ CODE_SAMPLE
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $propertyPhpDocInfo);
 
         // make sure the docblock is useful
-        if ($param->type === null) {
+        if (! $param->type instanceof Node) {
             return;
         }
 

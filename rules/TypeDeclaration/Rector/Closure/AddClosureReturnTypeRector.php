@@ -85,7 +85,7 @@ CODE_SAMPLE
             $inferedReturnType,
             TypeKind::RETURN()
         );
-        if ($returnTypeNode === null) {
+        if (! $returnTypeNode instanceof Node) {
             return null;
         }
 
