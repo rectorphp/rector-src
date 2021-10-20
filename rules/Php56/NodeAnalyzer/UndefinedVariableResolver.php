@@ -112,6 +112,15 @@ final class UndefinedVariableResolver
         return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class], true);
     }
 
+    private function isAssignOrStaticVariableParent(Node $parentNode): bool
+    {
+        if (in_array($parentNode::class, [Assign::class, AssignRef::class], true)) {
+            return true;
+        }
+
+        return $this->isStaticVariable($parentNode);
+    }
+
     private function shouldSkipVariable(Variable $variable): bool
     {
         $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
@@ -122,12 +131,8 @@ final class UndefinedVariableResolver
         if ($parentNode instanceof Global_) {
             return true;
         }
-        if (in_array($parentNode::class, [Assign::class, AssignRef::class], true)) {
-            return true;
-        }
-        if ($this->isStaticVariable(
-            $parentNode
-        )) {
+
+        if ($this->isAssignOrStaticVariableParent($parentNode)) {
             return true;
         }
 
