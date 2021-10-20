@@ -123,12 +123,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($parentNode instanceof Node &&
-            (
-                $parentNode instanceof Assign || $parentNode instanceof AssignRef || $this->isStaticVariable(
-                    $parentNode
-                )
-            )) {
+        if ($parentNode instanceof Assign || $parentNode instanceof AssignRef || $this->isStaticVariable($parentNode)) {
             return true;
         }
 
