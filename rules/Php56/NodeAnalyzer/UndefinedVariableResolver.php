@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Cast\Unset_ as UnsetCast;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
@@ -124,7 +125,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($parentNode instanceof Unset_ || $parentNode instanceof UnsetCast) {
+        if ($parentNode instanceof Unset_ || $parentNode instanceof UnsetCast || $parentNode instanceof Isset_) {
             return true;
         }
 
