@@ -204,7 +204,10 @@ final class AnonymousFunctionFactory
             }
 
             $parentNode = $variableNode->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof Assign) {
+            if (
+                $parentNode instanceof Assign
+                || $parentNode instanceof Stmt\Foreach_
+            ) {
                 $alreadyAssignedVariables[] = $variableName;
             }
 
