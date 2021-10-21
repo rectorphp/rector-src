@@ -4,34 +4,38 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
+use Nette\Utils\Strings;
 use PhpParser\Lexer;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\PhpParser\Parser\Parser;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 
 final class FileProcessor
 {
+    /**
+     * @var string
+     *
+     * @see https://regex101.com/r/ozPuC9/1
+     */
+    private const TEMPLATE_EXTENDS_REGEX = '#(\*|\/\/)\s+\@template-extends\s+\\\\?\w+#';
+
     public function __construct(
         private AffectedFilesCollector $affectedFilesCollector,
         private Lexer $lexer,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private Parser $parser,
         private RectorNodeTraverser $rectorNodeTraverser,
-        private BetterNodeFinder $betterNodeFinder,
-        private PhpDocInfoFactory $phpDocInfoFactory
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
     private function isTemplateExtendsInSource(array $nodes): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (\PhpParser\Node $subNode): bool {
-            $phpDocInfo =$this->phpDocInfoFactory->createFromNodeOrEmpty($subNode);
-            return (bool) $phpDocInfo->getTagsByName('@template-extends');
-        });
+        $print = $this->betterStandardPrinter->print($nodes);
+        return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
     }
 
     public function parseFileInfoToLocalCache(File $file): void
