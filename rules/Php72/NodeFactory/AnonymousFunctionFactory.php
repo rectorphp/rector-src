@@ -207,6 +207,7 @@ final class AnonymousFunctionFactory
             if (
                 $parentNode instanceof Assign
                 || $parentNode instanceof Stmt\Foreach_
+                || $parentNode instanceof Param
             ) {
                 $alreadyAssignedVariables[] = $variableName;
             }
