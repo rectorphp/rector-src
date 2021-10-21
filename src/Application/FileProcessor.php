@@ -18,7 +18,6 @@ final class FileProcessor
 {
     /**
      * @var string
-     *
      * @see https://regex101.com/r/ozPuC9/1
      */
     private const TEMPLATE_EXTENDS_REGEX = '#(\*|\/\/)\s+\@template-extends\s+\\\\?\w+#';
@@ -40,6 +39,7 @@ final class FileProcessor
         $oldStmts = $this->parser->parseFileInfo($smartFileInfo);
         $oldTokens = $this->lexer->getTokens();
 
+        // Tweak PHPStan internal issue https://github.com/phpstan/phpstan/issues/3865
         if ($this->isTemplateExtendsInSource($oldStmts)) {
             $file->hydrateStmtsAndTokens($oldStmts, $oldStmts, $oldTokens);
             return;
