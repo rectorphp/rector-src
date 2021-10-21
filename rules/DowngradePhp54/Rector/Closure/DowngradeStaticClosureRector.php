@@ -11,7 +11,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DowngradePhp54\Rector\Dir\DowngradeStaticClosureRector\DowngradeStaticClosureRectorTest
+ * @see \Rector\Tests\DowngradePhp54\Rector\Closure\DowngradeStaticClosureRector\DowngradeStaticClosureRectorTest
  */
 final class DowngradeStaticClosureRector extends AbstractRector
 {
