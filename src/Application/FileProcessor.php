@@ -40,7 +40,7 @@ final class FileProcessor
         $oldTokens = $this->lexer->getTokens();
 
         /**
-         * Tweak PHPStan internal issue fo has @template-extends that can endless loop in the process
+         * Tweak PHPStan internal issue for has @template-extends that cause endless loop in the process
          *
          * @see https://github.com/phpstan/phpstan/issues/3865
          * @see https://github.com/rectorphp/rector/issues/6758
