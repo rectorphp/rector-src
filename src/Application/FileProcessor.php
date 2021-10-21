@@ -33,15 +33,6 @@ final class FileProcessor
     ) {
     }
 
-    /**
-     * @param Node[] $nodes
-     */
-    private function isTemplateExtendsInSource(array $nodes): bool
-    {
-        $print = $this->betterStandardPrinter->print($nodes);
-        return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
-    }
-
     public function parseFileInfoToLocalCache(File $file): void
     {
         // store tokens by absolute path, so we don't have to print them right now
@@ -68,5 +59,14 @@ final class FileProcessor
         while ($otherTouchedFile = $this->affectedFilesCollector->getNext()) {
             $this->refactor($otherTouchedFile);
         }
+    }
+
+    /**
+     * @param Node[] $nodes
+     */
+    private function isTemplateExtendsInSource(array $nodes): bool
+    {
+        $print = $this->betterStandardPrinter->print($nodes);
+        return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
     }
 }
