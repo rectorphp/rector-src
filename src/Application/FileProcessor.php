@@ -39,7 +39,12 @@ final class FileProcessor
         $oldStmts = $this->parser->parseFileInfo($smartFileInfo);
         $oldTokens = $this->lexer->getTokens();
 
-        // Tweak PHPStan internal issue https://github.com/phpstan/phpstan/issues/3865
+        /**
+         * Tweak PHPStan internal issue fo has @template-extends that can endless loop in the process
+         *
+         * @see https://github.com/phpstan/phpstan/issues/3865
+         * @see https://github.com/rectorphp/rector/issues/6758
+         */
         if ($this->isTemplateExtendsInSource($oldStmts)) {
             $file->hydrateStmtsAndTokens($oldStmts, $oldStmts, $oldTokens);
             return;
