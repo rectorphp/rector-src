@@ -2,12 +2,20 @@
 
 namespace Rector\Tests\DowngradePhp74\Rector\ArrowFunction\ArrowFunctionToAnonymousFunctionRector\Fixture;
 
+use Iterator;
+
 class NoUse
 {
-    public function duplicate()
+    public function run($foo, $bar, $baz)
     {
-        $numbers = [3, 5, 7];
-        return array_map(fn(int $number) => $number * 2, $numbers);
+        $callable = fn () =>
+            function (Iterator $iterator) {
+                $baz = 'baz';
+
+                foreach ($iterator as $foo => $bar) {
+                    yield $foo => $bar;
+                }
+            };
     }
 }
 
@@ -17,14 +25,21 @@ class NoUse
 
 namespace Rector\Tests\DowngradePhp74\Rector\ArrowFunction\ArrowFunctionToAnonymousFunctionRector\Fixture;
 
+use Iterator;
+
 class NoUse
 {
-    public function duplicate()
+    public function run($foo, $bar, $baz)
     {
-        $numbers = [3, 5, 7];
-        return array_map(function (int $number) {
-            return $number * 2;
-        }, $numbers);
+        $callable = function () {
+            return function (Iterator $iterator) {
+                $baz = 'baz';
+
+                foreach ($iterator as $foo => $bar) {
+                    yield $foo => $bar;
+                }
+            };
+        };
     }
 }
 
