@@ -6,6 +6,7 @@ namespace Rector\Core\Application;
 
 use Nette\Utils\Strings;
 use PhpParser\Lexer;
+use PhpParser\Node;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\PhpParser\Parser\Parser;
@@ -32,6 +33,9 @@ final class FileProcessor
     ) {
     }
 
+    /**
+     * @param Node[] $nodes
+     */
     private function isTemplateExtendsInSource(array $nodes): bool
     {
         $print = $this->betterStandardPrinter->print($nodes);
