@@ -114,6 +114,10 @@ final class File
             throw new ShouldNotHappenException('Double stmts override');
         }
 
+        /*
+         * If newStmts is equal to $oldStmts,
+         * it is necessary to fill oldTokens only to avoid content of the file removed
+         */
         if ($newStmts === $oldStmts) {
             $this->oldTokens = $oldTokens;
             return;
