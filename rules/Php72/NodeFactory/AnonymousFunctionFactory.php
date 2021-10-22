@@ -216,18 +216,12 @@ final class AnonymousFunctionFactory
      * @param ClosureUse[] $uses
      * @return ClosureUse[]
      */
-    private function collectUsesNotEqual(?Closure $closure, array $uses, Variable $useVariable): array
+    private function collectUsesNotEqual(Closure $closure, array $uses, Variable $useVariable): array
     {
-        if (! $closure instanceof Closure) {
-            return $uses;
-        }
-
         foreach ($closure->params as $param) {
-            if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
-                continue;
+            if (! $this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
+                $uses[] = new ClosureUse($param->var);
             }
-
-            $uses[] = new ClosureUse($param->var);
         }
 
         return $uses;
@@ -254,20 +248,18 @@ final class AnonymousFunctionFactory
      */
     private function cleanUses(array $uses): array
     {
-        $variableNames = [];
         $variableNames = array_map(
             fn ($use): string => (string) $this->nodeNameResolver->getName($use->var),
             $uses,
-            $variableNames
+            []
         );
         $variableNames = array_unique($variableNames);
 
-        $uses = [];
-        foreach ($variableNames as $variableName) {
-            $uses[] = new ClosureUse(new Variable($variableName));
-        }
-
-        return $uses;
+        return array_map(
+            fn ($variableName): ClosureUse => new ClosureUse(new Variable($variableName)),
+            $variableNames,
+            []
+        );
     }
 
     /**
