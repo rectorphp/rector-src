@@ -187,16 +187,6 @@ final class AnonymousFunctionFactory
             }
 
             $uses = [];
-            $parentOfParentOfParent = $this->betterNodeFinder->findParentType($parentOfParent, Closure::class);
-
-            while ($parentOfParentOfParent instanceof Closure) {
-                $uses = $this->collectUsesNotEqual($parentOfParentOfParent, $uses, $useVariable);
-                $parentOfParentOfParent = $this->betterNodeFinder->findParentType(
-                    $parentOfParentOfParent,
-                    Closure::class
-                );
-            }
-
             while ($parentOfParent instanceof Closure) {
                 $uses = $this->collectUsesEqual($parentOfParent, $uses, $useVariable);
                 $parentOfParent = $this->betterNodeFinder->findParentType($parentOfParent, Closure::class);

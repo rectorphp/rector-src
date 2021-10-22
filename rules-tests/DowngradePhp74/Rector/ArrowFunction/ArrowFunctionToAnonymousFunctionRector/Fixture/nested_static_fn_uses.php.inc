@@ -56,7 +56,7 @@ final class NestedStaticFnUses
         return function ($foo) {
             return function ($bar) use ($foo) {
                 return function ($baz) use ($foo, $bar) {
-                    return function ($bat) use ($bar, $foo, $baz) {
+                    return function ($bat) use ($foo, $bar, $baz) {
                         return function () use ($foo, $bar, $baz, $bat) {
                             return [$foo, $bar, $baz, $bat];
                         };
