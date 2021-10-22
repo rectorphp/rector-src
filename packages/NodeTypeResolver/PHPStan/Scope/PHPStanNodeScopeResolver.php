@@ -127,6 +127,12 @@ final class PHPStanNodeScopeResolver
 
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
+        // it needs to be checked early before `@mixin` check as
+        // ReflectionProvider already hang when check class with `@template-extends`
+        if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
+            return $nodes;
+        }
+
         return $this->processNodesWithMixinHandling($smartFileInfo, $nodes, $scope, $nodeCallback);
     }
 
@@ -192,12 +198,6 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        // it needs to be checked early before `@mixin` check as
-        // ReflectionProvider already hang when check class with `@template-extends`
-        if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
-            return $nodes;
-        }
-
         if ($this->isMixinInSource($nodes)) {
             return $nodes;
         }
