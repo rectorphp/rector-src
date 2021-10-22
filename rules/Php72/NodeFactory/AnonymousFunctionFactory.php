@@ -182,9 +182,6 @@ final class AnonymousFunctionFactory
 
         while ($parent instanceof Closure) {
             $parentOfParent = $this->betterNodeFinder->findParentType($parent, Closure::class);
-            if (! $parentOfParent instanceof Closure) {
-                return $anonymousFunctionNode;
-            }
 
             $uses = [];
             while ($parentOfParent instanceof Closure) {
@@ -193,7 +190,6 @@ final class AnonymousFunctionFactory
             }
 
             $uses = array_merge($parent->uses, $uses);
-            $uses = $this->cleanUses($uses);
             $parent->uses = $uses;
 
             $parent = $this->betterNodeFinder->findParentType($parent, Closure::class);
@@ -215,26 +211,6 @@ final class AnonymousFunctionFactory
         }
 
         return $uses;
-    }
-
-    /**
-     * @param ClosureUse[] $uses
-     * @return ClosureUse[]
-     */
-    private function cleanUses(array $uses): array
-    {
-        $variableNames = array_map(
-            fn ($use): string => (string) $this->nodeNameResolver->getName($use->var),
-            $uses,
-            []
-        );
-        $variableNames = array_unique($variableNames);
-
-        return array_map(
-            fn ($variableName): ClosureUse => new ClosureUse(new Variable($variableName)),
-            $variableNames,
-            []
-        );
     }
 
     /**
