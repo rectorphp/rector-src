@@ -86,19 +86,7 @@ final class AnonymousFunctionFactory
         }
 
         foreach ($useVariables as $useVariable) {
-            $parent = $this->betterNodeFinder->findParentType($useVariable, Closure::class);
-            while ($parent instanceof Closure) {
-                $parentOfParent = $this->betterNodeFinder->findParentType($parent, Closure::class);
-                if ($parentOfParent instanceof Closure) {
-                    foreach ($parentOfParent->params as $param) {
-                        if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
-                            $parent->uses[] = new ClosureUse($useVariable);
-                        }
-                    }
-                }
-                $parent = $this->betterNodeFinder->findParentType($parent, Closure::class);
-            }
-
+            $anonymousFunctionNode = $this->applyNestedUses($anonymousFunctionNode, $useVariable);
             $anonymousFunctionNode->uses[] = new ClosureUse($useVariable);
         }
 
@@ -185,6 +173,29 @@ final class AnonymousFunctionFactory
         $anonymousFunction->params[] = new Param(new Variable('matches'));
 
         return $anonymousFunction;
+    }
+
+    private function applyNestedUses(Closure $anonymousFunctionNode, Variable $useVariable): Closure
+    {
+        $anonymousFunctionNode = clone $anonymousFunctionNode;
+        $parent = $this->betterNodeFinder->findParentType($useVariable, Closure::class);
+
+        while ($parent instanceof Closure) {
+            $parentOfParent = $this->betterNodeFinder->findParentType($parent, Closure::class);
+            if (! $parentOfParent instanceof Closure) {
+                return $anonymousFunctionNode;
+            }
+
+            foreach ($parentOfParent->params as $param) {
+                if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
+                    $parent->uses[] = new ClosureUse($useVariable);
+                }
+            }
+
+            $parent = $this->betterNodeFinder->findParentType($parent, Closure::class);
+        }
+
+        return $anonymousFunctionNode;
     }
 
     /**
