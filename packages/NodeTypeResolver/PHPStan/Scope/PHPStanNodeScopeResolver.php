@@ -55,6 +55,12 @@ final class PHPStanNodeScopeResolver
      */
     private const NOT_AN_INTERFACE_EXCEPTION_REGEX = '#^Provided node ".*" is not interface, but "class"$#';
 
+    /**
+     * @var string
+     * @see https://regex101.com/r/ozPuC9/1
+     */
+    private const TEMPLATE_EXTENDS_REGEX = '#(\*|\/\/)\s+\@template-extends\s+\\\\?\w+#';
+
     public function __construct(
         private ChangedFilesDetector $changedFilesDetector,
         private DependencyResolver $dependencyResolver,
@@ -119,6 +125,15 @@ final class PHPStanNodeScopeResolver
     }
 
     /**
+     * @param Node[] $nodes
+     */
+    private function isTemplateExtendsInSource(array $nodes): bool
+    {
+        $print = $this->betterStandardPrinter->print($nodes);
+        return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
+    }
+
+    /**
      * @param Stmt[] $nodes
      * @return Stmt[]
      */
@@ -128,6 +143,12 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
+        foreach ($this->changedFilesDetector->getDependentFileInfos($smartFileInfo) as $file) {
+            if ($this->isTemplateExtendsInSource($file->getOldStmts())) {
+                return $nodes;
+            }
+        }
+
         if ($this->isMixinInSource($nodes)) {
             return $nodes;
         }
