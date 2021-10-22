@@ -188,25 +188,12 @@ final class AnonymousFunctionFactory
 
             $uses = [];
             $parentOfParentOfParent = $this->betterNodeFinder->findParentType($parentOfParent, Closure::class);
-            if ($parentOfParentOfParent instanceof Closure) {
-                foreach ($parentOfParentOfParent->params as $param) {
-                    if (! $this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
-                        $uses[] = new ClosureUse($param->var);
-                    }
-                }
-            }
 
-            foreach ($parentOfParent->params as $param) {
-                if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
-                    $uses[] = new ClosureUse($param->var);
-                }
-            }
-
-            if ($uses !== []) {
-                $uses = array_merge($parent->uses, $uses);
-                $uses = $this->cleanUses($uses);
-                $parent->uses = $uses;
-            }
+            $uses = $this->collectUsesNotEqual($parentOfParentOfParent, $uses, $useVariable);
+            $uses = $this->collectUsesEqual($parentOfParent, $uses, $useVariable);
+            $uses = array_merge($parent->uses, $uses);
+            $uses = $this->cleanUses($uses);
+            $parent->uses = $uses;
 
             $parent = $this->betterNodeFinder->findParentType($parent, Closure::class);
         }
@@ -214,13 +201,50 @@ final class AnonymousFunctionFactory
         return $anonymousFunctionNode;
     }
 
+    /**
+     * @param ClosureUse[] $uses
+     * @return ClosureUse[]
+     */
+    private function collectUsesNotEqual(?Closure $closure, array $uses, Variable $useVariable): array
+    {
+        if (! $closure instanceof Closure) {
+            return $uses;
+        }
+
+        foreach ($closure->params as $param) {
+            if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
+                continue;
+            }
+
+            $uses[] = new ClosureUse($param->var);
+        }
+
+        return $uses;
+    }
+
+    /**
+     * @param ClosureUse[] $uses
+     * @return ClosureUse[]
+     */
+    private function collectUsesEqual(Closure $closure, array $uses, Variable $useVariable): array
+    {
+        foreach ($closure->params as $param) {
+            if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
+                $uses[] = new ClosureUse($param->var);
+            }
+        }
+
+        return $uses;
+    }
+
+    /**
+     * @param ClosureUse[] $uses
+     * @return ClosureUse[]
+     */
     private function cleanUses(array $uses): array
     {
         $variableNames = [];
-        foreach ($uses as $key => $use) {
-            $variableNames[] = $this->nodeNameResolver->getName($use->var);
-        }
-
+        $variableNames = array_map(function ($use) { return (string) $this->nodeNameResolver->getName($use->var); }, $uses, $variableNames);
         $variableNames = array_unique($variableNames);
 
         $uses = [];
