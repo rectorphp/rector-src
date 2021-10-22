@@ -244,12 +244,16 @@ final class AnonymousFunctionFactory
     private function cleanUses(array $uses): array
     {
         $variableNames = [];
-        $variableNames = array_map(function ($use) { return (string) $this->nodeNameResolver->getName($use->var); }, $uses, $variableNames);
+        $variableNames = array_map(
+            fn ($use): string => (string) $this->nodeNameResolver->getName($use->var),
+            $uses,
+            $variableNames
+        );
         $variableNames = array_unique($variableNames);
 
         $uses = [];
-        foreach ($variableNames as $variable) {
-            $uses[] = new ClosureUse(new Variable($variable));
+        foreach ($variableNames as $variableName) {
+            $uses[] = new ClosureUse(new Variable($variableName));
         }
 
         return $uses;
