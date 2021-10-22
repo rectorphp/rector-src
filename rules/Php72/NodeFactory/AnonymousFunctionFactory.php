@@ -186,16 +186,49 @@ final class AnonymousFunctionFactory
                 return $anonymousFunctionNode;
             }
 
+            $uses = [];
+            $parentOfParentOfParent = $this->betterNodeFinder->findParentType($parentOfParent, Closure::class);
+            if ($parentOfParentOfParent instanceof Closure) {
+                foreach ($parentOfParentOfParent->params as $param) {
+                    if (! $this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
+                        $uses[] = new ClosureUse($param->var);
+                    }
+                }
+            }
+
             foreach ($parentOfParent->params as $param) {
                 if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
-                    $parent->uses[] = new ClosureUse($useVariable);
+                    $uses[] = new ClosureUse($param->var);
                 }
+            }
+
+            if ($uses !== []) {
+                $uses = array_merge($parent->uses, $uses);
+                $uses = $this->cleanUses($uses);
+                $parent->uses = $uses;
             }
 
             $parent = $this->betterNodeFinder->findParentType($parent, Closure::class);
         }
 
         return $anonymousFunctionNode;
+    }
+
+    private function cleanUses(array $uses): array
+    {
+        $variableNames = [];
+        foreach ($uses as $key => $use) {
+            $variableNames[] = $this->nodeNameResolver->getName($use->var);
+        }
+
+        $variableNames = array_unique($variableNames);
+
+        $uses = [];
+        foreach ($variableNames as $variable) {
+            $uses[] = new ClosureUse(new Variable($variable));
+        }
+
+        return $uses;
     }
 
     /**
