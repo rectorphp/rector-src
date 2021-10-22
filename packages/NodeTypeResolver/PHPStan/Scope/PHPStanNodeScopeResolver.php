@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
+use PhpParser\Parser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
@@ -29,7 +30,6 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Parser\Parser;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
@@ -136,12 +136,12 @@ final class PHPStanNodeScopeResolver
     private function isTemplateExtendsInSource(array $nodes, string $currentFileName): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($currentFileName): bool {
-            if (! $node instanceof ClassConstFetch) { //die('here 0');
+            if (! $node instanceof ClassConstFetch) {
                 return false;
             }
 
             $class = $node->class;
-            if (! $class instanceof FullyQualified) { //die('here 1');
+            if (! $class instanceof FullyQualified) {
                 return false;
             }
 
@@ -171,10 +171,9 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            $smartFileInfo = new SmartFileInfo($reflectionClass->getFileName());
-            $nodes = $this->parser->parseFileInfo($smartFileInfo);
+            $fileNodes = $this->parser->parse(file_get_contents($reflectionClass->getFileName()));
 
-            $print = $this->betterStandardPrinter->print($nodes);
+            $print = $this->betterStandardPrinter->print($fileNodes);
             return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
         });
     }
@@ -189,11 +188,11 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
+        if ($this->isMixinInSource($nodes)) {
             return $nodes;
         }
 
-        if ($this->isMixinInSource($nodes)) {
+        if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
             return $nodes;
         }
 
