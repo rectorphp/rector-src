@@ -71,6 +71,10 @@ final class PHPStanNodeScopeResolver
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private ParentAttributeSourceLocator $parentAttributeSourceLocator,
         private BetterNodeFinder $betterNodeFinder,
+        /**
+         * use \PhpParser\Parser on purpose instead of extended \Rector\Core\PhpParser\Parser\Parser
+         * as detecting `@template-extends` too early on dependent files
+         */
         private Parser $parser,
         private BetterStandardPrinter $betterStandardPrinter,
         private SmartFileSystem $smartFileSystem
@@ -165,6 +169,7 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
+            // already checked in FileProcessor::parseFileInfoToLocalCache()
             if ($fileName === $currentFileName) {
                 return false;
             }
