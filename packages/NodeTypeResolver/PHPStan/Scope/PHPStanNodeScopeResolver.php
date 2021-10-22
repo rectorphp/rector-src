@@ -27,6 +27,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
+use Rector\Core\Application\FileProcessor;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
@@ -58,12 +59,6 @@ final class PHPStanNodeScopeResolver
      * @see https://regex101.com/r/AIA24M/1
      */
     private const NOT_AN_INTERFACE_EXCEPTION_REGEX = '#^Provided node ".*" is not interface, but "class"$#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/ozPuC9/1
-     */
-    private const TEMPLATE_EXTENDS_REGEX = '#(\*|\/\/)\s+\@template-extends\s+\\\\?\w+#';
 
     public function __construct(
         private ChangedFilesDetector $changedFilesDetector,
@@ -178,7 +173,7 @@ final class PHPStanNodeScopeResolver
             $fileNodes = $this->parser->parse($content);
 
             $print = $this->betterStandardPrinter->print($fileNodes);
-            return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
+            return (bool) Strings::match($print, FileProcessor::TEMPLATE_EXTENDS_REGEX);
         });
     }
 
