@@ -39,6 +39,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallN
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Throwable;
+use ReflectionClass;
 
 /**
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
@@ -156,13 +157,17 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            // only do-able with native ReflectionClass as PHPStan it seems cannot be found via ReflectionProvider
-            $classReflection = new \ReflectionClass($className);
-            if ($classReflection->isInternal()) {
+            // only do-able with native ReflectionClass as PHPStan it seems cannot be found via ReflectionProvider yet
+            $reflectionClass = new ReflectionClass($className);
+            if ($reflectionClass->isInternal()) {
                 return false;
             }
 
-            $smartFileInfo = new SmartFileInfo($classReflection->getFileName());
+            if (! file_exists($reflectionClass->getFileName())) {
+                return false;
+            }
+
+            $smartFileInfo = new SmartFileInfo($reflectionClass->getFileName());
             $nodes = $this->parser->parseFileInfo($smartFileInfo);
 
             $print = $this->betterStandardPrinter->print($nodes);
