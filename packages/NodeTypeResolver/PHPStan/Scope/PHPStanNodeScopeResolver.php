@@ -153,6 +153,8 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
+
+
             if (! class_exists($className)) {
                 return false;
             }
@@ -188,11 +190,11 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        if ($this->isMixinInSource($nodes)) {
+        if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
             return $nodes;
         }
 
-        if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
+        if ($this->isMixinInSource($nodes)) {
             return $nodes;
         }
 
