@@ -18,6 +18,13 @@ final class NestedStaticFnUses
     {
         return fn ($foo) => fn ($bar) => fn ($baz) => fn ($bat) => fn () => [$foo, $bar, $baz, $bat];
     }
+
+    public function mixed()
+    {
+        return fn($foo) => fn ($bar) => function () use ($foo, $bar) {
+            return [$foo, $bar];
+        };
+    }
 }
 ?>
 -----
@@ -61,6 +68,17 @@ final class NestedStaticFnUses
                             return [$foo, $bar, $baz, $bat];
                         };
                     };
+                };
+            };
+        };
+    }
+
+    public function mixed()
+    {
+        return function ($foo) {
+            return function ($bar) use ($foo) {
+                return function () use ($foo, $bar) {
+                    return [$foo, $bar];
                 };
             };
         };

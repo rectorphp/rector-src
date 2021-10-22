@@ -98,6 +98,22 @@ final class AnonymousFunctionFactory
         return $anonymousFunctionNode;
     }
 
+    /**
+     * @param ClosureUse[] $uses
+     * @return ClosureUse[]
+     */
+    private function cleanClosureUses(array $uses): array
+    {
+        $variableNames = array_map(
+            fn ($use): string => (string) $this->nodeNameResolver->getName($use->var),
+            $uses,
+            []
+        );
+        $variableNames = array_unique($variableNames);
+
+        return array_map(fn($variableName) => new ClosureUse(new Variable($variableName)), $variableNames, []);
+    }
+
     public function createFromPhpMethodReflection(PhpMethodReflection $phpMethodReflection, Expr $expr): ?Closure
     {
         /** @var FunctionVariantWithPhpDocs $functionVariantWithPhpDoc */
@@ -190,6 +206,7 @@ final class AnonymousFunctionFactory
             }
 
             $uses = array_merge($parent->uses, $uses);
+            $uses = $this->cleanClosureUses($uses);
             $parent->uses = $uses;
 
             $parent = $this->betterNodeFinder->findParentType($parent, Closure::class);
