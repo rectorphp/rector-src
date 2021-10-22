@@ -38,6 +38,7 @@ use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\VoidType;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -60,7 +61,8 @@ final class AnonymousFunctionFactory
         private NodeFactory $nodeFactory,
         private StaticTypeMapper $staticTypeMapper,
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private Parser $parser
+        private Parser $parser,
+        private NodeComparator $nodeComparator
     ) {
     }
 
@@ -84,6 +86,19 @@ final class AnonymousFunctionFactory
         }
 
         foreach ($useVariables as $useVariable) {
+            $parent = $this->betterNodeFinder->findParentType($useVariable, Closure::class);
+            while ($parent instanceof Closure) {
+                $parentOfParent = $this->betterNodeFinder->findParentType($parent, Closure::class);
+                if ($parentOfParent instanceof Closure) {
+                    foreach ($parentOfParent->params as $param) {
+                        if ($this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
+                            $parent->uses[] = new ClosureUse($useVariable);
+                        }
+                    }
+                }
+                $parent = $this->betterNodeFinder->findParentType($parent, Closure::class);
+            }
+
             $anonymousFunctionNode->uses[] = new ClosureUse($useVariable);
         }
 
