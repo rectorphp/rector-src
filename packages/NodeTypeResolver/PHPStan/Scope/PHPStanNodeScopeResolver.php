@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -15,7 +16,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
-use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
 use PHPStan\BetterReflection\Reflector\ClassReflector;
@@ -28,6 +28,7 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Parser\Parser;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
@@ -73,6 +74,7 @@ final class PHPStanNodeScopeResolver
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private ParentAttributeSourceLocator $parentAttributeSourceLocator,
         private BetterNodeFinder $betterNodeFinder,
+        private Parser $parser,
         private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
@@ -131,8 +133,40 @@ final class PHPStanNodeScopeResolver
      */
     private function isTemplateExtendsInSource(array $nodes): bool
     {
-        $print = $this->betterStandardPrinter->print($nodes);
-        return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node): bool {
+            if (! $node instanceof ClassConstFetch) { //die('here 0');
+                return false;
+            }
+
+            $class = $node->class;
+            if (! $class instanceof FullyQualified) { //die('here 1');
+                return false;
+            }
+
+            $className = $class->toString();
+
+            // fix error in parallel test
+            // use function_exists on purpose as using reflectionProvider broke the test in parallel
+            if (function_exists($className)) {
+                return false;
+            }
+
+            if (! class_exists($className)) {
+                return false;
+            }
+
+            // only do-able with native ReflectionClass as PHPStan it seems cannot be found via ReflectionProvider
+            $classReflection = new \ReflectionClass($className);
+            if ($classReflection->isInternal()) {
+                return false;
+            }
+
+            $smartFileInfo = new SmartFileInfo($classReflection->getFileName());
+            $nodes = $this->parser->parseFileInfo($smartFileInfo);
+
+            $print = $this->betterStandardPrinter->print($nodes);
+            return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
+        });
     }
 
     /**
@@ -145,10 +179,8 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        foreach ($this->changedFilesDetector->getDependentFileInfos($smartFileInfo) as $file) {
-            if ($this->isTemplateExtendsInSource($file->getOldStmts())) {
-                return $nodes;
-            }
+        if ($this->isTemplateExtendsInSource($nodes)) {
+            return $nodes;
         }
 
         if ($this->isMixinInSource($nodes)) {
@@ -242,7 +274,7 @@ final class PHPStanNodeScopeResolver
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ $classLike,
         MutatingScope $mutatingScope
-    ): Scope {
+    ): MutatingScope {
         $className = $this->resolveClassName($classLike);
 
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
