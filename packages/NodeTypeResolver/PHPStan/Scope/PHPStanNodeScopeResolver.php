@@ -36,10 +36,10 @@ use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\Core\Stubs\DummyTraitClass;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
+use ReflectionClass;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Throwable;
-use ReflectionClass;
 
 /**
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
@@ -152,8 +152,6 @@ final class PHPStanNodeScopeResolver
             if (function_exists($className)) {
                 return false;
             }
-
-
 
             if (! class_exists($className)) {
                 return false;
