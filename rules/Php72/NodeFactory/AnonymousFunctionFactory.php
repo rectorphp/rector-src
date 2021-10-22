@@ -206,21 +206,6 @@ final class AnonymousFunctionFactory
      * @param ClosureUse[] $uses
      * @return ClosureUse[]
      */
-    private function collectUsesNotEqual(Closure $closure, array $uses, Variable $useVariable): array
-    {
-        foreach ($closure->params as $param) {
-            if (! $this->nodeComparator->areNodesEqual($param->var, $useVariable)) {
-                $uses[] = new ClosureUse($param->var);
-            }
-        }
-
-        return $uses;
-    }
-
-    /**
-     * @param ClosureUse[] $uses
-     * @return ClosureUse[]
-     */
     private function collectUsesEqual(Closure $closure, array $uses, Variable $useVariable): array
     {
         foreach ($closure->params as $param) {
