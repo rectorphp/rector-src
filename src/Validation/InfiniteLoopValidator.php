@@ -26,13 +26,12 @@ final class InfiniteLoopValidator
      */
     public function process(Node $node, Node $originalNode, string $rectorClass): void
     {
-        if (
-            $rectorClass === DowngradeNullsafeToTernaryOperatorRector::class
-            || $rectorClass === ArrowFunctionToAnonymousFunctionRector::class
-        ) {
+        if ($rectorClass === DowngradeNullsafeToTernaryOperatorRector::class) {
             return;
         }
-
+        if ($rectorClass === ArrowFunctionToAnonymousFunctionRector::class) {
+            return;
+        }
         $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE);
 
         // special case
