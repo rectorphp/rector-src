@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -17,7 +18,6 @@ use PhpParser\Parser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
-use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
 use PHPStan\BetterReflection\Reflector\ClassReflector;
@@ -171,7 +171,7 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            $fileNodes = $this->parser->parse(file_get_contents($reflectionClass->getFileName()));
+            $fileNodes = $this->parser->parse(FileSystem::read($reflectionClass->getFileName()));
 
             $print = $this->betterStandardPrinter->print($fileNodes);
             return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
@@ -283,7 +283,7 @@ final class PHPStanNodeScopeResolver
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ $classLike,
         MutatingScope $mutatingScope
-    ): Scope {
+    ): MutatingScope {
         $className = $this->resolveClassName($classLike);
 
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
