@@ -133,9 +133,9 @@ final class PHPStanNodeScopeResolver
     /**
      * @param Node[] $nodes
      */
-    private function isTemplateExtendsInSource(array $nodes): bool
+    private function isTemplateExtendsInSource(array $nodes, string $currentFileName): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node): bool {
+        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($currentFileName): bool {
             if (! $node instanceof ClassConstFetch) { //die('here 0');
                 return false;
             }
@@ -167,6 +167,10 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
+            if ($reflectionClass->getFileName() === $currentFileName) {
+                return false;
+            }
+
             $smartFileInfo = new SmartFileInfo($reflectionClass->getFileName());
             $nodes = $this->parser->parseFileInfo($smartFileInfo);
 
@@ -185,7 +189,7 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        if ($this->isTemplateExtendsInSource($nodes)) {
+        if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
             return $nodes;
         }
 
