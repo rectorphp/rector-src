@@ -39,6 +39,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallN
 use ReflectionClass;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
+use Symplify\SmartFileSystem\SmartFileSystem;
 use Throwable;
 
 /**
@@ -77,7 +78,8 @@ final class PHPStanNodeScopeResolver
         private ParentAttributeSourceLocator $parentAttributeSourceLocator,
         private BetterNodeFinder $betterNodeFinder,
         private Parser $parser,
-        private BetterStandardPrinter $betterStandardPrinter
+        private BetterStandardPrinter $betterStandardPrinter,
+        private SmartFileSystem $smartFileSystem
     ) {
     }
 
@@ -153,25 +155,28 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
+            // use class_exists as PHPStan ReflectionProvider hang on check className with `@template-extends`
             if (! class_exists($className)) {
                 return false;
             }
 
-            // only do-able with native ReflectionClass as PHPStan it seems cannot be found via ReflectionProvider yet
+            // use native ReflectionClass as PHPStan ReflectionProvider hang on check className with `@template-extends`
             $reflectionClass = new ReflectionClass($className);
             if ($reflectionClass->isInternal()) {
                 return false;
             }
 
-            if (! file_exists($reflectionClass->getFileName())) {
+            $fileName = (string) $reflectionClass->getFileName();
+            if (! $this->smartFileSystem->exists($fileName)) {
                 return false;
             }
 
-            if ($reflectionClass->getFileName() === $currentFileName) {
+            if ($fileName === $currentFileName) {
                 return false;
             }
 
-            $fileNodes = $this->parser->parse(FileSystem::read($reflectionClass->getFileName()));
+            $content = $this->smartFileSystem->readFile($fileName);
+            $fileNodes = $this->parser->parse($content);
 
             $print = $this->betterStandardPrinter->print($fileNodes);
             return (bool) Strings::match($print, self::TEMPLATE_EXTENDS_REGEX);
