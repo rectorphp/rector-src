@@ -29,9 +29,11 @@ final class InfiniteLoopValidator
         if ($rectorClass === DowngradeNullsafeToTernaryOperatorRector::class) {
             return;
         }
+
         if ($rectorClass === ArrowFunctionToAnonymousFunctionRector::class) {
             return;
         }
+
         $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE);
 
         // special case
