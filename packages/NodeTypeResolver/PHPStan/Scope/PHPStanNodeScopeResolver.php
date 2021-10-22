@@ -192,6 +192,8 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
+        // it needs to be checked early before `@mixin` check as
+        // ReflectionProvider already hang when check class with `@template-extends`
         if ($this->isTemplateExtendsInSource($nodes, $smartFileInfo->getFilename())) {
             return $nodes;
         }
