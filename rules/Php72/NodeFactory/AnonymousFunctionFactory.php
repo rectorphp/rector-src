@@ -188,7 +188,11 @@ final class AnonymousFunctionFactory
         );
         $variableNames = array_unique($variableNames);
 
-        return array_map(fn ($variableName) => new ClosureUse(new Variable($variableName)), $variableNames, []);
+        return array_map(
+            fn ($variableName): ClosureUse => new ClosureUse(new Variable($variableName)),
+            $variableNames,
+            []
+        );
     }
 
     private function applyNestedUses(Closure $anonymousFunctionNode, Variable $useVariable): Closure
