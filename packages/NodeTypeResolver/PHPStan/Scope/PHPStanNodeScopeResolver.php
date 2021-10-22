@@ -16,6 +16,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
+use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\BetterReflection\Reflection\Exception\NotAnInterfaceReflection;
 use PHPStan\BetterReflection\Reflector\ClassReflector;
@@ -274,7 +275,7 @@ final class PHPStanNodeScopeResolver
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ $classLike,
         MutatingScope $mutatingScope
-    ): MutatingScope {
+    ): Scope {
         $className = $this->resolveClassName($classLike);
 
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
