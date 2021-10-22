@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class Foo
+final class DoNotRemoveNonEmptyStringDocblock
 {
     /**
      * @var string
@@ -16,7 +16,7 @@ final class Foo
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class Foo
+final class DoNotRemoveNonEmptyStringDocblock
 {
     /**
      * @psalm-var non-empty-string
