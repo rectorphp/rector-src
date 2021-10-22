@@ -13,6 +13,11 @@ final class NestedStaticFnUses
     {
         return fn ($foo) => fn ($bar) => fn ($baz) => fn () => [$foo, $bar, $baz];
     }
+
+    public function toomany()
+    {
+        return fn ($foo) => fn ($bar) => fn ($baz) => fn ($bat) => fn () => [$foo, $bar, $baz, $bat];
+    }
 }
 ?>
 -----
@@ -40,6 +45,21 @@ final class NestedStaticFnUses
                 return function ($baz) use ($foo, $bar) {
                     return function () use ($foo, $bar, $baz) {
                         return [$foo, $bar, $baz];
+                    };
+                };
+            };
+        };
+    }
+
+    public function toomany()
+    {
+        return function ($foo) {
+            return function ($bar) use ($foo) {
+                return function ($baz) use ($foo, $bar) {
+                    return function ($bat) use ($bar, $foo, $baz) {
+                        return function () use ($foo, $bar, $baz, $bat) {
+                            return [$foo, $bar, $baz, $bat];
+                        };
                     };
                 };
             };
