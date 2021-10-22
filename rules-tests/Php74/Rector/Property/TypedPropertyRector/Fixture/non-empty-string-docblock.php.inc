@@ -16,7 +16,11 @@ final class Foo
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-// what is expected code?
-// should remain the same? delete part bellow ----- (included)
-
+final class Foo
+{
+    /**
+     * @psalm-var non-empty-string
+     */
+    private string $name;
+}
 ?>
