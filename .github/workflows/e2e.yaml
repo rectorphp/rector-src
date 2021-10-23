@@ -1,0 +1,37 @@
+# This workflow runs system tests: Use the Rector application from the source
+# checkout to process "fixture" projects in e2e/ directory
+# to see if those can be processed successfully
+name: End to End tests
+
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    end_to_end:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php_version: ['8.0']
+                directory:
+                    - 'e2e/enums'
+
+        name: End to end test - ${{ matrix.directory }}
+
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php_version }}
+                    coverage: none
+
+            -
+                run: composer install --ansi
+                working-directory: ${{ matrix.directory }}
+
+            -
+                run: vendor/bin/rector process src --dry-run --ansi
+                working-directory: ${{ matrix.directory }}
