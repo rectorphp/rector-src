@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\Fixture;
 
-final class Collection
+final class SkipTypedArrayProperty
 {
     private array $items;
 
