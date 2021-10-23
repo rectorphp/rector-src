@@ -24,5 +24,4 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(\Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
     $services->set(AddMethodCallBasedStrictParamTypeRector::class);
-
 };
