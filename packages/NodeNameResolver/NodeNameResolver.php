@@ -210,7 +210,7 @@ final class NodeNameResolver
         return $renameMap[$name] ?? null;
     }
 
-    private function isCallOrIdentifier(Node $node): bool
+    private function isCallOrIdentifier(Expr|Identifier $node): bool
     {
         if (! $node instanceof Expr) {
             return $node instanceof Identifier;

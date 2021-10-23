@@ -88,7 +88,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     }
 
     private function processFqnNameImport(
-        PhpParserNode $phpParserNode,
+        ?\PhpParser\Node $phpParserNode,
         IdentifierTypeNode $identifierTypeNode,
         FullyQualifiedObjectType $fullyQualifiedObjectType,
         File $file

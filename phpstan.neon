@@ -336,9 +336,10 @@ parameters:
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
 
         -
-            message: '#Class cognitive complexity is \d+, keep it under 50#'
+            message: '#Class cognitive complexity is \d+, keep it under \d+#'
             paths:
                 - packages/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
+                - src/Rector/AbstractRector.php
 
         - '#Cognitive complexity for "Rector\\PHPStanStaticTypeMapper\\TypeMapper\\UnionTypeMapper\:\:mapToPhpParserNode\(\)" is 10, keep it under 9#'
 
