@@ -60,13 +60,11 @@ final class AliasedObjectType extends ObjectType
     {
         // compare with FQN classes
         if ($type instanceof TypeWithClassName) {
-            if ($type instanceof self) {
-                if ($this->getFullyQualifiedClass() === $type->getFullyQualifiedClass()) {
-                    return true;
-                }
+            if ($type instanceof self && $this->fullyQualifiedClass === $type->getFullyQualifiedClass()) {
+                return true;
             }
 
-            if ($this->getFullyQualifiedClass() === $type->getClassName()) {
+            if ($this->fullyQualifiedClass === $type->getClassName()) {
                 return true;
             }
         }
