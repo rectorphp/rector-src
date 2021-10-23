@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php71\NodeAnalyzer;
 
-use PHPStan\Reflection\PropertyReflection;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -12,6 +11,7 @@ use PhpParser\Node\Stmt;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
+use PHPStan\Reflection\PropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\TypeWithClassName;
