@@ -20,6 +20,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(ParamTypeFromStrictTypedPropertyRector::class);
     $services->set(ReturnTypeFromStrictTypedCallRector::class);
     $services->set(AddVoidReturnTypeWhereNoReturnRector::class);
-    // $services->set(AddMethodCallBasedStrictParamTypeRector::class);
     $services->set(ReturnTypeFromReturnNewRector::class);
+
+    $services->set(\Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
+    $services->set(AddMethodCallBasedStrictParamTypeRector::class);
+
 };

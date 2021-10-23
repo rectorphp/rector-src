@@ -11,6 +11,7 @@ use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -24,4 +25,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // $services->set(AddParamTypeFromCallersRector::class);
     $services->set(ParamTypeByParentCallTypeRector::class);
     $services->set(ParamTypeByMethodCallTypeRector::class);
+
 };
