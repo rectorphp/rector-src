@@ -8,6 +8,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\Type;
+use PHPStan\Type\TypeWithClassName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class AliasedObjectType extends ObjectType
@@ -52,5 +54,23 @@ final class AliasedObjectType extends ObjectType
         $use->type = Use_::TYPE_FUNCTION;
 
         return $use;
+    }
+
+    public function equals(Type $type): bool
+    {
+        // compare with FQN classes
+        if ($type instanceof TypeWithClassName) {
+            if ($type instanceof self) {
+                if ($this->getFullyQualifiedClass() === $type->getFullyQualifiedClass()) {
+                    return true;
+                }
+            }
+
+            if ($this->getFullyQualifiedClass() === $type->getClassName()) {
+                return true;
+            }
+        }
+
+        return parent::equals($type);
     }
 }

@@ -212,11 +212,11 @@ final class NodeNameResolver
 
     private function isCallOrIdentifier(Expr|Identifier $node): bool
     {
-        if (! $node instanceof Expr) {
-            return $node instanceof Identifier;
+        if ($node instanceof Expr) {
+            return $this->callAnalyzer->isObjectCall($node);
         }
 
-        return $this->callAnalyzer->isObjectCall($node);
+        return true;
     }
 
     private function isSingleName(Node $node, string $name): bool

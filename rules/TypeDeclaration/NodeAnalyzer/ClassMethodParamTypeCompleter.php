@@ -87,6 +87,10 @@ final class ClassMethodParamTypeCompleter
             return true;
         }
 
+        if ($currentParameterStaticType->equals($argumentStaticType)) {
+            return true;
+        }
+
         // already completed → skip
         return $currentParameterStaticType->equals($argumentStaticType);
     }

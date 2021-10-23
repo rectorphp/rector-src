@@ -65,6 +65,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             $node,
             $this->currentPhpParserNode
         );
+
         if (! $staticType instanceof FullyQualifiedObjectType) {
             return null;
         }
@@ -79,6 +80,10 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
+        if ($this->currentPhpParserNode === null) {
+            throw new ShouldNotHappenException();
+        }
+
         return $this->processFqnNameImport($this->currentPhpParserNode, $node, $staticType, $file);
     }
 
@@ -88,7 +93,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     }
 
     private function processFqnNameImport(
-        ?\PhpParser\Node $phpParserNode,
+        PhpParserNode $phpParserNode,
         IdentifierTypeNode $identifierTypeNode,
         FullyQualifiedObjectType $fullyQualifiedObjectType,
         File $file
@@ -180,10 +185,15 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     private function processDoctrineAnnotationTagValueNode(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
     ): void {
+        $currentPhpParserNode = $this->currentPhpParserNode;
+        if (! $currentPhpParserNode instanceof PhpParserNode) {
+            throw new ShouldNotHappenException();
+        }
+
         $identifierTypeNode = $doctrineAnnotationTagValueNode->identifierTypeNode;
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $identifierTypeNode,
-            $this->currentPhpParserNode
+            $currentPhpParserNode
         );
 
         if (! $staticType instanceof FullyQualifiedObjectType) {
@@ -200,7 +210,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $shortentedIdentifierTypeNode = $this->processFqnNameImport(
-            $this->currentPhpParserNode,
+            $currentPhpParserNode,
             $identifierTypeNode,
             $staticType,
             $file
@@ -229,9 +239,14 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $attributeClass = ltrim($spacelessPhpDocTagNode->name, '@\\');
         $identifierTypeNode = new IdentifierTypeNode($attributeClass);
 
+        $currentPhpParserNode = $this->currentPhpParserNode;
+        if (! $currentPhpParserNode instanceof PhpParserNode) {
+            throw new ShouldNotHappenException();
+        }
+
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             new IdentifierTypeNode($attributeClass),
-            $this->currentPhpParserNode
+            $currentPhpParserNode
         );
 
         if (! $staticType instanceof FullyQualifiedObjectType) {
@@ -248,7 +263,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $importedName = $this->processFqnNameImport(
-            $this->currentPhpParserNode,
+            $currentPhpParserNode,
             $identifierTypeNode,
             $staticType,
             $file
