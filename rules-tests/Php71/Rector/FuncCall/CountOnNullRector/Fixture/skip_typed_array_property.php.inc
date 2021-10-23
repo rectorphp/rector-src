@@ -5,7 +5,7 @@ namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\Fixture;
 final class Collection
 {
     private array $items;
-    
+
     public function __construct()
     {
         $this->items = [];
@@ -16,4 +16,3 @@ final class Collection
         return count($this->items);
     }
 }
-?>
