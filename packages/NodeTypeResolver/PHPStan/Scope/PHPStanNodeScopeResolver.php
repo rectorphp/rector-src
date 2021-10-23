@@ -6,7 +6,6 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -142,16 +141,11 @@ final class PHPStanNodeScopeResolver
     private function isTemplateExtendsInSource(array $nodes, string $currentFileName): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use ($currentFileName): bool {
-            if (! $node instanceof ClassConstFetch) {
+            if (! $node instanceof FullyQualified) {
                 return false;
             }
 
-            $class = $node->class;
-            if (! $class instanceof FullyQualified) {
-                return false;
-            }
-
-            $className = $class->toString();
+            $className = $node->toString();
 
             // fix error in parallel test
             // use function_exists on purpose as using reflectionProvider broke the test in parallel
