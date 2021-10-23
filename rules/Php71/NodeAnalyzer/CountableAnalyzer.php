@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php71\NodeAnalyzer;
 
-use PHPStan\Reflection\Php\PhpPropertyReflection;
-use PHPStan\Type\ArrayType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Stmt;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\NodeNameResolver\NodeNameResolver;
