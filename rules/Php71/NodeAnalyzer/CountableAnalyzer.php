@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Php71\NodeAnalyzer;
 
+use PHPStan\Reflection\Php\PhpPropertyReflection;
+use PHPStan\Type\ArrayType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -12,6 +14,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class CountableAnalyzer
@@ -60,6 +63,16 @@ final class CountableAnalyzer
         $propertiesDefaults = $nativeReflectionClass->getDefaultProperties();
 
         if (! array_key_exists($propertyName, $propertiesDefaults)) {
+            return false;
+        }
+
+        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+        $property = $classReflection->getProperty($propertyName, $scope);
+        if (! $property instanceof PhpPropertyReflection) {
+            return false;
+        }
+
+        if ($property->getNativeType() instanceof ArrayType) {
             return false;
         }
 
