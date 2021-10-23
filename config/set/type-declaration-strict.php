@@ -10,6 +10,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyR
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Param\ParamTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -22,6 +23,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(AddVoidReturnTypeWhereNoReturnRector::class);
     $services->set(ReturnTypeFromReturnNewRector::class);
 
-    $services->set(\Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
+    $services->set(TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
     $services->set(AddMethodCallBasedStrictParamTypeRector::class);
 };
