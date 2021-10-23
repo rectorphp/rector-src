@@ -13,7 +13,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\PropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -74,7 +73,8 @@ final class CountableAnalyzer
             return false;
         }
 
-        if ($phpPropertyReflection->getNativeType() instanceof ArrayType) {
+        $nativeType = $phpPropertyReflection->getNativeType();
+        if ($nativeType->isIterable()->yes()) {
             return false;
         }
 
