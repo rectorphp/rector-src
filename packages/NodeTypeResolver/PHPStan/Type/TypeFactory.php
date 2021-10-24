@@ -192,6 +192,7 @@ final class TypeFactory
                 PhpVersionFeature::STATIC_RETURN_TYPE
             )) {
                 /** @var ObjectType $traversedType */
+<<<<<<< HEAD
                 $className = $traversedType->getClassName();
                 if (! $this->reflectionProvider->hasClass($className)) {
                     throw new ShouldNotHappenException();
@@ -199,6 +200,13 @@ final class TypeFactory
 
                 $classReflection = $this->reflectionProvider->getClass($className);
                 return new ThisType($classReflection);
+=======
+<<<<<<< HEAD
+                return new ThisType($traversedType->getClassName());
+=======
+                return $this->normalizeStaticType($traversedType);
+>>>>>>> bd713da77... getFileName() now returns null
+>>>>>>> PHPStan\Reflection\ClassReflection::getFileName() now returns null|string
             }
 
             if ($this->isStatic($traversedType)) {
@@ -238,5 +246,16 @@ final class TypeFactory
         }
 
         return $type->getClassName() === ObjectReference::SELF()->getValue();
+    }
+
+    private function normalizeStaticType(ObjectType $traversedType): ThisType
+    {
+        /** @var ObjectType $traversedType */
+        $classReflection = $traversedType->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            throw new ShouldNotHappenException();
+        }
+
+        return new ThisType($classReflection);
     }
 }

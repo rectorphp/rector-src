@@ -91,15 +91,25 @@ final class FamilyRelationsAnalyzer
         $kindPropertyFetch = $this->getKindPropertyFetch($property);
 
         $className = $property->getAttribute(AttributeKey::CLASS_NAME);
+<<<<<<< HEAD
 
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             $ancestorClassName = $ancestorClassReflection->getName();
             if ($ancestorClassName === $className) {
+=======
+        foreach ($ancestors as $ancestorClassReflection) {
+            $ancestorName = $ancestorClassReflection->getName();
+            if ($ancestorName === $className) {
+>>>>>>> getFileName() now returns null
                 continue;
             }
 
             $fileName = $ancestorClassReflection->getFileName();
+<<<<<<< HEAD
             if ($fileName === false) {
+=======
+            if ($fileName === null) {
+>>>>>>> getFileName() now returns null
                 continue;
             }
 
