@@ -91,7 +91,10 @@ CODE_SAMPLE
         }
 
         $value = $this->valueResolver->getValue($args[0]->value);
-        if (is_string($value) || is_array($value)) {
+        if (is_string($value)) {
+            return true;
+        }
+        if (is_array($value)) {
             return true;
         }
 
