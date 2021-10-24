@@ -94,6 +94,7 @@ CODE_SAMPLE
         if (is_string($value)) {
             return true;
         }
+
         if (is_array($value)) {
             return true;
         }
