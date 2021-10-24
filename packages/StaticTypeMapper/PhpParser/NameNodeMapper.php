@@ -76,37 +76,14 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
             return new MixedType();
         }
 
-<<<<<<< HEAD
         $classReflection = $this->reflectionProvider->getClass($className);
 
-=======
-<<<<<<< HEAD
->>>>>>> StaticType requires ClassReflection on constructor
         if ($reference === ObjectReference::STATIC()->getValue()) {
             return new StaticType($classReflection);
         }
 
         if ($reference === ObjectReference::PARENT()->getValue()) {
-<<<<<<< HEAD
             return new ParentStaticType($classReflection);
-=======
-            return new ParentStaticType($className);
-        }
-
-        if ($this->reflectionProvider->hasClass($className)) {
-            $classReflection = $this->reflectionProvider->getClass($className);
-            return new ThisType($classReflection);
-=======
-        $classReflection = $this->reflectionProvider->getClass($className);
-
-        if ($reference === 'static') {
-            return new StaticType($classReflection);
-        }
-
-        if ($reference === 'parent') {
-            return new ParentStaticType($classReflection);
->>>>>>> ThisType needs reflection
->>>>>>> StaticType requires ClassReflection on constructor
         }
 
         return new ThisType($classReflection);

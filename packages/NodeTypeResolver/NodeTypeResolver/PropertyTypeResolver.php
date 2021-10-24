@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Analyser\Scope;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -19,12 +21,17 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class PropertyTypeResolver implements NodeTypeResolverInterface
 {
-    private NodeTypeResolver $nodeTypeResolver;
+    private PropertyFetchFinder $propertyFetchFinder;
+
+    private PhpDocInfoFactory $phpDocInfoFactory;
 
     #[Required]
-    public function autowirePropertyTypeResolver(NodeTypeResolver $nodeTypeResolver): void
-    {
-        $this->nodeTypeResolver = $nodeTypeResolver;
+    public function autowirePropertyTypeResolver(
+        PropertyFetchFinder $propertyFetchFinder,
+        PhpDocInfoFactory $phpDocInfoFactory
+    ): void {
+        $this->propertyFetchFinder = $propertyFetchFinder;
+        $this->phpDocInfoFactory = $phpDocInfoFactory;
     }
 
     /**
@@ -40,10 +47,23 @@ final class PropertyTypeResolver implements NodeTypeResolverInterface
      */
     public function resolve(Node $node): Type
     {
-        // fake property to local PropertyFetch → PHPStan understands that
-        $propertyFetch = new PropertyFetch(new Variable('this'), (string) $node->props[0]->name);
-        $propertyFetch->setAttribute(AttributeKey::SCOPE, $node->getAttribute(AttributeKey::SCOPE));
+        $class = $node->getAttribute(AttributeKey::CLASS_NODE);
 
-        return $this->nodeTypeResolver->getType($propertyFetch);
+        $propertyName = $node->props[0]->name->toString();
+        $localPropertyFetches = $this->propertyFetchFinder->findLocalPropertyFetchesByName($class, $propertyName);
+
+        foreach ($localPropertyFetches as $localPropertyFetch) {
+            $scope = $localPropertyFetch->getAttribute(AttributeKey::SCOPE);
+            if ($scope instanceof Scope) {
+                return $scope->getType($localPropertyFetch);
+            }
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if ($phpDocInfo instanceof PhpDocInfo) {
+            return $phpDocInfo->getVarType();
+        }
+
+        return new MixedType();
     }
 }

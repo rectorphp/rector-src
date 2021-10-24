@@ -10,10 +10,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ClassReflection;
-<<<<<<< HEAD
-=======
 use PHPStan\Reflection\ReflectionProvider;
->>>>>>> StaticType requires ClassReflection on constructor
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
@@ -106,32 +103,12 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function mapParent(Scope $scope): ParentStaticType | MixedType
     {
-<<<<<<< HEAD
         $parentClassReflection = $this->parentClassScopeResolver->resolveParentClassReflection($scope);
         if (! $parentClassReflection instanceof ClassReflection) {
             return new MixedType();
         }
 
         return new ParentStaticType($parentClassReflection);
-=======
-<<<<<<< HEAD
-        $parentClassName = $this->parentClassScopeResolver->resolveParentClassName($node);
-        if ($parentClassName === null) {
-            return new MixedType();
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            throw new ShouldNotHappenException();
-=======
-        $parentClassReflection = $this->parentClassScopeResolver->resolveParentClassReflection($node);
-        if ($parentClassReflection instanceof ClassReflection) {
-            return new ParentStaticType($parentClassReflection);
->>>>>>> StaticType requires ClassReflection on constructor
-        }
-
-        return new ParentStaticType($classReflection);
->>>>>>> NativeFunctionReflection has new parameter
     }
 
     private function mapStatic(Node $node, Scope $scope): MixedType | StaticType
@@ -142,19 +119,11 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
             return new MixedType();
         }
 
-<<<<<<< HEAD
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             throw new ShouldNotHappenException();
         }
 
-=======
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return new MixedType();
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
->>>>>>> StaticType requires ClassReflection on constructor
         return new StaticType($classReflection);
     }
 }
