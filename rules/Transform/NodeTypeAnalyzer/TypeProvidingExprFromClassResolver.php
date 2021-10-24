@@ -89,8 +89,8 @@ final class TypeProvidingExprFromClassResolver
 =======
         $nativeClassReflections = $classReflection->getNativeReflection();
 
-        foreach ($nativeClassReflections->getMethods() as $nativeMethodReflection) {
-            $methodReflection = $classReflection->getNativeMethod($nativeMethodReflection->getName());
+        foreach ($nativeClassReflections->getMethods() as $reflectionMethod) {
+            $methodReflection = $classReflection->getNativeMethod($reflectionMethod->getName());
 
 >>>>>>> 2fd45482d... ThisType
 <<<<<<< HEAD

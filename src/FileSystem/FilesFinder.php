@@ -116,6 +116,7 @@ final class FilesFinder
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (! $realPath) {
                 //dead symlink
 =======
@@ -127,6 +128,11 @@ final class FilesFinder
                 // dead symlink
 >>>>>>> 1408eb0e7... more precise types
 >>>>>>> abd995e94... ThisType needs reflection
+=======
+            if ($realPath === '') {
+                // dead symlink
+>>>>>>> d8a61e02a... fixup! more precise types
+>>>>>>> 8c175bebc... [CI] use PHPStan 1 for packages too
                 return false;
             }
 

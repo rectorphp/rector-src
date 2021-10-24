@@ -249,6 +249,7 @@ final class ReturnTypeInferer
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private function resolveUnionStaticTypes(UnionType $unionType, bool $isSupportedStaticReturnType): UnionType|null
     {
         $resolvedTypes = [];
@@ -271,11 +272,17 @@ final class ReturnTypeInferer
 =======
     private function resolveStaticType(bool $isSupportedStaticReturnType, FullyQualifiedObjectType $type): ?ThisType
     {
+=======
+    private function resolveStaticType(
+        bool $isSupportedStaticReturnType,
+        FullyQualifiedObjectType $fullyQualifiedObjectType
+    ): ?ThisType {
+>>>>>>> [CI] use PHPStan 1 for packages too
         if (! $isSupportedStaticReturnType) {
             return null;
         }
 
-        $classReflection = $type->getClassReflection();
+        $classReflection = $fullyQualifiedObjectType->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             throw new ShouldNotHappenException();
         }
@@ -296,7 +303,7 @@ final class ReturnTypeInferer
                 continue;
             }
 
-            /** @var \Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType $returnType */
+            /** @var FullyQualifiedObjectType $returnType */
             $returnTypeClassReflection = $returnType->getClassReflection();
             if (! $returnTypeClassReflection instanceof ClassReflection) {
                 throw new ShouldNotHappenException();
