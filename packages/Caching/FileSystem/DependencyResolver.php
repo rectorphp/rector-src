@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Dependency\DependencyResolver as PHPStanDependencyResolver;
-use PHPStan\File\FileHelper;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 final class DependencyResolver
@@ -16,7 +15,6 @@ final class DependencyResolver
     public function __construct(
         private NodeScopeResolver $nodeScopeResolver,
         private PHPStanDependencyResolver $phpStanDependencyResolver,
-        private FileHelper $fileHelper,
         private PrivatesAccessor $privatesAccessor
     ) {
     }
