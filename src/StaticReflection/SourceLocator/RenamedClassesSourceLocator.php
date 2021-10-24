@@ -27,7 +27,7 @@ final class RenamedClassesSourceLocator implements SourceLocator
 
     public function locateIdentifier(Reflector $reflector, Identifier $identifier): ?Reflection
     {
-        foreach ($this->renamedClassesDataCollector->getOldToNewClasses() as $oldClass => $newClass) {
+        foreach (array_keys($this->renamedClassesDataCollector->getOldToNewClasses()) as $oldClass) {
             if ($identifier->getName() !== $oldClass) {
                 continue;
             }
@@ -39,6 +39,9 @@ final class RenamedClassesSourceLocator implements SourceLocator
         return null;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function locateIdentifiersByType(Reflector $reflector, IdentifierType $identifierType): array
     {
         return [];
