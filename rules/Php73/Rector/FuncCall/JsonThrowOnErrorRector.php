@@ -90,6 +90,11 @@ CODE_SAMPLE
             }
         }
 
+        $value = $this->valueResolver->getValue($args[0]->value);
+        if (is_string($value) || is_array($value)) {
+            return true;
+        }
+
         return (bool) $this->betterNodeFinder->findFirstNext($funcCall, function (Node $node): bool {
             if (! $node instanceof FuncCall) {
                 return false;
