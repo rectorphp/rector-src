@@ -295,10 +295,16 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     private function matchTwoObjectTypes(UnionType $unionType): ?TypeWithClassName
     {
-        /** @var TypeWithClassName $unionedType */
         foreach ($unionType->getTypes() as $unionedType) {
-            /** @var TypeWithClassName $nestedUnionedType */
+            if (! $unionedType instanceof TypeWithClassName) {
+                throw new ShouldNotHappenException();
+            }
+
             foreach ($unionType->getTypes() as $nestedUnionedType) {
+                if (! $nestedUnionedType instanceof TypeWithClassName) {
+                    throw new ShouldNotHappenException();
+                }
+
                 if (! $this->areTypeWithClassNamesRelated($unionedType, $nestedUnionedType)) {
                     continue 2;
                 }
