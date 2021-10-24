@@ -31,30 +31,7 @@ final class DependencyResolver
             'analysedFiles'
         );
 
-        $dependencyFiles = [];
-
         $nodeDependencies = $this->phpStanDependencyResolver->resolveDependencies($node, $mutatingScope);
-        foreach ($nodeDependencies as $nodeDependency) {
-            $dependencyFile = $nodeDependency->getFileName();
-            if (! $dependencyFile) {
-                continue;
-            }
-
-            $dependencyFile = $this->fileHelper->normalizePath($dependencyFile);
-            if ($mutatingScope->getFile() === $dependencyFile) {
-                continue;
-            }
-
-            // only work with files that we've analysed
-            if (! in_array($dependencyFile, $analysedFileAbsolutesPaths, true)) {
-                continue;
-            }
-
-            $dependencyFiles[] = $dependencyFile;
-        }
-
-        $dependencyFiles = array_unique($dependencyFiles, SORT_STRING);
-
-        return array_values($dependencyFiles);
+        return $nodeDependencies->getFileDependencies($mutatingScope->getFile(), $analysedFileAbsolutesPaths);
     }
 }
