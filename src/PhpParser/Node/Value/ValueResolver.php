@@ -199,7 +199,7 @@ final class ValueResolver
     /**
      * @return mixed[]
      */
-    private function extractConstantArrayTypeValue(ConstantArrayType $constantArrayType): array
+    private function extractConstantArrayTypeValue(ConstantArrayType $constantArrayType): ?array
     {
         $keys = [];
         foreach ($constantArrayType->getKeyTypes() as $i => $keyType) {
@@ -214,8 +214,7 @@ final class ValueResolver
             } elseif ($valueType instanceof ConstantScalarType) {
                 $value = $valueType->getValue();
             } else {
-                // not sure about value
-                continue;
+                return null;
             }
 
             $values[$keys[$i]] = $value;
