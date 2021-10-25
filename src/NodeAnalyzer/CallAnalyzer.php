@@ -34,7 +34,8 @@ final class CallAnalyzer
     }
 
     #[Required]
-    public function autowireCallAnalyzer(BetterNodeFinder $betterNodeFinder): void {
+    public function autowireCallAnalyzer(BetterNodeFinder $betterNodeFinder): void
+    {
         $this->betterNodeFinder = $betterNodeFinder;
     }
 
