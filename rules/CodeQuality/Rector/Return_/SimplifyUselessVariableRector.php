@@ -84,7 +84,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->callAnalyzer->isNewInstance($this->betterNodeFinder, $previousVariableNode)) {
+        if ($this->callAnalyzer->isNewInstance($previousVariableNode)) {
             return null;
         }
 
