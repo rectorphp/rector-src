@@ -13,6 +13,7 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\MixedType;
+use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Core\Rector\AbstractRector;
@@ -28,7 +29,8 @@ final class SimplifyUselessVariableRector extends AbstractRector
 {
     public function __construct(
         private AssignAndBinaryMap $assignAndBinaryMap,
-        private VariableAnalyzer $variableAnalyzer
+        private VariableAnalyzer $variableAnalyzer,
+        private CallAnalyzer $callAnalyzer
     ) {
     }
 
@@ -79,6 +81,10 @@ CODE_SAMPLE
         $previousVariableNode = $previousNode->var;
 
         if ($this->hasSomeComment($previousVariableNode)) {
+            return null;
+        }
+
+        if ($this->callAnalyzer->isNewInstance($this->betterNodeFinder, $previousVariableNode)) {
             return null;
         }
 
