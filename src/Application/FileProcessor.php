@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use Nette\Utils\Strings;
-use PhpParser\Lexer;
 use PhpParser\Node;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
@@ -24,7 +23,6 @@ final class FileProcessor
 
     public function __construct(
         private AffectedFilesCollector $affectedFilesCollector,
-        private Lexer $lexer,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private RectorParser $parser,
         private RectorNodeTraverser $rectorNodeTraverser,
@@ -36,8 +34,10 @@ final class FileProcessor
     {
         // store tokens by absolute path, so we don't have to print them right now
         $smartFileInfo = $file->getSmartFileInfo();
-        $oldStmts = $this->parser->parseFileInfo($smartFileInfo);
-        $oldTokens = $this->lexer->getTokens();
+        $stmtsAndTokens = $this->parser->parseFileToStmtsAndTokens($smartFileInfo);
+
+        $oldStmts = $stmtsAndTokens->getStmts();
+        $oldTokens = $stmtsAndTokens->getTokens();
 
         /**
          * Tweak PHPStan internal issue for has @template-extends that cause endless loop in the process

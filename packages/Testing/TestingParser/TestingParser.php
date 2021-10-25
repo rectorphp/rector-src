@@ -34,7 +34,7 @@ final class TestingParser
         $smartFileInfo = new SmartFileInfo($file);
         $this->parameterProvider->changeParameter(Option::SOURCE, [$file]);
 
-        $nodes = $this->parser->parseFileInfo($smartFileInfo);
+        $nodes = $this->parser->parseFile($smartFileInfo);
 
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
