@@ -9,7 +9,7 @@ use PhpParser\Lexer;
 use PhpParser\Node;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Core\PhpParser\Parser\Parser;
+use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
@@ -26,7 +26,7 @@ final class FileProcessor
         private AffectedFilesCollector $affectedFilesCollector,
         private Lexer $lexer,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private Parser $parser,
+        private RectorParser $parser,
         private RectorNodeTraverser $rectorNodeTraverser,
         private BetterStandardPrinter $betterStandardPrinter
     ) {

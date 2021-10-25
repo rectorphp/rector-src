@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser\Parser;
 
 use PhpParser\Node\Stmt;
-use PhpParser\Parser as NikicParser;
+use PhpParser\Parser;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
-final class Parser
+final class RectorParser
 {
     /**
      * @var array<string, Stmt[]>
@@ -17,7 +17,7 @@ final class Parser
     private array $nodesByFile = [];
 
     public function __construct(
-        private NikicParser $nikicParser,
+        private Parser $parser,
         private SmartFileSystem $smartFileSystem
     ) {
     }
@@ -35,7 +35,7 @@ final class Parser
 
         $fileContent = $this->smartFileSystem->readFile($fileRealPath);
 
-        $nodes = $this->nikicParser->parse($fileContent);
+        $nodes = $this->parser->parse($fileContent);
         if ($nodes === null) {
             $nodes = [];
         }
