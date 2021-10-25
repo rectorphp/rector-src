@@ -125,16 +125,13 @@ CODE_SAMPLE
     ): Namespace_ {
         $nodes = $fileWithoutNamespace->stmts;
 
-        $nodesWithStrictTypesThenNamespace = [];
         foreach ($nodes as $key => $fileWithoutNamespace) {
             if ($fileWithoutNamespace instanceof Declare_) {
-                $nodesWithStrictTypesThenNamespace[] = $fileWithoutNamespace;
                 unset($nodes[$key]);
             }
         }
 
         $namespace = new Namespace_(new Name($expectedNamespace), $nodes);
-        $nodesWithStrictTypesThenNamespace[] = $namespace;
 
         $this->fullyQualifyStmtsAnalyzer->process($nodes);
 

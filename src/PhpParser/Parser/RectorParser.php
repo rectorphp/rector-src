@@ -38,12 +38,12 @@ final class RectorParser
 
         $fileContent = $this->smartFileSystem->readFile($fileRealPath);
 
-        $nodes = $this->parser->parse($fileContent);
-        if ($nodes === null) {
-            $nodes = [];
+        $stmts = $this->parser->parse($fileContent);
+        if ($stmts === null) {
+            $stmts = [];
         }
 
-        $this->nodesByFile[$fileRealPath] = $nodes;
+        $this->nodesByFile[$fileRealPath] = $stmts;
         return $this->nodesByFile[$fileRealPath];
     }
 
