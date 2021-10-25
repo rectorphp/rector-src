@@ -71,10 +71,8 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var Expression $previousNode */
         $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if (! $previousNode instanceof Expression) {
-            return null;
-        }
 
         /** @var AssignOp|Assign $previousNode */
         $previousNode = $previousNode->expr;
@@ -137,10 +135,6 @@ CODE_SAMPLE
         $variableNode = $return->expr;
 
         $previousExpression = $return->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if (! $previousExpression instanceof Node) {
-            return true;
-        }
-
         if (! $previousExpression instanceof Expression) {
             return true;
         }
