@@ -151,6 +151,7 @@ CODE_SAMPLE
         if (ObjectReference::isValid($className)) {
             return true;
         }
+
         if ($className === 'class') {
             return true;
         }
