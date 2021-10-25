@@ -276,16 +276,6 @@ final class NodeFactory
         );
     }
 
-    public function createStaticProtectedPropertyWithDefault(string $name, Node $node): Property
-    {
-        $propertyBuilder = new PropertyBuilder($name);
-        $propertyBuilder->makeProtected();
-        $propertyBuilder->makeStatic();
-        $propertyBuilder->setDefault($node);
-
-        return $propertyBuilder->getNode();
-    }
-
     public function createProperty(string $name): Property
     {
         $propertyBuilder = new PropertyBuilder($name);
