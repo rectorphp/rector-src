@@ -258,7 +258,7 @@ final class ValueResolver
             throw new ShouldNotHappenException();
         }
 
-        if (ObjectReference::SELF()->equals($class)) {
+        if ($class === ObjectReference::SELF()->getValue()) {
             $class = (string) $classConstFetch->class->getAttribute(AttributeKey::CLASS_NAME);
         }
 

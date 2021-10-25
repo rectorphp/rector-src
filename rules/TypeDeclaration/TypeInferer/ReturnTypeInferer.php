@@ -201,7 +201,7 @@ final class ReturnTypeInferer
             return false;
         }
 
-        return ObjectReference::STATIC()->equals($type->getClassName());
+        return $type->getClassName() === ObjectReference::STATIC()->getValue();
     }
 
     /**

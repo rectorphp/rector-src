@@ -146,7 +146,11 @@ final class PropertyFetchFinder
             }
 
             $class = $this->nodeNameResolver->getName($node->class);
-            if (! ObjectReference::isValid($class)) {
+            if (! in_array(
+                $class,
+                [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue(), self::THIS],
+                true
+            )) {
                 return false;
             }
 

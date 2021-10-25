@@ -40,7 +40,7 @@ final class NameTypeResolver implements NodeTypeResolverInterface
      */
     public function resolve(Node $node): Type
     {
-        if (ObjectReference::PARENT()->equals($node->toString())) {
+        if ($node->toString() === ObjectReference::PARENT()->getValue()) {
             return $this->resolveParent($node);
         }
 

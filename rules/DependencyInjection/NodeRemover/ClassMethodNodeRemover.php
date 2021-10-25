@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use Rector\Core\Enum\ObjectReference;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
@@ -88,7 +89,7 @@ final class ClassMethodNodeRemover
             return false;
         }
 
-        if (! $this->nodeNameResolver->isName($node->class, 'parent')) {
+        if (! $this->nodeNameResolver->isName($node->class, ObjectReference::PARENT()->getValue())) {
             return false;
         }
 

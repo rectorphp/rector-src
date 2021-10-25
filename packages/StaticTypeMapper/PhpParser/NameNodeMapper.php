@@ -76,11 +76,11 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
             return new MixedType();
         }
 
-        if (ObjectReference::STATIC()->equals($reference)) {
+        if ($reference === ObjectReference::STATIC()->getValue()) {
             return new StaticType($className);
         }
 
-        if (ObjectReference::PARENT()->equals($reference)) {
+        if ($reference === ObjectReference::PARENT()->getValue()) {
             return new ParentStaticType($className);
         }
 

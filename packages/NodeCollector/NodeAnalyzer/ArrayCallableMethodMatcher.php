@@ -138,7 +138,7 @@ final class ArrayCallableMethodMatcher
     private function resolveClassConstFetchType(ClassConstFetch $classConstFetch): MixedType | ObjectType
     {
         $classConstantReference = $this->valueResolver->getValue($classConstFetch);
-        if (ObjectReference::STATIC()->equals($classConstantReference)) {
+        if (ObjectReference::STATIC()->getValue() === $classConstantReference) {
             $classConstantReference = $classConstFetch->getAttribute(AttributeKey::CLASS_NAME);
         }
 

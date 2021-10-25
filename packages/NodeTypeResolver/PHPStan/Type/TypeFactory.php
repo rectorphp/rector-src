@@ -215,11 +215,19 @@ final class TypeFactory
 
     private function isStatic(Type $type): bool
     {
-        return $type instanceof ObjectType && ObjectReference::STATIC()->equals($type->getClassName());
+        if (! $type instanceof ObjectType) {
+            return false;
+        }
+
+        return $type->getClassName() === ObjectReference::STATIC()->getValue();
     }
 
     private function isSelf(Type $type): bool
     {
-        return $type instanceof ObjectType && ObjectReference::SELF()->equals($type->getClassName());
+        if (! $type instanceof ObjectType) {
+            return false;
+        }
+
+        return $type->getClassName() === ObjectReference::SELF()->getValue();
     }
 }

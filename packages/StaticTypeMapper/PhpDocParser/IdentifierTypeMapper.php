@@ -60,15 +60,15 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
             return new ClassStringType();
         }
 
-        if (ObjectReference::SELF()->equals($loweredName)) {
+        if ($loweredName === ObjectReference::SELF()->getValue()) {
             return $this->mapSelf($node);
         }
 
-        if (ObjectReference::PARENT()->equals($loweredName)) {
+        if ($loweredName === ObjectReference::PARENT()->getValue()) {
             return $this->mapParent($node);
         }
 
-        if (ObjectReference::STATIC()->equals($loweredName)) {
+        if ($loweredName === ObjectReference::STATIC()->getValue()) {
             return $this->mapStatic($node);
         }
 

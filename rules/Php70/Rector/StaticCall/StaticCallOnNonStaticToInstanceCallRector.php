@@ -148,7 +148,7 @@ CODE_SAMPLE
         }
 
         $className = $this->getName($staticCall->class);
-        if (ObjectReference::isValid($className)) {
+        if (ObjectReference::isValid($className) || $className === 'class') {
             return true;
         }
 
