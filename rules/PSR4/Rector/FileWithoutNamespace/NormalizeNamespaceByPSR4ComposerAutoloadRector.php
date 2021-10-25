@@ -93,7 +93,10 @@ CODE_SAMPLE
         }
 
         // is namespace and already correctly named?
-        if ($processNode instanceof Namespace_ && $this->nodeNameResolver->isCaseSensitiveName($processNode, $expectedNamespace)) {
+        if ($processNode instanceof Namespace_ && $this->nodeNameResolver->isCaseSensitiveName(
+            $processNode,
+            $expectedNamespace
+        )) {
             return null;
         }
 
