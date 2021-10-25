@@ -14,7 +14,7 @@ final class FileInfoParser
 {
     public function __construct(
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private RectorParser $parser
+        private RectorParser $rectorParser
     ) {
     }
 
@@ -23,7 +23,7 @@ final class FileInfoParser
      */
     public function parseFileInfoToNodesAndDecorate(SmartFileInfo $smartFileInfo): array
     {
-        $stmts = $this->parser->parseFile($smartFileInfo);
+        $stmts = $this->rectorParser->parseFile($smartFileInfo);
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
 
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);

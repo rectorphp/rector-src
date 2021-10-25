@@ -24,7 +24,7 @@ final class FileProcessor
     public function __construct(
         private AffectedFilesCollector $affectedFilesCollector,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private RectorParser $parser,
+        private RectorParser $rectorParser,
         private RectorNodeTraverser $rectorNodeTraverser,
         private BetterStandardPrinter $betterStandardPrinter
     ) {
@@ -34,7 +34,7 @@ final class FileProcessor
     {
         // store tokens by absolute path, so we don't have to print them right now
         $smartFileInfo = $file->getSmartFileInfo();
-        $stmtsAndTokens = $this->parser->parseFileToStmtsAndTokens($smartFileInfo);
+        $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokens($smartFileInfo);
 
         $oldStmts = $stmtsAndTokens->getStmts();
         $oldTokens = $stmtsAndTokens->getTokens();

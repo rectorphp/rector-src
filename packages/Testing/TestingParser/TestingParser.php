@@ -17,7 +17,7 @@ final class TestingParser
 {
     public function __construct(
         private ParameterProvider $parameterProvider,
-        private RectorParser $parser,
+        private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private BetterNodeFinder $betterNodeFinder
     ) {
@@ -34,7 +34,7 @@ final class TestingParser
         $smartFileInfo = new SmartFileInfo($file);
         $this->parameterProvider->changeParameter(Option::SOURCE, [$file]);
 
-        $nodes = $this->parser->parseFile($smartFileInfo);
+        $nodes = $this->rectorParser->parseFile($smartFileInfo);
 
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
