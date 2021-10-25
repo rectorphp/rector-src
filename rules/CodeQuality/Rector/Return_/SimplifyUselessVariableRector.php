@@ -71,11 +71,11 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Expression $previousNode */
+        /** @var AssignOp|Assign $previousNode */
         $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-        /** @var AssignOp|Assign $previousNode */
         $previousNode = $previousNode->expr;
+
         $previousVariableNode = $previousNode->var;
 
         if ($this->hasSomeComment($previousVariableNode)) {
