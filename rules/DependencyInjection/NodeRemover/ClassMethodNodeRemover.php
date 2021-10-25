@@ -84,7 +84,15 @@ final class ClassMethodNodeRemover
 
     private function isParentConstructStaticCall(Node $node): bool
     {
-        return $this->isStaticCallNamed($node, 'parent', MethodName::CONSTRUCT);
+        if (! $node instanceof StaticCall) {
+            return false;
+        }
+
+        if (! $this->nodeNameResolver->isName($node->class, 'parent')) {
+            return false;
+        }
+
+        return $this->nodeNameResolver->isName($node->name, MethodName::CONSTRUCT);
     }
 
     private function removeParamFromArgs(StaticCall $staticCall, string $paramName): void
@@ -123,18 +131,5 @@ final class ClassMethodNodeRemover
 
             unset($classMethod->stmts[$key]);
         }
-    }
-
-    private function isStaticCallNamed(Node $node, string $class, string $method): bool
-    {
-        if (! $node instanceof StaticCall) {
-            return false;
-        }
-
-        if (! $this->nodeNameResolver->isName($node->class, $class)) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($node->name, $method);
     }
 }

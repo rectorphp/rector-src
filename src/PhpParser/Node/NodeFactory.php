@@ -100,19 +100,16 @@ final class NodeFactory
     /**
      * Creates "\SomeClass::CONSTANT"
      */
-    public function createClassConstFetch(string $className, string $constantName): ClassConstFetch
+    public function createClassConstFetch(string|ObjectReference $className, string $constantName): ClassConstFetch
     {
-        $classNameNode = in_array($className, ObjectReference::REFERENCES, true) ? new Name(
-            $className
-        ) : new FullyQualified($className);
-
-        return $this->createClassConstFetchFromName($classNameNode, $constantName);
+        $name = $this->createName($className);
+        return $this->createClassConstFetchFromName($name, $constantName);
     }
 
     /**
      * Creates "\SomeClass::class"
      */
-    public function createClassConstReference(string $className): ClassConstFetch
+    public function createClassConstReference(string|ObjectReference $className): ClassConstFetch
     {
         return $this->createClassConstFetch($className, 'class');
     }
@@ -273,7 +270,7 @@ final class NodeFactory
     public function createParentConstructWithParams(array $params): StaticCall
     {
         return new StaticCall(
-            new Name(ObjectReference::PARENT),
+            new Name(ObjectReference::PARENT()->getValue()),
             new Identifier(MethodName::CONSTRUCT),
             $this->createArgsFromParams($params)
         );
@@ -415,12 +412,12 @@ final class NodeFactory
     /**
      * @param Node[] $args
      */
-    public function createStaticCall(string $class, string $method, array $args = []): StaticCall
+    public function createStaticCall(string|ObjectReference $class, string $method, array $args = []): StaticCall
     {
-        $class = $this->createClassPart($class);
-        $staticCall = new StaticCall($class, $method);
-        $staticCall->args = $this->createArgs($args);
-        return $staticCall;
+        $name = $this->createName($class);
+        $args = $this->createArgs($args);
+
+        return new StaticCall($name, $method, $args);
     }
 
     /**
@@ -434,8 +431,9 @@ final class NodeFactory
 
     public function createSelfFetchConstant(string $constantName, Node $node): ClassConstFetch
     {
-        $name = new Name('self');
+        $name = new Name(ObjectReference::SELF()->getValue());
         $name->setAttribute(AttributeKey::CLASS_NAME, $node->getAttribute(AttributeKey::CLASS_NAME));
+
         return new ClassConstFetch($name, $constantName);
     }
 
@@ -502,7 +500,11 @@ final class NodeFactory
         $classConstFetch = $this->builderFactory->classConstFetch($className, $constantName);
 
         $classNameString = $className->toString();
-        if (in_array($classNameString, ['self', 'static'], true)) {
+        if (in_array(
+            $classNameString,
+            [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue()],
+            true
+        )) {
             $currentNode = $this->currentNodeProvider->getNode();
             if ($currentNode !== null) {
                 $className = $currentNode->getAttribute(AttributeKey::CLASS_NAME);
@@ -612,15 +614,6 @@ final class NodeFactory
         return $value;
     }
 
-    private function createClassPart(string $class): Name | FullyQualified
-    {
-        if (in_array($class, ObjectReference::REFERENCES, true)) {
-            return new Name($class);
-        }
-
-        return new FullyQualified($class);
-    }
-
     private function decoreateArrayItemWithKey(int | string | null $key, ArrayItem $arrayItem): void
     {
         if ($key !== null) {
@@ -651,5 +644,18 @@ final class NodeFactory
 
         $param->type = $phpParserTypeNode;
         return $param;
+    }
+
+    private function createName(string|ObjectReference $className): FullyQualified|Name
+    {
+        if ($className instanceof ObjectReference) {
+            return new Name($className->getValue());
+        }
+
+        if (ObjectReference::isValid($className)) {
+            return new Name($className);
+        }
+
+        return new FullyQualified($className);
     }
 }

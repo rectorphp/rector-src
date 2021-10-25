@@ -6,25 +6,27 @@ namespace Rector\Core\Enum;
 
 use MyCLabs\Enum\Enum;
 
+/**
+ * @see https://github.com/myclabs/php-enum
+ *
+ * @method static ObjectReference SELF()
+ * @method static ObjectReference STATIC()
+ * @method static ObjectReference PARENT()
+ */
 final class ObjectReference extends Enum
 {
     /**
      * @var string
      */
-    public const SELF = 'self';
+    private const SELF = 'self';
 
     /**
      * @var string
      */
-    public const PARENT = 'parent';
+    private const PARENT = 'parent';
 
     /**
      * @var string
      */
-    public const STATIC = 'static';
-
-    /**
-     * @var string[]
-     */
-    public const REFERENCES = [self::STATIC, self::PARENT, self::SELF];
+    private const STATIC = 'static';
 }
