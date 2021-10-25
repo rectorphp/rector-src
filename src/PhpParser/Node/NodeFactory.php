@@ -48,6 +48,7 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Configuration\CurrentNodeProvider;
+use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeDecorator\PropertyTypeDecorator;
@@ -73,26 +74,6 @@ final class NodeFactory
      * @var string
      */
     private const THIS = 'this';
-
-    /**
-     * @var string
-     */
-    private const REFERENCE_PARENT = 'parent';
-
-    /**
-     * @var string
-     */
-    private const REFERENCE_SELF = 'self';
-
-    /**
-     * @var string
-     */
-    private const REFERENCE_STATIC = 'static';
-
-    /**
-     * @var string[]
-     */
-    private const REFERENCES = [self::REFERENCE_STATIC, self::REFERENCE_PARENT, self::REFERENCE_SELF];
 
     public function __construct(
         private BuilderFactory $builderFactory,
@@ -121,7 +102,7 @@ final class NodeFactory
      */
     public function createClassConstFetch(string $className, string $constantName): ClassConstFetch
     {
-        $classNameNode = in_array($className, self::REFERENCES, true) ? new Name(
+        $classNameNode = in_array($className, ObjectReference::REFERENCES, true) ? new Name(
             $className
         ) : new FullyQualified($className);
 
@@ -292,7 +273,7 @@ final class NodeFactory
     public function createParentConstructWithParams(array $params): StaticCall
     {
         return new StaticCall(
-            new Name(self::REFERENCE_PARENT),
+            new Name(ObjectReference::PARENT),
             new Identifier(MethodName::CONSTRUCT),
             $this->createArgsFromParams($params)
         );
@@ -633,7 +614,7 @@ final class NodeFactory
 
     private function createClassPart(string $class): Name | FullyQualified
     {
-        if (in_array($class, self::REFERENCES, true)) {
+        if (in_array($class, ObjectReference::REFERENCES, true)) {
             return new Name($class);
         }
 
