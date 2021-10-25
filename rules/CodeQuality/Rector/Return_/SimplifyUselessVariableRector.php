@@ -81,10 +81,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->callAnalyzer->isNewInstance($this->betterNodeFinder, $previousVariableNode)) {
-            return null;
-        }
-
         if ($previousNode instanceof Assign) {
             if ($this->isReturnWithVarAnnotation($node)) {
                 return null;
@@ -153,7 +149,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->variableAnalyzer->isStaticOrGlobal($variableNode);
+        if ($this->variableAnalyzer->isStaticOrGlobal($variableNode)) {
+            return true;
+        }
+
+        return $this->callAnalyzer->isNewInstance($previousNode->var);
     }
 
     private function hasSomeComment(Expr $expr): bool
