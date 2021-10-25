@@ -117,8 +117,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReference = $this->resolveClassSelf($node);
-        return $this->nodeFactory->createStaticCall($classReference, $methodName, $node->args);
+        $objectReference = $this->resolveClassSelf($node);
+        return $this->nodeFactory->createStaticCall($objectReference, $methodName, $node->args);
     }
 
     private function resolveClassSelf(MethodCall $methodCall): ObjectReference
