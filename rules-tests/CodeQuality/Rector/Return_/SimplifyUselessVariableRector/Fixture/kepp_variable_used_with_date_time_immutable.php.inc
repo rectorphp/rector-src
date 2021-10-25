@@ -2,7 +2,9 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Return_\SimplifyUselessVariableRector\Fixture;
 
-final class KeppPropertyUsedWithDateTimeImmutable
+use DateTimeImmutable;
+
+final class KeepVariableUsedWithDateTimeImmutable
 {
     public function run()
     {
