@@ -21,12 +21,12 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 final class CallAnalyzer
 {
-    private BetterNodeFinder $betterNodeFinder;
-
     /**
      * @var array<class-string<Expr>>
      */
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
+
+    private BetterNodeFinder $betterNodeFinder;
 
     public function __construct(
         private NodeComparator $nodeComparator
@@ -34,9 +34,7 @@ final class CallAnalyzer
     }
 
     #[Required]
-    public function autowireCallAnalyzer(
-        BetterNodeFinder $betterNodeFinder
-    ): void {
+    public function autowireCallAnalyzer(BetterNodeFinder $betterNodeFinder): void {
         $this->betterNodeFinder = $betterNodeFinder;
     }
 
