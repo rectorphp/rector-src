@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\Return_\SimplifyUselessVariableRector\
 
 use DateTimeImmutable;
 
-final class KeepVariableUsedWithDateTimeImmutable
+final class SkipVariableUsedWithDateTimeImmutable
 {
     public function run()
     {
