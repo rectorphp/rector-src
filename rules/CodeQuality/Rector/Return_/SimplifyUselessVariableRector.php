@@ -153,7 +153,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->callAnalyzer->isNewInstance($previousNode->var);
+        return $this->callAnalyzer->isNewInstance($this->betterNodeFinder, $previousNode->var);
     }
 
     private function hasSomeComment(Expr $expr): bool

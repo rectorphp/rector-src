@@ -203,7 +203,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $this->callAnalyzer->isNewInstance($return->expr)) {
+        if (! $this->callAnalyzer->isNewInstance($this->betterNodeFinder, $return->expr)) {
             return false;
         }
 
