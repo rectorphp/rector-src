@@ -40,12 +40,12 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
+use Rector\Core\PhpParser\Parser\SimplePhpParser;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
-use Symplify\Astral\PhpParser\SmartPhpParser;
 
 final class AnonymousFunctionFactory
 {
@@ -61,7 +61,7 @@ final class AnonymousFunctionFactory
         private NodeFactory $nodeFactory,
         private StaticTypeMapper $staticTypeMapper,
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private SmartPhpParser $smartPhpParser,
+        private SimplePhpParser $simplePhpParser,
         private NodeComparator $nodeComparator
     ) {
     }
@@ -143,7 +143,7 @@ final class AnonymousFunctionFactory
         }
 
         $phpCode = '<?php ' . $expr->value . ';';
-        $contentStmts = $this->smartPhpParser->parseString($phpCode);
+        $contentStmts = $this->simplePhpParser->parseString($phpCode);
 
         $anonymousFunction = new Closure();
 
