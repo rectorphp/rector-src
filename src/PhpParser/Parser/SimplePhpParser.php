@@ -16,11 +16,7 @@ final class SimplePhpParser
     private Parser $phpParser;
 
     public function __construct(
-<<<<<<< HEAD
-        private SmartFileSystem $smartFileSystem
-=======
         private SmartFileSystem $smartFileSystem,
->>>>>>> d3887c673... warn about self/static/parent object reference
     ) {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);

@@ -11,16 +11,20 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StaticType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\NotImplementedYetException;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
@@ -33,8 +37,9 @@ final class ObjectTypeSpecifier
 
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
-        ObjectType $objectType
-    ): ObjectType | AliasedObjectType | ShortenedObjectType | FullyQualifiedObjectType | MixedType {
+        ObjectType $objectType,
+        Scope|null $scope
+    ): ObjectType | AliasedObjectType | ShortenedObjectType | FullyQualifiedObjectType | StaticType | MixedType {
         /** @var Use_[]|null $uses */
         $uses = $node->getAttribute(AttributeKey::USE_NODES);
         if ($uses === null) {
@@ -58,13 +63,16 @@ final class ObjectTypeSpecifier
 
         $className = ltrim($objectType->getClassName(), '\\');
 
-        if ($this->reflectionProvider->hasClass($className)) {
-            return new FullyQualifiedObjectType($className);
+        if (ObjectReference::isValid($className)) {
+            if (! $scope instanceof Scope) {
+                throw new ShouldNotHappenException();
+            }
+
+            return $this->resolveObjectReferenceType($scope, $className);
         }
 
-        if (ObjectReference::isValid($className)) {
-            // @todo return This/Self/Static object
-            throw new NotImplementedYetException();
+        if ($this->reflectionProvider->hasClass($className)) {
+            return new FullyQualifiedObjectType($className);
         }
 
         // invalid type
@@ -238,5 +246,34 @@ final class ObjectTypeSpecifier
         }
 
         return new ShortenedObjectType($objectType->getClassName(), $useUse->name->toString());
+    }
+
+    private function resolveObjectReferenceType(
+        Scope $scope,
+        string $classReferenceValue
+    ): StaticType|FullyQualifiedObjectType|SelfObjectType {
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            throw new ShouldNotHappenException();
+        }
+
+        if (ObjectReference::STATIC()->getValue() === $classReferenceValue) {
+            return new StaticType($classReflection);
+        }
+
+        if (ObjectReference::SELF()->getValue() === $classReferenceValue) {
+            return new SelfObjectType($classReferenceValue, null, $classReflection);
+        }
+
+        if (ObjectReference::PARENT()->getValue()) {
+            $parentClassReflection = $classReflection->getParentClass();
+            if (! $parentClassReflection instanceof ClassReflection) {
+                throw new ShouldNotHappenException();
+            }
+
+            return new FullyQualifiedObjectType($parentClassReflection->getName(), null, $parentClassReflection);
+        }
+
+        throw new ShouldNotHappenException();
     }
 }
