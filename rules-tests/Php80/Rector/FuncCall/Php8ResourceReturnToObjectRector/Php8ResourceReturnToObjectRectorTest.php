@@ -8,7 +8,7 @@ use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class Php8ResourceToObjectRectorTest extends AbstractRectorTestCase
+final class Php8ResourceReturnToObjectRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

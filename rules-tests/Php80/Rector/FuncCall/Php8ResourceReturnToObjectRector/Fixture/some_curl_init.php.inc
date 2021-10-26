@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceToObjectRector\Fixture;
+namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector\Fixture;
 
 class SomeCurlInit
 {
@@ -15,7 +15,7 @@ class SomeCurlInit
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceToObjectRector\Fixture;
+namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector\Fixture;
 
 class SomeCurlInit
 {

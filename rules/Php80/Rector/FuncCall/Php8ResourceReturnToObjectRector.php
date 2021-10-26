@@ -21,9 +21,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://www.php.net/manual/en/migration80.incompatible.php#migration80.incompatible.resource2object
  *
- * @see \Rector\Tests\Php80\Rector\FuncCall\Php8ResourceToObjectRector\Php8ResourceToObjectRectorTest
+ * @see \Rector\Tests\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector\Php8ResourceReturnToObjectRectorTest
  */
-final class Php8ResourceToObjectRector extends AbstractRector implements MinPhpVersionInterface
+final class Php8ResourceReturnToObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
      * @var array<string, string>
