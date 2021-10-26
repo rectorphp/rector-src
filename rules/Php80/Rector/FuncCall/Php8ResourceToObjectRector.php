@@ -64,7 +64,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-
     }
 
     public function provideMinPhpVersion(): int
