@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceToObjectRector;
+namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
