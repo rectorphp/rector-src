@@ -99,6 +99,15 @@ CODE_SAMPLE
         return PhpVersionFeature::PHP8_RESOURCE_TO_OBJECT;
     }
 
+    private function isAssignWithFuncCallExpr(Node $node): bool
+    {
+        if (! $node instanceof Assign) {
+            return false;
+        }
+
+        return $node->expr instanceof FuncCall;
+    }
+
     private function resolveObjectInstanceCheck(FuncCall $funcCall, Expr $expr): ?string
     {
         $objectInstanceCheck = null;
@@ -106,14 +115,11 @@ CODE_SAMPLE
             &$objectInstanceCheck,
             $expr
         ): bool {
-            if (! $subNode instanceof Assign) {
+            if (! $this->isAssignWithFuncCallExpr($subNode)) {
                 return false;
             }
 
-            if (! $subNode->expr instanceof FuncCall) {
-                return false;
-            }
-
+            /** @var Assign $subNode */
             if (! $this->nodeComparator->areNodesEqual($subNode->var, $expr)) {
                 return false;
             }
@@ -133,11 +139,9 @@ CODE_SAMPLE
         }
 
         /** @var string $objectInstanceCheck */
-        if ($this->isDoubleCheck($funcCall, $assign->var, $objectInstanceCheck)) {
-            return null;
-        }
-
-        return $objectInstanceCheck;
+        return $this->isDoubleCheck($funcCall, $assign->var, $objectInstanceCheck)
+            ? null
+            : $objectInstanceCheck;
     }
 
     private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
@@ -147,7 +151,10 @@ CODE_SAMPLE
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($binaryOp, function (Node $subNode) use ($objectInstanceCheck, $expr): bool {
+        return (bool) $this->betterNodeFinder->findFirst($binaryOp, function (Node $subNode) use (
+            $objectInstanceCheck,
+            $expr
+        ): bool {
             if (! $subNode instanceof Instanceof_) {
                 return false;
             }
