@@ -201,8 +201,7 @@ final class BetterStandardPrinter extends Standard
 
         $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
 
-        return parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
-
+        $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
         if ($content === null) {
             return $content;
         }
