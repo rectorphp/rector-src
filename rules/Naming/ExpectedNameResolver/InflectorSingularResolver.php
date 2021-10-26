@@ -58,9 +58,11 @@ final class InflectorSingularResolver
         foreach ($camelCases as $camelCase) {
             $singularValueVarName .= $this->inflector->singularize($camelCase['camelcase']);
         }
+
         if ($singularValueVarName === '') {
             return $currentName;
         }
+
         if ($singularValueVarName === '_') {
             return $currentName;
         }
