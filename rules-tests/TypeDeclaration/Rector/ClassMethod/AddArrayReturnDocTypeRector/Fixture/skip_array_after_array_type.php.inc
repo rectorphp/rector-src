@@ -11,7 +11,6 @@ class SkipArrayAfterArrayType
      */
     public function getNewNamespaceForOldOne(string $namespace): array
     {
-        /** @var string $oldNamespace */
         foreach ($this->getOldToNewNamespaces() as $oldNamespace => $newNamespace) {
             if (Strings::startsWith($namespace, $oldNamespace)) {
                 return [$oldNamespace, $newNamespace];
