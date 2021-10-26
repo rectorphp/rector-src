@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
-use PhpParser\Parser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
@@ -29,6 +28,7 @@ use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
@@ -70,11 +70,7 @@ final class PHPStanNodeScopeResolver
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private ParentAttributeSourceLocator $parentAttributeSourceLocator,
         private BetterNodeFinder $betterNodeFinder,
-        /**
-         * use \PhpParser\Parser on purpose instead of extended \Rector\Core\PhpParser\Parser\Parser
-         * as detecting `@template-extends` too early on dependent files
-         */
-        private Parser $parser,
+        private RectorParser $parser,
         private BetterStandardPrinter $betterStandardPrinter,
         private SmartFileSystem $smartFileSystem
     ) {
@@ -174,10 +170,10 @@ final class PHPStanNodeScopeResolver
                 return false;
             }
 
-            $content = $this->smartFileSystem->readFile($fileName);
-            $fileNodes = $this->parser->parse($content);
+            $fileInfo = new SmartFileInfo($fileName);
+            $stmtsAndTokens = $this->parser->parseFileToStmtsAndTokens($fileInfo);
 
-            $print = $this->betterStandardPrinter->print($fileNodes);
+            $print = $this->betterStandardPrinter->print($stmtsAndTokens->getStmts());
             return (bool) Strings::match($print, FileProcessor::TEMPLATE_EXTENDS_REGEX);
         });
     }
