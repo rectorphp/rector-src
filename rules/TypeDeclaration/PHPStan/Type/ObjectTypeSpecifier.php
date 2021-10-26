@@ -17,6 +17,7 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use PHPStan\Type\StaticType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -24,6 +25,12 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\NotImplementedYetException;
 >>>>>>> warn about self/static/parent object reference
+=======
+use PHPStan\Type\StaticType;
+use Rector\Core\Enum\ObjectReference;
+use Rector\Core\Exception\NotImplementedYetException;
+use Rector\Core\Exception\ShouldNotHappenException;
+>>>>>>> fix unknown self/static types
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -73,15 +80,17 @@ final class ObjectTypeSpecifier
             }
 
             return $this->resolveObjectReferenceType($scope, $className);
+<<<<<<< HEAD
         }
 
         if ($this->reflectionProvider->hasClass($className)) {
             return new FullyQualifiedObjectType($className);
+=======
+>>>>>>> fix unknown self/static types
         }
 
-        if (ObjectReference::isValid($className)) {
-            // @todo return This/Self/Static object
-            throw new NotImplementedYetException();
+        if ($this->reflectionProvider->hasClass($className)) {
+            return new FullyQualifiedObjectType($className);
         }
 
         // invalid type
