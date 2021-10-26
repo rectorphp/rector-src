@@ -14,6 +14,7 @@ use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 use Rector\Core\Configuration\Option;
@@ -103,19 +104,15 @@ final class ReturnTypeInferer
     public function verifyStaticType(Type $type, bool $isSupportedStaticReturnType): ?Type
     {
         if ($this->isStaticType($type)) {
-            if (! $isSupportedStaticReturnType) {
-                return null;
-            }
-
-            /** @var FullyQualifiedObjectType $type */
-            return new ThisType($type->getClassName());
+            /** @var TypeWithClassName $type */
+            return $this->resolveStaticType($isSupportedStaticReturnType, $type);
         }
 
-        if (! $type instanceof UnionType) {
-            return $type;
+        if ($type instanceof UnionType) {
+            return $this->resolveUnionStaticTypes($type, $isSupportedStaticReturnType);
         }
 
-        return $this->resolveUnionStaticTypes($type, $isSupportedStaticReturnType);
+        return $type;
     }
 
     private function resolveTypeWithVoidHandling(FunctionLike $functionLike, Type $resolvedType): Type
@@ -175,7 +172,7 @@ final class ReturnTypeInferer
 
     private function isStaticType(Type $type): bool
     {
-        if (! $type instanceof FullyQualifiedObjectType) {
+        if (! $type instanceof TypeWithClassName) {
             return false;
         }
 
@@ -224,5 +221,16 @@ final class ReturnTypeInferer
         }
 
         return new UnionType($types);
+    }
+
+    private function resolveStaticType(
+        bool $isSupportedStaticReturnType,
+        TypeWithClassName $typeWithClassName
+    ): ?ThisType {
+        if (! $isSupportedStaticReturnType) {
+            return null;
+        }
+
+        return new ThisType($typeWithClassName->getClassName());
     }
 }
