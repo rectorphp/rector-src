@@ -115,29 +115,7 @@ final class ReturnTypeInferer
             return $type;
         }
 
-        $returnTypes = $type->getTypes();
-        $types = [];
-        $hasStatic = false;
-        foreach ($returnTypes as $returnType) {
-            if ($this->isStaticType($returnType)) {
-                /** @var FullyQualifiedObjectType $returnType */
-                $types[] = new ThisType($returnType->getClassName());
-                $hasStatic = true;
-                continue;
-            }
-
-            $types[] = $returnType;
-        }
-
-        if (! $hasStatic) {
-            return $type;
-        }
-
-        if (! $isSupportedStaticReturnType) {
-            return null;
-        }
-
-        return new UnionType($types);
+        return $this->resolveUnionStaticTypes($type, $isSupportedStaticReturnType);
     }
 
     private function resolveTypeWithVoidHandling(FunctionLike $functionLike, Type $resolvedType): Type
@@ -218,5 +196,33 @@ final class ReturnTypeInferer
         }
 
         return false;
+    }
+
+    private function resolveUnionStaticTypes(UnionType $unionType, bool $isSupportedStaticReturnType): UnionType|null
+    {
+        $returnTypes = $unionType->getTypes();
+        $types = [];
+        $hasStatic = false;
+
+        foreach ($returnTypes as $returnType) {
+            if ($this->isStaticType($returnType)) {
+                /** @var FullyQualifiedObjectType $returnType */
+                $types[] = new ThisType($returnType->getClassName());
+                $hasStatic = true;
+                continue;
+            }
+
+            $types[] = $returnType;
+        }
+
+        if (! $hasStatic) {
+            return $unionType;
+        }
+
+        if (! $isSupportedStaticReturnType) {
+            return null;
+        }
+
+        return new UnionType($types);
     }
 }
