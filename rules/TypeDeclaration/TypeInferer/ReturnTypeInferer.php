@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
@@ -48,7 +49,8 @@ final class ReturnTypeInferer
         private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
         private PhpVersionProvider $phpVersionProvider,
         private ParameterProvider $parameterProvider,
-        private BetterNodeFinder $betterNodeFinder
+        private BetterNodeFinder $betterNodeFinder,
+        private ReflectionProvider $reflectionProvider,
     ) {
         $this->returnTypeInferers = $typeInfererSorter->sort($returnTypeInferers);
     }
@@ -205,7 +207,9 @@ final class ReturnTypeInferer
         foreach ($unionType->getTypes() as $unionedType) {
             if ($this->isStaticType($unionedType)) {
                 /** @var FullyQualifiedObjectType $unionedType */
-                $resolvedTypes[] = new ThisType($unionedType->getClassName());
+                $classReflection = $this->reflectionProvider->getClass($unionedType->getClassName());
+
+                $resolvedTypes[] = new ThisType($classReflection);
                 $hasStatic = true;
                 continue;
             }
