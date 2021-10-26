@@ -28,7 +28,6 @@ use Rector\Core\Exception\NotImplementedYetException;
 =======
 use PHPStan\Type\StaticType;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
 >>>>>>> fix unknown self/static types
 use Rector\NodeTypeResolver\Node\AttributeKey;
