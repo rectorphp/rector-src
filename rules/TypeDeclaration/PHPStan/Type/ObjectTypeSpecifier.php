@@ -16,9 +16,14 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+<<<<<<< HEAD
 use PHPStan\Type\StaticType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
+=======
+use Rector\Core\Enum\ObjectReference;
+use Rector\Core\Exception\NotImplementedYetException;
+>>>>>>> warn about self/static/parent object reference
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -72,6 +77,11 @@ final class ObjectTypeSpecifier
 
         if ($this->reflectionProvider->hasClass($className)) {
             return new FullyQualifiedObjectType($className);
+        }
+
+        if (ObjectReference::isValid($className)) {
+            // @todo return This/Self/Static object
+            throw new NotImplementedYetException();
         }
 
         // invalid type
