@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
@@ -132,7 +133,31 @@ CODE_SAMPLE
         }
 
         /** @var string $objectInstanceCheck */
+        if ($this->isDoubleCheck($funcCall, $objectInstanceCheck)) {
+            return null;
+        }
+
         return $objectInstanceCheck;
+    }
+
+    private function isDoubleCheck(FuncCall $funcCall, string $objectInstanceCheck): bool
+    {
+        $binaryOp = $this->betterNodeFinder->findParentType($funcCall, BinaryOp::class);
+        if (! $binaryOp instanceof BinaryOp) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst($binaryOp, function (Node $subNode) use ($objectInstanceCheck): bool {
+            if (! $subNode instanceof Instanceof_) {
+                return false;
+            }
+
+            if (! $subNode->class instanceof FullyQualified) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($subNode->class, $objectInstanceCheck);
+        });
     }
 
     private function shouldSkip(FuncCall $funcCall): bool
