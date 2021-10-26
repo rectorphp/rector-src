@@ -101,7 +101,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            if ($subNode->var !== $argResource) {
+            if (! $this->nodeComparator->areNodesEqual($subNode->var, $argResource->value)) {
                 return false;
             }
 
@@ -119,7 +119,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return new Instanceof_($node->args[0], new FullyQualified($objectInstanceCheck));
+        return new Instanceof_($argResource->value, new FullyQualified($objectInstanceCheck));
     }
 
     public function provideMinPhpVersion(): int
