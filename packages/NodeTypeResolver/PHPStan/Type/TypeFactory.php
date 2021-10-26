@@ -192,11 +192,12 @@ final class TypeFactory
                 PhpVersionFeature::STATIC_RETURN_TYPE
             )) {
                 /** @var ObjectType $traversedType */
-                $classReflection = $this->reflectionProvider->getClass($traversedType->getClassName());
-                if ($classReflection === null) {
+                $className = $traversedType->getClassName();
+                if (! $this->reflectionProvider->hasClass($className)) {
                     throw new ShouldNotHappenException();
                 }
 
+                $classReflection = $this->reflectionProvider->getClass($className);
                 return new ThisType($classReflection);
             }
 

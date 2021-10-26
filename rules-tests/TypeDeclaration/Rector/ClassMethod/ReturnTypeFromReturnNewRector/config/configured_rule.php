@@ -8,4 +8,10 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(ReturnTypeFromReturnNewRector::class);
+
+    $parameters = $containerConfigurator->parameters();
+    $parameters->set(
+        \Rector\Core\Configuration\Option::PHP_VERSION_FEATURES,
+        \Rector\Core\ValueObject\PhpVersionFeature::STATIC_RETURN_TYPE
+    );
 };

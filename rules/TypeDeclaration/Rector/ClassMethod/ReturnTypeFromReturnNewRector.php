@@ -12,9 +12,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
+use PHPStan\Type\ThisType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -132,8 +134,12 @@ CODE_SAMPLE
             }
 
             $classReflection = $scope->getClassReflection();
-            if ($classReflection === null) {
+            if (! $classReflection instanceof ClassReflection) {
                 throw new ShouldNotHappenException();
+            }
+
+            if ($className === ObjectReference::SELF()->getValue()) {
+                return new ThisType($classReflection);
             }
 
             return new StaticType($classReflection);
