@@ -133,26 +133,30 @@ CODE_SAMPLE
         }
 
         /** @var string $objectInstanceCheck */
-        if ($this->isDoubleCheck($funcCall, $objectInstanceCheck)) {
+        if ($this->isDoubleCheck($funcCall, $assign->var, $objectInstanceCheck)) {
             return null;
         }
 
         return $objectInstanceCheck;
     }
 
-    private function isDoubleCheck(FuncCall $funcCall, string $objectInstanceCheck): bool
+    private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
     {
         $binaryOp = $this->betterNodeFinder->findParentType($funcCall, BinaryOp::class);
         if (! $binaryOp instanceof BinaryOp) {
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($binaryOp, function (Node $subNode) use ($objectInstanceCheck): bool {
+        return (bool) $this->betterNodeFinder->findFirst($binaryOp, function (Node $subNode) use ($objectInstanceCheck, $expr): bool {
             if (! $subNode instanceof Instanceof_) {
                 return false;
             }
 
             if (! $subNode->class instanceof FullyQualified) {
+                return false;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($expr, $subNode->expr)) {
                 return false;
             }
 
