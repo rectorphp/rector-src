@@ -62,7 +62,6 @@ final class AdvancedArrayAnalyzer
 
     public function isMoreSpecificArrayTypeOverride(
         Type $newType,
-        ClassMethod $classMethod,
         PhpDocInfo $phpDocInfo
     ): bool {
         if (! $newType instanceof ConstantArrayType) {
