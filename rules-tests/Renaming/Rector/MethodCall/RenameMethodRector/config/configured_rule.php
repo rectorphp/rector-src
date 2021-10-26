@@ -6,6 +6,9 @@ use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\AbstractType;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Foo;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SomeSubscriber;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -17,12 +20,17 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new MethodCallRename(AbstractType::class, 'setDefaultOptions', 'configureOptions'),
                 new MethodCallRename('Nette\Utils\Html', 'add', 'addHtml'),
                 new MethodCallRename(
-                    'Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture\DemoFile',
+                    CustomType::class,
                     'notify',
                     '__invoke'
                 ),
                 new MethodCallRename(
-                    'Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture\SomeSubscriber',
+                    SomeSubscriber::class,
+                    'old',
+                    'new'
+                ),
+                new MethodCallRename(
+                    Foo::class,
                     'old',
                     'new'
                 ),
