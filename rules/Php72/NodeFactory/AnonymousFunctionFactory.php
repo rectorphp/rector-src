@@ -30,7 +30,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
-use PhpParser\Parser;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -46,6 +45,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Symplify\Astral\PhpParser\SmartPhpParser;
 
 final class AnonymousFunctionFactory
 {
@@ -61,7 +61,7 @@ final class AnonymousFunctionFactory
         private NodeFactory $nodeFactory,
         private StaticTypeMapper $staticTypeMapper,
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private Parser $parser,
+        private SmartPhpParser $smartPhpParser,
         private NodeComparator $nodeComparator
     ) {
     }
@@ -143,11 +143,11 @@ final class AnonymousFunctionFactory
         }
 
         $phpCode = '<?php ' . $expr->value . ';';
-        $contentNodes = (array) $this->parser->parse($phpCode);
+        $contentStmts = $this->smartPhpParser->parseString($phpCode);
 
         $anonymousFunction = new Closure();
 
-        $firstNode = $contentNodes[0] ?? null;
+        $firstNode = $contentStmts[0] ?? null;
         if (! $firstNode instanceof Expression) {
             return null;
         }
