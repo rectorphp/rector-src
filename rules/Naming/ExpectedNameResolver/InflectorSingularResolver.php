@@ -49,7 +49,7 @@ final class InflectorSingularResolver
             return self::SINGULAR_VERB[$currentName];
         }
 
-        if (strpos($currentName, self::SINGLE) === 0) {
+        if (str_starts_with($currentName, self::SINGLE)) {
             return $currentName;
         }
 
@@ -58,21 +58,25 @@ final class InflectorSingularResolver
         foreach ($camelCases as $camelCase) {
             $singularValueVarName .= $this->inflector->singularize($camelCase['camelcase']);
         }
-
-        if ($singularValueVarName === '' || $singularValueVarName === '_') {
+        if ($singularValueVarName === '') {
+            return $currentName;
+        }
+        if ($singularValueVarName === '_') {
             return $currentName;
         }
 
         $singularValueVarName = $singularValueVarName === $currentName
             ? self::SINGLE . ucfirst($singularValueVarName)
             : $singularValueVarName;
-        if (strpos($singularValueVarName, self::SINGLE) !== 0) {
+        if (! str_starts_with($singularValueVarName, self::SINGLE)) {
             return $singularValueVarName;
         }
+
         $length = strlen($singularValueVarName);
         if ($length < 40) {
             return $singularValueVarName;
         }
+
         return $currentName;
     }
 }
