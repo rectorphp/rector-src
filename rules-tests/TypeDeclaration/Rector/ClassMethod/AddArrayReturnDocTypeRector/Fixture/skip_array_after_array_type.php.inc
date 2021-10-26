@@ -7,7 +7,7 @@ use Nette\Utils\Strings;
 class SkipArrayAfterArrayType
 {
     /**
-     * @return string[]
+     * @return string[]|int[]
      */
     public function getNewNamespaceForOldOne(string $namespace): array
     {
