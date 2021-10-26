@@ -83,19 +83,25 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->args[0] instanceof Arg) {
+        $argResource = $node->args[0];
+        if (! $argResource instanceof Arg) {
             return null;
         }
 
         $objectInstanceCheck = null;
         $assign = $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $subNode) use (
-            &$objectInstanceCheck
+            &$objectInstanceCheck,
+            $argResource
         ): bool {
             if (! $subNode instanceof Assign) {
                 return false;
             }
 
             if (! $subNode->expr instanceof FuncCall) {
+                return false;
+            }
+
+            if ($subNode->var !== $argResource) {
                 return false;
             }
 
