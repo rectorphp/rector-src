@@ -10,6 +10,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use ReflectionClass;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class TemplateExtendsGuard
@@ -48,7 +49,7 @@ final class TemplateExtendsGuard
             }
 
             // use native ReflectionClass as PHPStan ReflectionProvider hang on check className with `@template-extends`
-            $reflectionClass = new \ReflectionClass($className);
+            $reflectionClass = new ReflectionClass($className);
             if ($reflectionClass->isInternal()) {
                 return false;
             }
@@ -63,7 +64,7 @@ final class TemplateExtendsGuard
                 return false;
             }
 
-            $fileContents = file_get_contents($fileName);
+            $fileContents = $this->smartFileSystem->readFile($fileName);
             return (bool) Strings::match($fileContents, FileProcessor::TEMPLATE_EXTENDS_REGEX);
         });
     }
