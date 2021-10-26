@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
@@ -19,12 +20,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://www.php.net/manual/en/migration80.incompatible.php#migration80.incompatible.resource2object
  *
- * @see \Rector\Tests\Php80\Rector\FuncCall\Php8ResourceToObjectRector\Php8ResourceToObjectRector
+ * @see \Rector\Tests\Php80\Rector\FuncCall\Php8ResourceToObjectRector\Php8ResourceToObjectRectorTest
  */
 final class Php8ResourceToObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array
+     * @var array<string, string>
      */
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
         'curl_init' => 'CurlHandle',
@@ -75,23 +76,31 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->nodeNameResolver->isName($node, 'is_resource')) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        /** @var Expr $argResourceValue */
+        $argResourceValue = $node->args[0]->value;
+        $objectInstanceCheck = $this->resolveObjectInstanceCheck($node, $argResourceValue);
+        if ($objectInstanceCheck === null) {
             return null;
         }
 
-        $argResource = $node->args[0];
-        if (! $argResource instanceof Arg) {
-            return null;
-        }
+        return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
+    }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::PHP8_RESOURCE_TO_OBJECT;
+    }
+
+    private function resolveObjectInstanceCheck(FuncCall $funcCall, Expr $expr): ?string
+    {
         $objectInstanceCheck = null;
-        $assign = $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $subNode) use (
+        $assign = $this->betterNodeFinder->findFirstPreviousOfNode($funcCall, function (Node $subNode) use (
             &$objectInstanceCheck,
-            $argResource
+            $expr
         ): bool {
             if (! $subNode instanceof Assign) {
                 return false;
@@ -101,7 +110,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            if (! $this->nodeComparator->areNodesEqual($subNode->var, $argResource->value)) {
+            if (! $this->nodeComparator->areNodesEqual($subNode->var, $expr)) {
                 return false;
             }
 
@@ -119,11 +128,21 @@ CODE_SAMPLE
             return null;
         }
 
-        return new Instanceof_($argResource->value, new FullyQualified($objectInstanceCheck));
+        /** @var string $objectInstanceCheck */
+        return $objectInstanceCheck;
     }
 
-    public function provideMinPhpVersion(): int
+    private function shouldSkip(FuncCall $funcCall): bool
     {
-        return PhpVersionFeature::PHP8_RESOURCE_TO_OBJECT;
+        if (! $this->nodeNameResolver->isName($funcCall, 'is_resource')) {
+            return true;
+        }
+
+        if (! isset($funcCall->args[0])) {
+            return true;
+        }
+
+        $argResource = $funcCall->args[0];
+        return ! $argResource instanceof Arg;
     }
 }
