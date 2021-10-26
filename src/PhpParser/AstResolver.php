@@ -354,9 +354,13 @@ final class AstResolver
             $traits,
             fn (Node $node): bool => $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName)
         );
-        $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodName] = $classMethod;
 
-        return $classMethod;
+        $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodName] = $classMethod;
+        if ($classMethod instanceof ClassMethod) {
+            return $classMethod;
+        }
+
+        return null;
     }
 
     /**

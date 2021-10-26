@@ -18,7 +18,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
