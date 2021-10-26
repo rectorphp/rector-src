@@ -29,20 +29,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class IfToSpaceshipRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var int|null
-     */
-    private $onEqual;
+    private int|float|string|bool|null $onEqual = null;
 
-    /**
-     * @var int|null
-     */
-    private $onSmaller;
+    private int|float|string|bool|null $onSmaller = null;
 
-    /**
-     * @var int|null
-     */
-    private $onGreater;
+    private int|float|string|bool|null $onGreater = null;
 
     private ?Expr $firstValue = null;
 
