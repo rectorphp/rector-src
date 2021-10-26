@@ -14,7 +14,7 @@ use Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector;
 use Rector\Php80\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
-use Rector\Php80\Rector\FuncCall\Php8ResourceToObjectRector;
+use Rector\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector;
 use Rector\Php80\Rector\FuncCall\TokenGetAllToObjectRector;
 use Rector\Php80\Rector\FunctionLike\UnionTypesRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
@@ -110,5 +110,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ]),
         ]]);
 
-    $services->set(Php8ResourceToObjectRector::class);
+    $services->set(Php8ResourceReturnToObjectRector::class);
 };
