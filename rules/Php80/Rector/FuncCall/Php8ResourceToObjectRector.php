@@ -28,7 +28,10 @@ final class Php8ResourceToObjectRector extends AbstractRector implements MinPhpV
      * @var array<string, string>
      */
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
+        // curl
         'curl_init' => 'CurlHandle',
+        'curl_multi_init' => 'CurlMultiHandle',
+        'curl_share_init' => 'CurlShareHandle',
     ];
 
     public function getRuleDefinition(): RuleDefinition
