@@ -192,7 +192,7 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        if ($this->isMixinInSource($nodes)) {
+        if ($this->mixinGuard->containsMixinPhpDoc($nodes)) {
             return $nodes;
         }
 
