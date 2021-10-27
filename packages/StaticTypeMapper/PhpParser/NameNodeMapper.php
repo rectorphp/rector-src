@@ -19,6 +19,7 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Enum\ObjectReference;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -83,7 +84,12 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
         }
 
         if ($reference === ObjectReference::PARENT()->getValue()) {
-            return new ParentStaticType($classReflection);
+            $parentClassReflection = $classReflection->getParentClass();
+            if ($parentClassReflection === null) {
+                throw new ShouldNotHappenException();
+            }
+
+            return new ParentStaticType($parentClassReflection);
         }
 
         return new ThisType($classReflection);

@@ -93,8 +93,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentStaticType = new ParentStaticType($classReflection);
-
+        $parentStaticType = new ParentStaticType($classReflection->getParentClass());
         if (! $this->phpDocFromTypeDeclarationDecorator->decorateReturnWithSpecificType($node, $parentStaticType)) {
             return null;
         }

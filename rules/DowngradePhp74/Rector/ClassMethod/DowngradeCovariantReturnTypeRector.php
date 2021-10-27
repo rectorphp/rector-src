@@ -22,6 +22,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
+use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 use Symplify\PackageBuilder\Reflection\PrivatesCaller;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -174,8 +175,10 @@ CODE_SAMPLE
         }
 
         $bareReturnType = $returnTypeNode instanceof NullableType ? $returnTypeNode->type : $returnTypeNode;
+        $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($bareReturnType);
 
         $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($bareReturnType);
+
         $methodName = $this->getName($classMethod);
 
         /** @var ClassReflection[] $parentClassesAndInterfaces */
@@ -200,6 +203,16 @@ CODE_SAMPLE
                 'getReturnType',
                 []
             );
+
+            // skip "parent" reference if correct
+            if ($returnType instanceof ParentStaticType) {
+                dump($parentReturnType->isSuperTypeOf($returnType)->yes());
+                dump($returnType->isSuperTypeOf($parentReturnType)->yes());
+
+                if ($parentReturnType->accepts($returnType, true)->yes()) {
+                    continue;
+                }
+            }
 
             if ($parentReturnType->equals($returnType)) {
                 continue;
