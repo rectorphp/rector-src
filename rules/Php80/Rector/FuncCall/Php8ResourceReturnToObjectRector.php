@@ -33,18 +33,18 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
      */
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
         // curl
-        'curl_init' => 'CurlHandle', // https://www.php.net/manual/en/function.curl-init.php
-        'curl_multi_init' => 'CurlMultiHandle', // https://www.php.net/manual/en/function.curl-multi-init.php
-        'curl_share_init' => 'CurlShareHandle', // https://www.php.net/manual/en/function.curl-share-init.php
+        'curl_init' => 'CurlHandle',
+        'curl_multi_init' => 'CurlMultiHandle',
+        'curl_share_init' => 'CurlShareHandle',
 
         // socket
-        'socket_create' => 'Socket', // https://www.php.net/manual/en/function.socket-create.php
-        'socket_accept' => 'Socket', // https://www.php.net/manual/en/function.socket-accept.php
-        'socket_addrinfo_bind' => 'Socket', // https://www.php.net/manual/en/function.socket-addrinfo-bind.php
-        'socket_addrinfo_connect' => 'Socket', // https://www.php.net/manual/en/function.socket-addrinfo-connect.php
-        'socket_create_listen' => 'Socket', // https://www.php.net/manual/en/function.socket-create-listen.php
-        'socket_import_stream' => 'Socket', // https://www.php.net/manual/en/function.socket-import-stream.php
-        'socket_wsaprotocol_info_import' => 'Socket', // https://www.php.net/manual/en/function.socket-wsaprotocol-info-import.php
+        'socket_create' => 'Socket',
+        'socket_accept' => 'Socket',
+        'socket_addrinfo_bind' => 'Socket',
+        'socket_addrinfo_connect' => 'Socket',
+        'socket_create_listen' => 'Socket',
+        'socket_import_stream' => 'Socket',
+        'socket_wsaprotocol_info_import' => 'Socket',
     ];
 
     public function getRuleDefinition(): RuleDefinition
