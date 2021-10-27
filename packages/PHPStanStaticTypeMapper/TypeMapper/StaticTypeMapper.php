@@ -6,6 +6,7 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\StaticType;
@@ -50,6 +51,10 @@ final class StaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
+        if ($type instanceof StaticType) {
+            return new FullyQualified($type->getClassName());
+        }
+
         if ($type instanceof SelfStaticType) {
             return new Name(ObjectReference::SELF()->getValue());
         }
