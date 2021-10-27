@@ -30,12 +30,19 @@ final class TypeComparator
         private StaticTypeMapper $staticTypeMapper,
         private ArrayTypeComparator $arrayTypeComparator,
         private ScalarTypeComparator $scalarTypeComparator,
-        private TypeFactory $typeFactory
+        private TypeFactory $typeFactory,
     ) {
     }
 
     public function areTypesEqual(Type $firstType, Type $secondType): bool
     {
+        $firstTypeHash = $this->typeHasher->createTypeHash($firstType);
+        $secondTypeHash = $this->typeHasher->createTypeHash($secondType);
+
+        if ($firstTypeHash === $secondTypeHash) {
+            return true;
+        }
+
         if ($this->scalarTypeComparator->areEqualScalar($firstType, $secondType)) {
             return true;
         }
@@ -100,7 +107,6 @@ final class TypeComparator
     private function areAliasedObjectMatchingFqnObject(Type $firstType, Type $secondType): bool
     {
         if ($firstType instanceof AliasedObjectType && $secondType instanceof ObjectType && $firstType->getFullyQualifiedName() === $secondType->getClassName()) {
-            return true;
         }
 
         if (! $secondType instanceof AliasedObjectType) {

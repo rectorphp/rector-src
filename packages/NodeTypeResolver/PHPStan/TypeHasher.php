@@ -8,7 +8,9 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\Generic\GenericObjectType;
+use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeWithClassName;
@@ -26,7 +28,7 @@ final class TypeHasher
         return $this->createTypeHash($firstType) === $this->createTypeHash($secondType);
     }
 
-    private function createTypeHash(Type $type): string
+    public function createTypeHash(Type $type): string
     {
         if ($type instanceof MixedType) {
             return serialize($type) . $type->isExplicitMixed();
@@ -51,6 +53,21 @@ final class TypeHasher
         if ($type instanceof UnionType) {
             return $this->createUnionTypeHash($type);
         }
+
+        $type = $this->normalizeObjectType($type);
+
+        // normalize iterable
+        $type = TypeTraverser::map($type, function (Type $currentType, callable $traverseCallback): Type {
+            if (! $currentType instanceof ObjectType) {
+                return $traverseCallback($currentType);
+            }
+
+            if ($currentType->getClassName() === 'iterable') {
+                return new IterableType(new MixedType(), new MixedType());
+            }
+
+            return $traverseCallback($currentType);
+        });
 
         return $type->describe(VerbosityLevel::value());
     }
@@ -84,7 +101,7 @@ final class TypeHasher
         $normalizedUnionType = TypeTraverser::map(
             $normalizedUnionType,
             function (Type $type, callable $callable): Type {
-                if (! $type instanceof AliasedObjectType) {
+                if (! $type instanceof AliasedObjectType && ! $type instanceof ShortenedObjectType) {
                     return $callable($type);
                 }
 
@@ -93,5 +110,24 @@ final class TypeHasher
         );
 
         return $normalizedUnionType->describe(VerbosityLevel::precise());
+    }
+
+    private function normalizeObjectType(Type $type): Type
+    {
+        return TypeTraverser::map($type, function (Type $currentType, callable $traverseCallback): Type {
+            if ($currentType instanceof ShortenedObjectType) {
+                return new FullyQualifiedObjectType($currentType->getFullyQualifiedName());
+            }
+
+            if ($currentType instanceof AliasedObjectType) {
+                return new FullyQualifiedObjectType($currentType->getFullyQualifiedName());
+            }
+
+            if ($currentType instanceof ObjectType && ! $currentType instanceof GenericObjectType && ! $currentType instanceof AliasedObjectType && $currentType->getClassName() !== 'Iterator' && $currentType->getClassName() !== 'iterable') {
+                return new FullyQualifiedObjectType($currentType->getClassName());
+            }
+
+            return $traverseCallback($currentType);
+        });
     }
 }
