@@ -37,8 +37,8 @@ final class TypeFactory
 {
     public function __construct(
         private UnionTypeFactory $unionTypeFactory,
-        private PhpVersionProvider $phpVersionProvider,
-        private ReflectionProvider $reflectionProvider,
+//        private PhpVersionProvider $phpVersionProvider,
+//        private ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -188,27 +188,27 @@ final class TypeFactory
     private function normalizeObjectTypes(Type $type): Type
     {
         return TypeTraverser::map($type, function (Type $traversedType, callable $traverseCallback): Type {
-            if ($this->isStatic($traversedType) && $this->phpVersionProvider->isAtLeastPhpVersion(
-                PhpVersionFeature::STATIC_RETURN_TYPE
-            )) {
-                /** @var ObjectType $traversedType */
-                $className = $traversedType->getClassName();
-                if (! $this->reflectionProvider->hasClass($className)) {
-                    throw new ShouldNotHappenException();
-                }
+//            if ($this->isStatic($traversedType) && $this->phpVersionProvider->isAtLeastPhpVersion(
+//                PhpVersionFeature::STATIC_RETURN_TYPE
+//            )) {
+//                /** @var ObjectType $traversedType */
+//                $className = $traversedType->getClassName();
+//                if (! $this->reflectionProvider->hasClass($className)) {
+//                    throw new ShouldNotHappenException();
+//                }
+//
+//                $classReflection = $this->reflectionProvider->getClass($className);
+//                return new ThisType($classReflection);
+//            }
 
-                $classReflection = $this->reflectionProvider->getClass($className);
-                return new ThisType($classReflection);
-            }
+//            if ($this->isStatic($traversedType)) {
+//                return new MixedType();
+//            }
 
-            if ($this->isStatic($traversedType)) {
-                return new MixedType();
-            }
-
-            if ($this->isSelf($traversedType)) {
-                /** @var ObjectType $traversedType */
-                return new SelfObjectType($traversedType->getClassName());
-            }
+//            if ($this->isSelf($traversedType)) {
+//                /** @var ObjectType $traversedType */
+//                return new SelfObjectType($traversedType->getClassName());
+//            }
 
             if ($traversedType instanceof ShortenedObjectType) {
                 return new FullyQualifiedObjectType($traversedType->getFullyQualifiedName());
@@ -222,14 +222,14 @@ final class TypeFactory
         });
     }
 
-    private function isStatic(Type $type): bool
-    {
-        if (! $type instanceof ObjectType) {
-            return false;
-        }
-
-        return $type->getClassName() === ObjectReference::STATIC()->getValue();
-    }
+//    private function isStatic(Type $type): bool
+//    {
+//        if (! $type instanceof ObjectType) {
+//            return false;
+//        }
+//
+//        return $type->getClassName() === ObjectReference::STATIC()->getValue();
+//    }
 
     private function isSelf(Type $type): bool
     {
