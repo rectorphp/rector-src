@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as PhpParserUnionType;
-use PhpParser\Parser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -25,6 +24,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Parser\SimplePhpParser;
 use Rector\FamilyTree\ValueObject\PropertyType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -43,7 +43,7 @@ final class FamilyRelationsAnalyzer
         private BetterNodeFinder $betterNodeFinder,
         private StaticTypeMapper $staticTypeMapper,
         private AstResolver $astResolver,
-        private Parser $parser
+        private SimplePhpParser $simplePhpParser
     ) {
     }
 
@@ -98,22 +98,21 @@ final class FamilyRelationsAnalyzer
                 continue;
             }
 
+            if ($ancestorClassReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
+                continue;
+            }
+
             $fileName = $ancestorClassReflection->getFileName();
             if ($fileName === false) {
                 continue;
             }
 
-            $fileContent = $this->smartFileSystem->readFile($fileName);
-            $nodes = $this->parser->parse($fileContent);
-            if ($ancestorClassReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
+            $stmts = $this->simplePhpParser->parseFile($fileName);
+            if ($stmts === []) {
                 continue;
             }
 
-            if ($nodes === null) {
-                continue;
-            }
-
-            if (! $this->isPropertyWritten($nodes, $propertyName, $kindPropertyFetch)) {
+            if (! $this->isPropertyWritten($stmts, $propertyName, $kindPropertyFetch)) {
                 continue;
             }
 
