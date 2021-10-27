@@ -195,7 +195,7 @@ CODE_SAMPLE
         return $node->expr instanceof FuncCall;
     }
 
-    private function processBooleanOr(BooleanOr $booleanOr): ?Instanceof_
+    private function processBooleanOr(BooleanOr $booleanOr): BooleanOr|Instanceof_|null
     {
         $left = $booleanOr->left;
         $right = $booleanOr->right;
@@ -231,10 +231,22 @@ CODE_SAMPLE
         $argResourceValue = $funCall->args[0]->value;
         /** @var Instanceof_ $instanceof */
         if (! $this->isInstanceOfObjectCheck($instanceof, $argResourceValue, $objectInstanceCheck)) {
-            return null;
+
+            $booleanOr->left = $this->resolveInstanceOfFromFuncCall($argResourceValue, $booleanOr->left, $objectInstanceCheck, $instanceof);
+            $booleanOr->right = $this->resolveInstanceOfFromFuncCall($argResourceValue, $booleanOr->right, $objectInstanceCheck, $instanceof);
+
+            return $booleanOr;
         }
 
         return $instanceof;
+    }
+
+    private function resolveInstanceOfFromFuncCall(Expr $argResourceValue, Expr $expr, string $objectInstanceCheck, Instanceof_ $instanceof)
+    {
+        $instanceof = new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
+        return $expr instanceof FuncCall
+            ? $instanceof
+            : $expr;
     }
 
     private function isInstanceOfObjectCheck(Instanceof_ $instanceof, Expr $expr, string $objectInstanceCheck): bool
