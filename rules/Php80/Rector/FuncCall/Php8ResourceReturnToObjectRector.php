@@ -47,6 +47,26 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
         'socket_import_stream' => 'Socket',
         'socket_wsaprotocol_info_import' => 'Socket',
 
+        // GD
+        'imagecreate' => 'GdImage',
+        'imagecreatefromavif' => 'GdImage',
+        'imagecreatefrombmp' => 'GdImage',
+        'imagecreatefromgd2' => 'GdImage',
+        'imagecreatefromgd2part' => 'GdImage',
+        'imagecreatefromgd' => 'GdImage',
+        'imagecreatefromgif' => 'GdImage',
+        'imagecreatefromjpeg' => 'GdImage',
+        'imagecreatefrompng' => 'GdImage',
+        'imagecreatefromstring' => 'GdImage',
+        'imagecreatefromtga' => 'GdImage',
+        'imagecreatefromwbmp' => 'GdImage',
+        'imagecreatefromwebp' => 'GdImage',
+        'imagecreatefromxbm' => 'GdImage',
+        'imagecreatefromxpm' => 'GdImage',
+        'imagecreatetruecolor' => 'GdImage',
+        'imagecrop' => 'GdImage',
+        'imagecropauto' => 'GdImage',
+
         // XMLWriter
         'xmlwriter_open_memory' => 'XMLWriter',
 
