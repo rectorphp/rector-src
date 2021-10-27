@@ -6,6 +6,7 @@ namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
@@ -85,7 +86,7 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
 
         if ($reference === ObjectReference::PARENT()->getValue()) {
             $parentClassReflection = $classReflection->getParentClass();
-            if ($parentClassReflection === null) {
+            if (! $parentClassReflection instanceof ClassReflection) {
                 throw new ShouldNotHappenException();
             }
 

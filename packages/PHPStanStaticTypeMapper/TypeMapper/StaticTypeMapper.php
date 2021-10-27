@@ -50,9 +50,6 @@ final class StaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
-        // @todo how to solve parent type?
-        dump(get_class($type));
-
         if ($type instanceof SelfStaticType) {
             return new Name(ObjectReference::SELF()->getValue());
         }

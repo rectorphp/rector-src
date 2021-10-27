@@ -251,7 +251,7 @@ final class ObjectTypeSpecifier
     private function resolveObjectReferenceType(
         Scope $scope,
         string $classReferenceValue
-    ): StaticType|FullyQualifiedObjectType|SelfObjectType {
+    ): StaticType|SelfObjectType {
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             throw new ShouldNotHappenException();

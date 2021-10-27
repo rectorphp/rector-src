@@ -177,13 +177,40 @@ CODE_SAMPLE
         $bareReturnType = $returnTypeNode instanceof NullableType ? $returnTypeNode->type : $returnTypeNode;
         $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($bareReturnType);
 
-        $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($bareReturnType);
-
         $methodName = $this->getName($classMethod);
 
         /** @var ClassReflection[] $parentClassesAndInterfaces */
         $parentClassesAndInterfaces = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
 
+        return $this->resolveMatchingReturnType($parentClassesAndInterfaces, $methodName, $classMethod, $returnType);
+    }
+
+    private function addDocBlockReturn(ClassMethod $classMethod): void
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+
+        // keep return type if already set one
+        if (! $phpDocInfo->getReturnType() instanceof MixedType) {
+            return;
+        }
+
+        /** @var Node $returnType */
+        $returnType = $classMethod->returnType;
+        $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
+        $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $classMethod);
+    }
+
+    /**
+     * @param ClassReflection[] $parentClassesAndInterfaces
+     */
+    private function resolveMatchingReturnType(
+        array $parentClassesAndInterfaces,
+        string $methodName,
+        ClassMethod $classMethod,
+        \PHPStan\Type\Type $returnType
+    ): Type {
         foreach ($parentClassesAndInterfaces as $parentClassAndInterface) {
             $parentClassAndInterfaceHasMethod = $parentClassAndInterface->hasMethod($methodName);
             if (! $parentClassAndInterfaceHasMethod) {
@@ -206,9 +233,6 @@ CODE_SAMPLE
 
             // skip "parent" reference if correct
             if ($returnType instanceof ParentStaticType) {
-                dump($parentReturnType->isSuperTypeOf($returnType)->yes());
-                dump($returnType->isSuperTypeOf($parentReturnType)->yes());
-
                 if ($parentReturnType->accepts($returnType, true)->yes()) {
                     continue;
                 }
@@ -223,22 +247,5 @@ CODE_SAMPLE
         }
 
         return new MixedType();
-    }
-
-    private function addDocBlockReturn(ClassMethod $classMethod): void
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-
-        // keep return type if already set one
-        if (! $phpDocInfo->getReturnType() instanceof MixedType) {
-            return;
-        }
-
-        /** @var Node $returnType */
-        $returnType = $classMethod->returnType;
-        $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
-
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
-        $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $classMethod);
     }
 }
