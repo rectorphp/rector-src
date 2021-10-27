@@ -98,6 +98,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof BinaryOp && ! $parent instanceof BooleanOr) {
+            return null;
+        }
+
         if (! $this->isDoubleCheck($node, $argResourceValue, $objectInstanceCheck)) {
             return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
         }
