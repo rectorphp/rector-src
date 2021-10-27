@@ -31,7 +31,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class FamilyRelationsAnalyzer
 {
@@ -39,7 +38,6 @@ final class FamilyRelationsAnalyzer
         private ReflectionProvider $reflectionProvider,
         private PrivatesAccessor $privatesAccessor,
         private NodeNameResolver $nodeNameResolver,
-        private SmartFileSystem $smartFileSystem,
         private BetterNodeFinder $betterNodeFinder,
         private StaticTypeMapper $staticTypeMapper,
         private AstResolver $astResolver,
@@ -175,11 +173,11 @@ final class FamilyRelationsAnalyzer
     }
 
     /**
-     * @param Stmt[] $nodes
+     * @param Stmt[] $stmts
      */
-    private function isPropertyWritten(array $nodes, string $propertyName, string $kindPropertyFetch): bool
+    private function isPropertyWritten(array $stmts, string $propertyName, string $kindPropertyFetch): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $node) use (
+        return (bool) $this->betterNodeFinder->findFirst($stmts, function (Node $node) use (
             $propertyName,
             $kindPropertyFetch
         ): bool {
