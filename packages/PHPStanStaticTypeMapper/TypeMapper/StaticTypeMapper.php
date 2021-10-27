@@ -51,7 +51,7 @@ final class StaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
-        if ($type instanceof StaticType) {
+        if ($type::class === StaticType::class) {
             return new FullyQualified($type->getClassName());
         }
 
