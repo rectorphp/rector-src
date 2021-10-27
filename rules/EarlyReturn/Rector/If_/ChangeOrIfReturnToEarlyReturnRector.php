@@ -92,7 +92,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // may be used along with Php8ResourceReturnToObjectRector rule
+        // maybe used along with Php8ResourceReturnToObjectRector rule
         if ($this->isMaybeUsedAlongWithResourceToObjectRector($node->cond)) {
             return null;
         }

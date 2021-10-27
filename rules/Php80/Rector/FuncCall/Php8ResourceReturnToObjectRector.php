@@ -122,7 +122,7 @@ CODE_SAMPLE
         $argResourceValue = $funcCall->args[0]->value;
         $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
 
-        // if detected type is not FullyQualifiedObjectType, it still can be a resource to objec, when:
+        // if detected type is not FullyQualifiedObjectType, it still can be a resource to object, when:
         //      - in the right position of BooleanOr, it be NeverType
         //      - the object changed after init
         if (! $argValueType instanceof FullyQualifiedObjectType) {
