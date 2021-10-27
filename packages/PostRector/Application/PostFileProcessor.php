@@ -94,7 +94,7 @@ final class PostFileProcessor
             return;
         }
 
-        $message = sprintf('    [%s] %s', 'post rector', get_class($postRector));
+        $message = sprintf('    [%s] %s', 'post rector', $postRector::class);
         $this->symfonyStyle->writeln($message);
     }
 }
