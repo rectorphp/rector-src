@@ -83,31 +83,37 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof FuncCall) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parent instanceof BinaryOp) {
-                return null;
-            }
-
-            if ($this->shouldSkip($node)) {
-                return null;
-            }
-
-            /** @var Expr $argResourceValue */
-            $argResourceValue = $node->args[0]->value;
-            $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
-            if (! $argValueType instanceof FullyQualifiedObjectType) {
-                return null;
-            }
-
-            $objectInstanceCheck = $this->resolveObjectInstanceCheck($argValueType);
-            if ($objectInstanceCheck === null) {
-                return null;
-            }
-
-            return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
+            return $this->processFuncCall($node);
         }
 
         return null;
+    }
+
+    private function processFuncCall(FuncCall $funcCall): ?Instanceof_
+    {
+        $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof BinaryOp) {
+            return null;
+        }
+
+        if ($this->shouldSkip($funcCall)) {
+            return null;
+        }
+
+        /** @var Expr $argResourceValue */
+        $argResourceValue = $funcCall->args[0]->value;
+        $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
+
+        if (! $argValueType instanceof FullyQualifiedObjectType) {
+            return null;
+        }
+
+        $objectInstanceCheck = $this->resolveObjectInstanceCheck($argValueType);
+        if ($objectInstanceCheck === null) {
+            return null;
+        }
+
+        return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
     }
 
     public function provideMinPhpVersion(): int
