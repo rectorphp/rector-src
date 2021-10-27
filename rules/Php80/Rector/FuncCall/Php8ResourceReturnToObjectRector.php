@@ -107,7 +107,7 @@ CODE_SAMPLE
     private function processFuncCall(FuncCall $funcCall): ?Instanceof_
     {
         $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof BinaryOp) {
+        if ($parent instanceof BinaryOp && ! $parent instanceof BooleanOr) {
             return null;
         }
 
