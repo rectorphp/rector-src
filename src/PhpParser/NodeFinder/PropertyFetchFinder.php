@@ -37,7 +37,7 @@ final class PropertyFetchFinder
     }
 
     /**
-     * @return PropertyFetch[]|StaticPropertyFetch[]
+     * @return Node[]|PropertyFetch[]|StaticPropertyFetch[]
      */
     public function findPrivatePropertyFetches(Property | Param $propertyOrPromotedParam): array
     {
@@ -106,7 +106,7 @@ final class PropertyFetchFinder
 
     /**
      * @param Stmt[] $nodes
-     * @return PropertyFetch[]|StaticPropertyFetch[]
+     * @return Node[]
      */
     private function findPropertyFetchesInNonAnonymousClassLike(array $nodes, string $propertyName): array
     {
