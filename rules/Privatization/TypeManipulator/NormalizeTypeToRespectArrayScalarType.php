@@ -59,11 +59,7 @@ final class NormalizeTypeToRespectArrayScalarType
             }
         }
 
-        if (count($types) === 1) {
-            $arrayItemType = $types[0];
-        } else {
-            $arrayItemType = new IntersectionType($types);
-        }
+        $arrayItemType = count($types) === 1 ? $types[0] : new IntersectionType($types);
 
         return new ArrayType($arrayType->getKeyType(), $arrayItemType);
     }
