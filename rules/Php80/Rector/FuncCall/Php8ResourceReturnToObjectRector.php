@@ -7,6 +7,7 @@ namespace Rector\Php80\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
@@ -32,9 +33,9 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
      */
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
         // curl
-        'CurlHandle',
-        'CurlMultiHandle',
-        'CurlShareHandle',
+        'curl_init' => 'CurlHandle',
+        'curl_multi_init' => 'CurlMultiHandle',
+        'curl_share_init' => 'CurlShareHandle',
     ];
 
     public function getRuleDefinition(): RuleDefinition
@@ -121,6 +122,13 @@ CODE_SAMPLE
         $argResourceValue = $funcCall->args[0]->value;
         $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
 
+        // if detected type is not FullyQualifiedObjectType, it still can be a resource to objec, when:
+        //      - in the right position of BooleanOr, it be NeverType
+        //      - the object changed after init
+        if (! $argValueType instanceof FullyQualifiedObjectType) {
+            $argValueType = $this->resolveArgValueTypeFromPreviousAssign($funcCall, $argResourceValue);
+        }
+
         if (! $argValueType instanceof FullyQualifiedObjectType) {
             return null;
         }
@@ -135,14 +143,50 @@ CODE_SAMPLE
         return null;
     }
 
+    private function resolveArgValueTypeFromPreviousAssign(FuncCall $funcCall, Expr $expr): ?FullyQualifiedObjectType
+    {
+        $objectInstanceCheck = null;
+        $assign = $this->betterNodeFinder->findFirstPreviousOfNode($funcCall, function (Node $subNode) use (
+            &$objectInstanceCheck,
+            $expr
+        ): bool {
+            if (! $this->isAssignWithFuncCallExpr($subNode)) {
+                return false;
+            }
+
+            /** @var Assign $subNode */
+            if (! $this->nodeComparator->areNodesEqual($subNode->var, $expr)) {
+                return false;
+            }
+
+            foreach (self::COLLECTION_FUNCTION_TO_RETURN_OBJECT as $key => $value) {
+                if ($this->nodeNameResolver->isName($subNode->expr, $key)) {
+                    $objectInstanceCheck = $value;
+                    return true;
+                }
+            }
+        });
+
+        if (! $assign instanceof Assign) {
+            return null;
+        }
+
+        return new FullyQualifiedObjectType($objectInstanceCheck);
+    }
+
+    private function isAssignWithFuncCallExpr(Node $node): bool
+    {
+        if (! $node instanceof Assign) {
+            return false;
+        }
+
+        return $node->expr instanceof FuncCall;
+    }
+
     private function processBooleanOr(BooleanOr $booleanOr): ?Instanceof_
     {
         $left = $booleanOr->left;
         $right = $booleanOr->right;
-
-        if ($this->nodeComparator->areNodesEqual($left, $right)) {
-            return null;
-        }
 
         if ($left instanceof FuncCall && $right instanceof Instanceof_) {
             if ($this->shouldSkip($left)) {
@@ -161,6 +205,25 @@ CODE_SAMPLE
             }
 
             return $right;
+        }
+
+        if ($left instanceof Instanceof_ && $right instanceof FuncCall) {
+            if ($this->shouldSkip($right)) {
+                return null;
+            }
+
+            $objectInstanceCheck = $this->resolveObjectInstanceCheck($right);
+            if ($objectInstanceCheck === null) {
+                return null;
+            }
+
+            /** @var Expr $argResourceValue */
+            $argResourceValue = $right->args[0]->value;
+            if (! $this->isInstanceOfObjectCheck($left, $argResourceValue, $objectInstanceCheck)) {
+                return null;
+            }
+
+            return $left;
         }
 
         return null;
