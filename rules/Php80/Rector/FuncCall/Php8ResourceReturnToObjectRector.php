@@ -36,6 +36,9 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
         'curl_init' => 'CurlHandle',
         'curl_multi_init' => 'CurlMultiHandle',
         'curl_share_init' => 'CurlShareHandle',
+
+        // socket
+        'socket_create' => 'Socket'
     ];
 
     public function getRuleDefinition(): RuleDefinition
