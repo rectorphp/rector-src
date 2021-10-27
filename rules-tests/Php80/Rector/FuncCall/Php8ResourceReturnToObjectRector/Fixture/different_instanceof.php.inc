@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector\Fixture;
 
-final class DoubleCheckFlip
+final class DifferentInstanceof
 {
     public function run()
     {
@@ -17,7 +17,7 @@ final class DoubleCheckFlip
 
 namespace Rector\Tests\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector\Fixture;
 
-final class DoubleCheckFlip
+final class DifferentInstanceof
 {
     public function run()
     {

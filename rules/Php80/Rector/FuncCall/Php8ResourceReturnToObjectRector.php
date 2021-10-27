@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
+use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -125,7 +126,7 @@ CODE_SAMPLE
         return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
     }
 
-    private function resolveObjectInstanceCheck(FuncCall $funcCall): ?string
+    private function resolveArgValueType(FuncCall $funcCall): ?Type
     {
         /** @var Expr $argResourceValue */
         $argResourceValue = $funcCall->args[0]->value;
@@ -138,6 +139,12 @@ CODE_SAMPLE
             $argValueType = $this->resolveArgValueTypeFromPreviousAssign($funcCall, $argResourceValue);
         }
 
+        return $argValueType;
+    }
+
+    private function resolveObjectInstanceCheck(FuncCall $funcCall): ?string
+    {
+        $argValueType = $this->resolveArgValueType($funcCall);
         if (! $argValueType instanceof FullyQualifiedObjectType) {
             return null;
         }
@@ -195,7 +202,7 @@ CODE_SAMPLE
         return $node->expr instanceof FuncCall;
     }
 
-    private function processBooleanOr(BooleanOr $booleanOr): BooleanOr|Instanceof_|null
+    private function processBooleanOr(BooleanOr $booleanOr): ?Instanceof_
     {
         $left = $booleanOr->left;
         $right = $booleanOr->right;
@@ -206,14 +213,10 @@ CODE_SAMPLE
         if ($left instanceof FuncCall && $right instanceof Instanceof_) {
             $funCall = $left;
             $instanceof = $right;
-        }
-
-        if ($left instanceof Instanceof_ && $right instanceof FuncCall) {
+        } elseif ($left instanceof Instanceof_ && $right instanceof FuncCall) {
             $funCall = $right;
             $instanceof = $left;
-        }
-
-        if ($funCall === null && $instanceof === null) {
+        } else {
             return null;
         }
 
@@ -231,35 +234,10 @@ CODE_SAMPLE
         $argResourceValue = $funCall->args[0]->value;
         /** @var Instanceof_ $instanceof */
         if (! $this->isInstanceOfObjectCheck($instanceof, $argResourceValue, $objectInstanceCheck)) {
-            $booleanOr->left = $this->resolveInstanceOfFromFuncCall(
-                $argResourceValue,
-                $booleanOr->left,
-                $objectInstanceCheck,
-                $instanceof
-            );
-            $booleanOr->right = $this->resolveInstanceOfFromFuncCall(
-                $argResourceValue,
-                $booleanOr->right,
-                $objectInstanceCheck,
-                $instanceof
-            );
-
-            return $booleanOr;
+            return null;
         }
 
         return $instanceof;
-    }
-
-    private function resolveInstanceOfFromFuncCall(
-        Expr $argResourceValue,
-        Expr $expr,
-        string $objectInstanceCheck,
-        Instanceof_ $instanceof
-    ): Expr|Instanceof_ {
-        $instanceof = new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
-        return $expr instanceof FuncCall
-            ? $instanceof
-            : $expr;
     }
 
     private function isInstanceOfObjectCheck(Instanceof_ $instanceof, Expr $expr, string $objectInstanceCheck): bool
