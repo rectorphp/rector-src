@@ -113,11 +113,17 @@ CODE_SAMPLE
     private function isMaybeUsedAlongWithResourceToObjectRector(BooleanOr $booleanOr): bool
     {
         if ($booleanOr->left instanceof FuncCall) {
-            return $this->nodeNameResolver->isName($booleanOr->left, 'is_resource') && $booleanOr->right instanceof Instanceof_;
+            return $this->nodeNameResolver->isName(
+                $booleanOr->left,
+                'is_resource'
+            ) && $booleanOr->right instanceof Instanceof_;
         }
 
         if ($booleanOr->right instanceof FuncCall) {
-            return $this->nodeNameResolver->isName($booleanOr->right, 'is_resource') && $booleanOr->left instanceof Instanceof_;
+            return $this->nodeNameResolver->isName(
+                $booleanOr->right,
+                'is_resource'
+            ) && $booleanOr->left instanceof Instanceof_;
         }
 
         return false;
