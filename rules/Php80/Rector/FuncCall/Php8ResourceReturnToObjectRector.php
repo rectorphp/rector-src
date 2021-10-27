@@ -46,6 +46,9 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
         'socket_create_listen' => 'Socket',
         'socket_import_stream' => 'Socket',
         'socket_wsaprotocol_info_import' => 'Socket',
+
+        // XML
+        'xmlwriter_open_memory' => 'XMLWriter'
     ];
 
     public function getRuleDefinition(): RuleDefinition
