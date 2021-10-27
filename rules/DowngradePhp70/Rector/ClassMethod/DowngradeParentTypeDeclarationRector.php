@@ -9,9 +9,9 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocParser\PhpDocFromTypeDeclarationDecorator;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\StaticTypeMapper\ValueObject\Type\ParentObjectWithoutClassType;
 use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -95,12 +95,13 @@ CODE_SAMPLE
         }
 
         $parentClassReflection = $classReflection->getParentClass();
-        if (! $parentClassReflection instanceof ClassReflection) {
-            throw new ShouldNotHappenException();
+        if ($parentClassReflection instanceof ClassReflection) {
+            $staticType = new ParentStaticType($parentClassReflection);
+        } else {
+            $staticType = new ParentObjectWithoutClassType();
         }
 
-        $parentStaticType = new ParentStaticType($parentClassReflection);
-        if (! $this->phpDocFromTypeDeclarationDecorator->decorateReturnWithSpecificType($node, $parentStaticType)) {
+        if (! $this->phpDocFromTypeDeclarationDecorator->decorateReturnWithSpecificType($node, $staticType)) {
             return null;
         }
 

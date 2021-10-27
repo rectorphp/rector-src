@@ -209,7 +209,7 @@ CODE_SAMPLE
         array $parentClassesAndInterfaces,
         string $methodName,
         ClassMethod $classMethod,
-        \PHPStan\Type\Type $returnType
+        Type $returnType
     ): Type {
         foreach ($parentClassesAndInterfaces as $parentClassAndInterface) {
             $parentClassAndInterfaceHasMethod = $parentClassAndInterface->hasMethod($methodName);
@@ -232,10 +232,8 @@ CODE_SAMPLE
             );
 
             // skip "parent" reference if correct
-            if ($returnType instanceof ParentStaticType) {
-                if ($parentReturnType->accepts($returnType, true)->yes()) {
-                    continue;
-                }
+            if ($returnType instanceof ParentStaticType && $parentReturnType->accepts($returnType, true)->yes()) {
+                continue;
             }
 
             if ($parentReturnType->equals($returnType)) {

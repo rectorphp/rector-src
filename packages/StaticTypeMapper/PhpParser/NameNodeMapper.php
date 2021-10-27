@@ -14,16 +14,17 @@ use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\ParentObjectWithoutClassType;
 use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 
 final class NameNodeMapper implements PhpParserNodeMapperInterface
@@ -71,8 +72,10 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
         return in_array($name, $oldToNewClasses, true);
     }
 
-    private function createClassReferenceType(Name $name, string $reference): MixedType | StaticType | ThisType
-    {
+    private function createClassReferenceType(
+        Name $name,
+        string $reference
+    ): MixedType | StaticType | ObjectWithoutClassType {
         $className = $name->getAttribute(AttributeKey::CLASS_NAME);
         if ($className === null) {
             return new MixedType();
@@ -86,11 +89,11 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
 
         if ($reference === ObjectReference::PARENT()->getValue()) {
             $parentClassReflection = $classReflection->getParentClass();
-            if (! $parentClassReflection instanceof ClassReflection) {
-                throw new ShouldNotHappenException();
+            if ($parentClassReflection instanceof ClassReflection) {
+                return new ParentStaticType($parentClassReflection);
             }
 
-            return new ParentStaticType($parentClassReflection);
+            return new ParentObjectWithoutClassType();
         }
 
         return new ThisType($classReflection);
