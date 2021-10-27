@@ -62,7 +62,7 @@ final class TypeHasher
         }
 
         if ($typeWithClassName instanceof AliasedObjectType) {
-            return $typeWithClassName->getFullyQualifiedClass();
+            return $typeWithClassName->getFullyQualifiedName();
         }
 
         return $typeWithClassName->getClassName();
@@ -88,7 +88,7 @@ final class TypeHasher
                     return $callable($type);
                 }
 
-                return new FullyQualifiedObjectType($type->getFullyQualifiedClass());
+                return new FullyQualifiedObjectType($type->getFullyQualifiedName());
             }
         );
 

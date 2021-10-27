@@ -68,9 +68,9 @@ final class TypeFactory
                 $type = $this->removeValueFromConstantType($type);
             }
 
-            $type = $this->normalizeObjectTypes($type);
+            $normalizedType = $this->normalizeObjectTypes($type);
 
-            $typeHash = $type->describe(VerbosityLevel::cache());
+            $typeHash = $normalizedType->describe(VerbosityLevel::cache());
             $uniqueTypes[$typeHash] = $type;
         }
 
@@ -180,6 +180,10 @@ final class TypeFactory
     {
         return TypeTraverser::map($type, function (Type $currentType, callable $traverseCallback): Type {
             if ($currentType instanceof ShortenedObjectType) {
+                return new FullyQualifiedObjectType($currentType->getFullyQualifiedName());
+            }
+
+            if ($currentType instanceof AliasedObjectType) {
                 return new FullyQualifiedObjectType($currentType->getFullyQualifiedName());
             }
 
