@@ -74,50 +74,40 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class];
+        return [FuncCall::class, BooleanOr::class];
     }
 
     /**
-     * @param FuncCall $node
+     * @param FuncCall|BooleanOr $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
-            return null;
-        }
+        if ($node instanceof FuncCall) {
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parent instanceof BinaryOp) {
+                return null;
+            }
 
-        /** @var Expr $argResourceValue */
-        $argResourceValue = $node->args[0]->value;
-        $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
-        if (! $argValueType instanceof FullyQualifiedObjectType) {
-            return null;
-        }
+            if ($this->shouldSkip($node)) {
+                return null;
+            }
 
-        $objectInstanceCheck = $this->resolveObjectInstanceCheck($argValueType);
-        if ($objectInstanceCheck === null) {
-            return null;
-        }
+            /** @var Expr $argResourceValue */
+            $argResourceValue = $node->args[0]->value;
+            $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
+            if (! $argValueType instanceof FullyQualifiedObjectType) {
+                return null;
+            }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof BinaryOp && ! $parent instanceof BooleanOr) {
-            return null;
-        }
+            $objectInstanceCheck = $this->resolveObjectInstanceCheck($argValueType);
+            if ($objectInstanceCheck === null) {
+                return null;
+            }
 
-        if (! $this->isDoubleCheck($node, $argResourceValue, $objectInstanceCheck)) {
             return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
         }
 
-        /** @var BooleanOr $parent */
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent->left === $node) {
-            $this->removeNode($parent->left);
-        }
-
-        if ($parent->right === $node) {
-            $this->removeNode($parent->right);
-        }
-
-        return $node;
+        return null;
     }
 
     public function provideMinPhpVersion(): int
@@ -137,21 +127,16 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveBooleanOrCompareValue(FuncCall $funcCall): ?Expr
+    private function resolveBooleanOrCompareValue(BooleanOr $booleanOr): ?Expr
     {
         $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof BooleanOr) {
             return null;
         }
 
-        $parentOfParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentOfParent instanceof BinaryOp) { // skip complex condition
-            return null;
-        }
-
-        return $parent->left === $funcCall
-            ? $parent->right
-            : $parent->left;
+        return $booleanOr->left === $funcCall
+            ? $booleanOr->right
+            : $booleanOr->left;
     }
 
     private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
