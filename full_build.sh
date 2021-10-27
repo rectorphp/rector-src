@@ -18,3 +18,8 @@ rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests
 
 sh build/downgrade-rector.sh rector-build
 sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
+
+cd rector-prefixed-downgraded
+cp ../build/target-repository/bootstrap.php .
+cp ../preload.php .
+bin/rector list --ansi
