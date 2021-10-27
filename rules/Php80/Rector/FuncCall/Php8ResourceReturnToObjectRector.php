@@ -86,7 +86,7 @@ CODE_SAMPLE
             return $this->processFuncCall($node);
         }
 
-        return null;
+        return $this->processBooleanOr($node);
     }
 
     private function processFuncCall(FuncCall $funcCall): ?Instanceof_
@@ -100,19 +100,13 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Expr $argResourceValue */
-        $argResourceValue = $funcCall->args[0]->value;
-        $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
-
-        if (! $argValueType instanceof FullyQualifiedObjectType) {
-            return null;
-        }
-
-        $objectInstanceCheck = $this->resolveObjectInstanceCheck($argValueType);
+        $objectInstanceCheck = $this->resolveObjectInstanceCheck($funcCall);
         if ($objectInstanceCheck === null) {
             return null;
         }
 
+        /** @var Expr $argResourceValue */
+        $argResourceValue = $funcCall->args[0]->value;
         return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
     }
 
@@ -121,9 +115,17 @@ CODE_SAMPLE
         return PhpVersionFeature::PHP8_RESOURCE_TO_OBJECT;
     }
 
-    private function resolveObjectInstanceCheck(FullyQualifiedObjectType $fullyQualifiedObjectType): ?string
+    private function resolveObjectInstanceCheck(FuncCall $funcCall): ?string
     {
-        $className = $fullyQualifiedObjectType->getClassName();
+        /** @var Expr $argResourceValue */
+        $argResourceValue = $funcCall->args[0]->value;
+        $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
+
+        if (! $argValueType instanceof FullyQualifiedObjectType) {
+            return null;
+        }
+
+        $className = $argValueType->getClassName();
         foreach (self::COLLECTION_FUNCTION_TO_RETURN_OBJECT as $value) {
             if ($className === $value) {
                 return $value;
@@ -133,34 +135,48 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveBooleanOrCompareValue(BooleanOr $booleanOr): ?Expr
+    private function processBooleanOr(BooleanOr $booleanOr): ?Instanceof_
     {
-        $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof BooleanOr) {
+        $left = $booleanOr->left;
+        $right = $booleanOr->right;
+
+        if ($this->nodeComparator->areNodesEqual($left, $right)) {
             return null;
         }
 
-        return $booleanOr->left === $funcCall
-            ? $booleanOr->right
-            : $booleanOr->left;
+        if ($left instanceof FuncCall && $right instanceof Instanceof_) {
+            if ($this->shouldSkip($left)) {
+                return null;
+            }
+
+            $objectInstanceCheck = $this->resolveObjectInstanceCheck($left);
+            if ($objectInstanceCheck === null) {
+                return null;
+            }
+
+            /** @var Expr $argResourceValue */
+            $argResourceValue = $left->args[0]->value;
+            if (! $this->isInstanceOfObjectCheck($right, $argResourceValue, $objectInstanceCheck)) {
+                return null;
+            }
+
+            return $right;
+        }
+
+        return null;
     }
 
-    private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
+    private function isInstanceOfObjectCheck(Instanceof_ $instanceof, Expr $expr, string $objectInstanceCheck): bool
     {
-        $anotherValue = $this->resolveBooleanOrCompareValue($funcCall);
-        if (! $anotherValue instanceof Instanceof_) {
+        if (! $instanceof->class instanceof FullyQualified) {
             return false;
         }
 
-        if (! $anotherValue->class instanceof FullyQualified) {
+        if (! $this->nodeComparator->areNodesEqual($expr, $instanceof->expr)) {
             return false;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($expr, $anotherValue->expr)) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($anotherValue->class, $objectInstanceCheck);
+        return $this->nodeNameResolver->isName($instanceof->class, $objectInstanceCheck);
     }
 
     private function shouldSkip(FuncCall $funcCall): bool
