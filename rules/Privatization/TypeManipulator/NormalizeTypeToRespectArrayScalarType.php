@@ -59,7 +59,13 @@ final class NormalizeTypeToRespectArrayScalarType
             }
         }
 
-        return new ArrayType($arrayType->getKeyType(), new IntersectionType($types));
+        if (count($types) === 1) {
+            $arrayItemType = $types[0];
+        } else {
+            $arrayItemType = new IntersectionType($types);
+        }
+
+        return new ArrayType($arrayType->getKeyType(), $arrayItemType);
     }
 
     private function normalizeUnionType(UnionType $unionType): UnionType
