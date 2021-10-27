@@ -255,8 +255,7 @@ CODE_SAMPLE
         Expr $expr,
         string $objectInstanceCheck,
         Instanceof_ $instanceof
-    )
-    {
+    ) {
         $instanceof = new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
         return $expr instanceof FuncCall
             ? $instanceof
