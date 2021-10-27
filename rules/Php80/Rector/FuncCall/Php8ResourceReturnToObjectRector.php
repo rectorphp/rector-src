@@ -89,6 +89,11 @@ CODE_SAMPLE
         return $this->processBooleanOr($node);
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::PHP8_RESOURCE_TO_OBJECT;
+    }
+
     private function processFuncCall(FuncCall $funcCall): ?Instanceof_
     {
         $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
@@ -108,11 +113,6 @@ CODE_SAMPLE
         /** @var Expr $argResourceValue */
         $argResourceValue = $funcCall->args[0]->value;
         return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::PHP8_RESOURCE_TO_OBJECT;
     }
 
     private function resolveObjectInstanceCheck(FuncCall $funcCall): ?string
