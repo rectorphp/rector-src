@@ -8,11 +8,13 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -122,29 +124,28 @@ CODE_SAMPLE
 
     private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
     {
-        $binaryOp = $this->betterNodeFinder->findParentType($funcCall, BinaryOp::class);
-        if (! $binaryOp instanceof BinaryOp) {
+        $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parent instanceof BooleanOr) {
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($binaryOp, function (Node $subNode) use (
-            $objectInstanceCheck,
-            $expr
-        ): bool {
-            if (! $subNode instanceof Instanceof_) {
-                return false;
-            }
+        $anotherValue = $parent->left === $funcCall
+            ? $parent->right
+            : $parent->left;
 
-            if (! $subNode->class instanceof FullyQualified) {
-                return false;
-            }
+        if (! $anotherValue instanceof Instanceof_) {
+            return false;
+        }
 
-            if (! $this->nodeComparator->areNodesEqual($expr, $subNode->expr)) {
-                return false;
-            }
+        if (! $anotherValue->class instanceof FullyQualified) {
+            return false;
+        }
 
-            return $this->nodeNameResolver->isName($subNode->class, $objectInstanceCheck);
-        });
+        if (! $this->nodeComparator->areNodesEqual($expr, $anotherValue->expr)) {
+            return false;
+        }
+
+        return $this->nodeNameResolver->isName($anotherValue->class, $objectInstanceCheck);
     }
 
     private function shouldSkip(FuncCall $funcCall): bool
