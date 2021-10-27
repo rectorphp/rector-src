@@ -14,12 +14,15 @@ use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeUtils;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\StaticTypeMapper\TypeFactory\UnionTypeFactory;
+<<<<<<< HEAD
+=======
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+>>>>>>> try type hash
 
 final class TypeFactory
 {
@@ -65,12 +68,16 @@ final class TypeFactory
             }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             $typeHash = $this->typeHasher->createTypeHash($type);
 =======
             $normalizedType = $this->normalizeObjectTypes($type);
 
             $typeHash = $normalizedType->describe(VerbosityLevel::cache());
 >>>>>>> use non alias
+=======
+            $typeHash = $this->typeHasher->createTypeHash($type);
+>>>>>>> try type hash
             $uniqueTypes[$typeHash] = $type;
         }
 
@@ -176,6 +183,7 @@ final class TypeFactory
         return $unwrappedTypes;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
     private function normalizeObjectTypes(Type $type): Type
@@ -197,4 +205,6 @@ final class TypeFactory
         });
     }
 >>>>>>> use non alias
+=======
+>>>>>>> try type hash
 }
