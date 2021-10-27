@@ -53,6 +53,29 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
         // XMLParser
         'xml_parser_create' => 'XMLParser',
         'xml_parser_create_ns' => 'XMLParser',
+
+        // Broker
+        'enchant_broker_init' => 'EnchantBroker',
+        'enchant_broker_request_dict' => 'EnchantDictionary',
+        'enchant_broker_request_pwl_dict' => 'EnchantDictionary',
+
+        // OpenSSL
+        'openssl_x509_read' => 'OpenSSLCertificate',
+        'openssl_csr_sign' => 'OpenSSLCertificate',
+        'openssl_csr_new' => 'OpenSSLCertificateSigningRequest',
+        'openssl_pkey_new' => 'OpenSSLAsymmetricKey',
+
+        // Shmop
+        'shmop_open' => 'Shmop',
+
+        // MessageQueue
+        'msg_get_queue' => 'SysvMessageQueue',
+        'sem_get' => 'SysvSemaphore',
+        'shm_attach' => 'SysvSharedMemory',
+
+        // Inflate Deflate
+        'inflate_init' => 'InflateContext',
+        'deflate_init' => 'DeflateContext',
     ];
 
     public function getRuleDefinition(): RuleDefinition
