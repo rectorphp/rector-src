@@ -165,12 +165,15 @@ CODE_SAMPLE
                     return true;
                 }
             }
+
+            return false;
         });
 
         if (! $assign instanceof Assign) {
             return null;
         }
 
+        /** @var string $objectInstanceCheck */
         return new FullyQualifiedObjectType($objectInstanceCheck);
     }
 
@@ -188,45 +191,41 @@ CODE_SAMPLE
         $left = $booleanOr->left;
         $right = $booleanOr->right;
 
+        $funCall = null;
+        $instanceof = null;
+
         if ($left instanceof FuncCall && $right instanceof Instanceof_) {
-            if ($this->shouldSkip($left)) {
-                return null;
-            }
-
-            $objectInstanceCheck = $this->resolveObjectInstanceCheck($left);
-            if ($objectInstanceCheck === null) {
-                return null;
-            }
-
-            /** @var Expr $argResourceValue */
-            $argResourceValue = $left->args[0]->value;
-            if (! $this->isInstanceOfObjectCheck($right, $argResourceValue, $objectInstanceCheck)) {
-                return null;
-            }
-
-            return $right;
+            $funCall = $left;
+            $instanceof = $right;
         }
 
         if ($left instanceof Instanceof_ && $right instanceof FuncCall) {
-            if ($this->shouldSkip($right)) {
-                return null;
-            }
-
-            $objectInstanceCheck = $this->resolveObjectInstanceCheck($right);
-            if ($objectInstanceCheck === null) {
-                return null;
-            }
-
-            /** @var Expr $argResourceValue */
-            $argResourceValue = $right->args[0]->value;
-            if (! $this->isInstanceOfObjectCheck($left, $argResourceValue, $objectInstanceCheck)) {
-                return null;
-            }
-
-            return $left;
+            $funCall = $right;
+            $instanceof = $left;
         }
 
-        return null;
+        if ($funCall === null && $instanceof === null) {
+            return null;
+        }
+
+        /** @var FuncCall $funCall */
+        if ($this->shouldSkip($funCall)) {
+            return null;
+        }
+
+        $objectInstanceCheck = $this->resolveObjectInstanceCheck($funCall);
+        if ($objectInstanceCheck === null) {
+            return null;
+        }
+
+        /** @var Expr $argResourceValue */
+        $argResourceValue = $funCall->args[0]->value;
+        /** @var Instanceof_ $instanceof */
+        if (! $this->isInstanceOfObjectCheck($instanceof, $argResourceValue, $objectInstanceCheck)) {
+            return null;
+        }
+
+        return $instanceof;
     }
 
     private function isInstanceOfObjectCheck(Instanceof_ $instanceof, Expr $expr, string $objectInstanceCheck): bool
