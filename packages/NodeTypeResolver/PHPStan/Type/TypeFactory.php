@@ -64,7 +64,13 @@ final class TypeFactory
                 $type = $this->removeValueFromConstantType($type);
             }
 
+<<<<<<< HEAD
             $typeHash = $this->typeHasher->createTypeHash($type);
+=======
+            $normalizedType = $this->normalizeObjectTypes($type);
+
+            $typeHash = $normalizedType->describe(VerbosityLevel::cache());
+>>>>>>> use non alias
             $uniqueTypes[$typeHash] = $type;
         }
 
@@ -169,4 +175,26 @@ final class TypeFactory
 
         return $unwrappedTypes;
     }
+<<<<<<< HEAD
+=======
+
+    private function normalizeObjectTypes(Type $type): Type
+    {
+        return TypeTraverser::map($type, function (Type $currentType, callable $traverseCallback): Type {
+            if ($currentType instanceof ShortenedObjectType) {
+                return new FullyQualifiedObjectType($currentType->getFullyQualifiedName());
+            }
+
+            if ($currentType instanceof AliasedObjectType) {
+                return new FullyQualifiedObjectType($currentType->getFullyQualifiedName());
+            }
+
+            if ($currentType instanceof ObjectType && ! $currentType instanceof GenericObjectType && ! $currentType instanceof AliasedObjectType && $currentType->getClassName() !== 'Iterator') {
+                return new FullyQualifiedObjectType($currentType->getClassName());
+            }
+
+            return $traverseCallback($currentType);
+        });
+    }
+>>>>>>> use non alias
 }
