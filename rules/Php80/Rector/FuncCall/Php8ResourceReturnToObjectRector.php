@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,9 +31,9 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
      */
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
         // curl
-        'curl_init' => 'CurlHandle',
-        'curl_multi_init' => 'CurlMultiHandle',
-        'curl_share_init' => 'CurlShareHandle',
+        'CurlHandle',
+        'CurlMultiHandle',
+        'CurlShareHandle',
     ];
 
     public function getRuleDefinition(): RuleDefinition
@@ -86,12 +87,21 @@ CODE_SAMPLE
 
         /** @var Expr $argResourceValue */
         $argResourceValue = $node->args[0]->value;
-        $objectInstanceCheck = $this->resolveObjectInstanceCheck($node, $argResourceValue);
+        $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
+        if (! $argValueType instanceof FullyQualifiedObjectType) {
+            return null;
+        }
+
+        $objectInstanceCheck = $this->resolveObjectInstanceCheck($argValueType);
         if ($objectInstanceCheck === null) {
             return null;
         }
 
-        return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
+        if (! $this->isDoubleCheck($node, $argResourceValue, $objectInstanceCheck)) {
+            return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
+        }
+
+        return null;
     }
 
     public function provideMinPhpVersion(): int
@@ -99,49 +109,16 @@ CODE_SAMPLE
         return PhpVersionFeature::PHP8_RESOURCE_TO_OBJECT;
     }
 
-    private function isAssignWithFuncCallExpr(Node $node): bool
+    private function resolveObjectInstanceCheck(FullyQualifiedObjectType $fullyQualifiedObjectType): ?string
     {
-        if (! $node instanceof Assign) {
-            return false;
+        $className = $fullyQualifiedObjectType->getClassName();
+        foreach (self::COLLECTION_FUNCTION_TO_RETURN_OBJECT as $value) {
+            if ($className === $value) {
+                return $value;
+            }
         }
 
-        return $node->expr instanceof FuncCall;
-    }
-
-    private function resolveObjectInstanceCheck(FuncCall $funcCall, Expr $expr): ?string
-    {
-        $objectInstanceCheck = null;
-        $assign = $this->betterNodeFinder->findFirstPreviousOfNode($funcCall, function (Node $subNode) use (
-            &$objectInstanceCheck,
-            $expr
-        ): bool {
-            if (! $this->isAssignWithFuncCallExpr($subNode)) {
-                return false;
-            }
-
-            /** @var Assign $subNode */
-            if (! $this->nodeComparator->areNodesEqual($subNode->var, $expr)) {
-                return false;
-            }
-
-            foreach (self::COLLECTION_FUNCTION_TO_RETURN_OBJECT as $key => $value) {
-                if ($this->nodeNameResolver->isName($subNode->expr, $key)) {
-                    $objectInstanceCheck = $value;
-                    return true;
-                }
-            }
-
-            return false;
-        });
-
-        if (! $assign instanceof Assign) {
-            return null;
-        }
-
-        /** @var string $objectInstanceCheck */
-        return $this->isDoubleCheck($funcCall, $assign->var, $objectInstanceCheck)
-            ? null
-            : $objectInstanceCheck;
+        return null;
     }
 
     private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
