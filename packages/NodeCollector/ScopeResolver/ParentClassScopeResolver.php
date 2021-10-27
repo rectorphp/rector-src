@@ -25,12 +25,6 @@ final class ParentClassScopeResolver
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }
-
-        $parentClassReflection = $classReflection->getParentClass();
-        if ($parentClassReflection instanceof ClassReflection) {
-            return $parentClassReflection;
-        }
-
-        return null;
+        return $classReflection->getParentClass();
     }
 }

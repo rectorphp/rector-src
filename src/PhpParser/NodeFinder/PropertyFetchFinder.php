@@ -130,7 +130,7 @@ final class PropertyFetchFinder
 
     /**
      * @param Stmt[] $nodes
-     * @return PropertyFetch[]|StaticPropertyFetch[]
+     * @return Node[]
      */
     private function findPropertyFetchesInClassLike(array $nodes, string $propertyName): array
     {

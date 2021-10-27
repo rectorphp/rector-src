@@ -10,7 +10,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
@@ -32,8 +31,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
     public function __construct(
         private ObjectTypeSpecifier $objectTypeSpecifier,
         private ScalarStringToTypeMapper $scalarStringToTypeMapper,
-        private ParentClassScopeResolver $parentClassScopeResolver,
-        private ReflectionProvider $reflectionProvider
+        private ParentClassScopeResolver $parentClassScopeResolver
     ) {
     }
 
