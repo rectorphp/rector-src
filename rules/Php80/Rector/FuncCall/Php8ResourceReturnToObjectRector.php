@@ -102,7 +102,17 @@ CODE_SAMPLE
             return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
         }
 
-        return null;
+        /** @var BooleanOr $parent */
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent->left === $node) {
+            $this->removeNode($parent->left);
+        }
+
+        if ($parent->right === $node) {
+            $this->removeNode($parent->right);
+        }
+
+        return $node;
     }
 
     public function provideMinPhpVersion(): int
@@ -122,17 +132,26 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
+    private function resolveBooleanOrCompareValue(FuncCall $funcCall): ?Expr
     {
         $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof BooleanOr) {
-            return false;
+            return null;
         }
 
-        $anotherValue = $parent->left === $funcCall
+        $parentOfParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentOfParent instanceof BinaryOp) { // skip complex condition
+            return null;
+        }
+
+        return $parent->left === $funcCall
             ? $parent->right
             : $parent->left;
+    }
 
+    private function isDoubleCheck(FuncCall $funcCall, Expr $expr, string $objectInstanceCheck): bool
+    {
+        $anotherValue = $this->resolveBooleanOrCompareValue($funcCall);
         if (! $anotherValue instanceof Instanceof_) {
             return false;
         }
