@@ -116,6 +116,7 @@ CODE_SAMPLE
             if (! $this->nodeNameResolver->isName($booleanOr->left, 'is_resource')) {
                 return false;
             }
+
             return $booleanOr->right instanceof Instanceof_;
         }
 
@@ -123,6 +124,7 @@ CODE_SAMPLE
             if (! $this->nodeNameResolver->isName($booleanOr->right, 'is_resource')) {
                 return false;
             }
+
             return $booleanOr->left instanceof Instanceof_;
         }
 
