@@ -130,7 +130,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->refactorAliasName($node, $use->name->toString(), $lastName, $use);
+            $this->refactorAliasName($node, $use->name->toString(), $aliasName, $lastName, $use);
         }
 
         return $node;
@@ -185,7 +185,7 @@ CODE_SAMPLE
         return (bool) $this->fullyQualifiedFromUseFinder->matchAliasNamespace($use, $loweredAliasName);
     }
 
-    private function refactorAliasName(Use_ $use, string $aliasName, string $lastName, UseUse $useUse): void
+    private function refactorAliasName(Use_ $use, string $fullUseUseName, string $aliasName, string $lastName, UseUse $useUse): void
     {
         $parentUse = $use->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentUse instanceof Node) {
@@ -205,9 +205,13 @@ CODE_SAMPLE
             return;
         }
 
-        $lowerAliasName = strtolower($aliasName);
-        $this->nameRenamer->renameNameNode($this->resolvedNodeNames[$lowerAliasName], $lastName);
-        $useUse->alias = null;
+        $loweredFullUseUseName = strtolower($fullUseUseName);
+        if (isset($this->resolvedNodeNames[$loweredFullUseUseName])) {
+            $this->nameRenamer->renameNameNode($this->resolvedNodeNames[$loweredFullUseUseName], $lastName);
+            $useUse->alias = null;
+
+            return;
+        }
     }
 
     private function hasUseAlias(Use_ $use): bool
