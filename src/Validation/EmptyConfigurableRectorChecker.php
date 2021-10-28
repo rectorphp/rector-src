@@ -53,7 +53,7 @@ final class EmptyConfigurableRectorChecker
         $this->symfonyStyle->warning($warningMessage);
 
         foreach ($emptyConfigurableRectors as $emptyConfigurableRector) {
-            $this->symfonyStyle->writeln(' * ' . get_class($emptyConfigurableRector));
+            $this->symfonyStyle->writeln(' * ' . $emptyConfigurableRector::class);
         }
 
         // to take time to absorb it
