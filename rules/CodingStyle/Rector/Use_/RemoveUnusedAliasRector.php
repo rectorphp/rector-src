@@ -130,7 +130,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->refactorAliasName($node, $aliasName, $lastName, $use);
+            $this->refactorAliasName($node, $use->name->toString(), $lastName, $use);
         }
 
         return $node;
