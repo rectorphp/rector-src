@@ -10,6 +10,7 @@ use PHPStan\Type\CallableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -30,12 +31,12 @@ final class ClassMethodParamTypeCompleter
     /**
      * @param array<int, Type> $classParameterTypes
      */
-    public function complete(ClassMethod $classMethod, array $classParameterTypes): ?ClassMethod
+    public function complete(ClassMethod $classMethod, array $classParameterTypes, int $maxUnionTypes): ?ClassMethod
     {
         $hasChanged = false;
 
         foreach ($classParameterTypes as $position => $argumentStaticType) {
-            if ($this->shouldSkipArgumentStaticType($classMethod, $argumentStaticType, $position)) {
+            if ($this->shouldSkipArgumentStaticType($classMethod, $argumentStaticType, $position, $maxUnionTypes)) {
                 continue;
             }
 
@@ -63,7 +64,8 @@ final class ClassMethodParamTypeCompleter
     private function shouldSkipArgumentStaticType(
         ClassMethod $classMethod,
         Type $argumentStaticType,
-        int $position
+        int $position,
+        int $maxUnionTypes
     ): bool {
         if ($argumentStaticType instanceof MixedType) {
             return true;
@@ -97,6 +99,11 @@ final class ClassMethodParamTypeCompleter
             }
         }
 
+        // too many union types
+        if ($this->skipTooDetailedUnionOfTypes($currentParameterStaticType, $argumentStaticType, $maxUnionTypes)) {
+            return true;
+        }
+
         // avoid overriding more precise type
         if ($argumentStaticType->isSuperTypeOf($currentParameterStaticType)->yes()) {
             return true;
@@ -122,5 +129,18 @@ final class ClassMethodParamTypeCompleter
         }
 
         return $type->getClassName() === 'Closure';
+    }
+
+    private function skipTooDetailedUnionOfTypes(Type $currentType, Type $newType, int $maxUnionTypes): bool
+    {
+        if ($currentType instanceof MixedType) {
+            return false;
+        }
+
+        if (! $newType instanceof UnionType) {
+            return false;
+        }
+
+        return count($newType->getTypes()) > $maxUnionTypes;
     }
 }
