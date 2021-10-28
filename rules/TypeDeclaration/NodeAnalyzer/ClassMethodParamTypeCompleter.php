@@ -10,8 +10,10 @@ use PHPStan\Type\CallableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPStan\Type\VerbosityLevel;
+use Rector\Core\Php\PhpVersionProvider;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
 
@@ -19,7 +21,9 @@ final class ClassMethodParamTypeCompleter
 {
     public function __construct(
         private StaticTypeMapper $staticTypeMapper,
-        private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver
+        private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
+        private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
+        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -81,6 +85,16 @@ final class ClassMethodParamTypeCompleter
         $currentParameterStaticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($parameter->type);
         if ($this->isClosureAndCallableType($currentParameterStaticType, $argumentStaticType)) {
             return true;
+        }
+
+        // narrow union type in case its not supported yet
+        if ($argumentStaticType instanceof \PHPStan\Type\UnionType && ! $this->phpVersionProvider->isAtLeastPhpVersion(
+            PhpVersionFeature::UNION_TYPES
+        )) {
+            $narrowedObjectType = $this->unionTypeCommonTypeNarrower->narrowToSharedObjectType($argumentStaticType);
+            if ($narrowedObjectType instanceof ObjectType) {
+                $argumentStaticType = $narrowedObjectType;
+            }
         }
 
         // avoid overriding more precise type
