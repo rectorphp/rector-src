@@ -10,6 +10,7 @@ use PHPStan\Type\CallableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\VerbosityLevel;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
@@ -84,10 +85,6 @@ final class ClassMethodParamTypeCompleter
 
         // avoid overriding more precise type
         if ($argumentStaticType->isSuperTypeOf($currentParameterStaticType)->yes()) {
-            return true;
-        }
-
-        if ($currentParameterStaticType->equals($argumentStaticType)) {
             return true;
         }
 
