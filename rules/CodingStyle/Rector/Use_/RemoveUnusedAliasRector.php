@@ -121,7 +121,7 @@ CODE_SAMPLE
 
             /** @var string $aliasName */
             $aliasName = $this->getName($use->alias);
-            if ($this->shouldSkip($node, $use->name, $lastName, $aliasName)) {
+            if ($this->shouldSkip($node, $lastName, $aliasName)) {
                 continue;
             }
 
@@ -131,7 +131,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->refactorAliasName($node, $use->name->toString(), $aliasName, $lastName, $use);
+            $this->refactorAliasName($node, $use->name->toString(), $lastName, $use);
         }
 
         return $node;
@@ -167,7 +167,7 @@ CODE_SAMPLE
         return array_map('strtolower', $values);
     }
 
-    private function shouldSkip(Use_ $use, Name $name, string $lastName, string $aliasName): bool
+    private function shouldSkip(Use_ $use, string $lastName, string $aliasName): bool
     {
         // PHP is case insensitive
         $loweredLastName = strtolower($lastName);
@@ -189,7 +189,6 @@ CODE_SAMPLE
     private function refactorAliasName(
         Use_ $use,
         string $fullUseUseName,
-        string $aliasName,
         string $lastName,
         UseUse $useUse
     ): void {
