@@ -185,7 +185,13 @@ CODE_SAMPLE
         return (bool) $this->fullyQualifiedFromUseFinder->matchAliasNamespace($use, $loweredAliasName);
     }
 
-    private function refactorAliasName(Use_ $use, string $fullUseUseName, string $aliasName, string $lastName, UseUse $useUse): void
+    private function refactorAliasName(
+        Use_ $use,
+        string $fullUseUseName,
+        string $aliasName,
+        string $lastName,
+        UseUse $useUse
+    ): void
     {
         $parentUse = $use->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentUse instanceof Node) {
