@@ -6,7 +6,6 @@ namespace Rector\CodingStyle\Rector\Use_;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -186,12 +185,7 @@ CODE_SAMPLE
         return (bool) $this->fullyQualifiedFromUseFinder->matchAliasNamespace($use, $loweredAliasName);
     }
 
-    private function refactorAliasName(
-        Use_ $use,
-        string $fullUseUseName,
-        string $lastName,
-        UseUse $useUse
-    ): void {
+    private function refactorAliasName(Use_ $use, string $fullUseUseName, string $lastName, UseUse $useUse): void {
         $parentUse = $use->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentUse instanceof Node) {
             return;
