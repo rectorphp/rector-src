@@ -191,8 +191,7 @@ CODE_SAMPLE
         string $aliasName,
         string $lastName,
         UseUse $useUse
-    ): void
-    {
+    ): void {
         $parentUse = $use->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentUse instanceof Node) {
             return;
