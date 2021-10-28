@@ -90,17 +90,10 @@ final class ClassMethodParamTypeCompleter
         }
 
         // narrow union type in case its not supported yet
-        if ($argumentStaticType instanceof \PHPStan\Type\UnionType && ! $this->phpVersionProvider->isAtLeastPhpVersion(
-            PhpVersionFeature::UNION_TYPES
-        )) {
-            $narrowedObjectType = $this->unionTypeCommonTypeNarrower->narrowToSharedObjectType($argumentStaticType);
-            if ($narrowedObjectType instanceof ObjectType) {
-                $argumentStaticType = $narrowedObjectType;
-            }
-        }
+        $argumentStaticType = $this->narrowUnionTypeIfNotSupported($argumentStaticType);
 
         // too many union types
-        if ($this->skipTooDetailedUnionOfTypes($currentParameterStaticType, $argumentStaticType, $maxUnionTypes)) {
+        if ($this->isTooDetailedUnionType($currentParameterStaticType, $argumentStaticType, $maxUnionTypes)) {
             return true;
         }
 
@@ -131,7 +124,7 @@ final class ClassMethodParamTypeCompleter
         return $type->getClassName() === 'Closure';
     }
 
-    private function skipTooDetailedUnionOfTypes(Type $currentType, Type $newType, int $maxUnionTypes): bool
+    private function isTooDetailedUnionType(Type $currentType, Type $newType, int $maxUnionTypes): bool
     {
         if ($currentType instanceof MixedType) {
             return false;
@@ -142,5 +135,24 @@ final class ClassMethodParamTypeCompleter
         }
 
         return count($newType->getTypes()) > $maxUnionTypes;
+    }
+
+    private function narrowUnionTypeIfNotSupported(Type $type): Type
+    {
+        if (! $type instanceof UnionType) {
+            return $type;
+        }
+
+        // union is supported, so it's ok
+        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
+            return $type;
+        }
+
+        $narrowedObjectType = $this->unionTypeCommonTypeNarrower->narrowToSharedObjectType($type);
+        if ($narrowedObjectType instanceof ObjectType) {
+            return $narrowedObjectType;
+        }
+
+        return $type;
     }
 }
