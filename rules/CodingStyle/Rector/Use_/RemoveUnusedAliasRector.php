@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Rector\Use_;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -211,12 +212,12 @@ CODE_SAMPLE
         }
 
         $loweredFullUseUseName = strtolower($fullUseUseName);
-        if (isset($this->resolvedNodeNames[$loweredFullUseUseName])) {
-            $this->nameRenamer->renameNameNode($this->resolvedNodeNames[$loweredFullUseUseName], $lastName);
-            $useUse->alias = null;
-
+        if (! isset($this->resolvedNodeNames[$loweredFullUseUseName])) {
             return;
         }
+
+        $this->nameRenamer->renameNameNode($this->resolvedNodeNames[$loweredFullUseUseName], $lastName);
+        $useUse->alias = null;
     }
 
     private function hasUseAlias(Use_ $use): bool
