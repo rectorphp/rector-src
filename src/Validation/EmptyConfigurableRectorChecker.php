@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Core\Validation;
 
+use function count;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function count;
 
 final class EmptyConfigurableRectorChecker
 {
