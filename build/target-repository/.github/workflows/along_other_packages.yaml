@@ -47,6 +47,7 @@ jobs:
 
             -   run: |
                     # run
+                    yes | composer init --name some/prj
                     composer config minimum-stability dev
                     composer config prefer-stable true
                     composer require rector/rector:dev-main --dev --ansi
