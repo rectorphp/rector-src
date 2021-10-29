@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Name;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
@@ -176,12 +175,12 @@ CODE_SAMPLE
             return '';
         }
 
-        $originalNameBeforeLastPart = Strings::after((string) $originalName, '\\', -1);
-        if ($originalNameBeforeLastPart === null) {
+        $last = $originalName->getLast();
+        if ($last === null) {
             return '';
         }
 
-        if (strtolower($originalNameBeforeLastPart) !== strtolower($type)) {
+        if (strtolower($last) !== strtolower($type)) {
             return '';
         }
 
