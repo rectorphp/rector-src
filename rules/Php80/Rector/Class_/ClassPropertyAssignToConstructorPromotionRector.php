@@ -193,7 +193,7 @@ CODE_SAMPLE
         }
 
         if (! $type instanceof UnionType) {
-            return $type instanceof Identifier && $this->isName($type, 'callable');
+            return false;
         }
 
         foreach ($type->types as $type) {
