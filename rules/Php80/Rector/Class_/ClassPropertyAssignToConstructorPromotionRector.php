@@ -18,6 +18,7 @@ use PHPStan\Type\UnionType as PHPStanUnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
+use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -26,6 +27,7 @@ use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -42,7 +44,9 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private VariableRenamer $variableRenamer,
         private VarTagRemover $varTagRemover,
         private ParamAnalyzer $paramAnalyzer,
-        private PhpDocTypeChanger $phpDocTypeChanger
+        private PhpDocTypeChanger $phpDocTypeChanger,
+        private PropertyTypeInferer $propertyTypeInferer,
+        private PropertyAnalyzer $propertyAnalyzer
     ) {
     }
 
@@ -109,7 +113,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->shouldSkipProperty($property)) {
+            if ($this->propertyAnalyzer->hasForbiddenType($property)) {
                 continue;
             }
 
@@ -205,23 +209,6 @@ CODE_SAMPLE
             }
 
             return true;
-        }
-
-        return false;
-    }
-
-    private function shouldSkipProperty(Property $property): bool
-    {
-        $propertyType = $this->nodeTypeResolver->getType($property);
-        if (! $propertyType instanceof PHPStanUnionType) {
-            return false;
-        }
-
-        $types = $propertyType->getTypes();
-        foreach ($types as $type) {
-            if ($type instanceof CallableType) {
-                return true;
-            }
         }
 
         return false;
