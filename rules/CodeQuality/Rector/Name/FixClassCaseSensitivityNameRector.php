@@ -131,8 +131,7 @@ CODE_SAMPLE
         }
 
         if ($this->isParamTypeNameOrClassConstFetchClassName($parent)) {
-            /** @var Param|ClassConstFetch $parent */
-            return $this->processParamTypeNameOrClassConstFetchClassName($parent, $name, $originalName);
+            return $this->processParamTypeNameOrClassConstFetchClassName($name, $originalName);
         }
 
         // replace parts from the old one
@@ -159,12 +158,11 @@ CODE_SAMPLE
     }
 
     private function processParamTypeNameOrClassConstFetchClassName(
-        Param|ClassConstFetch $parent,
         Name $name,
         Name $originalName
     ): string {
         $oldTokens = $this->file->getOldTokens();
-        $startTokenPos = $parent->getStartTokenPos();
+        $startTokenPos = $name->getStartTokenPos();
 
         if (! isset($oldTokens[$startTokenPos][1])) {
             return '';
