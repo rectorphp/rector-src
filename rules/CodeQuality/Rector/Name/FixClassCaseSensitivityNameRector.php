@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Name;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
@@ -72,7 +73,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Name::class, Param::class];
+        return [Name::class];
     }
 
     /**
@@ -80,10 +81,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node instanceof Param) {
-            return $this->refactorParam($node);
-        }
-
         $fullyQualifiedName = $this->resolveFullyQualifiedName($node);
 
         if (! $this->reflectionProvider->hasClass($fullyQualifiedName)) {
@@ -122,23 +119,31 @@ CODE_SAMPLE
         return new FullyQualified($realClassName);
     }
 
-    private function refactorParam(Param $param): ?Param
-    {
-        print_node($param->getAttribute(AttributeKey::ORIGINAL_NODE)->type->getAttribute(AttributeKey::RESOLVED_NAME));
-        return $param;
-    }
-
     private function resolveFullyQualifiedName(Name $name): string
     {
-        $parent = $name->getAttribute(AttributeKey::PARENT_NODE);
-        // for some reason, Param gets already corrected name
-        if (! $parent instanceof Param && ! $parent instanceof ClassConstFetch) {
-            return $this->getName($name);
-        }
-
         $originalName = $name->getAttribute(AttributeKey::ORIGINAL_NAME);
         if (! $originalName instanceof Name) {
             return $this->getName($name);
+        }
+
+        $parent = $name->getAttribute(AttributeKey::PARENT_NODE);
+
+        if ($parent instanceof Param || $parent instanceof ClassConstFetch) {
+            $oldTokens = $this->file->getOldTokens();
+            $startTokenPos = $parent->getStartTokenPos();
+
+            if (isset($oldTokens[$startTokenPos][1])) {
+                $type = $oldTokens[$startTokenPos][1];
+                if (! str_contains($type, '\\')) {
+                    $originalNameBeforeLastPart = Strings::after((string) $originalName, '\\', -1);
+                    if (strtolower($originalNameBeforeLastPart) !== strtolower($originalNameBeforeLastPart)) {
+                        return null;
+                    }
+
+                    $name->parts[count($name->parts) - 1] = $type;
+                    return (string) $name;
+                }
+            }
         }
 
         // replace parts from the old one
