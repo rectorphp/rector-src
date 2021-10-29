@@ -304,12 +304,15 @@ CODE_SAMPLE
         if (count($property->props) > 1) {
             return true;
         }
+
         if (! $this->privatePropertyOnly) {
             return $this->propertyAnalyzer->hasForbiddenType($property);
         }
+
         if ($property->isPrivate()) {
             return $this->propertyAnalyzer->hasForbiddenType($property);
         }
+
         return true;
     }
 }
