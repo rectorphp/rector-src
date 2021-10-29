@@ -280,27 +280,27 @@ CODE_SAMPLE
     }
 
     /**
-     * @param null|string[] $stringValues
+     * @param string[] $stringValues
      */
-    private function resolveNewDoctrineTagValueNode(DoctrineAnnotationTagValueNode $docNode, ?array $stringValues): DoctrineAnnotationTagValueNode
+    private function resolveNewDoctrineTagValueNode(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $stringValues): DoctrineAnnotationTagValueNode
     {
-        if (! is_array($stringValues)) {
-            return new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode);
+        if ($stringValues === []) {
+            return new DoctrineAnnotationTagValueNode($doctrineAnnotationTagValueNode->identifierTypeNode);
         }
 
         return new DoctrineAnnotationTagValueNode(
-            $docNode->identifierTypeNode,
-            (string) current($stringValues),
+            $doctrineAnnotationTagValueNode->identifierTypeNode,
+            current($stringValues),
             $stringValues
         );
     }
 
     /**
-     * @return null|string[]
+     * @return string[]
      */
     private function getStringFromNestedDoctrineTagAnnotationToAttribute(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
-    ): ?array {
+    ): array {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $key => $value) {
             if (is_string($value)) {
@@ -310,7 +310,7 @@ CODE_SAMPLE
             }
         }
 
-        return null;
+        return [];
     }
 
     /**
