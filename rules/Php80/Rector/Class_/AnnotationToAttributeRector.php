@@ -249,7 +249,9 @@ CODE_SAMPLE
                 )) {
                     $stringValues = $this->getStringFromNestedDoctrineTagAnnotationToAttribute($docNode);
                     $newDoctrineTagValueNode = is_array($stringValues)
-                        ? new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode, current($stringValues), $stringValues)
+                        ? new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode, current(
+                            $stringValues
+                        ), $stringValues)
                         : new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode);
 
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
@@ -282,15 +284,18 @@ CODE_SAMPLE
     }
 
     /**
-     * @param DoctrineTagAndAnnotationToAttribute[] $doctrineTagAndAnnotationToAttributes
      * @return null|string[]
      */
-    private function getStringFromNestedDoctrineTagAnnotationToAttribute(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode): ?array
+    private function getStringFromNestedDoctrineTagAnnotationToAttribute(
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
+    ): ?array
     {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $key => $value) {
             if (is_string($value)) {
-                return [$key => $value];
+                return [
+                    $key => $value,
+                ];
             }
         }
 
@@ -308,9 +313,7 @@ CODE_SAMPLE
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $value) {
             if (is_string($value)) {
-                $originalValue = new DoctrineAnnotationTagValueNode(
-                    new IdentifierTypeNode($value)
-                );
+                $originalValue = new DoctrineAnnotationTagValueNode(new IdentifierTypeNode($value));
                 $doctrineTagAndAnnotationToAttributes = $this->collectDoctrineTagAndAnnotationToAttributes(
                     $originalValue,
                     $doctrineTagAndAnnotationToAttributes
