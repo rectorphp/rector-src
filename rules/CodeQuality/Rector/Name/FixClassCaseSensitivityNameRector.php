@@ -157,10 +157,7 @@ CODE_SAMPLE
         return $node->class instanceof Name;
     }
 
-    private function processParamTypeNameOrClassConstFetchClassName(
-        Name $name,
-        Name $originalName
-    ): string {
+    private function processParamTypeNameOrClassConstFetchClassName(Name $name, Name $originalName): string {
         $oldTokens = $this->file->getOldTokens();
         $startTokenPos = $name->getStartTokenPos();
 
