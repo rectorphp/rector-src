@@ -4,9 +4,9 @@ namespace Rector\Tests\CodeQuality\Rector\Name\FixClassCaseSensitivityNameRector
 
 use Rector\Tests\CodeQuality\Rector\Name\FixClassCaseSensitivityNameRector\Source\MissCaseTypedClass;
 
-final class SkipUnionParamType
+final class UnionParamType
 {
-    public function run(string|misscasetypedclass $misscasetypedclass)
+    public function run(string|\Rector\Tests\CodeQuality\Rector\Name\FixClassCaseSensitivityNameRector\Source\MissCaseTypedClass $misscasetypedclass)
     {
         return $misscasetypedclass;
     }

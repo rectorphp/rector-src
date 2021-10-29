@@ -10,6 +10,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\UnionType;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -134,6 +135,10 @@ CODE_SAMPLE
             return $this->processParamTypeNameOrClassConstFetchClassName($name, $originalName);
         }
 
+        if ($parent instanceof UnionType) {
+            return $this->processUnionType($parent, $name, $originalName);
+        }
+
         // replace parts from the old one
         $originalReversedParts = array_reverse($originalName->parts);
         $resolvedReversedParts = array_reverse($name->parts);
@@ -155,6 +160,17 @@ CODE_SAMPLE
         }
 
         return $node->class instanceof Name;
+    }
+
+    private function processUnionType(UnionType $node, Name $name, Name $originalName): string
+    {
+        foreach ($node->types as $type) {
+            if ($type instanceof Name && $type === $name) {
+                return $this->processParamTypeNameOrClassConstFetchClassName($name, $originalName);
+            }
+        }
+
+        return '';
     }
 
     private function processParamTypeNameOrClassConstFetchClassName(Name $name, Name $originalName): string
