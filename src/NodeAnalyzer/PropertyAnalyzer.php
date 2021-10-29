@@ -21,20 +21,17 @@ final class PropertyAnalyzer
     public function hasForbiddenType(Property $property): bool
     {
         $propertyType = $this->nodeTypeResolver->getType($property);
-        if ($propertyType instanceof NullType) {
-            return true;
-        }
+        $types = $propertyType instanceof UnionType
+            ? $propertyType->getTypes()
+            : [$propertyType];
 
-        if ($this->isCallableType($propertyType)) {
-            return true;
-        }
-
-        if (! $propertyType instanceof UnionType) {
-            return false;
-        }
-
-        $types = $propertyType->getTypes();
+        $totalTypes = count($types);
         foreach ($types as $type) {
+            // when types === 2 and nullable, it already handled in Nullable type check
+            if ($totalTypes > 2 && $type instanceof NullType) {
+                return true;
+            }
+
             if ($this->isCallableType($type)) {
                 return true;
             }
