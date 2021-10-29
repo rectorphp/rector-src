@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\Name\FixClassCaseSensitivityNameRector
 
 use Rector\Tests\CodeQuality\Rector\Name\FixClassCaseSensitivityNameRector\Source\MissCaseTypedClass;
 
-final class SkipCorrectClassConstFetch
+final class SkipClassConstFetchCorrect
 {
     public function run()
     {
