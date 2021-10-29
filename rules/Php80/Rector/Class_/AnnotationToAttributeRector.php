@@ -288,8 +288,7 @@ CODE_SAMPLE
      */
     private function getStringFromNestedDoctrineTagAnnotationToAttribute(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
-    ): ?array
-    {
+    ): ?array {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $key => $value) {
             if (is_string($value)) {
