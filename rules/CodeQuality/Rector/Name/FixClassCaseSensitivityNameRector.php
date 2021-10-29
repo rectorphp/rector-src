@@ -72,14 +72,18 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Name::class];
+        return [Name::class, Param::class];
     }
 
     /**
-     * @param Name $node
+     * @param Name|Param $node
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node instanceof Param) {
+            return $this->refactorParam($node);
+        }
+
         $fullyQualifiedName = $this->resolveFullyQualifiedName($node);
 
         if (! $this->reflectionProvider->hasClass($fullyQualifiedName)) {
@@ -116,6 +120,12 @@ CODE_SAMPLE
         }
 
         return new FullyQualified($realClassName);
+    }
+
+    private function refactorParam(Param $param): ?Param
+    {
+        print_node($param->getAttribute(AttributeKey::ORIGINAL_NODE)->type->getAttribute(AttributeKey::RESOLVED_NAME));
+        return $param;
     }
 
     private function resolveFullyQualifiedName(Name $name): string
