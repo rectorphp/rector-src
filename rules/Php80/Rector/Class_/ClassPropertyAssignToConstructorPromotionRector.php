@@ -43,7 +43,6 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private VarTagRemover $varTagRemover,
         private ParamAnalyzer $paramAnalyzer,
         private PhpDocTypeChanger $phpDocTypeChanger,
-        private PropertyTypeInferer $propertyTypeInferer,
         private PropertyAnalyzer $propertyAnalyzer
     ) {
     }
