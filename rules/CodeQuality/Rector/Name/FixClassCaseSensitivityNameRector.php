@@ -177,7 +177,11 @@ CODE_SAMPLE
         }
 
         $originalNameBeforeLastPart = Strings::after((string) $originalName, '\\', -1);
-        if (strtolower($originalNameBeforeLastPart) !== strtolower($originalNameBeforeLastPart)) {
+        if ($originalNameBeforeLastPart === null) {
+            return '';
+        }
+
+        if (strtolower($originalNameBeforeLastPart) !== strtolower($type)) {
             return '';
         }
 
