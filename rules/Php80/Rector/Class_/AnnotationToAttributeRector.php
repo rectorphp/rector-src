@@ -282,8 +282,10 @@ CODE_SAMPLE
     /**
      * @param string[] $stringValues
      */
-    private function resolveNewDoctrineTagValueNode(DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode, array $stringValues): DoctrineAnnotationTagValueNode
-    {
+    private function resolveNewDoctrineTagValueNode(
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
+        array $stringValues
+    ): DoctrineAnnotationTagValueNode {
         if ($stringValues === []) {
             return new DoctrineAnnotationTagValueNode($doctrineAnnotationTagValueNode->identifierTypeNode);
         }
