@@ -28,6 +28,7 @@ final class PropertyAnalyzer
         $totalTypes = count($types);
         foreach ($types as $type) {
             // when types === 2 and nullable, it already handled in Nullable type check
+            // to convert with ?TheType
             if ($totalTypes > 2 && $type instanceof NullType) {
                 return true;
             }
