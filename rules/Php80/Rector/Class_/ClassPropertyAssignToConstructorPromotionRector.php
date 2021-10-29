@@ -11,6 +11,9 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\UnionType;
+use PHPStan\Type\UnionType as PHPStanUnionType;
+use PHPStan\Type\CallableType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -106,6 +109,16 @@ CODE_SAMPLE
                 continue;
             }
 
+            $propertyType = $this->nodeTypeResolver->getType($property);
+            if ($propertyType instanceof PHPStanUnionType) {
+                $types = $propertyType->getTypes();
+                foreach ($types as $type) {
+                    if ($type instanceof CallableType) {
+                        continue 2;
+                    }
+                }
+            }
+
             $this->removeNode($property);
             $this->removeNode($promotionCandidate->getAssign());
 
@@ -182,6 +195,14 @@ CODE_SAMPLE
             $type = $type->type;
         } else {
             $type = $param->type;
+        }
+
+        if ($type instanceof UnionType) {
+            foreach ($type->types as $type) {
+                if ($type instanceof Identifier && $this->isName($type, 'callable')) {
+                    return true;
+                }
+            }
         }
 
         return $type instanceof Identifier && $this->isName($type, 'callable');
