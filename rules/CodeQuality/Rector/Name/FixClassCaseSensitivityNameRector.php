@@ -77,7 +77,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Name|Param $node
+     * @param Name $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -132,6 +132,7 @@ CODE_SAMPLE
         }
 
         if ($this->isParamTypeNameOrClassConstFetchClassName($parent)) {
+            /** @var Param|ClassConstFetch $parent */
             return $this->processParamTypeNameOrClassConstFetchClassName($parent, $name, $originalName);
         }
 
