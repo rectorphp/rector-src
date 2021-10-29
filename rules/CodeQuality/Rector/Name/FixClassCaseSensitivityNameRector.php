@@ -163,8 +163,7 @@ CODE_SAMPLE
         Param|ClassConstFetch $parent,
         Name $name,
         Name $originalName
-    ): string
-    {
+    ): string {
         $oldTokens = $this->file->getOldTokens();
         $startTokenPos = $parent->getStartTokenPos();
 
