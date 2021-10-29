@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\AnnotationAnalyzer\DoctrineAnnotationTagValueNodeAnalyzer;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -246,6 +247,16 @@ CODE_SAMPLE
                     $docNode,
                     $this->annotationsToAttributes
                 )) {
+                    /** @var DoctrineAnnotationTagValueNode $docNode */
+                    $addNestedDoctrineTagAnnotationToAttribute = $this->addNestedDoctrineTagAndAnnotationToAttribute(
+                        $docNode,
+                        $doctrineTagAndAnnotationToAttributes
+                    );
+
+                    if ($addNestedDoctrineTagAnnotationToAttribute === []) {
+                        return null;
+                    }
+
                     $newDoctrineTagValueNode = new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode);
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                         $newDoctrineTagValueNode,
@@ -286,6 +297,10 @@ CODE_SAMPLE
     ): array {
         $values = $doctrineAnnotationTagValueNode->getValues();
         foreach ($values as $value) {
+            if (is_string($value)) {
+                return [];
+            }
+
             $originalValues = $value->getOriginalValues();
             foreach ($originalValues as $originalValue) {
                 $doctrineTagAndAnnotationToAttributes = $this->collectDoctrineTagAndAnnotationToAttributes(
