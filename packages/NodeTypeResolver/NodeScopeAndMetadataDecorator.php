@@ -46,6 +46,9 @@ final class NodeScopeAndMetadataDecorator
      */
     public function decorateNodesFromFile(File $file, array $stmts): array
     {
+        // ParserInterface wrapping original PHPStan parser
+        // + include those traverser to keep in sync Rector + PHPStan DI
+
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NameResolver(null, [
             self::OPTION_PRESERVE_ORIGINAL_NAMES => true,
@@ -55,7 +58,6 @@ final class NodeScopeAndMetadataDecorator
 
         /** @var Stmt[] $stmts */
         $stmts = $nodeTraverser->traverse($stmts);
-
         $smartFileInfo = $file->getSmartFileInfo();
 
         $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo);

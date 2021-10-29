@@ -239,6 +239,10 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         $node = $this->refactor($node);
 
+        // ...
+        // @todo how to re-traverse with Scope
+        // $nodescoperesolver->traverseStmts(...)
+
         if (is_array($node)) {
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $node;
