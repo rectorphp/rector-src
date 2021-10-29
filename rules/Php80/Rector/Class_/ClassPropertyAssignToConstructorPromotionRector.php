@@ -12,9 +12,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
-use PHPStan\Type\UnionType as PHPStanUnionType;
-use PHPStan\Type\CallableType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Type\CallableType;
+use PHPStan\Type\UnionType as PHPStanUnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
@@ -109,14 +109,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyType = $this->nodeTypeResolver->getType($property);
-            if ($propertyType instanceof PHPStanUnionType) {
-                $types = $propertyType->getTypes();
-                foreach ($types as $type) {
-                    if ($type instanceof CallableType) {
-                        continue 2;
-                    }
-                }
+            if ($this->shouldSkipProperty($property)) {
+                continue;
             }
 
             $this->removeNode($property);
@@ -197,14 +191,39 @@ CODE_SAMPLE
             $type = $param->type;
         }
 
-        if ($type instanceof UnionType) {
-            foreach ($type->types as $type) {
-                if ($type instanceof Identifier && $this->isName($type, 'callable')) {
-                    return true;
-                }
+        if (! $type instanceof UnionType) {
+            return $type instanceof Identifier && $this->isName($type, 'callable');
+        }
+
+        foreach ($type->types as $type) {
+            if (! $type instanceof Identifier) {
+                continue;
+            }
+
+            if (! $this->isName($type, 'callable')) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function shouldSkipProperty(Property $property): bool
+    {
+        $propertyType = $this->nodeTypeResolver->getType($property);
+        if (! $propertyType instanceof PHPStanUnionType) {
+            return false;
+        }
+
+        $types = $propertyType->getTypes();
+        foreach ($types as $type) {
+            if ($type instanceof CallableType) {
+                return true;
             }
         }
 
-        return $type instanceof Identifier && $this->isName($type, 'callable');
+        return false;
     }
 }
