@@ -248,11 +248,7 @@ CODE_SAMPLE
                     $this->annotationsToAttributes
                 )) {
                     $stringValues = $this->getStringFromNestedDoctrineTagAnnotationToAttribute($docNode);
-                    $newDoctrineTagValueNode = is_array($stringValues)
-                        ? new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode, current(
-                            $stringValues
-                        ), $stringValues)
-                        : new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode);
+                    $newDoctrineTagValueNode = $this->resolveNewDoctrineTagValueNode($docNode, $stringValues);
 
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                         $newDoctrineTagValueNode,
@@ -281,6 +277,22 @@ CODE_SAMPLE
         });
 
         return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
+    }
+
+    /**
+     * @param null|string[] $stringValues
+     */
+    private function resolveNewDoctrineTagValueNode(DoctrineAnnotationTagValueNode $docNode, ?array $stringValues): DoctrineAnnotationTagValueNode
+    {
+        if (! is_array($stringValues)) {
+            return new DoctrineAnnotationTagValueNode($docNode->identifierTypeNode);
+        }
+
+        return new DoctrineAnnotationTagValueNode(
+            $docNode->identifierTypeNode,
+            (string) current($stringValues),
+            $stringValues
+        );
     }
 
     /**
