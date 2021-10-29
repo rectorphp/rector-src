@@ -11,6 +11,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\UnionType;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -128,7 +129,7 @@ CODE_SAMPLE
 
         $parent = $name->getAttribute(AttributeKey::PARENT_NODE);
 
-        if ($parent instanceof Param || $parent instanceof ClassConstFetch) {
+        if (($parent instanceof Param && $parent->type instanceof Name) || $parent instanceof ClassConstFetch) {
             $oldTokens = $this->file->getOldTokens();
             $startTokenPos = $parent->getStartTokenPos();
 
