@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeVisitor\FileNodeVisitor;
 use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamArgPositionNodeVisitor;
@@ -35,7 +34,6 @@ final class NodeScopeAndMetadataDecorator
         private NamespaceNodeVisitor $namespaceNodeVisitor,
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private StatementNodeVisitor $statementNodeVisitor,
-        private NodeConnectingVisitor $nodeConnectingVisitor,
         private FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor
     ) {
     }
@@ -46,6 +44,9 @@ final class NodeScopeAndMetadataDecorator
      */
     public function decorateNodesFromFile(File $file, array $stmts): array
     {
+        // ParserInterface wrapping original PHPStan parser
+        // + include those traverser to keep in sync Rector + PHPStan DI
+
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NameResolver(null, [
             self::OPTION_PRESERVE_ORIGINAL_NAMES => true,
@@ -55,13 +56,11 @@ final class NodeScopeAndMetadataDecorator
 
         /** @var Stmt[] $stmts */
         $stmts = $nodeTraverser->traverse($stmts);
-
         $smartFileInfo = $file->getSmartFileInfo();
 
         $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo);
 
         $nodeTraverserForPreservingName = new NodeTraverser();
-
         $preservingNameResolver = new NameResolver(null, [
             self::OPTION_PRESERVE_ORIGINAL_NAMES => true,
             // this option would override old non-fqn-namespaced nodes otherwise, so it needs to be disabled
@@ -74,7 +73,6 @@ final class NodeScopeAndMetadataDecorator
         $nodeTraverserForFormatPreservePrinting = new NodeTraverser();
         // needed also for format preserving printing
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->cloningVisitor);
-        $nodeTraverserForFormatPreservePrinting->addVisitor($this->nodeConnectingVisitor);
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->functionMethodAndClassNodeVisitor);
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->namespaceNodeVisitor);
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->functionLikeParamArgPositionNodeVisitor);

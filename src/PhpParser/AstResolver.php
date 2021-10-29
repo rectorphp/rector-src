@@ -20,8 +20,8 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\Php\PhpFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -139,7 +139,7 @@ final class AstResolver
         return $this->resolveClassMethodFromCall($call);
     }
 
-    public function resolveFunctionFromFunctionReflection(PhpFunctionReflection $phpFunctionReflection): ?Function_
+    public function resolveFunctionFromFunctionReflection(FunctionReflection $phpFunctionReflection): ?Function_
     {
         if (isset($this->functionsByName[$phpFunctionReflection->getName()])) {
             return $this->functionsByName[$phpFunctionReflection->getName()];
@@ -372,9 +372,9 @@ final class AstResolver
         }
 
         $reflectionFunction = $this->reflectionProvider->getFunction($funcCall->name, $scope);
-        if (! $reflectionFunction instanceof PhpFunctionReflection) {
-            return null;
-        }
+//        if (! $reflectionFunction instanceof FunctionReflection) {
+//            return null;
+//        }
 
         return $this->resolveFunctionFromFunctionReflection($reflectionFunction);
     }

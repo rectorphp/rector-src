@@ -79,7 +79,6 @@ final class VariableToConstantGuard
         }
 
         $referencePositions = [];
-
         $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
             $scope,
             $args,

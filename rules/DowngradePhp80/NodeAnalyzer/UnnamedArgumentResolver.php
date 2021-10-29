@@ -29,7 +29,7 @@ final class UnnamedArgumentResolver
         array $currentArgs
     ): array {
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
-        $unnamedArgs = [];
+
         $parameters = $parametersAcceptor->getParameters();
         $isNativeFunctionReflection = $functionLikeReflection instanceof NativeFunctionReflection;
 
