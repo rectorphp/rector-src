@@ -129,7 +129,7 @@ CODE_SAMPLE
 
         $parent = $name->getAttribute(AttributeKey::PARENT_NODE);
 
-        if (($parent instanceof Param && $parent->type instanceof Name) || $parent instanceof ClassConstFetch) {
+        if (($parent instanceof Param && $parent->type instanceof Name) || ($parent instanceof ClassConstFetch && $parent->class instanceof Name)) {
             $oldTokens = $this->file->getOldTokens();
             $startTokenPos = $parent->getStartTokenPos();
 
