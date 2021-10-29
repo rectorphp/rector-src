@@ -188,10 +188,6 @@ CODE_SAMPLE
         }
 
         $last = $originalName->getLast();
-        if ($last === null) {
-            return '';
-        }
-
         if (strtolower($last) !== strtolower($type)) {
             return '';
         }
