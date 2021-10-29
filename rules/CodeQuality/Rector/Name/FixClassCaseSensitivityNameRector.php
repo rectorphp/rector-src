@@ -162,12 +162,18 @@ CODE_SAMPLE
         return $node->class instanceof Name;
     }
 
-    private function processUnionType(UnionType $node, Name $name, Name $originalName): string
+    private function processUnionType(UnionType $unionType, Name $name, Name $originalName): string
     {
-        foreach ($node->types as $type) {
-            if ($type instanceof Name && $type === $name) {
-                return $this->processParamTypeNameOrClassConstFetchClassName($name, $originalName);
+        foreach ($unionType->types as $type) {
+            if (! $type instanceof Name) {
+                continue;
             }
+
+            if ($type !== $name) {
+                continue;
+            }
+
+            return $this->processParamTypeNameOrClassConstFetchClassName($name, $originalName);
         }
 
         return '';
