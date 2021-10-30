@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeTypeResolver\TypeComparator;
 
-use Iterator;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -22,36 +22,38 @@ final class ArrayTypeComparatorTest extends AbstractTestCase
 {
     private ArrayTypeComparator $arrayTypeComparator;
 
+    private ReflectionProvider $reflectionProvider;
+
     protected function setUp(): void
     {
         $this->boot();
         $this->arrayTypeComparator = $this->getService(ArrayTypeComparator::class);
+        $this->reflectionProvider = $this->getService(ReflectionProvider::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
-    public function test(ArrayType $firstArrayType, ArrayType $secondArrayType, bool $areExpectedEqual): void
-    {
-        $areEqual = $this->arrayTypeComparator->isSubtype($firstArrayType, $secondArrayType);
-        $this->assertSame($areExpectedEqual, $areEqual);
-    }
-
-    /**
-     * @return Iterator<ArrayType[]|bool[]>
-     */
-    public function provideData(): Iterator
+    public function testClassStringSubtype(): void
     {
         $classStringKeysArrayType = new ArrayType(new StringType(), new ClassStringType());
         $stringArrayType = new ArrayType(new StringType(), new MixedType());
-        yield [$stringArrayType, $classStringKeysArrayType, false];
 
-        $genericClassStringType = new GenericClassStringType(new ObjectType(SomeGenericTypeObject::class));
+        $isSubtypeActual = $this->arrayTypeComparator->isSubtype($classStringKeysArrayType, $stringArrayType);
+        $this->assertTrue($isSubtypeActual);
+    }
+
+    public function testGenericObjectType(): void
+    {
+        $someGenericTypeObjectClassReflection = $this->reflectionProvider->getClass(SomeGenericTypeObject::class);
+        $objectType = new ObjectType(SomeGenericTypeObject::class, null, $someGenericTypeObjectClassReflection);
+        $genericClassStringType = new GenericClassStringType($objectType);
+
         $constantArrayType = new ConstantArrayType(
             [new ConstantIntegerType(0)],
             [new UnionType([$genericClassStringType, $genericClassStringType])]
         );
 
-        yield [$constantArrayType, $stringArrayType, false];
+        $stringArrayType = new ArrayType(new StringType(), new MixedType());
+
+        $isSubtypeActual = $this->arrayTypeComparator->isSubtype($constantArrayType, $stringArrayType);
+        $this->assertFalse($isSubtypeActual);
     }
 }
