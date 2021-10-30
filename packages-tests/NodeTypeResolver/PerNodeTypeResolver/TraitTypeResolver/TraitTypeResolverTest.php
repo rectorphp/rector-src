@@ -6,6 +6,7 @@ namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver;
 
 use Iterator;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
@@ -36,7 +37,7 @@ final class TraitTypeResolverTest extends AbstractNodeTypeResolverTest
         yield [
             __DIR__ . '/Source/TraitWithTrait.php',
             0,
-            new UnionType([AnotherTrait::class, TraitWithTrait::class]),
+            new UnionType([new ObjectType(AnotherTrait::class), new ObjectType(TraitWithTrait::class)]),
         ];
     }
 }

@@ -48,6 +48,6 @@ final class TypeUnwrapper
             $unionedTypesWithoutNullType[] = $type;
         }
 
-        return new UnionType([$unionedTypesWithoutNullType]);
+        return new UnionType($unionedTypesWithoutNullType);
     }
 }

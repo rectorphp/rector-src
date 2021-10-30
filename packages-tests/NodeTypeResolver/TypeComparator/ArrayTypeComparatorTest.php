@@ -15,7 +15,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\ArrayTypeComparator;
-use Rector\StaticTypeMapper\TypeFactory\UnionTypeFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Tests\NodeTypeResolver\TypeComparator\Source\SomeGenericTypeObject;
 
@@ -43,8 +42,6 @@ final class ArrayTypeComparatorTest extends AbstractTestCase
      */
     public function provideData(): Iterator
     {
-        $unionTypeFactory = new UnionTypeFactory();
-
         $classStringKeysArrayType = new ArrayType(new StringType(), new ClassStringType());
         $stringArrayType = new ArrayType(new StringType(), new MixedType());
         yield [$stringArrayType, $classStringKeysArrayType, false];
