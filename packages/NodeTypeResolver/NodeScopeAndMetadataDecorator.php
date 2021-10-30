@@ -30,7 +30,7 @@ final class NodeScopeAndMetadataDecorator
     private const OPTION_REPLACE_NODES = 'replaceNodes';
 
     public function __construct(
-//        private CloningVisitor $cloningVisitor,
+        //        private CloningVisitor $cloningVisitor,
         private FunctionMethodAndClassNodeVisitor $functionMethodAndClassNodeVisitor,
         private NamespaceNodeVisitor $namespaceNodeVisitor,
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
