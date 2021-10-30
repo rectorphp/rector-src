@@ -13,6 +13,7 @@ use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\ArrayTypeComparator;
 use Rector\StaticTypeMapper\TypeFactory\UnionTypeFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -51,7 +52,7 @@ final class ArrayTypeComparatorTest extends AbstractTestCase
         $genericClassStringType = new GenericClassStringType(new ObjectType(SomeGenericTypeObject::class));
         $constantArrayType = new ConstantArrayType(
             [new ConstantIntegerType(0)],
-            [$unionTypeFactory->createUnionObjectType([$genericClassStringType, $genericClassStringType])]
+            [new UnionType([$genericClassStringType, $genericClassStringType])]
         );
 
         yield [$constantArrayType, $stringArrayType, false];

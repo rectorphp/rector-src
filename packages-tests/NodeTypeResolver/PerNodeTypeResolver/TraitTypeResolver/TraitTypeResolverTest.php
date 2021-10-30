@@ -8,7 +8,6 @@ use Iterator;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\StaticTypeMapper\TypeFactory\UnionTypeFactory;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver\Source\AnotherTrait;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver\Source\TraitWithTrait;
@@ -34,12 +33,10 @@ final class TraitTypeResolverTest extends AbstractNodeTypeResolverTest
      */
     public function provideData(): Iterator
     {
-        $unionTypeFactory = new UnionTypeFactory();
-
         yield [
             __DIR__ . '/Source/TraitWithTrait.php',
             0,
-            $unionTypeFactory->createUnionObjectType([AnotherTrait::class, TraitWithTrait::class]),
+            new UnionType([AnotherTrait::class, TraitWithTrait::class]),
         ];
     }
 }

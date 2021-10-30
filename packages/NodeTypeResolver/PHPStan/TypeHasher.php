@@ -15,7 +15,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\UnionTypeHelper;
 use PHPStan\Type\VerbosityLevel;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -87,9 +86,6 @@ final class TypeHasher
 
     private function createUnionTypeHash(UnionType $unionType): string
     {
-        // $sortedTypes = UnionTypeHelper::sortTypes($unionType->getTypes());
-        // $sortedUnionType = new UnionType($sortedTypes);
-
         $booleanType = new BooleanType();
         if ($booleanType->isSuperTypeOf($unionType)->yes()) {
             return $booleanType->describe(VerbosityLevel::precise());
