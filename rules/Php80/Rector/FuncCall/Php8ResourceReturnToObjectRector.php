@@ -98,6 +98,56 @@ final class Php8ResourceReturnToObjectRector extends AbstractRector implements M
         'deflate_init' => 'DeflateContext',
     ];
 
+    /**
+     * @var string
+     */
+    private const SOCKET = 'Socket';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
+    /**
+     * @var string
+     */
+    private const GD_IMAGE = 'GdImage';
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(

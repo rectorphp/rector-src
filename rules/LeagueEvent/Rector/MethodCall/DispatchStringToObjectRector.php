@@ -153,7 +153,7 @@ CODE_SAMPLE
      */
     private function createAnonymousEventClassBody(): array
     {
-        $return = new Return_(new PropertyFetch(new Variable('this'), 'name'));
+        $return = new Return_(new PropertyFetch(new Variable('this'), self::NAME));
 
         return [
             new Property(Class_::MODIFIER_PRIVATE, [new PropertyProperty(self::NAME)]),
@@ -180,7 +180,7 @@ CODE_SAMPLE
 
     private function createConstructAssign(): Assign
     {
-        $propertyFetch = new PropertyFetch(new Variable('this'), 'name');
+        $propertyFetch = new PropertyFetch(new Variable('this'), self::NAME);
         return new Assign($propertyFetch, new Variable(self::NAME));
     }
 }

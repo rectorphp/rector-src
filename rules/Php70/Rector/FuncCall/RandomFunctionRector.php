@@ -30,6 +30,11 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
         'rand' => 'random_int',
     ];
 
+    /**
+     * @var string
+     */
+    private const RANDOM_INT = 'random_int';
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -56,7 +61,7 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
                 $node->name = new Name($newFunctionName);
 
                 // special case: random_int(); → random_int(0, getrandmax());
-                if ($newFunctionName === 'random_int' && $node->args === []) {
+                if ($newFunctionName === self::RANDOM_INT && $node->args === []) {
                     $node->args[0] = new Arg(new LNumber(0));
                     $node->args[1] = new Arg($this->nodeFactory->createFuncCall('mt_getrandmax'));
                 }

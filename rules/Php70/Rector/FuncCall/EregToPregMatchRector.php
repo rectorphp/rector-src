@@ -43,6 +43,11 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
         'spliti' => 'preg_split',
     ];
 
+    /**
+     * @var string
+     */
+    private const EREGI = 'eregi';
+
     public function __construct(
         private EregToPcreTransformer $eregToPcreTransformer,
         private ArgsAnalyzer $argsAnalyzer
@@ -97,7 +102,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
         // ereg|eregi 3rd argument return value fix
         if (in_array(
             $functionName,
-            ['ereg', 'eregi'],
+            ['ereg', self::EREGI],
             true
         ) && isset($node->args[2]) && $node->args[2] instanceof Arg) {
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
@@ -196,7 +201,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
 
     private function isCaseInsensitiveFunction(string $functionName): bool
     {
-        if (\str_contains($functionName, 'eregi')) {
+        if (\str_contains($functionName, self::EREGI)) {
             return true;
         }
 

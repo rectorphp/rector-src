@@ -104,7 +104,7 @@ CODE_SAMPLE
                 $output .= $matches[2] ?? '';
                 $output .= $matches[3] ?? '';
 
-                return $output;
+                return $output . ($matches[3] ?? '');
             }
         );
 
