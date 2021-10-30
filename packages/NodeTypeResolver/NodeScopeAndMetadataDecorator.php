@@ -46,15 +46,15 @@ final class NodeScopeAndMetadataDecorator
      */
     public function decorateNodesFromFile(File $file, array $stmts): array
     {
-//        $nodeTraverser = new NodeTraverser();
-//        $nodeTraverser->addVisitor(new NameResolver(null, [
-//            self::OPTION_PRESERVE_ORIGINAL_NAMES => true,
-//            // required by PHPStan
-//            self::OPTION_REPLACE_NODES => true,
-//        ]));
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new NameResolver(null, [
+            self::OPTION_PRESERVE_ORIGINAL_NAMES => true,
+            // required by PHPStan
+            self::OPTION_REPLACE_NODES => true,
+        ]));
 
-//        /** @var Stmt[] $stmts */
-//        $stmts = $nodeTraverser->traverse($stmts);
+        /** @var Stmt[] $stmts */
+        $stmts = $nodeTraverser->traverse($stmts);
 
         $smartFileInfo = $file->getSmartFileInfo();
 
@@ -73,8 +73,8 @@ final class NodeScopeAndMetadataDecorator
 
         $nodeTraverserForFormatPreservePrinting = new NodeTraverser();
         // needed also for format preserving printing
-        $nodeTraverserForFormatPreservePrinting->addVisitor($this->cloningVisitor);
-        $nodeTraverserForFormatPreservePrinting->addVisitor($this->nodeConnectingVisitor);
+//        $nodeTraverserForFormatPreservePrinting->addVisitor($this->cloningVisitor);
+//        $nodeTraverserForFormatPreservePrinting->addVisitor($this->nodeConnectingVisitor);
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->functionMethodAndClassNodeVisitor);
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->namespaceNodeVisitor);
         $nodeTraverserForFormatPreservePrinting->addVisitor($this->functionLikeParamArgPositionNodeVisitor);
