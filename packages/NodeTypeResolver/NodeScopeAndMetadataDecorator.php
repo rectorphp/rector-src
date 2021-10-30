@@ -8,7 +8,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\NodeVisitor\NodeConnectingVisitor;
+//use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeVisitor\FileNodeVisitor;
 use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamArgPositionNodeVisitor;
@@ -30,12 +30,12 @@ final class NodeScopeAndMetadataDecorator
     private const OPTION_REPLACE_NODES = 'replaceNodes';
 
     public function __construct(
-        private CloningVisitor $cloningVisitor,
+//        private CloningVisitor $cloningVisitor,
         private FunctionMethodAndClassNodeVisitor $functionMethodAndClassNodeVisitor,
         private NamespaceNodeVisitor $namespaceNodeVisitor,
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private StatementNodeVisitor $statementNodeVisitor,
-        private NodeConnectingVisitor $nodeConnectingVisitor,
+//        private NodeConnectingVisitor $nodeConnectingVisitor,
         private FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor
     ) {
     }
@@ -98,7 +98,7 @@ final class NodeScopeAndMetadataDecorator
     public function decorateStmtsFromString(array $stmts): array
     {
         $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor($this->nodeConnectingVisitor);
+//        $nodeTraverser->addVisitor($this->nodeConnectingVisitor);
         $nodeTraverser->addVisitor($this->functionMethodAndClassNodeVisitor);
         $nodeTraverser->addVisitor($this->statementNodeVisitor);
 
