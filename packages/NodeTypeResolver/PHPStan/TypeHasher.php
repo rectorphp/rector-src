@@ -87,15 +87,15 @@ final class TypeHasher
 
     private function createUnionTypeHash(UnionType $unionType): string
     {
-        $sortedTypes = UnionTypeHelper::sortTypes($unionType->getTypes());
-        $sortedUnionType = new UnionType($sortedTypes);
+        // $sortedTypes = UnionTypeHelper::sortTypes($unionType->getTypes());
+        // $sortedUnionType = new UnionType($sortedTypes);
 
         $booleanType = new BooleanType();
         if ($booleanType->isSuperTypeOf($unionType)->yes()) {
             return $booleanType->describe(VerbosityLevel::precise());
         }
 
-        $normalizedUnionType = clone $sortedUnionType;
+        $normalizedUnionType = clone $unionType;
 
         // change alias to non-alias
         $normalizedUnionType = TypeTraverser::map(
