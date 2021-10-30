@@ -46,15 +46,15 @@ final class NodeScopeAndMetadataDecorator
      */
     public function decorateNodesFromFile(File $file, array $stmts): array
     {
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new NameResolver(null, [
-            self::OPTION_PRESERVE_ORIGINAL_NAMES => true,
-            // required by PHPStan
-            self::OPTION_REPLACE_NODES => true,
-        ]));
+//        $nodeTraverser = new NodeTraverser();
+//        $nodeTraverser->addVisitor(new NameResolver(null, [
+//            self::OPTION_PRESERVE_ORIGINAL_NAMES => true,
+//            // required by PHPStan
+//            self::OPTION_REPLACE_NODES => true,
+//        ]));
 
-        /** @var Stmt[] $stmts */
-        $stmts = $nodeTraverser->traverse($stmts);
+//        /** @var Stmt[] $stmts */
+//        $stmts = $nodeTraverser->traverse($stmts);
 
         $smartFileInfo = $file->getSmartFileInfo();
 
