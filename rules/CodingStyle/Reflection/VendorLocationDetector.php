@@ -32,7 +32,7 @@ final class VendorLocationDetector
 
     private function resolveReflectionFileName(
         MethodReflection | ReflectionWithFilename | FunctionReflection $reflection
-    ): string {
+    ): ?string {
         if ($reflection instanceof ReflectionWithFilename) {
             return $reflection->getFileName();
         }
