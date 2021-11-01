@@ -10,6 +10,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
@@ -94,13 +95,22 @@ final class DeadParamTagValueNodeAnalyzer
                 return $this->isUnionIdentifier($child);
             }
 
-            if ($key > 0 && ! $child instanceof PhpDocTextNode) {
-                return true;
-            }
-
-            if ($key > 0 && (string) $child !== '') {
+            if (! $this->isTextNextline($key, $child)) {
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    private function isTextNextline(int $key, PhpDocChildNode $child): bool
+    {
+        if ($key > 0 && ! $child instanceof PhpDocTextNode) {
+            return true;
+        }
+
+        if ($key > 0 && (string) $child !== '') {
+            return false;
         }
 
         return true;
