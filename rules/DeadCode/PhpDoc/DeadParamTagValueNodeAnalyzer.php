@@ -71,7 +71,7 @@ final class DeadParamTagValueNodeAnalyzer
         return false;
     }
 
-    private function isEmptyDescription(ParamTagValueNode $paramTagValueNode, Node $type): bool
+    private function isEmptyDescription(ParamTagValueNode $paramTagValueNode, Node $node): bool
     {
         if ($paramTagValueNode->description !== '') {
             return false;
@@ -91,7 +91,7 @@ final class DeadParamTagValueNodeAnalyzer
 
         if (! isset($children[1])) {
             $child = $children[0];
-            if ($child instanceof PhpDocTagNode && $type instanceof FullyQualified) {
+            if ($child instanceof PhpDocTagNode && $node instanceof FullyQualified) {
                 return $this->isUnionIdentifier($child);
             }
 
