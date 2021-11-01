@@ -89,20 +89,21 @@ final class DeadParamTagValueNodeAnalyzer
 
         $children = $parent->children;
 
-        if (! isset($children[1])) {
-            $child = $children[0];
+        foreach ($children as $child) {
             if ($child instanceof PhpDocTagNode && $node instanceof FullyQualified) {
                 return $this->isUnionIdentifier($child);
             }
 
-            return true;
+            if (! $child instanceof PhpDocTextNode) {
+                return true;
+            }
+
+            if ((string) $child !== '') {
+                return false;
+            }
         }
 
-        if (! $children[1] instanceof PhpDocTextNode) {
-            return true;
-        }
-
-        return (string) $children[1] === '';
+        return true;
     }
 
     private function isUnionIdentifier(PhpDocTagNode $phpDocTagNode): bool
