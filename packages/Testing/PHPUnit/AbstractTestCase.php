@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Rector\Testing\PHPUnit;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Kernel\RectorKernel;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symplify\SmartFileSystem\SmartFileInfo;
 use Webmozart\Assert\Assert;
 
 abstract class AbstractTestCase extends TestCase
@@ -26,21 +25,6 @@ abstract class AbstractTestCase extends TestCase
     }
 
     /**
-     * @deprecated
-     * Use @see bootFromConfigFiles() instead
-     *
-     * @param SmartFileInfo[] $configFileInfos
-     */
-    protected function bootFromConfigFileInfos(array $configFileInfos): void
-    {
-        $configFiles = array_map(function (SmartFileInfo $smartFileInfo) {
-            return $smartFileInfo->getRealPath();
-        }, $configFileInfos);
-
-        $this->bootFromConfigFiles($configFiles);
-    }
-
-    /**
      * @param string[] $configFiles
      */
     protected function bootFromConfigFiles(array $configFiles): void
@@ -51,11 +35,11 @@ abstract class AbstractTestCase extends TestCase
             $rectorKernel = self::$kernelsByHash[$configsHash];
             self::$currentContainer = $rectorKernel->getContainer();
         } else {
-            $rectorKernel = new RectorKernel('test_' . $configsHash, true, $configFiles);
-            $rectorKernel->boot();
+            $rectorKernel = new RectorKernel();
+            $container = $rectorKernel->createFromConfigs($configFiles);
 
             self::$kernelsByHash[$configsHash] = $rectorKernel;
-            self::$currentContainer = $rectorKernel->getContainer();
+            self::$currentContainer = $container;
         }
     }
 

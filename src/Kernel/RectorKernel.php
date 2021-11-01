@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\Core\Kernel;
 
+use Rector\Core\Config\Loader\ConfigureCallMergingLoaderFactory;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Collector\ConfigureCallValuesCollector;
 use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\VerifyRectorServiceExistsCompilerPass;
-use Rector\Core\DependencyInjection\Loader\ConfigurableCallValuesCollectingPhpFileLoader;
-use Symfony\Component\Config\Loader\DelegatingLoader;
-use Symfony\Component\Config\Loader\GlobFileLoader;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\Config\Loader\LoaderResolver;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Rector\Core\Exception\ShouldNotHappenException;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
-use Symfony\Component\HttpKernel\Config\FileLocator;
-use Symfony\Component\HttpKernel\Kernel;
 use Symplify\Astral\ValueObject\AstralConfig;
 use Symplify\AutowireArrayParameter\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
 use Symplify\ComposerJsonManipulator\ValueObject\ComposerJsonManipulatorConfig;
@@ -27,106 +21,94 @@ use Symplify\ConsoleColorDiff\ValueObject\ConsoleColorDiffConfig;
 use Symplify\PackageBuilder\DependencyInjection\CompilerPass\AutowireInterfacesCompilerPass;
 use Symplify\SimplePhpDocParser\ValueObject\SimplePhpDocParserConfig;
 use Symplify\Skipper\ValueObject\SkipperConfig;
+use Symplify\SymfonyContainerBuilder\ContainerBuilderFactory;
+use Symplify\SymplifyKernel\Contract\LightKernelInterface;
 
-/**
- * @todo possibly remove symfony/http-kernel and use the container build only
- */
-final class RectorKernel extends Kernel
+final class RectorKernel implements LightKernelInterface
 {
     private ConfigureCallValuesCollector $configureCallValuesCollector;
+
+    private ContainerInterface|null $container = null;
+
+    public function __construct()
+    {
+        $this->configureCallValuesCollector = new ConfigureCallValuesCollector();
+    }
 
     /**
      * @param string[] $configFiles
      */
-    public function __construct(
-        string $environment,
-        bool $debug,
-        private array $configFiles
-    ) {
-        $this->configureCallValuesCollector = new ConfigureCallValuesCollector();
+    public function createFromConfigs(array $configFiles): \Psr\Container\ContainerInterface
+    {
+        $defaultConfigFiles = $this->createDefaultConfigFiles();
+        $configFiles = array_merge($defaultConfigFiles, $configFiles);
 
-        parent::__construct($environment, $debug);
+        $compilerPasses = $this->createCompilerPasses();
+
+        $configureCallMergingLoaderFactory = new ConfigureCallMergingLoaderFactory($this->configureCallValuesCollector);
+
+        // @todo
+        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
+        // $containerBuilder->setParameter('container.dumper.inline_factories', true);
+        // to fix reincluding files again
+        // $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
+
+        $containerBuilderFactory = new ContainerBuilderFactory($configureCallMergingLoaderFactory);
+
+        $containerBuilder = $containerBuilderFactory->create([], $compilerPasses, $configFiles);
+        $containerBuilder->compile();
+
+        $this->container = $containerBuilder;
+
+        return $containerBuilder;
     }
 
-    public function getCacheDir(): string
+    public function getContainer(): \Psr\Container\ContainerInterface
     {
-        $cacheDirectory = $_ENV['KERNEL_CACHE_DIRECTORY'] ?? null;
-        if ($cacheDirectory !== null) {
-            return $cacheDirectory . '/' . $this->environment;
+        if ($this->container === null) {
+            throw new ShouldNotHappenException();
         }
 
-        // manually configured, so it can be replaced in phar
-        return sys_get_temp_dir() . '/rector/cache';
-    }
-
-    public function getLogDir(): string
-    {
-        // manually configured, so it can be replaced in phar
-        return sys_get_temp_dir() . '/rector/log';
-    }
-
-    public function registerContainerConfiguration(LoaderInterface $loader): void
-    {
-        $loader->load(__DIR__ . '/../../config/config.php');
-
-        foreach ($this->configFiles as $configFile) {
-            $loader->load($configFile);
-        }
-
-        $loader->load(AstralConfig::FILE_PATH);
-        $loader->load(ComposerJsonManipulatorConfig::FILE_PATH);
-        $loader->load(ConsoleColorDiffConfig::FILE_PATH);
-        $loader->load(SimplePhpDocParserConfig::FILE_PATH);
-        $loader->load(SkipperConfig::FILE_PATH);
+        return $this->container;
     }
 
     /**
-     * @return iterable<BundleInterface>
+     * @return CompilerPassInterface[]
      */
-    public function registerBundles(): iterable
+    private function createCompilerPasses(): array
     {
-        return [];
-    }
-
-    protected function build(ContainerBuilder $containerBuilder): void
-    {
-        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
-        $containerBuilder->setParameter('container.dumper.inline_factories', true);
-        // to fix reincluding files again
-        $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
+        $compilerPasses = [];
 
         // must run before AutowireArrayParameterCompilerPass, as the autowired array cannot contain removed services
-        $containerBuilder->addCompilerPass(new RemoveSkippedRectorsCompilerPass());
-        $containerBuilder->addCompilerPass(new AutowireArrayParameterCompilerPass());
+        $compilerPasses[] = new RemoveSkippedRectorsCompilerPass();
 
         // autowire Rectors by default (mainly for tests)
-        $containerBuilder->addCompilerPass(new AutowireInterfacesCompilerPass([RectorInterface::class]));
-        $containerBuilder->addCompilerPass(new MakeRectorsPublicCompilerPass());
+        $compilerPasses[] = new AutowireInterfacesCompilerPass([RectorInterface::class]);
+        $compilerPasses[] = new MakeRectorsPublicCompilerPass();
 
         // add all merged arguments of Rector services
-        $containerBuilder->addCompilerPass(
-            new MergeImportedRectorConfigureCallValuesCompilerPass($this->configureCallValuesCollector)
-        );
+        $compilerPasses[] = new MergeImportedRectorConfigureCallValuesCompilerPass($this->configureCallValuesCollector);
+        $compilerPasses[] = new VerifyRectorServiceExistsCompilerPass();
 
-        $containerBuilder->addCompilerPass(new VerifyRectorServiceExistsCompilerPass());
+        $compilerPasses[] = new AutowireArrayParameterCompilerPass();
+
+        return $compilerPasses;
     }
 
     /**
-     * This allows to use "%vendor%" variables in imports
+     * @return string[]
      */
-    protected function getContainerLoader(ContainerInterface $container): DelegatingLoader
+    private function createDefaultConfigFiles(): array
     {
-        $fileLocator = new FileLocator($this);
+        $configFiles = [];
 
-        $loaderResolver = new LoaderResolver([
-            new GlobFileLoader($fileLocator),
-            new ConfigurableCallValuesCollectingPhpFileLoader(
-                $container,
-                $fileLocator,
-                $this->configureCallValuesCollector
-            ),
-        ]);
+        $configFiles[] = __DIR__ . '/../../config/config.php';
+        $configFiles[] = AstralConfig::FILE_PATH;
+        $configFiles[] = ComposerJsonManipulatorConfig::FILE_PATH;
+        $configFiles[] = ConsoleColorDiffConfig::FILE_PATH;
+        $configFiles[] = SimplePhpDocParserConfig::FILE_PATH;
+        $configFiles[] = SkipperConfig::FILE_PATH;
 
-        return new DelegatingLoader($loaderResolver);
+        return $configFiles;
     }
 }
