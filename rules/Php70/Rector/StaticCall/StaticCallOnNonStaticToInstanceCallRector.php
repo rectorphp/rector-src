@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
@@ -158,7 +159,7 @@ CODE_SAMPLE
         }
 
         $scope = $staticCall->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof \PHPStan\Analyser\Scope) {
+        if (! $scope instanceof Scope) {
             return true;
         }
 
