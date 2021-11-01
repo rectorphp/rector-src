@@ -12,20 +12,19 @@ use Rector\Core\ValueObject\Configuration;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symplify\PackageBuilder\Console\Input\StaticInputDetector;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class RectorContainerFactory
 {
     /**
-     * @param SmartFileInfo[] $configFileInfos
+     * @param string[] $configFiles
      * @api
      */
-    public function createFromConfigs(array $configFileInfos): ContainerInterface
+    public function createFromConfigs(array $configFiles): ContainerInterface
     {
         // to override the configs without clearing cache
         $isDebug = StaticInputDetector::isDebug();
 
-        $environment = $this->createEnvironment($configFileInfos);
+        $environment = $this->createEnvironment($configFiles);
 
         // mt_rand is needed to invalidate container cache in case of class changes to be registered as services
         $isPHPUnitRun = StaticPHPUnitEnvironment::isPHPUnitRun();
@@ -36,7 +35,7 @@ final class RectorContainerFactory
         $phpStanStubLoader = new PHPStanStubLoader();
         $phpStanStubLoader->loadStubs();
 
-        $rectorKernel = new RectorKernel($environment, $isDebug, $configFileInfos);
+        $rectorKernel = new RectorKernel($environment, $isDebug, $configFiles);
         $rectorKernel->boot();
 
         return $rectorKernel->getContainer();
@@ -44,13 +43,13 @@ final class RectorContainerFactory
 
     public function createFromBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): ContainerInterface
     {
-        $container = $this->createFromConfigs($bootstrapConfigs->getConfigFileInfos());
+        $container = $this->createFromConfigs($bootstrapConfigs->getConfigFiles());
 
-        $mainConfigFileInfo = $bootstrapConfigs->getMainConfigFileInfo();
-        if ($mainConfigFileInfo !== null) {
+        $mainConfigFile = $bootstrapConfigs->getMainConfigFile();
+        if ($mainConfigFile !== null) {
             /** @var ChangedFilesDetector $changedFilesDetector */
             $changedFilesDetector = $container->get(ChangedFilesDetector::class);
-            $changedFilesDetector->setFirstResolvedConfigFileInfo($mainConfigFileInfo);
+            $changedFilesDetector->setFirstResolvedConfigFileInfo($mainConfigFile);
         }
 
         return $container;
@@ -58,13 +57,13 @@ final class RectorContainerFactory
 
     /**
      * @see https://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
-     * @param SmartFileInfo[] $configFileInfos
+     * @param string[] $configFiles
      */
-    private function createEnvironment(array $configFileInfos): string
+    private function createEnvironment(array $configFiles): string
     {
         $configHashes = [];
-        foreach ($configFileInfos as $configFileInfo) {
-            $configHashes[] = md5_file($configFileInfo->getRealPath());
+        foreach ($configFiles as $configFile) {
+            $configHashes[] = md5_file($configFile);
         }
 
         $configHashString = implode('', $configHashes);

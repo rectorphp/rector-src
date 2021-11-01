@@ -53,7 +53,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         }
 
         $configFileInfo = new SmartFileInfo($this->provideConfigFilePath());
-        $this->bootFromConfigFileInfos([$configFileInfo]);
+        $this->bootFromConfigFiles([$configFileInfo]);
 
         $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
         $this->parameterProvider = $this->getService(ParameterProvider::class);

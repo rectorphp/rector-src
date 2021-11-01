@@ -27,7 +27,6 @@ use Symplify\ConsoleColorDiff\ValueObject\ConsoleColorDiffConfig;
 use Symplify\PackageBuilder\DependencyInjection\CompilerPass\AutowireInterfacesCompilerPass;
 use Symplify\SimplePhpDocParser\ValueObject\SimplePhpDocParserConfig;
 use Symplify\Skipper\ValueObject\SkipperConfig;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @todo possibly remove symfony/http-kernel and use the container build only
@@ -37,12 +36,12 @@ final class RectorKernel extends Kernel
     private ConfigureCallValuesCollector $configureCallValuesCollector;
 
     /**
-     * @param SmartFileInfo[] $configFileInfos
+     * @param string[] $configFiles
      */
     public function __construct(
         string $environment,
         bool $debug,
-        private array $configFileInfos
+        private array $configFiles
     ) {
         $this->configureCallValuesCollector = new ConfigureCallValuesCollector();
 
@@ -69,8 +68,9 @@ final class RectorKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(__DIR__ . '/../../config/config.php');
-        foreach ($this->configFileInfos as $configFileInfo) {
-            $loader->load($configFileInfo->getRealPath());
+
+        foreach ($this->configFiles as $configFile) {
+            $loader->load($configFile);
         }
 
         $loader->load(AstralConfig::FILE_PATH);
