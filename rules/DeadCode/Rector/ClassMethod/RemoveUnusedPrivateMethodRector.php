@@ -140,7 +140,9 @@ CODE_SAMPLE
         }
 
         foreach ($class->getMethods() as $method) {
-            $isFound = (bool) $this->betterNodeFinder->findFirst((array) $method->getStmts(), function (Node $subNode): bool {
+            $isFound = (bool) $this->betterNodeFinder->findFirst(
+                (array) $method->getStmts(),
+                function (Node $subNode): bool {
                 if (! $subNode instanceof MethodCall) {
                     return false;
                 }
@@ -154,7 +156,8 @@ CODE_SAMPLE
                 }
 
                 return $subNode->name instanceof Variable;
-            });
+            }
+            );
 
             if ($isFound) {
                 return true;
