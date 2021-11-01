@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\DependencyInjection;
 
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Core\HttpKernel\RectorKernel;
+use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Stubs\PHPStanStubLoader;
 use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
 use Rector\Core\ValueObject\Configuration;

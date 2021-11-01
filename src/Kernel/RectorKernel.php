@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\HttpKernel;
+namespace Rector\Core\Kernel;
 
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Collector\ConfigureCallValuesCollector;

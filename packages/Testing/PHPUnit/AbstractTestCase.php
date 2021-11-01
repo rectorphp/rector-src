@@ -6,7 +6,7 @@ namespace Rector\Testing\PHPUnit;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\HttpKernel\RectorKernel;
+use Rector\Core\Kernel\RectorKernel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
