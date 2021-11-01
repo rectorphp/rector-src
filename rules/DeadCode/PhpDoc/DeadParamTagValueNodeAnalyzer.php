@@ -89,16 +89,16 @@ final class DeadParamTagValueNodeAnalyzer
 
         $children = $parent->children;
 
-        foreach ($children as $child) {
+        foreach ($children as $key => $child) {
             if ($child instanceof PhpDocTagNode && $node instanceof FullyQualified) {
                 return $this->isUnionIdentifier($child);
             }
 
-            if (! $child instanceof PhpDocTextNode) {
+            if ($key > 0 && ! $child instanceof PhpDocTextNode) {
                 return true;
             }
 
-            if ((string) $child !== '') {
+            if ($key > 0 && (string) $child !== '') {
                 return false;
             }
         }
