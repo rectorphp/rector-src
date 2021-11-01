@@ -108,13 +108,12 @@ final class DeadParamTagValueNodeAnalyzer
         if ($key > 0 && ! $phpDocChildNode instanceof PhpDocTextNode) {
             return true;
         }
+
         if ($key <= 0) {
             return true;
         }
-        if ((string) $phpDocChildNode === '') {
-            return true;
-        }
-        return false;
+
+        return (string) $phpDocChildNode === '';
     }
 
     private function isUnionIdentifier(PhpDocTagNode $phpDocTagNode): bool
