@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
+use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -59,17 +61,17 @@ final class DeadParamTagValueNodeAnalyzer
         }
 
         if (! $paramTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
-            return $this->isEmptyDescription($paramTagValueNode);
+            return $this->isEmptyDescription($paramTagValueNode, $param->type);
         }
 
         if (! $this->hasGenericType($paramTagValueNode->type)) {
-            return $this->isEmptyDescription($paramTagValueNode);
+            return $this->isEmptyDescription($paramTagValueNode, $param->type);
         }
 
         return false;
     }
 
-    private function isEmptyDescription(ParamTagValueNode $paramTagValueNode): bool
+    private function isEmptyDescription(ParamTagValueNode $paramTagValueNode, Node $type): bool
     {
         if ($paramTagValueNode->description !== '') {
             return false;
@@ -89,7 +91,7 @@ final class DeadParamTagValueNodeAnalyzer
 
         if (! isset($children[1])) {
             $child = $children[0];
-            if ($child instanceof PhpDocTagNode) {
+            if ($child instanceof PhpDocTagNode && $type instanceof UnionType) {
                 return $this->isUnionIdentifier($child);
             }
 
@@ -115,8 +117,9 @@ final class DeadParamTagValueNodeAnalyzer
 
         $types = $phpDocTagNode->value->type->types;
         foreach ($types as $type) {
+            dump($type);
             if ($type instanceof IdentifierTypeNode) {
-                return false;
+                //return false;
             }
         }
 
