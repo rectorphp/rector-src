@@ -13,6 +13,8 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use Rector\BetterPhpDocParser\ValueObject\PhpDoc\VariadicAwareParamTagValueNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
@@ -87,6 +89,11 @@ final class DeadParamTagValueNodeAnalyzer
         $children = $parent->children;
 
         if (! isset($children[1])) {
+            $child = $children[0];
+            if ($child instanceof PhpDocTagNode) {
+                return $this->isUnionIdentifier($child);
+            }
+
             return true;
         }
 
@@ -95,6 +102,26 @@ final class DeadParamTagValueNodeAnalyzer
         }
 
         return (string) $children[1] === '';
+    }
+
+    private function isUnionIdentifier(PhpDocTagNode $phpDocTagNode): bool
+    {
+        if (! $phpDocTagNode->value instanceof VariadicAwareParamTagValueNode) {
+            return true;
+        }
+
+        if (! $phpDocTagNode->value->type instanceof BracketsAwareUnionTypeNode) {
+            return true;
+        }
+
+        $types = $phpDocTagNode->value->type->types;
+        foreach ($types as $type) {
+            if ($type instanceof IdentifierTypeNode) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function hasGenericType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
