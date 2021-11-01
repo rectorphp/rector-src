@@ -105,11 +105,11 @@ final class DeadParamTagValueNodeAnalyzer
 
     private function isTextNextline(int $key, PhpDocChildNode $phpDocChildNode): bool
     {
-        if ($key > 0 && ! $phpDocChildNode instanceof PhpDocTextNode) {
+        if ($key < 1) {
             return true;
         }
 
-        if ($key <= 0) {
+        if (! $phpDocChildNode instanceof PhpDocTextNode) {
             return true;
         }
 
