@@ -99,7 +99,7 @@ CODE_SAMPLE
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof \PHPStan\Analyser\Scope) {
-            return true;
+            return null;
         }
 
         $parentClassName = $this->parentClassScopeResolver->resolveParentClassName($scope);
