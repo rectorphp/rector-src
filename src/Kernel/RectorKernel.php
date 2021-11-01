@@ -20,13 +20,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Kernel;
-use Symplify\Astral\Bundle\AstralBundle;
+use Symplify\Astral\ValueObject\AstralConfig;
 use Symplify\AutowireArrayParameter\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
-use Symplify\ComposerJsonManipulator\Bundle\ComposerJsonManipulatorBundle;
-use Symplify\ConsoleColorDiff\Bundle\ConsoleColorDiffBundle;
+use Symplify\ComposerJsonManipulator\ValueObject\ComposerJsonManipulatorConfig;
+use Symplify\ConsoleColorDiff\ValueObject\ConsoleColorDiffConfig;
 use Symplify\PackageBuilder\DependencyInjection\CompilerPass\AutowireInterfacesCompilerPass;
-use Symplify\SimplePhpDocParser\Bundle\SimplePhpDocParserBundle;
-use Symplify\Skipper\Bundle\SkipperBundle;
+use Symplify\SimplePhpDocParser\ValueObject\SimplePhpDocParserConfig;
+use Symplify\Skipper\ValueObject\SkipperConfig;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
@@ -72,6 +72,12 @@ final class RectorKernel extends Kernel
         foreach ($this->configFileInfos as $configFileInfo) {
             $loader->load($configFileInfo->getRealPath());
         }
+
+        $loader->load(AstralConfig::FILE_PATH);
+        $loader->load(ComposerJsonManipulatorConfig::FILE_PATH);
+        $loader->load(ConsoleColorDiffConfig::FILE_PATH);
+        $loader->load(SimplePhpDocParserConfig::FILE_PATH);
+        $loader->load(SkipperConfig::FILE_PATH);
     }
 
     /**
@@ -79,13 +85,7 @@ final class RectorKernel extends Kernel
      */
     public function registerBundles(): iterable
     {
-        return [
-            new ConsoleColorDiffBundle(),
-            new ComposerJsonManipulatorBundle(),
-            new SkipperBundle(),
-            new SimplePhpDocParserBundle(),
-            new AstralBundle(),
-        ];
+        return [];
     }
 
     protected function build(ContainerBuilder $containerBuilder): void
