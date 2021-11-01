@@ -7,6 +7,7 @@ namespace Rector\DeadCode\PhpDoc;
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
@@ -91,7 +92,7 @@ final class DeadParamTagValueNodeAnalyzer
 
         if (! isset($children[1])) {
             $child = $children[0];
-            if ($child instanceof PhpDocTagNode && $type instanceof UnionType) {
+            if ($child instanceof PhpDocTagNode && $type instanceof FullyQualified) {
                 return $this->isUnionIdentifier($child);
             }
 
@@ -117,9 +118,8 @@ final class DeadParamTagValueNodeAnalyzer
 
         $types = $phpDocTagNode->value->type->types;
         foreach ($types as $type) {
-            dump($type);
             if ($type instanceof IdentifierTypeNode) {
-                //return false;
+                return false;
             }
         }
 
