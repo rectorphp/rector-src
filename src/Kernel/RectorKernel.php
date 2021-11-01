@@ -38,7 +38,7 @@ final class RectorKernel implements LightKernelInterface
     /**
      * @param string[] $configFiles
      */
-    public function createFromConfigs(array $configFiles): \Psr\Container\ContainerInterface
+    public function createFromConfigs(array $configFiles): ContainerInterface
     {
         $defaultConfigFiles = $this->createDefaultConfigFiles();
         $configFiles = array_merge($defaultConfigFiles, $configFiles);
@@ -47,15 +47,14 @@ final class RectorKernel implements LightKernelInterface
 
         $configureCallMergingLoaderFactory = new ConfigureCallMergingLoaderFactory($this->configureCallValuesCollector);
 
-        // @todo
-        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
-        // $containerBuilder->setParameter('container.dumper.inline_factories', true);
-        // to fix reincluding files again
-        // $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
-
         $containerBuilderFactory = new ContainerBuilderFactory($configureCallMergingLoaderFactory);
 
         $containerBuilder = $containerBuilderFactory->create([], $compilerPasses, $configFiles);
+        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
+        $containerBuilder->setParameter('container.dumper.inline_factories', true);
+        // to fix reincluding files again
+        $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
+
         $containerBuilder->compile();
 
         $this->container = $containerBuilder;
@@ -63,7 +62,7 @@ final class RectorKernel implements LightKernelInterface
         return $containerBuilder;
     }
 
-    public function getContainer(): \Psr\Container\ContainerInterface
+    public function getContainer(): ContainerInterface
     {
         if ($this->container === null) {
             throw new ShouldNotHappenException();
