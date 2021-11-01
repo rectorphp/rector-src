@@ -11,4 +11,3 @@ if (interface_exists('Symfony\Component\HttpKernel\Bundle\BundleInterface')) {
 interface BundleInterface
 {
 }
-
