@@ -98,6 +98,9 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof \PHPStan\Analyser\Scope) {
+            return true;
+        }
 
         $parentClassName = $this->parentClassScopeResolver->resolveParentClassName($scope);
         if ($parentClassName === null) {

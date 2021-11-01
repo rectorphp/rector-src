@@ -158,6 +158,9 @@ CODE_SAMPLE
         }
 
         $scope = $staticCall->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof \PHPStan\Analyser\Scope) {
+            return true;
+        }
 
         $parentClassName = $this->parentClassScopeResolver->resolveParentClassName($scope);
         return $className === $parentClassName;
