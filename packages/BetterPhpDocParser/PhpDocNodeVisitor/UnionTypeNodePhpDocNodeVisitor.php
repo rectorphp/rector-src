@@ -61,7 +61,7 @@ final class UnionTypeNodePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor imp
         return $betterTokenProvider->isTokenTypeOnPosition(Lexer::TOKEN_CLOSE_PARENTHESES, $startAndEnd->getEnd());
     }
 
-    private function resolveStardAndEnd(Node $node): ?StartAndEnd
+    private function resolveStardAndEnd(UnionTypeNode $node): ?StartAndEnd
     {
         $starAndEnd = $node->getAttribute(PhpDocAttributeKey::START_AND_END);
         if ($starAndEnd instanceof StartAndEnd) {
