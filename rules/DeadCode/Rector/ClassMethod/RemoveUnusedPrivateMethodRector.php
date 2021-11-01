@@ -143,20 +143,20 @@ CODE_SAMPLE
             $isFound = (bool) $this->betterNodeFinder->findFirst(
                 (array) $method->getStmts(),
                 function (Node $subNode): bool {
-                if (! $subNode instanceof MethodCall) {
-                    return false;
-                }
+                    if (! $subNode instanceof MethodCall) {
+                        return false;
+                    }
 
-                if (! $subNode->var instanceof Variable) {
-                    return false;
-                }
+                    if (! $subNode->var instanceof Variable) {
+                        return false;
+                    }
 
-                if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
-                    return false;
-                }
+                    if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
+                        return false;
+                    }
 
-                return $subNode->name instanceof Variable;
-            }
+                    return $subNode->name instanceof Variable;
+                }
             );
 
             if ($isFound) {
