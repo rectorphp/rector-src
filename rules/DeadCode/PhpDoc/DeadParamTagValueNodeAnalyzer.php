@@ -103,17 +103,18 @@ final class DeadParamTagValueNodeAnalyzer
         return true;
     }
 
-    private function isTextNextline(int $key, PhpDocChildNode $child): bool
+    private function isTextNextline(int $key, PhpDocChildNode $phpDocChildNode): bool
     {
-        if ($key > 0 && ! $child instanceof PhpDocTextNode) {
+        if ($key > 0 && ! $phpDocChildNode instanceof PhpDocTextNode) {
             return true;
         }
-
-        if ($key > 0 && (string) $child !== '') {
-            return false;
+        if ($key <= 0) {
+            return true;
         }
-
-        return true;
+        if ((string) $phpDocChildNode === '') {
+            return true;
+        }
+        return false;
     }
 
     private function isUnionIdentifier(PhpDocTagNode $phpDocTagNode): bool
