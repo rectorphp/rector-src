@@ -9,12 +9,8 @@ if (interface_exists('Symfony\Component\HttpKernel\Bundle\BundleInterface')) {
 }
 
 /*
- * This file is part of the Symfony package.
- *
  * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @see https://github.com/symfony/http-kernel/blob/31b284c8cf1d8dc560023838472a310ac1bebfe5/LICENSE
  */
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
