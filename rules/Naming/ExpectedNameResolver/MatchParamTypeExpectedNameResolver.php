@@ -5,15 +5,19 @@ declare(strict_types=1);
 namespace Rector\Naming\ExpectedNameResolver;
 
 use PhpParser\Node\Param;
+use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class MatchParamTypeExpectedNameResolver
 {
     public function __construct(
         private StaticTypeMapper $staticTypeMapper,
-        private PropertyNaming $propertyNaming
+        private PropertyNaming $propertyNaming,
+        private UsedImportsResolver $usedImportsResolver
     ) {
     }
 
@@ -25,6 +29,17 @@ final class MatchParamTypeExpectedNameResolver
         }
 
         $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+
+        if ($staticType instanceof FullyQualifiedObjectType) {
+            $objectTypes = $this->usedImportsResolver->resolveForNode($param->type);
+            foreach ($objectTypes as $objectType) {
+                if ($objectType instanceof AliasedObjectType && $staticType->getClassName() === $objectType->getFullyQualifiedName()) {
+                    $staticType = $objectType;
+                    break;
+                }
+            }
+        }
+
         $expectedName = $this->propertyNaming->getExpectedNameFromType($staticType);
         if (! $expectedName instanceof ExpectedName) {
             return null;
