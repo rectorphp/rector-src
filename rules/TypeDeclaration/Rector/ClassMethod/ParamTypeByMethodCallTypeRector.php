@@ -218,6 +218,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($param->variadic) {
+            return true;
+        }
+
         // already has type, skip
         return $param->type !== null;
     }
