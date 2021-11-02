@@ -32,7 +32,7 @@ final class CreateJsonWithNamesForClassRector extends AbstractRector
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?Node
     {
         $smartFileInfo = $this->file->getSmartFileInfo();
         $targetFilePath = $smartFileInfo->getRealPathDirectory() . '/names.json';
