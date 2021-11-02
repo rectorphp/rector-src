@@ -120,12 +120,7 @@ final class ObjectTypeSpecifier
         return null;
     }
 
-    private function isNextUsesUsedNonAliasedSameClassName(
-        array $uses,
-        int $lastKey,
-        string $className,
-        string $fullyQualifiedName
-    ): bool
+    private function isNextUsesUsedNonAliasedSameClassName(array $uses, int $lastKey, string $className, string $fullyQualifiedName): bool
     {
         foreach ($uses as $key => $use) {
             if ($key > $lastKey) {
