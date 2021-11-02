@@ -125,7 +125,8 @@ final class ObjectTypeSpecifier
         int $lastKey,
         string $className,
         string $fullyQualifiedName
-    ): bool {
+    ): bool
+    {
         foreach ($uses as $key => $use) {
             if ($key > $lastKey) {
                 foreach ($use->uses as $useUse) {
