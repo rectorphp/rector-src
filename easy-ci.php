@@ -4,18 +4,25 @@ declare(strict_types=1);
 
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\NodeManipulator\MethodCallManipulator;
+use Rector\DependencyInjection\NodeManipulator\PropertyConstructorInjectionManipulator;
+use Rector\FileFormatter\Contract\Formatter\FileFormatterInterface;
 use Rector\Naming\Contract\Guard\ConflictingNameGuardInterface;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
+use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory;
 use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\ReadWrite\Contract\ReadNodeAnalyzerInterface;
 use Rector\Set\Contract\SetListInterface;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
+use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\TypeDeclaration\Contract\TypeInferer\ParamTypeInfererInterface;
 use Rector\TypeDeclaration\Contract\TypeInferer\PropertyTypeInfererInterface;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
@@ -48,10 +55,16 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         SetListInterface::class,
         ConflictingNameGuardInterface::class,
         TypeParser::class,
-        \Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory::class,
-        \Rector\Testing\PHPUnit\AbstractTestCase::class,
-        \Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory::class,
-        \Rector\Core\Contract\Console\OutputStyleInterface::class,
-        \Rector\FileFormatter\Contract\Formatter\FileFormatterInterface::class,
+        RectorBetterReflectionSourceLocatorFactory::class,
+        AbstractTestCase::class,
+        PHPStanServicesFactory::class,
+        OutputStyleInterface::class,
+        FileFormatterInterface::class,
+        MethodCallManipulator::class,
+        // fix later - rector-symfony
+        PropertyConstructorInjectionManipulator::class,
+        // used in tests
+        \Rector\FileSystemRector\Parser\FileInfoParser::class,
+        \Rector\Defluent\NodeAnalyzer\SameClassMethodCallAnalyzer::class,
     ]);
 };
