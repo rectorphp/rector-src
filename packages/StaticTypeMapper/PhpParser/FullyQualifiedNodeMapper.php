@@ -6,7 +6,10 @@ namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
 use PHPStan\Type\Type;
+use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -14,6 +17,10 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
 {
+    public function __construct(private CurrentFileProvider $currentFileProvider, private UsedImportsResolver $usedImportsResolver)
+    {
+    }
+
     /**
      * @return class-string<Node>
      */
@@ -27,6 +34,23 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
      */
     public function mapToPHPStan(Node $node): Type
     {
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Param) {
+            $file = $this->currentFileProvider->getFile();
+            $oldTokens = $file->getOldTokens();
+            $startTokenPos = $node->getStartTokenPos();
+
+            $type = $oldTokens[$startTokenPos][1];
+            if (! str_contains($type, '\\')) {
+                $objectTypes = $this->usedImportsResolver->resolveForNode($node);
+                foreach ($objectTypes as $objectType) {
+                    if ($objectType instanceof AliasedObjectType && $objectType->getClassName() === $type) {
+                        return $objectType;
+                    }
+                }
+            }
+        }
+
         $originalName = (string) $node->getAttribute(AttributeKey::ORIGINAL_NAME);
         $fullyQualifiedName = $node->toString();
 
