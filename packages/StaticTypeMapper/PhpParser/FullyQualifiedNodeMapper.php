@@ -15,13 +15,23 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\NodeTypeResolver\NodeTypeResolver;
+use Symfony\Contracts\Service\Attribute\Required;
 
 final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
 {
+    private NodeTypeResolver $nodeTypeResolver;
+
     public function __construct(
         private CurrentFileProvider $currentFileProvider,
         private UsedImportsResolver $usedImportsResolver
     ) {
+    }
+
+    #[Required]
+    public function autowireFullyQualifiedNodeMapper(NodeTypeResolver $nodeTypeResolver): void
+    {
+        $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
     /**
@@ -37,14 +47,6 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
      */
     public function mapToPHPStan(Node $node): Type
     {
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Param && $parent->type === $node) {
-            $possibleAliasedObjectType = $this->resolvePossibleAliasedObjectType($node);
-            if ($possibleAliasedObjectType instanceof AliasedObjectType) {
-                return $possibleAliasedObjectType;
-            }
-        }
-
         $originalName = (string) $node->getAttribute(AttributeKey::ORIGINAL_NAME);
         $fullyQualifiedName = $node->toString();
 
@@ -52,6 +54,11 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
         if ($this->isAliasedName($originalName, $fullyQualifiedName) && $originalName !== $fullyQualifiedName
         ) {
             return new AliasedObjectType($originalName, $fullyQualifiedName);
+        }
+
+        $possibleAliasedObjectType = $this->nodeTypeResolver->getType($node);
+        if ($possibleAliasedObjectType instanceof AliasedObjectType) {
+            return $possibleAliasedObjectType;
         }
 
         return new FullyQualifiedObjectType($fullyQualifiedName);
