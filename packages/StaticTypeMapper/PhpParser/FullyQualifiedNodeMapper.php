@@ -78,9 +78,15 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
 
         $objectTypes = $this->usedImportsResolver->resolveForNode($fullyQualified);
         foreach ($objectTypes as $objectType) {
-            if ($objectType instanceof AliasedObjectType && $objectType->getClassName() === $type) {
-                return $objectType;
+            if (! $objectType instanceof AliasedObjectType) {
+                continue;
             }
+
+            if ($objectType->getClassName() !== $type) {
+                continue;
+            }
+
+            return $objectType;
         }
 
         return null;
