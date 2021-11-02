@@ -72,12 +72,14 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
         }
 
         $type = $oldTokens[$startTokenPos][1];
-        if (! str_contains($type, '\\')) {
-            $objectTypes = $this->usedImportsResolver->resolveForNode($fullyQualified);
-            foreach ($objectTypes as $objectType) {
-                if ($objectType instanceof AliasedObjectType && $objectType->getClassName() === $type) {
-                    return $objectType;
-                }
+        if (str_contains($type, '\\')) {
+            return null;
+        }
+
+        $objectTypes = $this->usedImportsResolver->resolveForNode($fullyQualified);
+        foreach ($objectTypes as $objectType) {
+            if ($objectType instanceof AliasedObjectType && $objectType->getClassName() === $type) {
+                return $objectType;
             }
         }
 
