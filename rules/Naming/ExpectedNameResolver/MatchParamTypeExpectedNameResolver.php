@@ -32,8 +32,10 @@ final class MatchParamTypeExpectedNameResolver
 
         if ($staticType instanceof FullyQualifiedObjectType) {
             $objectTypes = $this->usedImportsResolver->resolveForNode($param->type);
+            $className = $staticType->getClassName();
+
             foreach ($objectTypes as $objectType) {
-                if ($objectType instanceof AliasedObjectType && $staticType->getClassName() === $objectType->getFullyQualifiedName()) {
+                if ($objectType instanceof AliasedObjectType && $className === $objectType->getFullyQualifiedName()) {
                     $staticType = $objectType;
                     break;
                 }
