@@ -10,6 +10,7 @@ use PhpParser\Node\Param;
 use PHPStan\Type\Type;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -17,8 +18,10 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
 {
-    public function __construct(private CurrentFileProvider $currentFileProvider, private UsedImportsResolver $usedImportsResolver)
-    {
+    public function __construct(
+        private CurrentFileProvider $currentFileProvider,
+        private UsedImportsResolver $usedImportsResolver
+    ) {
     }
 
     /**
@@ -36,18 +39,9 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
     {
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Param) {
-            $file = $this->currentFileProvider->getFile();
-            $oldTokens = $file->getOldTokens();
-            $startTokenPos = $node->getStartTokenPos();
-
-            $type = $oldTokens[$startTokenPos][1];
-            if (! str_contains($type, '\\')) {
-                $objectTypes = $this->usedImportsResolver->resolveForNode($node);
-                foreach ($objectTypes as $objectType) {
-                    if ($objectType instanceof AliasedObjectType && $objectType->getClassName() === $type) {
-                        return $objectType;
-                    }
-                }
+            $possibleAliasedObjectType = $this->resolvePossibleAliasedObjectType($node);
+            if ($possibleAliasedObjectType instanceof AliasedObjectType) {
+                return $possibleAliasedObjectType;
             }
         }
 
@@ -61,6 +55,33 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
         }
 
         return new FullyQualifiedObjectType($fullyQualifiedName);
+    }
+
+    private function resolvePossibleAliasedObjectType(FullyQualified $fullyQualified): ?AliasedObjectType
+    {
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            return null;
+        }
+
+        $oldTokens = $file->getOldTokens();
+        $startTokenPos = $fullyQualified->getStartTokenPos();
+
+        if (! isset($oldTokens[$startTokenPos][1])) {
+            return null;
+        }
+
+        $type = $oldTokens[$startTokenPos][1];
+        if (! str_contains($type, '\\')) {
+            $objectTypes = $this->usedImportsResolver->resolveForNode($fullyQualified);
+            foreach ($objectTypes as $objectType) {
+                if ($objectType instanceof AliasedObjectType && $objectType->getClassName() === $type) {
+                    return $objectType;
+                }
+            }
+        }
+
+        return null;
     }
 
     private function isAliasedName(string $originalName, string $fullyQualifiedName): bool
