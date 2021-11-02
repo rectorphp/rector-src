@@ -38,7 +38,7 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
     public function mapToPHPStan(Node $node): Type
     {
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Param) {
+        if ($parent instanceof Param && $parent->type === $node) {
             $possibleAliasedObjectType = $this->resolvePossibleAliasedObjectType($node);
             if ($possibleAliasedObjectType instanceof AliasedObjectType) {
                 return $possibleAliasedObjectType;
