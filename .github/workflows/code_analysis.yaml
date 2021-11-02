@@ -39,7 +39,7 @@ jobs:
 
 #                    -
 #                        name: 'Active Classes'
-#                        run: vendor/bin/easy-ci check-active-class bin src packages rules --ansi
+#                        run: vendor/bin/easy-ci check-active-class bin config src packages rules --ansi
 
                     # see https://github.com/rectorphp/rector-generator
                     -

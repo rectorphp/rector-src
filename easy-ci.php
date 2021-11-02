@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use PHPStan\PhpDocParser\Parser\TypeParser;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Naming\Contract\Guard\ConflictingNameGuardInterface;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
@@ -44,7 +46,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         NodeTypeResolverInterface::class,
         ReadNodeAnalyzerInterface::class,
         SetListInterface::class,
-        \Rector\Naming\Contract\Guard\ConflictingNameGuardInterface::class,
-        \PHPStan\PhpDocParser\Parser\TypeParser::class,
+        ConflictingNameGuardInterface::class,
+        TypeParser::class,
+        \Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory::class,
+        \Rector\Testing\PHPUnit\AbstractTestCase::class,
+        \Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory::class,
+        \Rector\Core\Contract\Console\OutputStyleInterface::class,
+        \Rector\FileFormatter\Contract\Formatter\FileFormatterInterface::class,
     ]);
 };
