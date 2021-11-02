@@ -100,7 +100,7 @@ final class ObjectTypeSpecifier
                 $alias = $useUse->alias->toString();
                 $fullyQualifiedName = $useUse->name->toString();
 
-                if ($this->isNextUsesUsedNonAliasedSameClassName($uses, $key, $className, $fullyQualifiedName)) {
+                if ($this->isNextUsesUsedNonAliasedSameClassName($uses, $key, $className)) {
                     return null;
                 }
 
@@ -123,13 +123,13 @@ final class ObjectTypeSpecifier
     private function isNextUsesUsedNonAliasedSameClassName(
         array $uses,
         int $lastKey,
-        string $className,
-        string $fullyQualifiedName
+        string $className
     ): bool {
         foreach ($uses as $key => $use) {
             if ($key > $lastKey) {
                 foreach ($use->uses as $useUse) {
-                    if ($className === $fullyQualifiedName) {
+                    $useName = $useUse->name->toString();
+                    if ($className === $useName) {
                         return true;
                     }
                 }
