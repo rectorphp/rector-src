@@ -123,11 +123,7 @@ final class ObjectTypeSpecifier
     /**
      * @param Use_[] $uses
      */
-    private function isNextUsesUsedNonAliasedSameClassName(
-        array $uses,
-        int $lastKey,
-        string $className
-    ): bool {
+    private function isNextUsesUsedNonAliasedSameClassName(array $uses, int $lastKey, string $className): bool {
         foreach ($uses as $key => $use) {
             if ($key <= $lastKey) {
                 continue;
