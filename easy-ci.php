@@ -45,5 +45,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ReadNodeAnalyzerInterface::class,
         SetListInterface::class,
         \Rector\Naming\Contract\Guard\ConflictingNameGuardInterface::class,
+        \PHPStan\PhpDocParser\Parser\TypeParser::class,
     ]);
 };
