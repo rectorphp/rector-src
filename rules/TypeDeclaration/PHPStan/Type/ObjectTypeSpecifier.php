@@ -120,18 +120,23 @@ final class ObjectTypeSpecifier
         return null;
     }
 
+    /**
+     * @param Use_[] $uses
+     */
     private function isNextUsesUsedNonAliasedSameClassName(
         array $uses,
         int $lastKey,
         string $className
     ): bool {
         foreach ($uses as $key => $use) {
-            if ($key > $lastKey) {
-                foreach ($use->uses as $useUse) {
-                    $useName = $useUse->name->toString();
-                    if ($className === $useName) {
-                        return true;
-                    }
+            if ($key <= $lastKey) {
+                continue;
+            }
+
+            foreach ($use->uses as $useUse) {
+                $useName = $useUse->name->toString();
+                if ($className === $useName) {
+                    return true;
                 }
             }
         }
