@@ -125,14 +125,15 @@ final class ObjectTypeSpecifier
      */
     private function isNextOrPreviousUsesUsedNonAliasedSameClassName(array $uses, int $lastKey, string $className): bool
     {
+        $lastClassName = Strings::after($className, '\\', -1);
         foreach ($uses as $key => $use) {
             if ($key === $lastKey) {
                 continue;
             }
 
             foreach ($use->uses as $useUse) {
-                $useName = $useUse->name->toString();
-                if ($className === $useName) {
+                $useName = $useUse->name->getLast();
+                if ($lastClassName === $useName) {
                     return true;
                 }
             }
