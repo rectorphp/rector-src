@@ -203,7 +203,10 @@ CODE_SAMPLE
                 return true;
             }
 
-            return (bool) $this->betterNodeFinder->findParentType($variable, Node\Expr\Ternary::class);
+            $conditional = $this->betterNodeFinder->findParentType($variable, Node\Expr\Ternary::class);
+            if ($conditional instanceof Node\Expr\Ternary) {
+                return true;
+            }
         }
 
         return false;
@@ -212,10 +215,6 @@ CODE_SAMPLE
     private function shouldSkipParam(Param $param, ClassMethod $classMethod): bool
     {
         if ($this->isParamConditioned($param, $classMethod)) {
-            return true;
-        }
-
-        if ($param->variadic) {
             return true;
         }
 
