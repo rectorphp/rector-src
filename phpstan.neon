@@ -530,3 +530,7 @@ parameters:
         -
             path: src/Bootstrap/RectorConfigsResolver.php
             message: '#Method Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:resolveFromInput\(\) should return string\|null but returns string\|false#'
+
+        -
+            path: rules/TypeDeclaration/PHPStan/Type/ObjectTypeSpecifier.php
+            message: '#Class cognitive complexity is 58, keep it under 50#'

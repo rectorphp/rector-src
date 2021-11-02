@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
@@ -132,6 +133,10 @@ final class ObjectTypeSpecifier
             }
 
             foreach ($use->uses as $useUse) {
+                if ($useUse->alias instanceof Identifier) {
+                    continue;
+                }
+
                 $useName = $useUse->name->getLast();
                 if ($lastClassName === $useName) {
                     return true;
