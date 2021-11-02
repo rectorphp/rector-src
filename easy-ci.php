@@ -44,5 +44,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         NodeTypeResolverInterface::class,
         ReadNodeAnalyzerInterface::class,
         SetListInterface::class,
+        \Rector\Naming\Contract\Guard\ConflictingNameGuardInterface::class,
     ]);
 };
