@@ -88,9 +88,10 @@ final class ObjectTypeSpecifier
         }
 
         $className = $objectType->getClassName();
+
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
-        foreach ($uses as $key => $use) {
+        foreach ($uses as $use) {
             foreach ($use->uses as $useUse) {
                 if ($useUse->alias === null) {
                     continue;
@@ -99,10 +100,6 @@ final class ObjectTypeSpecifier
                 $useName = $useUse->name->toString();
                 $alias = $useUse->alias->toString();
                 $fullyQualifiedName = $useUse->name->toString();
-
-                if ($this->isNextUsesUsedNonAliasedSameClassName($uses, $key, $className, $fullyQualifiedName)) {
-                    return null;
-                }
 
                 $processAliasedObject = $this->processAliasedObject(
                     $alias,
@@ -118,21 +115,6 @@ final class ObjectTypeSpecifier
         }
 
         return null;
-    }
-
-    private function isNextUsesUsedNonAliasedSameClassName(array $uses, int $lastKey, string $className, string $fullyQualifiedName): bool
-    {
-        foreach ($uses as $key => $use) {
-            if ($key > $lastKey) {
-                foreach ($use->uses as $useUse) {
-                    if ($className === $fullyQualifiedName) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 
     private function processAliasedObject(
