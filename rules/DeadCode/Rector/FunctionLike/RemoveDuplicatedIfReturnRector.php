@@ -101,7 +101,14 @@ CODE_SAMPLE
         }
 
         foreach ($ifWithOnlyReturnsByHash as $ifWithOnlyReturns) {
-            if (! $this->isBoolVarIfCondReturnTrueNextReturnBoolVar($ifWithOnlyReturns)) {
+            $isBool = $this->isBoolVarIfCondReturnTrueNextReturnBoolVar(
+                $ifWithOnlyReturns
+            );
+            if (! $isBool && count($ifWithOnlyReturns) < 2) {
+                continue;
+            }
+
+            if (! $isBool) {
                 // keep first one
                 array_shift($ifWithOnlyReturns);
             }
