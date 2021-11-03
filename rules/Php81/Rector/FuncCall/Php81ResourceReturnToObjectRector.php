@@ -37,6 +37,9 @@ final class Php81ResourceReturnToObjectRector extends AbstractRector implements 
         // pspell
         'pspell_config_create' => 'PSpell\Config',
         'pspell_new_config' => 'PSpell\Dictionary',
+
+        // ldap
+        'ldap_connect' => 'LDAP\Connection'
     ];
 
     public function __construct(
