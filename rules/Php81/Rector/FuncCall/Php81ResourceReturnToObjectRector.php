@@ -27,6 +27,9 @@ final class Php81ResourceReturnToObjectRector extends AbstractRector implements 
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
         // finfo
         'finfo_open' => 'finfo',
+
+        // ftp
+        'ftp_connect' => 'FTP\Connection',
     ];
 
     public function __construct(
