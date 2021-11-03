@@ -26,10 +26,7 @@ final class RemoveDelegatingParentCallRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const ALLOWED_ANNOTATIONS = [
-        'Route',
-        'required',
-    ];
+    private const ALLOWED_ANNOTATIONS = ['Route', 'required'];
 
     /**
      * @var string[]
@@ -167,11 +164,9 @@ CODE_SAMPLE
 
         foreach ($attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attr) {
-                if ($attr instanceof Node\Attribute) {
-                    $name = (string) $attr->name;
-                    if (in_array($name, self::ALLOWED_ATTRIBUTES, true)) {
-                        return true;
-                    }
+                $name = (string) $attr->name;
+                if (in_array($name, self::ALLOWED_ATTRIBUTES, true)) {
+                    return true;
                 }
             }
         }
