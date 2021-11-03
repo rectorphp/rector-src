@@ -154,7 +154,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->valueResolver->isvalue($returnStmt->expr, true);
+        return $this->valueResolver->isValue($returnStmt->expr, true);
     }
 
     /**
