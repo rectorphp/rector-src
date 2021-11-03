@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class Php81ResourceReturnToObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
-        /**
+    /**
      * @var array<string, string>
      */
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
@@ -29,8 +29,9 @@ final class Php81ResourceReturnToObjectRector extends AbstractRector implements 
         'finfo_open' => 'finfo',
     ];
 
-    public function __construct(private ResourceReturnToObject $resourceReturnToObject)
-    {
+    public function __construct(
+        private ResourceReturnToObject $resourceReturnToObject
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
