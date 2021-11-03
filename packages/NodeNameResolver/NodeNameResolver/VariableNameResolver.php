@@ -24,7 +24,7 @@ final class VariableNameResolver implements NodeNameResolverInterface
     /**
      * @param Variable $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 

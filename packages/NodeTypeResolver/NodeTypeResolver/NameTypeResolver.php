@@ -7,7 +7,8 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
@@ -22,11 +23,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class NameTypeResolver implements NodeTypeResolverInterface
 {
-    public function __construct(
-        private ReflectionProvider $reflectionProvider
-    ) {
-    }
-
     /**
      * @return array<class-string<Node>>
      */
@@ -38,13 +34,13 @@ final class NameTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Name $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         if ($node->toString() === ObjectReference::PARENT()->getValue()) {
-            return $this->resolveParent($node);
+            return $this->resolveParentReference($scope);
         }
 
-        $fullyQualifiedName = $this->resolveFullyQualifiedName($node);
+        $fullyQualifiedName = $this->resolveFullyQualifiedName($node, $scope);
 
         if ($node->toString() === 'array') {
             return new ArrayType(new MixedType(), new MixedType());
@@ -53,18 +49,12 @@ final class NameTypeResolver implements NodeTypeResolverInterface
         return new ObjectType($fullyQualifiedName);
     }
 
-    private function resolveParent(Name $name): MixedType | ObjectType | UnionType
+    private function resolveParentReference(Scope $scope): MixedType | ObjectType | UnionType
     {
-        $className = $name->getAttribute(AttributeKey::CLASS_NAME);
-        if ($className === null) {
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
             return new MixedType();
         }
-
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return new MixedType();
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
 
         $parentClassObjectTypes = [];
         foreach ($classReflection->getParents() as $parentClassReflection) {
@@ -82,7 +72,7 @@ final class NameTypeResolver implements NodeTypeResolverInterface
         return new UnionType($parentClassObjectTypes);
     }
 
-    private function resolveFullyQualifiedName(Name $name): string
+    private function resolveFullyQualifiedName(Name $name, Scope $scope): string
     {
         $nameValue = $name->toString();
         if (in_array(
@@ -90,14 +80,12 @@ final class NameTypeResolver implements NodeTypeResolverInterface
             [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue(), 'this'],
             true
         )) {
-            /** @var string|null $class */
-            $class = $name->getAttribute(AttributeKey::CLASS_NAME);
-            if ($class === null) {
-                // anonymous class probably
+            $classReflection = $scope->getClassReflection();
+            if ($classReflection->isAnonymous()) {
                 return 'Anonymous';
             }
 
-            return $class;
+            return $classReflection->getName();
         }
 
         /** @var Name|null $resolvedNameNode */

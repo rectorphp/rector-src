@@ -13,6 +13,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\Exception\ShouldHaveScopeException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -46,13 +47,19 @@ final class NameScopeFactory
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        $namespace = $scope instanceof Scope ? $scope->getNamespace() : null;
+        if (! $scope instanceof Scope) {
+            throw new ShouldHaveScopeException();
+        }
+
+        $namespace = $scope->getNamespace();
 
         /** @var Use_[] $useNodes */
         $useNodes = (array) $node->getAttribute(AttributeKey::USE_NODES);
 
         $uses = $this->resolveUseNamesByAlias($useNodes);
-        $className = $node->getAttribute(AttributeKey::CLASS_NAME);
+
+        $classReflection = $scope->getClassReflection();
+        $className = $classReflection->getName();
 
         return new NameScope($namespace, $uses, $className);
     }

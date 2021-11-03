@@ -73,13 +73,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if ($scope === null) {
-            $className = $node->getAttribute(AttributeKey::CLASS_NAME);
-            $classReflection = $this->reflectionProvider->getClass($className);
-        } else {
-            $classReflection = $scope->getClassReflection();
-        }
-
+        $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }

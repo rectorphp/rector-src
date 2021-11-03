@@ -13,5 +13,5 @@ interface NodeNameResolverInterface
      */
     public function getNode(): string;
 
-    public function resolve(Node $node): ?string;
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string;
 }

@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Core\NodeManipulator\ClassInsertManipulator;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpSpecToPHPUnit\PhpSpecMockCollector;
 use Rector\PhpSpecToPHPUnit\Rector\AbstractPhpSpecToPHPUnitRector;
 
@@ -43,8 +42,7 @@ final class AddMockPropertiesRector extends AbstractPhpSpecToPHPUnitRector
 
         $classMocks = $this->phpSpecMockCollector->resolveClassMocksFromParam($node);
 
-        /** @var string $class */
-        $class = $node->getAttribute(AttributeKey::CLASS_NAME);
+        $className = $this->getName($node);
 
         foreach ($classMocks as $name => $methods) {
             if ((is_countable($methods) ? count($methods) : 0) <= 1) {
@@ -56,7 +54,7 @@ final class AddMockPropertiesRector extends AbstractPhpSpecToPHPUnitRector
                 continue;
             }
 
-            $this->phpSpecMockCollector->addPropertyMock($class, $name);
+            $this->phpSpecMockCollector->addPropertyMock($className, $name);
 
             $variableType = $this->phpSpecMockCollector->getTypeForClassAndVariable($node, $name);
 

@@ -15,7 +15,6 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeCollector\StaticAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -106,13 +105,15 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var class-string $className */
-        $className = $node->getAttribute(AttributeKey::CLASS_NAME);
+        $scope = $this->getScope($node);
+        $classReflection = $scope->getClassReflection();
+
+        $className = $scope->getClassReflection()?->getName();
         if (! is_string($className)) {
             return null;
         }
 
-        $isStaticMethod = $this->staticAnalyzer->isStaticMethod($methodName, $className);
+        $isStaticMethod = $this->staticAnalyzer->isStaticMethod($methodName, $classReflection);
         if (! $isStaticMethod) {
             return null;
         }

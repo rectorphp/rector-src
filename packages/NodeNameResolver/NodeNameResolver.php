@@ -115,12 +115,14 @@ final class NodeNameResolver
             $this->invalidNameNodeReporter->reportInvalidNodeForName($node);
         }
 
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+
         foreach ($this->nodeNameResolvers as $nodeNameResolver) {
             if (! is_a($node, $nodeNameResolver->getNode(), true)) {
                 continue;
             }
 
-            return $nodeNameResolver->resolve($node);
+            return $nodeNameResolver->resolve($node, $scope);
         }
 
         // more complex

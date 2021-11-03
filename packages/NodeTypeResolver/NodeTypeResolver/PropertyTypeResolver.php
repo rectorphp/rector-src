@@ -38,7 +38,7 @@ final class PropertyTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Property $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         // fake property to local PropertyFetch → PHPStan understands that
         $propertyFetch = new PropertyFetch(new Variable('this'), (string) $node->props[0]->name);

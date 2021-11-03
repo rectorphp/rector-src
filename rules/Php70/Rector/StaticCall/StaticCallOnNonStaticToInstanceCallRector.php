@@ -173,12 +173,13 @@ CODE_SAMPLE
             return false;
         }
 
-        $methodReflection = $this->reflectionResolver->resolveMethodReflection($className, '__callStatic', null);
+        $classReflection = $this->reflectionProvider->getClass($className);
+
+        $methodReflection = $this->reflectionResolver->resolveMethodReflection($classReflection, '__callStatic', null);
         if ($methodReflection instanceof MethodReflection) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
         $reflectionClass = $classReflection->getNativeReflection();
 
         $reflectionMethod = $reflectionClass->getConstructor();

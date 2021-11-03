@@ -12,6 +12,8 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
+use Rector\Core\Exception\ShouldHaveScopeException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -87,9 +89,13 @@ final class VariableManipulator
 
     private function isTestCaseExpectedVariable(Variable $variable): bool
     {
-        /** @var string $className */
-        $className = $variable->getAttribute(AttributeKey::CLASS_NAME);
-        if (! \str_ends_with($className, 'Test')) {
+        $scope = $variable->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            throw new ShouldHaveScopeException();
+        }
+
+        $className = $scope->getClassReflection()?->getName();
+        if (is_string($className) && ! \str_ends_with($className, 'Test')) {
             return false;
         }
 

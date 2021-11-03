@@ -128,7 +128,7 @@ final class NodeTypeResolver
      * @deprecated
      * @see use NodeTypeResolver::getType() instead
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         $errorMessage = sprintf('Method "%s" is deprecated. Use "getType()" instead', __METHOD__);
         trigger_error($errorMessage, E_USER_WARNING);
@@ -155,7 +155,9 @@ final class NodeTypeResolver
             }
         }
 
-        $type = $this->resolveByNodeTypeResolvers($node);
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+
+        $type = $this->resolveByNodeTypeResolvers($node, $scope);
         if ($type !== null) {
             $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
 
@@ -374,14 +376,14 @@ final class NodeTypeResolver
         return new ArrayType(new MixedType(), new MixedType());
     }
 
-    private function resolveByNodeTypeResolvers(Node $node): ?Type
+    private function resolveByNodeTypeResolvers(Node $node, Scope $scope): ?Type
     {
         foreach ($this->nodeTypeResolvers as $nodeClass => $nodeTypeResolver) {
             if (! is_a($node, $nodeClass, true)) {
                 continue;
             }
 
-            return $nodeTypeResolver->resolve($node);
+            return $nodeTypeResolver->resolve($node, $scope);
         }
 
         return null;

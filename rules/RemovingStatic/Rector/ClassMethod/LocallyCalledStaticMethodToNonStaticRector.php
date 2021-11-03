@@ -152,8 +152,11 @@ CODE_SAMPLE
 
     private function isClassMethodMatchingStaticCall(ClassMethod $classMethod, StaticCall $staticCall): bool
     {
-        $className = $classMethod->getAttribute(AttributeKey::CLASS_NAME);
-        $objectType = new ObjectType($className);
+        $scope = $this->getScope($classMethod);
+        $classReflection = $scope->getClassReflection();
+
+        $className = $classReflection->getName();
+        $objectType = new ObjectType($className, null, $classReflection);
 
         $callerType = $this->nodeTypeResolver->getType($staticCall->class);
         return $objectType->equals($callerType);

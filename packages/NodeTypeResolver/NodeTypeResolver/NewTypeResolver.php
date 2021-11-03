@@ -40,7 +40,7 @@ final class NewTypeResolver implements NodeTypeResolverInterface
     /**
      * @param New_ $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         if ($node->class instanceof Name) {
             $className = $this->nodeNameResolver->getName($node->class);

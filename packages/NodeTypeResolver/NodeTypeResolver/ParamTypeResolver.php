@@ -62,7 +62,7 @@ final class ParamTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Param $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         $paramType = $this->resolveFromParamType($node);
         if (! $paramType instanceof MixedType) {

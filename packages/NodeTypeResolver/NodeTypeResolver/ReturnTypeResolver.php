@@ -33,7 +33,7 @@ final class ReturnTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Return_ $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         if ($node->expr === null) {
             return new VoidType();

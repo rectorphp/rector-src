@@ -29,12 +29,12 @@ final class NameNameResolver implements NodeNameResolverInterface
     /**
      * @param Name $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         // possible function parent
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof FuncCall) {
-            return $this->funcCallNameResolver->resolve($parent);
+            return $this->funcCallNameResolver->resolve($parent, $scope);
         }
 
         $resolvedName = $node->getAttribute(AttributeKey::RESOLVED_NAME);

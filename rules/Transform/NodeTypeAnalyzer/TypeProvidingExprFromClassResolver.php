@@ -21,6 +21,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\Exception\ShouldHaveScopeException;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -45,24 +46,19 @@ final class TypeProvidingExprFromClassResolver
         ClassMethod | Function_ $functionLike,
         ObjectType $objectType
     ): ?Expr {
-        $className = $class->getAttribute(AttributeKey::CLASS_NAME);
-        if ($className === null) {
-            return null;
+        $scope = $class->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            throw new ShouldHaveScopeException();
         }
 
         // A. match a method
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $scope->getClassReflection();
         $methodCallProvidingType = $this->resolveMethodCallProvidingType($classReflection, $objectType);
         if ($methodCallProvidingType !== null) {
             return $methodCallProvidingType;
         }
 
         // B. match existing property
-        $scope = $class->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
         $propertyFetch = $this->resolvePropertyFetchProvidingType($classReflection, $scope, $objectType);
         if ($propertyFetch !== null) {
             return $propertyFetch;

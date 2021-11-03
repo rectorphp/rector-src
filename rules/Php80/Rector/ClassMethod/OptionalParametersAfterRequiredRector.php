@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\CodingStyle\Reflection\VendorLocationDetector;
@@ -107,9 +108,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $classMethod->getAttribute(AttributeKey::CLASS_NAME);
-        $classMethodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($classMethod);
+        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
 
+        $classMethodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod(
+            $classMethod,
+            $scope
+        );
         if (! $classMethodReflection instanceof MethodReflection) {
             return null;
         }
@@ -118,6 +125,7 @@ CODE_SAMPLE
             $classMethodReflection,
             $classMethod->params
         );
+
         if ($expectedArgOrParamOrder === null) {
             return null;
         }

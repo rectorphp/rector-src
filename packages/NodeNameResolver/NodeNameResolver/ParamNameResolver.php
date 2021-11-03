@@ -31,7 +31,7 @@ final class ParamNameResolver implements NodeNameResolverInterface
     /**
      * @param Param $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         return $this->nodeNameResolver->getName($node->var);
     }

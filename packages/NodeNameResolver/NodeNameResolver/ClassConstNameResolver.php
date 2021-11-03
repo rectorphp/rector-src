@@ -31,7 +31,7 @@ final class ClassConstNameResolver implements NodeNameResolverInterface
     /**
      * @param ClassConst $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         if ($node->consts === []) {
             return null;

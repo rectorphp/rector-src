@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
@@ -46,7 +47,7 @@ final class CastTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Cast $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, Scope $scope): Type
     {
         foreach (self::CAST_CLASS_TO_TYPE_MAP as $castClass => $typeClass) {
             if (is_a($node, $castClass, true)) {

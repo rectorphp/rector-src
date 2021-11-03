@@ -6,6 +6,7 @@ namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
@@ -76,12 +77,12 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
         Name $name,
         string $reference
     ): MixedType | StaticType | ObjectWithoutClassType {
-        $className = $name->getAttribute(AttributeKey::CLASS_NAME);
-        if ($className === null) {
+        $scope = $name->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
             return new MixedType();
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $scope->getClassReflection();
 
         if ($reference === ObjectReference::STATIC()->getValue()) {
             return new StaticType($classReflection);

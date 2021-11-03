@@ -31,7 +31,7 @@ final class PropertyNameResolver implements NodeNameResolverInterface
     /**
      * @param Property $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         if ($node->props === []) {
             return null;

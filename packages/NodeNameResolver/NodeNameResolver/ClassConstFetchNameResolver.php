@@ -31,7 +31,7 @@ final class ClassConstFetchNameResolver implements NodeNameResolverInterface
     /**
      * @param ClassConstFetch $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         $class = $this->nodeNameResolver->getName($node->class);
         $name = $this->nodeNameResolver->getName($node->name);

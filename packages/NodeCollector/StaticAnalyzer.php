@@ -16,14 +16,8 @@ final class StaticAnalyzer
     ) {
     }
 
-    public function isStaticMethod(string $methodName, string $className): bool
+    public function isStaticMethod(string $methodName, ClassReflection $classReflection): bool
     {
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return false;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
-
         if ($classReflection->hasNativeMethod($methodName)) {
             $methodReflection = $classReflection->getNativeMethod($methodName);
             if ($methodReflection->isStatic()) {

@@ -23,7 +23,7 @@ final class FunctionNameResolver implements NodeNameResolverInterface
     /**
      * @param Function_ $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         $bareName = (string) $node->name;
 

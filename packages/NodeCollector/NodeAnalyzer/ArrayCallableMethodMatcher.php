@@ -17,6 +17,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Enum\ObjectReference;
+use Rector\Core\Exception\ShouldHaveScopeException;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
@@ -139,7 +140,13 @@ final class ArrayCallableMethodMatcher
     {
         $classConstantReference = $this->valueResolver->getValue($classConstFetch);
         if (ObjectReference::STATIC()->getValue() === $classConstantReference) {
-            $classConstantReference = $classConstFetch->getAttribute(AttributeKey::CLASS_NAME);
+            $scope = $classConstFetch->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                throw new ShouldHaveScopeException();
+            }
+
+            $classReflection = $scope->getClassReflection();
+            $classConstantReference = $classReflection->getName();
         }
 
         // non-class value
@@ -147,14 +154,14 @@ final class ArrayCallableMethodMatcher
             return new MixedType();
         }
 
-        if (! $this->reflectionProvider->hasClass($classConstantReference)) {
-            return new MixedType();
-        }
+//        if (! $this->reflectionProvider->hasClass($classConstantReference)) {
+//            return new MixedType();
+//        }
 
-        $scope = $classConstFetch->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return new MixedType();
-        }
+//        $scope = $classConstFetch->getAttribute(AttributeKey::SCOPE);
+//        if (! $scope instanceof Scope) {
+//            return new MixedType();
+//        }
 
         $classReflection = $this->reflectionProvider->getClass($classConstantReference);
         $hasConstruct = $classReflection->hasMethod(MethodName::CONSTRUCT);

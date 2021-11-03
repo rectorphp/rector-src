@@ -34,7 +34,7 @@ final class TraitTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Trait_ $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         $traitName = (string) $node->namespacedName;
         if (! $this->reflectionProvider->hasClass($traitName)) {

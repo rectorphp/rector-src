@@ -57,7 +57,6 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -420,11 +419,9 @@ final class NodeFactory
         return new FuncCall(new Name($name), $arguments);
     }
 
-    public function createSelfFetchConstant(string $constantName, Node $node): ClassConstFetch
+    public function createSelfFetchConstant(string $constantName): ClassConstFetch
     {
         $name = new Name(ObjectReference::SELF()->getValue());
-        $name->setAttribute(AttributeKey::CLASS_NAME, $node->getAttribute(AttributeKey::CLASS_NAME));
-
         return new ClassConstFetch($name, $constantName);
     }
 
@@ -488,25 +485,7 @@ final class NodeFactory
 
     public function createClassConstFetchFromName(Name $className, string $constantName): ClassConstFetch
     {
-        $classConstFetch = $this->builderFactory->classConstFetch($className, $constantName);
-
-        $classNameString = $className->toString();
-        if (in_array(
-            $classNameString,
-            [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue()],
-            true
-        )) {
-            $currentNode = $this->currentNodeProvider->getNode();
-            if ($currentNode !== null) {
-                $className = $currentNode->getAttribute(AttributeKey::CLASS_NAME);
-                $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $className);
-                $classConstFetch->class->setAttribute(AttributeKey::CLASS_NAME, $className);
-            }
-        } else {
-            $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $classNameString);
-        }
-
-        return $classConstFetch;
+        return $this->builderFactory->classConstFetch($className, $constantName);
     }
 
     /**

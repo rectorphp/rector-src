@@ -13,11 +13,13 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Enum\ObjectReference;
+use Rector\Core\Exception\ShouldHaveScopeException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ConstFetchAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -59,25 +61,37 @@ final class ValueResolver
         return $resolvedValue;
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getValue(Expr $expr, bool $resolvedClassReference = false)
+    public function getValueWithClassConstantReference(Expr $expr, Scope $scope): mixed
     {
         if ($expr instanceof Concat) {
-            return $this->processConcat($expr, $resolvedClassReference);
+            return $this->getValueWithClassConstantReference(
+                $expr->left,
+                $scope
+            ) . $this->getValueWithClassConstantReference($expr->right, $scope);
         }
 
-        if ($expr instanceof ClassConstFetch && $resolvedClassReference) {
+        if ($expr instanceof ClassConstFetch) {
             $class = $this->nodeNameResolver->getName($expr->class);
 
             if (in_array($class, [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue()], true)) {
-                return $expr->getAttribute(AttributeKey::CLASS_NAME);
+                return $scope->getClassReflection()?->getName();
             }
 
             if ($this->nodeNameResolver->isName($expr->name, 'class')) {
                 return $class;
             }
+        }
+
+        return $this->getValue($expr);
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getValue(Expr $expr)
+    {
+        if ($expr instanceof Concat) {
+            return $this->processConcat($expr);
         }
 
         try {
@@ -142,6 +156,9 @@ final class ValueResolver
         return $this->constFetchAnalyzer->isNull($node);
     }
 
+    /**
+     * @deprecated
+     */
     public function isValueEqual(Expr $firstExpr, Expr $secondExpr): bool
     {
         $firstValue = $this->getValue($firstExpr);
@@ -169,12 +186,9 @@ final class ValueResolver
         return true;
     }
 
-    private function processConcat(Concat $concat, bool $resolvedClassReference): string
+    private function processConcat(Concat $concat): string
     {
-        return $this->getValue($concat->left, $resolvedClassReference) . $this->getValue(
-            $concat->right,
-            $resolvedClassReference
-        );
+        return $this->getValue($concat->left) . $this->getValue($concat->right);
     }
 
     private function getConstExprEvaluator(): ConstExprEvaluator
@@ -269,7 +283,12 @@ final class ValueResolver
         }
 
         if ($class === ObjectReference::SELF()->getValue()) {
-            $class = (string) $classConstFetch->class->getAttribute(AttributeKey::CLASS_NAME);
+            $scope = $classConstFetch->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                throw new ShouldHaveScopeException();
+            }
+            $class = $scope->getClassReflection()
+                ->getName();
         }
 
         if ($constant === 'class') {

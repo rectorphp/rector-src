@@ -32,7 +32,7 @@ final class ClassNameResolver implements NodeNameResolverInterface
     /**
      * @param Class_ $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         if (property_exists($node, 'namespacedName')) {
             return $node->namespacedName->toString();

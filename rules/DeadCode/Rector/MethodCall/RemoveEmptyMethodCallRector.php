@@ -120,24 +120,25 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function getScope(MethodCall $methodCall): ?Scope
-    {
-        if ($this->callAnalyzer->isObjectCall($methodCall->var)) {
-            return null;
-        }
-
-        $parentArg = $this->betterNodeFinder->findParentType($methodCall, Arg::class);
-        if ($parentArg instanceof Arg) {
-            return null;
-        }
-
-        $scope = $methodCall->var->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
-        return $scope;
-    }
+    // @todo
+//    private function getScope(MethodCall $methodCall): ?Scope
+//    {
+//        if ($this->callAnalyzer->isObjectCall($methodCall->var)) {
+//            return null;
+//        }
+//
+//        $parentArg = $this->betterNodeFinder->findParentType($methodCall, Arg::class);
+//        if ($parentArg instanceof Arg) {
+//            return null;
+//        }
+//
+//        $scope = $methodCall->var->getAttribute(AttributeKey::SCOPE);
+//        if (! $scope instanceof Scope) {
+//            return null;
+//        }
+//
+//        return $scope;
+//    }
 
     private function shouldSkipClassMethod(
         Class_ | Trait_ | Interface_ $classLike,

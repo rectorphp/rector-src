@@ -33,7 +33,7 @@ final class FuncCallNameResolver implements NodeNameResolverInterface
      *
      * @param FuncCall $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         if ($node->name instanceof Expr) {
             return null;

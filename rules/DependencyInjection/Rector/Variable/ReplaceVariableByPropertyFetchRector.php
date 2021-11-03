@@ -10,6 +10,7 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DependencyInjection\Collector\VariablesToPropertyFetchCollection;
 use Rector\DependencyInjection\NodeAnalyzer\ControllerClassMethodAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -87,7 +88,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->controllerClassMethodAnalyzer->isInControllerActionMethod($node)) {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $this->controllerClassMethodAnalyzer->isInControllerActionMethod($node, $scope)) {
             return null;
         }
 

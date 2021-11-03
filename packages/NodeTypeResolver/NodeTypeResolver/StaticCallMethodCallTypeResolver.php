@@ -46,7 +46,7 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
     /**
      * @param StaticCall|MethodCall $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         $methodName = $this->nodeNameResolver->getName($node->name);
 

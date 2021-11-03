@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
@@ -75,9 +76,13 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var string|null $className */
-        $className = $node->getAttribute(AttributeKey::CLASS_NAME);
-        if ($className === null) {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        $className = $scope->getClassReflection()?->getName();
+        if (! is_string($className)) {
             return null;
         }
 

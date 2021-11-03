@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
@@ -35,23 +36,17 @@ final class ReflectionResolver
     ) {
     }
 
-    /**
-     * @param class-string $className
-     */
-    public function resolveMethodReflection(string $className, string $methodName, ?Scope $scope): ?MethodReflection
-    {
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return null;
+    public function resolveMethodReflection(
+        ClassReflection $classReflection,
+        string $methodName,
+        Scope $scope
+    ): ?MethodReflection {
+        // better, with support for "@method" annotation methods
+        if ($classReflection->hasMethod($methodName)) {
+            return $classReflection->getMethod($methodName, $scope);
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
-
-        // better, with support for "@method" annotation methods
-        if ($scope instanceof Scope) {
-            if ($classReflection->hasMethod($methodName)) {
-                return $classReflection->getMethod($methodName, $scope);
-            }
-        } elseif ($classReflection->hasNativeMethod($methodName)) {
+        if ($classReflection->hasNativeMethod($methodName)) {
             return $classReflection->getNativeMethod($methodName);
         }
 
@@ -95,6 +90,7 @@ final class ReflectionResolver
         }
 
         $scope = $methodCall->getAttribute(AttributeKey::SCOPE);
+
         return $this->resolveMethodReflection($callerType->getClassName(), $methodName, $scope);
     }
 
@@ -112,17 +108,10 @@ final class ReflectionResolver
         return $this->resolveFunctionReflectionFromFuncCall($call);
     }
 
-    public function resolveMethodReflectionFromClassMethod(ClassMethod $classMethod): ?MethodReflection
+    public function resolveMethodReflectionFromClassMethod(ClassMethod $classMethod, Scope $scope): ?MethodReflection
     {
-        $class = $classMethod->getAttribute(AttributeKey::CLASS_NAME);
-        if ($class === null) {
-            return null;
-        }
-
         $methodName = $this->nodeNameResolver->getName($classMethod);
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-
-        return $this->resolveMethodReflection($class, $methodName, $scope);
+        return $this->resolveMethodReflection($methodName, $scope);
     }
 
     public function resolveMethodReflectionFromNew(New_ $new): ?MethodReflection
@@ -132,8 +121,9 @@ final class ReflectionResolver
             return null;
         }
 
+        $classReflectoin = $newClassType->getClassReflection();
         $scope = $new->getAttribute(AttributeKey::SCOPE);
-        return $this->resolveMethodReflection($newClassType->getClassName(), MethodName::CONSTRUCT, $scope);
+        return $this->resolveMethodReflection($classReflectoin, MethodName::CONSTRUCT, $scope);
     }
 
     public function resolvePropertyReflectionFromPropertyFetch(

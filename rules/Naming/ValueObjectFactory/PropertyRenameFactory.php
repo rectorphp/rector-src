@@ -6,9 +6,11 @@ namespace Rector\Naming\ValueObjectFactory;
 
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Analyser\Scope;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\ValueObject\PropertyRename;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\Naming\ValueObjectFactory\PropertyRenameFactory\PropertyRenameFactoryTest
@@ -30,10 +32,13 @@ final class PropertyRenameFactory
             return null;
         }
 
-        $className = $this->nodeNameResolver->getName($classLike);
-        if (! is_string($className)) {
+        $scope = $property->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
             return null;
         }
+
+        $className = $scope->getClassReflection()
+            ->getName();
 
         return new PropertyRename(
             $property,

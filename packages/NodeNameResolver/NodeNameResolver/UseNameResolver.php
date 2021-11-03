@@ -31,7 +31,7 @@ final class UseNameResolver implements NodeNameResolverInterface
     /**
      * @param Use_ $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         if ($node->uses === []) {
             return null;

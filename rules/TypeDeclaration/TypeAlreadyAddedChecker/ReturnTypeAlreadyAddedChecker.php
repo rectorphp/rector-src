@@ -12,6 +12,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IntersectionType;
@@ -21,6 +22,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use Rector\Core\Exception\ShouldHaveScopeException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -84,7 +86,12 @@ final class ReturnTypeAlreadyAddedChecker
             return true;
         }
 
-        $className = $functionLike->getAttribute(AttributeKey::CLASS_NAME);
+        $scope = $functionLike->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            throw new ShouldHaveScopeException();
+        }
+
+        $className = $scope->getClassReflection()?->getName();
 
         $nodeContent = $this->nodeComparator->printWithoutComments($returnNode);
         $nodeContentWithoutPreslash = ltrim($nodeContent, '\\');

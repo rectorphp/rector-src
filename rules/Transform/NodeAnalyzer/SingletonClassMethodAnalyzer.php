@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
@@ -74,11 +75,18 @@ final class SingletonClassMethodAnalyzer
             return null;
         }
 
-        /** @var string $class */
-        $class = $classMethod->getAttribute(AttributeKey::CLASS_NAME);
+        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        $className = $scope->getClassReflection()?->getName();
 
         // the "self" class is created
-        if (! $this->nodeTypeResolver->isObjectType($stmt->expr->class, new ObjectType($class))) {
+        if (! $this->nodeTypeResolver->isObjectType(
+            $stmt->expr->class,
+            new ObjectType($className, null, $scope->getClassReflection())
+        )) {
             return null;
         }
 

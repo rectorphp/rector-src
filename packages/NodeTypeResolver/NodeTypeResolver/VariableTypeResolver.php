@@ -37,7 +37,7 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Variable $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         $variableName = $this->nodeNameResolver->getName($node);
         if ($variableName === null) {

@@ -50,7 +50,7 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
     /**
      * @param PropertyFetch $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         // compensate 3rd party non-analysed property reflection
         $vendorPropertyType = $this->getVendorPropertyFetchType($node);

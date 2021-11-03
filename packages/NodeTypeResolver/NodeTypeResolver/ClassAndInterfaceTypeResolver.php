@@ -32,7 +32,7 @@ final class ClassAndInterfaceTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Class_|Interface_ $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 

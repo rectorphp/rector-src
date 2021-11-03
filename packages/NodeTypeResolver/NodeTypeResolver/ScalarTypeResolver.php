@@ -29,7 +29,7 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
         return [Scalar::class];
     }
 
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): Type
     {
         if ($node instanceof DNumber) {
             return new ConstantFloatType($node->value);

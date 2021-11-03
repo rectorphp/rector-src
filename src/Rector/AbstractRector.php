@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -24,6 +25,7 @@ use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
+use Rector\Core\Exception\ShouldHaveScopeException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
@@ -62,7 +64,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
      * @var string[]
      */
     private const ATTRIBUTES_TO_MIRROR = [
-        AttributeKey::CLASS_NAME,
         AttributeKey::USE_NODES,
         AttributeKey::SCOPE,
         AttributeKey::RESOLVED_NAME,
@@ -468,6 +469,16 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function removeNodes(array $nodes): void
     {
         $this->nodeRemover->removeNodes($nodes);
+    }
+
+    protected function getScope(\PhpParser\Node $node): Scope
+    {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            throw new ShouldHaveScopeException();
+        }
+
+        return $scope;
     }
 
     /**

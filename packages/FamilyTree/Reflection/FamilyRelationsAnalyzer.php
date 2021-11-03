@@ -27,7 +27,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Parser\SimplePhpParser;
 use Rector\FamilyTree\ValueObject\PropertyType;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -88,7 +87,7 @@ final class FamilyRelationsAnalyzer
         $propertyName = $this->nodeNameResolver->getName($property);
         $kindPropertyFetch = $this->getKindPropertyFetch($property);
 
-        $className = $property->getAttribute(AttributeKey::CLASS_NAME);
+        $className = $scope->getClassReflection()?->getName();
 
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             $ancestorClassName = $ancestorClassReflection->getName();

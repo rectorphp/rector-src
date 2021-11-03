@@ -9,6 +9,8 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -74,8 +76,16 @@ final class PhpSpecMockCollector
 
     public function isVariableMockInProperty(Variable $variable): bool
     {
+        $scope = $variable->getAttribute(AttributeKey::SCOPE);
+
         $variableName = $this->nodeNameResolver->getName($variable);
-        $className = $variable->getAttribute(AttributeKey::CLASS_NAME);
+
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            throw new ShouldNotHappenException();
+        }
+
+        $className = $classReflection->getName();
 
         return in_array($variableName, $this->propertyMocksByClass[$className] ?? [], true);
     }
@@ -100,8 +110,12 @@ final class PhpSpecMockCollector
     {
         $variable = $this->nodeNameResolver->getName($param->var);
 
-        /** @var string $class */
-        $class = $param->getAttribute(AttributeKey::CLASS_NAME);
+        $scope = $param->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return;
+        }
+
+        $className = $scope->getClassReflection()?->getName();
 
         $classMethod = $this->betterNodeFinder->findParentType($param, ClassMethod::class);
         if (! $classMethod instanceof ClassMethod) {
@@ -109,13 +123,13 @@ final class PhpSpecMockCollector
         }
 
         $methodName = $this->nodeNameResolver->getName($classMethod);
-        $this->mocks[$class][$variable][] = $methodName;
+        $this->mocks[$className][$variable][] = $methodName;
 
         if ($param->type === null) {
             throw new ShouldNotHappenException();
         }
 
-        $paramType = (string) ($param->type ?? $param->type->getAttribute(AttributeKey::ORIGINAL_NAME));
-        $this->mocksWithsTypes[$class][$variable] = $paramType;
+        $paramType = (string) ($param->type->getAttribute(AttributeKey::ORIGINAL_NAME) ?: $param->type);
+        $this->mocksWithsTypes[$className][$variable] = $paramType;
     }
 }

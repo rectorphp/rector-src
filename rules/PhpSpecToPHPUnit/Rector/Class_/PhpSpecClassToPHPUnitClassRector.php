@@ -19,6 +19,7 @@ use PhpParser\Node\Stmt\Expression;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\ClassInsertManipulator;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpSpecToPHPUnit\LetManipulator;
 use Rector\PhpSpecToPHPUnit\Naming\PhpSpecRenaming;
 use Rector\PhpSpecToPHPUnit\Rector\AbstractPhpSpecToPHPUnitRector;
@@ -74,7 +75,8 @@ final class PhpSpecClassToPHPUnitClassRector extends AbstractPhpSpecToPHPUnitRec
         $this->phpSpecRenaming->renameClass($node);
         $this->phpSpecRenaming->renameExtends($node);
 
-        $testedClass = $this->phpSpecRenaming->resolveTestedClass($node);
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        $testedClass = $this->phpSpecRenaming->resolveTestedClass($node, $scope);
 
         $testedObjectType = new ObjectType($testedClass);
         $this->classInsertManipulator->addPropertyToClass($node, $propertyName, $testedObjectType);

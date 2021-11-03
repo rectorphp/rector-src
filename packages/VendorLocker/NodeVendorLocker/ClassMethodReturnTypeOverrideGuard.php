@@ -49,14 +49,14 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        // 2. skip chaotic contract class methods
-        if ($this->shouldSkipChaoticClassMethods($classMethod)) {
-            return true;
-        }
-
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return false;
+        }
+
+        // 2. skip chaotic contract class methods
+        if ($this->shouldSkipChaoticClassMethods($classMethod, $scope)) {
+            return true;
         }
 
         $classReflection = $scope->getClassReflection();
@@ -124,21 +124,12 @@ final class ClassMethodReturnTypeOverrideGuard
         return false;
     }
 
-    private function shouldSkipChaoticClassMethods(ClassMethod $classMethod): bool
+    private function shouldSkipChaoticClassMethods(ClassMethod $classMethod, Scope $scope): bool
     {
-        /** @var string|null $className */
-        $className = $classMethod->getAttribute(AttributeKey::CLASS_NAME);
-        if ($className === null) {
-            return false;
-        }
-
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
         $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
+
+        $className = $classReflection?->getName();
+        if (! is_string($className)) {
             return false;
         }
 

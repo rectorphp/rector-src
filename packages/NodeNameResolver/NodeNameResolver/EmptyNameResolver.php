@@ -21,7 +21,7 @@ final class EmptyNameResolver implements NodeNameResolverInterface
     /**
      * @param Empty_ $node
      */
-    public function resolve(Node $node): ?string
+    public function resolve(Node $node, \PHPStan\Analyser\Scope $scope): ?string
     {
         return 'empty';
     }
