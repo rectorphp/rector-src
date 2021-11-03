@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\Comparator\CurrentAndParentClassMethodComparator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -37,7 +38,8 @@ final class RemoveDelegatingParentCallRector extends AbstractRector
     ];
 
     public function __construct(
-        private CurrentAndParentClassMethodComparator $currentAndParentClassMethodComparator
+        private CurrentAndParentClassMethodComparator $currentAndParentClassMethodComparator,
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -157,21 +159,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $attrGroups = $classMethod->attrGroups;
-        if ($attrGroups === []) {
-            return false;
-        }
-
-        foreach ($attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $attr) {
-                $name = (string) $attr->name;
-                if (in_array($name, self::ALLOWED_ATTRIBUTES, true)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $this->phpAttributeAnalyzer->hasPhpAttributes($classMethod, self::ALLOWED_ATTRIBUTES);
     }
 
     private function matchClassMethodOnlyStmt(ClassMethod $classMethod): null | Stmt | Expr
