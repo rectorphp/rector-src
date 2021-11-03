@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php80\NodeManipulator\ResourceReturnToObject;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -20,6 +21,18 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class Php81ResourceReturnToObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
+        /**
+     * @var array<string, string>
+     */
+    private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
+        // finfo
+        'finfo_open' => 'finfo',
+    ];
+
+    public function __construct(private ResourceReturnToObject $resourceReturnToObject)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -65,7 +78,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        return $node;
+        return $this->resourceReturnToObject->refactor($node, self::COLLECTION_FUNCTION_TO_RETURN_OBJECT);
     }
 
     public function provideMinPhpVersion(): int
