@@ -30,6 +30,9 @@ final class Php81ResourceReturnToObjectRector extends AbstractRector implements 
 
         // ftp
         'ftp_connect' => 'FTP\Connection',
+
+        // imap_open
+        'imap_open' => 'IMAP\Connection',
     ];
 
     public function __construct(
