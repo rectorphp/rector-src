@@ -16,7 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://www.php.net/manual/en/migration81.incompatible.php#migration81.incompatible.resource2object
  *
- * @see \Rector\Tests\Php80\Rector\FuncCall\Php81ResourceReturnToObjectRector\Php81ResourceReturnToObjectRectorTest
+ * @see \Rector\Tests\Php81\Rector\FuncCall\Php81ResourceReturnToObjectRector\Php81ResourceReturnToObjectRectorTest
  */
 final class Php81ResourceReturnToObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
