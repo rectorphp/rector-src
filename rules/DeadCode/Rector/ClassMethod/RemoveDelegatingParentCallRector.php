@@ -23,6 +23,22 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDelegatingParentCallRector extends AbstractRector
 {
+    /**
+     * @var string[]
+     */
+    private const ALLOWED_ANNOTATIONS = [
+        'Route',
+        'required',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private const ALLOWED_ATTRIBUTES = [
+        'Symfony\Component\Routing\Annotation\Route',
+        'Symfony\Contracts\Service\Attribute\Required',
+    ];
+
     public function __construct(
         private CurrentAndParentClassMethodComparator $currentAndParentClassMethodComparator
     ) {
@@ -91,7 +107,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipWithAnnotations($node)) {
+        if ($this->shouldSkipWithAnnotationsOrAttributes($node)) {
             return null;
         }
 
@@ -137,10 +153,30 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkipWithAnnotations(ClassMethod $classMethod): bool
+    private function shouldSkipWithAnnotationsOrAttributes(ClassMethod $classMethod): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        return $phpDocInfo->hasByNames(['required', 'Route']);
+        if ($phpDocInfo->hasByNames(self::ALLOWED_ANNOTATIONS)) {
+            return true;
+        }
+
+        $attrGroups = $classMethod->attrGroups;
+        if ($attrGroups === []) {
+            return false;
+        }
+
+        foreach ($attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attr) {
+                if ($attr instanceof Node\Attribute) {
+                    $name = (string) $attr->name;
+                    if (in_array($name, self::ALLOWED_ATTRIBUTES, true)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private function matchClassMethodOnlyStmt(ClassMethod $classMethod): null | Stmt | Expr
