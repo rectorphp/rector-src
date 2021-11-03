@@ -101,9 +101,7 @@ CODE_SAMPLE
         }
 
         foreach ($ifWithOnlyReturnsByHash as $ifWithOnlyReturns) {
-            $isBool = $this->isBoolVarIfCondReturnTrueNextReturnBoolVar(
-                $ifWithOnlyReturns
-            );
+            $isBool = $this->isBoolVarIfCondReturnTrueNextReturnBoolVar($ifWithOnlyReturns);
             if (! $isBool && count($ifWithOnlyReturns) < 2) {
                 continue;
             }
