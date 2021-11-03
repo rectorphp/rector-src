@@ -37,8 +37,7 @@ final class ResourceReturnToObject
     public function refactor(
         FuncCall|BooleanOr $node,
         array $collectionFunctionToReturnObject
-    ): FuncCall|BooleanOr|Instanceof_|null
-    {
+    ): FuncCall|BooleanOr|Instanceof_|null {
         if ($node instanceof FuncCall) {
             return $this->processFuncCall($node, $collectionFunctionToReturnObject);
         }
