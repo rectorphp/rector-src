@@ -91,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasRequiredAnnotation($node)) {
+        if ($this->shouldSkipWithAnnotations($node)) {
             return null;
         }
 
@@ -137,10 +137,10 @@ CODE_SAMPLE
         return null;
     }
 
-    private function hasRequiredAnnotation(ClassMethod $classMethod): bool
+    private function shouldSkipWithAnnotations(ClassMethod $classMethod): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        return $phpDocInfo->hasByName('required');
+        return $phpDocInfo->hasByNames(['required', 'Route']);
     }
 
     private function matchClassMethodOnlyStmt(ClassMethod $classMethod): null | Stmt | Expr
