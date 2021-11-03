@@ -45,6 +45,14 @@ final class Php81ResourceReturnToObjectRector extends AbstractRector implements 
         'ldap_first_reference' => 'LDAP\ResultEntry',
         'ldap_next_entry' => 'LDAP\ResultEntry',
         'ldap_next_reference' => 'LDAP\ResultEntry',
+
+        // psql
+        'pg_pconnect' => 'PgSql\Connection',
+        'pg_connect' => 'PgSql\Connection',
+        'pg_query' => 'PgSql\Result',
+        'pg_prepare' => 'PgSql\Result',
+        'pg_execute' => 'PgSql\Result',
+        'pg_lo_open' => 'PgSql\Lob'
     ];
 
     public function __construct(
