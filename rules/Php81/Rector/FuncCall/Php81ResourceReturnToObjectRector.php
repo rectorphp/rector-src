@@ -33,6 +33,10 @@ final class Php81ResourceReturnToObjectRector extends AbstractRector implements 
 
         // imap_open
         'imap_open' => 'IMAP\Connection',
+
+        // pspell
+        'pspell_config_create' => 'PSpell\Config',
+        'pspell_new_config' => 'PSpell\Dictionary',
     ];
 
     public function __construct(
