@@ -52,7 +52,7 @@ final class Php81ResourceReturnToObjectRector extends AbstractRector implements 
         'pg_query' => 'PgSql\Result',
         'pg_prepare' => 'PgSql\Result',
         'pg_execute' => 'PgSql\Result',
-        'pg_lo_open' => 'PgSql\Lob'
+        'pg_lo_open' => 'PgSql\Lob',
     ];
 
     public function __construct(
