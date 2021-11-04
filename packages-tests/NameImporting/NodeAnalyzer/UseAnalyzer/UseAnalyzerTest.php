@@ -2,24 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Node\UseManipulator;
+namespace Rector\Tests\NameImporting\NodeAnalyzer\UseAnalyzer;
 
 use Iterator;
-use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use Rector\CodingStyle\Node\UseManipulator;
-use Rector\CodingStyle\ValueObject\NameAndParent;
+use Rector\NameImporting\NodeAnalyzer\UseAnalyzer;
+use Rector\NameImporting\ValueObject\NameAndParent;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
-use Rector\Tests\CodingStyle\Node\UseManipulator\Source\FirstUsage;
+use Rector\Tests\NameImporting\NodeAnalyzer\UseAnalyzer\Source\FirstUsage;
 
-final class UseManipulatorTest extends AbstractTestCase
+final class UseAnalyzerTest extends AbstractTestCase
 {
-    private UseManipulator $useManipulator;
+    private UseAnalyzer $useAnalyzer;
 
     private TestingParser $testingParser;
 
@@ -27,31 +25,25 @@ final class UseManipulatorTest extends AbstractTestCase
     {
         $this->boot();
 
-        $this->useManipulator = $this->getService(UseManipulator::class);
+        $this->useAnalyzer = $this->getService(UseAnalyzer::class);
         $this->testingParser = $this->getService(TestingParser::class);
     }
 
     /**
      * @dataProvider provideData()
      *
-     * @param class-string<Node> $parentNodeType
-<<<<<<< HEAD
-     * @param Identifier|FullyQualified $expectedNameNode
-=======
->>>>>>> Add UseManipulatorTest
+     * @param class-string<\PhpParser\Node> $parentNodeType
      */
     public function test(
         string $filePath,
         string $expectedShortName,
         int $position,
-        Name|Identifier $expectedNameNode,
+        \PhpParser\Node $expectedNameNode,
         string $parentNodeType
     ): void {
         $file = $this->testingParser->parseFilePathToFile($filePath);
 
-        $firstStmt = $file->getOldStmts()[1];
-
-        $namesAndParentsByShortName = $this->useManipulator->resolveUsedNameNodes($firstStmt);
+        $namesAndParentsByShortName = $this->useAnalyzer->resolveUsedNameNodes($file);
         $this->assertArrayHasKey($expectedShortName, $namesAndParentsByShortName);
 
         $namesAndParents = $namesAndParentsByShortName[$expectedShortName];

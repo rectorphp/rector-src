@@ -11,6 +11,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\ValueObject\Application\File;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
@@ -31,11 +32,11 @@ final class DocAliasResolver
     /**
      * @return string[]
      */
-    public function resolve(Node $node): array
+    public function resolve(File $file): array
     {
         $possibleDocAliases = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($node, function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($file->getNewStmts(), function (Node $node) use (
             &$possibleDocAliases
         ): void {
             $docComment = $node->getDocComment();

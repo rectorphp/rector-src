@@ -12,11 +12,11 @@ use PhpParser\Node\Stmt\UseUse;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Naming\NameRenamer;
 use Rector\CodingStyle\Node\DocAliasResolver;
-use Rector\CodingStyle\Node\UseManipulator;
 use Rector\CodingStyle\Node\UseNameAliasToNameResolver;
-use Rector\CodingStyle\ValueObject\NameAndParent;
 use Rector\Core\PhpParser\NodeFinder\FullyQualifiedFromUseFinder;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NameImporting\NodeAnalyzer\UseAnalyzer;
+use Rector\NameImporting\ValueObject\NameAndParent;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedAliasRector extends AbstractRector
 {
     /**
-     * @var NameAndParent[][]
+     * @var array<string, NameAndParent[]>
      */
     private array $resolvedNodeNames = [];
 
@@ -43,7 +43,7 @@ final class RemoveUnusedAliasRector extends AbstractRector
 
     public function __construct(
         private DocAliasResolver $docAliasResolver,
-        private UseManipulator $useManipulator,
+        private UseAnalyzer $useManipulator,
         private UseNameAliasToNameResolver $useNameAliasToNameResolver,
         private NameRenamer $nameRenamer,
         private ClassNameImportSkipper $classNameImportSkipper,
@@ -94,13 +94,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $searchNode = $this->resolveSearchNode($node);
-        if (! $searchNode instanceof Node) {
-            return null;
-        }
-
-        $this->resolvedNodeNames = $this->useManipulator->resolveUsedNameNodes($searchNode);
-        $this->resolvedDocPossibleAliases = $this->docAliasResolver->resolve($searchNode);
+        $this->resolvedNodeNames = $this->useManipulator->resolveUsedNameNodes($this->file);
+        $this->resolvedDocPossibleAliases = $this->docAliasResolver->resolve($this->file);
 
         $this->useNamesAliasToName = $this->useNameAliasToNameResolver->resolve($this->file);
 
@@ -145,16 +140,6 @@ CODE_SAMPLE
         }
 
         return ! $this->hasUseAlias($use);
-    }
-
-    private function resolveSearchNode(Use_ $use): ?Node
-    {
-        $searchNode = $use->getAttribute(AttributeKey::PARENT_NODE);
-        if ($searchNode !== null) {
-            return $searchNode;
-        }
-
-        return $use->getAttribute(AttributeKey::NEXT_NODE);
     }
 
     /**
