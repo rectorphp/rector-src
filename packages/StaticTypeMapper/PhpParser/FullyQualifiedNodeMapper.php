@@ -40,13 +40,11 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
     {
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
-        $possibleAliasedObjectType = null;
         if ($this->isParamTyped($node, $parent)) {
             $possibleAliasedObjectType = $this->resolvePossibleAliasedObjectType($node);
-        }
-
-        if ($possibleAliasedObjectType instanceof AliasedObjectType) {
-            return $possibleAliasedObjectType;
+            if ($possibleAliasedObjectType instanceof AliasedObjectType) {
+                return $possibleAliasedObjectType;
+            }
         }
 
         $originalName = (string) $node->getAttribute(AttributeKey::ORIGINAL_NAME);
