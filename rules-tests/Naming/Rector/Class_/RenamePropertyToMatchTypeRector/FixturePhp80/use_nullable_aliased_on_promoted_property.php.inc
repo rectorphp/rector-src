@@ -4,7 +4,7 @@ namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixt
 
 use Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Source\EliteManager as AwesomeManager;
 
-class UseAliased
+class UseNullableAliased
 {
     public function __construct(private ?AwesomeManager $eventManager)
     {
@@ -19,7 +19,7 @@ namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixt
 
 use Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Source\EliteManager as AwesomeManager;
 
-class UseAliased
+class UseNullableAliased
 {
     public function __construct(private ?AwesomeManager $awesomeManager)
     {
