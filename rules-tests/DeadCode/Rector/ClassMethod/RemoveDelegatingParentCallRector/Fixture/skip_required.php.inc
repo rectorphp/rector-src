@@ -2,6 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveDelegatingParentCallRector\Fixture;
 
+use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveDelegatingParentCallRector\Source\ParentClassWithoutRequired;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class SkipRequired extends ParentClassWithoutRequired
@@ -15,9 +16,3 @@ class SkipRequired extends ParentClassWithoutRequired
     }
 }
 
-class ParentClassWithoutRequired
-{
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
-    {
-    }
-}
