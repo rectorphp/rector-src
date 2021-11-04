@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\UseUse;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NameImporting\ValueObject\NameAndParent;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -30,11 +29,11 @@ final class UseAnalyzer
     /**
      * @return array<string, NameAndParent[]>
      */
-    public function resolveUsedNameNodes(File $file): array
+    public function resolveUsedNameNodes(Node $node): array
     {
-        $usedNamesByShortName = $this->resolveUsedNames($file);
-        $usedClassNamesByShortName = $this->resolveUsedClassNames($file);
-        $usedTraitNamesByShortName = $this->resolveTraitUseNames($file);
+        $usedNamesByShortName = $this->resolveUsedNames($node);
+        $usedClassNamesByShortName = $this->resolveUsedClassNames($node);
+        $usedTraitNamesByShortName = $this->resolveTraitUseNames($node);
 
         return array_merge($usedNamesByShortName, $usedClassNamesByShortName, $usedTraitNamesByShortName);
     }
@@ -42,12 +41,12 @@ final class UseAnalyzer
     /**
      * @return array<string, NameAndParent[]>
      */
-    private function resolveUsedNames(File $file): array
+    private function resolveUsedNames(Node $node): array
     {
         $namesAndParentsByShortName = [];
 
         /** @var Name[] $names */
-        $names = $this->betterNodeFinder->findInstanceOf($file->getOldStmts(), Name::class);
+        $names = $this->betterNodeFinder->findInstanceOf($node, Name::class);
 
         foreach ($names as $name) {
             /** node name before becoming FQN - attribute from @see NameResolver */
@@ -71,12 +70,12 @@ final class UseAnalyzer
     /**
      * @return array<string, NameAndParent[]>
      */
-    private function resolveUsedClassNames(File $file): array
+    private function resolveUsedClassNames(Node $node): array
     {
         $namesAndParentsByShortName = [];
 
         /** @var ClassLike[] $classLikes */
-        $classLikes = $this->betterNodeFinder->findClassLikes($file->getOldStmts());
+        $classLikes = $this->betterNodeFinder->findClassLikes($node);
 
         foreach ($classLikes as $classLike) {
             $classLikeName = $classLike->name;
@@ -98,12 +97,12 @@ final class UseAnalyzer
     /**
      * @return array<string, NameAndParent[]>
      */
-    private function resolveTraitUseNames(File $file): array
+    private function resolveTraitUseNames(Node $node): array
     {
         $namesAndParentsByShortName = [];
 
         /** @var Identifier[] $identifiers */
-        $identifiers = $this->betterNodeFinder->findInstanceOf($file->getOldStmts(), Identifier::class);
+        $identifiers = $this->betterNodeFinder->findInstanceOf($node, Identifier::class);
 
         foreach ($identifiers as $identifier) {
             $parentNode = $identifier->getAttribute(AttributeKey::PARENT_NODE);

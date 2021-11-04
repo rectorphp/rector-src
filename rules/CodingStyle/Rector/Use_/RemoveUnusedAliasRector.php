@@ -29,7 +29,7 @@ final class RemoveUnusedAliasRector extends AbstractRector
     /**
      * @var array<string, NameAndParent[]>
      */
-    private array $resolvedNodeNames = [];
+    private array $resolvedNamesAndParentsByShortName = [];
 
     /**
      * @var array<string, string[]>
@@ -43,7 +43,7 @@ final class RemoveUnusedAliasRector extends AbstractRector
 
     public function __construct(
         private DocAliasResolver $docAliasResolver,
-        private UseAnalyzer $useManipulator,
+        private UseAnalyzer $useAnalyzer,
         private UseNameAliasToNameResolver $useNameAliasToNameResolver,
         private NameRenamer $nameRenamer,
         private ClassNameImportSkipper $classNameImportSkipper,
@@ -94,15 +94,23 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->resolvedNodeNames = $this->useManipulator->resolveUsedNameNodes($this->file);
-        $this->resolvedDocPossibleAliases = $this->docAliasResolver->resolve($this->file);
+        $searchNode = $this->resolveSearchNode($node);
+        if (! $searchNode instanceof \PhpParser\Node) {
+            return null;
+        }
 
+        $this->resolvedNamesAndParentsByShortName = $this->useAnalyzer->resolveUsedNameNodes($searchNode);
+        $this->resolvedDocPossibleAliases = $this->docAliasResolver->resolve($searchNode);
         $this->useNamesAliasToName = $this->useNameAliasToNameResolver->resolve($this->file);
 
         // lowercase
         $this->resolvedDocPossibleAliases = $this->lowercaseArray($this->resolvedDocPossibleAliases);
 
-        $this->resolvedNodeNames = array_change_key_case($this->resolvedNodeNames, CASE_LOWER);
+        $this->resolvedNamesAndParentsByShortName = array_change_key_case(
+            $this->resolvedNamesAndParentsByShortName,
+            CASE_LOWER
+        );
+
         $this->useNamesAliasToName = array_change_key_case($this->useNamesAliasToName, CASE_LOWER);
 
         foreach ($node->uses as $use) {
@@ -120,7 +128,7 @@ CODE_SAMPLE
             }
 
             // only last name is used → no need for alias
-            if (isset($this->resolvedNodeNames[$lowercasedLastName])) {
+            if (isset($this->resolvedNamesAndParentsByShortName[$lowercasedLastName])) {
                 $use->alias = null;
                 continue;
             }
@@ -158,7 +166,7 @@ CODE_SAMPLE
         $loweredAliasName = strtolower($aliasName);
 
         // both are used → nothing to remove
-        if (isset($this->resolvedNodeNames[$loweredLastName], $this->resolvedNodeNames[$loweredAliasName])) {
+        if (isset($this->resolvedNamesAndParentsByShortName[$loweredLastName], $this->resolvedNamesAndParentsByShortName[$loweredAliasName])) {
             return true;
         }
 
@@ -191,11 +199,14 @@ CODE_SAMPLE
         }
 
         $loweredFullUseUseName = strtolower($fullUseUseName);
-        if (! isset($this->resolvedNodeNames[$loweredFullUseUseName])) {
+        if (! isset($this->resolvedNamesAndParentsByShortName[$loweredFullUseUseName])) {
             return;
         }
 
-        $this->nameRenamer->renameNameNode($this->resolvedNodeNames[$loweredFullUseUseName], $lastName);
+        $this->nameRenamer->renameNameNode(
+            $this->resolvedNamesAndParentsByShortName[$loweredFullUseUseName],
+            $lastName
+        );
         $useUse->alias = null;
     }
 
@@ -208,5 +219,15 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function resolveSearchNode(Use_ $use): ?Node
+    {
+        $searchNode = $use->getAttribute(AttributeKey::PARENT_NODE);
+        if ($searchNode !== null) {
+            return $searchNode;
+        }
+
+        return $use->getAttribute(AttributeKey::NEXT_NODE);
     }
 }

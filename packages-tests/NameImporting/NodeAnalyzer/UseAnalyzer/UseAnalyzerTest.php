@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\Tests\NameImporting\NodeAnalyzer\UseAnalyzer;
 
 use Iterator;
+use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use Rector\NameImporting\NodeAnalyzer\UseAnalyzer;
@@ -32,18 +34,19 @@ final class UseAnalyzerTest extends AbstractTestCase
     /**
      * @dataProvider provideData()
      *
-     * @param class-string<\PhpParser\Node> $parentNodeType
+     * @param class-string<Node> $parentNodeType
      */
     public function test(
         string $filePath,
         string $expectedShortName,
         int $position,
-        \PhpParser\Node $expectedNameNode,
+        Name|Identifier $expectedNameNode,
         string $parentNodeType
     ): void {
         $file = $this->testingParser->parseFilePathToFile($filePath);
+        $firstStmt = $file->getOldStmts()[1];
 
-        $namesAndParentsByShortName = $this->useAnalyzer->resolveUsedNameNodes($file);
+        $namesAndParentsByShortName = $this->useAnalyzer->resolveUsedNameNodes($firstStmt);
         $this->assertArrayHasKey($expectedShortName, $namesAndParentsByShortName);
 
         $namesAndParents = $namesAndParentsByShortName[$expectedShortName];
