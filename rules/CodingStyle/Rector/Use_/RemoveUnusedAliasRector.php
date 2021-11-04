@@ -43,11 +43,7 @@ final class RemoveUnusedAliasRector extends AbstractRector
 
     public function __construct(
         private DocAliasResolver $docAliasResolver,
-<<<<<<< HEAD
         private UseAnalyzer $useAnalyzer,
-=======
-        private UseAnalyzer $useManipulator,
->>>>>>> Add UseManipulatorTest
         private UseNameAliasToNameResolver $useNameAliasToNameResolver,
         private NameRenamer $nameRenamer,
         private ClassNameImportSkipper $classNameImportSkipper,
@@ -98,19 +94,15 @@ CODE_SAMPLE
             return null;
         }
 
-<<<<<<< HEAD
         $searchNode = $this->resolveSearchNode($node);
         if (! $searchNode instanceof Node) {
             return null;
         }
 
         $this->resolvedNamesAndParentsByShortName = $this->useAnalyzer->resolveUsedNameNodes($searchNode);
+        $this->resolvedNodeNames = $this->useAnalyzer->resolveUsedNameNodes($searchNode);
         $this->resolvedDocPossibleAliases = $this->docAliasResolver->resolve($searchNode);
-=======
-        $this->resolvedNodeNames = $this->useManipulator->resolveUsedNameNodes($this->file);
-        $this->resolvedDocPossibleAliases = $this->docAliasResolver->resolve($this->file);
 
->>>>>>> Add UseManipulatorTest
         $this->useNamesAliasToName = $this->useNameAliasToNameResolver->resolve($this->file);
 
         // lowercase
