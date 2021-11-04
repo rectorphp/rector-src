@@ -51,4 +51,21 @@ final class TestingParser
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
     }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+    public function parseFilePathToFile(string $filePath): File
+    {
+        $smartFileInfo = new SmartFileInfo($filePath);
+        $file = new File($smartFileInfo, $smartFileInfo->getContents());
+
+        $stmts = $this->rectorParser->parseFile($smartFileInfo);
+        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
+
+        return $file;
+    }
+=======
+>>>>>>> b529e101b... add ShortNameResolverTest
+>>>>>>> Add UseManipulatorTest
 }
