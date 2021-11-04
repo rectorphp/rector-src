@@ -65,11 +65,13 @@ final class FullyQualifiedNodeMapper implements PhpParserNodeMapperInterface
             return true;
         }
 
-        if ($parent instanceof Node) {
-            $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parent instanceof Param && $parent->type instanceof NullableType && $parent->type->type === $node) {
-                return true;
-            }
+        if (! $parent instanceof NullableType) {
+            return false;
+        }
+
+        $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Param && $parent->type instanceof NullableType && $parent->type->type === $node) {
+            return true;
         }
 
         return false;
