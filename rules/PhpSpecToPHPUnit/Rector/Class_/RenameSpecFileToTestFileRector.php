@@ -71,9 +71,7 @@ CODE_SAMPLE
         }
 
         $newPathName = $this->createPathName($oldPathname);
-
-        $file = $node->getAttribute(AttributeKey::FILE);
-        $this->removedAndAddedFilesCollector->addMovedFile($file, $newPathName);
+        $this->removedAndAddedFilesCollector->addMovedFile($this->file, $newPathName);
 
         return null;
     }
