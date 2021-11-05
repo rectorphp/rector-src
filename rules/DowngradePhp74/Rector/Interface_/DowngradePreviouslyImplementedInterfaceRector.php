@@ -7,19 +7,21 @@ namespace Rector\DowngradePhp74\Rector\Interface_;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Interface_;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Reflection\ReflectionProvider;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 /**
  * @see \Rector\Tests\DowngradePhp74\Rector\Interface_\DowngradePreviouslyImplementedInterfaceRector\DowngradePreviouslyImplementedInterfaceRectorTest
  */
 final class DowngradePreviouslyImplementedInterfaceRector extends AbstractRector
 {
-    public function __construct(private ReflectionProvider $reflectionProvider, private FamilyRelationsAnalyzer $familyRelationsAnalyzer)
-    {
+    public function __construct(
+        private ReflectionProvider $reflectionProvider,
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -81,7 +83,10 @@ CODE_SAMPLE
                 unset($extends[$key]);
             }
 
-            $collectInterfaces = array_merge($collectInterfaces, $this->familyRelationsAnalyzer->getClassLikeAncestorNames($extend));
+            $collectInterfaces = array_merge(
+                $collectInterfaces,
+                $this->familyRelationsAnalyzer->getClassLikeAncestorNames($extend)
+            );
         }
 
         return $node;
