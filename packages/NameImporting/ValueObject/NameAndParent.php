@@ -39,4 +39,9 @@ final class NameAndParent
     {
         return strtolower($this->shortName);
     }
+
+    public function matchShortName(string $desiredShortName): bool
+    {
+        return strtolower($this->shortName) === strtolower($desiredShortName);
+    }
 }

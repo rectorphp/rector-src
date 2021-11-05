@@ -39,11 +39,11 @@ final class UseAnalyzer
     }
 
     /**
-     * @return array<string, NameAndParent[]>
+     * @return NameAndParent[]
      */
     private function resolveUsedNames(Node $node): array
     {
-        $namesAndParentsByShortName = [];
+        $namesAndParents = [];
 
         /** @var Name[] $names */
         $names = $this->betterNodeFinder->findInstanceOf($node, Name::class);
@@ -61,10 +61,10 @@ final class UseAnalyzer
             }
 
             $shortName = $originalName->toString();
-            $namesAndParentsByShortName[] = new NameAndParent($shortName, $name, $parentNode);
+            $namesAndParents[] = new NameAndParent($shortName, $name, $parentNode);
         }
 
-        return $namesAndParentsByShortName;
+        return $namesAndParents;
     }
 
     /**
@@ -72,7 +72,7 @@ final class UseAnalyzer
      */
     private function resolveUsedClassNames(Node $node): array
     {
-        $namesAndParentsByShortName = [];
+        $namesAndParents = [];
 
         /** @var ClassLike[] $classLikes */
         $classLikes = $this->betterNodeFinder->findClassLikes($node);
@@ -84,14 +84,14 @@ final class UseAnalyzer
             }
 
             $name = $this->nodeNameResolver->getName($classLikeName);
-            if ($name === null) {
+            if (! is_string($name)) {
                 continue;
             }
 
-            $namesAndParentsByShortName[] = new NameAndParent($name, $classLikeName, $classLike);
+            $namesAndParents[] = new NameAndParent($name, $classLikeName, $classLike);
         }
 
-        return $namesAndParentsByShortName;
+        return $namesAndParents;
     }
 
     /**

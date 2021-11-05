@@ -17,6 +17,7 @@ use Rector\NameImporting\NodeAnalyzer\UseAnalyzer;
 use Rector\NameImporting\ValueObject\NameAndParent;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
+use Rector\Tests\CodingStyle\Rector\Use_\RemoveUnusedAliasRector\Source\AbstractKernel;
 use Rector\Tests\NameImporting\NodeAnalyzer\UseAnalyzer\Source\FirstUsage;
 
 final class UseAnalyzerTest extends AbstractTestCase
@@ -49,21 +50,19 @@ final class UseAnalyzerTest extends AbstractTestCase
         $file = $this->testingParser->parseFilePathToFile($filePath);
         $firstStmt = $file->getOldStmts()[1];
 
-        $namesAndParentsByShortName = $this->useAnalyzer->resolveUsedNameNodes($firstStmt);
-        $this->assertArrayHasKey($expectedShortName, $namesAndParentsByShortName);
+        $namesAndParents = $this->useAnalyzer->resolveUsedNameNodes($firstStmt);
 
-        $namesAndParents = $namesAndParentsByShortName[$expectedShortName];
         $this->assertArrayHasKey($position, $namesAndParents);
-
         $nameAndParent = $namesAndParents[$position];
         $this->assertInstanceOf(NameAndParent::class, $nameAndParent);
+
+        $this->assertSame($expectedShortName, $nameAndParent->getShortName());
 
         // remove attributes for compare
         $nameNode = $nameAndParent->getNameNode();
         $nameNode->setAttributes([]);
 
         $this->assertEquals($expectedNameNode, $nameNode);
-
         $this->assertInstanceOf($parentNodeType, $nameAndParent->getParentNode());
     }
 
@@ -77,25 +76,33 @@ final class UseAnalyzerTest extends AbstractTestCase
             New_::class,
         ];
 
-        yield [__DIR__ . '/Fixture/some_uses.php.inc', 'SomeUses', 0, new Identifier('SomeUses'), Class_::class];
+        yield [__DIR__ . '/Fixture/some_uses.php.inc', 'SomeUses', 1, new Identifier('SomeUses'), Class_::class];
 
         yield [
             __DIR__ . '/Fixture/use_import.php.inc',
             'BaseKernel',
-            0,
-            new Identifier('BaseKernel'),
-            UseUse::class,
+            4,
+            new FullyQualified(AbstractKernel::class),
+            New_::class,
         ];
 
         yield [
             __DIR__ . '/Fixture/use_import.php.inc',
             'BaseInterface',
-            0,
+            6,
             new Identifier('BaseInterface'),
             UseUse::class,
         ];
 
-        yield [__DIR__ . '/Fixture/use_import.php.inc', 'SomeClass', 0, new Identifier('SomeClass'), Class_::class];
+        yield [
+            __DIR__ . '/Fixture/use_import.php.inc',
+            'BaseKernel',
+            7,
+            new Identifier('BaseKernel'),
+            UseUse::class,
+        ];
+
+        yield [__DIR__ . '/Fixture/use_import.php.inc', 'SomeClass', 5, new Identifier('SomeClass'), Class_::class];
 
         yield [
             __DIR__ . '/Fixture/union_alias_imports.php.inc',
@@ -108,7 +115,7 @@ final class UseAnalyzerTest extends AbstractTestCase
         yield [
             __DIR__ . '/Fixture/union_alias_imports.php.inc',
             'PhpParserUnionType',
-            0,
+            3,
             new Identifier('PhpParserUnionType'),
             UseUse::class,
         ];
