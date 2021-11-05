@@ -164,11 +164,7 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
-        if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
-            return true;
-        }
-
-        if ($this->isSafeType($classReflection, $classMethod)) {
+        if ($classMethod->params === []) {
             return true;
         }
 
@@ -176,7 +172,23 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->shouldSkipClassMethod($classMethod);
+        if ($classMethod->isMagic()) {
+            return true;
+        }
+
+        if ($this->sealedClassAnalyzer->isSealedClass($classReflection)) {
+            return true;
+        }
+
+        if ($this->autowiredClassMethodOrPropertyAnalyzer->detect($classMethod)) {
+            return true;
+        }
+
+        if ($this->hasParamAlreadyNonTyped($classMethod)) {
+            return true;
+        }
+
+        return $this->isSafeType($classReflection, $classMethod);
     }
 
     private function processRemoveParamTypeFromMethod(
@@ -216,20 +228,8 @@ CODE_SAMPLE
         $param->type = null;
     }
 
-    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
+    private function hasParamAlreadyNonTyped(ClassMethod $classMethod): bool
     {
-        if ($classMethod->isMagic()) {
-            return true;
-        }
-
-        if ($classMethod->params === []) {
-            return true;
-        }
-
-        if ($this->autowiredClassMethodOrPropertyAnalyzer->detect($classMethod)) {
-            return true;
-        }
-
         foreach ($classMethod->params as $param) {
             if ($param->type !== null) {
                 return false;
