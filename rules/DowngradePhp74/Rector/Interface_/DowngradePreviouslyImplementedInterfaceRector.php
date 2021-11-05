@@ -15,11 +15,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradePreviouslyImplementedInterfaceRector extends AbstractRector
 {
-    /**
-     * @var string[]
-     */
-    private const FUNC_FREAD_FWRITE = ['fread', 'fwrite'];
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
