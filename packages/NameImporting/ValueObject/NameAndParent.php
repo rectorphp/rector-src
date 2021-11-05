@@ -30,16 +30,6 @@ final class NameAndParent
         return $this->parentNode;
     }
 
-    public function getShortName(): string
-    {
-        return $this->shortName;
-    }
-
-    public function getLowercasedShortName(): string
-    {
-        return strtolower($this->shortName);
-    }
-
     public function matchShortName(string $desiredShortName): bool
     {
         return strtolower($this->shortName) === strtolower($desiredShortName);

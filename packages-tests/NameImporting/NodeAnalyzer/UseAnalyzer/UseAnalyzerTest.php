@@ -56,7 +56,7 @@ final class UseAnalyzerTest extends AbstractTestCase
         $nameAndParent = $namesAndParents[$position];
         $this->assertInstanceOf(NameAndParent::class, $nameAndParent);
 
-        $this->assertSame($expectedShortName, $nameAndParent->getShortName());
+        $this->assertTrue($nameAndParent->matchShortName($expectedShortName));
 
         // remove attributes for compare
         $nameNode = $nameAndParent->getNameNode();

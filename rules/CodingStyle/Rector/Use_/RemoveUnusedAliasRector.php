@@ -114,7 +114,6 @@ CODE_SAMPLE
             }
 
             $lastName = $use->name->getLast();
-            $lowercasedLastName = strtolower($lastName);
 
             /** @var string $aliasName */
             $aliasName = $this->getName($use->alias);
@@ -123,11 +122,10 @@ CODE_SAMPLE
             }
 
             // only last name is used → no need for alias
-            foreach ($this->namesAndParents as $resolvedNamesAndParent) {
-                if ($resolvedNamesAndParent->getLowercasedShortName() === $lowercasedLastName) {
-                    $use->alias = null;
-                    continue 2;
-                }
+            $matchedNamesAndParents = $this->matchNamesAndParentsByShort($lastName);
+            if ($matchedNamesAndParents !== []) {
+                $use->alias = null;
+                continue;
             }
 
             $this->refactorAliasName($node, $use->name->toString(), $lastName, $use);
@@ -227,23 +225,10 @@ CODE_SAMPLE
 
     private function areBothShortNamesUsed(string $firstName, string $secondName): bool
     {
-        $isFirstNameUsed = false;
-        foreach ($this->namesAndParents as $resolvedNamesAndParent) {
-            if ($resolvedNamesAndParent->getLowercasedShortName() === strtolower($firstName)) {
-                $isFirstNameUsed = true;
-                break;
-            }
-        }
+        $firstNamesAndParents = $this->matchNamesAndParentsByShort($firstName);
+        $secondNamesAndParents = $this->matchNamesAndParentsByShort($secondName);
 
-        $isSecondNameUsed = false;
-        foreach ($this->namesAndParents as $resolvedNamesAndParent) {
-            if ($resolvedNamesAndParent->getLowercasedShortName() === strtolower($secondName)) {
-                $isSecondNameUsed = true;
-                break;
-            }
-        }
-
-        return $isFirstNameUsed && $isSecondNameUsed;
+        return $firstNamesAndParents !== [] && $secondNamesAndParents !== [];
     }
 
     /**
