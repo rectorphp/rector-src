@@ -218,11 +218,6 @@ CODE_SAMPLE
             return;
         }
 
-        // It already has no type => nothing to do - check original param, as it could have been removed by this rule
-        if ($param->type === null) {
-            return;
-        }
-
         // Add the current type in the PHPDoc
         $this->nativeParamToPhpDocDecorator->decorate($classMethod, $param);
         $param->type = null;
