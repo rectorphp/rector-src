@@ -57,10 +57,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-//        if ($this->isInAnonymousClass($node)) {
-//            return null;
-//        }
-
         if ($this->shouldSkipProperty($node)) {
             return null;
         }

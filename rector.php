@@ -68,9 +68,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
 
     $parameters->set(Option::SKIP, [
-        // possibly leave that to PHPStan rule, already covered
-        \Rector\CodeQuality\Rector\Name\FixClassCaseSensitivityNameRector::class,
-
         StringClassNameToClassConstantRector::class,
         // some classes in config might not exist without dev dependencies
         SplitStringClassConstantToClassConstFetchRector::class,
