@@ -81,6 +81,7 @@ CODE_SAMPLE
 
             if (in_array($extend->toString(), $collectInterfaces, true)) {
                 unset($extends[$key]);
+                continue;
             }
 
             $collectInterfaces = array_merge(
@@ -89,6 +90,7 @@ CODE_SAMPLE
             );
         }
 
+        $node->extends = $extends;
         return $node;
     }
 }
