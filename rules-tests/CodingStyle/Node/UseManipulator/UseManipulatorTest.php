@@ -35,6 +35,7 @@ final class UseManipulatorTest extends AbstractTestCase
      * @dataProvider provideData()
      *
      * @param class-string<Node> $parentNodeType
+     * @param Identifier|FullyQualified $expectedNameNode
      */
     public function test(
         string $filePath,
