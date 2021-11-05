@@ -11,7 +11,6 @@ use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 /**
