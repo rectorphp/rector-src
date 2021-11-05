@@ -95,7 +95,7 @@ CODE_SAMPLE
         }
 
         $searchNode = $this->resolveSearchNode($node);
-        if (! $searchNode instanceof \PhpParser\Node) {
+        if (! $searchNode instanceof Node) {
             return null;
         }
 
