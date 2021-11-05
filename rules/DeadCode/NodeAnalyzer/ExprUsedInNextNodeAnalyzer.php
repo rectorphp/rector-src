@@ -28,6 +28,7 @@ final class ExprUsedInNextNodeAnalyzer
     {
         return (bool) $this->betterNodeFinder->findFirstNext(
             $expr,
+<<<<<<< HEAD
             function (Node $node) use ($expr, $isCheckNameScope): bool {
                 if ($isCheckNameScope && $node instanceof Name) {
                     $scope = $node->getAttribute(AttributeKey::SCOPE);
@@ -41,6 +42,19 @@ final class ExprUsedInNextNodeAnalyzer
 
                 return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
             }
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr)
+=======
+            function (Node $node) use ($expr): bool {
+                return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
+            }
+>>>>>>> 939846cc0... skip dead property in unused private property
+=======
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr)
+>>>>>>> 1f3994e5b... skip rename for now, till re-traversing
+>>>>>>> restore state before PHPStan 1.0
         );
     }
 }
