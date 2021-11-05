@@ -14,6 +14,7 @@ final class NameAndParent
      * @param Name|Identifier $nameNode
      */
     public function __construct(
+        private string $shortName,
         private Node $nameNode,
         private Node $parentNode
     ) {
@@ -27,5 +28,15 @@ final class NameAndParent
     public function getParentNode(): Node
     {
         return $this->parentNode;
+    }
+
+    public function getShortName(): string
+    {
+        return $this->shortName;
+    }
+
+    public function getLowercasedShortName(): string
+    {
+        return strtolower($this->shortName);
     }
 }

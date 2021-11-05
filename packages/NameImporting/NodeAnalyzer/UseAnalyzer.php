@@ -27,15 +27,15 @@ final class UseAnalyzer
     }
 
     /**
-     * @return array<string, NameAndParent[]>
+     * @return NameAndParent[]
      */
     public function resolveUsedNameNodes(Node $node): array
     {
-        $usedNamesByShortName = $this->resolveUsedNames($node);
-        $usedClassNamesByShortName = $this->resolveUsedClassNames($node);
-        $usedTraitNamesByShortName = $this->resolveTraitUseNames($node);
+        $usedNames = $this->resolveUsedNames($node);
+        $usedClassNames = $this->resolveUsedClassNames($node);
+        $usedTraitNames = $this->resolveTraitUseNames($node);
 
-        return array_merge($usedNamesByShortName, $usedClassNamesByShortName, $usedTraitNamesByShortName);
+        return array_merge($usedNames, $usedClassNames, $usedTraitNames);
     }
 
     /**
@@ -61,14 +61,14 @@ final class UseAnalyzer
             }
 
             $shortName = $originalName->toString();
-            $namesAndParentsByShortName[$shortName][] = new NameAndParent($name, $parentNode);
+            $namesAndParentsByShortName[] = new NameAndParent($shortName, $name, $parentNode);
         }
 
         return $namesAndParentsByShortName;
     }
 
     /**
-     * @return array<string, NameAndParent[]>
+     * @return NameAndParent[]
      */
     private function resolveUsedClassNames(Node $node): array
     {
@@ -88,18 +88,18 @@ final class UseAnalyzer
                 continue;
             }
 
-            $namesAndParentsByShortName[$name][] = new NameAndParent($classLikeName, $classLike);
+            $namesAndParentsByShortName[] = new NameAndParent($name, $classLikeName, $classLike);
         }
 
         return $namesAndParentsByShortName;
     }
 
     /**
-     * @return array<string, NameAndParent[]>
+     * @return NameAndParent[]
      */
     private function resolveTraitUseNames(Node $node): array
     {
-        $namesAndParentsByShortName = [];
+        $namesAndParents = [];
 
         /** @var Identifier[] $identifiers */
         $identifiers = $this->betterNodeFinder->findInstanceOf($node, Identifier::class);
@@ -111,9 +111,9 @@ final class UseAnalyzer
             }
 
             $shortName = $identifier->name;
-            $namesAndParentsByShortName[$shortName][] = new NameAndParent($identifier, $parentNode);
+            $namesAndParents[] = new NameAndParent($shortName, $identifier, $parentNode);
         }
 
-        return $namesAndParentsByShortName;
+        return $namesAndParents;
     }
 }
