@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\DowngradePhp74\Rector\Identical;
+namespace Rector\DowngradePhp74\Rector\Interface_;
 
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
