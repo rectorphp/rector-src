@@ -238,9 +238,7 @@ CODE_SAMPLE
     {
         return array_filter(
             $this->namesAndParents,
-            function (NameAndParent $nameAndParent) use ($shortName): bool {
-                return $nameAndParent->matchShortName($shortName);
-            }
+            fn (NameAndParent $nameAndParent): bool => $nameAndParent->matchShortName($shortName)
         );
     }
 }
