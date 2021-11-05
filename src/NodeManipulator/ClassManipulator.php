@@ -35,12 +35,15 @@ final class ClassManipulator
             if ($classReflection === $ancestorClassReflection) {
                 continue;
             }
+
             if (! $ancestorClassReflection->hasMethod($oldMethod)) {
                 continue;
             }
+
             if ($this->classChildAnalyzer->hasChildClassMethod($ancestorClassReflection, $newMethod)) {
                 continue;
             }
+
             return true;
         }
 
