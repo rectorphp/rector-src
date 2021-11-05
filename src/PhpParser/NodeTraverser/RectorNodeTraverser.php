@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\VersionBonding\PhpVersionedFilter;
 
@@ -22,7 +21,7 @@ final class RectorNodeTraverser extends NodeTraverser
      */
     public function __construct(
         private array $phpRectors,
-        private BetterNodeFinder $betterNodeFinder,
+        private NodeFinder $nodeFinder,
         private PhpVersionedFilter $phpVersionedFilter
     ) {
     }
@@ -35,7 +34,7 @@ final class RectorNodeTraverser extends NodeTraverser
     {
         $this->prepareNodeVisitors();
 
-        $hasNamespace = (bool) $this->betterNodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
+        $hasNamespace = (bool) $this->nodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
         if (! $hasNamespace && $nodes !== []) {
             $fileWithoutNamespace = new FileWithoutNamespace($nodes);
             return parent::traverse([$fileWithoutNamespace]);
