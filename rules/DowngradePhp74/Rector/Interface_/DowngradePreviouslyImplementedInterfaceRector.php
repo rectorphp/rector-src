@@ -81,7 +81,7 @@ CODE_SAMPLE
                 unset($extends[$key]);
             }
 
-            $collectInterfaces[] = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($extend);
+            $collectInterfaces = array_merge($collectInterfaces, $this->familyRelationsAnalyzer->getClassLikeAncestorNames($extend));
         }
 
         return $node;
