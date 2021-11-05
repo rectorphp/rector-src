@@ -241,13 +241,14 @@ CODE_SAMPLE
 
     private function isSafeType(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
+        $classReflectionName = $classReflection->getName();
         foreach ($this->safeTypes as $safeType) {
             if ($classReflection->isSubclassOf($safeType)) {
                 return true;
             }
 
             // skip self too
-            if ($classReflection->getName() === $safeType) {
+            if ($classReflectionName === $safeType) {
                 return true;
             }
         }
@@ -262,7 +263,7 @@ CODE_SAMPLE
             }
 
             // skip self too
-            if ($classReflection->getName() === $safeType) {
+            if ($classReflectionName === $safeType) {
                 return true;
             }
         }
