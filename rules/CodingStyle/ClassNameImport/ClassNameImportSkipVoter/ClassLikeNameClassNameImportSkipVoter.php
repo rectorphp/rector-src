@@ -29,10 +29,10 @@ final class ClassLikeNameClassNameImportSkipVoter implements ClassNameImportSkip
     public function shouldSkip(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType, Node $node): bool
     {
         $classLikeNames = $this->shortNameResolver->resolveShortClassLikeNamesForNode($node);
-        $shortName = $fullyQualifiedObjectType->getShortNameLowered();
+        $shortNameLowered = $fullyQualifiedObjectType->getShortNameLowered();
 
         foreach ($classLikeNames as $classLikeName) {
-            if (strtolower($classLikeName) === $shortName) {
+            if (strtolower($classLikeName) === $shortNameLowered) {
                 return true;
             }
         }
