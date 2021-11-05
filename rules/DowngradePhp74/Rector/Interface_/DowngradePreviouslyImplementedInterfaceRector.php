@@ -72,6 +72,7 @@ CODE_SAMPLE
         }
 
         $collectInterfaces = [];
+        $isCleaned = false;
         foreach ($extends as $key => $extend) {
             if (! $extend instanceof FullyQualified) {
                 continue;
@@ -79,6 +80,8 @@ CODE_SAMPLE
 
             if (in_array($extend->toString(), $collectInterfaces, true)) {
                 unset($extends[$key]);
+                $isCleaned = true;
+
                 continue;
             }
 
@@ -86,6 +89,10 @@ CODE_SAMPLE
                 $collectInterfaces,
                 $this->familyRelationsAnalyzer->getClassLikeAncestorNames($extend)
             );
+        }
+
+        if (! $isCleaned) {
+            return null;
         }
 
         $node->extends = $extends;
