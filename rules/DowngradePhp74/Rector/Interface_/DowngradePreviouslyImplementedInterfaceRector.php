@@ -67,7 +67,11 @@ CODE_SAMPLE
     {
         $extends = $node->extends;
 
-        if (count($extends) < 2) {
+        if ($extends === []) {
+            return null;
+        }
+
+        if (count($extends) === 1) {
             return null;
         }
 
