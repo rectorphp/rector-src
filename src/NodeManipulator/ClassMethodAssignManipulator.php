@@ -42,7 +42,6 @@ final class ClassMethodAssignManipulator
         private VariableManipulator $variableManipulator,
         private NodeComparator $nodeComparator,
         private ReflectionResolver $reflectionResolver,
-        private NodeFinder $nodeFinder,
         private ArrayDestructVariableFilter $arrayDestructVariableFilter
     ) {
     }
@@ -163,7 +162,7 @@ final class ClassMethodAssignManipulator
         $referencedVariables = [];
 
         /** @var Variable[] $variables */
-        $variables = $this->nodeFinder->findInstanceOf($classMethod, Variable::class);
+        $variables = $this->betterNodeFinder->findInstanceOf($classMethod, Variable::class);
 
         foreach ($variables as $variable) {
             if ($this->nodeNameResolver->isName($variable, 'this')) {

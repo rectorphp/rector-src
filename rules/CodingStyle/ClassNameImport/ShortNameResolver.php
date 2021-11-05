@@ -49,7 +49,6 @@ final class ShortNameResolver
     public function __construct(
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private NodeNameResolver $nodeNameResolver,
-        private NodeFinder $nodeFinder,
         private ReflectionProvider $reflectionProvider,
         private BetterNodeFinder $betterNodeFinder,
         private UseImportNameMatcher $useImportNameMatcher,
@@ -94,7 +93,7 @@ final class ShortNameResolver
         }
 
         /** @var ClassLike[] $classLikes */
-        $classLikes = $this->nodeFinder->findInstanceOf($namespace, ClassLike::class);
+        $classLikes = $this->betterNodeFinder->findInstanceOf($namespace, ClassLike::class);
 
         $shortClassLikeNames = [];
         foreach ($classLikes as $classLike) {
@@ -197,7 +196,7 @@ final class ShortNameResolver
      */
     private function resolveNativeClassReflection(array $stmts): ?ReflectionClass
     {
-        $firstClassLike = $this->nodeFinder->findFirstInstanceOf($stmts, ClassLike::class);
+        $firstClassLike = $this->betterNodeFinder->findFirstInstanceOf($stmts, ClassLike::class);
         if (! $firstClassLike instanceof ClassLike) {
             return null;
         }
