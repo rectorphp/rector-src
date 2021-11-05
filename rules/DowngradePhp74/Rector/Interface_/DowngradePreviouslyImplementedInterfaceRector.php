@@ -5,16 +5,24 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp74\Rector\Identical;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Interface_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Reflection\ReflectionProvider;
+use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 /**
  * @see \Rector\Tests\DowngradePhp74\Rector\Interface_\DowngradePreviouslyImplementedInterfaceRector\DowngradePreviouslyImplementedInterfaceRectorTest
  */
 final class DowngradePreviouslyImplementedInterfaceRector extends AbstractRector
 {
+    public function __construct(private ReflectionProvider $reflectionProvider, private FamilyRelationsAnalyzer $familyRelationsAnalyzer)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -58,6 +66,25 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $extends = $node->extends;
+
+        if (count($extends) < 2) {
+            return null;
+        }
+
+        $collectInterfaces = [];
+        foreach ($extends as $key => $extend) {
+            if (! $extend instanceof FullyQualified) {
+                continue;
+            }
+
+            if (in_array($extend->toString(), $collectInterfaces, true)) {
+                unset($extends[$key]);
+            }
+
+            $collectInterfaces[] = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($extend);
+        }
+
         return $node;
     }
 }
