@@ -19,21 +19,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             RenameMethodRector::METHOD_CALL_RENAMES => ValueObjectInliner::inline([
                 new MethodCallRename(AbstractType::class, 'setDefaultOptions', 'configureOptions'),
                 new MethodCallRename('Nette\Utils\Html', 'add', 'addHtml'),
-                new MethodCallRename(
-                    CustomType::class,
-                    'notify',
-                    '__invoke'
-                ),
-                new MethodCallRename(
-                    SomeSubscriber::class,
-                    'old',
-                    'new'
-                ),
-                new MethodCallRename(
-                    Foo::class,
-                    'old',
-                    'new'
-                ),
+                new MethodCallRename(CustomType::class, 'notify', '__invoke'),
+                new MethodCallRename(SomeSubscriber::class, 'old', 'new'),
+                new MethodCallRename(Foo::class, 'old', 'new'),
                 // with array key
                 new MethodCallRenameWithArrayKey('Nette\Utils\Html', 'addToArray', 'addToHtmlArray', 'hey'),
             ]),
