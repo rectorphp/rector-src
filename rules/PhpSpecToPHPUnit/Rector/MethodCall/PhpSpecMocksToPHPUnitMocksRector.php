@@ -130,7 +130,7 @@ final class PhpSpecMocksToPHPUnitMocksRector extends AbstractPhpSpecToPHPUnitRec
     private function createCreateMockCall(Param $param, Name $name): ?Expression
     {
         /** @var Class_ $classLike */
-        $classLike = $param->getAttribute(AttributeKey::CLASS_NODE);
+        $classLike = $this->betterNodeFinder->findParentType($param, Class_::class);
 
         $classMocks = $this->phpSpecMockCollector->resolveClassMocksFromParam($classLike);
 
