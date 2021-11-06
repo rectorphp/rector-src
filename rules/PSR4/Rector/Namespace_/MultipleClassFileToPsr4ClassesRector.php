@@ -196,7 +196,7 @@ CODE_SAMPLE
     {
         $classLikes = $this->betterNodeFinder->findInstanceOf([$node], ClassLike::class);
 
-        return array_filter($classLikes, function (ClassLike $classLike) {
+        return array_filter($classLikes, function (ClassLike $classLike): bool {
             if (! $classLike instanceof Class_) {
                 return true;
             }

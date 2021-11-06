@@ -29,7 +29,7 @@ final class NextVariableUsageNodeFinder
     public function find(Assign $assign): ?Node
     {
         $scopeNode = $this->parentScopeFinder->find($assign);
-        if (! $scopeNode instanceof \PhpParser\Node) {
+        if (! $scopeNode instanceof Node) {
             return null;
         }
 
