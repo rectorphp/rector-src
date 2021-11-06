@@ -52,7 +52,8 @@ final class AttributeKey
     public const METHOD_NAME = 'methodName';
 
     /**
-     * @var string
+     * @deprecated Use
+     * @see BetterNodeFinder to find your parent nodes.
      */
     public const METHOD_NODE = 'methodNode';
 
