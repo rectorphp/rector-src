@@ -32,7 +32,7 @@ final class ExprUsedInNextNodeAnalyzer
                     $scope = $node->getAttribute(AttributeKey::SCOPE);
                     $resolvedName = $node->getAttribute(AttributeKey::RESOLVED_NAME);
 
-                    if (! $scope instanceof Scope && ! $resolvedName instanceof Name) {
+                    if (! $scope instanceof Scope && ! $resolvedName instanceof Name && $node->hasAttribute(AttributeKey::NAMESPACED_NAME)) {
                         return true;
                     }
                 }
