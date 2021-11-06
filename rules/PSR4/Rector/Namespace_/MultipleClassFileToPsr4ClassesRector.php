@@ -196,14 +196,12 @@ CODE_SAMPLE
     {
         $classLikes = $this->betterNodeFinder->findInstanceOf([$node], ClassLike::class);
 
-        $nonAnonymousClassLikes = array_filter($classLikes, function (ClassLike $classLike) {
+        return array_filter($classLikes, function (ClassLike $classLike) {
             if (! $classLike instanceof Class_) {
                 return true;
             }
 
-            return $classLike->isAnonymous();
+            return ! $classLike->isAnonymous();
         });
-
-        return $nonAnonymousClassLikes;
     }
 }

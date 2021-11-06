@@ -86,7 +86,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
         }
 
         $scopeNode = $this->parentScopeFinder->find($node);
-        if ($scopeNode === null) {
+        if (! $scopeNode instanceof \PhpParser\Node) {
             return null;
         }
 

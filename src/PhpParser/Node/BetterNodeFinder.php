@@ -345,7 +345,7 @@ final class BetterNodeFinder
     {
         // assign of empty string to something
         $scopeNode = $this->findParentScope($expr);
-        if ($scopeNode === null) {
+        if (! $scopeNode instanceof Node) {
             return [];
         }
 
@@ -406,7 +406,7 @@ final class BetterNodeFinder
         return null;
     }
 
-    private function findParentScope(\PhpParser\Node $node): \PhpParser\Node|null
+    private function findParentScope(Node $node): Node|null
     {
         return $this->findParentByTypes($node, [
             Closure::class,
