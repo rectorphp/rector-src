@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
@@ -33,7 +34,7 @@ final class ExprUsedInNextNodeAnalyzer
                     $resolvedName = $node->getAttribute(AttributeKey::RESOLVED_NAME);
                     $next = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-                    if (! $scope instanceof Scope && ! $resolvedName instanceof Name && $next instanceof Node\Arg) {
+                    if (! $scope instanceof Scope && ! $resolvedName instanceof Name && $next instanceof Arg) {
                         return true;
                     }
                 }
