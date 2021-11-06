@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -49,12 +48,7 @@ final class PropertyFetchFinder
             return [];
         }
 
-        $className = $this->nodeNameResolver->getName($classLike);
-
-        // unable to resolved
-        if ($className === null) {
-            throw new ShouldNotHappenException();
-        }
+        $className = $classLike->namespacedName->toString();
 
         if ($this->reflectionProvider->hasClass($className)) {
             $classReflection = $this->reflectionProvider->getClass($className);

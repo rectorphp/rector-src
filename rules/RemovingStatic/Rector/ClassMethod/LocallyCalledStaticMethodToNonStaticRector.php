@@ -157,13 +157,9 @@ CODE_SAMPLE
             return false;
         }
 
-        $className = $this->getName($classLike);
-        if (! is_string($className)) {
-            return false;
-        }
+        $className = $classLike->namespacedName->toString();
 
         $objectType = new ObjectType($className);
-
         $callerType = $this->nodeTypeResolver->getType($staticCall->class);
 
         return $objectType->equals($callerType);

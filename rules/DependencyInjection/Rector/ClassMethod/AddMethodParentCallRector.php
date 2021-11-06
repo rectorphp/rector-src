@@ -88,7 +88,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $className = $this->getName($classLike);
+        $className = $classLike->namespacedName->toString();
 
         foreach ($this->methodByParentTypes as $type => $method) {
             if (! $this->isObjectType($classLike, new ObjectType($type))) {

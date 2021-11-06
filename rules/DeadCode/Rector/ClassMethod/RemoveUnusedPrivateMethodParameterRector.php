@@ -75,15 +75,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return null;
-        }
-
-        $className = $this->getName($classLike);
-        if (! is_string($className)) {
-            return null;
-        }
+//        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+//        if (! $classLike instanceof ClassLike) {
+//            return null;
+//        }
 
         $unusedParameters = $this->unusedParameterResolver->resolve($node);
         if ($unusedParameters === []) {

@@ -17,7 +17,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -29,7 +28,6 @@ final class NameTypeResolver implements NodeTypeResolverInterface
     public function __construct(
         private ReflectionProvider $reflectionProvider,
         private BetterNodeFinder $betterNodeFinder,
-        private NodeNameResolver $nodeNameResolver,
     ) {
     }
 

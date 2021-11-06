@@ -122,7 +122,7 @@ final class ReflectionResolver
             return null;
         }
 
-        $className = $this->nodeNameResolver->getName($classLike);
+        $className = $classLike->namespacedName->toString();
         if (! is_string($className)) {
             return null;
         }

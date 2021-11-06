@@ -106,18 +106,14 @@ final class PhpSpecRenaming
     public function resolveTestedClass(Node $node): string
     {
         if ($node instanceof ClassLike) {
-            $className = $this->nodeNameResolver->getName($node);
+            $className = $node->namespacedName->toString();
         } else {
             $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
             if (! $classLike instanceof ClassLike) {
                 throw new ShouldNotHappenException();
             }
 
-            $className = $this->nodeNameResolver->getName($classLike);
-        }
-
-        if (! is_string($className)) {
-            throw new ShouldNotHappenException();
+            $className = $classLike->namespacedName->toString();
         }
 
         $newClassName = StaticRectorStrings::removePrefixes($className, ['spec\\']);

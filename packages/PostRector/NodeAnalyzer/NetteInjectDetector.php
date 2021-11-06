@@ -47,7 +47,6 @@ final class NetteInjectDetector
     private function hasParentClassConstructor(Class_ $class): bool
     {
         $className = $class->namespacedName->toString();
-
         if (! $this->reflectionProvider->hasClass($className)) {
             return false;
         }

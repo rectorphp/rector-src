@@ -498,5 +498,4 @@ parameters:
             path: src/Bootstrap/RectorConfigsResolver.php
             message: '#Method Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:resolveFromInput\(\) should return string\|null but returns string\|false#'
 
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\TypeAlreadyAddedChecker\\ReturnTypeAlreadyAddedChecker\:\:isSameOrBetterReturnTypeAlreadyAdded\(\)" is 11, keep it under 10#'
         - '#Cognitive complexity for "Rector\\Core\\NodeManipulator\\ClassMethodAssignManipulator\:\:collectReferenceVariableNames\(\)" is 13, keep it under 10#'

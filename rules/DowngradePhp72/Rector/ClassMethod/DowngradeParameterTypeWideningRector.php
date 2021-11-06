@@ -129,11 +129,7 @@ CODE_SAMPLE
             return $this->processRemoveParamTypeFromMethod($ancestorOverridableAnonymousClass, $node);
         }
 
-        $className = $this->nodeNameResolver->getName($classLike);
-        if ($className === null) {
-            return null;
-        }
-
+        $className = $classLike->namespacedName->toString();
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }

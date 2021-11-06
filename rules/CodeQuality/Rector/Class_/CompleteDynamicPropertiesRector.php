@@ -132,10 +132,6 @@ CODE_SAMPLE
         }
 
         $className = $class->namespacedName->toString();
-        if ($className === null) {
-            return true;
-        }
-
         if (! $this->reflectionProvider->hasClass($className)) {
             return true;
         }
