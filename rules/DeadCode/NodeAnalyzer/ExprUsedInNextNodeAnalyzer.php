@@ -31,8 +31,9 @@ final class ExprUsedInNextNodeAnalyzer
                 if ($isCheckNameScope && $node instanceof Name) {
                     $scope = $node->getAttribute(AttributeKey::SCOPE);
                     $resolvedName = $node->getAttribute(AttributeKey::RESOLVED_NAME);
+                    $next = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-                    if (! $scope instanceof Scope && ! $resolvedName instanceof Name && $node->hasAttribute(AttributeKey::NAMESPACED_NAME)) {
+                    if (! $scope instanceof Scope && ! $resolvedName instanceof Name && $next instanceof Node\Arg) {
                         return true;
                     }
                 }
