@@ -114,7 +114,7 @@ CODE_SAMPLE
 
     private function shouldSkip(Assign $assign): bool
     {
-        $classMethod = $assign->getAttribute(AttributeKey::METHOD_NODE);
+        $classMethod = $this->betterNodeFinder->findParentType($assign, Node\Stmt\ClassMethod::class);
         if (! $classMethod instanceof FunctionLike) {
             return true;
         }
