@@ -66,9 +66,11 @@ final class PropertyFetchFinder
         }
 
         $nodes = [$classLike];
-        $nodes = array_merge($nodes, $this->astResolver->parseClassReflectionTraits($classReflection));
+        $nodesTrait = $this->astResolver->parseClassReflectionTraits($classReflection);
+        $hasTrait = $nodesTrait !== [];
+        $nodes = array_merge($nodes, $nodesTrait);
 
-        return $this->findPropertyFetchesInClassLike($nodes, $propertyName);
+        return $this->findPropertyFetchesInClassLike($classLike, $nodes, $propertyName, $hasTrait);
     }
 
     /**
@@ -113,15 +115,20 @@ final class PropertyFetchFinder
      * @param Stmt[] $stmts
      * @return PropertyFetch[]|StaticPropertyFetch[]
      */
-    private function findPropertyFetchesInClassLike(array $stmts, string $propertyName): array
+    private function findPropertyFetchesInClassLike(ClassLike $classLike, array $stmts, string $propertyName, bool $hasTrait): array
     {
         /** @var PropertyFetch[] $propertyFetches */
         $propertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, PropertyFetch::class);
 
         /** @var PropertyFetch[] $matchingPropertyFetches */
         $matchingPropertyFetches = array_filter($propertyFetches, function (PropertyFetch $propertyFetch) use (
-            $propertyName
+            $propertyName, $classLike, $hasTrait
         ): bool {
+            $parent = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
+            if ($parent !== $classLike && ! $hasTrait) {
+                return false;
+            }
+
             if (! $this->nodeNameResolver->isName($propertyFetch->var, self::THIS)) {
                 return false;
             }
