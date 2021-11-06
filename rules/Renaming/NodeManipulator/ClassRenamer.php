@@ -261,8 +261,8 @@ final class ClassRenamer
         if ($newNamespacePart && ! $classNamingGetNamespace) {
             $this->changeNameToFullyQualifiedName($classLike);
 
-            $nameNode = new Name($newNamespacePart);
-            return new Namespace_($nameNode, [$classLike]);
+            $name = new Name($newNamespacePart);
+            return new Namespace_($name, [$classLike]);
         }
 
         return $classLike;

@@ -50,7 +50,6 @@ parameters:
         # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
         - packages/BetterPhpDocParser/ValueObject/PhpDocNode/AbstractTagValueNode.php
         - packages/Testing/PHPUnit/*.php
-        - packages-tests/NodeVisitor/FunctionMethodAndClassNodeVisitor/FunctionMethodAndClassNodeVisitorTest.php
         - rules/DowngradePhp70/Rector/FunctionLike/AbstractDowngradeParamDeclarationRector.php
 
         # demo rule
@@ -248,7 +247,6 @@ parameters:
             message: '#Function "property_exists\(\)" cannot be used/left in the code#'
             paths:
                 # on PhpParser Nodes
-                - packages/NodeTypeResolver/NodeVisitor/FunctionMethodAndClassNodeVisitor.php
                 - packages/NodeTypeResolver/NodeVisitor/StatementNodeVisitor.php
                 - packages/NodeNameResolver/NodeNameResolver.php
                 - packages/NodeNameResolver/NodeNameResolver/ClassNameResolver.php
