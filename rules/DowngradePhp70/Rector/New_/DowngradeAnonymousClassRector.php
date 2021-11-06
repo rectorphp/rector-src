@@ -31,7 +31,8 @@ final class DowngradeAnonymousClassRector extends AbstractRector
 
     public function __construct(
         private ClassAnalyzer $classAnalyzer,
-        private ClassFromAnonymousFactory $classFromAnonymousFactory
+        private ClassFromAnonymousFactory $classFromAnonymousFactory,
+        private \Rector\Core\NodeDecorator\NamespacedNameDecorator $namespacedNameDecorator
     ) {
     }
 
@@ -120,7 +121,11 @@ CODE_SAMPLE
         }
 
         $className = $this->createAnonymousClassName();
-        $this->classes[] = $this->classFromAnonymousFactory->create($className, $node->class);
+
+        $class = $this->classFromAnonymousFactory->create($className, $node->class);
+        $this->classes[] = $class;
+
+        $this->namespacedNameDecorator->decorate($class);
 
         return new New_(new Name($className), $node->args);
     }
