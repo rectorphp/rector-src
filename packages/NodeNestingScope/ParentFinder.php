@@ -30,11 +30,13 @@ final class ParentFinder
                     return $parent;
                 }
             }
-
-            if ($parent === null) {
-                return null;
-            }
         } while ($parent = $parent->getAttribute(AttributeKey::PARENT_NODE));
+
+        foreach ($types as $type) {
+            if (is_a($node, $type, true)) {
+                return $node;
+            }
+        }
 
         return null;
     }
