@@ -131,7 +131,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $className = $this->nodeNameResolver->getName($class);
+        $className = $class->namespacedName->toString();
         if ($className === null) {
             return true;
         }

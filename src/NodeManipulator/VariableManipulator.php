@@ -87,8 +87,16 @@ final class VariableManipulator
 
     private function isTestCaseExpectedVariable(Variable $variable): bool
     {
-        /** @var string $className */
-        $className = $variable->getAttribute(AttributeKey::CLASS_NAME);
+        $classLike = $this->betterNodeFinder->findParentType($variable, Node\Stmt\ClassLike::class);
+        if (! $classLike instanceof Node\Stmt\ClassLike) {
+            return false;
+        }
+
+        $className = $this->nodeNameResolver->getName($classLike);
+        if (! is_string($className)) {
+            return false;
+        }
+
         if (! \str_ends_with($className, 'Test')) {
             return false;
         }

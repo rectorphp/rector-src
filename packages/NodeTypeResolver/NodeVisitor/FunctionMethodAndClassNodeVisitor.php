@@ -9,6 +9,9 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
+/**
+ * @deprecated
+ */
 final class FunctionMethodAndClassNodeVisitor extends NodeVisitorAbstract
 {
     private ?string $className = null;

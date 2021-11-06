@@ -37,7 +37,7 @@ final class ValueObjectClassAnalyzer
         }
 
         /** @var string $className */
-        $className = $this->nodeNameResolver->getName($class);
+        $className = $class->namespacedName->toString();
 
         if (isset($this->valueObjectStatusByClassName[$className])) {
             return $this->valueObjectStatusByClassName[$className];

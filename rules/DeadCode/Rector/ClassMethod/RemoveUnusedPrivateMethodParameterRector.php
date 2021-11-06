@@ -6,13 +6,13 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeCollector\UnusedParameterResolver;
 use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -75,9 +75,13 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var string|null $className */
-        $className = $node->getAttribute(AttributeKey::CLASS_NAME);
-        if ($className === null) {
+        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+        if (! $classLike instanceof ClassLike) {
+            return null;
+        }
+
+        $className = $this->getName($classLike);
+        if (! is_string($className)) {
             return null;
         }
 
@@ -87,7 +91,6 @@ CODE_SAMPLE
         }
 
         $this->removeNodes($unusedParameters);
-
         $this->clearPhpDocInfo($node, $unusedParameters);
 
         return $node;
