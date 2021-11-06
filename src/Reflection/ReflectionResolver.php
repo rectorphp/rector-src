@@ -11,9 +11,11 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
@@ -36,6 +38,19 @@ final class ReflectionResolver
         private NodeNameResolver $nodeNameResolver,
         private TypeToCallReflectionResolverRegistry $typeToCallReflectionResolverRegistry
     ) {
+    }
+
+    public function resolveClassAndAnonymousClass(ClassLike $classLike): ClassReflection|null
+    {
+        if ($classLike instanceof Class_ && $this->isAnonymousClass($classLike)) {
+            return $this->reflectionProvider->getAnonymousClassReflection(
+                $classLike,
+                $classLike->getAttribute(AttributeKey::SCOPE)
+            );
+        }
+
+        $className = $classLike->namespacedName->toString();
+        return $this->reflectionProvider->getClass($className);
     }
 
     /**
@@ -203,5 +218,10 @@ final class ReflectionResolver
         // fallback to callable
         $funcCallNameType = $scope->getType($funcCall->name);
         return $this->typeToCallReflectionResolverRegistry->resolve($funcCallNameType, $scope);
+    }
+
+    private function isAnonymousClass(Class_ $class): bool
+    {
+        return ! property_exists($class, 'namespacedName');
     }
 }

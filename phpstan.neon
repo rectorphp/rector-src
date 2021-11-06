@@ -497,3 +497,8 @@ parameters:
             message: '#Method Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:resolveFromInput\(\) should return string\|null but returns string\|false#'
 
         - '#Cognitive complexity for "Rector\\Core\\NodeManipulator\\ClassMethodAssignManipulator\:\:collectReferenceVariableNames\(\)" is 13, keep it under 10#'
+
+        -
+            # name resolver php-parser feature
+            message: '#Function "property_exists\(\)" cannot be used/left in the code#'
+            path: src/Reflection/ReflectionResolver.php
