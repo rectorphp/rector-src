@@ -60,13 +60,17 @@ CODE_SAMPLE
         ]);
     }
 
-    public function isInPhpSpecBehavior(Node $node): bool
+    protected function isInPhpSpecBehavior(Node $node): bool
     {
+        if ($node instanceof ClassLike) {
+            return $this->isObjectType($node, new ObjectType('PhpSpec\ObjectBehavior'));
+        }
+
         $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
         if (! $classLike instanceof ClassLike) {
             return false;
         }
 
-        return $this->isObjectType($classLike, new ObjectType('PhpSpec\ObjectBehavior'));
+        return $this->isInPhpSpecBehavior($classLike);
     }
 }

@@ -149,11 +149,7 @@ CODE_SAMPLE
             return $this->isObjectType($node->class, $objectType);
         }
 
-        // ClassMethod
-        /** @var Class_|null $classLike */
         $classLike = $this->betterNodeFinder->findParentType($node, Class_::class);
-
-        // anonymous class
         if (! $classLike instanceof Class_) {
             return false;
         }
