@@ -169,6 +169,11 @@ CODE_SAMPLE
         return (bool) $functionLike->returnType->getAttribute(AttributeKey::DO_NOT_CHANGE);
     }
 
+    private function shouldSkipSelfReturnNullableType(ClassMethod | Function_ $functionLike): bool
+    {
+        return $functionLike->returnType instanceof NullableType && $functionLike->returnType->type instanceof Name && $this->nodeNameResolver->isName($functionLike->returnType->type, 'self');
+    }
+
     private function shouldSkipExistingReturnType(ClassMethod | Function_ $functionLike, Type $inferedType): bool
     {
         if ($functionLike->returnType === null) {
@@ -178,6 +183,10 @@ CODE_SAMPLE
         if ($functionLike instanceof ClassMethod && $this->vendorLockResolver->isReturnChangeVendorLockedIn(
             $functionLike
         )) {
+            return true;
+        }
+
+        if ($this->shouldSkipSelfReturnNullableType($functionLike)) {
             return true;
         }
 
