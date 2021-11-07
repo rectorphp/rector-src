@@ -52,8 +52,11 @@ final class UsedImportsResolver
 
         // add class itself
         if ($class !== null) {
-            $className = $class->namespacedName->toString();
-            $usedImports[] = new FullyQualifiedObjectType($className);
+            // is not anonymous class
+            if (property_exists($class, 'namespacedName')) {
+                $className = $class->namespacedName->toString();
+                $usedImports[] = new \Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType($className);
+            }
         }
 
         $this->useImportsTraverser->traverserStmts($stmts, function (
