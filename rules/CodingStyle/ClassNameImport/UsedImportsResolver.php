@@ -26,11 +26,10 @@ final class UsedImportsResolver
      */
     public function resolveForNode(Node $node): array
     {
-        if ($node instanceof Namespace_) {
-            $namespace = $node;
-        } else {
-            $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
-        }
+        $namespace = $node instanceof Namespace_ ? $node : $this->betterNodeFinder->findParentType(
+            $node,
+            Namespace_::class
+        );
 
         if ($namespace instanceof Namespace_) {
             return $this->resolveForNamespace($namespace);
@@ -51,12 +50,10 @@ final class UsedImportsResolver
         $class = $this->betterNodeFinder->findFirstInstanceOf($stmts, Class_::class);
 
         // add class itself
-        if ($class !== null) {
-            // is not anonymous class
-            if (property_exists($class, 'namespacedName')) {
-                $className = $class->namespacedName->toString();
-                $usedImports[] = new \Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType($className);
-            }
+        // is not anonymous class
+        if ($class !== null && property_exists($class, 'namespacedName')) {
+            $className = $class->namespacedName->toString();
+            $usedImports[] = new FullyQualifiedObjectType($className);
         }
 
         $this->useImportsTraverser->traverserStmts($stmts, function (
