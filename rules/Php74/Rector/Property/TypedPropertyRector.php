@@ -266,7 +266,6 @@ CODE_SAMPLE
         }
 
         if (! $propertyType->isSuperTypeOf(new NullType())->yes()) {
-//        if (! TypeCombinator::containsNull($propertyType)) {
             return;
         }
 
