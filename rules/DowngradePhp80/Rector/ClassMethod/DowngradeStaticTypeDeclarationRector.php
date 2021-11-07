@@ -74,7 +74,7 @@ CODE_SAMPLE
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
-            throw new ShouldNotHappenException();
+            return null;
         }
 
         $classReflection = $scope->getClassReflection();
