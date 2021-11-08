@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\Annotation;
 
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
-use Rector\BetterPhpDocParser\ValueObject\ChangeResolvedClassInParticularContextForAnnotationRule;
+use Rector\BetterPhpDocParser\ValueObject\ChangeResolvedClassInParticular;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 
 final class ChangeResolvedClassInParticularContextForAnnotation
 {
     /**
-     * @var ChangeResolvedClassInParticularContextForAnnotationRule[]
+     * @var ChangeResolvedClassInParticular[]
      */
     private array $rules = [];
 
     public function __construct()
     {
         $this->rules = [
-            new ChangeResolvedClassInParticularContextForAnnotationRule(
+            new ChangeResolvedClassInParticular(
                 'Doctrine\ORM\Mapping\JoinTable',
                 'inverseJoinColumns',
                 'Doctrine\ORM\Mapping\InverseJoinColumns'
@@ -38,13 +38,13 @@ final class ChangeResolvedClassInParticularContextForAnnotation
 
     private function applyRule(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
-        ChangeResolvedClassInParticularContextForAnnotationRule $changeResolvedClassInParticularContextForAnnotationRule,
+        ChangeResolvedClassInParticular $changeResolvedClassInParticular,
         AnnotationToAttribute $annotationToAttribute
     ): void {
         $docNodeValue = $doctrineAnnotationTagValueNode->getValue(
-            $changeResolvedClassInParticularContextForAnnotationRule->getValue()
+            $changeResolvedClassInParticular->getValue()
         );
-        if ($annotationToAttribute->getTag() !== $changeResolvedClassInParticularContextForAnnotationRule->getTag()) {
+        if ($annotationToAttribute->getTag() !== $changeResolvedClassInParticular->getTag()) {
             return;
         }
 
@@ -64,7 +64,7 @@ final class ChangeResolvedClassInParticularContextForAnnotation
 
             $singleToTraverse[0]->identifierTypeNode->setAttribute(
                 'resolved_class',
-                $changeResolvedClassInParticularContextForAnnotationRule->getResolvedClass()
+                $changeResolvedClassInParticular->getResolvedClass()
             );
         }
     }

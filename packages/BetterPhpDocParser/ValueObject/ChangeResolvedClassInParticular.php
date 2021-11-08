@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\ValueObject;
 
-final class ChangeResolvedClassInParticularContextForAnnotationRule
+final class ChangeResolvedClassInParticular
 {
     public function __construct(
         private string $tag,
