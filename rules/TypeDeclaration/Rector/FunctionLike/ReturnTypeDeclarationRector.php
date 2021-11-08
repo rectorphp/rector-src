@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
@@ -187,11 +186,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $currentType instanceof UnionType) {
-            return $this->isNullableTypeSubType($currentType, $inferedType);
-        }
-
-        return true;
+        return $this->isNullableTypeSubType($currentType, $inferedType);
     }
 
     private function addReturnType(
@@ -225,7 +220,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $inferedType->isSubTypeOf($currentType)
+        return $currentType->isSubTypeOf($currentType)
             ->yes();
     }
 
