@@ -142,7 +142,9 @@ final class NodeTypeResolver
     {
         if ($node instanceof NullableType) {
             $type = $this->getType($node->type);
-            return new UnionType([$type, new NullType()]);
+            if (! $type instanceof MixedType) {
+                return new UnionType([$type, new NullType()]);
+            }
         }
 
         if ($node instanceof Ternary) {

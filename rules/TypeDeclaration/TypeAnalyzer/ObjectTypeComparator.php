@@ -7,7 +7,9 @@ namespace Rector\TypeDeclaration\TypeAnalyzer;
 use PHPStan\Type\CallableType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
+use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 
 final class ObjectTypeComparator
 {
@@ -17,6 +19,15 @@ final class ObjectTypeComparator
      */
     public function isCurrentObjectTypeSubType(Type $currentType, Type $newType): bool
     {
+        if ($currentType instanceof UnionType) {
+            $types = $currentType->getTypes();
+            foreach ($types as $type) {
+                if ($type instanceof ThisType) {
+                    return true;
+                }
+            }
+        }
+
         if ($newType instanceof ObjectWithoutClassType && $currentType instanceof ObjectType) {
             return true;
         }
