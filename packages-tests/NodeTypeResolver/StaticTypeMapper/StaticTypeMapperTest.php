@@ -13,12 +13,16 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ClassStringType;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\UnionType;
+use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Tests\NodeTypeResolver\Source\Enum;
 
 final class StaticTypeMapperTest extends AbstractTestCase
 {
@@ -80,6 +84,18 @@ final class StaticTypeMapperTest extends AbstractTestCase
             TypeKind::ANY()
         );
         $this->assertInstanceOf(IdentifierTypeNode::class, $phpStanDocTypeNode);
+    }
+
+    public function testStringUnion(): void
+    {
+        $mixedType = new UnionType([new ConstantStringType(Enum::MODE_ADD), new ConstantStringType(Enum::MODE_EDIT), new ConstantStringType(Enum::MODE_CLONE)]);
+
+        $phpStanDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
+            $mixedType,
+            TypeKind::PROPERTY()
+        );
+        $this->assertInstanceOf(BracketsAwareUnionTypeNode::class, $phpStanDocTypeNode);
+        $this->assertSame("'add'|'edit'|'clone'", $phpStanDocTypeNode->__toString());
     }
 
     /**
