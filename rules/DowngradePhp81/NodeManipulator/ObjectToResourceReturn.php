@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp81\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name;
@@ -26,7 +27,7 @@ final class ObjectToResourceReturn
     /**
      * @param string[] $collectionObjectToResource
      */
-    public function refactor(Instanceof_ $instanceof, array $collectionObjectToResource): ?FuncCall
+    public function refactor(Instanceof_ $instanceof, array $collectionObjectToResource): ?BooleanOr
     {
         if (! $instanceof->class instanceof FullyQualified) {
             return null;
@@ -43,7 +44,10 @@ final class ObjectToResourceReturn
                 continue;
             }
 
-            return $this->nodeFactory->createFuncCall('is_resource', [$instanceof->expr]);
+            return new BooleanOr(
+                $this->nodeFactory->createFuncCall('is_resource', [$instanceof->expr]),
+                $instanceof
+            );
         }
 
         return null;
