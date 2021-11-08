@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp81\NodeManipulator;
 
+use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
+use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ObjectToResourceReturn
 {
     public function __construct(
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeNameResolver $nodeNameResolver,
         private NodeFactory $nodeFactory
     ) {
     }
@@ -23,6 +30,28 @@ final class ObjectToResourceReturn
     {
         if (! $instanceof->class instanceof FullyQualified) {
             return null;
+        }
+
+        $binaryOp = $this->betterNodeFinder->findParentType($instanceof, BinaryOp::class);
+        if ($binaryOp instanceof BinaryOp) {
+            $hasIsResourceCheckAlready = (bool) $this->betterNodeFinder->findFirst(
+                $binaryOp,
+                function (Node $subNode): bool {
+                    if (! $subNode instanceof FuncCall) {
+                        return false;
+                    }
+
+                    if (! $subNode->name instanceof Name) {
+                        return false;
+                    }
+
+                    return $this->nodeNameResolver->isName($subNode->name, 'is_resource');
+                }
+            );
+
+            if ($hasIsResourceCheckAlready) {
+                return null;
+            }
         }
 
         $className = $instanceof->class->toString();
