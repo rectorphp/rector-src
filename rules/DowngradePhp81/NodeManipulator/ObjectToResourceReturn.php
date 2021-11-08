@@ -17,7 +17,7 @@ final class ObjectToResourceReturn
     }
 
     /**
-     * @param array<string, string> $collectionObjectToResource
+     * @param string[] $collectionObjectToResource
      */
     public function refactor(Instanceof_ $instanceof, array $collectionObjectToResource): ?FuncCall {
         if (! $instanceof->class instanceof FullyQualified) {
