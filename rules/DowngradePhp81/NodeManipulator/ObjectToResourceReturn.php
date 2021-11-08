@@ -57,6 +57,9 @@ final class ObjectToResourceReturn
         return null;
     }
 
+    /**
+     * @param BinaryOp|null $binaryOp
+     */
     private function hasIsResourceCheck(Expr $expr, ?BinaryOp $binaryOp): bool
     {
         if ($binaryOp instanceof BinaryOp) {
@@ -75,7 +78,11 @@ final class ObjectToResourceReturn
                         return false;
                     }
 
-                    if (! isset($subNode->args[0]) || ! $subNode->args[0] instanceof Arg) {
+                    if (! isset($subNode->args[0])) {
+                        return false;
+                    }
+
+                    if (! $subNode->args[0] instanceof Arg) {
                         return false;
                     }
 
