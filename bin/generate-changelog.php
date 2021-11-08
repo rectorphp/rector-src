@@ -12,7 +12,11 @@ use Symplify\PackageBuilder\Console\Command\CommandNaming;
 require __DIR__ . '/../vendor/autoload.php';
 
 /**
- * Inspired from @see https://github.com/REPOSITORY_NAME    blob/master/bin/generate-changelog.php
+ * Inspired from @see https://github.com/phpstan/phpstan-src/blob/master/bin/generate-changelog.php
+ *
+ * Usage:
+ * GITHUB_TOKEN=<github_token> php bin/generate-changelog.php <from-commit> <to-commit> >> <file_to_dump.md>
+ * GITHUB_TOKEN=ghp_... php bin/generate-changelog.php 07736c1 cb74bb6 >> CHANGELOG_dumped.md
  */
 final class GenerateChangelogCommand extends Symfony\Component\Console\Command\Command
 {
@@ -107,7 +111,7 @@ final class GenerateChangelogCommand extends Symfony\Component\Console\Command\C
                     $parenthesis = sprintf(
                         '[#%d](%s)',
                         $responseItem->number,
-                        'https://github.com/' . self::DEVELOPMENT_REPOSITORY_NAME . '. pull/' . $responseItem->number
+                        'https://github.com/' . self::DEVELOPMENT_REPOSITORY_NAME . '/pull/' . $responseItem->number
                     );
                     $thanks = $responseItem->user->login;
                 } else {
