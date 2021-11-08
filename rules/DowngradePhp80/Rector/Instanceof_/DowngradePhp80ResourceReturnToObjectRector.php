@@ -14,7 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://www.php.net/manual/en/migration80.incompatible.php#migration80.incompatible.resource2object
  *
- * @see \Rector\Tests\DowngradePhp80\Rector\Instanceof_\DowngradePhp80ResourceReturnToObjectRector\DowngradePhp80ResourceReturnToObjectRector
+ * @see \Rector\Tests\DowngradePhp80\Rector\Instanceof_\DowngradePhp80ResourceReturnToObjectRector\DowngradePhp80ResourceReturnToObjectRectorTest
  */
 final class DowngradePhp80ResourceReturnToObjectRector extends AbstractRector
 {
