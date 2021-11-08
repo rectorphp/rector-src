@@ -32,9 +32,27 @@ final class ObjectToResourceReturn
             return null;
         }
 
-        $binaryOp = $this->betterNodeFinder->findParentType($instanceof, BinaryOp::class);
+        $className = $instanceof->class->toString();
+        foreach ($collectionObjectToResource as $singleCollectionObjectToResource) {
+            if ($singleCollectionObjectToResource !== $className) {
+                continue;
+            }
+
+            $binaryOp = $this->betterNodeFinder->findParentType($instanceof, BinaryOp::class);
+            if ($this->hasIsResourceCheck($binaryOp)) {
+                continue;
+            }
+
+            return $this->nodeFactory->createFuncCall('is_resource', [$instanceof->expr]);
+        }
+
+        return null;
+    }
+
+    private function hasIsResourceCheck(?BinaryOp $binaryOp): bool
+    {
         if ($binaryOp instanceof BinaryOp) {
-            $hasIsResourceCheckAlready = (bool) $this->betterNodeFinder->findFirst(
+            return (bool) $this->betterNodeFinder->findFirst(
                 $binaryOp,
                 function (Node $subNode): bool {
                     if (! $subNode instanceof FuncCall) {
@@ -48,19 +66,8 @@ final class ObjectToResourceReturn
                     return $this->nodeNameResolver->isName($subNode->name, 'is_resource');
                 }
             );
-
-            if ($hasIsResourceCheckAlready) {
-                return null;
-            }
         }
 
-        $className = $instanceof->class->toString();
-        foreach ($collectionObjectToResource as $singleCollectionObjectToResource) {
-            if ($singleCollectionObjectToResource === $className) {
-                return $this->nodeFactory->createFuncCall('is_resource', [$instanceof->expr]);
-            }
-        }
-
-        return null;
+        return false;
     }
 }
