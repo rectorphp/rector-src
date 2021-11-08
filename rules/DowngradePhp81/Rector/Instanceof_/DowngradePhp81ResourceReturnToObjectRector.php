@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp81\Rector\Instanceof_;
 
+use finfo;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Instanceof_;
 use Rector\Core\Rector\AbstractRector;
@@ -19,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradePhp81ResourceReturnToObjectRector extends AbstractRector
 {
     /**
-     * @var string[]
+     * @var string[]|class-string<finfo>[]
      */
     private const COLLECTION_OBJECT_TO_RESOURCE = [
         // finfo
