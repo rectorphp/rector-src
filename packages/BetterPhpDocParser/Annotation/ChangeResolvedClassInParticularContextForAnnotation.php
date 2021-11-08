@@ -47,6 +47,7 @@ final class ChangeResolvedClassInParticularContextForAnnotation
         if ($annotationToAttribute->getTag() !== $changeResolvedClassInParticularContextForAnnotationRule->getTag()) {
             return;
         }
+
         if (! ($docNodeValue instanceof CurlyListNode)) {
             return;
         }
