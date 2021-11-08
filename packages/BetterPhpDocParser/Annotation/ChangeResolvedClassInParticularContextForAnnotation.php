@@ -14,7 +14,7 @@ final class ChangeResolvedClassInParticularContextForAnnotation
     /**
      * @var ChangeResolvedClassInParticularContextForAnnotationRule[]
      */
-    private array $rules;
+    private array $rules = [];
 
     public function __construct()
     {
@@ -29,31 +29,42 @@ final class ChangeResolvedClassInParticularContextForAnnotation
 
     public function changeResolvedClassIfNeed(
         AnnotationToAttribute $annotationToAttribute,
-        DoctrineAnnotationTagValueNode $docNode
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
     ): void {
         foreach ($this->rules as $rule) {
-            $this->applyRule($docNode, $rule, $annotationToAttribute);
+            $this->applyRule($doctrineAnnotationTagValueNode, $rule, $annotationToAttribute);
         }
     }
 
     private function applyRule(
-        DoctrineAnnotationTagValueNode $docNode,
-        ChangeResolvedClassInParticularContextForAnnotationRule $rule,
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
+        ChangeResolvedClassInParticularContextForAnnotationRule $changeResolvedClassInParticularContextForAnnotationRule,
         AnnotationToAttribute $annotationToAttribute
     ): void {
-        $docNodeValue = $docNode->getValue($rule->getValue());
-
-        if ($annotationToAttribute->getTag() !== $rule->getTag() || ! ($docNodeValue instanceof CurlyListNode)) {
+        $docNodeValue = $doctrineAnnotationTagValueNode->getValue(
+            $changeResolvedClassInParticularContextForAnnotationRule->getValue()
+        );
+        if ($annotationToAttribute->getTag() !== $changeResolvedClassInParticularContextForAnnotationRule->getTag()) {
+            return;
+        }
+        if (! ($docNodeValue instanceof CurlyListNode)) {
             return;
         }
 
         $toTraverse = [$docNodeValue->getValues(), $docNodeValue->getOriginalValues()];
 
-        foreach ($toTraverse as $tmp) {
-            if (! array_key_exists(0, $tmp) && ! ($tmp[0] instanceof DoctrineAnnotationTagValueNode)) {
+        foreach ($toTraverse as $singleToTraverse) {
+            if (! array_key_exists(
+                0,
+                $singleToTraverse
+            ) && ! ($singleToTraverse[0] instanceof DoctrineAnnotationTagValueNode)) {
                 continue;
             }
-            $tmp[0]->identifierTypeNode->setAttribute('resolved_class', $rule->getResolvedClass());
+
+            $singleToTraverse[0]->identifierTypeNode->setAttribute(
+                'resolved_class',
+                $changeResolvedClassInParticularContextForAnnotationRule->getResolvedClass()
+            );
         }
     }
 }
