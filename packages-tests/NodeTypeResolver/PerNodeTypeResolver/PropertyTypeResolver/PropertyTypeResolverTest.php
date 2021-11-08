@@ -8,11 +8,13 @@ use Iterator;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\ClassThatExtendsHtml;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\Enum;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\Html;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\SomeChild;
 
@@ -48,6 +50,9 @@ final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTest
         // mimics failing test from DomainDrivenDesign set
         $unionType = new UnionType([new ObjectType(SomeChild::class), new NullType()]);
         yield [__DIR__ . '/Source/ActionClass.php', 0, $unionType];
+
+        $unionType = new UnionType([new StringType(Enum::MODE_ADD), new StringType(Enum::MODE_EDIT), new StringType(Enum::MODE_CLONE)]);
+        yield [__DIR__ . '/Source/Enum.php', 0, $unionType];
     }
 
     private function getStringFromType(Type $type): string
