@@ -57,9 +57,6 @@ final class ObjectToResourceReturn
         return null;
     }
 
-    /**
-     * @param BinaryOp|null $binaryOp
-     */
     private function hasIsResourceCheck(Expr $expr, ?BinaryOp $binaryOp): bool
     {
         if ($binaryOp instanceof BinaryOp) {
