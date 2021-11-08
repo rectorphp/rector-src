@@ -14,12 +14,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://www.php.net/manual/en/migration81.incompatible.php#migration81.incompatible.resource2object
  *
- * @see \Rector\Tests\DowngradePhp81\Rector\ClassConst\DowngradePhp81ResourceReturnToObjectRector\DowngradePhp81ResourceReturnToObjectRectorTest
+ * @see \Rector\Tests\DowngradePhp81\Rector\Instanceof_\DowngradePhp81ResourceReturnToObjectRector\DowngradePhp81ResourceReturnToObjectRectorTest
  */
 final class DowngradePhp81ResourceReturnToObjectRector extends AbstractRector
 {
-        /**
-     * @var array<string, string>
+    /**
+     * @var string[]
      */
     private const COLLECTION_OBJECT_TO_RESOURCE = [
         // finfo
