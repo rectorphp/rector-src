@@ -60,8 +60,9 @@ final class DowngradePhp80ResourceReturnToObjectRector extends AbstractRector
         'DeflateContext',
     ];
 
-    public function __construct(private ObjectToResourceReturn $objectToResourceReturn)
-    {
+    public function __construct(
+        private ObjectToResourceReturn $objectToResourceReturn
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

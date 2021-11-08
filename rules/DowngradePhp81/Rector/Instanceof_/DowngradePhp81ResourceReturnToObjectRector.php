@@ -46,8 +46,9 @@ final class DowngradePhp81ResourceReturnToObjectRector extends AbstractRector
         'PgSql\Lob',
     ];
 
-    public function __construct(private ObjectToResourceReturn $objectToResourceReturn)
-    {
+    public function __construct(
+        private ObjectToResourceReturn $objectToResourceReturn
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
