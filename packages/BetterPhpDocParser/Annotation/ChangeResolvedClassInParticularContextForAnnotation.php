@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\Annotation;
 
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
-use Rector\BetterPhpDocParser\ValueObject\ChangeResolvedClassInParticular;
+use Rector\BetterPhpDocParser\ValueObject\ChangeResolvedClassInParticularContext;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 
 final class ChangeResolvedClassInParticularContextForAnnotation
 {
     /**
-     * @var ChangeResolvedClassInParticular[]
+     * @var ChangeResolvedClassInParticularContext[]
      */
     private array $rules = [];
 
     public function __construct()
     {
         $this->rules = [
-            new ChangeResolvedClassInParticular(
+            new ChangeResolvedClassInParticularContext(
                 'Doctrine\ORM\Mapping\JoinTable',
                 'inverseJoinColumns',
                 'Doctrine\ORM\Mapping\InverseJoinColumns'
@@ -38,13 +38,13 @@ final class ChangeResolvedClassInParticularContextForAnnotation
 
     private function applyRule(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
-        ChangeResolvedClassInParticular $changeResolvedClassInParticular,
+        ChangeResolvedClassInParticularContext $changeResolvedClassInParticularContext,
         AnnotationToAttribute $annotationToAttribute
     ): void {
         $docNodeValue = $doctrineAnnotationTagValueNode->getValue(
-            $changeResolvedClassInParticular->getValue()
+            $changeResolvedClassInParticularContext->getValue()
         );
-        if ($annotationToAttribute->getTag() !== $changeResolvedClassInParticular->getTag()) {
+        if ($annotationToAttribute->getTag() !== $changeResolvedClassInParticularContext->getTag()) {
             return;
         }
 
@@ -64,7 +64,7 @@ final class ChangeResolvedClassInParticularContextForAnnotation
 
             $singleToTraverse[0]->identifierTypeNode->setAttribute(
                 'resolved_class',
-                $changeResolvedClassInParticular->getResolvedClass()
+                $changeResolvedClassInParticularContext->getResolvedClass()
             );
         }
     }
