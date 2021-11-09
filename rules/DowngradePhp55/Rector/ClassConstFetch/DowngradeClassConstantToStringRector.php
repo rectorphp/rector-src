@@ -72,12 +72,15 @@ CODE_SAMPLE
         if (! $node->name instanceof Identifier) {
             return null;
         }
+
         if (strtolower($node->name->name) !== 'class') {
             return null;
         }
+
         if (! $node->class instanceof Name) {
             return null;
         }
+
         $className = $node->class->toString();
 
         $func = match (strtolower($className)) {
