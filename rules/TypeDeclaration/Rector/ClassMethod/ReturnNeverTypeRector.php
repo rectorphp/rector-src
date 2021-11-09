@@ -17,6 +17,7 @@ use PHPStan\Type\NeverType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeNestingScope\ValueObject\ControlStructure;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -101,7 +102,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $notNeverNodes = $this->betterNodeFinder->findInstanceOf($node, Yield_::class);
+        $notNeverNodes = $this->betterNodeFinder->findInstancesOf($node, [Yield_::class] + ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES);
         if ($notNeverNodes !== []) {
             return true;
         }
