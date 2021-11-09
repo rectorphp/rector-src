@@ -36,7 +36,9 @@ final class MixinGuard
                 return false;
             }
 
-            $className = $node instanceof FullyQualified ? $node->toString() : (string) $this->nodeNameResolver->getName($node);
+            $className = $node instanceof FullyQualified ? $node->toString() : (string) $this->nodeNameResolver->getName(
+                $node
+            );
 
             return $this->isCircularMixin($className);
         });
