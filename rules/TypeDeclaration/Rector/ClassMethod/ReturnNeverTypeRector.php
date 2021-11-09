@@ -102,7 +102,10 @@ CODE_SAMPLE
             return true;
         }
 
-        $notNeverNodes = $this->betterNodeFinder->findInstancesOf($node, [Yield_::class] + ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES);
+        $notNeverNodes = $this->betterNodeFinder->findInstancesOf(
+            $node,
+            [Yield_::class] + ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES
+        );
         if ($notNeverNodes !== []) {
             return true;
         }
