@@ -77,7 +77,7 @@ final class ValueResolver
                 // @todo scope is needed
                 $classLike = $this->betterNodeFinder->findParentType($expr, ClassLike::class);
                 if ($classLike instanceof ClassLike) {
-                    return $this->nodeNameResolver->getName($classLike);
+                    return (string) $this->nodeNameResolver->getName($classLike);
                 }
             }
 
