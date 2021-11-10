@@ -8,8 +8,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
@@ -18,7 +16,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -29,7 +26,6 @@ final class CountableAnalyzer
         private NodeTypeResolver $nodeTypeResolver,
         private NodeNameResolver $nodeNameResolver,
         private ReflectionProvider $reflectionProvider,
-        private BetterNodeFinder $betterNodeFinder,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
@@ -84,28 +80,12 @@ final class CountableAnalyzer
             return false;
         }
 
-        if ($this->isFilledByConstructParam($expr, $propertyName)) {
+        if ($this->propertyFetchAnalyzer->isFilledByConstructParam($expr)) {
             return false;
         }
 
         $propertyDefaultValue = $propertiesDefaults[$propertyName];
         return $propertyDefaultValue === null;
-    }
-
-    private function isFilledByConstructParam(PropertyFetch $propertyFetch, string $propertyName): bool
-    {
-        $classLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return false;
-        }
-
-        $property = $classLike->getProperty($propertyName);
-
-        if ($property instanceof Property) {
-            return $this->propertyFetchAnalyzer->isFilledByConstructParam($property);
-        }
-
-        return false;
     }
 
     private function resolveProperty(
