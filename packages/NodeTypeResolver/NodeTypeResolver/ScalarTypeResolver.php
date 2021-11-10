@@ -36,7 +36,7 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
         }
 
         if ($node instanceof String_) {
-            return new ConstantStringType($node->value);
+            return new ConstantStringType((string) $node->value);
         }
 
         if ($node instanceof LNumber) {
