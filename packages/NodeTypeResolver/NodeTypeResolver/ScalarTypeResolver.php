@@ -32,7 +32,7 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
     public function resolve(Node $node): Type
     {
         if ($node instanceof DNumber) {
-            return new ConstantFloatType($node->value);
+            return new ConstantFloatType((float) $node->value);
         }
 
         if ($node instanceof String_) {
@@ -40,7 +40,7 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
         }
 
         if ($node instanceof LNumber) {
-            return new ConstantIntegerType($node->value);
+            return new ConstantIntegerType((int) $node->value);
         }
 
         if ($node instanceof MagicConst) {
