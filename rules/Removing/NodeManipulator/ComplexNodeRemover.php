@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Removing\NodeManipulator;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Clone_;
 use PhpParser\Node\Expr\New_;
@@ -18,8 +17,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
-use PHPStan\Type\Type;
-use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -40,7 +37,6 @@ final class ComplexNodeRemover
         private BetterNodeFinder $betterNodeFinder,
         private NodeRemover $nodeRemover,
         private NodeComparator $nodeComparator,
-        private CallAnalyzer $callAnalyzer,
         private NodeTypeResolver $nodeTypeResolver,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
@@ -101,17 +97,15 @@ final class ComplexNodeRemover
             $isInNewCurrentClassNameSelfClone = (bool) $this->betterNodeFinder->findFirst(
                 (array) $method->getStmts(),
                 function (Node $subNode) use ($classLike, $propertyName): bool {
-                    if (! $subNode instanceof Expr) {
-                        return false;
+                    if ($subNode instanceof New_) {
+                        return $this->isPropertyNameUsedAfterNewOrClone($subNode, $classLike, $propertyName);
                     }
 
-                    $isCloneOrNew = $this->callAnalyzer->isNewInstance($subNode);
-                    if (! $isCloneOrNew) {
-                        return false;
+                    if ($subNode instanceof Clone_) {
+                        return $this->isPropertyNameUsedAfterNewOrClone($subNode, $classLike, $propertyName);
                     }
 
-                    /** @var New_|Clone_ $subNode */
-                    return $this->isPropertyNameUsedAfterNewOrClone($subNode, $classLike, $propertyName);
+                    return false;
                 }
             );
 
@@ -124,13 +118,13 @@ final class ComplexNodeRemover
     }
 
     private function isFoundAfterCloneOrNew(
-        ObjectType $type,
+        ObjectType $objectType,
         Clone_|New_ $expr,
         Assign $parentAssign,
         string $className,
         string $propertyName
     ): bool {
-        if ($type->getClassName() !== $className) {
+        if ($objectType->getClassName() !== $className) {
             return false;
         }
 
