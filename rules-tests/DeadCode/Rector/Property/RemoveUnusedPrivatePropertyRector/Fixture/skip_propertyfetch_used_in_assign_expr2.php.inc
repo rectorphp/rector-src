@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRecto
 
 class SkipPropertyFetchUsedInAssignExpr2
 {
-    private string $foo;
+    private int $foo;
 
     public function __construct(int $foo)
     {
