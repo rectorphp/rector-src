@@ -13,7 +13,7 @@ class SkipNewSameClassNameUsage
 
     public function run($var)
     {
-        $obj = new SkipCloneSelf($var);
+        $obj = new SkipNewSameClassNameUsage($var);
         echo $obj->var;
     }
 }
