@@ -124,16 +124,12 @@ final class ComplexNodeRemover
     }
 
     private function isFoundAfterCloneOrNew(
-        Type $type,
+        ObjectType $type,
         Clone_|New_ $expr,
         Assign $parentAssign,
         string $className,
         string $propertyName
     ): bool {
-        if (! $type instanceof ObjectType) {
-            return false;
-        }
-
         if ($type->getClassName() !== $className) {
             return false;
         }
