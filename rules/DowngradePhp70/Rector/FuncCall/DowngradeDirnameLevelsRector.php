@@ -47,22 +47,15 @@ final class DowngradeDirnameLevelsRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace the 2nd argument of dirname() by a closure with a loop',
+            'Replace the 2nd argument of dirname()',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-return dirname($path, $levels);
+return dirname($path, 2);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-$dirnameFunc = function ($path, $levels) {
-    $dir = null;
-    while (--$levels >= 0) {
-        $dir = dirname($dir ?: $path);
-    }
-    return $dir;
-};
-return $dirnameFunc($path, $levels);
+return dirname(dirname($path));
 CODE_SAMPLE
                 ),
             ]
@@ -87,19 +80,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentStmt = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        $scope = $currentStmt->getAttribute(AttributeKey::SCOPE);
+        $levels = $this->getLevelsRealValue($levelsArg);
+        if ($levels !== null) {
+            return $this->refactorForFixedLevels($node, $levels);
+        }
 
-        $funcVariable = new Variable($this->variableNaming->createCountedValueName('dirnameFunc', $scope));
-
-        $closure = $this->createClosure();
-        $exprAssignClosure = $this->createExprAssign($funcVariable, $closure);
-
-        $this->nodesToAddCollector->addNodeBeforeNode($exprAssignClosure, $node);
-
-        $node->name = $funcVariable;
-
-        return $node;
+        return $this->refactorForVariableLevels($node);
     }
 
     private function getLevelsArg(FuncCall $funcCall): ?Arg
@@ -117,6 +103,44 @@ CODE_SAMPLE
         }
 
         return $funcCall->args[1];
+    }
+
+    private function getLevelsRealValue(Arg $levelsArg): ?int
+    {
+        if ($levelsArg->value instanceof LNumber) {
+            return $levelsArg->value->value;
+        }
+
+        return null;
+    }
+
+    private function refactorForFixedLevels(FuncCall $funcCall, int $levels): FuncCall
+    {
+        // keep only the 1st argument
+        $funcCall->args = [$funcCall->args[0]];
+
+        for ($i = 1; $i < $levels; ++$i) {
+            $funcCall = $this->createDirnameFuncCall(new Arg($funcCall));
+        }
+
+        return $funcCall;
+    }
+
+    private function refactorForVariableLevels(FuncCall $funcCall): FuncCall
+    {
+        $currentStmt = $funcCall->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        $scope = $currentStmt->getAttribute(AttributeKey::SCOPE);
+
+        $funcVariable = new Variable($this->variableNaming->createCountedValueName('dirnameFunc', $scope));
+
+        $closure = $this->createClosure();
+        $exprAssignClosure = $this->createExprAssign($funcVariable, $closure);
+
+        $this->nodesToAddCollector->addNodeBeforeNode($exprAssignClosure, $funcCall);
+
+        $funcCall->name = $funcVariable;
+
+        return $funcCall;
     }
 
     private function createExprAssign(Variable $var, Expr $expr): Expression

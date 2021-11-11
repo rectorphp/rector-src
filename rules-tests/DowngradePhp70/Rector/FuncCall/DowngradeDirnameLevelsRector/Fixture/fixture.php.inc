@@ -13,6 +13,12 @@ class Fixture
     {
         return dirname($path);
     }
+
+    public function dirnameWithFixedLevels($path)
+    {
+        dirname($path, 1);
+        dirname($path, 2);
+    }
 }
 
 ?>
@@ -38,6 +44,12 @@ class Fixture
     public function simpleDirname($path)
     {
         return dirname($path);
+    }
+
+    public function dirnameWithFixedLevels($path)
+    {
+        dirname($path);
+        dirname(dirname($path));
     }
 }
 
