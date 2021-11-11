@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-abstract class FooBar
+abstract class SkipPropertyFetchUsedInAssignExpr
 {
     private string $foo;
     private string $bar;
 
-    public function __construct(string $foo, string $bar) 
+    public function __construct(string $foo, string $bar)
     {
         $this->foo = $foo;
         $this->bar = $bar;
@@ -21,5 +21,3 @@ abstract class FooBar
         return md5($foobar);
     }
 }
-?>
------
