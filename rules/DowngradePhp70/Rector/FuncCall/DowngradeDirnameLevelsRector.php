@@ -75,7 +75,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $levelsArg = $this->getLevelsArg($node);
-        if ($levelsArg === null) {
+        if (! $levelsArg instanceof Arg) {
             return null;
         }
 
@@ -142,9 +142,9 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    private function createExprAssign(Variable $var, Expr $expr): Expression
+    private function createExprAssign(Variable $variable, Expr $expr): Expression
     {
-        return new Expression(new Assign($var, $expr));
+        return new Expression(new Assign($variable, $expr));
     }
 
     private function createClosure(): Closure
@@ -157,9 +157,9 @@ CODE_SAMPLE
         $closure->params = [new Param($pathVariable), new Param($levelsVariable)];
         $closure->stmts[] = $this->createExprAssign($dirVariable, $this->nodeFactory->createNull());
 
-        $whileCond = new GreaterOrEqual(new PreDec($levelsVariable), new LNumber(0));
+        $greaterOrEqual = new GreaterOrEqual(new PreDec($levelsVariable), new LNumber(0));
         $closure->stmts[] = new While_(
-            $whileCond,
+            $greaterOrEqual,
             [$this->createExprAssign(
                 $dirVariable,
                 $this->createDirnameFuncCall(new Arg(new Ternary($dirVariable, null, $pathVariable)))
