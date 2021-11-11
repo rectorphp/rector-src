@@ -331,14 +331,7 @@ final class ComplexNodeRemover
 
     private function isExpressionVariableNotAssign(Node $node): bool
     {
-        if ($node !== null) {
-            $expressionVariable = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-            if (! $expressionVariable instanceof Assign) {
-                return true;
-            }
-        }
-
-        return false;
+        $expressionVariable = $node->getAttribute(AttributeKey::PARENT_NODE);
+        return ! $expressionVariable instanceof Assign;
     }
 }
