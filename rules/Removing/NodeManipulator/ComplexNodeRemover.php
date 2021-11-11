@@ -58,11 +58,6 @@ final class ComplexNodeRemover
             }
 
             $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
-            if ($this->nodeComparator->areNodesEqual($assign->expr, $propertyFetch) && isset($assigns[$propertyName])) {
-                unset($assigns[$propertyName]);
-                continue;
-            }
-
             $propertyNames[] = $propertyName;
             $assigns[$propertyName][] = $assign;
         }
