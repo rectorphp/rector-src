@@ -104,7 +104,7 @@ CODE_SAMPLE
 
         $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOf(
             $node,
-            [Yield_::class] + ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES
+            array_merge([Yield_::class], ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES)
         );
         if ($hasNotNeverNodes) {
             return true;
