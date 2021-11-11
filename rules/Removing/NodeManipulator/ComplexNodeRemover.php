@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -153,9 +154,22 @@ final class ComplexNodeRemover
             $paramKeysToBeRemoved[] = $key;
         }
 
+        $this->processRemoveParamWithKeys($params, $paramKeysToBeRemoved);
+    }
+
+    /**
+     * @param Param[] $params
+     * @param int[] $paramKeysToBeRemoved
+     */
+    private function processRemoveParamWithKeys(array $params, array $paramKeysToBeRemoved): void
+    {
         foreach ($paramKeysToBeRemoved as $paramKeyToBeRemoved) {
             $nextKeyParamToBeRemoved = $paramKeyToBeRemoved + 1;
-            if (isset($params[$nextKeyParamToBeRemoved]) && ! in_array($nextKeyParamToBeRemoved, $paramKeysToBeRemoved, true)) {
+            if (isset($params[$nextKeyParamToBeRemoved]) && ! in_array(
+                $nextKeyParamToBeRemoved,
+                $paramKeysToBeRemoved,
+                true
+            )) {
                 break;
             }
 
