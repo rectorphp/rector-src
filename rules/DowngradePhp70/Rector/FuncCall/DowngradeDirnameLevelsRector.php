@@ -95,7 +95,7 @@ CODE_SAMPLE
         $closure = $this->createClosure();
         $exprAssignClosure = $this->createExprAssign($funcVariable, $closure);
 
-        $this->nodesToAddCollector->addNodesBeforeNode([$exprAssignClosure], $node);
+        $this->nodesToAddCollector->addNodeBeforeNode($exprAssignClosure, $node);
 
         $node->name = $funcVariable;
 
