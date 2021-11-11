@@ -130,7 +130,9 @@ final class ComplexNodeRemover
             return;
         }
 
-        foreach ($constructClassMethod->getParams() as $param) {
+        $params = $constructClassMethod->getParams();
+        $paramKeysToBeRemoved = [];
+        foreach ($params as $key => $param) {
             $variable = $this->betterNodeFinder->findFirst(
                 (array) $constructClassMethod->stmts,
                 fn (Node $node): bool => $this->nodeComparator->areNodesEqual($param->var, $node)
@@ -148,7 +150,16 @@ final class ComplexNodeRemover
                 continue;
             }
 
-            $this->nodeRemover->removeNode($param);
+            $paramKeysToBeRemoved[] = $key;
+        }
+
+        foreach ($paramKeysToBeRemoved as $paramKeyToBeRemoved) {
+            $nextKeyParamToBeRemoved = $paramKeyToBeRemoved + 1;
+            if (isset($params[$nextKeyParamToBeRemoved]) && ! in_array($nextKeyParamToBeRemoved, $paramKeysToBeRemoved, true)) {
+                break;
+            }
+
+            $this->nodeRemover->removeNode($params[$paramKeyToBeRemoved]);
         }
     }
 
