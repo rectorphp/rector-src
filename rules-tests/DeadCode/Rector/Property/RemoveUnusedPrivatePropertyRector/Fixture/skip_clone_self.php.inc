@@ -22,4 +22,10 @@ class SkipCloneSelf
         $obj = new self($var);
         echo $obj->var;
     }
+
+    public function run3($var)
+    {
+        $obj = new SkipCloneSelf($var);
+        echo $obj->var;
+    }
 }
