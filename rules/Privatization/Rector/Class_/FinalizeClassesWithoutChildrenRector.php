@@ -28,15 +28,15 @@ final class FinalizeClassesWithoutChildrenRector extends AbstractRector
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Embeddable',
     ];
-    
+
     /**
      * @var string[]
      */
     private const DOCTRINE_ODM_MAPPING_ANNOTATION = [
-        'Doctrine\ODM\MongoDB\Mapping\Annotations\Document', 
+        'Doctrine\ODM\MongoDB\Mapping\Annotations\Document',
         'Doctrine\ODM\MongoDB\Mapping\Annotations\EmbeddedDocument',
     ];
-    
+
     public function __construct(
         private ClassAnalyzer $classAnalyzer,
         private FamilyRelationsAnalyzer $familyRelationsAnalyzer
