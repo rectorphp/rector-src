@@ -163,14 +163,19 @@ final class ComplexNodeRemover
      */
     private function processRemoveParamWithKeys(array $params, array $paramKeysToBeRemoved): void
     {
+        $totalKeys = count($params) - 1;
         foreach ($paramKeysToBeRemoved as $paramKeyToBeRemoved) {
-            $nextKeyParamToBeRemoved = $paramKeyToBeRemoved + 1;
-            if (isset($params[$nextKeyParamToBeRemoved]) && ! in_array(
-                $nextKeyParamToBeRemoved,
-                $paramKeysToBeRemoved,
-                true
-            )) {
-                break;
+            $startNextKey = $paramKeyToBeRemoved + 1;
+            for ($nextKey = $startNextKey; $nextKey <= $totalKeys; ++$nextKey) {
+                if (! isset($params[$nextKey])) {
+                    continue;
+                }
+
+                if (in_array($nextKey, $paramKeysToBeRemoved, true)) {
+                    continue;
+                }
+
+                break 2;
             }
 
             $this->nodeRemover->removeNode($params[$paramKeyToBeRemoved]);
