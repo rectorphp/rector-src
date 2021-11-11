@@ -134,10 +134,8 @@ CODE_SAMPLE
                 }
 
                 $className = $this->nodeNameResolver->getName($attribute->name);
-                if (in_array($className, self::DOCTRINE_ORM_MAPPING_ANNOTATION, true)) {
-                    return true;
-                }
-                if (in_array($className, self::DOCTRINE_ODM_MAPPING_ANNOTATION, true)) {
+                if (in_array($className, self::DOCTRINE_ORM_MAPPING_ANNOTATION, true)
+                   || in_array($className, self::DOCTRINE_ODM_MAPPING_ANNOTATION, true)) {
                     return true;
                 }
             }
