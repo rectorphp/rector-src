@@ -183,10 +183,6 @@ final class ComplexNodeRemover
             $type = $type->getStaticObjectType();
         }
 
-        if (! $expr instanceof Clone_) {
-            return $this->isFoundAfterCloneOrNew($type, $expr, $parentAssign, $className, $propertyName);
-        }
-
         if ($type instanceof ObjectType) {
             return $this->isFoundAfterCloneOrNew($type, $expr, $parentAssign, $className, $propertyName);
         }
