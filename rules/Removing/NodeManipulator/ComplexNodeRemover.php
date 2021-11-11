@@ -30,7 +30,6 @@ use Rector\NodeRemoval\AssignRemover;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 
 final class ComplexNodeRemover
 {
@@ -40,7 +39,6 @@ final class ComplexNodeRemover
         private NodeNameResolver $nodeNameResolver,
         private BetterNodeFinder $betterNodeFinder,
         private NodeRemover $nodeRemover,
-        private NodesToRemoveCollector $nodesToRemoveCollector,
         private NodeComparator $nodeComparator,
         private CallAnalyzer $callAnalyzer,
         private NodeTypeResolver $nodeTypeResolver,
@@ -71,22 +69,10 @@ final class ComplexNodeRemover
             $assigns[] = $assign;
         }
 
-        $this->processRemovePropertyAssigns($property, $assigns);
+        $this->processRemovePropertyAssigns($assigns);
 
         if ($shouldKeepProperty) {
             return;
-        }
-
-        // remove __construct param
-
-        /** @var Property $property */
-        $this->nodeRemover->removeNode($property);
-
-        foreach ($property->props as $prop) {
-            if (! $this->nodesToRemoveCollector->isNodeRemoved($prop)) {
-                // if the property has at least one node left -> return
-                return;
-            }
         }
 
         $this->nodeRemover->removeNode($property);
@@ -95,7 +81,7 @@ final class ComplexNodeRemover
     /**
      * @param Assign[] $assigns
      */
-    private function processRemovePropertyAssigns(Property $property, array $assigns): void
+    private function processRemovePropertyAssigns(array $assigns): void
     {
         foreach ($assigns as $assign) {
             // remove assigns
