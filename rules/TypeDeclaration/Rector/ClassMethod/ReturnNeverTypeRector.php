@@ -103,10 +103,7 @@ CODE_SAMPLE
         }
 
         $yieldAndConditionalNodes = array_merge([Yield_::class], ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES);
-        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOf(
-            $node,
-            $yieldAndConditionalNodes
-        );
+        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOf($node, $yieldAndConditionalNodes);
         if ($hasNotNeverNodes) {
             return true;
         }
