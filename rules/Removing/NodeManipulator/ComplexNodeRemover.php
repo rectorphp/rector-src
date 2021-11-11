@@ -127,8 +127,10 @@ final class ComplexNodeRemover
             return null;
         }
 
-        $isInExpr = (bool) $this->betterNodeFinder->findFirst($assign->expr,
-            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $expr));
+        $isInExpr = (bool) $this->betterNodeFinder->findFirst(
+            $assign->expr,
+            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $expr)
+        );
 
         if ($isInExpr) {
             return null;
