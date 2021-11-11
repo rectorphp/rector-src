@@ -4,7 +4,7 @@ namespace Rector\Core\Tests\Issues\NullableParamNamespaced\Fixture;
 
 use PhpParser\Node\Stmt\ClassLike;
 
-class Fixture
+class DoNotAddShortFQCNClassNameDocblockNullable
 {
     public function run(?ClassLike $classLike): bool
     {
@@ -29,7 +29,7 @@ namespace Rector\Core\Tests\Issues\NullableParamNamespaced\Fixture;
 
 use PhpParser\Node\Stmt\ClassLike;
 
-class Fixture
+class DoNotAddShortFQCNClassNameDocblockNullable
 {
     public function run(?ClassLike $classLike): bool
     {
