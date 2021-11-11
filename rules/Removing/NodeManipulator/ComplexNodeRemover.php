@@ -44,6 +44,7 @@ final class ComplexNodeRemover
 
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
 
+        $assigns = [];
         foreach ($propertyFetches as $propertyFetch) {
             if ($this->shouldSkipPropertyForClassMethod($propertyFetch, $classMethodNamesToSkip)) {
                 $shouldKeepProperty = true;
@@ -55,9 +56,21 @@ final class ComplexNodeRemover
                 return;
             }
 
-            // remove assigns
-            $this->assignRemover->removeAssignNode($assign);
-            $this->removeConstructorDependency($assign);
+            $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
+            if ($this->nodeComparator->areNodesEqual($assign->expr, $propertyFetch) && isset($assigns[$propertyName])) {
+                unset($assigns[$propertyName]);
+                continue;
+            }
+
+            $assigns[$propertyName][] = $assign;
+        }
+
+        foreach ($assigns as $assignPropertyNamesAssign) {
+            foreach ($assignPropertyNamesAssign as $propertyNameAssign) {
+                // remove assigns
+                $this->assignRemover->removeAssignNode($propertyNameAssign);
+                $this->removeConstructorDependency($propertyNameAssign);
+            }
         }
 
         if ($shouldKeepProperty) {
