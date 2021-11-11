@@ -99,6 +99,7 @@ CODE_SAMPLE
         if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_ORM_MAPPING_ANNOTATION)) {
             return null;
         }
+
         if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_ODM_MAPPING_ANNOTATION)) {
             return null;
         }
@@ -139,6 +140,7 @@ CODE_SAMPLE
                 if (in_array($className, self::DOCTRINE_ORM_MAPPING_ANNOTATION, true)) {
                     return true;
                 }
+
                 if (in_array($className, self::DOCTRINE_ODM_MAPPING_ANNOTATION, true)) {
                     return true;
                 }
