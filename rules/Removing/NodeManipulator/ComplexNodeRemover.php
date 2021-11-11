@@ -168,14 +168,16 @@ final class ComplexNodeRemover
             $startNextKey = $paramKeyToBeRemoved + 1;
             for ($nextKey = $startNextKey; $nextKey <= $totalKeys; ++$nextKey) {
                 if (! isset($params[$nextKey])) {
-                    continue;
+                    // no next param, break the inner loop, remove the param
+                    break;
                 }
 
                 if (in_array($nextKey, $paramKeysToBeRemoved, true)) {
+                    // keep searching next key not in $paramKeysToBeRemoved
                     continue;
                 }
 
-                break 2;
+                return;
             }
 
             $this->nodeRemover->removeNode($params[$paramKeyToBeRemoved]);
