@@ -94,7 +94,7 @@ CODE_SAMPLE
         $classLike = $this->betterNodeFinder->findParentType($node, Class_::class);
 
         foreach ($this->parameterTypehints as $parameterTypehint) {
-            if ($classLike && ! $this->isObjectType($classLike, $parameterTypehint->getObjectType())) {
+            if (null !== $classLike && ! $this->isObjectType($classLike, $parameterTypehint->getObjectType())) {
                 continue;
             }
 
