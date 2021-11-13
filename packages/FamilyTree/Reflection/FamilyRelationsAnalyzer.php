@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
@@ -68,7 +69,7 @@ final class FamilyRelationsAnalyzer
         Property $property,
         Type $varType,
         ?Scope $scope,
-        Name | NullableType | PhpParserUnionType | null $propertyTypeNode
+        Name | NullableType | PhpParserUnionType | IntersectionType| null $propertyTypeNode
     ): PropertyType {
         if ($varType instanceof UnionType) {
             return new PropertyType($varType, $propertyTypeNode);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper;
 
 use PhpParser\Node;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -47,7 +48,7 @@ final class StaticTypeMapper
     }
 
     /**
-     * @return Name|NullableType|PhpParserUnionType|null
+     * @return Name|NullableType|PhpParserUnionType|IntersectionType|null
      */
     public function mapPHPStanTypeToPhpParserNode(Type $phpStanType, TypeKind $typeKind): ?Node
     {

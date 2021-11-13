@@ -130,7 +130,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Node\Name|UnionType|NullableType|null
+     * @return Node\Name|UnionType|NullableType|Node\IntersectionType|null
      */
     private function matchPropertySingleTypeNode(PropertyFetch $propertyFetch): ?Node
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper;
 
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType;
@@ -47,8 +48,10 @@ final class PHPStanStaticTypeMapper
         throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
     }
 
-    public function mapToPhpParserNode(Type $type, TypeKind $typeKind): Name | NullableType | UnionType | null
-    {
+    public function mapToPhpParserNode(
+        Type $type,
+        TypeKind $typeKind
+    ): Name | NullableType | UnionType | IntersectionType | null {
         foreach ($this->typeMappers as $typeMapper) {
             if (! is_a($type, $typeMapper->getNodeClass(), true)) {
                 continue;
