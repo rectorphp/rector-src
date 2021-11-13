@@ -107,7 +107,7 @@ final class InflectorSingularResolver
         foreach ($camelCases as $camelCase) {
             $value = $this->inflector->singularize($camelCase['camelcase']);
 
-            if (in_array($camelCase['camelcase'], ['is', 'has'])) {
+            if (in_array($camelCase['camelcase'], ['is', 'has'], true)) {
                 $value = $camelCase['camelcase'];
             }
 
