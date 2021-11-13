@@ -4,14 +4,21 @@ namespace Rector\Php82\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\PhpVersion;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-// TODO: consider should this implement MinPhpVersionInterface - won't hurt old PHP versions so I think no.
-class AllowDynamicPropertiesRector extends AbstractRector
+/**
+ * @changelog https://github.com/php/php-src/pull/7571
+ *
+ * @see \Rector\Tests\Php82\Rector\Class_\AllowDynamicPropertiesRector\AllowDynamicPropertiesRectorTest
+ */
+class AllowDynamicPropertiesRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
      * @var string
@@ -53,14 +60,9 @@ CODE_SAMPLE
     public function refactor(Node $node)
     {
         $skipAttribute = false;
+        assert($node instanceof Class_);
 
-        /**
-         * @var \PhpParser\Node\AttributeGroup $attrGroup
-         */
         foreach ($node->attrGroups as $attrGroup) {
-            /**
-             * @var \PhpParser\Node\Attribute $attribute
-             */
             foreach ($attrGroup->attrs as $key => $attribute) {
                 if ($this->isName($attribute->name, 'AllowDynamicProperties')) {
                     $skipAttribute = true;
@@ -76,11 +78,17 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function addAllowDynamicPropertiesAttribute(Node $node): Node
+    private function addAllowDynamicPropertiesAttribute(Class_ $node): Node
     {
         $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(self::ATTRIBUTE);
         $node->attrGroups[] = $attributeGroup;
 
         return $node;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        // TODO: Consider what actual version to target...
+        return PhpVersion::PHP_81;
     }
 }
