@@ -42,9 +42,11 @@ final class UnpackedArgList
         if ($arg->unpack) {
             $arg->unpack = false;
             $this->unpack($arg);
-        } else {
-            $this->addAsItem($arg);
+
+            return;
         }
+
+        $this->addAsItem($arg);
     }
 
     private function unpack(Arg $arg): void
@@ -57,9 +59,11 @@ final class UnpackedArgList
 
                 $this->addArrayItem($arrayItem);
             }
-        } else {
-            $this->addNextArg($arg);
+
+            return;
         }
+
+        $this->addNextArg($arg);
     }
 
     private function addAsItem(Arg $arg): void

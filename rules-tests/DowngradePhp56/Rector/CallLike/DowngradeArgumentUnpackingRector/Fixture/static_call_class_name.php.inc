@@ -9,20 +9,9 @@ final class SomeClass
         var_dump(func_get_args());
     }
 
-    public function f1(array $items)
+    public function call(array $items)
     {
         SomeClass::run(...$items);
-    }
-
-    public function f2(array $items)
-    {
-        self::run(...$items);
-    }
-
-    public function f3(array $items)
-    {
-        $class = 'SomeClass';
-        $class::{'run'}(...$items);
     }
 }
 
@@ -39,20 +28,9 @@ final class SomeClass
         var_dump(func_get_args());
     }
 
-    public function f1(array $items)
+    public function call(array $items)
     {
         call_user_func_array([SomeClass::class, 'run'], $items);
-    }
-
-    public function f2(array $items)
-    {
-        call_user_func_array(['self', 'run'], $items);
-    }
-
-    public function f3(array $items)
-    {
-        $class = 'SomeClass';
-        call_user_func_array([$class, 'run'], $items);
     }
 }
 

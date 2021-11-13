@@ -29,20 +29,24 @@ final class ArgManipulator
      */
     public function unpack(array $args): array
     {
-        $list = new UnpackedArgList($args);
+        $unpackedArgList = new UnpackedArgList($args);
 
-        return $list->toArray();
+        return $unpackedArgList->toArray();
     }
-    
+
     /**
      * @param Arg[] $args
      */
     public function canBeInlined(array $args): bool
     {
         foreach ($args as $arg) {
-            if ($arg->unpack && ! $arg->value instanceof Array_) {
-                return false;
+            if (! $arg->unpack) {
+                continue;
             }
+            if ($arg->value instanceof Array_) {
+                continue;
+            }
+            return false;
         }
 
         return true;

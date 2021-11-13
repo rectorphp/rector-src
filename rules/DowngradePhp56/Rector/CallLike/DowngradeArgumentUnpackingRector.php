@@ -118,36 +118,38 @@ CODE_SAMPLE
     private function methodCallToCallbackArg(MethodCall $methodCall): Arg
     {
         $object = $methodCall->var;
-        $method = $methodCall->name instanceof Identifier ? new String_($methodCall->name->toString()) : $methodCall->name;
-        $callback = new Array_([new ArrayItem($object), new ArrayItem($method)]);
+        $method = $methodCall->name instanceof Identifier ? new String_(
+            $methodCall->name->toString()
+        ) : $methodCall->name;
+        $array = new Array_([new ArrayItem($object), new ArrayItem($method)]);
 
-        return new Arg($callback);
+        return new Arg($array);
     }
 
     private function staticCallToCallbackArg(StaticCall $staticCall): Arg
     {
         if ($staticCall->class instanceof Name) {
-            if ($staticCall->class->isSpecialClassName()) {
-                $class = new String_($staticCall->class->toString());
-            } else {
-                $class = new ClassConstFetch($staticCall->class, 'class');
-            }
+            $class = $staticCall->class->isSpecialClassName()
+                ? new String_($staticCall->class->toString())
+                : new ClassConstFetch($staticCall->class, 'class');
         } else {
             $class = $staticCall->class;
         }
 
-        $method = $staticCall->name instanceof Identifier ? new String_($staticCall->name->toString()) : $staticCall->name;
-        $callback = new Array_([new ArrayItem($class), new ArrayItem($method)]);
+        $method = $staticCall->name instanceof Identifier ? new String_(
+            $staticCall->name->toString()
+        ) : $staticCall->name;
+        $array = new Array_([new ArrayItem($class), new ArrayItem($method)]);
 
-        return new Arg($callback);
+        return new Arg($array);
     }
 
     /**
      * @param Arg[] $args
      */
-    private function createCallUserFuncArrayFuncCall(Arg $callback, array $args): FuncCall
+    private function createCallUserFuncArrayFuncCall(Arg $arg, array $args): FuncCall
     {
-        return new FuncCall(new Name('call_user_func_array'), [$callback, $this->mergeArgs($args)]);
+        return new FuncCall(new Name('call_user_func_array'), [$arg, $this->mergeArgs($args)]);
     }
 
     /**
@@ -175,7 +177,7 @@ CODE_SAMPLE
             /** @var Array_ $array */
             $array = $unpackedArgs[0]->value;
             $arrayItems = array_filter($array->items);
-            $new->args = array_map(fn(ArrayItem $item) => new Arg($item->value), $arrayItems);
+            $new->args = array_map(fn (ArrayItem $item): Arg => new Arg($item->value), $arrayItems);
 
             return $new;
         }
@@ -187,15 +189,14 @@ CODE_SAMPLE
                 'parent' => new FuncCall(new Name('get_parent_class')),
                 default => new ClassConstFetch($new->class, 'class'),
             };
-        } else if ($new->class instanceof Expr) {
+        } elseif ($new->class instanceof Expr) {
             $class = $new->class;
         } else {
             return null;
         }
 
         $newReflection = new New_(new Name('\\ReflectionClass'), [new Arg($class)]);
-        $methodCall = new MethodCall($newReflection, 'newInstanceArgs', [$this->mergeArgs($args)]);
 
-        return $methodCall;
+        return new MethodCall($newReflection, 'newInstanceArgs', [$this->mergeArgs($args)]);
     }
 }
