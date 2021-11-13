@@ -249,6 +249,7 @@ final class BetterNodeFinder
             if (! $this->nodeNameResolver->isName($propertyFetch->var, 'this')) {
                 return false;
             }
+
             return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
         });
     }
