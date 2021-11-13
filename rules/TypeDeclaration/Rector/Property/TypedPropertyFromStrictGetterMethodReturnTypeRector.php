@@ -96,7 +96,7 @@ CODE_SAMPLE
         }
 
         $propertyType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($getterReturnType, TypeKind::PROPERTY());
-        if (! $propertyType instanceof \PhpParser\Node) {
+        if (! $propertyType instanceof Node) {
             return null;
         }
 
