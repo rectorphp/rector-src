@@ -62,18 +62,17 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $skipAttribute = false;
-
+        $alreadyHasAttribute = false;
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $key => $attribute) {
                 if ($this->isName($attribute->name, 'AllowDynamicProperties')) {
-                    $skipAttribute = true;
+                    $alreadyHasAttribute = true;
                     break 2;
                 }
             }
         }
 
-        if (!$skipAttribute) {
+        if (!$alreadyHasAttribute) {
             return $this->addAllowDynamicPropertiesAttribute($node);
         }
 
