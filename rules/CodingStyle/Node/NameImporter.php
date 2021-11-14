@@ -121,9 +121,11 @@ final class NameImporter
 
         $this->addUseImport($file, $name, $fullyQualifiedObjectType);
 
+        $className = $fullyQualifiedObjectType->getClassName();
+
         // possibly aliased
         foreach ($this->aliasedUses as $aliasedUse) {
-            if ($fullyQualifiedObjectType->getClassName() === $aliasedUse) {
+            if ($className === $aliasedUse) {
                 return null;
             }
         }
