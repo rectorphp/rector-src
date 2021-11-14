@@ -83,11 +83,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isNotCurrentClassLikePropertyFetch($node->expr, $isPropertyFetch)) {
+        /** @var Variable|PropertyFetch|StaticPropertyFetch $expr */
+        $expr = $node->expr;
+        if ($this->isNotCurrentClassLikePropertyFetch($expr, $isPropertyFetch)) {
             return null;
         }
 
-        $exprName = $this->getName($node->expr);
+        $exprName = $this->getName($expr);
         if ($exprName === null) {
             return null;
         }
