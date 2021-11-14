@@ -11,6 +11,8 @@ use MyCLabs\Enum\Enum;
  * @method static TypeKind RETURN()
  * @method static TypeKind PARAM()
  * @method static TypeKind ANY()
+ *
+ * @extends Enum<TypeKind>
  */
 final class TypeKind extends Enum
 {

@@ -12,6 +12,8 @@ use MyCLabs\Enum\Enum;
  * @method static ApplicationPhase PRINT()
  * @method static ApplicationPhase POST_RECTORS()
  * @method static ApplicationPhase PARSING()
+ *
+ * @extends Enum<ApplicationPhase>
  */
 final class ApplicationPhase extends Enum
 {

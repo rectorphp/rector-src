@@ -12,6 +12,8 @@ use MyCLabs\Enum\Enum;
  * @method static ObjectReference SELF()
  * @method static ObjectReference STATIC()
  * @method static ObjectReference PARENT()
+ *
+ * @extends Enum<ObjectReference>
  */
 final class ObjectReference extends Enum
 {
