@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\Class_\AllowDynamicPropertiesRector;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class AllowDynamicPropertiesRectorTest extends AbstractRectorTestCase
+final class AddAllowDynamicPropertiesAttributeRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php82\Rector\Class_\AllowDynamicPropertiesRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
 
 #[\Immutable]
 class SomeObject
@@ -12,7 +12,7 @@ class SomeObject
 -----
 <?php
 
-namespace Rector\Tests\Php82\Rector\Class_\AllowDynamicPropertiesRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
 
 #[\Immutable]
 #[\AllowDynamicProperties]

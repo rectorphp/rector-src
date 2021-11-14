@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Rector\Php82\Rector\Class_\AllowDynamicPropertiesRector;
+use Rector\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
-    $services->set(AllowDynamicPropertiesRector::class);
+    $services->set(AddAllowDynamicPropertiesAttributeRector::class);
 };

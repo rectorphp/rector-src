@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php82\Rector\Class_\AllowDynamicPropertiesRector\AllowDynamicPropertiesRectorTest
  */
-class AddAllowDynamicPropertiesRector extends AbstractRector
+class AddAllowDynamicPropertiesAttributeRector extends AbstractRector
 {
     /**
      * @var string
