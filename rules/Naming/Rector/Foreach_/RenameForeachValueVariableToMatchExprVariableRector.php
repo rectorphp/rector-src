@@ -8,12 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Type\ThisType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -125,6 +127,13 @@ CODE_SAMPLE
         $variableType = $expr instanceof PropertyFetch
             ? $this->nodeTypeResolver->getType($expr->var)
             : $this->nodeTypeResolver->getType($expr->class);
+
+        if ($variableType instanceof FullyQualifiedObjectType) {
+            $currentClassLike = $this->betterNodeFinder->findParentType($expr, ClassLike::class);
+            if ($currentClassLike instanceof ClassLike) {
+                return ! $this->nodeNameResolver->isName($currentClassLike, $variableType->getClassName());
+            }
+        }
 
         return ! $variableType instanceof ThisType;
     }
