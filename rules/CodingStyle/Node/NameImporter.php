@@ -59,9 +59,13 @@ final class NameImporter
             return null;
         }
 
-        $this->aliasedUses = $this->aliasUsesResolver->resolveFromStmts($uses);
+        $className = $staticType->getClassName();
+        // class has \, no need to search in aliases, mark aliasedUses as empty
+        $this->aliasedUses = str_contains($className, '\\')
+            ? []
+            : $this->aliasUsesResolver->resolveFromStmts($uses);
 
-        return $this->importNameAndCollectNewUseStatement($file, $name, $staticType);
+        return $this->importNameAndCollectNewUseStatement($file, $name, $staticType, $className);
     }
 
     private function shouldSkipName(Name $name): bool
@@ -100,7 +104,8 @@ final class NameImporter
     private function importNameAndCollectNewUseStatement(
         File $file,
         Name $name,
-        FullyQualifiedObjectType $fullyQualifiedObjectType
+        FullyQualifiedObjectType $fullyQualifiedObjectType,
+        string $className
     ): ?Name {
         // the same end is already imported → skip
         if ($this->classNameImportSkipper->shouldSkipNameForFullyQualifiedObjectType(
@@ -120,12 +125,6 @@ final class NameImporter
         }
 
         $this->addUseImport($file, $name, $fullyQualifiedObjectType);
-
-        $className = $fullyQualifiedObjectType->getClassName();
-
-        if (str_contains($className, '\\')) {
-            return $fullyQualifiedObjectType->getShortNameNode();
-        }
 
         // possibly aliased
         foreach ($this->aliasedUses as $aliasedUse) {
