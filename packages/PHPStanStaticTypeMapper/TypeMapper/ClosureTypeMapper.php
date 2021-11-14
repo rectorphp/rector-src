@@ -51,7 +51,7 @@ final class ClosureTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
-        if ($typeKind->equals(TypeKind::PROPERTY())) {
+        if ($typeKind->is(TypeKind::PROPERTY())) {
             return null;
         }
 

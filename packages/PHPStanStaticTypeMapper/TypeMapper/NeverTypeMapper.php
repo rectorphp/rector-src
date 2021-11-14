@@ -30,7 +30,7 @@ final class NeverTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
     {
-        if ($typeKind->equals(TypeKind::RETURN())) {
+        if ($typeKind->is(TypeKind::RETURN())) {
             return new IdentifierTypeNode('never');
         }
 

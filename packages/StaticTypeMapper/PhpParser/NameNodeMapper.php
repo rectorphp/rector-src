@@ -60,7 +60,7 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
             return new FullyQualifiedObjectType($name);
         }
 
-        if (ObjectReference::isValid($name)) {
+        if (ObjectReference::hasValue($name)) {
             return $this->createClassReferenceType($node, $name);
         }
 

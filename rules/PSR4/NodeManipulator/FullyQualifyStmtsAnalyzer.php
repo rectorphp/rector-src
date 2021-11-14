@@ -45,7 +45,7 @@ final class FullyQualifyStmtsAnalyzer
             }
 
             $name = $this->nodeNameResolver->getName($node);
-            if (ObjectReference::isValid($name)) {
+            if (ObjectReference::hasValue($name)) {
                 return null;
             }
 

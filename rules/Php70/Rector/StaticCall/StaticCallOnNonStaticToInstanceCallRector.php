@@ -150,7 +150,7 @@ CODE_SAMPLE
         }
 
         $className = $this->getName($staticCall->class);
-        if (ObjectReference::isValid($className)) {
+        if (ObjectReference::hasValue($className)) {
             return true;
         }
 

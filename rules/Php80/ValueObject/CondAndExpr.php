@@ -39,6 +39,6 @@ final class CondAndExpr
 
     public function equalsMatchKind(MatchKind $matchKind): bool
     {
-        return $this->matchKind->equals($matchKind);
+        return $this->matchKind->is($matchKind);
     }
 }

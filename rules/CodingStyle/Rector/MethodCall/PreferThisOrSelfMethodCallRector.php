@@ -91,7 +91,7 @@ CODE_SAMPLE
             }
 
             /** @var PreferenceSelfThis $preference */
-            if ($preference->equals(PreferenceSelfThis::PREFER_SELF())) {
+            if ($preference->is(PreferenceSelfThis::PREFER_SELF())) {
                 return $this->processToSelf($node);
             }
 

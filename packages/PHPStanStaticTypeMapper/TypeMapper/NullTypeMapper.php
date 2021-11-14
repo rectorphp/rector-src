@@ -39,16 +39,16 @@ final class NullTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
-        if ($typeKind->equals(TypeKind::PROPERTY())) {
+        if ($typeKind->is(TypeKind::PROPERTY())) {
             return null;
         }
 
-        if ($typeKind->equals(TypeKind::PARAM())) {
+        if ($typeKind->is(TypeKind::PARAM())) {
             return null;
         }
 
         // return type cannot be only null
-        if ($typeKind->equals(TypeKind::RETURN())) {
+        if ($typeKind->is(TypeKind::RETURN())) {
             return null;
         }
 

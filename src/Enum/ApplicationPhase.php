@@ -4,41 +4,30 @@ declare(strict_types=1);
 
 namespace Rector\Core\Enum;
 
-use MyCLabs\Enum\Enum;
-
-/**
- * @method static ApplicationPhase REFACTORING()
- * @method static ApplicationPhase PRINT_SKIP()
- * @method static ApplicationPhase PRINT()
- * @method static ApplicationPhase POST_RECTORS()
- * @method static ApplicationPhase PARSING()
- *
- * @extends Enum<ApplicationPhase>
- */
-final class ApplicationPhase extends Enum
+final class ApplicationPhase extends \MabeEnum\Enum
 {
     /**
      * @var string
      */
-    private const REFACTORING = 'refactoring';
+    public const REFACTORING = 'refactoring';
 
     /**
      * @var string
      */
-    private const PRINT_SKIP = 'printing skipped due error';
+    public const PRINT_SKIP = 'printing skipped due error';
 
     /**
      * @var string
      */
-    private const PRINT = 'print';
+    public const PRINT = 'print';
 
     /**
      * @var string
      */
-    private const POST_RECTORS = 'post rectors';
+    public const POST_RECTORS = 'post rectors';
 
     /**
      * @var string
      */
-    private const PARSING = 'parsing';
+    public const PARSING = 'parsing';
 }

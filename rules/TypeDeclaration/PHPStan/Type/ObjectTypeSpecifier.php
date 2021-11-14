@@ -63,7 +63,7 @@ final class ObjectTypeSpecifier
 
         $className = ltrim($objectType->getClassName(), '\\');
 
-        if (ObjectReference::isValid($className)) {
+        if (ObjectReference::hasValue($className)) {
             if (! $scope instanceof Scope) {
                 throw new ShouldNotHappenException();
             }

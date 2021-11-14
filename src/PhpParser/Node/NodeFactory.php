@@ -640,7 +640,7 @@ final class NodeFactory
             return new Name($className->getValue());
         }
 
-        if (ObjectReference::isValid($className)) {
+        if (ObjectReference::hasName($className)) {
             return new Name($className);
         }
 
