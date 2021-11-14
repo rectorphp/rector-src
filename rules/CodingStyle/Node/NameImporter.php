@@ -123,6 +123,8 @@ final class NameImporter
 
         $className = $fullyQualifiedObjectType->getClassName();
 
+        dump($className);
+
         // possibly aliased
         foreach ($this->aliasedUses as $aliasedUse) {
             if ($className === $aliasedUse) {
