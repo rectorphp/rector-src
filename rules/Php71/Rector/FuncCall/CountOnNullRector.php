@@ -21,7 +21,6 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\Constant\ConstantArrayType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -145,7 +144,7 @@ CODE_SAMPLE
         $types = $unionType->getTypes();
 
         foreach ($types as $type) {
-            if (! $type instanceof ConstantArrayType) {
+            if ($type->isIterable()->no()) {
                 return false;
             }
         }
