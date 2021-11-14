@@ -22,12 +22,9 @@ use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\Accessory\NonEmptyArrayType;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
-use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -46,10 +43,8 @@ use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrect
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\HasOffsetTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
-use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\Type\ObjectTypeSpecifier;
-use Symfony\Contracts\Service\Attribute\Required;
 
 final class NodeTypeResolver
 {
@@ -57,8 +52,6 @@ final class NodeTypeResolver
      * @var array<class-string<Node>, NodeTypeResolverInterface>
      */
     private array $nodeTypeResolvers = [];
-
-    private ArrayTypeAnalyzer $arrayTypeAnalyzer;
 
     /**
      * @param NodeTypeResolverInterface[] $nodeTypeResolvers
@@ -78,14 +71,6 @@ final class NodeTypeResolver
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
             $this->addNodeTypeResolver($nodeTypeResolver);
         }
-    }
-
-    // Prevents circular dependency
-
-    #[Required]
-    public function autowireNodeTypeResolver(ArrayTypeAnalyzer $arrayTypeAnalyzer): void
-    {
-        $this->arrayTypeAnalyzer = $arrayTypeAnalyzer;
     }
 
     /**
@@ -327,20 +312,6 @@ final class NodeTypeResolver
             ->yes();
     }
 
-    private function resolveArrayType(Expr $expr): Type
-    {
-        /** @var Scope|null $scope */
-        $scope = $expr->getAttribute(AttributeKey::SCOPE);
-
-        if ($scope instanceof Scope) {
-            $arrayType = $scope->getType($expr);
-            $arrayType = $this->genericClassStringTypeCorrector->correct($arrayType);
-            return $this->removeNonEmptyArrayFromIntersectionWithArrayType($arrayType);
-        }
-
-        return new ArrayType(new MixedType(), new MixedType());
-    }
-
     private function resolveByNodeTypeResolvers(Node $node): ?Type
     {
         foreach ($this->nodeTypeResolvers as $nodeClass => $nodeTypeResolver) {
@@ -352,37 +323,6 @@ final class NodeTypeResolver
         }
 
         return null;
-    }
-
-    private function removeNonEmptyArrayFromIntersectionWithArrayType(Type $type): Type
-    {
-        if (! $type instanceof IntersectionType) {
-            return $type;
-        }
-
-        if (count($type->getTypes()) !== 2) {
-            return $type;
-        }
-
-        if (! $type->isSubTypeOf(new NonEmptyArrayType())->yes()) {
-            return $type;
-        }
-
-        $otherType = null;
-        foreach ($type->getTypes() as $intersectionedType) {
-            if ($intersectionedType instanceof NonEmptyArrayType) {
-                continue;
-            }
-
-            $otherType = $intersectionedType;
-            break;
-        }
-
-        if ($otherType === null) {
-            return $type;
-        }
-
-        return $otherType;
     }
 
     private function isObjectTypeOfObjectType(ObjectType $resolvedObjectType, ObjectType $requiredObjectType): bool
