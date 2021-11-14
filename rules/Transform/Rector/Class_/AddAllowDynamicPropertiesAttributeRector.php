@@ -4,12 +4,9 @@ namespace Rector\Transform\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Type\ObjectType;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\PhpVersion;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,6 +23,7 @@ class AddAllowDynamicPropertiesAttributeRector extends AbstractRector
     private const ATTRIBUTE = 'AllowDynamicProperties';
 
     public function __construct(
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
     ) {
     }
@@ -62,17 +60,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $alreadyHasAttribute = false;
-        foreach ($node->attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $key => $attribute) {
-                if ($this->isName($attribute->name, 'AllowDynamicProperties')) {
-                    $alreadyHasAttribute = true;
-                    break 2;
-                }
-            }
-        }
-
-        if (!$alreadyHasAttribute) {
+        if (!$this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)) {
             return $this->addAllowDynamicPropertiesAttribute($node);
         }
 
