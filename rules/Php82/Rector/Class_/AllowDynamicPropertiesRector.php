@@ -72,10 +72,10 @@ CODE_SAMPLE
         }
 
         if (!$skipAttribute) {
-            $node = $this->addAllowDynamicPropertiesAttribute($node);
+            return $this->addAllowDynamicPropertiesAttribute($node);
         }
 
-        return $node;
+        return null;
     }
 
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Node
