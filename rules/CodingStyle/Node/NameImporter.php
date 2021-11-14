@@ -123,7 +123,9 @@ final class NameImporter
 
         $className = $fullyQualifiedObjectType->getClassName();
 
-        dump($className);
+        if (str_contains($className, '\\')) {
+            return null;
+        }
 
         // possibly aliased
         foreach ($this->aliasedUses as $aliasedUse) {
