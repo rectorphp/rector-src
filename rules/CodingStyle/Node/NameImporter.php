@@ -124,7 +124,7 @@ final class NameImporter
         $className = $fullyQualifiedObjectType->getClassName();
 
         if (str_contains($className, '\\')) {
-            return null;
+            return $fullyQualifiedObjectType->getShortNameNode();
         }
 
         // possibly aliased
