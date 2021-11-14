@@ -6,10 +6,12 @@ namespace Rector\Naming\Rector\Foreach_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Type\ThisType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -22,7 +24,8 @@ final class RenameForeachValueVariableToMatchExprVariableRector extends Abstract
 {
     public function __construct(
         private InflectorSingularResolver $inflectorSingularResolver,
-        private ForeachAnalyzer $foreachAnalyzer
+        private ForeachAnalyzer $foreachAnalyzer,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -73,11 +76,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->expr instanceof Variable && ! $node->expr instanceof PropertyFetch) {
+        $isPropertyFetch = $this->propertyFetchAnalyzer->isPropertyFetch($node->expr);
+        if (! $node->expr instanceof Variable && ! $isPropertyFetch) {
             return null;
         }
 
-        if ($this->isNotThisTypePropertyFetch($node->expr)) {
+        if ($this->isNotThisTypePropertyFetch($node->expr, $isPropertyFetch)) {
             return null;
         }
 
@@ -111,14 +115,18 @@ CODE_SAMPLE
         return $this->processRename($node, $valueVarName, $singularValueVarName);
     }
 
-    private function isNotThisTypePropertyFetch(PropertyFetch|Variable $expr): bool
+    private function isNotThisTypePropertyFetch(PropertyFetch|StaticPropertyFetch|Variable $expr, bool $isPropertyFetch): bool
     {
-        if ($expr instanceof PropertyFetch) {
-            $variableType = $this->getType($expr->var);
-            return ! $variableType instanceof ThisType;
+        if (! $isPropertyFetch) {
+            return false;
         }
 
-        return false;
+        /** @var PropertyFetch|StaticPropertyFetch $expr  */
+        $variableType = $expr instanceof PropertyFetch
+            ? $this->nodeTypeResolver->getType($expr->var)
+            : $this->nodeTypeResolver->getType($expr->class);
+
+        return ! $variableType instanceof ThisType;
     }
 
     private function processRename(Foreach_ $foreach, string $valueVarName, string $singularValueVarName): Foreach_
