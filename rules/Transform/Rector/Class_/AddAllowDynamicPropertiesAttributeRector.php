@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Php82\Rector\Class_;
+namespace Rector\Transform\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php82\Rector\Class_\AllowDynamicPropertiesRector\AllowDynamicPropertiesRectorTest
  */
-class AllowDynamicPropertiesRector extends AbstractRector implements MinPhpVersionInterface
+class AddAllowDynamicPropertiesRector extends AbstractRector
 {
     /**
      * @var string
@@ -85,11 +85,5 @@ CODE_SAMPLE
         $node->attrGroups[] = $attributeGroup;
 
         return $node;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        // TODO: Consider what actual version to target...
-        return PhpVersion::PHP_81;
     }
 }
