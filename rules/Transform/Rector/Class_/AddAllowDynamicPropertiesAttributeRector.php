@@ -16,7 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://github.com/php/php-src/pull/7571
  *
- * @see \Rector\Tests\Php82\Rector\Class_\AllowDynamicPropertiesRector\AllowDynamicPropertiesRectorTest
+ * @see \Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\AddAllowDynamicPropertiesAttributeRectorTest
  */
 class AddAllowDynamicPropertiesAttributeRector extends AbstractRector
 {
