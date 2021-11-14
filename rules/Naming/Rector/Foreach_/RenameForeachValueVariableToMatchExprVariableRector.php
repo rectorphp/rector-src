@@ -83,7 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isNotThisTypePropertyFetch($node->expr, $isPropertyFetch)) {
+        if ($this->isNotCurrentClassLikePropertyFetch($node->expr, $isPropertyFetch)) {
             return null;
         }
 
@@ -117,13 +117,15 @@ CODE_SAMPLE
         return $this->processRename($node, $valueVarName, $singularValueVarName);
     }
 
-    private function isNotThisTypePropertyFetch(PropertyFetch|StaticPropertyFetch|Variable $expr, bool $isPropertyFetch): bool
-    {
+    private function isNotCurrentClassLikePropertyFetch(
+        PropertyFetch|StaticPropertyFetch|Variable $expr,
+        bool $isPropertyFetch
+    ): bool {
         if (! $isPropertyFetch) {
             return false;
         }
 
-        /** @var PropertyFetch|StaticPropertyFetch $expr  */
+        /** @var PropertyFetch|StaticPropertyFetch $expr */
         $variableType = $expr instanceof PropertyFetch
             ? $this->nodeTypeResolver->getType($expr->var)
             : $this->nodeTypeResolver->getType($expr->class);
