@@ -20,6 +20,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -111,7 +112,7 @@ CODE_SAMPLE
 
         $countedType = $this->getType($countedNode);
 
-        if ($countedType instanceof UnionType && $this->isAlwaysIterableType($countedType)) {
+        if ($this->isAlwaysIterableType($countedType)) {
             return null;
         }
 
@@ -139,9 +140,13 @@ CODE_SAMPLE
         return new Ternary($conditionNode, $node, new LNumber(0));
     }
 
-    private function isAlwaysIterableType(UnionType $unionType): bool
+    private function isAlwaysIterableType(Type $possibleUnionType): bool
     {
-        $types = $unionType->getTypes();
+        if (! $possibleUnionType instanceof UnionType) {
+            return false;
+        }
+
+        $types = $possibleUnionType->getTypes();
 
         foreach ($types as $type) {
             if ($type->isIterable()->no()) {
