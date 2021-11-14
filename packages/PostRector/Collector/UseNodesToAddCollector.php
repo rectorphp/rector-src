@@ -89,12 +89,12 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
     public function isShortImported(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
         $shortName = $fullyQualifiedObjectType->getShortName();
+        $filePath = $file->getFilePath();
 
-        if ($this->isShortClassImported($file, $shortName)) {
+        if ($this->isShortClassImported($filePath, $shortName)) {
             return true;
         }
 
-        $filePath = $file->getFilePath();
         $fileFunctionUseImportTypes = $this->functionUseImportTypesInFilePath[$filePath] ?? [];
 
         foreach ($fileFunctionUseImportTypes as $fileFunctionUseImportType) {
@@ -143,10 +143,9 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         return $this->functionUseImportTypesInFilePath[$smartFileInfo->getRealPath()] ?? [];
     }
 
-    private function isShortClassImported(File $file, string $shortName): bool
+    private function isShortClassImported(string $filePath, string $shortName): bool
     {
-        $realPath = $file->getFilePath();
-        $fileUseImports = $this->useImportTypesInFilePath[$realPath] ?? [];
+        $fileUseImports = $this->useImportTypesInFilePath[$filePath] ?? [];
 
         foreach ($fileUseImports as $fileUseImport) {
             if ($fileUseImport->getShortName() === $shortName) {
