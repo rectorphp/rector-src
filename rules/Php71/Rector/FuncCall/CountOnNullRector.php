@@ -111,7 +111,7 @@ CODE_SAMPLE
 
         $countedType = $this->getType($countedNode);
 
-        if ($countedType instanceof UnionType && $this->isAlwaysArrayType($countedType)) {
+        if ($countedType instanceof UnionType && $this->isAlwaysIterableType($countedType)) {
             return null;
         }
 
@@ -139,7 +139,7 @@ CODE_SAMPLE
         return new Ternary($conditionNode, $node, new LNumber(0));
     }
 
-    private function isAlwaysArrayType(UnionType $unionType): bool
+    private function isAlwaysIterableType(UnionType $unionType): bool
     {
         $types = $unionType->getTypes();
 
