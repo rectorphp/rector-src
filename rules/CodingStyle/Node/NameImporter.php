@@ -126,6 +126,10 @@ final class NameImporter
 
         $this->addUseImport($file, $name, $fullyQualifiedObjectType);
 
+        if ($this->aliasedUses === []) {
+            return $fullyQualifiedObjectType->getShortNameNode();
+        }
+
         // possibly aliased
         foreach ($this->aliasedUses as $aliasedUse) {
             if ($className === $aliasedUse) {
