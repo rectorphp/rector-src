@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\MixedType;
@@ -166,6 +165,7 @@ CODE_SAMPLE
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
+
         $propertyType = $this->familyRelationsAnalyzer->getPossibleUnionPropertyType(
             $node,
             $varType,
@@ -200,7 +200,7 @@ CODE_SAMPLE
     }
 
     private function isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn(
-        Name | NullableType | PhpParserUnionType | Node\IntersectionType | null $node,
+        Name | ComplexType | null $node,
         Property $property,
         Type $type
     ): bool {
