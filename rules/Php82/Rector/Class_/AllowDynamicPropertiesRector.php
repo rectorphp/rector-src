@@ -57,10 +57,12 @@ CODE_SAMPLE
         return [Class_::class];
     }
 
-    public function refactor(Node $node)
+    /**
+     * @param Class_ $node
+     */
+    public function refactor(Node $node): ?Node
     {
         $skipAttribute = false;
-        assert($node instanceof Class_);
 
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $key => $attribute) {
@@ -78,7 +80,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function addAllowDynamicPropertiesAttribute(Class_ $node): Node
+    private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
     {
         $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(self::ATTRIBUTE);
         $node->attrGroups[] = $attributeGroup;
