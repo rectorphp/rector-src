@@ -244,50 +244,6 @@ final class NodeTypeResolver
         return $scope->getNativeType($expr);
     }
 
-    /**
-     * @deprecated
-     * @see Use NodeTypeResolver::getType() instead
-     */
-    public function getStaticType(Node $node): Type
-    {
-        $errorMessage = sprintf('Method "%s" is deprecated. Use "getType()" instead', __METHOD__);
-        trigger_error($errorMessage, E_USER_WARNING);
-        sleep(3);
-
-        if ($node instanceof Param || $node instanceof New_ || $node instanceof Return_) {
-            return $this->getType($node);
-        }
-
-        if (! $node instanceof Expr) {
-            return new MixedType();
-        }
-
-        if ($this->arrayTypeAnalyzer->isArrayType($node)) {
-            return $this->resolveArrayType($node);
-        }
-
-        if ($node instanceof Scalar) {
-            return $this->getType($node);
-        }
-
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return new MixedType();
-        }
-
-        $staticType = $scope->getType($node);
-        if ($staticType instanceof GenericObjectType) {
-            return $staticType;
-        }
-
-        if ($staticType instanceof ObjectType) {
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-            return $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $staticType, $scope);
-        }
-
-        return $this->accessoryNonEmptyStringTypeCorrector->correct($staticType);
-    }
-
     public function isNumberType(Node $node): bool
     {
         $nodeType = $this->getType($node);
