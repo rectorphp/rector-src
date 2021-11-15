@@ -13,9 +13,16 @@ use Rector\Core\PhpParser\NodeVisitor\CreatedByRuleNodeVisitor;
 use Rector\DowngradePhp74\Rector\ArrowFunction\ArrowFunctionToAnonymousFunctionRector;
 use Rector\DowngradePhp80\Rector\NullsafeMethodCall\DowngradeNullsafeToTernaryOperatorRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 
 final class InfiniteLoopValidator
 {
+    private const ALLOWED_INFINITE_RECTOR_CLASSES = [
+        DowngradeNullsafeToTernaryOperatorRector::class,
+        ArrowFunctionToAnonymousFunctionRector::class,
+        ClosureToArrowFunctionRector::class,
+    ];
+
     public function __construct(
         private BetterNodeFinder $betterNodeFinder
     ) {
@@ -26,11 +33,7 @@ final class InfiniteLoopValidator
      */
     public function process(Node $node, Node $originalNode, string $rectorClass): void
     {
-        if ($rectorClass === DowngradeNullsafeToTernaryOperatorRector::class) {
-            return;
-        }
-
-        if ($rectorClass === ArrowFunctionToAnonymousFunctionRector::class) {
+        if (in_array($rectorClass, self::ALLOWED_INFINITE_RECTOR_CLASSES, true)) {
             return;
         }
 
