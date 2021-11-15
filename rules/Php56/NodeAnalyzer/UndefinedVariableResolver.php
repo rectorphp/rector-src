@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Cast\Unset_ as UnsetCast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
-use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -116,9 +115,9 @@ final class UndefinedVariableResolver
         return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class], true);
     }
 
-    private function conditionParent(Node $parentNode): bool
+    private function isAsCoalesceLeft(Node $parentNode, Variable $variable): bool
     {
-        return in_array($parentNode::class, [Ternary::class, Coalesce::class], true);
+        return $parentNode instanceof Coalesce && $parentNode->left === $variable;
     }
 
     private function isAssignOrStaticVariableParent(Node $parentNode): bool
@@ -146,6 +145,10 @@ final class UndefinedVariableResolver
         }
 
         if ($this->issetOrUnsetParent($parentNode)) {
+            return true;
+        }
+
+        if ($this->isAsCoalesceLeft($parentNode, $variable)) {
             return true;
         }
 
