@@ -27,9 +27,6 @@ final class DocBlockClassRenamer
             return;
         }
 
-        $phpDocNodeTraverser = $this->renamingPhpDocNodeVisitorFactory->create();
-        $this->classRenamePhpDocNodeVisitor->setOldToNewTypes($oldToNewTypes);
-
         $phpDocNode = $phpDocInfo->getPhpDocNode();
         $tags = $phpDocNode->getTags();
 
@@ -49,6 +46,9 @@ final class DocBlockClassRenamer
                 }
             }
         }
+
+        $phpDocNodeTraverser = $this->renamingPhpDocNodeVisitorFactory->create();
+        $this->classRenamePhpDocNodeVisitor->setOldToNewTypes($oldToNewTypes);
 
         $phpDocNodeTraverser->traverse($phpDocInfo->getPhpDocNode());
     }
