@@ -9,10 +9,12 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignRef;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\Cast\Unset_ as UnsetCast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -112,6 +114,11 @@ final class UndefinedVariableResolver
     private function issetOrUnsetParent(Node $parentNode): bool
     {
         return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class], true);
+    }
+
+    private function conditionParent(Node $parentNode): bool
+    {
+        return in_array($parentNode::class, [Ternary::class, Coalesce::class], true);
     }
 
     private function isAssignOrStaticVariableParent(Node $parentNode): bool
