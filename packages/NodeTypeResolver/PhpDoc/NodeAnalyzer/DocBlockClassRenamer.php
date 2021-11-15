@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer;
 
+use PhpParser\Node\Name;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\NodeTypeResolver\PhpDoc\PhpDocNodeTraverser\RenamingPhpDocNodeVisitorFactory;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\ClassRenamePhpDocNodeVisitor;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 
 final class DocBlockClassRenamer
 {
@@ -28,6 +31,26 @@ final class DocBlockClassRenamer
 
         $phpDocNodeTraverser = $this->renamingPhpDocNodeVisitorFactory->create();
         $this->classRenamePhpDocNodeVisitor->setOldToNewTypes($oldToNewTypes);
+
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
+        $tags = $phpDocNode->getTags();
+
+        foreach ($tags as $tag) {
+            $tagValueNode = $tag->value;
+            $tagName = $phpDocInfo->resolveNameForPhpDocTagValueNode($tagValueNode);
+
+            if (! is_string($tagName)) {
+                continue;
+            }
+
+            $tagValues = $phpDocInfo->getTagsByName($tagName);
+            foreach ($tagValues as $tagValue) {
+                $name = new Name((string) $tagValue->value);
+                if ($name->isSpecialClassName()) {
+                    return;
+                }
+            }
+        }
 
         $phpDocNodeTraverser->traverse($phpDocInfo->getPhpDocNode());
     }

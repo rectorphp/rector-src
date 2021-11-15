@@ -485,7 +485,7 @@ final class PhpDocInfo
         return $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($phpDocTagValueNode, $this->node);
     }
 
-    private function resolveNameForPhpDocTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): string
+    public function resolveNameForPhpDocTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): ?string
     {
         foreach (self::TAGS_TYPES_TO_NAMES as $tagValueNodeType => $name) {
             /** @var class-string<PhpDocTagNode> $tagValueNodeType */
@@ -494,6 +494,6 @@ final class PhpDocInfo
             }
         }
 
-        throw new NotImplementedYetException($phpDocTagValueNode::class);
+        return null;
     }
 }
