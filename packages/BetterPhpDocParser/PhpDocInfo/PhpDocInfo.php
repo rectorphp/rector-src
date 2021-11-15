@@ -338,6 +338,9 @@ final class PhpDocInfo
         }
 
         $name = $this->resolveNameForPhpDocTagValueNode($phpDocTagValueNode);
+        if (! is_string($name)) {
+            return;
+        }
 
         $phpDocTagNode = new PhpDocTagNode($name, $phpDocTagValueNode);
         $this->addPhpDocTagNode($phpDocTagNode);
