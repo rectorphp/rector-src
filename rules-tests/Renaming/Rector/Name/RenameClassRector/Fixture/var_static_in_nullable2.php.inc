@@ -8,7 +8,7 @@ use DateTimeInterface;
 class VarStaticInNullable extends \DateTime
 {
     /**
-     * @var static|null
+     * @var ?static
      */
     private $dateTime;
 
@@ -32,7 +32,7 @@ use DateTimeInterface;
 class VarStaticInNullable extends \DateTime
 {
     /**
-     * @var static|null
+     * @var ?static
      */
     private $dateTime;
 
