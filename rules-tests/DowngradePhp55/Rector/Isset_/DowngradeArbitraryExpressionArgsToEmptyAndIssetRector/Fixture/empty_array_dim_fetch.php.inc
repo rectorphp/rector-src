@@ -6,7 +6,7 @@ final class SomeClass
 {
     public function run()
     {
-        return isset(some_function()) && isset($var);
+        return empty(some_function()['a']) && empty(['b']);
     }
 }
 
@@ -20,7 +20,7 @@ final class SomeClass
 {
     public function run()
     {
-        return some_function() !== null && isset($var);
+        return empty(some_function()['a']) && !['b'];
     }
 }
 

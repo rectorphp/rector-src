@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp55\Rector\Isset_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
@@ -71,16 +72,28 @@ CODE_SAMPLE
     private function shouldSkip(Isset_|Empty_ $node): bool
     {
         if ($node instanceof Empty_) {
-            return $node->expr instanceof Variable;
+            return $this->isAcceptable($node->expr);
         }
 
         foreach ($node->vars as $var) {
-            if (! $var instanceof Variable) {
+            if (! $this->isAcceptable($var)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Check whether an expression can be passed to empty/isset before PHP 5.5
+     */
+    private function isAcceptable(Expr $expr): bool
+    {
+        if ($expr instanceof Variable) {
+            return true;
+        }
+        
+        return $expr instanceof ArrayDimFetch;
     }
 
     private function refactorEmpty(Empty_ $empty): BooleanNot
@@ -93,7 +106,7 @@ CODE_SAMPLE
         $exprs = [];
         $currentExpr = null;
         foreach ($isset->vars as $var) {
-            if (! $var instanceof Variable) {
+            if (! $this->isAcceptable($var)) {
                 $currentExpr = new NotIdentical($var, $this->nodeFactory->createNull());
                 $exprs[] = $currentExpr;
                 continue;
