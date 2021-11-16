@@ -10,6 +10,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PropertyTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -95,6 +96,14 @@ final class DocBlockClassRenamer
     {
         if ($typeNode instanceof SpacingAwareArrayTypeNode) {
             $typeNode = $typeNode->type;
+        }
+
+        if ($typeNode instanceof GenericTypeNode) {
+            foreach ($typeNode->genericTypes as $type) {
+                if ($this->hasSpecialClassName($type)) {
+                    return true;
+                }
+            }
         }
 
         if (! $typeNode instanceof IdentifierTypeNode) {

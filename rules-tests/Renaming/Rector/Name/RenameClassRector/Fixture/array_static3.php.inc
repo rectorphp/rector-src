@@ -27,7 +27,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 use DateTime;
 use DateTimeInterface;
 
-class ArrayStatic2 extends \DateTime
+class ArrayStatic3 extends \DateTime
 {
     /**
      * @var array<static>
