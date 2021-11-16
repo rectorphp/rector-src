@@ -5,7 +5,17 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer;
 
 use PhpParser\Node\Name;
+use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PropertyTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\NodeTypeResolver\PhpDoc\PhpDocNodeTraverser\RenamingPhpDocNodeVisitorFactory;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\ClassRenamePhpDocNodeVisitor;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
@@ -34,16 +44,32 @@ final class DocBlockClassRenamer
             $tagValueNode = $tag->value;
             $tagName = $phpDocInfo->resolveNameForPhpDocTagValueNode($tagValueNode);
 
+            // MethodTagValueNode doesn't has type property
+            if ($tagValueNode instanceof MethodTagValueNode) {
+                continue;
+            }
+
             if (! is_string($tagName)) {
                 continue;
             }
 
-            $tagValues = $phpDocInfo->getTagsByName($tagName);
-            foreach ($tagValues as $tagValue) {
-                $name = new Name((string) $tagValue->value);
-                if ($name->isSpecialClassName()) {
-                    return;
-                }
+            /**
+             * @var ReturnTagValueNode|ParamTagValueNode|VarTagValueNode|PropertyTagValueNode $tagValueNode
+             */
+            if ($tagValueNode->type instanceof BracketsAwareUnionTypeNode && $this->hasSpecialClassNameInUnion(
+                $tagValueNode->type
+            )) {
+                return;
+            }
+
+            if ($tagValueNode->type instanceof NullableTypeNode && $this->hasSpecialClassName(
+                $tagValueNode->type->type
+            )) {
+                return;
+            }
+
+            if ($this->hasSpecialClassName($tagValueNode->type)) {
+                return;
             }
         }
 
@@ -51,5 +77,26 @@ final class DocBlockClassRenamer
         $this->classRenamePhpDocNodeVisitor->setOldToNewTypes($oldToNewTypes);
 
         $phpDocNodeTraverser->traverse($phpDocInfo->getPhpDocNode());
+    }
+
+    private function hasSpecialClassNameInUnion(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
+    {
+        foreach ($bracketsAwareUnionTypeNode->types as $type) {
+            if ($this->hasSpecialClassName($type)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function hasSpecialClassName(TypeNode $typeNode): bool
+    {
+        if (! $typeNode instanceof IdentifierTypeNode) {
+            return false;
+        }
+
+        $name = new Name((string) $typeNode);
+        return $name->isSpecialClassName();
     }
 }
