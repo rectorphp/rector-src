@@ -66,8 +66,6 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
             return new ClassStringType();
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-
         if ($loweredName === ObjectReference::SELF()->getValue()) {
             return $this->mapSelf($node);
         }
