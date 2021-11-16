@@ -90,13 +90,8 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function mapSelf(Node $node): MixedType | SelfObjectType
     {
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return new MixedType();
-        }
-
         // @todo check FQN
-        $className = $this->nodeNameResolver->getName($classLike);
+        $className = $this->resolveClassName($node);
         if (! is_string($className)) {
             // self outside the class, e.g. in a function
             return new MixedType();
@@ -109,6 +104,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
     {
         $className = $this->resolveClassName($node);
         if (! is_string($className)) {
+            // parent outside the class, e.g. in a function
             return new MixedType();
         }
 
@@ -127,6 +123,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
     {
         $className = $this->resolveClassName($node);
         if (! is_string($className)) {
+            // static outside the class, e.g. in a function
             return new MixedType();
         }
 
