@@ -107,7 +107,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function mapParent(Node $node): ParentStaticType | MixedType
     {
-        $className = $this->resolveValidClassName($node);
+        $className = $this->resolveClassName($node);
         if (! is_string($className)) {
             return new MixedType();
         }
@@ -125,7 +125,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function mapStatic(Node $node): MixedType | StaticType
     {
-        $className = $this->resolveValidClassName($node);
+        $className = $this->resolveClassName($node);
         if (! is_string($className)) {
             return new MixedType();
         }
@@ -135,7 +135,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
         return new StaticType($classReflection);
     }
 
-    private function resolveValidClassName(Node $node): ?string
+    private function resolveClassName(Node $node): ?string
     {
         $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
         if (! $classLike instanceof ClassLike) {
