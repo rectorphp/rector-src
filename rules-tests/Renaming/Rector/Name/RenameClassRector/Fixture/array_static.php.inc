@@ -39,7 +39,7 @@ class ArrayStatic extends \DateTime
     public function __construct(\DateTimeInterface $dateTime)
     {
         $this->dateTime = rand(0,1)
-            ? $dateTime
+            ? [$dateTime]
             : null;
     }
 }

@@ -16,6 +16,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
+use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\NodeTypeResolver\PhpDoc\PhpDocNodeTraverser\RenamingPhpDocNodeVisitorFactory;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\ClassRenamePhpDocNodeVisitor;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
@@ -92,6 +93,10 @@ final class DocBlockClassRenamer
 
     private function hasSpecialClassName(TypeNode $typeNode): bool
     {
+        if ($typeNode instanceof SpacingAwareArrayTypeNode) {
+            $typeNode = $typeNode->type;
+        }
+
         if (! $typeNode instanceof IdentifierTypeNode) {
             return false;
         }
