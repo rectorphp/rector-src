@@ -134,7 +134,10 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function resolveClassName(Node $node): ?string
     {
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+        $classLike = $node instanceof ClassLike
+            ? $node
+            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
+
         if (! $classLike instanceof ClassLike) {
             return null;
         }
