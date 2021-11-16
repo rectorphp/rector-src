@@ -48,7 +48,7 @@ final class DocBlockClassRenamer
 
             // MethodTagValueNode doesn't has type property
             if ($tagValueNode instanceof MethodTagValueNode) {
-                continue;
+                return;
             }
 
             if (! is_string($tagName)) {
