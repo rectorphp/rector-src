@@ -311,13 +311,7 @@ CODE_SAMPLE
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
     ): array {
         $values = $doctrineAnnotationTagValueNode->getValues();
-        $stringValues = [];
-
-        foreach ($values as $key => $value) {
-            if (is_string($value)) {
-                $stringValues[$key] = $value;
-            }
-        }
+        $stringValues = array_filter($values, 'is_string');
 
         return $stringValues;
     }
