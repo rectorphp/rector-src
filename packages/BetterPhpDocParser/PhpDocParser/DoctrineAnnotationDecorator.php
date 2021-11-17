@@ -257,7 +257,7 @@ final class DoctrineAnnotationDecorator
         string $annotationContent,
         string $tagName,
         string $fullyQualifiedAnnotationClass,
-        StartAndEnd $formerStartEnd
+        StartAndEnd $startAndEnd
     ): SpacelessPhpDocTagNode {
         $nestedTokenIterator = $this->tokenIteratorFactory->create($annotationContent);
 
@@ -276,7 +276,7 @@ final class DoctrineAnnotationDecorator
             SilentKeyMap::CLASS_NAMES_TO_SILENT_KEYS[$fullyQualifiedAnnotationClass] ?? null
         );
 
-        $doctrineAnnotationTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $formerStartEnd);
+        $doctrineAnnotationTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
 
         return new SpacelessPhpDocTagNode($tagName, $doctrineAnnotationTagValueNode);
     }
