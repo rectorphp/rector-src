@@ -311,9 +311,8 @@ CODE_SAMPLE
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
     ): array {
         $values = $doctrineAnnotationTagValueNode->getValues();
-        $stringValues = array_filter($values, 'is_string');
 
-        return $stringValues;
+        return array_filter($values, 'is_string');
     }
 
     /**
