@@ -5,8 +5,10 @@ namespace Rector\Transform\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -15,12 +17,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\AddAllowDynamicPropertiesAttributeRectorTest
  */
-class AddAllowDynamicPropertiesAttributeRector extends AbstractRector
+class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
      * @var string
      */
-    private const ATTRIBUTE = 'AllowDynamicProperties';
+    protected const ATTRIBUTE = 'AllowDynamicProperties';
 
     public function __construct(
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
@@ -73,5 +75,10 @@ CODE_SAMPLE
         $node->attrGroups[] = $attributeGroup;
 
         return $node;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
     }
 }
