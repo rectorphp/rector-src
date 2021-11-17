@@ -69,9 +69,9 @@ CODE_SAMPLE
         }
 
         $variable = $this->createVariable($node);
-        $exprAssign = new Expression(new Assign($node->valueVar, $variable));
+        $expression = new Expression(new Assign($node->valueVar, $variable));
         $node->valueVar = $variable;
-        $node->stmts = array_merge([$exprAssign], $node->stmts);
+        $node->stmts = array_merge([$expression], $node->stmts);
 
         return $node;
     }
