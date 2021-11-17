@@ -16,6 +16,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNod
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php80\NodeAnalyzer\AnnotationTargetResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeFactory\AttributeFlagFactory;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
@@ -54,7 +55,7 @@ final class DoctrineAnnotationClassToAttributeRector extends AbstractRector impl
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private PropertyToAddCollector $propertyToAddCollector,
-        private \Rector\Php80\NodeAnalyzer\AnnotationTargetResolver $annotationTargetResolver
+        private AnnotationTargetResolver $annotationTargetResolver
     ) {
     }
 
