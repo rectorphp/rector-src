@@ -532,6 +532,18 @@ final class PhpVersionFeature
     public const PHP81_RESOURCE_TO_OBJECT = PhpVersion::PHP_81;
 
     /**
+     * @see https://wiki.php.net/rfc/new_in_initializers
+     * @var int
+     */
+    public const NEW_INITIALIZERS = PhpVersion::PHP_81;
+
+    /**
+     * @see https://wiki.php.net/rfc/pure-intersection-types
+     * @var int
+     */
+    public const INTERSECTION_TYPES = PhpVersion::PHP_81;
+
+    /**
      * @see https://wiki.php.net/rfc/deprecate_dynamic_properties
      * @var int
      */

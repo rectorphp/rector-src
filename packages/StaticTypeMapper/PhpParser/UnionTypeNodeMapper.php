@@ -12,6 +12,9 @@ use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 
+/**
+ * @implements PhpParserNodeMapperInterface<UnionType>
+ */
 final class UnionTypeNodeMapper implements PhpParserNodeMapperInterface
 {
     private PhpParserNodeMapper $phpParserNodeMapper;

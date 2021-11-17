@@ -106,13 +106,9 @@ parameters:
         -
             message: '#Array (with keys|destruct) is not allowed\. Use value object to pass data instead#'
             path: rules/Php70/EregToPcreTransformer.php
-
-        # 3rd party code
         -
             message: '#Use explicit return value over magic &reference#'
             path: rules/Php70/EregToPcreTransformer.php
-
-        # 3rd party code
         -
             message: '#Use value object over return of values#'
             path: rules/Php70/EregToPcreTransformer.php
@@ -431,6 +427,12 @@ parameters:
                 - src/Application/FileProcessor.php
                 - src/PhpParser/Node/BetterNodeFinder.php
 
+        # find everything class, better then 10 different finders
+        -
+            message: '#Class cognitive complexity is \d+, keep it under 50#'
+            paths:
+                - src/PhpParser/Node/BetterNodeFinder.php
+
         -
             message: '#Parameter \#2 \$length of function str_split expects int<1, max\>, int given#'
             paths:
@@ -487,9 +489,6 @@ parameters:
             paths:
                 - packages/VersionBonding/PhpVersionedFilter.php
 
-        # waits for enum phpstan to support PHSPtan 1.0
-        - '#Constant Rector\\(.*?)\\Enum\\(.*?)\:\:(.*?) is unused#'
-
         # use lighter service for performance reasons
         -
             path: packages/Caching/ValueObject/Storage/FileCacheStorage.php
@@ -509,3 +508,9 @@ parameters:
         -
             path: rules/Php74/Rector/Property/TypedPropertyRector.php
             message: '#Class cognitive complexity is 36, keep it under 30#'
+
+        -
+            message: '#Autowired/inject method name must respect "autowire/inject" \+ class name#'
+            paths:
+                - packages/StaticTypeMapper/PhpDocParser/IntersectionTypeMapper.php
+                - packages/StaticTypeMapper/PhpParser/IntersectionTypeNodeMapper.php
