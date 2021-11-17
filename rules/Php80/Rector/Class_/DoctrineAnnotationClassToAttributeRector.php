@@ -7,7 +7,6 @@ namespace Rector\Php80\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -41,7 +40,6 @@ final class DoctrineAnnotationClassToAttributeRector extends AbstractRector impl
      * @var string
      */
     public const REMOVE_ANNOTATIONS = 'remove_annotations';
-
 
     /**
      * @var string
@@ -176,9 +174,10 @@ CODE_SAMPLE
 
     private function decorateTarget(PhpDocInfo $phpDocInfo, AttributeGroup $attributeGroup): void
     {
-        $targetDoctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(
-            'Doctrine\Common\Annotations\Annotation\Target'
-        );
+        $targetDoctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClasses([
+            'Doctrine\Common\Annotations\Annotation\Target',
+            'Target',
+        ]);
 
         if (! $targetDoctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return;
