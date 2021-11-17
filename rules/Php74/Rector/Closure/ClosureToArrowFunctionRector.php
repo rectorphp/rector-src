@@ -74,12 +74,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $arrowFunction = new ArrowFunction();
+        $arrowFunction = new ArrowFunction(['expr' => $returnExpr]);
         $arrowFunction->params = $node->params;
         $arrowFunction->returnType = $node->returnType;
         $arrowFunction->byRef = $node->byRef;
-
-        $arrowFunction->expr = $returnExpr;
 
         if ($node->static) {
             $arrowFunction->static = true;
