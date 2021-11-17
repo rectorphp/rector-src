@@ -7,6 +7,7 @@ use Rector\Core\ValueObject\PhpVersion;
 use Rector\DowngradePhp81\Rector\ClassConst\DowngradeFinalizePublicClassConstantRector;
 use Rector\DowngradePhp81\Rector\FunctionLike\DowngradeNeverTypeDeclarationRector;
 use Rector\DowngradePhp81\Rector\Instanceof_\DowngradePhp81ResourceReturnToObjectRector;
+use Rector\DowngradePhp81\Rector\Property\DowngradeReadonlyPropertyRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -17,4 +18,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(DowngradeFinalizePublicClassConstantRector::class);
     $services->set(DowngradeNeverTypeDeclarationRector::class);
     $services->set(DowngradePhp81ResourceReturnToObjectRector::class);
+    $services->set(DowngradeReadonlyPropertyRector::class);
 };
