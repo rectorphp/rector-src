@@ -17,7 +17,6 @@ use Rector\Compatibility\NodeAnalyzer\RequiredAnnotationPropertyAnalyzer;
 use Rector\Compatibility\NodeFactory\ConstructorClassMethodFactory;
 use Rector\Compatibility\ValueObject\PropertyWithPhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
