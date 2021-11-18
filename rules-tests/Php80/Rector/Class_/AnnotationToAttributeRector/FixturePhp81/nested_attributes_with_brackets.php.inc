@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixturePh
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81 as Assert;
 
-final class NestedAttribute
+final class NestedAttributeWithBrackets
 {
     /**
      * @Assert\All({
@@ -22,7 +22,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixturePh
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81 as Assert;
 
-final class NestedAttribute
+final class NestedAttributeWithBrackets
 {
     #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\All(nestedAsserts: [new \Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\NotNull()])]
     public $value;
