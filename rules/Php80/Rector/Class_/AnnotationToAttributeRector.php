@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use Rector\BetterPhpDocParser\Annotation\InverseJoinColumnCorrector;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -224,11 +223,9 @@ CODE_SAMPLE
             $nestedDoctrineAnnotationTagValueNodes = $this->findNestedDoctrineAnnotationTagValueNodes($phpDocChildNode);
 
             // depends on PHP 8.1+ - nested values, skip for now
-            if (count($nestedDoctrineAnnotationTagValueNodes) > 0) {
+            if ($nestedDoctrineAnnotationTagValueNodes !== []) {
                 continue;
             }
-
-            // $this->inverseJoinColumnCorrector->correctInverseJoinColumn($annotationToAttribute, $docNode);
 
             $doctrineTagValueNode = $phpDocChildNode->value;
 
@@ -241,9 +238,9 @@ CODE_SAMPLE
                     $phpDocChildNode->value,
                     $annotationToAttribute
                 );
-            }
 
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineTagValueNode);
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineTagValueNode);
+            }
         }
 
         return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
@@ -252,20 +249,20 @@ CODE_SAMPLE
     /**
      * @return DoctrineAnnotationTagValueNode[]
      */
-    private function findNestedDoctrineAnnotationTagValueNodes(PhpDocTagNode $phpDocChildNode): array
+    private function findNestedDoctrineAnnotationTagValueNodes(PhpDocTagNode $phpDocTagNode): array
     {
         $nestedDoctrineAnnotationTagValueNodes = [];
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable($phpDocChildNode->value, '', function (DocNode $node) use (
+        $phpDocNodeTraverser->traverseWithCallable($phpDocTagNode->value, '', function (DocNode $node) use (
             &$nestedDoctrineAnnotationTagValueNodes
         ) {
             if (! $node instanceof DoctrineAnnotationTagValueNode) {
-                return $node;
+                return null;
             }
 
             $nestedDoctrineAnnotationTagValueNodes[] = $node;
-            return $node;
+            return null;
         });
 
         return $nestedDoctrineAnnotationTagValueNodes;

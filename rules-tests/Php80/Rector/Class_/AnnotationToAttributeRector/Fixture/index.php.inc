@@ -11,5 +11,3 @@ use Doctrine\ORM\Mapping\Index;
 class ECommerceProduct
 {
 }
-
-?>

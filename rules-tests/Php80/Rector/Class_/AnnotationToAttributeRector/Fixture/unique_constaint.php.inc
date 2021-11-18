@@ -11,5 +11,3 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 class ECommerceProduct
 {
 }
-
-?>

@@ -25,7 +25,7 @@ final class CategoryNamespaceProvider
         'EntityFactory',
         'Repository',
         'Validator',
-        'Validator',
+        'Validation',
     ];
 
     /**
