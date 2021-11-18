@@ -13,7 +13,7 @@ function skipExactValue(){
         'type' => 'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html',
         'title' => 'Unprocessable Entity',
         'status' => 422,
-        'detail' => 'Failed Validation'
+        'detail' => 'Failed Validator'
     ];
 
     $response = json_encode($jsonData);

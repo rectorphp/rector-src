@@ -16,7 +16,8 @@ final class ConvertedAnnotationToAttributeParentRemover
     /**
      * @param AnnotationToAttribute[] $annotationsToAttributes
      */
-    public function processPhpDocNode(PhpDocNode $phpDocNode, array $annotationsToAttributes,): void {
+    public function processPhpDocNode(PhpDocNode $phpDocNode, array $annotationsToAttributes,): void
+    {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
 
         $phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function ($node) use (
