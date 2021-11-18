@@ -48,17 +48,6 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
     public const ANNOTATION_TO_ATTRIBUTE = 'annotations_to_attributes';
 
     /**
-     * List of annotations that should not be unwrapped
-     * @var string[]
-     */
-    private const SKIP_UNWRAP_ANNOTATIONS = [
-        'Symfony\Component\Validator\Constraints\All',
-        'Symfony\Component\Validator\Constraints\AtLeastOneOf',
-        'Symfony\Component\Validator\Constraints\Collection',
-        'Symfony\Component\Validator\Constraints\Sequentially',
-    ];
-
-    /**
      * @var AnnotationToAttribute[]
      */
     private array $annotationsToAttributes = [];
@@ -151,8 +140,7 @@ CODE_SAMPLE
 
         $this->convertedAnnotationToAttributeParentRemover->processPhpDocNode(
             $phpDocInfo->getPhpDocNode(),
-            $this->annotationsToAttributes,
-            self::SKIP_UNWRAP_ANNOTATIONS
+            $this->annotationsToAttributes
         );
 
         return $node;
@@ -234,10 +222,6 @@ CODE_SAMPLE
 
             if (! $docNode instanceof DoctrineAnnotationTagValueNode) {
                 return null;
-            }
-
-            if ($docNode->hasClassNames(self::SKIP_UNWRAP_ANNOTATIONS)) {
-                return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             foreach ($this->annotationsToAttributes as $annotationToAttribute) {
