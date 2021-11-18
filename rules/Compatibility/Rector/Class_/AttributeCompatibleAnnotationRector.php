@@ -7,6 +7,7 @@ namespace Rector\Compatibility\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -173,7 +174,7 @@ CODE_SAMPLE
 
             // unwrap nullable type, as variable is required
             $propertyType = $property->type;
-            if ($propertyType instanceof Node\NullableType) {
+            if ($propertyType instanceof NullableType) {
                 $propertyType = $propertyType->type;
             }
 
@@ -220,7 +221,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $property->type instanceof Node\NullableType;
+        return $property->type instanceof NullableType;
     }
 
     /**
