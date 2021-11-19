@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Rector\DowngradePhp81\Rector\ClassMethod\DowngradeNewInInitializerRector;
+use Rector\DowngradePhp81\Rector\FunctionLike\DowngradeNewInInitializerRector;
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 

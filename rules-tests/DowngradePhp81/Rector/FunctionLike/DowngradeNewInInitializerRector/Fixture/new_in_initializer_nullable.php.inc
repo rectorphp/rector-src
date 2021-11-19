@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DowngradePhp81\Rector\ClassMethod\DowngradeNewInInitializerRector\Fixture;
+namespace Rector\Tests\DowngradePhp81\Rector\FunctionLike\DowngradeNewInInitializerRector\Fixture;
 
 class SomeClass
 {
@@ -13,7 +13,7 @@ class SomeClass
 -----
 <?php
 
-namespace Rector\Tests\DowngradePhp81\Rector\ClassMethod\DowngradeNewInInitializerRector\Fixture;
+namespace Rector\Tests\DowngradePhp81\Rector\FunctionLike\DowngradeNewInInitializerRector\Fixture;
 
 class SomeClass
 {
