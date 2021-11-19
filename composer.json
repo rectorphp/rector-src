@@ -70,6 +70,7 @@
         "symplify/phpstan-extensions": "^10.0",
         "symplify/phpstan-rules": "^10.0",
         "symplify/rule-doc-generator": "^10.0",
+        "symplify/vendor-patches": "^10.0",
         "timeweb/phpstan-enum": "dev-22-upgrade-phpstan-to-1.0"
     },
     "replace": {
@@ -142,6 +143,11 @@
         "release": "vendor/bin/monorepo-builder release patch --ansi"
     },
     "extra": {
+        "patches": {
+            "symfony/dependency-injection": [
+                "patches/symfony-dependency-injection-loader-configurator-servicesconfigurator-php.patch"
+            ]
+        },
         "branch-alias": {
             "dev-main": "0.12-dev"
         }
