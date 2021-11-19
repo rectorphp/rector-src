@@ -23,6 +23,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
+use Rector\Php80\PhpDoc\PhpDocNodeFinder;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
@@ -53,7 +54,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private AttrGroupsFactory $attrGroupsFactory,
         private PhpDocTagRemover $phpDocTagRemover,
-        private \Rector\Php80\PhpDoc\PhpDocNodeFinder $phpDocNodeFinder,
+        private PhpDocNodeFinder $phpDocNodeFinder,
     ) {
     }
 
