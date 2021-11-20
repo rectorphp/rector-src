@@ -42,13 +42,13 @@ final class ExprUsedInNextNodeAnalyzer
                     }
                 }
 
-                /**
-                 * handle when used along with RemoveAlwaysElseRector
-                 */
                 if (! $node instanceof If_) {
                     return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
                 }
 
+                /**
+                 * handle when used along with RemoveAlwaysElseRector
+                 */
                 if (! $this->hasIfChangedByRemoveAlwaysElseRector($node)) {
                     return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
                 }
