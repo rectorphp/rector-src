@@ -48,16 +48,23 @@ final class ExprUsedInNextNodeAnalyzer
                  *   - previous statement of node is the expression with assign
                  *   - the next statement of previous statement is not equal to If_, as gone
                  */
-                if ($node instanceof If_) {
-                    $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
-                    if ($previousStatement instanceof Stmt) {
-                        $nextStatement = $previousStatement->getAttribute(AttributeKey::NEXT_NODE);
-                        return $nextStatement === $node;
-                    }
+                if ($node instanceof If_ && $this->hasNodeBeforeIfChanged($node)) {
+                    return true;
                 }
 
                 return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
             }
         );
+    }
+
+    private function hasNodeBeforeIfChanged(If_ $node): bool
+    {
+        $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
+        if ($previousStatement instanceof Stmt) {
+            $nextStatement = $previousStatement->getAttribute(AttributeKey::NEXT_NODE);
+            return $nextStatement === $node;
+        }
+
+        return false;
     }
 }
