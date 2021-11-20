@@ -149,6 +149,7 @@ CODE_SAMPLE
             return true;
         }
 
+        // handle used along with RemoveAlwaysElseRector
         $hasIfConditionNext = $this->hasIfConditionNext($assign);
         if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable, $hasIfConditionNext)) {
             return true;
