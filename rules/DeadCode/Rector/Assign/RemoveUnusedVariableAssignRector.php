@@ -131,13 +131,6 @@ CODE_SAMPLE
         );
     }
 
-    private function hasIfConditionNext(Assign $assign): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirstNext($assign,
-            fn (Node $subNode): bool => $subNode instanceof If_
-        );
-    }
-
     private function isUsed(Assign $assign, Variable $variable): bool
     {
         $isUsedPrev = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
@@ -149,9 +142,7 @@ CODE_SAMPLE
             return true;
         }
 
-        // handle used along with RemoveAlwaysElseRector
-        $hasIfConditionNext = $this->hasIfConditionNext($assign);
-        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable, $hasIfConditionNext)) {
+        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable, false, true)) {
             return true;
         }
 
