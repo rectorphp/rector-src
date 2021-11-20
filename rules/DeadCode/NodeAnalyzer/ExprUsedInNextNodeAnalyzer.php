@@ -40,7 +40,6 @@ final class ExprUsedInNextNodeAnalyzer
                         return true;
                     }
                 }
-
                 /**
                  * handle when used along with RemoveUnusedVariableAssignRector and RemoveAlwaysElseRector
                  * which the ElseIf_ gone, changed to If_, and the node structure be:
@@ -48,21 +47,23 @@ final class ExprUsedInNextNodeAnalyzer
                  *   - previous statement of node is the expression with assign
                  *   - the next statement of previous statement is not equal to If_, as gone
                  */
-                if ($node instanceof If_ && $this->hasNodeBeforeIfChanged($node)) {
-                    return true;
+                if (! $node instanceof If_) {
+                    return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
                 }
-
-                return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
+                if (! $this->hasNodeBeforeIfChanged($node)) {
+                    return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
+                }
+                return true;
             }
         );
     }
 
-    private function hasNodeBeforeIfChanged(If_ $node): bool
+    private function hasNodeBeforeIfChanged(If_ $if): bool
     {
-        $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
+        $previousStatement = $if->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
         if ($previousStatement instanceof Stmt) {
             $nextStatement = $previousStatement->getAttribute(AttributeKey::NEXT_NODE);
-            return $nextStatement === $node;
+            return $nextStatement === $if;
         }
 
         return false;
