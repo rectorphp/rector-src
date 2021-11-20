@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\Value;
 
+use PhpParser\BuilderHelpers;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\New_;
@@ -80,7 +82,18 @@ final class ValueNormalizer
         $resolveClass = $doctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
             PhpDocAttributeKey::RESOLVED_CLASS
         );
-        return new New_(new FullyQualified($resolveClass));
+
+        $values = $doctrineAnnotationTagValueNode->getValues();
+        if ($values !== []) {
+            $argValues = $this->normalize(...$doctrineAnnotationTagValueNode->getValues());
+            $argExpr = BuilderHelpers::normalizeValue($argValues);
+
+            $args = [new Arg($argExpr)];
+        } else {
+            $args = [];
+        }
+
+        return new New_(new FullyQualified($resolveClass), $args);
     }
 
     private function normalizeConstrExprNode(ConstExprNode $constExprNode): int|bool|float

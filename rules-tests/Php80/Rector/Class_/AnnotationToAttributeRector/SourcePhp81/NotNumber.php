@@ -6,4 +6,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp
 
 final class NotNumber
 {
+    public function __construct(int $number = 1000)
+    {
+    }
 }
