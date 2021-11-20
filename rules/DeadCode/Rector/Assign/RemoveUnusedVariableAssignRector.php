@@ -131,6 +131,13 @@ CODE_SAMPLE
         );
     }
 
+    private function hasIfConditionNext(Assign $assign): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstNext($assign,
+            fn (Node $subNode): bool => $subNode instanceof If_
+        );
+    }
+
     private function isUsed(Assign $assign, Variable $variable): bool
     {
         $isUsedPrev = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
@@ -142,7 +149,8 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable)) {
+        $hasIfConditionNext = $this->hasIfConditionNext($assign);
+        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable, $hasIfConditionNext)) {
             return true;
         }
 
