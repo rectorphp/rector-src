@@ -80,9 +80,8 @@ final class ValueNormalizer
             throw new InvalidNestedAttributeException();
         }
 
-        $resolveClass = $doctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
-            PhpDocAttributeKey::RESOLVED_CLASS
-        );
+        $annotationShortName = $doctrineAnnotationTagValueNode->identifierTypeNode->name;
+        $annotationShortName = ltrim($annotationShortName, '@');
 
         $values = $doctrineAnnotationTagValueNode->getValues();
         if ($values !== []) {
@@ -97,7 +96,6 @@ final class ValueNormalizer
 
             foreach ($argValues as $key => $argValue) {
                 $expr = BuilderHelpers::normalizeValue($argValue);
-
                 $name = null;
 
                 // for named arguments
@@ -111,7 +109,7 @@ final class ValueNormalizer
             $args = [];
         }
 
-        return new New_(new FullyQualified($resolveClass), $args);
+        return new New_(new Name($annotationShortName), $args);
     }
 
     private function normalizeConstrExprNode(ConstExprNode $constExprNode): int|bool|float

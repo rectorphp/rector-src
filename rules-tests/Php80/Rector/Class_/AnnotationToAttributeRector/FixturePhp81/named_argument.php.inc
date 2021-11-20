@@ -24,7 +24,7 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81 as 
 
 final class NamedArgument
 {
-    #[\Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\All(nestedAsserts: [new \Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\NotNumber(secondValue: 1000)])]
+    #[Assert\All(nestedAsserts: [new Assert\NotNumber(secondValue: 1000)])]
     public $value;
 }
 
