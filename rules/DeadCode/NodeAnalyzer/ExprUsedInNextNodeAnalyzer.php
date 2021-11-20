@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprUsedInNextNodeAnalyzer
@@ -42,17 +43,13 @@ final class ExprUsedInNextNodeAnalyzer
                 }
 
                 /**
-                 * handle when used along with RemoveUnusedVariableAssignRector and RemoveAlwaysElseRector
-                 * which the ElseIf_ gone, changed to If_, and the node structure be:
-                 *   - the node is an If_
-                 *   - previous statement of node is the expression with assign
-                 *   - the next statement of previous statement is not equal to If_, as gone
+                 * handle when used along with RemoveAlwaysElseRector
                  */
                 if (! $node instanceof If_) {
                     return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
                 }
 
-                if (! $this->hasNodeBeforeIfChanged($node)) {
+                if (! $this->hasIfChangedByRemoveAlwaysElseRector($node)) {
                     return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
                 }
 
@@ -61,14 +58,9 @@ final class ExprUsedInNextNodeAnalyzer
         );
     }
 
-    private function hasNodeBeforeIfChanged(If_ $if): bool
+    private function hasIfChangedByRemoveAlwaysElseRector(If_ $if): bool
     {
-        $previousStatement = $if->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
-        if ($previousStatement instanceof Stmt) {
-            $nextStatement = $previousStatement->getAttribute(AttributeKey::NEXT_NODE);
-            return $nextStatement === $if;
-        }
-
-        return false;
+        $createdByRule = $if->getAttribute(AttributeKey::CREATED_BY_RULE);
+        return $createdByRule === RemoveAlwaysElseRector::class;
     }
 }
