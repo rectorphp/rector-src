@@ -142,7 +142,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable, false, true)) {
+        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable)) {
             return true;
         }
 
