@@ -24,7 +24,7 @@ final class AnnotationToAttributeMapper
     /**
      * @return Expr|Expr[]
      */
-    public function map(mixed $value)
+    public function map(mixed $value): array|Expr
     {
         foreach ($this->annotationToAttributeMappers as $annotationToAttributeMapper) {
             if ($annotationToAttributeMapper->isCandidate($value)) {
