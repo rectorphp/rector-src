@@ -16,6 +16,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @changelog https://wiki.php.net/rfc/new_in_initializers
+ *
  * @see \Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\NewInInitializerRectorTest
  */
 final class NewInInitializerRector extends AbstractRector implements MinPhpVersionInterface
@@ -41,8 +43,10 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
+    private Logger $logger;
+
     public function __construct(
-        private Logger $logger = new NullLogger,
+        Logger $logger = new NullLogger,
     ) {
     }
 }

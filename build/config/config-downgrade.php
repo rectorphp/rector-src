@@ -64,6 +64,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 \PhpParser\PrettyPrinterAbstract::class,
                 \Helmich\TypoScriptParser\Parser\Traverser\Visitor::class,
                 \Symplify\SymplifyKernel\Contract\LightKernelInterface::class,
+                \Symfony\Component\String\Slugger\SluggerInterface::class,
             ],
             DowngradeParameterTypeWideningRector::SAFE_TYPES_TO_METHODS => [
                 ContainerInterface::class => [
@@ -101,6 +102,8 @@ final class DowngradeRectorConfig
         // no event-dispatcher used
         'vendor/symfony/console/Event/*',
         'vendor/symfony/console/EventListener/*',
+        // only for composer patches on composer install - not needed in final package
+        'vendor/cweagans/*',
         'nette/caching/src/Bridges/*',
 
         // This class has an issue for PHP 7.1:
