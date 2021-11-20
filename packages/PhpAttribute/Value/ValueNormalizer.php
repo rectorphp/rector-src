@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprFalseNode;
@@ -85,10 +86,27 @@ final class ValueNormalizer
 
         $values = $doctrineAnnotationTagValueNode->getValues();
         if ($values !== []) {
-            $argValues = $this->normalize(...$doctrineAnnotationTagValueNode->getValues());
-            $argExpr = BuilderHelpers::normalizeValue($argValues);
+            $argValues = $this->normalize(
+                $doctrineAnnotationTagValueNode->getValuesWithExplicitSilentAndWithoutQuotes()
+            );
 
-            $args = [new Arg($argExpr)];
+            $args = [];
+            if (! is_array($argValues)) {
+                throw new ShouldNotHappenException();
+            }
+
+            foreach ($argValues as $key => $argValue) {
+                $expr = BuilderHelpers::normalizeValue($argValue);
+
+                $name = null;
+
+                // for named arguments
+                if (is_string($key)) {
+                    $name = new Identifier($key);
+                }
+
+                $args[] = new Arg($expr, false, false, [], $name);
+            }
         } else {
             $args = [];
         }

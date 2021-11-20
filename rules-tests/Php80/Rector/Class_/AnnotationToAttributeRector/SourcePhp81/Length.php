@@ -6,4 +6,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp
 
 final class Length
 {
+    public function __construct(mixed $value = null)
+    {
+    }
 }
