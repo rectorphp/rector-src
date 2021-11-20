@@ -40,6 +40,7 @@ final class ExprUsedInNextNodeAnalyzer
                         return true;
                     }
                 }
+
                 /**
                  * handle when used along with RemoveUnusedVariableAssignRector and RemoveAlwaysElseRector
                  * which the ElseIf_ gone, changed to If_, and the node structure be:
@@ -50,9 +51,11 @@ final class ExprUsedInNextNodeAnalyzer
                 if (! $node instanceof If_) {
                     return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
                 }
+
                 if (! $this->hasNodeBeforeIfChanged($node)) {
                     return $this->exprUsedInNodeAnalyzer->isUsed($node, $expr);
                 }
+
                 return true;
             }
         );
