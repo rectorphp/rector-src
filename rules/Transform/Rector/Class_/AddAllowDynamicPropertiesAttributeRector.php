@@ -69,16 +69,16 @@ CODE_SAMPLE
         return null;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
+    }
+
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
     {
         $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(self::ATTRIBUTE);
         $node->attrGroups[] = $attributeGroup;
 
         return $node;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
     }
 }
