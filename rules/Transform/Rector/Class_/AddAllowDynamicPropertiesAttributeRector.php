@@ -17,12 +17,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\AddAllowDynamicPropertiesAttributeRectorTest
  */
-class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements MinPhpVersionInterface
+final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
      * @var string
      */
-    protected const ATTRIBUTE = 'AllowDynamicProperties';
+    private const ATTRIBUTE = 'AllowDynamicProperties';
 
     public function __construct(
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
