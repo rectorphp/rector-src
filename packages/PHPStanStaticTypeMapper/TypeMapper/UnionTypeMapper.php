@@ -86,7 +86,15 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         $unionTypesNodes = array_unique($unionTypesNodes);
-        return new BracketsAwareUnionTypeNode($unionTypesNodes);
+        if (count($unionTypesNodes) > 1) {
+            return new BracketsAwareUnionTypeNode($unionTypesNodes);
+        }
+
+        if (count($unionTypesNodes) === 1) {
+            return $unionTypesNodes[0];
+        }
+
+        throw new ShouldNotHappenException();
     }
 
     /**

@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\Core\Php\PhpVersionProvider;
@@ -38,6 +39,10 @@ final class StringTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
     {
+        if ($type instanceof ConstantStringType) {
+            return new IdentifierTypeNode('\'' . $type->getValue() . '\'');
+        }
+
         return new IdentifierTypeNode('string');
     }
 

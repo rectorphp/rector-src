@@ -88,14 +88,19 @@ final class StaticTypeMapperTest extends AbstractTestCase
 
     public function testStringUnion(): void
     {
-        $stringUnion = new UnionType([new ConstantStringType(Enum::MODE_ADD), new ConstantStringType(Enum::MODE_EDIT), new ConstantStringType(Enum::MODE_CLONE)]);
+        $stringUnion = new UnionType([
+            new ConstantStringType(Enum::MODE_ADD),
+            new ConstantStringType(Enum::MODE_EDIT),
+            new ConstantStringType(Enum::MODE_CLONE),
+        ]);
 
         $phpStanDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $stringUnion,
             TypeKind::PROPERTY()
         );
         $this->assertInstanceOf(BracketsAwareUnionTypeNode::class, $phpStanDocTypeNode);
-        $this->assertSame("'add'|'edit'|'clone'", $phpStanDocTypeNode->__toString());
+
+        $this->assertSame("'add'|'clone'|'edit'", (string) $phpStanDocTypeNode);
     }
 
     /**
