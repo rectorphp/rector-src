@@ -30,7 +30,7 @@ final class DowngradeGeneratedScalarTypesRector extends AbstractRector
 {
     /**
      * Extends list here as needed
-     * @var 'vendor/symfony/dependency-injection/Dumper/PhpDumper.php'[] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
+     * @var 'vendor/symfony/dependency-injection/Dumper/PhpDumper.php'[] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
      */
     private const FILES_TO_INCLUDE = [
         // https://github.com/symfony/symfony/blob/ad91659ea9b2a964f933bf27d0d1f1ef60fe9417/src/Symfony/Component/DependencyInjection/Dumper/PhpDumper.php#L1516
