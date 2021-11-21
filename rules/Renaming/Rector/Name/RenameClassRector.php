@@ -120,11 +120,14 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, array<string, string>> $configuration
+     * @param array<string, array<string, string>>|array<string, string> $configuration
      */
     public function configure(array $configuration): void
     {
-        $this->addOldToNewClasses($configuration[self::OLD_TO_NEW_CLASSES] ?? []);
+        $oldToNewClasses = $configuration[self::OLD_TO_NEW_CLASSES] ?? $configuration;
+        Assert::allString($oldToNewClasses);
+
+        $this->addOldToNewClasses($oldToNewClasses);
 
         $classMapFiles = $configuration[self::CLASS_MAP_FILES] ?? [];
         Assert::allString($classMapFiles);
