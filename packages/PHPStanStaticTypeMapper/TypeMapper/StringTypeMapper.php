@@ -40,7 +40,7 @@ final class StringTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
     {
         if ($type instanceof ConstantStringType) {
-            return new IdentifierTypeNode('\'' . $type->getValue() . '\'');
+            return new IdentifierTypeNode("'" . $type->getValue() . "'");
         }
 
         return new IdentifierTypeNode('string');

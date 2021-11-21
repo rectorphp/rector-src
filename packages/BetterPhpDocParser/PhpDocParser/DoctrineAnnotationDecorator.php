@@ -27,7 +27,7 @@ final class DoctrineAnnotationDecorator
 {
     /**
      * Special short annotations, that are resolved as FQN by Doctrine annotation parser
-     * @var string[]
+     * @var 'Target'[]
      */
     private const ALLOWED_SHORT_ANNOTATIONS = ['Target'];
 

@@ -10,7 +10,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 final class TypeAnalyzer
 {
     /**
-     * @var string[]
+     * @var 'object'[]
      */
     private const EXTRA_TYPES = ['object'];
 
