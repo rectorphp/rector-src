@@ -9,6 +9,8 @@ use Clue\React\NDJson\Encoder;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
+use Rector\Parallel\Enum\Action;
+use Rector\Parallel\Enum\ReactCommand;
 use Rector\Parallel\WorkerRunner;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,6 +33,7 @@ final class WorkerCommand extends AbstractProcessCommand
     protected function configure(): void
     {
         parent::configure();
+
         $this->setDescription('(Internal) Support for parallel process');
     }
 

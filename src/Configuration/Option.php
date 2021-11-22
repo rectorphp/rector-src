@@ -185,4 +185,9 @@ final class Option
      * @var string
      */
     public const PARALLEL_IDENTIFIER = 'identifier';
+
+    /**
+     * @var string
+     */
+    public const PARALLEL_PORT = 'port';
 }
