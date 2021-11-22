@@ -111,6 +111,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NEW_INITIALIZERS;
+    }
+
     private function processPropertyPromotion(ClassMethod $classMethod, Param $param, string $paramName): void
     {
         $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
@@ -125,10 +130,5 @@ CODE_SAMPLE
 
         $param->flags = $property->flags;
         $this->removeNode($property);
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::NEW_INITIALIZERS;
     }
 }
