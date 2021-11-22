@@ -43,10 +43,8 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-    private Logger $logger;
-
     public function __construct(
-        Logger $logger = new NullLogger,
+        private Logger $logger = new NullLogger,
     ) {
     }
 }
