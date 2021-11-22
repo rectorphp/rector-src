@@ -10,7 +10,6 @@ use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
-use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Contract\Rector\RectorInterface;
@@ -31,7 +30,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ProcessCommand extends Command
+final class ProcessCommand extends AbstractProcessCommand
 {
     /**
      * @param RectorInterface[] $rectors
@@ -47,7 +46,6 @@ final class ProcessCommand extends Command
         private ProcessResultFactory $processResultFactory,
         private NodeScopeResolver $nodeScopeResolver,
         private DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private ConfigurationFactory $configurationFactory,
         private MissedRectorDueVersionChecker $missedRectorDueVersionChecker,
         private EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,
         private array $rectors
