@@ -7,7 +7,7 @@ final class SkipWithEncapsedStringPart
     public function run(int $id): array
     {
         $data                = [
-            'url' => $id . '/foo'
+            'url' => "/$id.pdf",
         ];
 
         return $data;
