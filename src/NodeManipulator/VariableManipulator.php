@@ -6,6 +6,7 @@ namespace Rector\Core\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
@@ -56,7 +57,7 @@ final class VariableManipulator
                     return null;
                 }
 
-                if ($node->expr instanceof Encapsed) {
+                if ($this->hasEncapsedStringPart($node->expr)) {
                     return null;
                 }
 
@@ -65,10 +66,6 @@ final class VariableManipulator
                 }
 
                 if ($this->isTestCaseExpectedVariable($node->var)) {
-                    return null;
-                }
-
-                if ($node->expr instanceof Array_ && $this->hasEncapsedStringPart($node->expr)) {
                     return null;
                 }
 
@@ -91,10 +88,10 @@ final class VariableManipulator
         );
     }
 
-    private function hasEncapsedStringPart(Array_ $array): bool
+    private function hasEncapsedStringPart(Expr $expr): bool
     {
         return (bool) $this->betterNodeFinder->findFirst(
-            $array,
+            $expr,
             fn (Node $subNode): bool => $subNode instanceof Encapsed || $subNode instanceof EncapsedStringPart
         );
     }
