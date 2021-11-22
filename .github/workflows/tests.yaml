@@ -33,10 +33,10 @@ jobs:
 
             -   uses: "ramsey/composer-install@v1"
 
-            # with --runner=WrapperRunner, it is faster, only ideal with 5 processes (p5)
+            # with --runner=WrapperRunner, it is faster, only ideal with 2 processes (p2)
             # @see https://github.com/rectorphp/rector-src/pull/551#issuecomment-889990905
-#            -   run: vendor/bin/paratest -p5 --runner=WrapperRunner ${{ matrix.path }} --colors
-#                if: ${{ matrix.path == 'rules-tests' }}
+            -   run: vendor/bin/paratest -p2 --runner=WrapperRunner ${{ matrix.path }} --colors --verbose
+                if: ${{ matrix.path == 'rules-tests' }}
 
             -   run: vendor/bin/phpunit ${{ matrix.path }}
-#                if: ${{ matrix.path != 'rules-tests' }}
+                if: ${{ matrix.path != 'rules-tests' }}
