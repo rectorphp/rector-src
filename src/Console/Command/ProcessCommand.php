@@ -25,7 +25,6 @@ use Rector\Core\ValueObjectFactory\ProcessResultFactory;
 use Rector\VersionBonding\Application\MissedRectorDueVersionChecker;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,7 +37,6 @@ final class ProcessCommand extends AbstractProcessCommand
     public function __construct(
         private AdditionalAutoloader $additionalAutoloader,
         private ChangedFilesDetector $changedFilesDetector,
-        private OutputFormatterCollector $outputFormatterCollector,
         private MissingRectorRulesReporter $missingRectorRulesReporter,
         private ApplicationFileProcessor $applicationFileProcessor,
         private FileFactory $fileFactory,
@@ -48,6 +46,7 @@ final class ProcessCommand extends AbstractProcessCommand
         private DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private MissedRectorDueVersionChecker $missedRectorDueVersionChecker,
         private EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,
+        private OutputFormatterCollector $outputFormatterCollector,
         private array $rectors
     ) {
         parent::__construct();
@@ -55,9 +54,20 @@ final class ProcessCommand extends AbstractProcessCommand
 
     protected function configure(): void
     {
-        parent::configure();
-
         $this->setDescription('Upgrades or refactors source code with provided rectors');
+
+        $names = $this->outputFormatterCollector->getNames();
+
+        $description = sprintf('Select output format: "%s".', implode('", "', $names));
+        $this->addOption(
+            Option::OUTPUT_FORMAT,
+            Option::OUTPUT_FORMAT_SHORT,
+            InputOption::VALUE_OPTIONAL,
+            $description,
+            ConsoleOutputFormatter::NAME
+        );
+
+        parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -102,7 +112,6 @@ final class ProcessCommand extends AbstractProcessCommand
         $outputFormat = $configuration->getOutputFormat();
         $outputFormatter = $this->outputFormatterCollector->getByName($outputFormat);
 
-        // here should be value obect factory
         $processResult = $this->processResultFactory->create($files);
         $outputFormatter->report($processResult, $configuration);
 

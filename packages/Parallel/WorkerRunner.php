@@ -7,6 +7,7 @@ namespace Rector\Parallel;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Rector\Core\Application\FileProcessor;
+use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Parallel\Enum\Action;
@@ -52,7 +53,7 @@ final class WorkerRunner
         // 2. collect diffs + errors from file processor
         $decoder->on(ReactEvent::DATA, function (array $json) use ($encoder, $configuration): void {
             $action = $json[ReactCommand::ACTION];
-            if ($action !== Action::CHECK) {
+            if ($action !== Action::PROCESS) {
                 return;
             }
 
@@ -67,10 +68,8 @@ final class WorkerRunner
             foreach ($filePaths as $filePath) {
                 try {
                     $smartFileInfo = new SmartFileInfo($filePath);
-                    $currentErrorsAndFileDiffs = $this->fileProcessor->processFileInfo(
-                        $smartFileInfo,
-                        $configuration
-                    );
+                    $file = new File($smartFileInfo, $smartFileInfo->getContents());
+                    $currentErrorsAndFileDiffs = $this->fileProcessor->refactor($file, $configuration);
 
                     $errorAndFileDiffs = $this->parametersMerger->merge(
                         $errorAndFileDiffs,

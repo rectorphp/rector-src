@@ -22,11 +22,6 @@ final class Name
     /**
      * @var string
      */
-    public const CHECKER_CLASS = 'checker_class';
-
-    /**
-     * @var string
-     */
     public const RELATIVE_FILE_PATH = 'relative_file_path';
 
     /**
@@ -42,5 +37,5 @@ final class Name
     /**
      * @var string
      */
-    public const APPLIED_CHECKERS = 'applied_checkers';
+    public const APPLIED_RECTORS = 'applied_rectors';
 }

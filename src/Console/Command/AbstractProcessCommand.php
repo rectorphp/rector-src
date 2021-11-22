@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\Console\Command;
 
-use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Console\Output\OutputFormatterCollector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,15 +15,10 @@ abstract class AbstractProcessCommand extends Command
 {
     protected ConfigurationFactory $configurationFactory;
 
-    protected OutputFormatterCollector $outputFormatterCollector;
-
     #[Required]
-    public function autowire(
-        ConfigurationFactory $configurationFactory,
-        OutputFormatterCollector $outputFormatterCollector,
-    ): void {
+    public function autowire(ConfigurationFactory $configurationFactory,): void
+    {
         $this->configurationFactory = $configurationFactory;
-        $this->outputFormatterCollector = $outputFormatterCollector;
     }
 
     protected function configure(): void
@@ -50,17 +43,6 @@ abstract class AbstractProcessCommand extends Command
             'Path to file with extra autoload (will be included)'
         );
 
-        $names = $this->outputFormatterCollector->getNames();
-
-        $description = sprintf('Select output format: "%s".', implode('", "', $names));
-        $this->addOption(
-            Option::OUTPUT_FORMAT,
-            Option::OUTPUT_FORMAT_SHORT,
-            InputOption::VALUE_OPTIONAL,
-            $description,
-            ConsoleOutputFormatter::NAME
-        );
-
         $this->addOption(
             Option::NO_PROGRESS_BAR,
             null,
@@ -76,5 +58,8 @@ abstract class AbstractProcessCommand extends Command
         );
 
         $this->addOption(Option::CLEAR_CACHE, null, InputOption::VALUE_NONE, 'Clear unchaged files cache');
+
+        $this->addOption(Option::PARALLEL_PORT, null, InputOption::VALUE_REQUIRED);
+        $this->addOption(Option::PARALLEL_IDENTIFIER, null, InputOption::VALUE_REQUIRED);
     }
 }

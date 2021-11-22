@@ -14,7 +14,7 @@ final class Action
     /**
      * @var string
      */
-    public const CHECK = 'check';
+    public const PROCESS = 'process';
 
     /**
      * @var string

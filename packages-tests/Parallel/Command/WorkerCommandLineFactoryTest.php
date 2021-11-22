@@ -13,7 +13,6 @@ use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
-use Symplify\PackageBuilder\Console\Command\CommandNaming;
 use Symplify\PackageBuilder\Testing\AbstractKernelTestCase;
 
 final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
@@ -46,7 +45,7 @@ final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
      */
     public function test(array $inputParameters, string $expectedCommand): void
     {
-        $inputDefinition = $this->prepareCheckCommandDefinition();
+        $inputDefinition = $this->prepareProcessCommandDefinition();
         $arrayInput = new ArrayInput($inputParameters, $inputDefinition);
 
         $workerCommandLine = $this->workerCommandLineFactory->create(
@@ -70,23 +69,23 @@ final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
 
         yield [
             [
-                self::COMMAND => CommandNaming::classToName(ProcessCommand::class),
-                Option::PATHS => ['src'],
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
             ],
             "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
 
         yield [
             [
-                self::COMMAND => 'check',
-                Option::PATHS => ['src'],
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
             ],
             "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
     }
 
-    private function prepareCheckCommandDefinition(): InputDefinition
+    private function prepareProcessCommandDefinition(): InputDefinition
     {
         $inputDefinition = $this->processCommand->getDefinition();
 

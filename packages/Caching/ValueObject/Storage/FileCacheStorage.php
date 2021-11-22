@@ -10,6 +10,7 @@ use Nette\Utils\Random;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Caching\ValueObject\CacheFilePaths;
 use Rector\Caching\ValueObject\CacheItem;
+use Rector\Core\Exception\Cache\CachingException;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
@@ -60,7 +61,7 @@ final class FileCacheStorage implements CacheStorageInterface
         $exported = @\var_export(new CacheItem($variableKey, $data), true);
         $errorAfter = \error_get_last();
         if ($errorAfter !== null && $errorBefore !== $errorAfter) {
-            throw new \Rector\Core\Exception\Cache\CachingException(\sprintf(
+            throw new CachingException(\sprintf(
                 'Error occurred while saving item %s (%s) to cache: %s',
                 $key,
                 $variableKey,

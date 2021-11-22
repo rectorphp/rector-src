@@ -65,7 +65,7 @@ final class WorkerCommandLineFactory
         $processCommandArray[] = escapeshellarg($identifier);
 
         /** @var string[] $paths */
-        $paths = $input->getArgument(Option::PATHS);
+        $paths = $input->getArgument(Option::SOURCE);
         foreach ($paths as $path) {
             $processCommandArray[] = escapeshellarg($path);
         }

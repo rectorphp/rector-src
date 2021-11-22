@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\Exception\Cache;
 
-final class CachingException extends \Exception
+use Exception;
+
+final class CachingException extends Exception
 {
 }

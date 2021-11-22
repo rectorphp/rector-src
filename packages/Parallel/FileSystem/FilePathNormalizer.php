@@ -6,6 +6,9 @@ namespace Rector\Parallel\FileSystem;
 
 use Symplify\SmartFileSystem\SmartFileInfo;
 
+/**
+ * @api @todo complete parallel run
+ */
 final class FilePathNormalizer
 {
     /**

@@ -12,6 +12,8 @@ use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
 use Rector\Core\Configuration\Option;
+use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Parallel\Enum\Action;
 use Rector\Parallel\ValueObject\Bridge;
@@ -29,6 +31,8 @@ use Throwable;
  * https://github.com/phpstan/phpstan-src/commit/9124c66dcc55a222e21b1717ba5f60771f7dda92#diff-39c7a3b0cbb217bbfff96fbb454e6e5e60c74cf92fbb0f9d246b8bebbaad2bb0
  *
  * https://github.com/phpstan/phpstan-src/commit/b84acd2e3eadf66189a64fdbc6dd18ff76323f67#diff-7f625777f1ce5384046df08abffd6c911cfbb1cfc8fcb2bdeaf78f337689e3e2R150
+ *
+ * @api @todo complete parallel run
  */
 final class ParallelFileProcessor
 {
@@ -67,7 +71,6 @@ final class ParallelFileProcessor
         $numberOfProcesses = $schedule->getNumberOfProcesses();
 
         // initial counters
-        $codingStandardErrors = [];
         $fileDiffs = [];
         $systemErrors = [];
 
@@ -95,7 +98,7 @@ final class ParallelFileProcessor
 
                 $job = array_pop($jobs);
                 $parallelProcess->request([
-                    ReactCommand::ACTION => Action::CHECK,
+                    ReactCommand::ACTION => Action::PROCESS,
                     'files' => $job,
                 ]);
             });
@@ -116,7 +119,7 @@ final class ParallelFileProcessor
             &$systemErrorsCount,
             &$reachedSystemErrorsCountLimit
         ): void {
-            $systemErrors[] = new \Rector\Core\ValueObject\Error\SystemError(
+            $systemErrors[] = new SystemError(
                 $throwable->getLine(),
                 $throwable->getMessage(),
                 $throwable->getFile()
@@ -149,7 +152,6 @@ final class ParallelFileProcessor
                     $parallelProcess,
                     &$systemErrors,
                     &$fileDiffs,
-                    &$codingStandardErrors,
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
@@ -189,7 +191,7 @@ final class ParallelFileProcessor
 
                     $job = array_pop($jobs);
                     $parallelProcess->request([
-                        ReactCommand::ACTION => Action::CHECK,
+                        ReactCommand::ACTION => Action::PROCESS,
                         'files' => $job,
                     ]);
                 },
