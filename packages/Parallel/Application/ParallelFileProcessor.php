@@ -12,6 +12,8 @@ use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Console\Command\ProcessCommand;
+use Rector\Core\Console\Command\WorkerCommand;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
@@ -24,6 +26,7 @@ use Rector\Parallel\ValueObject\ReactEvent;
 use Rector\Parallel\ValueObject\Schedule;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symplify\PackageBuilder\Console\Command\CommandNaming;
 use Throwable;
 
 /**
@@ -139,6 +142,8 @@ final class ParallelFileProcessor
             $processIdentifier = Random::generate();
             $workerCommandLine = $this->workerCommandLineFactory->create(
                 $mainScript,
+                CommandNaming::classToName(ProcessCommand::class),
+                CommandNaming::classToName(WorkerCommand::class),
                 $projectConfigFile,
                 $input,
                 $processIdentifier,

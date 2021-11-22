@@ -7,9 +7,7 @@ namespace Rector\Parallel\Command;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Command\ProcessCommand;
-use Rector\Core\Console\Command\WorkerCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symplify\PackageBuilder\Console\Command\CommandNaming;
 
 /**
  * @see \Rector\Tests\Parallel\Command\WorkerCommandLineFactoryTest
@@ -28,6 +26,8 @@ final class WorkerCommandLineFactory
 
     public function create(
         string $mainScript,
+        string $originalCommandName,
+        string $workerCommandName,
         ?string $projectConfigFile,
         InputInterface $input,
         string $identifier,
@@ -40,15 +40,14 @@ final class WorkerCommandLineFactory
 
         foreach ($args as $arg) {
             // skip command name
-            $processCommandName = CommandNaming::classToName(ProcessCommand::class);
-            if ($arg === $processCommandName) {
+            if ($arg === $originalCommandName) {
                 break;
             }
 
             $processCommandArray[] = escapeshellarg($arg);
         }
 
-        $processCommandArray[] = CommandNaming::classToName(WorkerCommand::class);
+        $processCommandArray[] = $workerCommandName;
         if ($projectConfigFile !== null) {
             $processCommandArray[] = self::OPTION_DASHES . Option::CONFIG;
             $processCommandArray[] = escapeshellarg($projectConfigFile);

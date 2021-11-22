@@ -8,11 +8,13 @@ use Iterator;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Command\ProcessCommand;
+use Rector\Core\Console\Command\WorkerCommand;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
+use Symplify\PackageBuilder\Console\Command\CommandNaming;
 use Symplify\PackageBuilder\Testing\AbstractKernelTestCase;
 
 final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
@@ -50,6 +52,8 @@ final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
 
         $workerCommandLine = $this->workerCommandLineFactory->create(
             self::DUMMY_MAIN_SCRIPT,
+            CommandNaming::classToName(ProcessCommand::class),
+            CommandNaming::classToName(WorkerCommand::class),
             null,
             $arrayInput,
             'identifier',
