@@ -53,7 +53,7 @@ final class WorkerCommand extends AbstractProcessCommand
             // handshake?
             $outEncoder->write([
                 ReactCommand::ACTION => Action::HELLO,
-                \Rector\Parallel\ValueObject\ReactCommand::IDENTIFIER => $parallelIdentifier,
+                ReactCommand::IDENTIFIER => $parallelIdentifier,
             ]);
 
             $this->workerRunner->run($outEncoder, $inDecoder, $configuration);

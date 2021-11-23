@@ -18,13 +18,15 @@ use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Parallel\ValueObject\Bridge;
-use Rector\Parallel\ValueObject\ReactCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\Content;
+use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
 use Symplify\EasyParallel\ValueObject\ParallelProcess;
+use Symplify\EasyParallel\ValueObject\ProcessPool;
+use Symplify\EasyParallel\ValueObject\Schedule;
 use Symplify\PackageBuilder\Console\Command\CommandNaming;
 use Throwable;
 
@@ -48,7 +50,7 @@ final class ParallelFileProcessor
      */
     private const SYSTEM_ERROR_COUNT_LIMIT = 20;
 
-    private \Symplify\EasyParallel\ValueObject\ProcessPool|null $processPool = null;
+    private ProcessPool|null $processPool = null;
 
     public function __construct(
         private WorkerCommandLineFactory $workerCommandLineFactory
@@ -77,7 +79,7 @@ final class ParallelFileProcessor
         $systemErrors = [];
 
         $tcpServer = new TcpServer('127.0.0.1:0', $streamSelectLoop);
-        $this->processPool = new \Symplify\EasyParallel\ValueObject\ProcessPool($tcpServer);
+        $this->processPool = new ProcessPool($tcpServer);
 
         $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs): void {
             $inDecoder = new Decoder($connection, true, 512, 0, 4 * 1024 * 1024);
@@ -100,7 +102,7 @@ final class ParallelFileProcessor
 
                 $job = array_pop($jobs);
                 $parallelProcess->request([
-                    ReactCommand::ACTION => Action::MAIN,
+                    \Symplify\EasyParallel\Enum\ReactCommand::ACTION => Action::MAIN,
                     Content::FILES => $job,
                 ]);
             });
