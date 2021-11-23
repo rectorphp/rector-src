@@ -62,11 +62,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)) {
-            return $this->addAllowDynamicPropertiesAttribute($node);
+        if (
+            $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)
+        ) {
+            return null;
         }
 
-        return null;
+        return $this->addAllowDynamicPropertiesAttribute($node);
     }
 
     public function provideMinPhpVersion(): int
