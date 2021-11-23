@@ -102,7 +102,7 @@ final class ParallelFileProcessor
 
                 $job = array_pop($jobs);
                 $parallelProcess->request([
-                    \Symplify\EasyParallel\Enum\ReactCommand::ACTION => Action::MAIN,
+                    ReactCommand::ACTION => Action::MAIN,
                     Content::FILES => $job,
                 ]);
             });
