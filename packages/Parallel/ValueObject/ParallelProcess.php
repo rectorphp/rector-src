@@ -10,8 +10,10 @@ use Exception;
 use React\ChildProcess\Process;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
-use Rector\Parallel\Enum\Action;
 use Rector\Parallel\Exception\ParallelShouldNotHappenException;
+use Symplify\EasyParallel\Enum\Action;
+use Symplify\EasyParallel\Enum\Content;
+use Symplify\EasyParallel\Enum\ReactEvent;
 use Throwable;
 
 /**
@@ -122,7 +124,7 @@ final class ParallelProcess
             }
 
             $onData = $this->onData;
-            $onData($json['result']);
+            $onData($json[Content::RESULT]);
         });
         $this->encoder = $encoder;
 
