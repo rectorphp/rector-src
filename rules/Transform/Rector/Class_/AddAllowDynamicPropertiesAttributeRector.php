@@ -63,6 +63,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if (
+            $node->extends !== null && (string) $node->extends === 'stdClass' ||
             $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)
         ) {
             return null;
