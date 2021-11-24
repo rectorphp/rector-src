@@ -82,7 +82,20 @@ CODE_SAMPLE
 
     private function hasNeededAttributeAlready(Class_ $node): bool
     {
-        return $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE);
+        // Current node: Any class
+        $nodeHasAttribute = $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE);
+        if (!$node->extends instanceof FullyQualified) {
+            // Current node: Standalone classes with no parents..
+            return $nodeHasAttribute;
+        }
+
+        if ($nodeHasAttribute === true) {
+            // Current node: Class with parent, but attribute defined locally
+            return true;
+        }
+
+        // Current node: Class without local attribute, must check parent tree...
+        return false;
     }
 
     private function isDescendantOfStdclass(Class_ $node): bool
