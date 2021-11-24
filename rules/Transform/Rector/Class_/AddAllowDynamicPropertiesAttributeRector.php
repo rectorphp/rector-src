@@ -26,6 +26,7 @@ final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector impl
     private const ATTRIBUTE = 'AllowDynamicProperties';
 
     public function __construct(
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
     ) {
@@ -78,7 +79,7 @@ CODE_SAMPLE
     private function shouldSkipAllowDynamicPropertiesAttribute(Class_ $node): bool
     {
         if (
-            $node->extends !== null && (string) $node->extends === 'stdClass' ||
+            in_array('stdClass', $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node)) ||
             $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)
         ) {
             return true;
