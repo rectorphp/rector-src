@@ -67,8 +67,8 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if (
-            $this->hasNeededAttributeAlready($node) ||
             $this->isDescendantOfStdclass($node) ||
+            $this->hasNeededAttributeAlready($node) ||
             $this->hasMagicSetMethod($node)
         ) {
             return null;
@@ -80,6 +80,16 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
+    }
+
+    private function isDescendantOfStdclass(Class_ $node): bool
+    {
+        if (!$node->extends instanceof FullyQualified) {
+            return false;
+        }
+
+        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
+        return in_array('stdClass', $ancestorClassNames);
     }
 
     private function hasNeededAttributeAlready(Class_ $node): bool
@@ -95,16 +105,6 @@ CODE_SAMPLE
 
         // TODO: recursive check for if ancestors applied the attribute
         return true;
-    }
-
-    private function isDescendantOfStdclass(Class_ $node): bool
-    {
-        if (!$node->extends instanceof FullyQualified) {
-            return false;
-        }
-
-        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
-        return in_array('stdClass', $ancestorClassNames);
     }
 
     private function hasMagicSetMethod(Class_ $node): bool
