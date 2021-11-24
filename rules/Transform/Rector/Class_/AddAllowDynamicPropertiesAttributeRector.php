@@ -3,6 +3,7 @@
 namespace Rector\Transform\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -86,9 +87,12 @@ CODE_SAMPLE
 
     private function isDescendantOfStdclass(Class_ $node): bool
     {
-        $ancestorClasses = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
+        if (!$node->extends instanceof FullyQualified) {
+            return false;
+        }
 
-        return in_array('stdClass', $ancestorClasses);
+        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
+        return in_array('stdClass', $ancestorClassNames);
     }
 
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
