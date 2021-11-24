@@ -64,7 +64,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkipAllowDynamicPropertiesAttribute($node)) {
+        if (
+            $this->hasNeededAttributeAlready($node) ||
+            $this->isDescendantOfStdclass($node)
+        ) {
             return null;
         }
 
@@ -86,18 +89,6 @@ CODE_SAMPLE
         $ancestorClasses = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
 
         return in_array('stdClass', $ancestorClasses);
-    }
-
-    private function shouldSkipAllowDynamicPropertiesAttribute(Class_ $node): bool
-    {
-        if (
-            $this->hasNeededAttributeAlready($node) ||
-            $this->isDescendantOfStdclass($node)
-        ) {
-            return true;
-        }
-
-        return false;
     }
 
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
