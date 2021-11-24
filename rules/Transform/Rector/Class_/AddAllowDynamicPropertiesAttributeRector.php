@@ -104,7 +104,8 @@ CODE_SAMPLE
         }
 
         // TODO: recursive check for if ancestors applied the attribute
-        return true;
+        $parentNode = $this->getParentClassNode($node);
+        return $this->hasNeededAttributeAlready($parentNode);
     }
 
     private function hasMagicSetMethod(Class_ $node): bool
@@ -119,7 +120,8 @@ CODE_SAMPLE
         }
 
         // TODO: recursive check for if ancestors defined __set
-        return true;
+        $parentNode = $this->getParentClassNode($node);
+        return $this->hasMagicSetMethod($parentNode);
     }
 
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
