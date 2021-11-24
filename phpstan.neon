@@ -560,3 +560,9 @@ parameters:
         -
             path: rules/Php80/NodeManipulator/TokenManipulator.php
             message: '#Property set "\$node\-\>expr" is overridden#'
+
+        # closure callable mix
+        - '#Parameter (.*?) expects callable(.*?), Closure(.*?) given#'
+
+        # stmts[]/nodes[] mix
+        - '#Parameter \#2 \$stmts of method PHPStan\\Analyser\\NodeScopeResolver\:\:processStmtNodes\(\) expects array<PhpParser\\Node\\Stmt\>, array<PhpParser\\Node\> given#'

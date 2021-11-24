@@ -136,6 +136,16 @@ CODE_SAMPLE
 
     private function isArray(Expr $expr): bool
     {
+<<<<<<< HEAD
+=======
+//        /** @var Scope|null $scope */
+//        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+//
+//        if (! $scope instanceof Scope) {
+//            return false;
+//        }
+
+>>>>>>> add refesh node type prototoyep
         return $this->getType($expr) instanceof ArrayType;
     }
 

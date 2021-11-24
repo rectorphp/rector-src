@@ -157,7 +157,10 @@ CODE_SAMPLE
                 return null;
             }
 
-            return new Variable($singularValueVarName);
+            // @todo in case of variable rename, we loose to type
+            $node->name = $singularValueVarName;
+
+            return $node;
         });
 
         return $foreach;

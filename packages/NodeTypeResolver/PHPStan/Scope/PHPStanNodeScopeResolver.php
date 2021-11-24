@@ -6,14 +6,22 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
+use PHPStan\Analyser\ExpressionContext;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
+<<<<<<< HEAD
+=======
+use PHPStan\Analyser\Scope;
+use PHPStan\Analyser\ScopeContext;
+>>>>>>> add refesh node type prototoyep
 use PHPStan\BetterReflection\Reflector\ClassReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
@@ -27,6 +35,7 @@ use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
+use Symplify\PackageBuilder\Reflection\PrivatesCaller;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
@@ -56,7 +65,23 @@ final class PHPStanNodeScopeResolver
         private PrivatesAccessor $privatesAccessor,
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private ParentAttributeSourceLocator $parentAttributeSourceLocator,
+<<<<<<< HEAD
+<<<<<<< HEAD
         private TraitScopeFaker $traitScopeFaker,
+=======
+=======
+        private ScopeFactory                         $scopeFactory,
+        private PrivatesAccessor                     $privatesAccessor,
+        private RenamedClassesSourceLocator          $renamedClassesSourceLocator,
+        private ParentAttributeSourceLocator         $parentAttributeSourceLocator,
+        private MixinGuard                           $mixinGuard,
+        private TraitScopeFaker                      $traitScopeFaker,
+>>>>>>> decouple TraitScopeFaker
+>>>>>>> decouple TraitScopeFaker
+=======
+        private TraitScopeFaker $traitScopeFaker,
+        private PrivatesCaller $privatesCaller
+>>>>>>> add refesh node type prototoyep
     ) {
     }
 
@@ -107,6 +132,69 @@ final class PHPStanNodeScopeResolver
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
         return $this->processNodesWithDependentFiles($smartFileInfo, $stmts, $scope, $nodeCallback);
+    }
+
+    public function refreshNodeScope(Expr|Stmt|Node $node, Scope $currentScope): void
+    {
+        // there is no scope :)
+        if (! $node instanceof Expr && ! $node instanceof Stmt) {
+            return;
+        }
+
+        // @todo duplicated from above for now
+        // refactor to invokable class later -https://stackoverflow.com/questions/32093354/how-to-define-a-callback-with-parameters-without-closure-and-use-in-php
+
+        // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
+        $nodeCallback = function (Node $node, MutatingScope $scope) use (&$nodeCallback): void {
+            if ($node instanceof Trait_) {
+                $traitName = $this->resolveClassName($node);
+
+                $traitReflectionClass = $this->reflectionProvider->getClass($traitName);
+
+                $scopeContext = $this->traitScopeFaker->createDummyClassScopeContext($scope);
+                $traitScope = clone $scope;
+                $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $scopeContext);
+
+                $traitScope = $traitScope->enterTrait($traitReflectionClass);
+
+                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+                return;
+            }
+
+            // the class reflection is resolved AFTER entering to class node
+            // so we need to get it from the first after this one
+            if ($node instanceof Class_ || $node instanceof Interface_) {
+                /** @var MutatingScope $scope */
+                $scope = $this->resolveClassOrInterfaceScope($node, $scope);
+            }
+
+            // special case for unreachable nodes
+            if ($node instanceof UnreachableStatementNode) {
+                $originalNode = $node->getOriginalStatement();
+                $originalNode->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+                $originalNode->setAttribute(AttributeKey::SCOPE, $scope);
+            } else {
+                $node->setAttribute(AttributeKey::SCOPE, $scope);
+            }
+        };
+
+        if ($node instanceof Expr) {
+            /** @see NodeScopeResolver::processExprNode() */
+            $this->privatesCaller->callPrivateMethod(
+                $this->nodeScopeResolver,
+                'processExprNode',
+                [$node, $currentScope, $nodeCallback, ExpressionContext::createDeep()]
+            );
+        } else {
+            $this->resetScopeContextForClassLike($node, $currentScope);
+
+            /** @see NodeScopeResolver::processStmtNode() */
+            $this->privatesCaller->callPrivateMethod(
+                $this->nodeScopeResolver,
+                'processStmtNode',
+                [$node, $currentScope, $nodeCallback]
+            );
+        }
     }
 
     /**
@@ -211,5 +299,20 @@ final class PHPStanNodeScopeResolver
             $this->parentAttributeSourceLocator,
         ]);
         $this->privatesAccessor->setPrivateProperty($classReflector, 'sourceLocator', $aggregateSourceLocator);
+    }
+
+    /**
+     * Cannot enter class twice as it ends with internal error in PHPStan.
+     * To refresh scope nodes, we have to null class reflection in ScopeContext first.
+     */
+    private function resetScopeContextForClassLike(Expr|Stmt|Node $node, Scope $currentScope): void
+    {
+        if (! $node instanceof ClassLike) {
+            return;
+        }
+
+        /** @var ScopeContext $scopeContext */
+        $scopeContext = $this->privatesAccessor->getPrivateProperty($currentScope, 'context');
+        $this->privatesAccessor->setPrivateProperty($scopeContext, 'classReflection', null);
     }
 }

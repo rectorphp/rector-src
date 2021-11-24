@@ -1,7 +1,15 @@
 <?php
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 declare(strict_types=1);
 
+=======
+>>>>>>> decouple TraitScopeFaker
+=======
+declare(strict_types=1);
+
+>>>>>>> add refesh node type prototoyep
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use PHPStan\Analyser\MutatingScope;

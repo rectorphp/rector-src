@@ -114,6 +114,8 @@ CODE_SAMPLE
         }
 
         $conditionStaticType = $this->getType($conditionNode);
+
+        // skip non empty array
         if ($conditionStaticType instanceof BooleanType || $conditionStaticType instanceof ConstantIntegerType) {
             return null;
         }
