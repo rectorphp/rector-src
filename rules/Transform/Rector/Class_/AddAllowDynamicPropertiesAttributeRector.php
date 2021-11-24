@@ -76,11 +76,23 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
     }
 
+    private function hasNeededAttributeAlready(Class_ $node): bool
+    {
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE);
+    }
+
+    private function isDescendantOfStdclass(Class_ $node): bool
+    {
+        $ancestorClasses = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
+
+        return in_array('stdClass', $ancestorClasses);
+    }
+
     private function shouldSkipAllowDynamicPropertiesAttribute(Class_ $node): bool
     {
         if (
-            in_array('stdClass', $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node)) ||
-            $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)
+            $this->hasNeededAttributeAlready($node) ||
+            $this->isDescendantOfStdclass($node)
         ) {
             return true;
         }
