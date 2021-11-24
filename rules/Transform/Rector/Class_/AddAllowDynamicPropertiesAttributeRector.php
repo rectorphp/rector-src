@@ -6,6 +6,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -62,10 +63,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (
-            $node->extends !== null && (string) $node->extends === 'stdClass' ||
-            $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)
-        ) {
+        if ($this->shouldSkipAllowDynamicPropertiesAttribute($node)) {
             return null;
         }
 
@@ -75,6 +73,18 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
+    }
+
+    private function shouldSkipAllowDynamicPropertiesAttribute(Class_ $node): bool
+    {
+        if (
+            $node->extends !== null && (string) $node->extends === 'stdClass' ||
+            $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
