@@ -193,6 +193,7 @@ final class NodeTypeResolver
         }
 
         $type = $scope->getType($node);
+
         $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
         $type = $this->genericClassStringTypeCorrector->correct($type);
 

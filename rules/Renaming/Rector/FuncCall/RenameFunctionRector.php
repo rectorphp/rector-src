@@ -77,7 +77,11 @@ final class RenameFunctionRector extends AbstractRector implements ConfigurableR
     }
 
     /**
+<<<<<<< HEAD
      * @param array<string, mixed[]> $configuration
+=======
+     * @param array<string, array<string, string>|array<string, string>> $configuration
+>>>>>>> remove isCheckNameScope param
      */
     public function configure(array $configuration): void
     {

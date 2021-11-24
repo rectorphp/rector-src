@@ -264,14 +264,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
             // refresh PHPStan scope, parent connections and other attributes
             $scope = $originalNode->getAttribute(AttributeKey::SCOPE);
-//                $parent = $originalNode->getAttribute(AttributeKey::PARENT_NODE);
-//                if ($parent instanceof Stmt) {
-//                    $parentScope = $parent->getAttribute(AttributeKey::SCOPE);
-//                    if ($parentScope instanceof Scope) {
-//                        $scope = $parentScope;
-//                    }
-//                }
-
             if ($scope instanceof Scope) {
                 $this->phpStanNodeScopeResolver->refreshNodeScope($node, $scope);
             }

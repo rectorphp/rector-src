@@ -566,3 +566,6 @@ parameters:
 
         # stmts[]/nodes[] mix
         - '#Parameter \#2 \$stmts of method PHPStan\\Analyser\\NodeScopeResolver\:\:processStmtNodes\(\) expects array<PhpParser\\Node\\Stmt\>, array<PhpParser\\Node\> given#'
+
+        # complex logic - refactor to Invokable class
+        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:refreshNodeScope\(\)" is \d+, keep it under 10#'

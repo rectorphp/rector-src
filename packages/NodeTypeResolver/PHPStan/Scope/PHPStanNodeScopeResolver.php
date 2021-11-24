@@ -17,11 +17,8 @@ use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\ExpressionContext;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
-<<<<<<< HEAD
-=======
 use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
->>>>>>> add refesh node type prototoyep
 use PHPStan\BetterReflection\Reflector\ClassReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
@@ -65,23 +62,8 @@ final class PHPStanNodeScopeResolver
         private PrivatesAccessor $privatesAccessor,
         private RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private ParentAttributeSourceLocator $parentAttributeSourceLocator,
-<<<<<<< HEAD
-<<<<<<< HEAD
-        private TraitScopeFaker $traitScopeFaker,
-=======
-=======
-        private ScopeFactory                         $scopeFactory,
-        private PrivatesAccessor                     $privatesAccessor,
-        private RenamedClassesSourceLocator          $renamedClassesSourceLocator,
-        private ParentAttributeSourceLocator         $parentAttributeSourceLocator,
-        private MixinGuard                           $mixinGuard,
-        private TraitScopeFaker                      $traitScopeFaker,
->>>>>>> decouple TraitScopeFaker
->>>>>>> decouple TraitScopeFaker
-=======
         private TraitScopeFaker $traitScopeFaker,
         private PrivatesCaller $privatesCaller
->>>>>>> add refesh node type prototoyep
     ) {
     }
 
@@ -178,7 +160,23 @@ final class PHPStanNodeScopeResolver
             }
         };
 
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+
         if ($node instanceof Expr) {
+            // go one level up, as list of stmts share the same scope
+            if (! $parent instanceof Stmt && $parent instanceof Node) {
+                $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parentParent instanceof Stmt) {
+                    /** @see NodeScopeResolver::processStmtNode() */
+                    $this->privatesCaller->callPrivateMethod(
+                        $this->nodeScopeResolver,
+                        'processStmtNode',
+                        [$parentParent, $currentScope, $nodeCallback]
+                    );
+                    return;
+                }
+            }
+
             /** @see NodeScopeResolver::processExprNode() */
             $this->privatesCaller->callPrivateMethod(
                 $this->nodeScopeResolver,
