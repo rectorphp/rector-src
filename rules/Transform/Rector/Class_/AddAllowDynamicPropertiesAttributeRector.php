@@ -6,6 +6,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
@@ -31,6 +32,7 @@ final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector impl
         private FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
+        private ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -104,24 +106,18 @@ CODE_SAMPLE
         }
 
         // TODO: recursive check for if ancestors applied the attribute
-        $parentNode = $this->getParentClassNode($node);
-        return $this->hasNeededAttributeAlready($parentNode);
+        //$parentNode = $this->getParentClassNode($node);
+        return false;
     }
 
     private function hasMagicSetMethod(Class_ $node): bool
     {
-        $nodeSetMethod = $node->getMethod('__set');
-        if ($nodeSetMethod instanceof ClassMethod) {
+        $classReflection = $this->reflectionProvider->getClass($node->namespacedName);
+        if ($classReflection->hasMethod('__set')) {
             return true;
         }
 
-        if (!$node->extends instanceof FullyQualified) {
-            return false;
-        }
-
-        // TODO: recursive check for if ancestors defined __set
-        $parentNode = $this->getParentClassNode($node);
-        return $this->hasMagicSetMethod($parentNode);
+        return false;
     }
 
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
