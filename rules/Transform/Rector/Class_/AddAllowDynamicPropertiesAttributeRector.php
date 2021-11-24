@@ -5,6 +5,7 @@ namespace Rector\Transform\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
@@ -67,7 +68,8 @@ CODE_SAMPLE
     {
         if (
             $this->hasNeededAttributeAlready($node) ||
-            $this->isDescendantOfStdclass($node)
+            $this->isDescendantOfStdclass($node) ||
+            $this->hasMagicSetMethod($node)
         ) {
             return null;
         }
@@ -103,6 +105,21 @@ CODE_SAMPLE
 
         $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
         return in_array('stdClass', $ancestorClassNames);
+    }
+
+    private function hasMagicSetMethod(Class_ $node): bool
+    {
+        $nodeSetMethod = $node->getMethod('__set');
+        if ($nodeSetMethod instanceof ClassMethod) {
+            return true;
+        }
+
+        if (!$node->extends instanceof FullyQualified) {
+            return false;
+        }
+
+        // TODO: recursive check for if ancestors defined __set
+        return true;
     }
 
     private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
