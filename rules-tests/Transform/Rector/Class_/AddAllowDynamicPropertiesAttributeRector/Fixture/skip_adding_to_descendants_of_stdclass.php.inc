@@ -14,4 +14,9 @@ class DescendantOfStdClass extends ChildOfStdClass
     public string $someProperty = 'hello space';
 }
 
+class GrandChildOfStdClass extends ChildOfStdClass
+{
+    public string $someProperty = 'hello universe';
+}
+
 ?>
