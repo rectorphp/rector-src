@@ -3,7 +3,7 @@
 namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
 
 #[\AllowDynamicProperties]
-class AnotherObject
+class AlreadyHasAttribute
 {
     public string $someProperty = 'hello world';
 }

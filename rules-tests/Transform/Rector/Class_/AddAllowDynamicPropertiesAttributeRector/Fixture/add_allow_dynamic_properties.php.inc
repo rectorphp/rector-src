@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
 
-class AnotherObject
+class WantsAttribute
 {
     public string $someProperty = 'hello world';
 }
@@ -14,7 +14,7 @@ class AnotherObject
 namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
 
 #[\AllowDynamicProperties]
-class AnotherObject
+class WantsAttribute
 {
     public string $someProperty = 'hello world';
 }

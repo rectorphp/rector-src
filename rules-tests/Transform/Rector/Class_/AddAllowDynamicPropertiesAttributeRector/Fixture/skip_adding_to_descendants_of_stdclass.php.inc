@@ -4,12 +4,12 @@ namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttribut
 
 use stdClass;
 
-class BasicObject extends stdClass
+class ChildOfStdClass extends stdClass
 {
     public string $someProperty = 'hello world';
 }
 
-class AnotherObject extends BasicObject
+class DescendantOfStdClass extends ChildOfStdClass
 {
     public string $someProperty = 'hello space';
 }
