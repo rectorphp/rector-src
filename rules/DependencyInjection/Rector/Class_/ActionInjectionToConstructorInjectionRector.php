@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\DependencyInjection\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\ObjectType;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DependencyInjection\Collector\VariablesToPropertyFetchCollection;
 use Rector\PostRector\Collector\PropertyToAddCollector;
@@ -25,7 +27,7 @@ final class ActionInjectionToConstructorInjectionRector extends AbstractRector
     public function __construct(
         private ServiceMapProvider $applicationServiceMapProvider,
         private VariablesToPropertyFetchCollection $variablesToPropertyFetchCollection,
-        private PropertyToAddCollector $propertyToAddCollector
+        private PropertyToAddCollector $propertyToAddCollector,
     ) {
     }
 
@@ -48,13 +50,9 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 final class SomeController
 {
-    /**
-     * @var ProductRepository
-     */
-    private $productRepository;
-    public function __construct(ProductRepository $productRepository)
-    {
-        $this->productRepository = $productRepository;
+    public function __construct(
+        private ProductRepository $productRepository
+    ) {
     }
 
     public function default()
@@ -89,7 +87,38 @@ CODE_SAMPLE
             $this->processClassMethod($node, $classMethod);
         }
 
+        foreach ($node->getMethods() as $classMethod) {
+            $this->refactorVariablesToPropertyFetches($classMethod);
+        }
+
         return $node;
+    }
+
+    private function refactorVariablesToPropertyFetches(ClassMethod $classMethod): void
+    {
+        if (! $classMethod->isPublic()) {
+            return;
+        }
+
+        $this->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node) {
+            if (! $node instanceof Variable) {
+                return null;
+            }
+
+            foreach ($this->variablesToPropertyFetchCollection->getVariableNamesAndTypes() as $name => $type) {
+                if (! $this->isName($node, $name)) {
+                    continue;
+                }
+
+                if (! $this->isObjectType($node, $type)) {
+                    continue;
+                }
+
+                return $this->nodeFactory->createPropertyFetch('this', $name);
+            }
+
+            return null;
+        });
     }
 
     private function processClassMethod(Class_ $class, ClassMethod $classMethod): void
@@ -100,6 +129,9 @@ CODE_SAMPLE
             }
 
             $paramType = $this->getType($paramNode);
+            if (! $paramType instanceof ObjectType) {
+                throw new ShouldNotHappenException();
+            }
 
             /** @var string $paramName */
             $paramName = $this->getName($paramNode->var);
