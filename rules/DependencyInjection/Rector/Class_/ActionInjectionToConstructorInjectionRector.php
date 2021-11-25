@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DependencyInjection\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -100,17 +101,17 @@ CODE_SAMPLE
             return;
         }
 
-        $this->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node) {
+        $this->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node): ?PropertyFetch {
             if (! $node instanceof Variable) {
                 return null;
             }
 
-            foreach ($this->variablesToPropertyFetchCollection->getVariableNamesAndTypes() as $name => $type) {
+            foreach ($this->variablesToPropertyFetchCollection->getVariableNamesAndTypes() as $name => $objectType) {
                 if (! $this->isName($node, $name)) {
                     continue;
                 }
 
-                if (! $this->isObjectType($node, $type)) {
+                if (! $this->isObjectType($node, $objectType)) {
                     continue;
                 }
 
