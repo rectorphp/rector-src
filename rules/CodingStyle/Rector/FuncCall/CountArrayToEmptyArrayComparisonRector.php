@@ -94,11 +94,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentScope = $parent->getAttribute(AttributeKey::SCOPE);
-        if (! $parentScope instanceof Scope) {
-            return null;
-        }
-
         $processIdentical = $this->processIdenticalOrNotIdentical($parent, $node, $expr);
         if ($processIdentical !== null) {
             return $processIdentical;
@@ -143,14 +138,7 @@ CODE_SAMPLE
 
     private function isArray(Expr $expr): bool
     {
-        /** @var Scope|null $scope */
-        $scope = $expr->getAttribute(AttributeKey::SCOPE);
-
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
-        return $scope->getType($expr) instanceof ArrayType;
+        return $this->getType($expr) instanceof ArrayType;
     }
 
     private function processIdenticalOrNotIdentical(Node $node, FuncCall $funcCall, Expr $expr): ?Expr
