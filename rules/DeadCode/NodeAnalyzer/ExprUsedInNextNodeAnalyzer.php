@@ -57,14 +57,12 @@ final class ExprUsedInNextNodeAnalyzer
         return $createdByRule === RemoveAlwaysElseRector::class;
     }
 
-    private function isUsedInRootStmts(File $file, Expr $expr): bool
+    private function isUsedInRootStmts(\File $file, \Expr $expr): bool
     {
         // topmost file without namespace, look for file nodes
         $seekNode = $file->getOldStmts();
 
-        $usedFoundNode = $this->betterNodeFinder->findFirst($seekNode, function (\PhpParser\Node $node) use (
-            $expr
-        ): bool {
+        $usedFoundNode = $this->betterNodeFinder->findFirst($seekNode, function (Node $node) use ($expr): bool {
             if ($node->getEndTokenPos() < $expr->getStartTokenPos()) {
                 return false;
             }
@@ -73,13 +71,13 @@ final class ExprUsedInNextNodeAnalyzer
                 return false;
             }
 
-            if (get_class($expr) !== get_class($node)) {
+            if ($expr::class !== $node::class) {
                 return false;
             }
 
             return true;
         });
 
-        return $usedFoundNode instanceof \PhpParser\Node;
+        return $usedFoundNode instanceof Node;
     }
 }
