@@ -2,10 +2,10 @@
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-use App\Model\OldClass;
+use MyNamespace\MyClass
 
 /**
- * @template T of OldClass
+ * @template T of MyClass
  */
 interface MyServiceInterface
 {
@@ -16,10 +16,10 @@ interface MyServiceInterface
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-use App\Model\OldClass;
+use MyNewNamespace\MyNewClass;
 
 /**
- * @template T of NewClass
+ * @template T of MyNewClass
  */
 interface MyServiceInterface
 {
