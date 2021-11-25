@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -79,17 +80,16 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var Variable[] $variables */
+        $variables = $this->betterNodeFinder->findInstanceOf((array) $node->getStmts(), Variable::class);
         $hasRemovedParam = false;
-        $stmts = (array) $node->getStmts();
+
         foreach ($params as $param) {
             $paramVar = $param->var;
-            $isUsedInClassMethodStmts = (bool) $this->betterNodeFinder->findFirst(
-                $stmts,
-                fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $paramVar)
-            );
-
-            if ($isUsedInClassMethodStmts) {
-                continue;
+            foreach ($variables as $variable) {
+                if ($this->nodeComparator->areNodesEqual($variable, $paramVar)) {
+                    continue 2;
+                }
             }
 
             $this->removeNode($param);
