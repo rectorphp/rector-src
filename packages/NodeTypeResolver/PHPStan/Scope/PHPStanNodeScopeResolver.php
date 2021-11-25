@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -120,6 +121,11 @@ final class PHPStanNodeScopeResolver
     {
         // there is no scope :)
         if (! $node instanceof Expr && ! $node instanceof Stmt) {
+            return;
+        }
+
+        // skip literal number separator, as value is now string type and crashes PHPSTan scope
+        if (($node instanceof LNumber || $node instanceof Node\Scalar\DNumber) && is_string($node->value)) {
             return;
         }
 

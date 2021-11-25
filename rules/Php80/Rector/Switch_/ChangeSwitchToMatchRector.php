@@ -124,6 +124,7 @@ CODE_SAMPLE
             return $this->changeToAssign($node, $match, $assignExpr);
         }
 
+
         return $match;
     }
 
@@ -204,7 +205,7 @@ CODE_SAMPLE
             $this->removeNode($nextNode);
         }
 
-        $condAndExprs[] = new CondAndExpr([], $returnedExpr, MatchKind::RETURN());
+        $condAndExprs[] = new CondAndExpr(null, $returnedExpr, MatchKind::RETURN());
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
     }
 
@@ -226,7 +227,7 @@ CODE_SAMPLE
 
         $throw = new Throw_($nextNode->expr);
 
-        $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN());
+        $condAndExprs[] = new CondAndExpr(null, $throw, MatchKind::RETURN());
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
     }
 }
