@@ -10,6 +10,7 @@ use MyNamespace\MyClass
 interface MyServiceInterface
 {
 }
+
 ?>
 -----
 <?php
@@ -24,3 +25,5 @@ use MyNewNamespace\MyNewClass;
 interface MyServiceInterface
 {
 }
+
+?>
