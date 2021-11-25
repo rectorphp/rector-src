@@ -86,7 +86,7 @@ CODE_SAMPLE
         if ($newObj->value instanceof Variable) {
             $args = [$newObj, $newObj];
         } else {
-            // we dont' want the expression to be executed twice so we use array_fill() as a trick
+            // we don't want the expression to be executed twice so we use array_fill() as a trick
             $args = [new Arg(new LNumber(0)), new Arg(new LNumber(2)), $newObj];
             $funcCall = new FuncCall(new Name('array_fill'), $args);
             $args = [new Arg($funcCall, false, true)];
