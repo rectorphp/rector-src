@@ -33,7 +33,7 @@ final class DowngradeClosureCallRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Replace the 2nd argument of dirname()',
+            'Replace Closure::call() by Closure::bindTo()',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
