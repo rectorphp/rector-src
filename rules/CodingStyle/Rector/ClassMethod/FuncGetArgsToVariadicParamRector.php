@@ -84,7 +84,7 @@ CODE_SAMPLE
 
         $variableName = 'args';
         $assign->expr = new Variable('args');
-        return $this->applyVariadicParams($node, $assign, $variableName);
+        return $this->applyVariadicParams($node, $variableName);
     }
 
     public function provideMinPhpVersion(): int
@@ -94,7 +94,6 @@ CODE_SAMPLE
 
     private function applyVariadicParams(
         ClassMethod | Function_ | Closure $node,
-        Assign $assign,
         string $variableName
     ): ?Node {
         $param = $this->createVariadicParam($variableName);
@@ -115,7 +114,7 @@ CODE_SAMPLE
         $parent = $assign->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Expression) {
             $this->removeNode($assign);
-            return $this->applyVariadicParams($node, $assign, $variableName);
+            return $this->applyVariadicParams($node, $variableName);
         }
 
         $variable = $assign->var;
@@ -131,7 +130,7 @@ CODE_SAMPLE
             return $variable;
         });
 
-        $this->applyVariadicParams($functionLike, $assign, $variableName);
+        $this->applyVariadicParams($functionLike, $variableName);
         return $node;
     }
 
