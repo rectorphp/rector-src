@@ -1,4 +1,4 @@
-# 489 Rules Overview
+# 501 Rules Overview
 
 <br>
 
@@ -14,19 +14,21 @@
 
 - [CodingStyle](#codingstyle) (38)
 
+- [Compatibility](#compatibility) (1)
+
 - [Composer](#composer) (6)
 
-- [DeadCode](#deadcode) (49)
+- [DeadCode](#deadcode) (50)
 
 - [DependencyInjection](#dependencyinjection) (3)
 
 - [DowngradePhp53](#downgradephp53) (1)
 
-- [DowngradePhp54](#downgradephp54) (5)
+- [DowngradePhp54](#downgradephp54) (6)
 
-- [DowngradePhp55](#downgradephp55) (1)
+- [DowngradePhp55](#downgradephp55) (4)
 
-- [DowngradePhp56](#downgradephp56) (3)
+- [DowngradePhp56](#downgradephp56) (4)
 
 - [DowngradePhp70](#downgradephp70) (12)
 
@@ -40,13 +42,11 @@
 
 - [DowngradePhp80](#downgradephp80) (19)
 
-- [DowngradePhp81](#downgradephp81) (2)
+- [DowngradePhp81](#downgradephp81) (7)
 
 - [EarlyReturn](#earlyreturn) (11)
 
 - [Generics](#generics) (1)
-
-- [LeagueEvent](#leagueevent) (1)
 
 - [MockeryToProphecy](#mockerytoprophecy) (2)
 
@@ -80,7 +80,7 @@
 
 - [Php80](#php80) (17)
 
-- [Php81](#php81) (7)
+- [Php81](#php81) (8)
 
 - [PhpSpecToPHPUnit](#phpspectophpunit) (7)
 
@@ -2574,7 +2574,7 @@ Use `class` keyword for class name resolution in string instead of hardcoded str
 
 ```diff
 -$value = 'App\SomeClass::someMethod()';
-+$value = \App\SomeClass . '::someMethod()';
++$value = \App\SomeClass::class . '::someMethod()';
 ```
 
 <br>
@@ -2668,6 +2668,39 @@ Wrap encapsed variables in curly braces
  {
 -    echo "Hello $world!";
 +    echo "Hello {$world}!";
+ }
+```
+
+<br>
+
+## Compatibility
+
+### AttributeCompatibleAnnotationRector
+
+Change annotation to attribute compatible form, see https://tomasvotruba.com/blog/doctrine-annotations-and-attributes-living-together-in-peace/
+
+- class: [`Rector\Compatibility\Rector\Class_\AttributeCompatibleAnnotationRector`](../rules/Compatibility/Rector/Class_/AttributeCompatibleAnnotationRector.php)
+
+```diff
+-use Doctrine\Common\Annotations\Annotation\Required;
++use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
+
+ /**
+  * @annotation
++ * @NamedArgumentConstructor
+  */
+ class SomeAnnotation
+ {
+     /**
+-     * @var string[]
+-     * @Required()
++     * @param string[] $enum
+      */
+-    public array $enum;
++    public function __construct(
++        public array $enum
++    ) {
++    }
  }
 ```
 
@@ -3651,6 +3684,29 @@ Remove unused if check to non-empty array before foreach of the array
 
 <br>
 
+### RemoveUnusedParamInRequiredAutowireRector
+
+Remove unused parameter in required autowire method
+
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedParamInRequiredAutowireRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedParamInRequiredAutowireRector.php)
+
+```diff
+ use Symfony\Contracts\Service\Attribute\Required;
+
+ final class SomeService
+ {
+     private $visibilityManipulator;
+
+     #[Required]
+-    public function autowireSomeService(VisibilityManipulator $visibilityManipulator)
++    public function autowireSomeService()
+     {
+     }
+ }
+```
+
+<br>
+
 ### RemoveUnusedPrivateClassConstantRector
 
 Remove unused class constants
@@ -4090,6 +4146,26 @@ Remove the "callable" param type, add a `@param` tag instead
 
 <br>
 
+### DowngradeIndirectCallByArrayRector
+
+Downgrade indirect method call by array variable
+
+- class: [`Rector\DowngradePhp54\Rector\FuncCall\DowngradeIndirectCallByArrayRector`](../rules/DowngradePhp54/Rector/FuncCall/DowngradeIndirectCallByArrayRector.php)
+
+```diff
+ class Hello {
+     public static function world($x) {
+         echo "Hello, $x\n";
+     }
+ }
+
+ $func = array('Hello','world');
+-$func('you');
++call_user_func($func, 'you');
+```
+
+<br>
+
 ### DowngradeInstanceMethodCallRector
 
 Downgrade instance and method call/property access
@@ -4140,6 +4216,34 @@ Replace short arrays by long arrays
 
 ## DowngradePhp55
 
+### DowngradeArbitraryExpressionArgsToEmptyAndIssetRector
+
+Downgrade arbitrary expression arguments to `empty()` and `isset()`
+
+- class: [`Rector\DowngradePhp55\Rector\Isset_\DowngradeArbitraryExpressionArgsToEmptyAndIssetRector`](../rules/DowngradePhp55/Rector/Isset_/DowngradeArbitraryExpressionArgsToEmptyAndIssetRector.php)
+
+```diff
+-if (isset(some_function())) {
++if (some_function() !== null) {
+     // ...
+ }
+```
+
+<br>
+
+### DowngradeBoolvalRector
+
+Replace `boolval()` by type casting to boolean
+
+- class: [`Rector\DowngradePhp55\Rector\FuncCall\DowngradeBoolvalRector`](../rules/DowngradePhp55/Rector/FuncCall/DowngradeBoolvalRector.php)
+
+```diff
+-$bool = boolval($value);
++$bool = (bool) $value;
+```
+
+<br>
+
 ### DowngradeClassConstantToStringRector
 
 Replace <class>::class constant by string class names
@@ -4157,6 +4261,22 @@ Replace <class>::class constant by string class names
 -        return \AnotherClass::class;
 +        return 'AnotherClass';
      }
+ }
+```
+
+<br>
+
+### DowngradeForeachListRector
+
+Downgrade `list()` support in foreach constructs
+
+- class: [`Rector\DowngradePhp55\Rector\Foreach_\DowngradeForeachListRector`](../rules/DowngradePhp55/Rector/Foreach_/DowngradeForeachListRector.php)
+
+```diff
+-foreach ($array as $key => list($item1, $item2)) {
++foreach ($array as $key => arrayItem) {
++    list($item1, $item2) = $arrayItem;
+     var_dump($item1, $item2);
  }
 ```
 
@@ -4205,6 +4325,21 @@ Changes ** (exp) operator to pow(val, val2)
 ```diff
 -1**2;
 +pow(1, 2);
+```
+
+<br>
+
+### DowngradeUseFunctionRector
+
+Replace imports of functions and constants
+
+- class: [`Rector\DowngradePhp56\Rector\Use_\DowngradeUseFunctionRector`](../rules/DowngradePhp56/Rector/Use_/DowngradeUseFunctionRector.php)
+
+```diff
+-use function Foo\Bar\baz;
+-
+-$var = baz();
++$var = \Foo\Bar\baz();
 ```
 
 <br>
@@ -4831,9 +4966,8 @@ Convert the list reference assignment to its equivalent PHP 7.2 code
  {
      public function run($string)
      {
--        $array = [1, 2, 3];
+         $array = [1, 2, 3];
 -        list($a, &$b) = $array;
-+        $array = [1, 2];
 +        list($a) = $array;
 +        $b =& $array[1];
 
@@ -5577,6 +5711,57 @@ Remove final from class constants
 
 <br>
 
+### DowngradeFirstClassCallableSyntaxRector
+
+Replace variadic placeholders usage by `Closure::fromCallable()`
+
+- class: [`Rector\DowngradePhp81\Rector\FuncCall\DowngradeFirstClassCallableSyntaxRector`](../rules/DowngradePhp81/Rector/FuncCall/DowngradeFirstClassCallableSyntaxRector.php)
+
+```diff
+-$cb = strlen(...);
++$cb = \Closure::fromCallable('strlen');
+```
+
+<br>
+
+### DowngradeNeverTypeDeclarationRector
+
+Remove "never" return type, add a `"@return` never" tag instead
+
+- class: [`Rector\DowngradePhp81\Rector\FunctionLike\DowngradeNeverTypeDeclarationRector`](../rules/DowngradePhp81/Rector/FunctionLike/DowngradeNeverTypeDeclarationRector.php)
+
+```diff
+-function someFunction(): never
++/**
++ * @return never
++ */
++function someFunction()
+ {
+ }
+```
+
+<br>
+
+### DowngradeNewInInitializerRector
+
+Replace New in initializers
+
+- class: [`Rector\DowngradePhp81\Rector\FunctionLike\DowngradeNewInInitializerRector`](../rules/DowngradePhp81/Rector/FunctionLike/DowngradeNewInInitializerRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function __construct(
+-        private Logger $logger = new NullLogger,
++        private ?Logger $logger = null,
+     ) {
++        $this->logger = $logger ?? new NullLogger;
+     }
+ }
+```
+
+<br>
+
 ### DowngradePhp81ResourceReturnToObjectRector
 
 change instanceof Object to is_resource
@@ -5590,6 +5775,48 @@ change instanceof Object to is_resource
      {
 -        $obj instanceof \finfo;
 +        is_resource($obj) || $obj instanceof \finfo;
+     }
+ }
+```
+
+<br>
+
+### DowngradePureIntersectionTypeRector
+
+Remove the intersection type params and returns, add `@param/@return` tags instead
+
+- class: [`Rector\DowngradePhp81\Rector\FunctionLike\DowngradePureIntersectionTypeRector`](../rules/DowngradePhp81/Rector/FunctionLike/DowngradePureIntersectionTypeRector.php)
+
+```diff
+-function someFunction(): Foo&Bar
++/**
++ * @return Foo&Bar
++ */
++function someFunction()
+ {
+ }
+```
+
+<br>
+
+### DowngradeReadonlyPropertyRector
+
+Remove "readonly" property type, add a "@readonly" tag instead
+
+- class: [`Rector\DowngradePhp81\Rector\Property\DowngradeReadonlyPropertyRector`](../rules/DowngradePhp81/Rector/Property/DowngradeReadonlyPropertyRector.php)
+
+```diff
+ class SomeClass
+ {
+-    public readonly string $foo;
++    /**
++     * @readonly
++     */
++    public string $foo;
+
+     public function __construct()
+     {
+         $this->foo = 'foo';
      }
  }
 ```
@@ -5938,36 +6165,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 +     */
 +    public method getParams(ParamInterface $someParam)
      {
-     }
- }
-```
-
-<br>
-
-## LeagueEvent
-
-### DispatchStringToObjectRector
-
-Change string events to anonymous class which implement \League\Event\HasEventName
-
-- class: [`Rector\LeagueEvent\Rector\MethodCall\DispatchStringToObjectRector`](../rules/LeagueEvent/Rector/MethodCall/DispatchStringToObjectRector.php)
-
-```diff
- final class SomeClass
- {
-     /** @var \League\Event\EventDispatcher */
-     private $dispatcher;
-
-     public function run()
-     {
--        $this->dispatcher->dispatch('my-event');
-+        $this->dispatcher->dispatch(new class implements \League\Event\HasEventName
-+        {
-+            public function eventName(): string
-+            {
-+                return 'my-event';
-+            }
-+        });
      }
  }
 ```
@@ -8179,6 +8376,27 @@ Add final to constants that
 
 <br>
 
+### IntersectionTypesRector
+
+Change docs to intersection types, where possible (properties are covered by TypedPropertyRector (@todo))
+
+- class: [`Rector\Php81\Rector\FunctionLike\IntersectionTypesRector`](../rules/Php81/Rector/FunctionLike/IntersectionTypesRector.php)
+
+```diff
+ final class SomeClass
+ {
+-    /**
+-     * @param string&int $types
+-     */
+-    public function process($types)
++    public function process(string&int $types)
+     {
+     }
+ }
+```
+
+<br>
+
 ### MyCLabsClassToEnumRector
 
 Refactor MyCLabs enum class to native Enum
@@ -8665,7 +8883,7 @@ Add unique use imports collected during Rector run
 
 Change global `$variables` to private properties
 
-- class: [`Rector\Privatization\Rector\ClassMethod\ChangeGlobalVariablesToPropertiesRector`](../rules/Privatization/Rector/ClassMethod/ChangeGlobalVariablesToPropertiesRector.php)
+- class: [`Rector\Privatization\Rector\Class_\ChangeGlobalVariablesToPropertiesRector`](../rules/Privatization/Rector/ClassMethod/ChangeGlobalVariablesToPropertiesRector.php)
 
 ```diff
  class SomeClass

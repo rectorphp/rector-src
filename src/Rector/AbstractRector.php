@@ -45,7 +45,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
-use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -87,8 +86,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected PhpDocInfoFactory $phpDocInfoFactory;
 
     protected NodeFactory $nodeFactory;
-
-    protected VisibilityManipulator $visibilityManipulator;
 
     protected ValueResolver $valueResolver;
 
@@ -144,7 +141,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
         SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        VisibilityManipulator $visibilityManipulator,
         NodeFactory $nodeFactory,
         PhpDocInfoFactory $phpDocInfoFactory,
         SymfonyStyle $symfonyStyle,
@@ -172,7 +168,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
         $this->simpleCallableNodeTraverser = $simpleCallableNodeTraverser;
-        $this->visibilityManipulator = $visibilityManipulator;
         $this->nodeFactory = $nodeFactory;
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->symfonyStyle = $symfonyStyle;
@@ -327,15 +322,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
      * Use this method for getting expr|node type
      */
     protected function getType(Node $node): Type
-    {
-        return $this->nodeTypeResolver->getType($node);
-    }
-
-    /**
-     * @deprecated
-     * Use @see AbstractRector::getType() instead, as single method to get types
-     */
-    protected function getObjectType(Node $node): Type
     {
         return $this->nodeTypeResolver->getType($node);
     }
