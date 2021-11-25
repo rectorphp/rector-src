@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rector\DependencyInjection\Rector\Class_;
 
 use PhpParser\Node;
+<<<<<<< HEAD
 use PhpParser\Node\Expr\PropertyFetch;
+=======
+>>>>>>> merge ReplaceVariableByPropertyFetchRector to ActionInjectionToConstructorInjectionRector, for complete change without broken code
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -101,17 +104,29 @@ CODE_SAMPLE
             return;
         }
 
+<<<<<<< HEAD
         $this->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node): ?PropertyFetch {
+=======
+        $this->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node) {
+>>>>>>> merge ReplaceVariableByPropertyFetchRector to ActionInjectionToConstructorInjectionRector, for complete change without broken code
             if (! $node instanceof Variable) {
                 return null;
             }
 
+<<<<<<< HEAD
             foreach ($this->variablesToPropertyFetchCollection->getVariableNamesAndTypes() as $name => $objectType) {
+=======
+            foreach ($this->variablesToPropertyFetchCollection->getVariableNamesAndTypes() as $name => $type) {
+>>>>>>> merge ReplaceVariableByPropertyFetchRector to ActionInjectionToConstructorInjectionRector, for complete change without broken code
                 if (! $this->isName($node, $name)) {
                     continue;
                 }
 
+<<<<<<< HEAD
                 if (! $this->isObjectType($node, $objectType)) {
+=======
+                if (! $this->isObjectType($node, $type)) {
+>>>>>>> merge ReplaceVariableByPropertyFetchRector to ActionInjectionToConstructorInjectionRector, for complete change without broken code
                     continue;
                 }
 
