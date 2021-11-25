@@ -41,6 +41,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 final class SomeService
 {
+    #[Required]
     public function autowireSomeService()
     {
     }
