@@ -9,6 +9,10 @@ use MyNamespace\MyClass
  */
 interface MyServiceInterface
 {
+    /**
+     * @return T
+     */
+    public function get(): MyClass;
 }
 
 ?>
@@ -24,6 +28,10 @@ use MyNewNamespace\MyNewClass;
  */
 interface MyServiceInterface
 {
+    /**
+     * @return T
+     */
+    public function get(): MyNewClass;
 }
 
 ?>
