@@ -36,23 +36,23 @@ final class MethodTypeAnalyzer
      */
     private function isMethodName(MethodCall $methodCall, string $expectedName): bool
     {
-        if ($methodCall->name instanceof Identifier) {
-            $comparison = strcasecmp($methodCall->name->toString(), $expectedName);
-            if ($comparison === 0) {
-                return true;
-            }
+        if (
+        $methodCall->name instanceof Identifier
+        && $this->areMethodNamesEqual($methodCall->name->toString(), $expectedName)
+        ) {
+            return true;
         }
 
         $type = $this->nodeTypeResolver->getType($methodCall->name);
 
-        if ($type instanceof ConstantStringType) {
-            $comparison = strcasecmp($type->getValue(), $expectedName);
-            if ($comparison === 0) {
-                return true;
-            }
-        }
+        return $type instanceof ConstantStringType && $this->areMethodNamesEqual($type->getValue(), $expectedName);
+    }
 
-        return false;
+    private function areMethodNamesEqual(string $left, string $right): bool
+    {
+        $comparison = strcasecmp($left, $right);
+
+        return $comparison === 0;
     }
 
     /**
@@ -65,11 +65,17 @@ final class MethodTypeAnalyzer
             return false;
         }
 
-        $comparison = strcasecmp($expectedClass, $type->getClassName());
-        if ($comparison === 0) {
+        if ($this->areClassNamesEqual($expectedClass, $type->getClassName())) {
             return true;
         }
 
         return $type->getAncestorWithClassName($expectedClass) !== null;
+    }
+
+    private function areClassNamesEqual(string $left, string $right): bool
+    {
+        $comparison = strcasecmp($left, $right);
+
+        return $comparison === 0;
     }
 }
