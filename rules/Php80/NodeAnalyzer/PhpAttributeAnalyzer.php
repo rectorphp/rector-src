@@ -59,7 +59,6 @@ final class PhpAttributeAnalyzer
             }
         }
 
-
         return false;
     }
 

@@ -85,7 +85,7 @@ CODE_SAMPLE
 
     private function isDescendantOfStdclass(Class_ $node): bool
     {
-        if (!$node->extends instanceof FullyQualified) {
+        if (! $node->extends instanceof FullyQualified) {
             return false;
         }
 
