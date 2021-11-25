@@ -25,7 +25,7 @@ final class CondAndExpr
     }
 
     /**
-     * @return Expr[]
+     * @return Expr[]|null
      */
     public function getCondExprs(): array|null
     {
