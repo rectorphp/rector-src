@@ -93,35 +93,31 @@ CODE_SAMPLE
         return in_array('stdClass', $ancestorClassNames);
     }
 
-    private function hasNeededAttributeAlready(Class_ $node): bool
+    private function hasNeededAttributeAlready(Class_ $class): bool
     {
-        $nodeHasAttribute = $this->phpAttributeAnalyzer->hasPhpAttribute($node, self::ATTRIBUTE);
-        if ($nodeHasAttribute === true) {
+        $nodeHasAttribute = $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
+        if ($nodeHasAttribute) {
             return true;
         }
 
-        if (!$node->extends instanceof FullyQualified) {
+        if (!$class->extends instanceof FullyQualified) {
             return false;
         }
 
-        return $this->phpAttributeAnalyzer->hasInheritedPhpAttribute($node, self::ATTRIBUTE);
+        return $this->phpAttributeAnalyzer->hasInheritedPhpAttribute($class, self::ATTRIBUTE);
     }
 
-    private function hasMagicSetMethod(Class_ $node): bool
+    private function hasMagicSetMethod(Class_ $class): bool
     {
-        $classReflection = $this->reflectionProvider->getClass($node->namespacedName);
-        if ($classReflection->hasMethod('__set')) {
-            return true;
-        }
-
-        return false;
+        $classReflection = $this->reflectionProvider->getClass($class->namespacedName);
+        return $classReflection->hasMethod('__set');
     }
 
-    private function addAllowDynamicPropertiesAttribute(Class_ $node): Class_
+    private function addAllowDynamicPropertiesAttribute(Class_ $class): Class_
     {
         $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(self::ATTRIBUTE);
-        $node->attrGroups[] = $attributeGroup;
+        $class->attrGroups[] = $attributeGroup;
 
-        return $node;
+        return $class;
     }
 }

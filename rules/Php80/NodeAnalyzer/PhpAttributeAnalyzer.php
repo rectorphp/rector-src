@@ -37,9 +37,9 @@ final class PhpAttributeAnalyzer
         return false;
     }
 
-    public function hasInheritedPhpAttribute(ClassLike $node, string $attributeClass): bool
+    public function hasInheritedPhpAttribute(ClassLike $classLike, string $attributeClass): bool
     {
-        $className = $node->namespacedName->toString();
+        $className = $classLike->namespacedName->toString();
         $reflectionClass = $this->reflectionProvider->getClass($className);
         $ancestorClassReflections = $reflectionClass->getAncestors();
 
