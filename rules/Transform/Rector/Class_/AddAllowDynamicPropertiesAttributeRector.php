@@ -5,7 +5,6 @@ namespace Rector\Transform\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -105,8 +104,8 @@ CODE_SAMPLE
             return false;
         }
 
-        // TODO: recursive check for if ancestors applied the attribute
-        //$parentNode = $this->getParentClassNode($node);
+        // TODO: figure out how to check for attributes via reflection
+        $classReflection = $this->reflectionProvider->getClass($node->namespacedName);
         return false;
     }
 
