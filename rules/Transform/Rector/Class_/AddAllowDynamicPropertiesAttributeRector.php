@@ -104,9 +104,7 @@ CODE_SAMPLE
             return false;
         }
 
-        // TODO: figure out how to check for attributes via reflection
-        $classReflection = $this->reflectionProvider->getClass($node->namespacedName);
-        return false;
+        return $this->phpAttributeAnalyzer->hasInheritedPhpAttribute($node, self::ATTRIBUTE);
     }
 
     private function hasMagicSetMethod(Class_ $node): bool
