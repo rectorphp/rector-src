@@ -11,6 +11,9 @@ use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedParamInRequiredAutowireRector\RemoveUnusedParamInRequiredAutowireRectorTest
+ */
 final class RemoveUnusedParamInRequiredAutowireRector extends AbstractRector
 {
     public function __construct(
