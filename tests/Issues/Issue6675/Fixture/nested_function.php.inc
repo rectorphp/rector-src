@@ -2,7 +2,7 @@
 
 namespace Rector\Core\Tests\Issues\Issue6675\Fixture;
 
-$db = mysql_connect("server","user","password");
+$db = mysql_connect("server", "user", "password");
 echo mysql_error();
 
 ?>
@@ -11,7 +11,7 @@ echo mysql_error();
 
 namespace Rector\Core\Tests\Issues\Issue6675\Fixture;
 
-$db = mysqli_connect("server","user","password");
+$db = mysqli_connect("server", "user", "password");
 echo mysqli_error($db);
 
 ?>

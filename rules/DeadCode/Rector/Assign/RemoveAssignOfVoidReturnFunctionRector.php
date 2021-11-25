@@ -6,7 +6,6 @@ namespace Rector\DeadCode\Rector\Assign;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
@@ -77,10 +76,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->expr instanceof FuncCall && ! $node->expr instanceof MethodCall && ! $node->expr instanceof StaticCall) {
+        if (! $node->expr instanceof MethodCall && ! $node->expr instanceof StaticCall) {
             return null;
         }
 
+        // fragile, as just modified
         if (! $node->var instanceof Variable) {
             return null;
         }

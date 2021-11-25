@@ -16,6 +16,7 @@ use PHPStan\Type\ResourceType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -147,6 +148,7 @@ CODE_SAMPLE
             }
 
             $node->name = new Name($newFunction);
+            $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
 
             return $node;
         }
