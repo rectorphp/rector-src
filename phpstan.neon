@@ -569,3 +569,11 @@ parameters:
 
         # complex logic - refactor to Invokable class
         - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:refreshNodeScope\(\)" is \d+, keep it under 10#'
+
+        # the 1_000 can be string as number
+        -
+            path: packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+            message: '#Call to function is_string\(\) with float\|int will always evaluate to false#'
+        -
+            path: packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+            message: '#Result of && is always false#'

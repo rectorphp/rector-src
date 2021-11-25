@@ -129,6 +129,11 @@ final class PHPStanNodeScopeResolver
             return;
         }
 
+        // not supported yet by scope traverser
+        if ($node instanceof Stmt\Enum_) {
+            return;
+        }
+
         // @todo duplicated from above for now
         // refactor to invokable class later -https://stackoverflow.com/questions/32093354/how-to-define-a-callback-with-parameters-without-closure-and-use-in-php
 

@@ -93,21 +93,9 @@ CODE_SAMPLE
         return PhpVersionFeature::VARIADIC_PARAM;
     }
 
-<<<<<<< HEAD
     private function applyVariadicParams(
         ClassMethod | Function_ | Closure $node, string $variableName
     ): ClassMethod | Function_ | Closure | null {
-=======
-<<<<<<< HEAD
-    private function applyVariadicParams(ClassMethod | Function_ | Closure $node, string $variableName): ?Node
-    {
-=======
-    private function applyVariadicParams(
-        ClassMethod | Function_ | Closure $node,
-        string $variableName
-    ): ClassMethod | Function_ | Closure | null {
->>>>>>> include only method and static calls
->>>>>>> d1d0d0cea4... include only method and static calls
         $param = $this->createVariadicParam($variableName);
         $variableParam = $param->var;
         if ($variableParam instanceof Variable && $this->hasFunctionOrClosureInside($node, $variableParam)) {

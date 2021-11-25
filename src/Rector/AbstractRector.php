@@ -48,6 +48,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
+use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -264,13 +265,14 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
             // refresh PHPStan scope, parent connections and other attributes
             $scope = $originalNode->getAttribute(AttributeKey::SCOPE);
-            if ($scope instanceof Scope) {
+            if ($scope instanceof Scope && ! $this instanceof RenameClassRector) {
+                // keep the original scope for class rename, as namespace rename can influence the class name
                 $this->phpStanNodeScopeResolver->refreshNodeScope($node, $scope);
             }
 
             // update parents relations - must run before connectParentNodes()
-            $this->mirrorAttributes($originalAttributes, $node);
-            $this->connectParentNodes($node);
+//            $this->mirrorAttributes($originalAttributes, $node);
+//            $this->connectParentNodes($node);
 
             // is different node type? do not traverse children to avoid looping
             if ($originalNode::class !== $node::class) {
@@ -291,7 +293,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         // if Stmt ("$value;") was replaced by Expr ("$value"), add Expression (the ending ";") to prevent breaking the code
         if ($originalNode instanceof Stmt && $node instanceof Expr) {
-            $node = new Expression($node);
+            throw new ShouldNotHappenException('Trying to replace Stmt with expr. You have to return Stmt instead.');
+            // $node = new Expression($node);
         }
 
         return $node;

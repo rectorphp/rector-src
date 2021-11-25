@@ -49,7 +49,6 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($node, $phpParserNode);
-
         // make sure to compare FQNs
         if ($staticType instanceof ShortenedObjectType) {
             $staticType = new ObjectType($staticType->getFullyQualifiedName());
