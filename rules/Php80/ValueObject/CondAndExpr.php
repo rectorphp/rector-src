@@ -10,10 +10,10 @@ use Rector\Php80\Enum\MatchKind;
 final class CondAndExpr
 {
     /**
-     * @param Expr[] $condExprs
+     * @param Expr[]|null $condExprs
      */
     public function __construct(
-        private array $condExprs,
+        private array|null $condExprs,
         private Expr $expr,
         private MatchKind $matchKind
     ) {
