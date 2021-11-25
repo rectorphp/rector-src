@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileProcessor;
 
-use PHPStan\AnalysedCodeException;
-use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Enum\ApplicationPhase;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -24,11 +21,6 @@ use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
 {
-    /**
-     * @var File[]
-     */
-    private array $notParsedFiles = [];
-
     public function __construct(
         private FormatPerservingPrinter $formatPerservingPrinter,
         private FileProcessor $fileProcessor,
@@ -37,7 +29,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         private FileDiffFileDecorator $fileDiffFileDecorator,
         private CurrentFileProvider $currentFileProvider,
         private PostFileProcessor $postFileProcessor,
-        private ErrorFactory $errorFactory
     ) {
     }
 
@@ -114,23 +105,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         $this->notifyPhase($file, $applicationPhase);
 
         try {
-            if (in_array($file, $this->notParsedFiles, true)) {
-                // we cannot process this file
-                return;
-            }
-
             $callback($file);
-        } catch (ShouldNotHappenException $shouldNotHappenException) {
-            throw $shouldNotHappenException;
-        } catch (AnalysedCodeException $analysedCodeException) {
-            // inform about missing classes in tests
-            if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
-                throw $analysedCodeException;
-            }
-
-            $this->notParsedFiles[] = $file;
-            $error = $this->errorFactory->createAutoloadError($analysedCodeException, $file->getSmartFileInfo());
-            $file->addRectorError($error);
         } catch (Throwable $throwable) {
             if ($this->symfonyStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;
@@ -141,6 +116,7 @@ final class PhpFileProcessor implements FileProcessorInterface
                 $file->getRelativeFilePath(),
                 $throwable->getLine()
             );
+
             $file->addRectorError($rectorError);
         }
     }
