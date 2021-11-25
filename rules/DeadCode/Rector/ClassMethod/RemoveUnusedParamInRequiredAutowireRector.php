@@ -13,8 +13,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class RemoveUnusedParamInRequiredAutowireRector extends AbstractRector
 {
-    public function __construct(private PhpAttributeAnalyzer $phpAttributeAnalyzer)
-    {
+    public function __construct(
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -41,6 +42,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 final class SomeService
 {
+    private $visibilityManipulator;
+
     #[Required]
     public function autowireSomeService()
     {
@@ -68,14 +71,43 @@ CODE_SAMPLE
             return null;
         }
 
+        $params = $node->params;
+        if ($params === []) {
+            return null;
+        }
+
+        $hasRemovedParam = false;
+        $stmts = (array) $node->getStmts();
+        foreach ($params as $param) {
+            $paramVar = $param->var;
+            $isUsedInClassMethodStmts = (bool) $this->betterNodeFinder->findFirst(
+                $stmts,
+                fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $paramVar)
+            );
+
+            if ($isUsedInClassMethodStmts) {
+                continue;
+            }
+
+            $this->removeNode($param);
+            $hasRemovedParam = true;
+        }
+
+        if (! $hasRemovedParam) {
+            return null;
+        }
+
         return $node;
     }
 
     private function shouldSkip(ClassMethod $classMethod): bool
     {
-        $phpDocInfo            = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         $hasRequiredAnnotation = $phpDocInfo->hasByName('required');
-        $hasRequiredAttribute  = $this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, 'Symfony\Contracts\Service\Attribute\Required');
+        $hasRequiredAttribute = $this->phpAttributeAnalyzer->hasPhpAttribute(
+            $classMethod,
+            'Symfony\Contracts\Service\Attribute\Required'
+        );
 
         return ! $hasRequiredAnnotation && ! $hasRequiredAttribute;
     }
