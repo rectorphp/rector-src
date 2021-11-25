@@ -7,10 +7,12 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
@@ -125,12 +127,12 @@ final class PHPStanNodeScopeResolver
         }
 
         // skip literal number separator, as value is now string type and crashes PHPSTan scope
-        if (($node instanceof LNumber || $node instanceof Node\Scalar\DNumber) && is_string($node->value)) {
+        if (($node instanceof LNumber || $node instanceof DNumber) && is_string($node->value)) {
             return;
         }
 
         // not supported yet by scope traverser
-        if ($node instanceof Stmt\Enum_) {
+        if ($node instanceof Enum_) {
             return;
         }
 
@@ -211,7 +213,7 @@ final class PHPStanNodeScopeResolver
      * @return Stmt[]
      */
     private function processNodesWithDependentFiles(
-        SmartFileInfo $smartFileInfo,
+        \SmartFileInfo $smartFileInfo,
         array $stmts,
         MutatingScope $mutatingScope,
         callable $nodeCallback
@@ -234,7 +236,7 @@ final class PHPStanNodeScopeResolver
 
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ $classLike,
-        MutatingScope $mutatingScope
+        \MutatingScope $mutatingScope
     ): MutatingScope {
         $className = $this->resolveClassName($classLike);
 
@@ -268,8 +270,8 @@ final class PHPStanNodeScopeResolver
      */
     private function resolveAndSaveDependentFiles(
         array $stmts,
-        MutatingScope $mutatingScope,
-        SmartFileInfo $smartFileInfo
+        \MutatingScope $mutatingScope,
+        \SmartFileInfo $smartFileInfo
     ): void {
         $dependentFiles = [];
         foreach ($stmts as $stmt) {
@@ -314,9 +316,9 @@ final class PHPStanNodeScopeResolver
      * Cannot enter class twice as it ends with internal error in PHPStan.
      * To refresh scope nodes, we have to null class reflection in ScopeContext first.
      */
-    private function resetScopeContextForClassLike(Expr|Stmt|Node $node, Scope $currentScope): void
+    private function resetScopeContextForClassLike(\Stmt $stmt, \Scope $currentScope): void
     {
-        if (! $node instanceof ClassLike) {
+        if (! $stmt instanceof ClassLike) {
             return;
         }
 

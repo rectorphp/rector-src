@@ -13,8 +13,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
@@ -43,7 +41,6 @@ use Rector\Core\ValueObject\RectifiedNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\PostRector\Collector\NodesToAddCollector;
@@ -164,7 +161,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         ChangedNodeAnalyzer $changedNodeAnalyzer,
         InfiniteLoopValidator $infiniteLoopValidator,
         RectifiedAnalyzer $rectifiedAnalyzer,
-        NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         PHPStanNodeScopeResolver $phpStanNodeScopeResolver
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
@@ -235,7 +231,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         // show current Rector class on --debug
         $this->printDebugApplying();
 
-        $originalAttributes = $node->getAttributes();
+        $node->getAttributes();
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
 
         $node = $this->refactor($node);
@@ -477,7 +473,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         return false;
     }
 
-    private function shouldSkipCurrentNode(Node $node): bool
+    private function shouldSkipCurrentNode(\Node $node): bool
     {
         if ($this->nodesToRemoveCollector->isNodeRemoved($node)) {
             return true;
@@ -510,30 +506,5 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         // indented on purpose to improve log nesting under [refactoring]
         $this->symfonyStyle->writeln('    [applying] ' . static::class);
         $this->previousAppliedClass = static::class;
-    }
-
-    /**
-     * @param array<string, mixed> $originalAttributes
-     */
-    private function mirrorAttributes(array $originalAttributes, Node $newNode): void
-    {
-        if ($newNode instanceof Name) {
-            $newNode->setAttribute(AttributeKey::RESOLVED_NAME, $newNode->toString());
-        }
-
-        foreach ($originalAttributes as $attributeName => $oldAttributeValue) {
-            if (! in_array($attributeName, self::ATTRIBUTES_TO_MIRROR, true)) {
-                continue;
-            }
-
-            $newNode->setAttribute($attributeName, $oldAttributeValue);
-        }
-    }
-
-    private function connectParentNodes(Node $node): void
-    {
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new ParentConnectingVisitor());
-        $nodeTraverser->traverse([$node]);
     }
 }
