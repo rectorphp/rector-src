@@ -17,11 +17,14 @@ final class RemoveUnusedParamInRequiredAutowireRector extends AbstractRector
         return new RuleDefinition('Remove unused parameter in required autowire method', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-final class SomeClass
+use Symfony\Contracts\Service\Attribute\Required;
+
+final class SomeService
 {
     private $visibilityManipulator;
 
-    public function autowireAbstractRector(VisibilityManipulator $visibilityManipulator)
+    #[Required]
+    public function autowireSomeService(VisibilityManipulator $visibilityManipulator)
     {
     }
 }
@@ -29,9 +32,11 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-final class SomeClass
+use Symfony\Contracts\Service\Attribute\Required;
+
+final class SomeService
 {
-    public function autowireAbstractRector()
+    public function autowireSomeService()
     {
     }
 }
