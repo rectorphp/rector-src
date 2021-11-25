@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     // include the latest PHP version + all bellow in one config!
-    $containerConfigurator->import(LevelSetList::UP_TO_PHP_80);
+    $containerConfigurator->import(LevelSetList::UP_TO_PHP_81);
 
     // include sets
     $containerConfigurator->import(SetList::CODING_STYLE);
