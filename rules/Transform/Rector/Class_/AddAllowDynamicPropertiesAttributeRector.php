@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rector\Transform\Rector\Class_;
 
 use PhpParser\Node;
@@ -58,9 +56,7 @@ CODE_SAMPLE
         ]);
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
+
     public function getNodeTypes(): array
     {
         return [Class_::class];
@@ -71,15 +67,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->isDescendantOfStdclass($node)) {
-            return null;
-        }
-
-        if ($this->hasNeededAttributeAlready($node)) {
-            return null;
-        }
-
-        if ($this->hasMagicSetMethod($node)) {
+        if (
+            $this->isDescendantOfStdclass($node) ||
+            $this->hasNeededAttributeAlready($node) ||
+            $this->hasMagicSetMethod($node)
+        ) {
             return null;
         }
 
@@ -91,14 +83,14 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
     }
 
-    private function isDescendantOfStdclass(Class_ $class): bool
+    private function isDescendantOfStdclass(Class_ $node): bool
     {
-        if (! $class->extends instanceof FullyQualified) {
+        if (! $node->extends instanceof FullyQualified) {
             return false;
         }
 
-        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($class);
-        return in_array('stdClass', $ancestorClassNames, true);
+        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
+        return in_array('stdClass', $ancestorClassNames);
     }
 
     private function hasNeededAttributeAlready(Class_ $class): bool
@@ -108,7 +100,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $class->extends instanceof FullyQualified) {
+        if (!$class->extends instanceof FullyQualified) {
             return false;
         }
 
@@ -117,8 +109,7 @@ CODE_SAMPLE
 
     private function hasMagicSetMethod(Class_ $class): bool
     {
-        $className = (string) $this->nodeNameResolver->getName($class);
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $this->reflectionProvider->getClass($class->namespacedName);
         return $classReflection->hasMethod('__set');
     }
 
