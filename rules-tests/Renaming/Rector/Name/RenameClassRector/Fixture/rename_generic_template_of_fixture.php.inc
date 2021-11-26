@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-use MyNamespace\MyClass
+use MyNamespace\MyClass;
 
 /**
  * @template T of MyClass
@@ -21,17 +21,17 @@ interface MyServiceInterface
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-use MyNewNamespace\MyNewClass;
+use MyNamespace\MyClass;
 
 /**
- * @template T of MyNewClass
+ * @template T of \MyNewNamespace\MyNewClass
  */
 interface MyServiceInterface
 {
     /**
      * @return T
      */
-    public function get(): MyNewClass;
+    public function get(): \MyNewNamespace\MyNewClass;
 }
 
 ?>
