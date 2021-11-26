@@ -59,9 +59,12 @@ CODE_SAMPLE
         ]);
     }
 
+<<<<<<< HEAD
     /**
      * @return array<class-string<Node>>
      */
+=======
+>>>>>>> [TypeDeclaration] Add AddPropertyTypeDeclaration rule
     public function getNodeTypes(): array
     {
         return [Class_::class];
@@ -90,7 +93,11 @@ CODE_SAMPLE
             return false;
         }
 
+<<<<<<< HEAD
         $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($class);
+=======
+        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
+>>>>>>> [TypeDeclaration] Add AddPropertyTypeDeclaration rule
         return in_array('stdClass', $ancestorClassNames, true);
     }
 
