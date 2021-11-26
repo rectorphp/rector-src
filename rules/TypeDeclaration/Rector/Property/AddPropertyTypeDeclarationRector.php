@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\StringType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -30,6 +31,8 @@ final class AddPropertyTypeDeclarationRector extends AbstractRector implements C
 
     public function getRuleDefinition(): RuleDefinition
     {
+        $configuration = [new AddPropertyTypeDeclaration('ParentClass', 'name', new StringType())];
+
         return new RuleDefinition('Add type to property by added rules, mostly public/property by parent type', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
@@ -47,13 +50,13 @@ class SomeClass extends ParentClass
 }
 CODE_SAMPLE
 ,
-                []
+                $configuration
             ),
         ]);
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
