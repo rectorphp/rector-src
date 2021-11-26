@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Transform\Rector\Class_;
 
 use PhpParser\Node;
@@ -57,7 +59,6 @@ CODE_SAMPLE
         ]);
     }
 
-
     public function getNodeTypes(): array
     {
         return [Class_::class];
@@ -97,7 +98,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (!$class->extends instanceof FullyQualified) {
+        if (! $class->extends instanceof FullyQualified) {
             return false;
         }
 
