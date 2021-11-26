@@ -58,6 +58,9 @@ CODE_SAMPLE
         ]);
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeTypes(): array
     {
         return [Class_::class];
@@ -68,14 +71,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (
-            $this->isDescendantOfStdclass($node) ||
-            $this->hasNeededAttributeAlready($node) ||
-            $this->hasMagicSetMethod($node)
-        ) {
+        if ($this->isDescendantOfStdclass($node)) {
             return null;
         }
-
+        if ($this->hasNeededAttributeAlready($node)) {
+            return null;
+        }
+        if ($this->hasMagicSetMethod($node)) {
+            return null;
+        }
         return $this->addAllowDynamicPropertiesAttribute($node);
     }
 
@@ -84,13 +88,13 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
     }
 
-    private function isDescendantOfStdclass(Class_ $node): bool
+    private function isDescendantOfStdclass(Class_ $class): bool
     {
-        if (! $node->extends instanceof FullyQualified) {
+        if (! $class->extends instanceof FullyQualified) {
             return false;
         }
 
-        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
+        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($class);
         return in_array('stdClass', $ancestorClassNames, true);
     }
 
