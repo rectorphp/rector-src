@@ -40,13 +40,12 @@ final class PhpAttributeAnalyzer
     public function hasInheritedPhpAttribute(ClassLike $classLike, string $attributeClass): bool
     {
         $className = (string) $this->nodeNameResolver->getName($classLike);
-        if (! $this->reflectionProvider->getClass($className)) {
+        if (! $this->reflectionProvider->hasClass($className)) {
             return false;
         }
 
         $reflectionClass = $this->reflectionProvider->getClass($className);
         $ancestorClassReflections = $reflectionClass->getAncestors();
-
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             $ancestorClassName = $ancestorClassReflection->getName();
             if ($ancestorClassName === $className) {
