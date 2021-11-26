@@ -74,12 +74,15 @@ CODE_SAMPLE
         if ($this->isDescendantOfStdclass($node)) {
             return null;
         }
+
         if ($this->hasNeededAttributeAlready($node)) {
             return null;
         }
+
         if ($this->hasMagicSetMethod($node)) {
             return null;
         }
+
         return $this->addAllowDynamicPropertiesAttribute($node);
     }
 
