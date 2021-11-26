@@ -7,6 +7,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -67,11 +68,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (
-            $this->isDescendantOfStdclass($node) ||
-            $this->hasNeededAttributeAlready($node) ||
-            $this->hasMagicSetMethod($node)
-        ) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -83,14 +80,14 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES;
     }
 
-    private function isDescendantOfStdclass(Class_ $node): bool
+    private function isDescendantOfStdclass(Class_ $class): bool
     {
-        if (! $node->extends instanceof FullyQualified) {
+        if (! $class->extends instanceof FullyQualified) {
             return false;
         }
 
-        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
-        return in_array('stdClass', $ancestorClassNames);
+        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($class);
+        return in_array('stdClass', $ancestorClassNames, true);
     }
 
     private function hasNeededAttributeAlready(Class_ $class): bool
@@ -107,17 +104,31 @@ CODE_SAMPLE
         return $this->phpAttributeAnalyzer->hasInheritedPhpAttribute($class, self::ATTRIBUTE);
     }
 
-    private function hasMagicSetMethod(Class_ $class): bool
-    {
-        $classReflection = $this->reflectionProvider->getClass($class->namespacedName);
-        return $classReflection->hasMethod('__set');
-    }
-
     private function addAllowDynamicPropertiesAttribute(Class_ $class): Class_
     {
         $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(self::ATTRIBUTE);
         $class->attrGroups[] = $attributeGroup;
 
         return $class;
+    }
+
+    private function shouldSkip(Class_ $class): bool
+    {
+        if ($this->isDescendantOfStdclass($class)) {
+            return true;
+        }
+
+        if ($this->hasNeededAttributeAlready($class)) {
+            return true;
+        }
+
+        return $this->hasMagicSetMethod($class);
+    }
+
+    private function hasMagicSetMethod(Class_ $class): bool
+    {
+        $className = $this->getName($class);
+        $classReflection = $this->reflectionProvider->getClass($className);
+        return $classReflection->hasMethod(MethodName::SET);
     }
 }
