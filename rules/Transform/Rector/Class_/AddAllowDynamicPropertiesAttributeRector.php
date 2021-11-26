@@ -114,7 +114,8 @@ CODE_SAMPLE
 
     private function hasMagicSetMethod(Class_ $class): bool
     {
-        $classReflection = $this->reflectionProvider->getClass($class->namespacedName);
+        $className = (string) $this->nodeNameResolver->getName($class);
+        $classReflection = $this->reflectionProvider->getClass($className);
         return $classReflection->hasMethod('__set');
     }
 
