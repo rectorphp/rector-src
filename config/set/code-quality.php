@@ -84,6 +84,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(CombinedAssignRector::class);
     $services->set(SimplifyEmptyArrayCheckRector::class);
+    $services->set(ReplaceMultipleBooleanNotRector::class);
     $services->set(ForeachToInArrayRector::class);
     $services->set(SimplifyForeachToCoalescingRector::class);
     $services->set(InArrayAndArrayKeysToArrayKeyExistsRector::class);
