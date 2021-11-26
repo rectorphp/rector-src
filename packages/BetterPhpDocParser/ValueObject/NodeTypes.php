@@ -10,6 +10,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PropertyTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 
 final class NodeTypes
 {
@@ -22,6 +23,7 @@ final class NodeTypes
         ReturnTagValueNode::class,
         ThrowsTagValueNode::class,
         PropertyTagValueNode::class,
+        TemplateTagValueNode::class,
     ];
 
     /**
