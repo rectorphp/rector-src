@@ -39,7 +39,7 @@ final class PhpAttributeAnalyzer
 
     public function hasInheritedPhpAttribute(ClassLike $classLike, string $attributeClass): bool
     {
-        $className = $classLike->namespacedName->toString();
+        $className = (string) $this->nodeNameResolver->getName($classLike);
         $reflectionClass = $this->reflectionProvider->getClass($className);
         $ancestorClassReflections = $reflectionClass->getAncestors();
 
