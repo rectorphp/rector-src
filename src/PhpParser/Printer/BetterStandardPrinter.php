@@ -26,6 +26,7 @@ use PhpParser\PrettyPrinter\Standard;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Printer\Whitespace\IndentCharacterDetector;
+use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -102,10 +103,7 @@ final class BetterStandardPrinter extends Standard
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
         // add new line in case of added stmts
-        if (count($stmts) !== count($origStmts) && ! \Rector\Core\Util\StringUtils::isMatch(
-            $content,
-            self::NEWLINE_END_REGEX
-        )) {
+        if (count($stmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
             $content .= $this->nl;
         }
 
@@ -298,7 +296,7 @@ final class BetterStandardPrinter extends Standard
     protected function pScalar_String(String_ $string): string
     {
         $isRegularPattern = (bool) $string->getAttribute(AttributeKey::IS_REGULAR_PATTERN, false);
-        if ($isRegularPattern === true) {
+        if (! $isRegularPattern) {
             return parent::pScalar_String($string);
         }
 

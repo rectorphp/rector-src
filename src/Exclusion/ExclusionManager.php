@@ -115,7 +115,7 @@ final class ExclusionManager
             }
 
             $noRectorWithRule = '#@noRector \\\\?' . preg_quote($rectorClass, '#') . '$#';
-            if (StringUtils::isMatch($comment->getText(), $noRectorWithRule) !== null) {
+            if (StringUtils::isMatch($comment->getText(), $noRectorWithRule)) {
                 return true;
             }
         }

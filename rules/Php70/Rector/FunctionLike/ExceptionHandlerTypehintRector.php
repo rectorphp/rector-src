@@ -10,6 +10,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -80,7 +81,7 @@ CODE_SAMPLE
         }
 
         // is probably handling exceptions
-        if (! \Rector\Core\Util\StringUtils::isMatch((string) $node->name, self::HANDLE_INSENSITIVE_REGEX)) {
+        if (! StringUtils::isMatch((string) $node->name, self::HANDLE_INSENSITIVE_REGEX)) {
             return null;
         }
 

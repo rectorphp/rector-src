@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\StringUtils;
 use Rector\Restoration\ValueObject\CompleteImportForPartialAnnotation;
 use Symplify\Astral\ValueObject\NodeBuilder\UseBuilder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -90,7 +91,7 @@ CODE_SAMPLE
 
         foreach ($this->useImportsToRestore as $useImportToRestore) {
             $annotationToSeek = '#\*\s+\@' . $useImportToRestore->getAlias() . '#';
-            if (! \Rector\Core\Util\StringUtils::isMatch($printedClass, $annotationToSeek)) {
+            if (! StringUtils::isMatch($printedClass, $annotationToSeek)) {
                 continue;
             }
 

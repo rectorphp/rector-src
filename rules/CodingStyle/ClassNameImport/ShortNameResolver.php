@@ -18,6 +18,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -170,7 +171,7 @@ final class ShortNameResolver
                 function ($node) use (&$shortNames) {
                     if ($node instanceof PhpDocTagNode) {
                         $shortName = trim($node->name, '@');
-                        if (\Rector\Core\Util\StringUtils::isMatch($shortName, self::BIG_LETTER_START_REGEX)) {
+                        if (StringUtils::isMatch($shortName, self::BIG_LETTER_START_REGEX)) {
                             $shortNames[] = $shortName;
                         }
 

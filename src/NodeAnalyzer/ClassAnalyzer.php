@@ -7,6 +7,7 @@ namespace Rector\Core\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\Class_;
+use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -44,6 +45,6 @@ final class ClassAnalyzer
         }
 
         // match PHPStan pattern for anonymous classes
-        return \Rector\Core\Util\StringUtils::isMatch($className, self::ANONYMOUS_CLASS_REGEX);
+        return StringUtils::isMatch($className, self::ANONYMOUS_CLASS_REGEX);
     }
 }

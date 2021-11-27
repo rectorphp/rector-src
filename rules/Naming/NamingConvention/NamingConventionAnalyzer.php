@@ -7,6 +7,7 @@ namespace Rector\Naming\NamingConvention;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class NamingConventionAnalyzer
@@ -35,9 +36,6 @@ final class NamingConventionAnalyzer
         }
 
         // starts with or ends with
-        return \Rector\Core\Util\StringUtils::isMatch(
-            $currentName,
-            '#^(' . $expectedName . '|' . $expectedName . '$)#i'
-        );
+        return StringUtils::isMatch($currentName, '#^(' . $expectedName . '|' . $expectedName . '$)#i');
     }
 }

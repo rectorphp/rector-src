@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\VersionBonding\PhpVersionedFilter;
-use Webmozart\Assert\Assert;
 
 final class RectorNodeTraverser extends NodeTraverser
 {
@@ -31,7 +29,7 @@ final class RectorNodeTraverser extends NodeTraverser
     /**
      * @template TNode as Node
      * @param TNode[] $nodes
-     * @return TNode[]|FileWithoutNamespace[]
+     * @return TNode[]
      */
     public function traverse(array $nodes): array
     {
@@ -39,8 +37,6 @@ final class RectorNodeTraverser extends NodeTraverser
 
         $hasNamespace = (bool) $this->nodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
         if (! $hasNamespace && $nodes !== []) {
-            Assert::allIsInstanceOf($nodes, Stmt::class);
-
             $fileWithoutNamespace = new FileWithoutNamespace($nodes);
             return parent::traverse([$fileWithoutNamespace]);
         }

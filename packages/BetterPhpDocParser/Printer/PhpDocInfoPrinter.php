@@ -22,6 +22,7 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Util\StringUtils;
 use Symplify\SimplePhpDocParser\PhpDocNodeTraverser;
 
 /**
@@ -168,18 +169,15 @@ final class PhpDocInfoPrinter
         $output = $this->printEnd($output);
 
         // fix missing start
-        if (! \Rector\Core\Util\StringUtils::isMatch($output, self::DOCBLOCK_START_REGEX) && $output) {
+        if (! StringUtils::isMatch($output, self::DOCBLOCK_START_REGEX) && $output) {
             $output = '/**' . $output;
         }
 
         // fix missing end
-        if (\Rector\Core\Util\StringUtils::isMatch(
+        if (StringUtils::isMatch(
             $output,
             self::OPENING_DOCBLOCK_REGEX
-        ) && $output && ! \Rector\Core\Util\StringUtils::isMatch(
-            $output,
-            self::CLOSING_DOCBLOCK_REGEX
-        )) {
+        ) && $output && ! StringUtils::isMatch($output, self::CLOSING_DOCBLOCK_REGEX)) {
             $output .= ' */';
         }
 
@@ -298,7 +296,6 @@ final class PhpDocInfoPrinter
         for ($i = $from; $i < $to; ++$i) {
             while (isset($positionJumpSet[$i])) {
                 $i = $positionJumpSet[$i];
-                continue;
             }
 
             $output .= $this->tokens[$i][0] ?? '';

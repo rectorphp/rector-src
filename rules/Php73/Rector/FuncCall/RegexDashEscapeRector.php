@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Php\Regex\RegexPatternArgumentManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -87,10 +88,7 @@ CODE_SAMPLE
         }
 
         foreach ($regexArguments as $regexArgument) {
-            if (\Rector\Core\Util\StringUtils::isMatch(
-                $regexArgument->value,
-                self::THREE_BACKSLASH_FOR_ESCAPE_NEXT_REGEX
-            )) {
+            if (StringUtils::isMatch($regexArgument->value, self::THREE_BACKSLASH_FOR_ESCAPE_NEXT_REGEX)) {
                 continue;
             }
 
@@ -104,14 +102,14 @@ CODE_SAMPLE
     {
         $stringValue = $string->value;
 
-        if (\Rector\Core\Util\StringUtils::isMatch($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX)) {
+        if (StringUtils::isMatch($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX)) {
             $string->value = Strings::replace($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX, '$1\-');
             // helped needed to skip re-escaping regular expression
             $string->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);
             return;
         }
 
-        if (\Rector\Core\Util\StringUtils::isMatch($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX)) {
+        if (StringUtils::isMatch($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX)) {
             $string->value = Strings::replace($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX, '\-$1]');
             // helped needed to skip re-escaping regular expression
             $string->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);

@@ -123,7 +123,7 @@ final class FilesFinder
                 // make the path work accross different OSes
                 $excludePath = str_replace('\\', '/', $excludePath);
 
-                if (\Rector\Core\Util\StringUtils::isMatch($realPath, '#' . preg_quote($excludePath, '#') . '#')) {
+                if (StringUtils::isMatch($realPath, '#' . preg_quote($excludePath, '#') . '#')) {
                     return false;
                 }
 
@@ -149,7 +149,7 @@ final class FilesFinder
         }
 
         // starts with *
-        if (StringUtils::isMatch($path, self::STARTS_WITH_ASTERISK_REGEX) !== null) {
+        if (StringUtils::isMatch($path, self::STARTS_WITH_ASTERISK_REGEX)) {
             return $path . '*';
         }
 

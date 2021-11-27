@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\SprintfStringAndArgs;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -48,7 +49,7 @@ final class NodeTransformer
         $arrayMessageParts = [];
 
         foreach ($messageParts as $messagePart) {
-            if (\Rector\Core\Util\StringUtils::isMatch($messagePart, self::PERCENT_TEXT_REGEX)) {
+            if (StringUtils::isMatch($messagePart, self::PERCENT_TEXT_REGEX)) {
                 /** @var Expr $messagePartNode */
                 $messagePartNode = array_shift($arrayItems);
             } else {
