@@ -101,7 +101,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $interfaceByTrait = $configuration[self::INTERFACE_BY_TRAIT] ?? ($configuration ?: []);
+        $interfaceByTrait = $configuration[self::INTERFACE_BY_TRAIT] ?? $configuration;
 
         Assert::isArray($interfaceByTrait);
         Assert::allString(array_keys($interfaceByTrait));

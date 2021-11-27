@@ -87,7 +87,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $removedFunctionArguments = $configuration[self::REMOVED_FUNCTION_ARGUMENTS] ?? ($configuration ?: []);
+        $removedFunctionArguments = $configuration[self::REMOVED_FUNCTION_ARGUMENTS] ?? $configuration;
         Assert::allIsInstanceOf($removedFunctionArguments, RemoveFuncCallArg::class);
         $this->removedFunctionArguments = $removedFunctionArguments;
     }

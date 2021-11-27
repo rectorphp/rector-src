@@ -93,7 +93,15 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> d09ebf3895... direct array style
         $methodCallRenamesWithAddedArguments = $configuration[self::METHOD_CALL_RENAMES_WITH_ADDED_ARGUMENTS] ?? ($configuration ?: []);
+=======
+        $methodCallRenamesWithAddedArguments = $configuration[self::METHOD_CALL_RENAMES_WITH_ADDED_ARGUMENTS] ?? $configuration;
+>>>>>>> d71acc39da... direct array style
         Assert::allIsInstanceOf(
             $methodCallRenamesWithAddedArguments,
             MethodCallToAnotherMethodCallWithArguments::class

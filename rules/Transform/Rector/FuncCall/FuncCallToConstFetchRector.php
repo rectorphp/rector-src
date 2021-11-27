@@ -93,7 +93,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $functionsToConstants = $configuration[self::FUNCTIONS_TO_CONSTANTS] ?? ($configuration ?: []);
+        $functionsToConstants = $configuration[self::FUNCTIONS_TO_CONSTANTS] ?? $configuration;
         Assert::allString($functionsToConstants);
         Assert::allString(array_keys($functionsToConstants));
 

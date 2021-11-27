@@ -95,7 +95,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $oldToNewInterfaces = $configuration[self::OLD_TO_NEW_INTERFACES] ?? ($configuration ?: []);
+        $oldToNewInterfaces = $configuration[self::OLD_TO_NEW_INTERFACES] ?? $configuration;
 
         Assert::allString(array_keys($oldToNewInterfaces));
         Assert::allString($oldToNewInterfaces);

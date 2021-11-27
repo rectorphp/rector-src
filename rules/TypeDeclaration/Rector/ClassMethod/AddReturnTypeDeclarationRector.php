@@ -105,7 +105,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $methodReturnTypes = $configuration[self::METHOD_RETURN_TYPES] ?? ($configuration ?: []);
+        $methodReturnTypes = $configuration[self::METHOD_RETURN_TYPES] ?? $configuration;
         Assert::allIsInstanceOf($methodReturnTypes, AddReturnTypeDeclaration::class);
 
         $this->methodReturnTypes = $methodReturnTypes;

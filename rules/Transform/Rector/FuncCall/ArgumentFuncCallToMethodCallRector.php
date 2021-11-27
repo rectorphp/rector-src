@@ -147,12 +147,12 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $functionToMethodCalls = $configuration[self::FUNCTIONS_TO_METHOD_CALLS] ?? ($configuration ?: []);
+        $functionToMethodCalls = $configuration[self::FUNCTIONS_TO_METHOD_CALLS] ?? $configuration;
         Assert::allIsInstanceOf($functionToMethodCalls, ArgumentFuncCallToMethodCall::class);
 
         $this->argumentFuncCallToMethodCalls = $functionToMethodCalls;
 
-        $arrayFunctionsToMethodCalls = $configuration[self::ARRAY_FUNCTIONS_TO_METHOD_CALLS] ?? ($configuration ?: []);
+        $arrayFunctionsToMethodCalls = $configuration[self::ARRAY_FUNCTIONS_TO_METHOD_CALLS] ?? $configuration;
         Assert::allIsInstanceOf($arrayFunctionsToMethodCalls, ArrayFuncCallToMethodCall::class);
 
         $this->arrayFunctionsToMethodCalls = $arrayFunctionsToMethodCalls;

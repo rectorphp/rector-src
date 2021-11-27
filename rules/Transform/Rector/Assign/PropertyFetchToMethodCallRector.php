@@ -101,7 +101,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $propertiesToMethodCalls = $configuration[self::PROPERTIES_TO_METHOD_CALLS] ?? ($configuration ?: []);
+        $propertiesToMethodCalls = $configuration[self::PROPERTIES_TO_METHOD_CALLS] ?? $configuration;
         Assert::allIsInstanceOf($propertiesToMethodCalls, PropertyFetchToMethodCall::class);
         $this->propertiesToMethodCalls = $propertiesToMethodCalls;
     }
