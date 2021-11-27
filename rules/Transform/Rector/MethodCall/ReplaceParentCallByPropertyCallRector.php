@@ -94,12 +94,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, ReplaceParentCallByPropertyCall[]> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {
         $parentCallToProperties = $configuration[self::PARENT_CALLS_TO_PROPERTIES] ?? $configuration;
-        Assert::allIsInstanceOf($parentCallToProperties, ReplaceParentCallByPropertyCall::class);
+        Assert::allIsAOf($parentCallToProperties, ReplaceParentCallByPropertyCall::class);
 
         $this->parentCallToProperties = $parentCallToProperties;
     }

@@ -135,7 +135,7 @@ CODE_SAMPLE
         $methodVisibilities = $configuration[self::METHOD_VISIBILITIES] ?? $configuration;
 
         Assert::isArray($methodVisibilities);
-        Assert::allIsInstanceOf($methodVisibilities, ChangeMethodVisibility::class);
+        Assert::allIsAOf($methodVisibilities, ChangeMethodVisibility::class);
 
         $this->methodVisibilities = $methodVisibilities;
     }

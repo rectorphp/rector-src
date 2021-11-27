@@ -136,12 +136,14 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, NewToMethodCall[]> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {
         $newsToMethodCalls = $configuration[self::NEWS_TO_METHOD_CALLS] ?? $configuration;
-        Assert::allIsInstanceOf($newsToMethodCalls, NewToMethodCall::class);
+        Assert::isArray($newsToMethodCalls);
+        Assert::allIsAOf($newsToMethodCalls, NewToMethodCall::class);
+
         $this->newsToMethodCalls = $newsToMethodCalls;
     }
 

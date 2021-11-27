@@ -114,12 +114,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, SingleToManyMethod[]> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {
         $singleToManyMethods = $configuration[self::SINGLES_TO_MANY_METHODS] ?? $configuration;
-        Assert::allIsInstanceOf($singleToManyMethods, SingleToManyMethod::class);
+        Assert::allIsAOf($singleToManyMethods, SingleToManyMethod::class);
 
         $this->singleToManyMethods = $singleToManyMethods;
     }

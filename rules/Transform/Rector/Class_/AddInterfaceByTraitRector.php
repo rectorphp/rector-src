@@ -97,7 +97,7 @@ CODE_SAMPLE
 
     /**
      * @todo complex configuration, introduce value object!
-     * @param array<string, array<string, string>> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {
