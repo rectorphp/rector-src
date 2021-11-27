@@ -110,7 +110,8 @@ CODE_SAMPLE
      *
      * @param string[] $groupNamesBySuffix
      */
-    private function processGroupNamesBySuffix(SmartFileInfo $smartFileInfo, array $groupNamesBySuffix): void {
+    private function processGroupNamesBySuffix(SmartFileInfo $smartFileInfo, array $groupNamesBySuffix): void
+    {
         foreach ($groupNamesBySuffix as $groupNames) {
             // has class suffix
             $suffixPattern = '\w+' . $groupNames . '(Test)?\.php$';
