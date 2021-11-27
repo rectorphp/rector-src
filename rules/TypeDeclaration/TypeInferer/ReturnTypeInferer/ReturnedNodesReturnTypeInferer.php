@@ -47,9 +47,6 @@ final class ReturnedNodesReturnTypeInferer implements ReturnTypeInfererInterface
     ) {
     }
 
-    /**
-     * @param ClassMethod|Closure|Function_ $functionLike
-     */
     public function inferFunctionLike(FunctionLike $functionLike): Type
     {
         $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);

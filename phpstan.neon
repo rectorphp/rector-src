@@ -566,3 +566,9 @@ parameters:
 
         # strict rules
         - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
+
+        # specific generics
+        - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)Rector\:\:refactor\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
+
+        # only for empty ctor
+        - '#Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'

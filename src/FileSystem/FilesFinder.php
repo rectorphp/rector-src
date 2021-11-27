@@ -149,7 +149,7 @@ final class FilesFinder
         }
 
         // starts with *
-        if (Strings::match($path, self::STARTS_WITH_ASTERISK_REGEX)) {
+        if (Strings::match($path, self::STARTS_WITH_ASTERISK_REGEX) !== null) {
             return $path . '*';
         }
 

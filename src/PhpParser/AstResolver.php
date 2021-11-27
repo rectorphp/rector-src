@@ -149,12 +149,6 @@ final class AstResolver
         }
 
         $fileContent = $this->smartFileSystem->readFile($fileName);
-        if (! is_string($fileContent)) {
-            // to avoid parsing missing function again
-            $this->functionsByName[$functionReflection->getName()] = null;
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === null) {
             return null;
@@ -235,11 +229,12 @@ final class AstResolver
      */
     public function parseClassReflectionTraits(ClassReflection $classReflection): array
     {
+        /** @var ClassReflection[] $classLikes */
         $classLikes = $classReflection->getTraits(true);
         $traits = [];
         foreach ($classLikes as $classLike) {
             $fileName = $classLike->getFileName();
-            if (! $fileName) {
+            if ($fileName === null) {
                 continue;
             }
 

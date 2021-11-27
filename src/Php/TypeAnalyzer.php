@@ -92,7 +92,7 @@ final class TypeAnalyzer
             return 'callable';
         }
 
-        if (Strings::match($loweredType, self::ARRAY_TYPE_REGEX)) {
+        if (Strings::match($loweredType, self::ARRAY_TYPE_REGEX) !== null) {
             return 'array';
         }
 

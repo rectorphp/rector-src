@@ -19,9 +19,6 @@ final class ReturnTagReturnTypeInferer implements ReturnTypeInfererInterface
     ) {
     }
 
-    /**
-     * @param ClassMethod|Closure|Function_ $functionLike
-     */
     public function inferFunctionLike(FunctionLike $functionLike): Type
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);

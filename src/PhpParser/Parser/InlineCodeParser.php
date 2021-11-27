@@ -64,8 +64,11 @@ final class InlineCodeParser
         }
 
         // wrap code so php-parser can interpret it
-        $content = Strings::match($content, self::OPEN_PHP_TAG_REGEX) !== null ? $content : '<?php ' . $content;
-        $content = Strings::match($content, self::ENDING_SEMI_COLON_REGEX) !== null ? $content : $content . ';';
+        $openPhpTagMatch = Strings::match($content, self::OPEN_PHP_TAG_REGEX);
+        $content = $openPhpTagMatch !== null ? $content : '<?php ' . $content;
+
+        $endingSemiColonRegexMatch = Strings::match($content, self::ENDING_SEMI_COLON_REGEX);
+        $content = $endingSemiColonRegexMatch !== null ? $content : $content . ';';
 
         $stmts = $this->simplePhpParser->parseString($content);
         return $this->nodeScopeAndMetadataDecorator->decorateStmtsFromString($stmts);
