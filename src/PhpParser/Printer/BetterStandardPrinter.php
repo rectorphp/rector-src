@@ -294,8 +294,8 @@ final class BetterStandardPrinter extends Standard
      */
     protected function pScalar_String(String_ $string): string
     {
-        $isRegularPattern = $string->getAttribute(AttributeKey::IS_REGULAR_PATTERN);
-        if (! $isRegularPattern) {
+        $isRegularPattern = (bool) $string->getAttribute(AttributeKey::IS_REGULAR_PATTERN, false);
+        if ($isRegularPattern === true) {
             return parent::pScalar_String($string);
         }
 
