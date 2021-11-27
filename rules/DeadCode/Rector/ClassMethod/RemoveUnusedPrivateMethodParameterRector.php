@@ -104,42 +104,57 @@ CODE_SAMPLE
             return;
         }
 
-        $methodName = (string) $this->nodeNameResolver->getName($classMethod);
-        $keysArg    = array_keys($unusedParameters);
+        $methodName = $this->nodeNameResolver->getName($classMethod);
+        $keysArg = array_keys($unusedParameters);
 
         foreach ($methods as $method) {
 
             /** @var MethodCall[] $callers */
-            $callers = $this->betterNodeFinder->find($method, function (Node $subNode) use ($methodName): bool {
-                if (! $subNode instanceof MethodCall) {
-                    return false;
-                }
-
-                if (! $subNode->var instanceof Variable) {
-                    return false;
-                }
-
-                if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
-                    return false;
-                }
-
-                return $this->nodeNameResolver->isName($subNode->name, $methodName);
-            });
-
+            $callers = $this->resolveCallers($method, $methodName);
             foreach ($callers as $caller) {
-                $args = $caller->getArgs();
-                foreach ($args as $key => $arg) {
-                    foreach ($keysArg as $keyArg) {
-                        if ($key === $keyArg) {
-                            unset($args[$key]);
-                            continue 2;
-                        }
-                    }
-                }
-
-                $caller->args = $args;
+                $this->cleanupArgs($caller, $keysArg);
             }
         }
+    }
+
+    /**
+     * @param int[] $keysArg
+     */
+    private function cleanupArgs(MethodCall $methodCall, array $keysArg): void
+    {
+        $args = $methodCall->getArgs();
+        foreach (array_keys($args) as $key) {
+            foreach ($keysArg as $keyArg) {
+                if ($key === $keyArg) {
+                    unset($args[$key]);
+                    continue 2;
+                }
+            }
+        }
+
+        $methodCall->args = $args;
+    }
+
+    /**
+     * @return MethodCall[]
+     */
+    private function resolveCallers(ClassMethod $classMethod, string $methodName): array
+    {
+        return $this->betterNodeFinder->find($classMethod, function (Node $subNode) use ($methodName): bool {
+            if (! $subNode instanceof MethodCall) {
+                return false;
+            }
+
+            if (! $subNode->var instanceof Variable) {
+                return false;
+            }
+
+            if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($subNode->name, $methodName);
+        });
     }
 
     private function shouldSkip(ClassMethod $classMethod): bool
