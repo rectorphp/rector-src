@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\Configuration\InvalidConfigurationException;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
+use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
@@ -74,7 +75,7 @@ final class PhpVersionProvider
             $this->throwInvalidTypeException($phpVersionFeatures);
         }
 
-        if (Strings::match(
+        if (StringUtils::isMatch(
             (string) $phpVersionFeatures,
             self::VALID_PHP_VERSION_REGEX
         ) && $phpVersionFeatures >= (PhpVersion::PHP_53 - 1)) {

@@ -15,6 +15,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -110,12 +111,12 @@ final class ExclusionManager
     private function matchesNoRectorComment(Node $node, string $rectorClass): bool
     {
         foreach ($node->getComments() as $comment) {
-            if (Strings::match($comment->getText(), self::NO_RECTOR_START_REGEX)) {
+            if (StringUtils::isMatch($comment->getText(), self::NO_RECTOR_START_REGEX)) {
                 return true;
             }
 
             $noRectorWithRule = '#@noRector \\\\?' . preg_quote($rectorClass, '#') . '$#';
-            if (Strings::match($comment->getText(), $noRectorWithRule) !== null) {
+            if (StringUtils::isMatch($comment->getText(), $noRectorWithRule) !== null) {
                 return true;
             }
         }
