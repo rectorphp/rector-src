@@ -7,13 +7,11 @@ namespace Rector\DeadCode\NodeCollector;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeManipulator\ClassMethodManipulator;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 final class UnusedParameterResolver
 {
     public function __construct(
-        private ClassMethodManipulator $classMethodManipulator,
-        private NodeNameResolver $nodeNameResolver
+        private ClassMethodManipulator $classMethodManipulator
     ) {
     }
 
