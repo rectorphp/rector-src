@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 #[\AllowDynamicProperties]
 class WantsAttributeRemoved
@@ -12,7 +12,7 @@ class WantsAttributeRemoved
 -----
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 class WantsAttributeRemoved
 {

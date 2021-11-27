@@ -6,6 +6,7 @@ namespace Rector\Transform\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -16,12 +17,19 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\RemoveAllowDynamicPropertiesAttributeRectorTest
  */
-final class RemoveAllowDynamicPropertiesAttributeRector extends AbstractRector
+final class RemoveAllowDynamicPropertiesAttributeRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
      * @var string
      */
     private const ATTRIBUTE = 'AllowDynamicProperties';
+
+    public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
+
+    /**
+     * @var null|array<array-key, string>
+     */
+    private ?array $transformOnNamespaces = null;
 
     public function __construct(
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
@@ -54,6 +62,11 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [Class_::class];
+    }
+
+    public function configure(array $configuration): void
+    {
+        $this->transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? null;
     }
 
     /**
@@ -89,6 +102,15 @@ CODE_SAMPLE
 
     private function shouldRemove(Class_ $class): bool
     {
-        return $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
+        if ($this->transformOnNamespaces !== null) {
+            $className = (string) $this->nodeNameResolver->getName($class);
+            foreach ($this->transformOnNamespaces as $transformOnNamespace) {
+                if (str_contains($className, $transformOnNamespace)) {
+                    return $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
+                }
+            }
+        }
+
+        return false;
     }
 }

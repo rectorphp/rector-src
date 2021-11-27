@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 class DoesNotUseDynamicProps
 {
@@ -22,7 +22,7 @@ class GrandkidOfHasAttribute extends ChildHasAttribute
 -----
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 class DoesNotUseDynamicProps
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 #[\AllowDynamicProperties]
 #[\Immutable]
@@ -13,7 +13,7 @@ class RemoveAppendedAttributeGroup
 -----
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 #[\Immutable]
 class RemoveAppendedAttributeGroup
