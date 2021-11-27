@@ -108,9 +108,12 @@ CODE_SAMPLE
         $keysArg = array_keys($unusedParameters);
 
         foreach ($methods as $method) {
-
             /** @var MethodCall[] $callers */
             $callers = $this->resolveCallers($method, $methodName);
+            if ($callers === []) {
+                continue;
+            }
+
             foreach ($callers as $caller) {
                 $this->cleanupArgs($caller, $keysArg);
             }
