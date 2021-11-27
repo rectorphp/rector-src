@@ -563,3 +563,6 @@ parameters:
 
         # @todo fix in symplify
         - '#Parameter \#3 \$configuration of class Symplify\\RuleDocGenerator\\ValueObject\\CodeSample\\ConfiguredCodeSample constructor expects array<string, mixed\>, array<int, Rector\\TypeDeclaration\\ValueObject\\AddPropertyTypeDeclaration\> given#'
+
+        # strict rules
+        - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
