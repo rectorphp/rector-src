@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Exclusion;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Stmt;

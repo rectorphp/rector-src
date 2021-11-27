@@ -143,12 +143,12 @@ final class XmlFileFormatter implements FileFormatterInterface
 
     private function isOpeningTag(string $part): bool
     {
-        return (bool) Strings::match($part, self::IS_OPENING_TAG_REGEX);
+        return \Rector\Core\Util\StringUtils::isMatch($part, self::IS_OPENING_TAG_REGEX);
     }
 
     private function isClosingTag(string $part): bool
     {
-        return (bool) Strings::match($part, self::IS_CLOSING_TAG_REGEX);
+        return \Rector\Core\Util\StringUtils::isMatch($part, self::IS_CLOSING_TAG_REGEX);
     }
 
     private function isOpeningCdataTag(string $part): bool

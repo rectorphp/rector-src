@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser;
 
-use Nette\Utils\Strings;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -49,7 +48,7 @@ final class NodeTransformer
         $arrayMessageParts = [];
 
         foreach ($messageParts as $messagePart) {
-            if (Strings::match($messagePart, self::PERCENT_TEXT_REGEX)) {
+            if (\Rector\Core\Util\StringUtils::isMatch($messagePart, self::PERCENT_TEXT_REGEX)) {
                 /** @var Expr $messagePartNode */
                 $messagePartNode = array_shift($arrayItems);
             } else {

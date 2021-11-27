@@ -168,7 +168,7 @@ CODE_SAMPLE
 
     private function isJsonString(string $stringValue): bool
     {
-        if (! (bool) Strings::match($stringValue, self::JSON_STRING_REGEX)) {
+        if (! \Rector\Core\Util\StringUtils::isMatch($stringValue, self::JSON_STRING_REGEX)) {
             return false;
         }
 

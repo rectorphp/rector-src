@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeNameResolver;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
@@ -193,7 +192,7 @@ final class NodeNameResolver
     public function endsWith(string $currentName, string $expectedName): bool
     {
         $suffixNamePattern = '#\w+' . ucfirst($expectedName) . '#';
-        return (bool) Strings::match($currentName, $suffixNamePattern);
+        return \Rector\Core\Util\StringUtils::isMatch($currentName, $suffixNamePattern);
     }
 
     public function getShortName(string | Name | Identifier | ClassLike $name): string
@@ -218,7 +217,7 @@ final class NodeNameResolver
 
         // is probably regex pattern
         if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
-            return (bool) Strings::match($resolvedName, $desiredName);
+            return \Rector\Core\Util\StringUtils::isMatch($resolvedName, $desiredName);
         }
 
         // is probably fnmatch

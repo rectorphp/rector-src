@@ -168,7 +168,7 @@ CODE_SAMPLE
         }
 
         // e+/e-
-        if (Strings::match($numericValueAsString, '#e#i')) {
+        if (\Rector\Core\Util\StringUtils::isMatch($numericValueAsString, '#e#i')) {
             return true;
         }
 

@@ -82,8 +82,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     {
         // is quoted?
         if (isset($this->values[$key]) && is_string($this->values[$key])) {
-            $isQuoted = (bool) Strings::match($this->values[$key], self::UNQUOTED_VALUE_REGEX);
-            if ($isQuoted) {
+            if (\Rector\Core\Util\StringUtils::isMatch($this->values[$key], self::UNQUOTED_VALUE_REGEX)) {
                 $value = '"' . $value . '"';
             }
         }
@@ -113,8 +112,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     public function changeSilentValue($value): void
     {
         // is quoted?
-        $isQuoted = (bool) Strings::match($this->values[0], self::UNQUOTED_VALUE_REGEX);
-        if ($isQuoted) {
+        if (\Rector\Core\Util\StringUtils::isMatch($this->values[0], self::UNQUOTED_VALUE_REGEX)) {
             $value = '"' . $value . '"';
         }
 

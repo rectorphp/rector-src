@@ -87,7 +87,10 @@ CODE_SAMPLE
         }
 
         foreach ($regexArguments as $regexArgument) {
-            if (Strings::match($regexArgument->value, self::THREE_BACKSLASH_FOR_ESCAPE_NEXT_REGEX)) {
+            if (\Rector\Core\Util\StringUtils::isMatch(
+                $regexArgument->value,
+                self::THREE_BACKSLASH_FOR_ESCAPE_NEXT_REGEX
+            )) {
                 continue;
             }
 
@@ -101,14 +104,14 @@ CODE_SAMPLE
     {
         $stringValue = $string->value;
 
-        if (Strings::match($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX)) {
+        if (\Rector\Core\Util\StringUtils::isMatch($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX)) {
             $string->value = Strings::replace($stringValue, self::LEFT_HAND_UNESCAPED_DASH_REGEX, '$1\-');
             // helped needed to skip re-escaping regular expression
             $string->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);
             return;
         }
 
-        if (Strings::match($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX)) {
+        if (\Rector\Core\Util\StringUtils::isMatch($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX)) {
             $string->value = Strings::replace($stringValue, self::RIGHT_HAND_UNESCAPED_DASH_REGEX, '\-$1]');
             // helped needed to skip re-escaping regular expression
             $string->setAttribute(AttributeKey::IS_REGULAR_PATTERN, true);

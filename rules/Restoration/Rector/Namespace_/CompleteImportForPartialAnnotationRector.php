@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Restoration\Rector\Namespace_;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -91,7 +90,7 @@ CODE_SAMPLE
 
         foreach ($this->useImportsToRestore as $useImportToRestore) {
             $annotationToSeek = '#\*\s+\@' . $useImportToRestore->getAlias() . '#';
-            if (! Strings::match($printedClass, $annotationToSeek)) {
+            if (! \Rector\Core\Util\StringUtils::isMatch($printedClass, $annotationToSeek)) {
                 continue;
             }
 

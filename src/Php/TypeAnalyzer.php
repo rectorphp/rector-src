@@ -72,30 +72,4 @@ final class TypeAnalyzer
 
         return false;
     }
-
-    public function normalizeType(string $type): string
-    {
-        $loweredType = strtolower($type);
-        if ($loweredType === 'boolean') {
-            return 'bool';
-        }
-
-        if (in_array($loweredType, ['double', 'real'], true)) {
-            return 'float';
-        }
-
-        if ($loweredType === 'integer') {
-            return 'int';
-        }
-
-        if ($loweredType === 'callback') {
-            return 'callable';
-        }
-
-        if (Strings::match($loweredType, self::ARRAY_TYPE_REGEX) !== null) {
-            return 'array';
-        }
-
-        return $type;
-    }
 }

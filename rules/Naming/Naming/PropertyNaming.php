@@ -91,7 +91,7 @@ final class PropertyNaming
         }
 
         foreach (self::EXCLUDED_CLASSES as $excludedClass) {
-            if (Strings::match($className, $excludedClass)) {
+            if (\Rector\Core\Util\StringUtils::isMatch($className, $excludedClass)) {
                 return null;
             }
         }
@@ -225,7 +225,7 @@ final class PropertyNaming
         }
 
         // starts with "I\W+"?
-        if (Strings::match($shortName, self::I_PREFIX_REGEX)) {
+        if (\Rector\Core\Util\StringUtils::isMatch($shortName, self::I_PREFIX_REGEX)) {
             return Strings::substring($shortName, 1);
         }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeManipulator;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -159,7 +158,7 @@ final class TokenManipulator
                 return null;
             }
 
-            if (! Strings::match($constName, '#^T_#')) {
+            if (! \Rector\Core\Util\StringUtils::isMatch($constName, '#^T_#')) {
                 return null;
             }
 

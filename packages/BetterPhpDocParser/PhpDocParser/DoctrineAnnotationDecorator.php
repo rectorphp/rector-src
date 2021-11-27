@@ -96,7 +96,7 @@ final class DoctrineAnnotationDecorator
 
                 $nextPhpDocChildNode = $phpDocNode->children[$key];
 
-                if ($nextPhpDocChildNode instanceof PhpDocTextNode && Strings::match(
+                if ($nextPhpDocChildNode instanceof PhpDocTextNode && \Rector\Core\Util\StringUtils::isMatch(
                     $nextPhpDocChildNode->text,
                     self::NESTED_ANNOTATION_END_REGEX
                 )) {

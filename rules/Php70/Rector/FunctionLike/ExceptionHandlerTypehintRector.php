@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php70\Rector\FunctionLike;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
@@ -81,7 +80,7 @@ CODE_SAMPLE
         }
 
         // is probably handling exceptions
-        if (! Strings::match((string) $node->name, self::HANDLE_INSENSITIVE_REGEX)) {
+        if (! \Rector\Core\Util\StringUtils::isMatch((string) $node->name, self::HANDLE_INSENSITIVE_REGEX)) {
             return null;
         }
 

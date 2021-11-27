@@ -78,7 +78,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! Strings::match($methodName, self::DOUBLE_UNDERSCORE_START_REGEX)) {
+        if (! \Rector\Core\Util\StringUtils::isMatch($methodName, self::DOUBLE_UNDERSCORE_START_REGEX)) {
             return null;
         }
 

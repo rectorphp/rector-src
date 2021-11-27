@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Php;
 
-use Nette\Utils\Strings;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\Configuration\InvalidConfigurationException;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;

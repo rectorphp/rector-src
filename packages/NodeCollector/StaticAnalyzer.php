@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeCollector;
 
-use Nette\Utils\Strings;
 use PHPStan\PhpDoc\ResolvedPhpDocBlock;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -44,7 +43,7 @@ final class StaticAnalyzer
         }
 
         // @see https://regex101.com/r/7Zkej2/1
-        return (bool) Strings::match(
+        return \Rector\Core\Util\StringUtils::isMatch(
             $resolvedPhpDocBlock->getPhpDocString(),
             '#@method\s*static\s*((([\w\|\\\\]+)|\$this)*+(\[\])*)*\s+\b' . $methodName . '\b#'
         );

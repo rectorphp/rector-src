@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\FileSystemRector\ValueObjectFactory;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -67,7 +66,7 @@ final class AddedFileWithNodesFactory
             return null;
         }
 
-        if (Strings::match($oldClassName, '#\b' . $desiredGroupName . '\b#')) {
+        if (\Rector\Core\Util\StringUtils::isMatch($oldClassName, '#\b' . $desiredGroupName . '\b#')) {
             return null;
         }
 

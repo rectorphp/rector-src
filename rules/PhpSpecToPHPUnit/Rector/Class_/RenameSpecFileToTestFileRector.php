@@ -65,7 +65,7 @@ CODE_SAMPLE
         $oldPathname = $smartFileInfo->getPathname();
 
         // ends with Spec.php
-        if (! Strings::match($oldPathname, self::SPEC_SUFFIX_REGEX)) {
+        if (! \Rector\Core\Util\StringUtils::isMatch($oldPathname, self::SPEC_SUFFIX_REGEX)) {
             return null;
         }
 

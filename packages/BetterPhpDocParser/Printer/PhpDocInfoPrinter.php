@@ -168,12 +168,15 @@ final class PhpDocInfoPrinter
         $output = $this->printEnd($output);
 
         // fix missing start
-        if (! Strings::match($output, self::DOCBLOCK_START_REGEX) && $output) {
+        if (! \Rector\Core\Util\StringUtils::isMatch($output, self::DOCBLOCK_START_REGEX) && $output) {
             $output = '/**' . $output;
         }
 
         // fix missing end
-        if (Strings::match($output, self::OPENING_DOCBLOCK_REGEX) && $output && ! Strings::match(
+        if (\Rector\Core\Util\StringUtils::isMatch(
+            $output,
+            self::OPENING_DOCBLOCK_REGEX
+        ) && $output && ! \Rector\Core\Util\StringUtils::isMatch(
             $output,
             self::CLOSING_DOCBLOCK_REGEX
         )) {

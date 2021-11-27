@@ -59,7 +59,7 @@ final class UseImportNameMatcher
         $shortNamePattern = preg_quote($shortName, '#');
         $pattern = sprintf(self::SHORT_NAME_REGEX, $shortNamePattern);
 
-        return (bool) Strings::match($tag, $pattern);
+        return \Rector\Core\Util\StringUtils::isMatch($tag, $pattern);
     }
 
     private function resolveName(string $tag, UseUse $useUse): string

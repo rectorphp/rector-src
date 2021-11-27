@@ -101,13 +101,6 @@ final class AstResolver
             return null;
         }
 
-        $fileContent = $this->smartFileSystem->readFile($fileName);
-        if (! is_string($fileContent)) {
-            // avoids parsing again falsy file
-            $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodReflection->getName()] = null;
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === null) {
             return null;

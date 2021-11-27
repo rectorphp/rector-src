@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Autodiscovery\Rector\Class_;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
@@ -89,7 +88,7 @@ CODE_SAMPLE
 
         // is entity in expected directory?
         $smartFileInfo = $this->file->getSmartFileInfo();
-        if (Strings::match($smartFileInfo->getRealPath(), self::ENTITY_PATH_REGEX)) {
+        if (\Rector\Core\Util\StringUtils::isMatch($smartFileInfo->getRealPath(), self::ENTITY_PATH_REGEX)) {
             return null;
         }
 

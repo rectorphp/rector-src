@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\Class_;
@@ -45,6 +44,6 @@ final class ClassAnalyzer
         }
 
         // match PHPStan pattern for anonymous classes
-        return (bool) Strings::match($className, self::ANONYMOUS_CLASS_REGEX);
+        return \Rector\Core\Util\StringUtils::isMatch($className, self::ANONYMOUS_CLASS_REGEX);
     }
 }

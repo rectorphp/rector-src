@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\ClassNameImport;
 
 use Nette\Utils\Reflection;
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -171,7 +170,7 @@ final class ShortNameResolver
                 function ($node) use (&$shortNames) {
                     if ($node instanceof PhpDocTagNode) {
                         $shortName = trim($node->name, '@');
-                        if (Strings::match($shortName, self::BIG_LETTER_START_REGEX)) {
+                        if (\Rector\Core\Util\StringUtils::isMatch($shortName, self::BIG_LETTER_START_REGEX)) {
                             $shortNames[] = $shortName;
                         }
 

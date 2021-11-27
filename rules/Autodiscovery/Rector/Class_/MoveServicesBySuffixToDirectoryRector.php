@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Autodiscovery\Rector\Class_;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Autodiscovery\FileLocation\ExpectedFileLocationResolver;
@@ -115,7 +114,7 @@ CODE_SAMPLE
         foreach ($groupNamesBySuffix as $groupNames) {
             // has class suffix
             $suffixPattern = '\w+' . $groupNames . '(Test)?\.php$';
-            if (! Strings::match($smartFileInfo->getRealPath(), '#' . $suffixPattern . '#')) {
+            if (! \Rector\Core\Util\StringUtils::isMatch($smartFileInfo->getRealPath(), '#' . $suffixPattern . '#')) {
                 continue;
             }
 
@@ -124,7 +123,7 @@ CODE_SAMPLE
             }
 
             // file is already in the group
-            if (Strings::match($smartFileInfo->getPath(), '#' . $groupNames . '$#')) {
+            if (\Rector\Core\Util\StringUtils::isMatch($smartFileInfo->getPath(), '#' . $groupNames . '$#')) {
                 continue;
             }
 
@@ -140,7 +139,7 @@ CODE_SAMPLE
     ): bool {
         $expectedLocationFilePattern = $this->expectedFileLocationResolver->resolve($groupName, $suffixPattern);
 
-        return (bool) Strings::match($smartFileInfo->getRealPath(), $expectedLocationFilePattern);
+        return \Rector\Core\Util\StringUtils::isMatch($smartFileInfo->getRealPath(), $expectedLocationFilePattern);
     }
 
     private function moveFileToGroupName(SmartFileInfo $fileInfo, File $file, string $desiredGroupName): void

@@ -90,12 +90,12 @@ final class InflectorSingularResolver
                 return $singular;
             }
 
-            if (Strings::match($currentName, '#' . ucfirst($plural) . '#')) {
+            if (\Rector\Core\Util\StringUtils::isMatch($currentName, '#' . ucfirst($plural) . '#')) {
                 $resolvedValue = Strings::replace($currentName, '#' . ucfirst($plural) . '#', ucfirst($singular));
                 return $this->singularizeCamelParts($resolvedValue);
             }
 
-            if (Strings::match($currentName, '#' . $plural . '#')) {
+            if (\Rector\Core\Util\StringUtils::isMatch($currentName, '#' . $plural . '#')) {
                 $resolvedValue = Strings::replace($currentName, '#' . $plural . '#', $singular);
                 return $this->singularizeCamelParts($resolvedValue);
             }

@@ -31,7 +31,7 @@ final class RectorNodeTraverser extends NodeTraverser
     /**
      * @template TNode as Node
      * @param TNode[] $nodes
-     * @return TNode[]
+     * @return TNode[]|FileWithoutNamespace[]
      */
     public function traverse(array $nodes): array
     {
