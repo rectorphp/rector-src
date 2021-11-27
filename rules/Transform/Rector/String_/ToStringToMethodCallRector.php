@@ -80,7 +80,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->methodNamesByType = $configuration[self::METHOD_NAMES_BY_TYPE] ?? [];
+        $this->methodNamesByType = $configuration[self::METHOD_NAMES_BY_TYPE] ?? ($configuration ?: []);
     }
 
     private function processStringNode(String_ $string): ?Node

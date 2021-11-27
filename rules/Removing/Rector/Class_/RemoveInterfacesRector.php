@@ -80,6 +80,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->interfacesToRemove = $configuration[self::INTERFACES_TO_REMOVE] ?? [];
+        $this->interfacesToRemove = $configuration[self::INTERFACES_TO_REMOVE] ?? ($configuration ?: []);
     }
 }

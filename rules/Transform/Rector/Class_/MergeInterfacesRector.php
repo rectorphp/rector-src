@@ -94,7 +94,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->oldToNewInterfaces = $configuration[self::OLD_TO_NEW_INTERFACES] ?? [];
+        $this->oldToNewInterfaces = $configuration[self::OLD_TO_NEW_INTERFACES] ?? ($configuration ?: []);
     }
 
     private function makeImplementsUnique(Class_ $class): void

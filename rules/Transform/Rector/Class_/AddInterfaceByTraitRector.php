@@ -99,6 +99,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->interfaceByTrait = $configuration[self::INTERFACE_BY_TRAIT] ?? [];
+        $this->interfaceByTrait = $configuration[self::INTERFACE_BY_TRAIT] ?? ($configuration ?: []);
     }
 }

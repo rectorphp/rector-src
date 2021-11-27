@@ -154,8 +154,8 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->types = $configuration[self::TYPES] ?? [];
-        $this->suffixes = $configuration[self::SUFFIXES] ?? [];
+        $this->types = $configuration[self::TYPES] ?? ($configuration ?: []);
+        $this->suffixes = $configuration[self::SUFFIXES] ?? ($configuration ?: []);
         $this->enableValueObjectGuessing = $configuration[self::ENABLE_VALUE_OBJECT_GUESSING] ?? false;
     }
 

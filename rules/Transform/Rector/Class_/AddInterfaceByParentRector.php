@@ -105,6 +105,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->interfaceByParent = $configuration[self::INTERFACE_BY_PARENT] ?? [];
+        $this->interfaceByParent = $configuration[self::INTERFACE_BY_PARENT] ?? ($configuration ?: []);
     }
 }

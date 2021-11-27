@@ -116,6 +116,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->reservedNamesToNewOnes = $configuration[self::RESERVED_NAMES_TO_NEW_ONES] ?? [];
+        $this->reservedNamesToNewOnes = $configuration[self::RESERVED_NAMES_TO_NEW_ONES] ?? ($configuration ?: []);
     }
 }

@@ -94,6 +94,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->traitsToRemove = $configuration[self::TRAITS_TO_REMOVE] ?? [];
+        $this->traitsToRemove = $configuration[self::TRAITS_TO_REMOVE] ?? ($configuration ?: []);
     }
 }

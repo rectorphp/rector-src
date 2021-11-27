@@ -92,7 +92,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->reservedKeywordsToReplacements = $configuration[self::RESERVED_KEYWORDS_TO_REPLACEMENTS] ?? [];
+        $this->reservedKeywordsToReplacements = $configuration[self::RESERVED_KEYWORDS_TO_REPLACEMENTS] ?? ($configuration ?: []);
     }
 
     private function processIdentifier(Identifier $identifier): Identifier

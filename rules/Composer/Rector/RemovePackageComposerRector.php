@@ -59,6 +59,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->packageNames = $configuration[self::PACKAGE_NAMES] ?? [];
+        $this->packageNames = $configuration[self::PACKAGE_NAMES] ?? ($configuration ?: []);
     }
 }

@@ -97,6 +97,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->parentClassesToRemove = $configuration[self::PARENT_TYPES_TO_REMOVE] ?? [];
+        $this->parentClassesToRemove = $configuration[self::PARENT_TYPES_TO_REMOVE] ?? ($configuration ?: []);
     }
 }

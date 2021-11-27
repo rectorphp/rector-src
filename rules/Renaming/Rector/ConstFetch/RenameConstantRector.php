@@ -91,6 +91,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->oldToNewConstants = $configuration[self::OLD_TO_NEW_CONSTANTS] ?? [];
+        $this->oldToNewConstants = $configuration[self::OLD_TO_NEW_CONSTANTS] ?? ($configuration ?: []);
     }
 }

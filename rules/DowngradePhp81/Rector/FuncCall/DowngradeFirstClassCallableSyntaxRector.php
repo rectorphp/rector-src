@@ -67,7 +67,7 @@ CODE_SAMPLE
 
     private function shouldSkip(FuncCall|MethodCall|StaticCall $node): bool
     {
-        if (count($node->args) !== 1) {
+        if (count((array) $node->args) !== 1) {
             return true;
         }
 

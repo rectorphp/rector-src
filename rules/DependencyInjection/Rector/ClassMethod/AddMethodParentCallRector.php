@@ -117,7 +117,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->methodByParentTypes = $configuration[self::METHODS_BY_PARENT_TYPES] ?? [];
+        $this->methodByParentTypes = $configuration[self::METHODS_BY_PARENT_TYPES] ?? ($configuration ?: []);
     }
 
     private function shouldSkipMethod(ClassMethod $classMethod, string $method): bool
