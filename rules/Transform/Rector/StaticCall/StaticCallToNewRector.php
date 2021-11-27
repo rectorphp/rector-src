@@ -97,7 +97,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, StaticCallToNew[]> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {

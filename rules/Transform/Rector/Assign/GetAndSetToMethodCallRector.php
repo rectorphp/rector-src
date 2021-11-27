@@ -90,7 +90,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, GetAndSetToMethodCall[]> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {

@@ -102,7 +102,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, PreferenceSelfThis[]> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {

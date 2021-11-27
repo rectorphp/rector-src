@@ -92,9 +92,10 @@ CODE_SAMPLE
     {
         $methodCallToPropertyFetchCollection = $configuration[self::METHOD_CALL_TO_PROPERTY_FETCHES] ?? ($configuration ?: []);
 
-        Assert::allString($methodCallToPropertyFetchCollection);
         Assert::allString(array_keys($methodCallToPropertyFetchCollection));
+        Assert::allString($methodCallToPropertyFetchCollection);
 
+        /** @var array<string, string> $methodCallToPropertyFetchCollection */
         $this->methodCallToPropertyFetchCollection = $methodCallToPropertyFetchCollection;
     }
 }

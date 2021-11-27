@@ -123,7 +123,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, GenericClassMethodParam[]> $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {
