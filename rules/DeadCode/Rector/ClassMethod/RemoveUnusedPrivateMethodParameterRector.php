@@ -124,11 +124,8 @@ CODE_SAMPLE
     {
         $args = $methodCall->getArgs();
         foreach (array_keys($args) as $key) {
-            foreach ($keysArg as $keyArg) {
-                if ($key === $keyArg) {
-                    unset($args[$key]);
-                    continue 2;
-                }
+            if (in_array($key, $keysArg, true)) {
+                unset($args[$key]);
             }
         }
 
