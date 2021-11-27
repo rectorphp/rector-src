@@ -7,7 +7,6 @@ namespace Rector\DeadCode\NodeCollector;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeManipulator\ClassMethodManipulator;
-use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class UnusedParameterResolver
@@ -33,11 +32,6 @@ final class UnusedParameterResolver
             }
 
             if ($this->classMethodManipulator->isParameterUsedInClassMethod($param, $classMethod)) {
-                // reset to keep order of removed arguments, if not construtctor - probably autowired
-                if (! $this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
-                    $unusedParameters = [];
-                }
-
                 continue;
             }
 

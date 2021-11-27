@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
@@ -81,8 +84,62 @@ CODE_SAMPLE
 
         $this->removeNodes($unusedParameters);
         $this->clearPhpDocInfo($node, $unusedParameters);
+        $this->removeCallerArgs($node, $unusedParameters);
 
         return $node;
+    }
+
+    /**
+     * @param Param[] $unusedParameters
+     */
+    private function removeCallerArgs(ClassMethod $classMethod, array $unusedParameters): void
+    {
+        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
+        if (! $classLike instanceof ClassLike) {
+            return;
+        }
+
+        $methods = $classLike->getMethods();
+        if ($methods === []) {
+            return;
+        }
+
+        $methodName = (string) $this->nodeNameResolver->getName($classMethod);
+        $keysArg    = array_keys($unusedParameters);
+
+        foreach ($methods as $method) {
+
+            /** @var MethodCall[] $callers */
+            $callers = $this->betterNodeFinder->find($method, function (Node $subNode) use ($methodName): bool {
+                if (! $subNode instanceof MethodCall) {
+                    return false;
+                }
+
+                if (! $subNode->var instanceof Variable) {
+                    return false;
+                }
+
+                if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
+                    return false;
+                }
+
+                return $this->nodeNameResolver->isName($subNode->name, $methodName);
+            });
+
+            foreach ($callers as $caller) {
+                $args = $caller->getArgs();
+                foreach ($args as $key => $arg) {
+                    foreach ($keysArg as $keyArg) {
+                        if ($key === $keyArg) {
+                            unset($args[$key]);
+                            continue 2;
+                        }
+                    }
+                }
+
+                $caller->args = $args;
+            }
+        }
     }
 
     private function shouldSkip(ClassMethod $classMethod): bool
