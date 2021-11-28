@@ -24,7 +24,7 @@ class SomeClass
 {
     public function run()
     {
-        $dotenv = new \Rector\Tests\Transform\Rector\StaticCall\StaticCallToNewRector\Source\SomeJsonResponse();
+        $dotenv = new \Rector\Tests\Transform\Rector\StaticCall\StaticCallToNewRector\Source\SomeJsonResponse(true);
     }
 }
 
