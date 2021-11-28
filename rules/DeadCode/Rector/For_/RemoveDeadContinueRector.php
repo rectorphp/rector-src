@@ -83,16 +83,14 @@ CODE_SAMPLE
 
     private function isRemovable(Stmt $stmt): bool
     {
-        if ($stmt instanceof Continue_) {
-            if ($stmt->num === null) {
-                return true;
-            }
-
-            if ($stmt->num instanceof LNumber) {
-                return $stmt->num->value < 2;
-            }
+        if (! $stmt instanceof Continue_) {
+            return false;
         }
 
-        return false;
+        if ($stmt->num instanceof LNumber) {
+            return $stmt->num->value < 2;
+        }
+
+        return true;
     }
 }
