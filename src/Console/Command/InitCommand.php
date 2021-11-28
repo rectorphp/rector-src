@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Console\Command;
 
+use Nette\Utils\Strings;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Contract\Template\TemplateResolverInterface;
 use Rector\Core\Exception\Template\TemplateTypeNotFoundException;
@@ -63,7 +64,7 @@ final class InitCommand extends Command
             $this->smartFileSystem->copy($rectorTemplateFilePath, $rectorRootFilePath);
 
             $fullPHPVersion = (string) $this->phpVersionProvider->provide();
-            $phpVersion = substr($fullPHPVersion, 0, 1) . substr($fullPHPVersion, 2, 1);
+            $phpVersion = Strings::substring($fullPHPVersion, 0, 1) . Strings::substring($fullPHPVersion, 2, 1);
 
             $fileContent = $this->smartFileSystem->readFile($rectorRootFilePath);
             $fileContent = str_replace(
