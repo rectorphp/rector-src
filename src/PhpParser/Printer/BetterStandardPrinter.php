@@ -104,8 +104,8 @@ final class BetterStandardPrinter extends Standard
 
         // strip empty starting/ending php tags
         if (array_key_exists(0, $stmts) && $stmts[0] instanceof FileWithoutNamespace) {
-            $content = \preg_replace('/^<\\?php\\s+\\?>\\n?/', '', $content);
-            $content = \preg_replace('/<\\?php$/', '', \rtrim($content)) ."\n";
+            $content = Strings::replace('/^<\\?php\\s+\\?>\\n?/', '', $content);
+            $content = Strings::replace('/<\\?php$/', '', \rtrim($content)) ."\n";
         }
 
         // add new line in case of added stmts
