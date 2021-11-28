@@ -15,7 +15,6 @@ interface AnnotationToAttributeMapperInterface
 
     /**
      * @param T $value
-     * @return Expr|mixed[]
      */
     public function map($value): array|Expr;
 }

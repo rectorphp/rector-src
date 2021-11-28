@@ -585,3 +585,8 @@ parameters:
 
         # resolve later
         - '#Method Rector\\PhpAttribute\\AnnotationToAttributeMapper\\CurlyListNodeAnnotationToAttributeMapper\:\:map\(\) should return array<PhpParser\\Node\\Expr\>\|PhpParser\\Node\\Expr but returns array<int\|string, array<PhpParser\\Node\\Expr\>\|PhpParser\\Node\\Expr\>#'
+
+        # always Expr or mixed nested array
+        - '#Method Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface\:\:map\(\) return type has no value type specified in iterable type array#'
+        - '#Method Rector\\PhpAttribute\\AnnotationToAttributeMapper\\(.*?)AnnotationToAttributeMapper\:\:map\(\) return type has no value type specified in iterable type array#'
+
