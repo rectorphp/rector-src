@@ -92,6 +92,7 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         $functionsToNews = $configuration[self::FUNCTIONS_TO_NEWS] ?? $configuration;
+
         Assert::isArray($functionsToNews);
         Assert::allString($functionsToNews);
 
