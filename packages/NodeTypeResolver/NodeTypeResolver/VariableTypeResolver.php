@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PHPStan\Analyser\Scope;
@@ -29,9 +28,6 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
     ) {
     }
 
-    /**
-     * @return array<class-string<Expr>>
-     */
     public function getNodeClasses(): array
     {
         return [Variable::class];

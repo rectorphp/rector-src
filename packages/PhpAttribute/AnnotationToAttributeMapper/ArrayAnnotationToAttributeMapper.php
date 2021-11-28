@@ -9,7 +9,7 @@ use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
- * @implements AnnotationToAttributeMapperInterface<array>
+ * @implements AnnotationToAttributeMapperInterface<mixed[]>
  */
 final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMapperInterface
 {
