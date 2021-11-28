@@ -36,6 +36,16 @@ final class BetterStandardPrinter extends Standard
 {
     /**
      * @var string
+     */
+    private const EMPTY_STARTING_TAG = '/^<\\?php\\s+\\?>\\n?/';
+    
+    /**
+     * @var string
+     */
+    private const EMPTY_ENDING_TAG = '/<\\?php$/';
+
+    /**
+     * @var string
      * @see https://regex101.com/r/jUFizd/1
      */
     private const NEWLINE_END_REGEX = "#\n$#";
@@ -104,8 +114,8 @@ final class BetterStandardPrinter extends Standard
 
         // strip empty starting/ending php tags
         if (array_key_exists(0, $stmts) && $stmts[0] instanceof FileWithoutNamespace) {
-            $content = Strings::replace($content, '/^<\\?php\\s+\\?>\\n?/', '');
-            $content = Strings::replace(\rtrim($content), '/<\\?php$/', '', ) ."\n";
+            $content = Strings::replace($content, self::EMPTY_STARTING_TAG, '');
+            $content = Strings::replace(\rtrim($content), self::EMPTY_ENDING_TAG, '', ) ."\n";
         }
 
         // add new line in case of added stmts
