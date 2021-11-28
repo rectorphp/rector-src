@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Cast\Bool_;
@@ -38,6 +39,9 @@ final class CastTypeResolver implements NodeTypeResolverInterface
         Double::class => FloatType::class,
     ];
 
+    /**
+     * @return array<class-string<Expr>>
+     */
     public function getNodeClasses(): array
     {
         return [Cast::class];

@@ -24,11 +24,14 @@ final class PropertyTypeResolver implements NodeTypeResolverInterface
     private NodeTypeResolver $nodeTypeResolver;
 
     #[Required]
-    public function autowirePropertyTypeResolver(NodeTypeResolver $nodeTypeResolver): void
+    public function autowire(NodeTypeResolver $nodeTypeResolver): void
     {
         $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeClasses(): array
     {
         return [Property::class];

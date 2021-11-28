@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
@@ -32,6 +33,9 @@ final class NewTypeResolver implements NodeTypeResolverInterface
     ) {
     }
 
+    /**
+     * @return array<class-string<Expr>>
+     */
     public function getNodeClasses(): array
     {
         return [New_::class];

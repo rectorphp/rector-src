@@ -38,6 +38,9 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
         $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
+    /**
+     * @return class-string[]
+     */
     public function getNodeClasses(): array
     {
         return [StaticCall::class, MethodCall::class];

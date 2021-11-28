@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Analyser\Scope;
@@ -41,6 +42,9 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
         $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
+    /**
+     * @return array<class-string<Expr>>
+     */
     public function getNodeClasses(): array
     {
         return [PropertyFetch::class];

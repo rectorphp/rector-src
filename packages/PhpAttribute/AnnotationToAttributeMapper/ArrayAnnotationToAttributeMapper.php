@@ -32,10 +32,9 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
 
     /**
      * @param mixed[] $value
-     * @return Expr|Expr[]
      */
     public function map($value): array|Expr
     {
-        return array_map(fn ($item): Expr => $this->annotationToAttributeMapper->map($item), $value);
+        return array_map(fn ($item): Expr|array => $this->annotationToAttributeMapper->map($item), $value);
     }
 }

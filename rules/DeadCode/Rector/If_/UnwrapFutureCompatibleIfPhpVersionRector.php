@@ -80,7 +80,11 @@ CODE_SAMPLE
         }
 
         // if is skipped
-        if ($result === true || $result > 0) {
+        if ($result === true) {
+            return $this->refactorIsMatch($node);
+        }
+
+        if ($result > 0) {
             return $this->refactorIsMatch($node);
         }
 

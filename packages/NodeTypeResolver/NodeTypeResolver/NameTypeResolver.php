@@ -35,6 +35,9 @@ final class NameTypeResolver implements NodeTypeResolverInterface
     ) {
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeClasses(): array
     {
         return [Name::class, FullyQualified::class];

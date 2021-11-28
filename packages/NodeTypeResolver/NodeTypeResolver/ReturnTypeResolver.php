@@ -25,6 +25,9 @@ final class ReturnTypeResolver implements NodeTypeResolverInterface
         $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeClasses(): array
     {
         return [Return_::class];

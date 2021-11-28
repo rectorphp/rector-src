@@ -51,6 +51,9 @@ final class ParamTypeResolver implements NodeTypeResolverInterface
         $this->staticTypeMapper = $staticTypeMapper;
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeClasses(): array
     {
         return [Param::class];
