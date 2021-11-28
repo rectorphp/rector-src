@@ -102,6 +102,12 @@ final class BetterStandardPrinter extends Standard
 
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
+        // strip empty starting/ending php tags
+        if ($stmts[0] instanceof FileWithoutNamespace) {
+            $content = \preg_replace('/^<\\?php\\s+\\?>\\n?/', '', $content);
+            $content = \preg_replace('/<\\?php$/', '', \rtrim($content));
+        }
+
         // add new line in case of added stmts
         if (count($stmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
             $content .= $this->nl;
