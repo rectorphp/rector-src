@@ -62,7 +62,9 @@ final class InitCommand extends Command
         } else {
             $this->smartFileSystem->copy($rectorTemplateFilePath, $rectorRootFilePath);
 
-            $phpVersion  = substr((string) $this->phpVersionProvider->provide(), 0, 2);
+            $fullPHPVersion = (string) $this->phpVersionProvider->provide();
+            $phpVersion  = substr($fullPHPVersion, 0, 1) . substr($fullPHPVersion, 2, 1);
+
             $fileContent = $this->smartFileSystem->readFile($rectorRootFilePath);
             $fileContent = str_replace(
                 'LevelSetList::UP_TO_PHP_XY',
