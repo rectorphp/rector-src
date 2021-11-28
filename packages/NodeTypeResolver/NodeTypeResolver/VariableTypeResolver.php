@@ -17,6 +17,8 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\VariableTypeResolver\VariableTypeResolverTest
+ *
+ * @implements NodeTypeResolverInterface<Variable>
  */
 final class VariableTypeResolver implements NodeTypeResolverInterface
 {
@@ -26,9 +28,6 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
     ) {
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [Variable::class];
