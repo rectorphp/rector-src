@@ -23,6 +23,9 @@ use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 
+/**
+ * @implements NodeTypeResolverInterface<Cast>
+ */
 final class CastTypeResolver implements NodeTypeResolverInterface
 {
     /**
@@ -35,9 +38,6 @@ final class CastTypeResolver implements NodeTypeResolverInterface
         Double::class => FloatType::class,
     ];
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [Cast::class];

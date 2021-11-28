@@ -21,6 +21,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyFetchTypeResolver\PropertyFetchTypeResolverTest
+ *
+ * @implements NodeTypeResolverInterface<PropertyFetch>
  */
 final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
 {
@@ -34,14 +36,11 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
     }
 
     #[Required]
-    public function autowirePropertyFetchTypeResolver(NodeTypeResolver $nodeTypeResolver): void
+    public function autowire(NodeTypeResolver $nodeTypeResolver): void
     {
         $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [PropertyFetch::class];

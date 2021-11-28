@@ -15,6 +15,8 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver\TraitTypeResolverTest
+ *
+ * @implements NodeTypeResolverInterface<Trait_>
  */
 final class TraitTypeResolver implements NodeTypeResolverInterface
 {
@@ -23,9 +25,6 @@ final class TraitTypeResolver implements NodeTypeResolverInterface
     ) {
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [Trait_::class];

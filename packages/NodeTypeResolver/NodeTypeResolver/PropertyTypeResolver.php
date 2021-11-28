@@ -16,6 +16,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\PropertyTypeResolverTest
+ *
+ * @implements NodeTypeResolverInterface<Property>
  */
 final class PropertyTypeResolver implements NodeTypeResolverInterface
 {
@@ -27,9 +29,6 @@ final class PropertyTypeResolver implements NodeTypeResolverInterface
         $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [Property::class];

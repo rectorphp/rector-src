@@ -23,6 +23,8 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\NameTypeResolver\NameTypeResolverTest
+ *
+ * @implements NodeTypeResolverInterface<Name|FullyQualified>
  */
 final class NameTypeResolver implements NodeTypeResolverInterface
 {
@@ -33,9 +35,6 @@ final class NameTypeResolver implements NodeTypeResolverInterface
     ) {
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [Name::class, FullyQualified::class];

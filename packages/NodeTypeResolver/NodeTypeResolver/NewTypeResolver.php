@@ -21,6 +21,9 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
+/**
+ * @implements NodeTypeResolverInterface<New_>
+ */
 final class NewTypeResolver implements NodeTypeResolverInterface
 {
     public function __construct(
@@ -29,9 +32,6 @@ final class NewTypeResolver implements NodeTypeResolverInterface
     ) {
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [New_::class];

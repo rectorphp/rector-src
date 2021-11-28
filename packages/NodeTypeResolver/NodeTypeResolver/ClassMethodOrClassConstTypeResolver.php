@@ -16,6 +16,9 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symfony\Contracts\Service\Attribute\Required;
 
+/**
+ * @implements NodeTypeResolverInterface<ClassMethod|ClassConst>
+ */
 final class ClassMethodOrClassConstTypeResolver implements NodeTypeResolverInterface
 {
     private NodeTypeResolver $nodeTypeResolver;
@@ -31,9 +34,6 @@ final class ClassMethodOrClassConstTypeResolver implements NodeTypeResolverInter
         $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [ClassMethod::class, ClassConst::class];

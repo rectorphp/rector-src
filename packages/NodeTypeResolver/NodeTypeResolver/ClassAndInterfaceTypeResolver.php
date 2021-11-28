@@ -18,12 +18,11 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\ClassTypeResolverTest
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\InterfaceTypeResolverTest
+ *
+ * @implements NodeTypeResolverInterface<Class_|Interface_>
  */
 final class ClassAndInterfaceTypeResolver implements NodeTypeResolverInterface
 {
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [Class_::class, Interface_::class];

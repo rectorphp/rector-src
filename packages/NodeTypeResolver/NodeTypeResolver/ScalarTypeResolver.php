@@ -19,11 +19,11 @@ use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 
+/**
+ * @implements NodeTypeResolverInterface<Scalar>
+ */
 final class ScalarTypeResolver implements NodeTypeResolverInterface
 {
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeClasses(): array
     {
         return [Scalar::class];
@@ -32,15 +32,15 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
     public function resolve(Node $node): Type
     {
         if ($node instanceof DNumber) {
-            return new ConstantFloatType((float) $node->value);
+            return new ConstantFloatType($node->value);
         }
 
         if ($node instanceof String_) {
-            return new ConstantStringType((string) $node->value);
+            return new ConstantStringType($node->value);
         }
 
         if ($node instanceof LNumber) {
-            return new ConstantIntegerType((int) $node->value);
+            return new ConstantIntegerType($node->value);
         }
 
         if ($node instanceof MagicConst) {
