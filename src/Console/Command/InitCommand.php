@@ -7,6 +7,7 @@ namespace Rector\Core\Console\Command;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Contract\Template\TemplateResolverInterface;
 use Rector\Core\Exception\Template\TemplateTypeNotFoundException;
+use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Template\DefaultResolver;
 use Stringable;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +27,8 @@ final class InitCommand extends Command
         private FileSystemGuard $fileSystemGuard,
         private SmartFileSystem $smartFileSystem,
         private SymfonyStyle $symfonyStyle,
-        private array $templateResolvers
+        private array $templateResolvers,
+        private PhpVersionProvider $phpVersionProvider
     ) {
         parent::__construct();
     }
@@ -59,6 +61,16 @@ final class InitCommand extends Command
             $this->symfonyStyle->warning('Config file "rector.php" already exists');
         } else {
             $this->smartFileSystem->copy($rectorTemplateFilePath, $rectorRootFilePath);
+
+            $phpVersion  = (int) $this->phpVersionProvider->provide();
+            $fileContent = $this->smartFileSystem->readFile($rectorRootFilePath);
+            $fileContent = str_replace(
+                'LevelSetList::UP_TO_PHP_XY',
+                sprintf('LevelSetList::UP_TO_PHP_%d', $phpVersion),
+                $fileContent
+            );
+            $this->smartFileSystem->dumpFile($rectorRootFilePath, $fileContent);
+
             $this->symfonyStyle->success('"rector.php" config file was added');
         }
 
