@@ -11,10 +11,8 @@ use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(ClassConstFetchToValueRector::class)
-        ->call('configure', [[
-            ClassConstFetchToValueRector::CLASS_CONST_FETCHES_TO_VALUES => ValueObjectInliner::inline([
-                new ClassConstFetchToValue(OldClassWithConstants::class, 'DEVELOPMENT', 'development'),
-                new ClassConstFetchToValue(OldClassWithConstants::class, 'PRODUCTION', 'production'),
-            ]),
-        ]]);
+        ->configure([
+            new ClassConstFetchToValue(OldClassWithConstants::class, 'DEVELOPMENT', 'development'),
+            new ClassConstFetchToValue(OldClassWithConstants::class, 'PRODUCTION', 'production'),
+        ]);
 };
