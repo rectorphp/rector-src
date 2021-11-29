@@ -154,13 +154,16 @@ final class ComplexNodeRemover
 
         $params = $constructClassMethod->getParams();
         $paramKeysToBeRemoved = [];
-        $variables = $this->betterNodeFinder->find((array) $constructClassMethod->stmts, function (Node $subNode): bool {
+        $variables = $this->betterNodeFinder->find(
+            (array) $constructClassMethod->stmts,
+            function (Node $subNode): bool {
             if (! $subNode instanceof Variable) {
                 return false;
             }
 
             return $this->isExpressionVariableNotAssign($subNode);
-        });
+        }
+        );
 
         foreach ($params as $key => $param) {
             $variable = $this->betterNodeFinder->findFirst(
