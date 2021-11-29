@@ -30,7 +30,6 @@ namespace Rector\Core\Tests\Issues\AutoImportBeforeDocblock\Fixture;
  * License
  */
 use Foobar\B;
-
 use Foobar\A;
 
 /**

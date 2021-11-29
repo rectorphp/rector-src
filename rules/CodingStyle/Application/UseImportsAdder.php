@@ -106,7 +106,7 @@ final class UseImportsAdder
                 $newUses[0]->setAttribute(AttributeKey::PHP_DOC_INFO, $namespace->stmts[0]->getAttribute(AttributeKey::PHP_DOC_INFO));
                 $newUses[0]->setAttribute(AttributeKey::COMMENTS, $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS));
 
-                $namespace->stmts[0]->setDocComment(new Doc(''));
+                $namespace->stmts[0]->setAttribute(AttributeKey::COMMENTS, null);
             }
         }
 
