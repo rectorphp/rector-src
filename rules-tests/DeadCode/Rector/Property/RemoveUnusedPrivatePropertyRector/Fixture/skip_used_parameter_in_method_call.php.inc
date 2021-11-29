@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Rector\Core\Tests\Issues\RemoveUnusedPromotedPrivate\Fixture;
+namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
 final class DemoSetting extends AbstractSetting
 {
