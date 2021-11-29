@@ -2,6 +2,8 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
+use Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Source\AbstractSetting;
+
 final class DemoSetting extends AbstractSetting
 {
     private PageInterface $page;
@@ -18,15 +20,5 @@ final class DemoSetting extends AbstractSetting
     public function getPage()
     {
         return $this->page;
-    }
-}
-
-abstract class AbstractSetting
-{
-	public function __construct(PageInterface $page, SectionInterface $section)
-    {
-        // do something with $page and $section
-        $page->runSomething();
-        $section->runSomething();
     }
 }
