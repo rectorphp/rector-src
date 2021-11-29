@@ -9,7 +9,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(AddVoidReturnTypeWhereNoReturnRector::class)
-        ->call('configure', [[
-            AddVoidReturnTypeWhereNoReturnRector::USE_PHPDOC => true,
-        ]]);
+        ->configure(true);
 };

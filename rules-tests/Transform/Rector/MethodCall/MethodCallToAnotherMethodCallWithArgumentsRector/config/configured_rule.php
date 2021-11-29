@@ -21,7 +21,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     ]);
 
     $services->set(MethodCallToAnotherMethodCallWithArgumentsRector::class)
-        ->call('configure', [[
-            MethodCallToAnotherMethodCallWithArgumentsRector::METHOD_CALL_RENAMES_WITH_ADDED_ARGUMENTS => $configuration,
-        ]]);
+        ->configure($configuration);
 };

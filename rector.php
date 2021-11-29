@@ -35,8 +35,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services = $containerConfigurator->services();
 
-    $services->set(\Rector\Core\Rector\ConfigureRector::class);
-
     // phpunit
     $services->set(PreferThisOrSelfMethodCallRector::class)
         ->configure([

@@ -11,7 +11,6 @@ final class ConfigureRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        
     }
 
     public function getNodeTypes(): array

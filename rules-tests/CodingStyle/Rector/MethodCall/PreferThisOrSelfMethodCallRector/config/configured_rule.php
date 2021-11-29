@@ -14,11 +14,9 @@ use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(PreferThisOrSelfMethodCallRector::class)
-        ->call('configure', [[
-            PreferThisOrSelfMethodCallRector::TYPE_TO_PREFERENCE => [
-                SomeAbstractTestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
-                BeLocalClass::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_THIS()),
-                TestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
-            ],
-        ]]);
+        ->configure([
+            SomeAbstractTestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
+            BeLocalClass::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_THIS()),
+            TestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
+        ]);
 };
