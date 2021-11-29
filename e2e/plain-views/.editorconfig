@@ -1,0 +1,2 @@
+[src/view.php]
+trim_trailing_whitespace = false
