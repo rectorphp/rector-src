@@ -98,17 +98,18 @@ CODE_SAMPLE
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
-        foreach ($this->renameAnnotations as $renamedAnnotation) {
-            if ($renamedAnnotation instanceof RenameAnnotationByType) {
-                if (! $this->isObjectType($classLike, $renamedAnnotation->getObjectType())) {
-                    continue;
-                }
+        foreach ($this->renameAnnotations as $renameAnnotation) {
+            if ($renameAnnotation instanceof RenameAnnotationByType && ! $this->isObjectType(
+                $classLike,
+                $renameAnnotation->getObjectType()
+            )) {
+                continue;
             }
 
             $this->docBlockTagReplacer->replaceTagByAnother(
                 $phpDocInfo,
-                $renamedAnnotation->getOldAnnotation(),
-                $renamedAnnotation->getNewAnnotation()
+                $renameAnnotation->getOldAnnotation(),
+                $renameAnnotation->getNewAnnotation()
             );
         }
 
