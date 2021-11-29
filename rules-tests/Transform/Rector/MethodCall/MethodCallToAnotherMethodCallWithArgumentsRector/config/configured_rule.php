@@ -11,15 +11,13 @@ use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
-    $configuration = ValueObjectInliner::inline([
-        new MethodCallToAnotherMethodCallWithArguments(
-            NetteServiceDefinition::class,
-            'setInject',
-            'addTag',
-            ['inject']
-        ),
-    ]);
-
     $services->set(MethodCallToAnotherMethodCallWithArgumentsRector::class)
-        ->configure($configuration);
+        ->configure([
+         new MethodCallToAnotherMethodCallWithArguments(
+             NetteServiceDefinition::class,
+             'setInject',
+             'addTag',
+             ['inject']
+         )
+        ]);
 };
