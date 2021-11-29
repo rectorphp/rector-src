@@ -99,8 +99,9 @@ final class UseImportsAdder
         $newUses = $this->createUses($useImportTypes, $functionUseImportTypes, $namespaceName);
 
         if ($namespace->stmts[0] instanceof Use_ && $newUses !== []) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($namespace->stmts[0]);
-            if ($phpDocInfo instanceof PhpDocInfo) {
+            $comments = $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS);
+
+            if ($comments !== null) {
                 // mirror
                 $newUses[0]->setAttribute(AttributeKey::PHP_DOC_INFO, $namespace->stmts[0]->getAttribute(AttributeKey::PHP_DOC_INFO));
                 $newUses[0]->setAttribute(AttributeKey::COMMENTS, $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS));
