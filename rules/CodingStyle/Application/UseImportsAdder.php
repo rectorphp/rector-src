@@ -23,9 +23,7 @@ final class UseImportsAdder
 {
     public function __construct(
         private UsedImportsResolver $usedImportsResolver,
-        private TypeFactory $typeFactory,
-        private PhpDocInfoFactory $phpDocInfoFactory,
-        private NodesToAddCollector $nodesToAddCollector
+        private TypeFactory $typeFactory
     ) {
     }
 
