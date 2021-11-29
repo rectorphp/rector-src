@@ -36,11 +36,13 @@ final class BetterStandardPrinter extends Standard
 {
     /**
      * @var string
+     * @see https://regex101.com/r/QA7mai/1
      */
     private const EMPTY_STARTING_TAG_REGEX = '/^<\\?php\\s+\\?>\\n?/';
 
     /**
      * @var string
+     * @see https://regex101.com/r/IVNkrt/1
      */
     private const EMPTY_ENDING_TAG_REGEX = '/<\\?php$/';
 
