@@ -154,17 +154,9 @@ final class ComplexNodeRemover
 
         $params = $constructClassMethod->getParams();
         $paramKeysToBeRemoved = [];
-        $variables = $this->betterNodeFinder->find(
-            (array) $constructClassMethod->stmts,
-            function (Node $subNode): bool {
-            if (! $subNode instanceof Variable) {
-                return false;
-            }
 
-            return $this->isExpressionVariableNotAssign($subNode);
-        }
-        );
-
+        /** @var Variable[] $variables */
+        $variables = $this->resolveVariables($constructClassMethod);
         foreach ($params as $key => $param) {
             $variable = $this->betterNodeFinder->findFirst(
                 (array) $constructClassMethod->stmts,
@@ -183,16 +175,45 @@ final class ComplexNodeRemover
                 continue;
             }
 
-            foreach ($variables as $variable) {
-                if ($this->nodeComparator->areNodesEqual($assign->expr, $variable)) {
-                    continue 2;
-                }
+            if ($this->isInVariables($variables, $assign)) {
+                continue;
             }
 
             $paramKeysToBeRemoved[] = $key;
         }
 
         $this->processRemoveParamWithKeys($params, $paramKeysToBeRemoved);
+    }
+
+    /**
+     * @return Variable[]
+     */
+    private function resolveVariables(ClassMethod $classMethod): array
+    {
+        return $this->betterNodeFinder->find(
+            (array) $classMethod->stmts,
+            function (Node $subNode): bool {
+                if (! $subNode instanceof Variable) {
+                    return false;
+                }
+
+                return $this->isExpressionVariableNotAssign($subNode);
+            }
+        );
+    }
+
+    /**
+     * @param Variable[] $variables
+     */
+    private function isInVariables(array $variables, Assign $assign): bool
+    {
+        foreach ($variables as $variable) {
+            if ($this->nodeComparator->areNodesEqual($assign->expr, $variable)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
