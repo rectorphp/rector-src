@@ -97,9 +97,9 @@ final class UseImportsAdder
         $newUses = $this->createUses($useImportTypes, $functionUseImportTypes, $namespaceName);
 
         if ($namespace->stmts[0] instanceof Use_ && $newUses !== []) {
-            $comments = $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS);
+            $comments = (array) $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS);
 
-            if ($comments !== null) {
+            if ($comments !== []) {
                 $newUses[0]->setAttribute(
                     AttributeKey::COMMENTS,
                     $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS)
