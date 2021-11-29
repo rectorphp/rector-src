@@ -45,5 +45,5 @@ jobs:
                 working-directory: ${{ matrix.directory }}
 
             -
-                run: ./../../bin/rector process src --dry-run --ansi -a vendor/autoload.php
+                run: ./../../bin/rector process --dry-run --ansi
                 working-directory: ${{ matrix.directory }}
