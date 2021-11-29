@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -153,6 +154,14 @@ final class ComplexNodeRemover
 
         $params = $constructClassMethod->getParams();
         $paramKeysToBeRemoved = [];
+        $variables = $this->betterNodeFinder->find((array) $constructClassMethod->stmts, function (Node $subNode): bool {
+            if (! $subNode instanceof Variable) {
+                return false;
+            }
+
+            return $this->isExpressionVariableNotAssign($subNode);
+        });
+
         foreach ($params as $key => $param) {
             $variable = $this->betterNodeFinder->findFirst(
                 (array) $constructClassMethod->stmts,
@@ -169,6 +178,12 @@ final class ComplexNodeRemover
 
             if (! $this->nodeComparator->areNodesEqual($param->var, $assign->expr)) {
                 continue;
+            }
+
+            foreach ($variables as $variable) {
+                if ($this->nodeComparator->areNodesEqual($assign->expr, $variable)) {
+                    continue 2;
+                }
             }
 
             $paramKeysToBeRemoved[] = $key;
