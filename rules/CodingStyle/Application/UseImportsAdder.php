@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Application;
 
 use Nette\Utils\Strings;
-use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Type\ObjectType;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -103,8 +101,14 @@ final class UseImportsAdder
 
             if ($comments !== null) {
                 // mirror
-                $newUses[0]->setAttribute(AttributeKey::PHP_DOC_INFO, $namespace->stmts[0]->getAttribute(AttributeKey::PHP_DOC_INFO));
-                $newUses[0]->setAttribute(AttributeKey::COMMENTS, $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS));
+                $newUses[0]->setAttribute(
+                    AttributeKey::PHP_DOC_INFO,
+                    $namespace->stmts[0]->getAttribute(AttributeKey::PHP_DOC_INFO)
+                );
+                $newUses[0]->setAttribute(
+                    AttributeKey::COMMENTS,
+                    $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS)
+                );
 
                 $namespace->stmts[0]->setAttribute(AttributeKey::COMMENTS, null);
             }
