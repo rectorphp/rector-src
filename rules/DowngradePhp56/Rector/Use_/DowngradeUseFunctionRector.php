@@ -10,7 +10,9 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Use_;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,6 +24,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeUseFunctionRector extends AbstractRector
 {
+    public function __construct(
+        private CurrentFileProvider $currentFileProvider
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -60,6 +67,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->isAlreadyFullyQualified($node)) {
+            return null;
+        }
+
         $name = $this->getFullyQualifiedName($node->getAttribute(AttributeKey::USE_NODES), $node);
         if ($name === null) {
             return null;
@@ -74,6 +85,24 @@ CODE_SAMPLE
         if ($use->type === Use_::TYPE_FUNCTION || $use->type === Use_::TYPE_CONSTANT) {
             $this->removeNode($use);
         }
+    }
+
+    private function isAlreadyFullyQualified(ConstFetch|FuncCall $node): bool
+    {
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            return false;
+        }
+
+        $oldTokens = $file->getOldTokens();
+        $startTokenPos = $node->getStartTokenPos();
+        $name = $oldTokens[$startTokenPos][1] ?? null;
+
+        if (! is_string($name)) {
+            return false;
+        }
+
+        return str_starts_with($name, '\\');
     }
 
     /**
