@@ -11,8 +11,11 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Type\ObjectType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
@@ -20,7 +23,9 @@ final class UseImportsAdder
 {
     public function __construct(
         private UsedImportsResolver $usedImportsResolver,
-        private TypeFactory $typeFactory
+        private TypeFactory $typeFactory,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private NodesToAddCollector $nodesToAddCollector
     ) {
     }
 
@@ -90,6 +95,15 @@ final class UseImportsAdder
         );
 
         $newUses = $this->createUses($useImportTypes, $functionUseImportTypes, $namespaceName);
+
+        if ($namespace->stmts[0] instanceof Use_) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($namespace->stmts[0]);
+            if ($phpDocInfo instanceof PhpDocInfo) {
+                $this->nodesToAddCollector->addNodesAfterNode($newUses, $namespace->stmts[0]);
+                return;
+            }
+        }
+
         $namespace->stmts = array_merge($newUses, $namespace->stmts);
     }
 
