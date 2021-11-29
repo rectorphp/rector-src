@@ -42,7 +42,7 @@ final class ArraySpreadInsteadOfArrayMergeRector extends AbstractRector implemen
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change array_merge() to spread operator, except values with possible string key values',
+            'Change array_merge() to spread operator',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -136,16 +136,14 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $this->isArrayKeyTypeAllowed($expr);
-    }
-
-    private function isArrayKeyTypeAllowed(Expr $expr): bool {
-
         $arrayStaticType = $this->getType($expr);
         if (! $arrayStaticType instanceof ArrayType) {
-            return false;
+            return true;
         }
+        return ! $this->isArrayKeyTypeAllowed($arrayStaticType);
+    }
 
+    private function isArrayKeyTypeAllowed(ArrayType $arrayStaticType): bool {
         $allowedKeyTypes = [IntegerType::class];
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS)) {
             $allowedKeyTypes[] = StringType::class;
