@@ -13,12 +13,8 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
@@ -143,7 +139,8 @@ CODE_SAMPLE
         return ! $this->isArrayKeyTypeAllowed($arrayStaticType);
     }
 
-    private function isArrayKeyTypeAllowed(ArrayType $arrayStaticType): bool {
+    private function isArrayKeyTypeAllowed(ArrayType $arrayStaticType): bool
+    {
         $allowedKeyTypes = [IntegerType::class];
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS)) {
             $allowedKeyTypes[] = StringType::class;
