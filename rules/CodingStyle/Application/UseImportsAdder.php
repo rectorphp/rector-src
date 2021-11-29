@@ -100,11 +100,6 @@ final class UseImportsAdder
             $comments = $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS);
 
             if ($comments !== null) {
-                // mirror
-                $newUses[0]->setAttribute(
-                    AttributeKey::PHP_DOC_INFO,
-                    $namespace->stmts[0]->getAttribute(AttributeKey::PHP_DOC_INFO)
-                );
                 $newUses[0]->setAttribute(
                     AttributeKey::COMMENTS,
                     $namespace->stmts[0]->getAttribute(AttributeKey::COMMENTS)
