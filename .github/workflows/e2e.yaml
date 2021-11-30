@@ -31,10 +31,14 @@ jobs:
                     php-version: ${{ matrix.php_version }}
                     coverage: none
 
+            # run in root rector-src
+            -   run: composer install --ansi
+
+            # run in e2e subdir
             -
                 run: composer install --ansi
                 working-directory: ${{ matrix.directory }}
 
             -
-                run: vendor/bin/rector process src --dry-run --ansi
+                run: ./../../bin/rector process src --dry-run --ansi -a vendor/autoload.php
                 working-directory: ${{ matrix.directory }}
