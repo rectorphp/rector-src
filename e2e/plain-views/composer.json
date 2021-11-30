@@ -2,9 +2,6 @@
     "require": {
         "php": "^8.0"
     },
-    "require-dev": {
-        "rector/rector-src": "dev-main"
-    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
