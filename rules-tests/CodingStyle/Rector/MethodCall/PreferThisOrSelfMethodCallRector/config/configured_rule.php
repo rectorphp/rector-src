@@ -9,14 +9,13 @@ use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
 use Rector\Tests\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector\Source\BeLocalClass;
 use Rector\Tests\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector\Source\SomeAbstractTestCase;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(PreferThisOrSelfMethodCallRector::class)
         ->configure([
-            SomeAbstractTestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
-            BeLocalClass::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_THIS()),
-            TestCase::class => ValueObjectInliner::inline(PreferenceSelfThis::PREFER_SELF()),
+            SomeAbstractTestCase::class => PreferenceSelfThis::PREFER_SELF(),
+            BeLocalClass::class => PreferenceSelfThis::PREFER_THIS(),
+            TestCase::class => PreferenceSelfThis::PREFER_SELF(),
         ]);
 };

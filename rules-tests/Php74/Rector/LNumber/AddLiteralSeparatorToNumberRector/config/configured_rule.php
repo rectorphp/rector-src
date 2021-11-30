@@ -8,5 +8,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(AddLiteralSeparatorToNumberRector::class)
-        ->configure(1_000_000);
+        ->configure([
+            AddLiteralSeparatorToNumberRector::LIMIT_VALUE => 1_000_000,
+        ]);
 };

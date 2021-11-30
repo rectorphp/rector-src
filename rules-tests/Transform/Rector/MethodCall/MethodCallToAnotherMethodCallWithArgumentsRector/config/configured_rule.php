@@ -6,18 +6,17 @@ use Rector\Tests\Transform\Rector\MethodCall\MethodCallToAnotherMethodCallWithAr
 use Rector\Transform\Rector\MethodCall\MethodCallToAnotherMethodCallWithArgumentsRector;
 use Rector\Transform\ValueObject\MethodCallToAnotherMethodCallWithArguments;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(MethodCallToAnotherMethodCallWithArgumentsRector::class)
         ->configure([
-         new MethodCallToAnotherMethodCallWithArguments(
-             NetteServiceDefinition::class,
-             'setInject',
-             'addTag',
-             ['inject']
-         )
+            new MethodCallToAnotherMethodCallWithArguments(
+                NetteServiceDefinition::class,
+                'setInject',
+                'addTag',
+                ['inject']
+            ),
         ]);
 };
