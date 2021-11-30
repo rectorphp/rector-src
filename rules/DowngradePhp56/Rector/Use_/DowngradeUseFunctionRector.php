@@ -10,9 +10,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Use_;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -24,11 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeUseFunctionRector extends AbstractRector
 {
-    public function __construct(
-        private CurrentFileProvider $currentFileProvider
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -89,12 +82,7 @@ CODE_SAMPLE
 
     private function isAlreadyFullyQualified(ConstFetch|FuncCall $node): bool
     {
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return false;
-        }
-
-        $oldTokens = $file->getOldTokens();
+        $oldTokens = $this->file->getOldTokens();
         $startTokenPos = $node->getStartTokenPos();
         $name = $oldTokens[$startTokenPos][1] ?? null;
 
