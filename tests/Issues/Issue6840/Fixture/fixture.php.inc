@@ -21,11 +21,10 @@ namespace Rector\Core\Tests\Issues\Issue6840\Fixture;
 
 class Fixture
 {
-    private array $imageSize;
+    protected array $imageSize;
 
-    public function __construct(
-        private string $imageId
-    ) {
+    public function __construct(protected $imageId)
+    {
         $this->imageSize = [];
     }
 }

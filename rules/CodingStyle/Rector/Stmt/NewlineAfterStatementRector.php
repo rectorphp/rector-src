@@ -151,6 +151,10 @@ CODE_SAMPLE
             }
         }
 
+        if ($this->nodesToRemoveCollector->isActive()) {
+            return null;
+        }
+
         $this->stmtsHashed[$hash] = true;
         $this->nodesToAddCollector->addNodeAfterNode(new Nop(), $node);
 
