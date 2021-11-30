@@ -88,7 +88,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->isReadonly()) {
+        if ($node->isReadonly() || $node->props[0]->default !== null) {
             return null;
         }
 
