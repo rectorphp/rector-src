@@ -34,10 +34,8 @@ final class ClassNameResolver implements NodeNameResolverInterface
      */
     public function resolve(Node $node): ?string
     {
-        /** @var Name|null $namespacedName */
-        $namespacedName = $node->namespacedName;
-        if ($namespacedName instanceof Name) {
-            return $namespacedName->toString();
+        if (property_exists($node, 'namespacedName') && $node->namespacedName instanceof Name) {
+            return $node->namespacedName->toString();
         }
 
         if ($node->name === null) {
