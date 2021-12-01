@@ -118,6 +118,7 @@ CODE_SAMPLE
             if (! $this->isName($node, $argumentFuncCallToMethodCall->getFunction())) {
                 continue;
             }
+
             if ($argumentFuncCallToMethodCall instanceof ArgumentFuncCallToMethodCall) {
                 return $this->refactorFuncCallToMethodCall($argumentFuncCallToMethodCall, $classLike, $node);
             }
