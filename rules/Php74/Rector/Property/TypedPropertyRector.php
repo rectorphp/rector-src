@@ -7,6 +7,7 @@ namespace Rector\Php74\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -31,6 +32,7 @@ use Rector\Php74\TypeAnalyzer\PropertyUnionTypeResolver;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
@@ -141,20 +143,30 @@ CODE_SAMPLE
         if ($varType instanceof UnionType) {
             $types = $varType->getTypes();
 
-            if (count($types) === 2 && $types[1] instanceof TemplateType) {
-                $templateType = $types[1];
+            if (count($types) === 2) {
+                if ($types[0] instanceof FullyQualifiedObjectType && $types[0]->getClassName() === 'Prophecy\Prophecy\ObjectProphecy') {
+                    return null;
+                }
 
-                $node->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                    $templateType->getBound(),
-                    TypeKind::PROPERTY()
-                );
+                if ($types[1] instanceof TemplateType) {
+                    $templateType = $types[1];
 
-                return $node;
+                    $node->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                        $templateType->getBound(),
+                        TypeKind::PROPERTY()
+                    );
+
+                    return $node;
+                }
             }
         }
 
         // we are not sure what object type this is
         if ($varType instanceof NonExistingObjectType) {
+            return null;
+        }
+
+        if ($varType instanceof FullyQualifiedObjectType && $varType->getClassName() === 'Prophecy\Prophecy\ObjectProphecy') {
             return null;
         }
 
