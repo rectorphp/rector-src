@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Php74\TypeAnalyzer;
 
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 
 final class ObjectTypeAnalyzer
 {
