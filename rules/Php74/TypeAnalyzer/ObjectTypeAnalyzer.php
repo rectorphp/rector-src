@@ -26,9 +26,11 @@ final class ObjectTypeAnalyzer
             if (! $type instanceof FullyQualifiedObjectType) {
                 continue;
             }
+
             if ($type->getClassName() !== 'Prophecy\Prophecy\ObjectProphecy') {
                 continue;
             }
+
             return true;
         }
 
