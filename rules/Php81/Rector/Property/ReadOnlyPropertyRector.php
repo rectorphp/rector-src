@@ -88,8 +88,10 @@ CODE_SAMPLE
         if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($node)) {
             return null;
         }
-
-        if ($node->isReadonly() || $node->props[0]->default instanceof Expr) {
+        if ($node->isReadonly()) {
+            return null;
+        }
+        if ($node->props[0]->default instanceof Expr) {
             return null;
         }
 

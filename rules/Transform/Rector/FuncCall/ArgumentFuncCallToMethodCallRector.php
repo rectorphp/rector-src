@@ -118,10 +118,11 @@ CODE_SAMPLE
             if (! $this->isName($node, $argumentFuncCallToMethodCall->getFunction())) {
                 continue;
             }
-
             if ($argumentFuncCallToMethodCall instanceof ArgumentFuncCallToMethodCall) {
                 return $this->refactorFuncCallToMethodCall($argumentFuncCallToMethodCall, $classLike, $node);
-            } elseif ($argumentFuncCallToMethodCall instanceof ArrayFuncCallToMethodCall) {
+            }
+
+            if ($argumentFuncCallToMethodCall instanceof ArrayFuncCallToMethodCall) {
                 return $this->refactorArrayFunctionToMethodCall($argumentFuncCallToMethodCall, $node, $classLike);
             }
         }
