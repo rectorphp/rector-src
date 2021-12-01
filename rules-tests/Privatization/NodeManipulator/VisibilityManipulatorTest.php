@@ -6,11 +6,9 @@ declare(strict_types=1);
 namespace Rector\Tests\Privatization\NodeManipulator;
 
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\Core\ValueObject\Visibility;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Rector\Testing\TestingParser\TestingParser;
 
 final class VisibilityManipulatorTest extends AbstractTestCase
 {

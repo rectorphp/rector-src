@@ -147,7 +147,7 @@ final class VisibilityManipulator
     {
         $isStatic = $node instanceof ClassMethod && $node->isStatic();
         if ($isStatic) {
-            $this->removeVisibility($node);
+            $this->removeVisibilityFlag($node, Visibility::STATIC);
         }
 
         if ($visibility !== Visibility::STATIC && $visibility !== Visibility::ABSTRACT && $visibility !== Visibility::FINAL) {
@@ -157,7 +157,7 @@ final class VisibilityManipulator
         $this->addVisibilityFlag($node, $visibility);
 
         if ($isStatic) {
-            $this->makeStatic($node);
+            $this->addVisibilityFlag($node, Visibility::STATIC);
         }
     }
 }
