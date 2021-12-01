@@ -9,6 +9,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Trait_;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -19,6 +20,12 @@ use Symfony\Contracts\Service\Attribute\Required;
 final class ClassNameResolver implements NodeNameResolverInterface
 {
     private NodeNameResolver $nodeNameResolver;
+
+    private const ALLOWED_CLASSLIKE = [
+        Class_::class,
+        Interface_::class,
+        Trait_::class,
+    ];
 
     #[Required]
     public function autowire(NodeNameResolver $nodeNameResolver): void
@@ -36,7 +43,7 @@ final class ClassNameResolver implements NodeNameResolverInterface
      */
     public function resolve(Node $node): ?string
     {
-        if (($node instanceof Class_ || $node instanceof Interface_) && property_exists(
+        if (in_array($node::class, self::ALLOWED_CLASSLIKE, true) && property_exists(
             $node,
             'namespacedName'
         ) && $node->namespacedName !== null && $node->namespacedName::class === Name::class) {
