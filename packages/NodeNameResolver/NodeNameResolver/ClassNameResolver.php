@@ -19,13 +19,9 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class ClassNameResolver implements NodeNameResolverInterface
 {
-    private NodeNameResolver $nodeNameResolver;
+    private const ALLOWED_CLASSLIKE = [Class_::class, Interface_::class, Trait_::class];
 
-    private const ALLOWED_CLASSLIKE = [
-        Class_::class,
-        Interface_::class,
-        Trait_::class,
-    ];
+    private NodeNameResolver $nodeNameResolver;
 
     #[Required]
     public function autowire(NodeNameResolver $nodeNameResolver): void
