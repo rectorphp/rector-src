@@ -598,3 +598,7 @@ parameters:
         -
             message: '#Call to function property_exists\(\) with PhpParser\\Node\\Stmt\\Class_ and .{1}namespacedName.{1} will always evaluate to true#'
             path: packages/NodeNameResolver/NodeNameResolver/ClassNameResolver.php
+
+        -
+            message: '#Instanceof between PhpParser\\Node\\Name and PhpParser\\Node\\Name will always evaluate to true#'
+            path: packages/NodeNameResolver/NodeNameResolver/ClassNameResolver.php
