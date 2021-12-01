@@ -6,10 +6,7 @@ namespace Rector\NodeNameResolver\NodeNameResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Trait_;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -19,8 +16,6 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class ClassNameResolver implements NodeNameResolverInterface
 {
-    private const ALLOWED_CLASSLIKE = [Class_::class, Interface_::class, Trait_::class];
-
     private NodeNameResolver $nodeNameResolver;
 
     #[Required]
@@ -39,7 +34,7 @@ final class ClassNameResolver implements NodeNameResolverInterface
      */
     public function resolve(Node $node): ?string
     {
-        if (in_array($node::class, self::ALLOWED_CLASSLIKE, true) && property_exists(
+        if (property_exists(
             $node,
             'namespacedName'
         ) && $node->namespacedName instanceof Name) {
