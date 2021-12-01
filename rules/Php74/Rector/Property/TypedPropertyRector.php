@@ -28,12 +28,11 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php74\TypeAnalyzer\ObjectTypeAnalyzer;
 use Rector\Php74\TypeAnalyzer\PropertyUnionTypeResolver;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -83,6 +82,7 @@ final class TypedPropertyRector extends AbstractRector implements ConfigurableRe
         private PropertyAnalyzer $propertyAnalyzer,
         private PropertyUnionTypeResolver $propertyUnionTypeResolver,
         private AstResolver $astResolver,
+        private ObjectTypeAnalyzer $objectTypeAnalyzer
     ) {
     }
 
@@ -155,7 +155,7 @@ CODE_SAMPLE
             }
         }
 
-        if ($this->shouldSkipObjectType($varType)) {
+        if ($this->objectTypeAnalyzer->isSpecial($varType)) {
             return null;
         }
 
@@ -184,26 +184,6 @@ CODE_SAMPLE
         $node->type = $propertyTypeNode;
 
         return $node;
-    }
-
-    private function shouldSkipObjectType(Type $varType): bool
-    {
-        // we are not sure what object type this is
-        if ($varType instanceof NonExistingObjectType) {
-            return true;
-        }
-
-        $types = ! $varType instanceof UnionType
-            ? [$varType]
-            : $varType->getTypes();
-
-        foreach ($types as $type) {
-            if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === 'Prophecy\Prophecy\ObjectProphecy') {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
