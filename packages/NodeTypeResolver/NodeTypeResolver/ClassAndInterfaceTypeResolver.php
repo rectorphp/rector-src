@@ -11,11 +11,11 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use PHPStan\Type\ObjectWithoutClassType;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\ClassTypeResolverTest
@@ -25,8 +25,9 @@ use Rector\NodeNameResolver\NodeNameResolver;
  */
 final class ClassAndInterfaceTypeResolver implements NodeTypeResolverInterface
 {
-    public function __construct(private NodeNameResolver $nodeNameResolver)
-    {
+    public function __construct(
+        private NodeNameResolver $nodeNameResolver
+    ) {
     }
 
     /**
