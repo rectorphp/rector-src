@@ -7,12 +7,14 @@ namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTyp
 use Iterator;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentClass;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentInterface;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentTrait;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithTrait;
+use PHPStan\Type\VerbosityLevel;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\ClassAndInterfaceTypeResolver
@@ -55,10 +57,10 @@ final class ClassTypeResolverTest extends AbstractNodeTypeResolverTest
         $variableNodes = $this->getNodesForFileOfType($file, Class_::class);
 
         $resolvedType = $this->nodeTypeResolver->getType($variableNodes[0]);
-        $this->assertInstanceOf(TypeWithClassName::class, $resolvedType);
+        $this->assertInstanceOf(ObjectWithoutClassType::class, $resolvedType);
 
-        /** @var TypeWithClassName $resolvedType */
+        /** @var ObjectWithoutClassType $resolvedType */
         // anonymous classes contain a hash, which is different between platforms
-        $this->assertStringStartsWith('AnonymousClass', $resolvedType->getClassName());
+        $this->assertStringStartsWith('object~AnonymousClass', $resolvedType->describe(VerbosityLevel::precise()));
     }
 }
