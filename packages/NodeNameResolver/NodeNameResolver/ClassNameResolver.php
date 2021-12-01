@@ -6,6 +6,7 @@ namespace Rector\NodeNameResolver\NodeNameResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -34,7 +35,7 @@ final class ClassNameResolver implements NodeNameResolverInterface
      */
     public function resolve(Node $node): ?string
     {
-        if (property_exists($node, 'namespacedName') && $node->namespacedName !== null && $node->namespacedName::class === Name::class) {
+        if ($node instanceof Class_ && $node->namespacedName !== null && $node->namespacedName::class === Name::class) {
             return $node->namespacedName->toString();
         }
 
