@@ -143,30 +143,19 @@ CODE_SAMPLE
         if ($varType instanceof UnionType) {
             $types = $varType->getTypes();
 
-            if (count($types) === 2) {
-                if ($types[0] instanceof FullyQualifiedObjectType && $types[0]->getClassName() === 'Prophecy\Prophecy\ObjectProphecy') {
-                    return null;
-                }
+            if (count($types) === 2 && $types[1] instanceof TemplateType) {
+                $templateType = $types[1];
 
-                if ($types[1] instanceof TemplateType) {
-                    $templateType = $types[1];
+                $node->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                    $templateType->getBound(),
+                    TypeKind::PROPERTY()
+                );
 
-                    $node->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                        $templateType->getBound(),
-                        TypeKind::PROPERTY()
-                    );
-
-                    return $node;
-                }
+                return $node;
             }
         }
 
-        // we are not sure what object type this is
-        if ($varType instanceof NonExistingObjectType) {
-            return null;
-        }
-
-        if ($varType instanceof FullyQualifiedObjectType && $varType->getClassName() === 'Prophecy\Prophecy\ObjectProphecy') {
+        if ($this->shouldSkipObjectType($varType)) {
             return null;
         }
 
@@ -195,6 +184,26 @@ CODE_SAMPLE
         $node->type = $propertyTypeNode;
 
         return $node;
+    }
+
+    private function shouldSkipObjectType(Type $varType): bool
+    {
+        // we are not sure what object type this is
+        if ($varType instanceof NonExistingObjectType) {
+            return true;
+        }
+
+        $types = ! $varType instanceof UnionType
+            ? [$varType]
+            : $varType->getTypes();
+
+        foreach ($types as $type) {
+            if ($type instanceof FullyQualifiedObjectType && $type->getClassName() === 'Prophecy\Prophecy\ObjectProphecy') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
