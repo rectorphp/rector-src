@@ -46,7 +46,7 @@ final class ClassNameResolver implements NodeNameResolverInterface
         if (in_array($node::class, self::ALLOWED_CLASSLIKE, true) && property_exists(
             $node,
             'namespacedName'
-        ) && $node->namespacedName !== null && $node->namespacedName::class === Name::class) {
+        ) && $node->namespacedName instanceof Name) {
             return $node->namespacedName->toString();
         }
 
