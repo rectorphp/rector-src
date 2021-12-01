@@ -11,7 +11,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
@@ -52,8 +51,7 @@ final class ClassAndInterfaceTypeResolver implements NodeTypeResolverInterface
 
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
-            $objectType = new ObjectType((string) $this->nodeNameResolver->getName($node));
-            return new ObjectWithoutClassType($objectType);
+            return new ObjectType((string) $this->nodeNameResolver->getName($node));
         }
 
         return new ObjectType($classReflection->getName(), null, $classReflection);
