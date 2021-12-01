@@ -596,7 +596,7 @@ parameters:
             path: src/Validation/RectorAssert.php
 
         -
-            message: '#Call to function property_exists\(\) with PhpParser\\Node\\Stmt\\Class_ and .{1}namespacedName.{1} will always evaluate to true#'
+            message: '#Call to function property_exists\(\) with PhpParser\\Node\\Stmt\\ClassLike and .{1}namespacedName.{1} will always evaluate to true#'
             path: packages/NodeNameResolver/NodeNameResolver/ClassNameResolver.php
 
         -
