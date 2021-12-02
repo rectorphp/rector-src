@@ -55,7 +55,7 @@ jobs:
 
                     $expectedDiff = 'expected-output.diff';
                     if (!file_exists($expectedDiff)) {
-                        var_dump($output);
+                        echo $output;
                         exit($exitCode);
                     }
 
