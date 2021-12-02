@@ -52,7 +52,7 @@ jobs:
                     <?php
                     exec('./../../bin/rector process --dry-run --ansi -a vendor/autoload.php', $output, $exitCode);
 
-                    $output = implode("\n", $output)
+                    $output = implode("\n", $output);
                     if ($exitCode !== 0) {
                         var_dump($output);
                     }
