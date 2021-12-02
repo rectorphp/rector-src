@@ -44,7 +44,7 @@ jobs:
                 run: composer install --ansi
                 working-directory: ${{ matrix.directory }}
 
-
+            # run rector. check whether we expect a certain output, or alternatively that rector just processed everything without errors
             -
                 shell: php {0}
                 working-directory: ${{ matrix.directory }}
