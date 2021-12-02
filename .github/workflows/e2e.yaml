@@ -66,4 +66,4 @@ jobs:
                     var_dump($output);
                     var_dump($expectedDiff);
 
-                    exit( === file_get_contents($expectedDiff));
+                    exit($output === file_get_contents($expectedDiff));
