@@ -143,7 +143,11 @@ final class ShortNameResolver
         });
 
         $docBlockShortNamesToFullyQualifiedNames = $this->resolveFromStmtsDocBlocks($stmts);
-        return [...$shortNamesToFullyQualifiedNames, ...$docBlockShortNamesToFullyQualifiedNames];
+        /**
+         * @var array<string, string> $result
+         */
+        $result = [...$shortNamesToFullyQualifiedNames, ...$docBlockShortNamesToFullyQualifiedNames];
+        return $result;
     }
 
     /**
