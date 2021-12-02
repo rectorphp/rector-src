@@ -57,4 +57,7 @@ jobs:
                         exit($exitCode);
                     }
 
+                    var_dump($output);
+                    var_dump($expectedDiff);
+
                     exit($output === file_get_contents($expectedDiff));
