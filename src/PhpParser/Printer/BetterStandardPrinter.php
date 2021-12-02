@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Printer;
 
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
@@ -122,12 +123,12 @@ final class BetterStandardPrinter extends Standard
             $originalContent = $content;
 
             $newContent = Strings::replace($content, self::EMPTY_STARTING_TAG_REGEX, '');
-            $newContent = Strings::replace(\rtrim($newContent), self::EMPTY_ENDING_TAG_REGEX, '', ) ."\n";
+            $newContent = Strings::replace(\rtrim($newContent), self::EMPTY_ENDING_TAG_REGEX, '',) . "\n";
 
             if ($originalContent !== $newContent) {
                 /** @var File $file */
                 $file = $this->currentFileProvider->getFile();
-                return (string) file_get_contents($file->getFilePath());
+                return (string) FileSystem::read($file->getFilePath());
             }
         }
 

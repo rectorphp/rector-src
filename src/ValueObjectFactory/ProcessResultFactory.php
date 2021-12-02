@@ -30,7 +30,7 @@ final class ProcessResultFactory
             $errors = array_merge($errors, $file->getErrors());
 
             $fileDiff = $file->getFileDiff();
-            if (!$fileDiff instanceof FileDiff) {
+            if (! $fileDiff instanceof FileDiff) {
                 continue;
             }
 
