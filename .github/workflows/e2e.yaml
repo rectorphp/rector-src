@@ -57,7 +57,7 @@ jobs:
                         var_dump($output);
                     }
 
-                    $expectedDiff = '${{ matrix.directory }}/expected-output.diff';
+                    $expectedDiff = 'expected-output.diff';
                     var_dump($expectedDiff);
                     if (!file_exists($expectedDiff)) {
                         exit($exitCode);
