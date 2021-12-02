@@ -51,19 +51,25 @@ jobs:
                 run: |
                     <?php
                     exec('./../../bin/rector process --dry-run --no-ansi -a vendor/autoload.php', $output, $exitCode);
-
                     $output = implode("\n", $output);
-                    if ($exitCode !== 0) {
-                        var_dump($output);
-                    }
 
                     $expectedDiff = 'expected-output.diff';
-                    var_dump($expectedDiff);
                     if (!file_exists($expectedDiff)) {
+                        var_dump($output);
                         exit($exitCode);
                     }
 
-                    var_dump($output);
-                    var_dump($expectedDiff);
+                    $matchedExpectedOutput = false;
+                    if (trim($output) === trim(file_get_contents($expectedDiff))) {
+                        $matchedExpectedOutput = true;
+                    }
 
-                    exit(trim($output) === trim(file_get_contents($expectedDiff)));
+                    if ($matchedExpectedOutput === false) {
+                        echo "EXPECTED:\n";
+                        var_dump($expectedDiff);
+                        echo "ACTUAL:\n";
+                        var_dump($output);
+                        exit(1);
+                    }
+
+                    exit(0);
