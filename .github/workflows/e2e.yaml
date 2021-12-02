@@ -50,7 +50,7 @@ jobs:
                 working-directory: ${{ matrix.directory }}
                 run: |
                     <?php
-                    exec('./../../bin/rector process --dry-run --ansi -a vendor/autoload.php', $output, $exitCode);
+                    exec('./../../bin/rector process --dry-run --no-ansi -a vendor/autoload.php', $output, $exitCode);
 
                     $output = implode("\n", $output);
                     if ($exitCode !== 0) {
@@ -66,4 +66,4 @@ jobs:
                     var_dump($output);
                     var_dump($expectedDiff);
 
-                    exit($output === file_get_contents($expectedDiff));
+                    exit(trim($output) === trim(file_get_contents($expectedDiff)));
