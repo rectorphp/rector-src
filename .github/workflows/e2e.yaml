@@ -44,6 +44,17 @@ jobs:
                 run: composer install --ansi
                 working-directory: ${{ matrix.directory }}
 
+
             -
-                run: ./../../bin/rector process --dry-run --ansi -a vendor/autoload.php
+                shell: php {0}
                 working-directory: ${{ matrix.directory }}
+                run: |
+                    <?php
+                    exec('./../../bin/rector process --dry-run --ansi -a vendor/autoload.php', $output, $exitCode);
+
+                    $expectedDiff = '${{ matrix.directory }}/expected-output.diff';
+                    if (!file_exists($expectedDiff)) {
+                        exit($exitCode);
+                    }
+
+                    exit($output === file_get_contents($expectedDiff));
