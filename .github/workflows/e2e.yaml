@@ -50,7 +50,7 @@ jobs:
                 working-directory: ${{ matrix.directory }}
                 run: |
                     <?php
-                    exec('./../../bin/rector process --dry-run --no-ansi -a vendor/autoload.php', $output, $exitCode);
+                    exec('./../../bin/rector process --dry-run --no-ansi --no-progress-bar -a vendor/autoload.php', $output, $exitCode);
                     $output = implode("\n", $output);
 
                     $expectedDiff = 'expected-output.diff';
