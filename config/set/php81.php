@@ -17,11 +17,11 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(ReturnNeverTypeRector::class);
-    $services->set(MyCLabsClassToEnumRector::class);
+    //$services->set(MyCLabsClassToEnumRector::class);
     $services->set(MyCLabsMethodCallToEnumConstRector::class);
     $services->set(FinalizePublicClassConstantRector::class);
     $services->set(ReadOnlyPropertyRector::class);
-    $services->set(SpatieEnumClassToEnumRector::class);
+    //$services->set(SpatieEnumClassToEnumRector::class);
     $services->set(Php81ResourceReturnToObjectRector::class);
     $services->set(NewInInitializerRector::class);
     $services->set(IntersectionTypesRector::class);
