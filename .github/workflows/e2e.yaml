@@ -60,13 +60,14 @@ jobs:
                     }
 
                     $matchedExpectedOutput = false;
-                    if (trim($output) === trim(file_get_contents($expectedDiff))) {
+                    $expectedOutput = file_get_contents($expectedDiff);
+                    if (trim($output) === trim($expectedOutput)) {
                         $matchedExpectedOutput = true;
                     }
 
                     if ($matchedExpectedOutput === false) {
                         echo "EXPECTED:\n";
-                        var_dump($expectedDiff);
+                        var_dump($expectedOutput);
                         echo "ACTUAL:\n";
                         var_dump($output);
                         exit(1);
