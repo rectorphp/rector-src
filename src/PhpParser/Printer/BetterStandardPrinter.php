@@ -31,6 +31,7 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Printer\BetterStandardPrinterTest
@@ -92,6 +93,7 @@ final class BetterStandardPrinter extends Standard
         private IndentCharacterDetector $indentCharacterDetector,
         private DocBlockUpdater $docBlockUpdater,
         private CurrentFileProvider $currentFileProvider,
+        private SmartFileSystem $smartFileSystem,
         array $options = []
     ) {
         parent::__construct($options);
@@ -128,7 +130,7 @@ final class BetterStandardPrinter extends Standard
             if ($originalContent !== $newContent) {
                 /** @var File $file */
                 $file = $this->currentFileProvider->getFile();
-                return (string) FileSystem::read($file->getFilePath());
+                return $this->smartFileSystem->readFile($file->getFilePath());
             }
         }
 
