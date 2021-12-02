@@ -71,7 +71,7 @@ final class AstResolver
     ) {
     }
 
-    public function resolveClassFromName(string $className): Class_ | Trait_ | Interface_ | null
+    public function resolveClassFromName(string $className): Class_ | Trait_ | Interface_ | Enum_ | null
     {
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
@@ -83,7 +83,7 @@ final class AstResolver
 
     public function resolveClassFromObjectType(
         TypeWithClassName $typeWithClassName
-    ): Class_ | Trait_ | Interface_ | null {
+    ): Class_ | Trait_ | Interface_ | Enum_ | null {
         return $this->resolveClassFromName($typeWithClassName->getClassName());
     }
 
