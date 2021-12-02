@@ -7,6 +7,7 @@ namespace Rector\Core\ValueObjectFactory;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\ProcessResult;
+use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 
 final class ProcessResultFactory
@@ -28,11 +29,16 @@ final class ProcessResultFactory
         foreach ($files as $file) {
             $errors = array_merge($errors, $file->getErrors());
 
-            if ($file->getFileDiff() === null) {
+            $fileDiff = $file->getFileDiff();
+            if (!$fileDiff instanceof FileDiff) {
                 continue;
             }
 
-            $fileDiffs[] = $file->getFileDiff();
+            if ($fileDiff->getDiff() === '') {
+                continue;
+            }
+
+            $fileDiffs[] = $fileDiff;
         }
 
         return new ProcessResult(

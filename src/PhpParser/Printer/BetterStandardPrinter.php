@@ -26,7 +26,9 @@ use PhpParser\PrettyPrinter\Standard;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Printer\Whitespace\IndentCharacterDetector;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -88,6 +90,7 @@ final class BetterStandardPrinter extends Standard
     public function __construct(
         private IndentCharacterDetector $indentCharacterDetector,
         private DocBlockUpdater $docBlockUpdater,
+        private CurrentFileProvider $currentFileProvider,
         array $options = []
     ) {
         parent::__construct($options);
@@ -116,8 +119,16 @@ final class BetterStandardPrinter extends Standard
 
         // strip empty starting/ending php tags
         if (array_key_exists(0, $stmts) && $stmts[0] instanceof FileWithoutNamespace) {
-            $content = Strings::replace($content, self::EMPTY_STARTING_TAG_REGEX, '');
-            $content = Strings::replace(\rtrim($content), self::EMPTY_ENDING_TAG_REGEX, '', ) ."\n";
+            $originalContent = $content;
+
+            $newContent = Strings::replace($content, self::EMPTY_STARTING_TAG_REGEX, '');
+            $newContent = Strings::replace(\rtrim($newContent), self::EMPTY_ENDING_TAG_REGEX, '', ) ."\n";
+
+            if ($originalContent !== $newContent) {
+                /** @var File $file */
+                $file = $this->currentFileProvider->getFile();
+                return (string) file_get_contents($file->getFilePath());
+            }
         }
 
         // add new line in case of added stmts
