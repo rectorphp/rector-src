@@ -51,7 +51,7 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-enum StatusEnum: string
+enum StatusEnum : string
 {
     case draft = 'draft';
     case published = 'published';

@@ -23,7 +23,7 @@ namespace Rector\Tests\Php81\Rector\Class_\MyCLabsClassToEnumRector\Fixture;
 
 use MyCLabs\Enum\Enum;
 
-enum PrivateConstWithStaticMethod: string
+enum PrivateConstWithStaticMethod : string
 {
     /**
      * Some comment

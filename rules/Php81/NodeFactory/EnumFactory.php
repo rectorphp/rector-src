@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\EnumCase;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -20,7 +21,8 @@ final class EnumFactory
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private PhpDocInfoFactory $phpDocInfoFactory,
-        private BuilderFactory $builderFactory
+        private BuilderFactory $builderFactory,
+        private ValueResolver $valueResolver
     ) {
     }
 
@@ -29,9 +31,18 @@ final class EnumFactory
         $shortClassName = $this->nodeNameResolver->getShortName($class);
         $enum = new Enum_($shortClassName);
 
-        // constant to cases
-        foreach ($class->getConstants() as $classConst) {
-            $enum->stmts[] = $this->createEnumCaseFromConst($classConst);
+        $constants = $class->getConstants();
+
+        if ($constants !== []) {
+            $value = $this->valueResolver->getValue($constants[0]->consts[0]->value);
+            $enum->scalarType = is_string($value)
+                ? 'string'
+                : 'int';
+
+            // constant to cases
+            foreach ($constants as $classConst) {
+                $enum->stmts[] = $this->createEnumCaseFromConst($classConst);
+            }
         }
 
         return $enum;
@@ -47,6 +58,11 @@ final class EnumFactory
 
         $docBlockMethods = $phpDocInfo?->getTagsByName('@method');
         if ($docBlockMethods !== null) {
+            $value = $docBlockMethods[0]->value->methodName;
+            $enum->scalarType = is_string($value)
+                ? 'string'
+                : 'int';
+
             foreach ($docBlockMethods as $docBlockMethod) {
                 $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod);
             }
