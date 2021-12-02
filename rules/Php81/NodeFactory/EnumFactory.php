@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\NodeFactory;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Enum_;
@@ -36,12 +37,12 @@ final class EnumFactory
         if ($constants !== []) {
             $value = $this->valueResolver->getValue($constants[0]->consts[0]->value);
             $enum->scalarType = is_string($value)
-                ? 'string'
-                : 'int';
+                ? new Identifier('string')
+                : new Identifier('int');
 
             // constant to cases
-            foreach ($constants as $classConst) {
-                $enum->stmts[] = $this->createEnumCaseFromConst($classConst);
+            foreach ($constants as $constant) {
+                $enum->stmts[] = $this->createEnumCaseFromConst($constant);
             }
         }
 
@@ -58,10 +59,7 @@ final class EnumFactory
 
         $docBlockMethods = $phpDocInfo?->getTagsByName('@method');
         if ($docBlockMethods !== null) {
-            $value = $docBlockMethods[0]->value->methodName;
-            $enum->scalarType = is_string($value)
-                ? 'string'
-                : 'int';
+            $enum->scalarType = new Identifier('string');
 
             foreach ($docBlockMethods as $docBlockMethod) {
                 $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod);
