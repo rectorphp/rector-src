@@ -170,7 +170,8 @@
     "repositories" : [
         {
             "type" : "vcs",
-            "url" : "https://github.com/samsonasik/Stringy"
+            "url" : "https://github.com/samsonasik/Stringy",
+            "no-api": true
         }
     ],
     "minimum-stability": "dev",
