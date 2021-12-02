@@ -51,7 +51,7 @@ jobs:
                 run: |
                     <?php
                     exec('./../../bin/rector process --dry-run --no-ansi --no-progress-bar -a vendor/autoload.php', $output, $exitCode);
-                    $output = implode("\n", $output);
+                    $output = trim(implode("\n", $output));
 
                     $expectedDiff = 'expected-output.diff';
                     if (!file_exists($expectedDiff)) {
@@ -60,8 +60,8 @@ jobs:
                     }
 
                     $matchedExpectedOutput = false;
-                    $expectedOutput = file_get_contents($expectedDiff);
-                    if (trim($output) === trim($expectedOutput)) {
+                    $expectedOutput = trim(file_get_contents($expectedDiff));
+                    if ($output === $expectedOutput) {
                         $matchedExpectedOutput = true;
                     }
 
