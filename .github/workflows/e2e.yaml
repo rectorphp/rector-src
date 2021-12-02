@@ -52,11 +52,13 @@ jobs:
                     <?php
                     exec('./../../bin/rector process --dry-run --ansi -a vendor/autoload.php', $output, $exitCode);
 
+                    $output = implode("\n", $output)
                     if ($exitCode !== 0) {
                         var_dump($output);
                     }
 
                     $expectedDiff = '${{ matrix.directory }}/expected-output.diff';
+                    var_dump($expectedDiff);
                     if (!file_exists($expectedDiff)) {
                         exit($exitCode);
                     }
@@ -64,4 +66,4 @@ jobs:
                     var_dump($output);
                     var_dump($expectedDiff);
 
-                    exit($output === file_get_contents($expectedDiff));
+                    exit( === file_get_contents($expectedDiff));
