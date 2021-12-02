@@ -66,9 +66,9 @@ jobs:
                     }
 
                     if ($matchedExpectedOutput === false) {
-                        echo "EXPECTED:\n";
+                        echo "\nEXPECTED:\n";
                         var_dump($expectedOutput);
-                        echo "ACTUAL:\n";
+                        echo "\nACTUAL:\n";
                         var_dump($output);
                         exit(1);
                     }
