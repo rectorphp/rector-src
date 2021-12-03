@@ -32,4 +32,5 @@ if ($matchedExpectedOutput === false) {
     exit(1);
 }
 
+echo "[OK] end-to-end test successfully completed.";
 exit(0);
