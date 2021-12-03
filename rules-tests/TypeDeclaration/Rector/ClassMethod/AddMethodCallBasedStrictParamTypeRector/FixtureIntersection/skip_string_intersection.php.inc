@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Rector\Core\Tests\Issues\IntersectionString\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\FixtureIntersection;
 
 final class SkipStringIntersection
 {
