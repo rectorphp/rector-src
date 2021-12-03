@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\CallableType;
 use PHPStan\Type\MixedType;
@@ -13,6 +14,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -25,6 +27,7 @@ final class ClassMethodParamTypeCompleter
         private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
         private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
         private PhpVersionProvider $phpVersionProvider,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -47,6 +50,17 @@ final class ClassMethodParamTypeCompleter
 
             if (! $phpParserTypeNode instanceof Node) {
                 continue;
+            }
+
+            if ($phpParserTypeNode instanceof IntersectionType) {
+                $types = $phpParserTypeNode->types;
+
+                $firstType = (string) $this->nodeNameResolver->getName($types[0]);
+                $secondType = (string) $this->nodeNameResolver->getName($types[1]);
+
+                if ($firstType === $secondType) {
+                    continue;
+                }
             }
 
             // update parameter
