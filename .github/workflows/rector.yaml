@@ -60,7 +60,7 @@ jobs:
             # temporary disable rectify as splitted from https://github.com/rectorphp/rector-src/pull/1364
             # -   run: bin/rector process ${{ matrix.paths }} --ansi --no-progress-bar
 
-            -   run: vendor/bin/ecs check --fix --ansi
+            # -   run: vendor/bin/ecs check --fix --ansi
 
             # see https://github.com/EndBug/add-and-commit
             -
