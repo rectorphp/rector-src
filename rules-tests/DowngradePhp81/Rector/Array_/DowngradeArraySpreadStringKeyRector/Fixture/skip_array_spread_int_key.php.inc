@@ -12,5 +12,3 @@ class SkipArraySpreadIntKey
         $result = [...$parts, ...$parts2];
     }
 }
-
-?>
