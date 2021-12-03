@@ -112,13 +112,18 @@ final class ProcessCommand extends AbstractProcessCommand
 
         // MAIN PHASE
         // 5. run Rector
-        $this->applicationFileProcessor->run($files, $configuration);
+        $errorsAndFileDiffs = $this->applicationFileProcessor->run($files, $configuration);
 
         // REPORTING PHASE
         // 6. reporting phase
         // report diffs and errors
         $outputFormat = $configuration->getOutputFormat();
         $outputFormatter = $this->outputFormatterCollector->getByName($outputFormat);
+
+        $processResult = $this->processResultFactory->createFromErrorsAndFileDiffs($errorsAndFileDiffs);
+
+        dump($errorsAndFileDiffs);
+        die;
 
         $processResult = $this->processResultFactory->create($files);
         $outputFormatter->report($processResult, $configuration);

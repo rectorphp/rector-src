@@ -43,4 +43,19 @@ final class ProcessResultFactory
             $this->nodesToRemoveCollector->getCount(),
         );
     }
+
+    public function createFromErrorsAndFileDiffs(array $errorsAndFileDiffs): ProcessResult
+    {
+        $errors = $errorsAndFileDiffs['errors'];
+        $fileDiffs = $errorsAndFileDiffs['file_diffs'];
+
+        return new ProcessResult(
+            $fileDiffs,
+            $errors,
+            $this->removedAndAddedFilesCollector->getAddedFileCount(),
+            $this->removedAndAddedFilesCollector->getRemovedFilesCount(),
+            $this->nodesToRemoveCollector->getCount(),
+        );
+    }
+
 }

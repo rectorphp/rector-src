@@ -30,25 +30,31 @@ final class ApplicationFileProcessor
 
     /**
      * @param File[] $files
+     * @return array<string, mixed>
      */
-    public function run(array $files, Configuration $configuration): void
+    public function run(array $files, Configuration $configuration): array
     {
-        $this->processFiles($files, $configuration);
+        $errorsAndFileDiffs = $this->processFiles($files, $configuration);
         $this->fileFormatter->format($files);
 
         $this->fileDiffFileDecorator->decorate($files);
         $this->printFiles($files, $configuration);
+
+        return $errorsAndFileDiffs;
     }
 
     /**
      * @param File[] $files
+     * @return array<string, mixed>
      */
-    private function processFiles(array $files, Configuration $configuration): void
+    private function processFiles(array $files, Configuration $configuration): array
     {
         if ($configuration->shouldShowProgressBar()) {
             $fileCount = count($files);
             $this->symfonyStyle->progressStart($fileCount);
         }
+
+        $fileDiffsAndErrors = [];
 
         foreach ($files as $file) {
             foreach ($this->fileProcessors as $fileProcessor) {
@@ -56,7 +62,10 @@ final class ApplicationFileProcessor
                     continue;
                 }
 
-                $fileProcessor->process($file, $configuration);
+                $result = $fileProcessor->process($file, $configuration);
+                if (is_array($result)) {
+                    $fileDiffsAndErrors = array_merge($fileDiffsAndErrors, $result);
+                }
             }
 
             // progress bar +1
@@ -66,6 +75,8 @@ final class ApplicationFileProcessor
         }
 
         $this->removedAndAddedFilesProcessor->run($configuration);
+
+        return $fileDiffsAndErrors;
     }
 
     /**

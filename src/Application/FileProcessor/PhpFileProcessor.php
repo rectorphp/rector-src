@@ -41,7 +41,10 @@ final class PhpFileProcessor implements FileProcessorInterface
     ) {
     }
 
-    public function process(File $file, Configuration $configuration): void
+    /**
+     * @return array<string, mixed>
+     */
+    public function process(File $file, Configuration $configuration): array
     {
         // 1. parse files to nodes
         $this->tryCatchWrapper($file, function (File $file): void {
@@ -83,6 +86,22 @@ final class PhpFileProcessor implements FileProcessorInterface
                 $this->printFile($file, $configuration);
             }, ApplicationPhase::PRINT());
         } while ($file->hasChanged());
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+        // return json here
+        return [
+            'errors' => $file->getErrors(),
+            'file_diff' => $file->getFileDiff(),
+        ];
+>>>>>>> c71e840f5f... fixup! add demo file
+=======
+
+        // return json here
+        dump($file);
+        die;
+>>>>>>> dbc8a2a267... add demo file
     }
 
     public function supports(File $file, Configuration $configuration): bool
