@@ -24,7 +24,7 @@ final class ClassMethodParamTypeCompleter
         private StaticTypeMapper $staticTypeMapper,
         private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
         private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
-        private PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
