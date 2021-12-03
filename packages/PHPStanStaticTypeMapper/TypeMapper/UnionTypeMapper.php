@@ -134,7 +134,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         if ($nullabledTypeNode instanceof ComplexType) {
-            throw new ShouldNotHappenException();
+            return $nullabledTypeNode;
         }
 
         return new NullableType($nullabledTypeNode);

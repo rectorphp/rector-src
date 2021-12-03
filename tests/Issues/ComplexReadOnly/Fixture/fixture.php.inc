@@ -28,7 +28,7 @@ namespace Rector\Core\Tests\Issues\ComplexReadOnly\Fixture;
 final class Fixture
 {
     public function __construct(
-        private array|null $condExprs
+        private readonly array|null $condExprs
     ) {
     }
 
