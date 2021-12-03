@@ -73,7 +73,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         SplitStringClassConstantToClassConstFetchRector::class,
 
         FinalizeClassesWithoutChildrenRector::class => [
-            DowngradeArraySpreadRector::class,
+            __DIR__ . '/rules/DowngradePhp74/Rector/Array_/DowngradeArraySpreadRector.php',
         ],
 
         // test paths
