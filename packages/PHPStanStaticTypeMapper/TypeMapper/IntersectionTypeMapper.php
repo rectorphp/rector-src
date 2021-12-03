@@ -87,6 +87,12 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             $intersectionedTypeNodes[] = $resolvedType;
         }
 
+        $uniqueIntersectionedTypeNodes = array_unique($intersectionedTypeNodes);
+        if (count($uniqueIntersectionedTypeNodes) === 1) {
+            // choose one if only one
+            return $intersectionedTypeNodes[0];
+        }
+
         return new Node\IntersectionType($intersectionedTypeNodes);
     }
 }
