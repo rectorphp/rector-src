@@ -11,6 +11,8 @@ use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Core\Configuration\Option;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector;
+use Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
@@ -74,6 +76,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         FinalizeClassesWithoutChildrenRector::class => [
             __DIR__ . '/rules/DowngradePhp74/Rector/Array_/DowngradeArraySpreadRector.php',
         ],
+
+        MyCLabsClassToEnumRector::class,
+        SpatieEnumClassToEnumRector::class,
 
         // test paths
         '*/tests/**/Fixture/*',
