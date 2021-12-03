@@ -9,7 +9,6 @@ use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
 use Rector\CodingStyle\Rector\String_\SplitStringClassConstantToClassConstFetchRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Core\Configuration\Option;
-use Rector\DowngradePhp74\Rector\Array_\DowngradeArraySpreadRector;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
