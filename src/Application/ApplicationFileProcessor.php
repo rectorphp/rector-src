@@ -8,8 +8,11 @@ use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\Application\SystemError;
 use Rector\Core\ValueObject\Configuration;
+use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\FileFormatter\FileFormatter;
+use Rector\Parallel\ValueObject\Bridge;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
@@ -30,22 +33,22 @@ final class ApplicationFileProcessor
 
     /**
      * @param File[] $files
-     * @return array<string, mixed>
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
     public function run(array $files, Configuration $configuration): array
     {
-        $errorsAndFileDiffs = $this->processFiles($files, $configuration);
+        $systemErrorsAndFileDiffs = $this->processFiles($files, $configuration);
         $this->fileFormatter->format($files);
 
         $this->fileDiffFileDecorator->decorate($files);
         $this->printFiles($files, $configuration);
 
-        return $errorsAndFileDiffs;
+        return $systemErrorsAndFileDiffs;
     }
 
     /**
      * @param File[] $files
-     * @return array<string, mixed>
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
     private function processFiles(array $files, Configuration $configuration): array
     {
@@ -54,7 +57,10 @@ final class ApplicationFileProcessor
             $this->symfonyStyle->progressStart($fileCount);
         }
 
-        $fileDiffsAndErrors = [];
+        $systemErrorsAndFileDiffs = [
+            Bridge::SYSTEM_ERRORS => [],
+            Bridge::FILE_DIFFS => [],
+        ];
 
         foreach ($files as $file) {
             foreach ($this->fileProcessors as $fileProcessor) {
@@ -63,8 +69,9 @@ final class ApplicationFileProcessor
                 }
 
                 $result = $fileProcessor->process($file, $configuration);
+
                 if (is_array($result)) {
-                    $fileDiffsAndErrors = array_merge($fileDiffsAndErrors, $result);
+                    $systemErrorsAndFileDiffs = array_merge($systemErrorsAndFileDiffs, $result);
                 }
             }
 
@@ -76,7 +83,7 @@ final class ApplicationFileProcessor
 
         $this->removedAndAddedFilesProcessor->run($configuration);
 
-        return $fileDiffsAndErrors;
+        return $systemErrorsAndFileDiffs;
     }
 
     /**

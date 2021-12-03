@@ -12,7 +12,7 @@ interface FileProcessorInterface
     public function supports(File $file, Configuration $configuration): bool;
 
     /**
-     * @return array<string, mixed>|void
+     * @return mixed[]|void
      */
     public function process(File $file, Configuration $configuration);
 
