@@ -91,9 +91,11 @@ CODE_SAMPLE
         if ($node instanceof Coalesce) {
             return null;
         }
+
         if ($this->exprAnalyzer->isNonTypedFromParam($node->left)) {
             return null;
         }
+
         if ($this->exprAnalyzer->isNonTypedFromParam($node->right)) {
             return null;
         }
