@@ -7,16 +7,16 @@ namespace Rector\VendorLocker;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
-use PHPStan\Type\MixedType;
-use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 
 final class ParentClassMethodTypeOverrideGuard
 {
