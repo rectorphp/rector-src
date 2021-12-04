@@ -102,10 +102,7 @@ CODE_SAMPLE
 
             $collectedVariableTypesByNames = $this->mockVariableCollector->collectMockVariableName($node);
 
-            $this->mockVariableTypesByNames = array_merge(
-                $this->mockVariableTypesByNames,
-                $collectedVariableTypesByNames
-            );
+            $this->mockVariableTypesByNames = [...$this->mockVariableTypesByNames, ...$collectedVariableTypesByNames];
 
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
             if ($parentNode instanceof Arg) {
