@@ -51,12 +51,12 @@ final class DowngradeParameterTypeWideningRector extends AbstractRector implemen
     private array $safeTypesToMethods = [];
 
     public function __construct(
-        private NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
-        private ReflectionResolver $reflectionResolver,
-        private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
-        private BuiltInMethodAnalyzer $builtInMethodAnalyzer,
-        private OverrideFromAnonymousClassMethodAnalyzer $overrideFromAnonymousClassMethodAnalyzer,
-        private SealedClassAnalyzer $sealedClassAnalyzer
+        private readonly NativeParamToPhpDocDecorator $nativeParamToPhpDocDecorator,
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
+        private readonly BuiltInMethodAnalyzer $builtInMethodAnalyzer,
+        private readonly OverrideFromAnonymousClassMethodAnalyzer $overrideFromAnonymousClassMethodAnalyzer,
+        private readonly SealedClassAnalyzer $sealedClassAnalyzer
     ) {
     }
 

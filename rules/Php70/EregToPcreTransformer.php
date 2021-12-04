@@ -67,7 +67,7 @@ final class EregToPcreTransformer
      * Single type is chosen to prevent every regular with different delimiter.
      */
     public function __construct(
-        private string $pcreDelimiter = '#'
+        private readonly string $pcreDelimiter = '#'
     ) {
     }
 
