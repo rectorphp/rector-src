@@ -15,6 +15,8 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
 use PHPStan\Type\MixedType;
+use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 
 final class ParentClassMethodTypeOverrideGuard
 {
@@ -37,10 +39,9 @@ final class ParentClassMethodTypeOverrideGuard
         }
 
         $variants = $parentClassMethodReflection->getVariants();
-        foreach ($variants as $variant) {
-            if (! $variant->getNativeReturnType() instanceof MixedType) {
-                return false;
-            }
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethodReflection->getVariants());
+        if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs && ! $parametersAcceptor->getNativeReturnType() instanceof MixedType) {
+            return false;
         }
 
         $classReflection = $parentClassMethodReflection->getDeclaringClass();
