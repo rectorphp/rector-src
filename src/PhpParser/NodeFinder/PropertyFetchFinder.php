@@ -27,10 +27,10 @@ final class PropertyFetchFinder
     private const THIS = 'this';
 
     public function __construct(
-        private BetterNodeFinder $betterNodeFinder,
-        private NodeNameResolver $nodeNameResolver,
-        private ReflectionResolver $reflectionResolver,
-        private AstResolver $astResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly AstResolver $astResolver,
     ) {
     }
 

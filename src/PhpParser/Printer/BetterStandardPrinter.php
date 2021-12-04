@@ -86,8 +86,8 @@ final class BetterStandardPrinter extends Standard
      * @param mixed[] $options
      */
     public function __construct(
-        private IndentCharacterDetector $indentCharacterDetector,
-        private DocBlockUpdater $docBlockUpdater,
+        private readonly IndentCharacterDetector $indentCharacterDetector,
+        private readonly DocBlockUpdater $docBlockUpdater,
         array $options = []
     ) {
         parent::__construct($options);
