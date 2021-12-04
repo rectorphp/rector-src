@@ -18,6 +18,7 @@ use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @changelog https://wiki.php.net/rfc/deprecate_dynamic_properties
@@ -85,7 +86,12 @@ CODE_SAMPLE,
 
     public function configure(array $configuration): void
     {
-        $this->transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? [];
+        $transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? $configuration;
+
+        Assert::isArray($transformOnNamespaces);
+        Assert::allString($transformOnNamespaces);
+
+        $this->transformOnNamespaces = $transformOnNamespaces;
     }
 
     /**
