@@ -9,7 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -39,8 +39,10 @@ final class RemoveAllowDynamicPropertiesAttributeRector extends AbstractRector i
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove the `AllowDynamicProperties` attribute from all classes', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
+namespace Example\Domain;
+
 #[AllowDynamicProperties]
 class SomeObject {
     public string $someProperty = 'hello world';
@@ -48,10 +50,17 @@ class SomeObject {
 CODE_SAMPLE,
 
                 <<<'CODE_SAMPLE'
+namespace Example\Domain;
+
 class SomeObject {
     public string $someProperty = 'hello world';
 }
-CODE_SAMPLE
+CODE_SAMPLE,
+                [
+                    RemoveAllowDynamicPropertiesAttributeRector::TRANSFORM_ON_NAMESPACES => [
+                        'Example\*'
+                    ]
+                ]
             ),
         ]);
     }
