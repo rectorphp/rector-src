@@ -38,7 +38,6 @@ final class ParentClassMethodTypeOverrideGuard
             return true;
         }
 
-        $parentClassMethodReflection->getVariants();
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethodReflection->getVariants());
         if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs && ! $parametersAcceptor->getNativeReturnType() instanceof MixedType) {
             return false;
