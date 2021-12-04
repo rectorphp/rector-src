@@ -7,5 +7,12 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
-    $services->set(AddAllowDynamicPropertiesAttributeRector::class);
+    $services->set(AddAllowDynamicPropertiesAttributeRector::class)
+        ->call('configure', [[
+            [
+                AddAllowDynamicPropertiesAttributeRector::TRANSFORM_ON_NAMESPACES => [
+                    '*\Fixture\On\*'
+                ]
+            ]
+        ]]);
 };

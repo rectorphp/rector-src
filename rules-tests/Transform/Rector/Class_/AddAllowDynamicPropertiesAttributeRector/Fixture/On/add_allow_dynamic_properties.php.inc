@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\On;
 
 class WantsAttribute
 {
@@ -11,7 +11,7 @@ class WantsAttribute
 -----
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\On;
 
 #[\AllowDynamicProperties]
 class WantsAttribute
