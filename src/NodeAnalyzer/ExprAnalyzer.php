@@ -13,8 +13,8 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 final class ExprAnalyzer
 {
     public function __construct(
-        private NodeComparator $nodeComparator,
-        private BetterNodeFinder $betterNodeFinder,
+        private readonly NodeComparator $nodeComparator,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
