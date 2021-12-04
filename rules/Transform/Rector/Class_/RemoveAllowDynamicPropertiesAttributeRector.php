@@ -27,9 +27,9 @@ final class RemoveAllowDynamicPropertiesAttributeRector extends AbstractRector i
     public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
 
     /**
-     * @var null|array<array-key, string>
+     * @var array<array-key, string>
      */
-    private ?array $transformOnNamespaces = null;
+    private array $transformOnNamespaces = [];
 
     public function __construct(
         private PhpAttributeAnalyzer $phpAttributeAnalyzer,
@@ -66,7 +66,7 @@ CODE_SAMPLE
 
     public function configure(array $configuration): void
     {
-        $this->transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? null;
+        $this->transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? [];
     }
 
     /**
@@ -102,15 +102,15 @@ CODE_SAMPLE
 
     private function shouldRemove(Class_ $class): bool
     {
-        if ($this->transformOnNamespaces !== null) {
+        if (count($this->transformOnNamespaces) !== 0) {
             $className = (string) $this->nodeNameResolver->getName($class);
             foreach ($this->transformOnNamespaces as $transformOnNamespace) {
-                if (str_contains($className, $transformOnNamespace)) {
-                    return $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
+                if (! $this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
+                    return false;
                 }
             }
         }
 
-        return false;
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
     }
 }
