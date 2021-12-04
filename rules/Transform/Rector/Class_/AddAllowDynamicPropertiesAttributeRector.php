@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -15,7 +16,7 @@ use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -23,12 +24,19 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\AddAllowDynamicPropertiesAttributeRectorTest
  */
-final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements MinPhpVersionInterface
+final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
      * @var string
      */
     private const ATTRIBUTE = 'AllowDynamicProperties';
+
+    public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
+
+    /**
+     * @var null|array<array-key, string>
+     */
+    private ?array $transformOnNamespaces = null;
 
     public function __construct(
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
@@ -41,20 +49,27 @@ final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector impl
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add the `AllowDynamicProperties` attribute to all classes', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
+namespace Example\Domain;
+
 class SomeObject {
     public string $someProperty = 'hello world';
 }
-CODE_SAMPLE
-
-                ,
+CODE_SAMPLE,
                 <<<'CODE_SAMPLE'
+namespace Example\Domain;
+
 #[AllowDynamicProperties]
 class SomeObject {
     public string $someProperty = 'hello world';
 }
-CODE_SAMPLE
+CODE_SAMPLE,
+                [
+                    AddAllowDynamicPropertiesAttributeRector::TRANSFORM_ON_NAMESPACES => [
+                        'Example\*',
+                    ]
+                ],
             ),
         ]);
     }
@@ -65,6 +80,12 @@ CODE_SAMPLE
     public function getNodeTypes(): array
     {
         return [Class_::class];
+    }
+
+
+    public function configure(array $configuration): void
+    {
+        $this->transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? null;
     }
 
     /**
@@ -118,6 +139,15 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class): bool
     {
+        if ($this->transformOnNamespaces !== null) {
+            $className = (string) $this->nodeNameResolver->getName($class);
+            foreach ($this->transformOnNamespaces as $transformOnNamespace) {
+                if (! $this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
+                    return true;
+                }
+            }
+        }
+
         if ($this->isDescendantOfStdclass($class)) {
             return true;
         }
