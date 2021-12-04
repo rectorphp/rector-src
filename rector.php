@@ -18,7 +18,6 @@ use Rector\Php81\Rector\ClassMethod\NewInInitializerRector;
 use Rector\Php81\Rector\FuncCall\Php81ResourceReturnToObjectRector;
 use Rector\Php81\Rector\FunctionLike\IntersectionTypesRector;
 use Rector\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector;
-use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
