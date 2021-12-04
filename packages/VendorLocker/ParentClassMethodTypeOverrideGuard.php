@@ -14,6 +14,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
+use PHPStan\Type\MixedType;
 
 final class ParentClassMethodTypeOverrideGuard
 {
@@ -33,6 +34,13 @@ final class ParentClassMethodTypeOverrideGuard
         // nothing to check
         if (! $parentClassMethodReflection instanceof MethodReflection) {
             return true;
+        }
+
+        $variants = $parentClassMethodReflection->getVariants();
+        foreach ($variants as $variant) {
+            if (! $variant->getNativeReturnType() instanceof MixedType) {
+                return false;
+            }
         }
 
         $classReflection = $parentClassMethodReflection->getDeclaringClass();
@@ -95,11 +103,8 @@ final class ParentClassMethodTypeOverrideGuard
             return null;
         }
 
-        foreach ($classReflection->getAncestors() as $parentClassReflection) {
-            if ($classReflection === $parentClassReflection) {
-                continue;
-            }
-
+        $parentClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+        foreach ($parentClassReflections as $parentClassReflection) {
             if (! $parentClassReflection->hasNativeMethod($methodName)) {
                 continue;
             }
