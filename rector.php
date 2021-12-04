@@ -79,7 +79,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
         MyCLabsClassToEnumRector::class,
         SpatieEnumClassToEnumRector::class,
-        
+
         // test paths
         '*/tests/**/Fixture/*',
         '*/rules-tests/**/Fixture/*',
