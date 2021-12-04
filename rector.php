@@ -13,9 +13,7 @@ use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector;
 use Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector;
-use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\Php81\Rector\FuncCall\Php81ResourceReturnToObjectRector;
-use Rector\Php81\Rector\FunctionLike\IntersectionTypesRector;
 use Rector\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
@@ -85,10 +83,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         SpatieEnumClassToEnumRector::class,
 
         // temporary skip non return never type rector
-        FinalizePublicClassConstantRector::class,
         MyCLabsMethodCallToEnumConstRector::class,
         Php81ResourceReturnToObjectRector::class,
-        IntersectionTypesRector::class,
 
         // test paths
         '*/tests/**/Fixture/*',
