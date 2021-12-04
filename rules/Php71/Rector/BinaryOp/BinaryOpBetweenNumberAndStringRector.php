@@ -15,6 +15,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst\Line;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\Constant\ConstantStringType;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -28,6 +29,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class BinaryOpBetweenNumberAndStringRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(private ExprAnalyzer $exprAnalyzer)
+    {
+    }
+
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::BINARY_OP_NUMBER_STRING;
@@ -83,6 +88,10 @@ CODE_SAMPLE
         }
 
         if ($node instanceof Coalesce) {
+            return null;
+        }
+
+        if ($this->exprAnalyzer->isNonTypedFromParam($node->left) || $this->exprAnalyzer->isNonTypedFromParam($node->right)) {
             return null;
         }
 
