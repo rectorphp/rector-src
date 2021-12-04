@@ -9,10 +9,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(RemoveAllowDynamicPropertiesAttributeRector::class)
         ->call('configure', [[
-            [
-                RemoveAllowDynamicPropertiesAttributeRector::TRANSFORM_ON_NAMESPACES => [
-                    '*\Fixture\Process\*'
-                ]
+            RemoveAllowDynamicPropertiesAttributeRector::TRANSFORM_ON_NAMESPACES => [
+                '*\Fixture\Process\*'
             ]
         ]]);
 };
