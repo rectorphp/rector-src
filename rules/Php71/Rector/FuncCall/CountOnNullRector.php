@@ -221,7 +221,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->nodeComparator->areNodesEqual($args[0], $expr);
+        return $this->nodeComparator->areNodesEqual($args[0]->value, $expr);
     }
 
     private function castToArray(Expr $countedExpr, FuncCall $funcCall): FuncCall
