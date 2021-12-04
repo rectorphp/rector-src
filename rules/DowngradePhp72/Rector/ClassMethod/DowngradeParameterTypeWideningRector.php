@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
@@ -131,9 +130,6 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($classLike);
-        if (! $classReflection instanceof ClassReflection) {
-            throw new ShouldNotHappenException();
-        }
 
         return $this->processRemoveParamTypeFromMethod($classReflection, $node);
     }
