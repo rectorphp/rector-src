@@ -42,15 +42,7 @@ final class PropertyManipulator
     /**
      * @var string[]
      */
-    private const ALLOWED_NOT_READONLY_ANNOTATION = [
-        '@ORM\Entity',
-        '@ORM\Table',
-    ];
-
-    /**
-     * @var string[]
-     */
-    private const ALLOWED_NOT_READONLY_ANNOTATION_CLASS_ORATTRIBUTES = [
+    private const ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES = [
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Table',
     ];
@@ -118,13 +110,13 @@ final class PropertyManipulator
         $class = $this->betterNodeFinder->findParentType($propertyOrParam, Class_::class);
         if ($class instanceof Class_) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
-            if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_ORATTRIBUTES)) {
+            if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
                 return true;
             }
 
             if ($this->phpAttributeAnalyzer->hasPhpAttributes(
                 $class,
-                self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_ORATTRIBUTES
+                self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
             )) {
                 return true;
             }
