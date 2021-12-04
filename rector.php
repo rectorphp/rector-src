@@ -91,7 +91,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         // @todo remove when enabling it on different PR
         ArraySpreadInsteadOfArrayMergeRector::class,
 
-        // temporary skip non new in initialization rector
+        // temporary skip non readonly property rector
         ReturnNeverTypeRector::class,
         FinalizePublicClassConstantRector::class,
         MyCLabsMethodCallToEnumConstRector::class,
