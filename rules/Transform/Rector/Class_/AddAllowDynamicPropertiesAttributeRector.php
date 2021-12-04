@@ -34,9 +34,9 @@ final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector impl
     public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
 
     /**
-     * @var null|array<array-key, string>
+     * @var array<array-key, string>
      */
-    private ?array $transformOnNamespaces = null;
+    private array $transformOnNamespaces = [];
 
     public function __construct(
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
@@ -139,7 +139,7 @@ CODE_SAMPLE,
 
     private function shouldSkip(Class_ $class): bool
     {
-        if ($this->transformOnNamespaces !== null) {
+        if (count($this->transformOnNamespaces) !== 0) {
             $className = (string) $this->nodeNameResolver->getName($class);
             foreach ($this->transformOnNamespaces as $transformOnNamespace) {
                 if (! $this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
