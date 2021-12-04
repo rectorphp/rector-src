@@ -13,15 +13,10 @@ use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector;
 use Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector;
-use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
-use Rector\Php81\Rector\FuncCall\Php81ResourceReturnToObjectRector;
-use Rector\Php81\Rector\FunctionLike\IntersectionTypesRector;
-use Rector\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -84,13 +79,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
         MyCLabsClassToEnumRector::class,
         SpatieEnumClassToEnumRector::class,
-
-        // temporary skip non new in initialization rector
-        ReturnNeverTypeRector::class,
-        FinalizePublicClassConstantRector::class,
-        MyCLabsMethodCallToEnumConstRector::class,
-        Php81ResourceReturnToObjectRector::class,
-        IntersectionTypesRector::class,
 
         // test paths
         '*/tests/**/Fixture/*',
