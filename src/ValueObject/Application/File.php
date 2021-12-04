@@ -169,6 +169,9 @@ final class File
         return $this->rectorWithLineChanges;
     }
 
+    /**
+     * @deprecated
+     */
     public function addRectorError(SystemError $systemError): void
     {
         $this->systemErrors[] = $systemError;
@@ -180,6 +183,7 @@ final class File
     }
 
     /**
+     * @deprecated
      * @return SystemError[]
      */
     public function getErrors(): array

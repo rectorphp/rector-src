@@ -84,9 +84,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             }
 
             // important to detect if file has changed
-            $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
-                $this->printFile($file, $configuration);
-            }, ApplicationPhase::PRINT());
+            $this->printFile($file, $configuration);
+            $this->notifyPhase($file, ApplicationPhase::PRINT());
         } while ($file->hasChanged());
 
         // return json here
@@ -143,7 +142,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
             $this->notParsedFiles[] = $file;
             $error = $this->errorFactory->createAutoloadError($analysedCodeException, $file->getSmartFileInfo());
-            $file->addRectorError($error);
+            //$file->addRectorError($error);
         } catch (Throwable $throwable) {
             if ($this->symfonyStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;
