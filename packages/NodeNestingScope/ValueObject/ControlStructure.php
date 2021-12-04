@@ -66,4 +66,21 @@ final class ControlStructure
         Switch_::class,
         Foreach_::class,
     ];
+
+    /**
+     * There are Nodes with cond property, but only these that the cond is checked can be direct use check
+     * For example:
+     *
+     *   do { } while (cond) has cond but checked later.
+     *
+     * which cannot be included for first cond check nodes
+     *
+     * @var array<class-string<Node>>
+     */
+    public const CONDITIONAL_NODE_COND_CHECK_FIRST_SCOPE_TYPES = [
+        If_::class,
+        While_::class,
+        ElseIf_::class,
+        Case_::class,
+    ];
 }

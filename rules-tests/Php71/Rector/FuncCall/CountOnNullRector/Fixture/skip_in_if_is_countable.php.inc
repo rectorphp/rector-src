@@ -12,7 +12,7 @@ final class SkipInIfIsArray
             ? []
             : null;
 
-        if (is_array($this->data)) {
+        if (is_countable($this->data)) {
             echo count($this->data);
         }
     }

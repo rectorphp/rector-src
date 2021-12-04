@@ -24,6 +24,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeNestingScope\ValueObject\ControlStructure;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeAnalyzer\CountableTypeAnalyzer;
 use Rector\Php71\NodeAnalyzer\CountableAnalyzer;
@@ -189,7 +190,38 @@ CODE_SAMPLE
 
         // skip node in trait, as impossible to analyse
         $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
-        return $trait instanceof Trait_;
+        if ($trait instanceof Trait_) {
+            return true;
+        }
+
+        return $this->isInConditionalIsArrayOrCountable($funcCall->args[0]->value);
+    }
+
+    private function isInConditionalIsArrayOrCountable(Expr $expr): bool
+    {
+        $conditionalNode = $this->betterNodeFinder->findParentByTypes(
+            $expr,
+            ControlStructure::CONDITIONAL_NODE_COND_CHECK_FIRST_SCOPE_TYPES
+        );
+        if (! $conditionalNode instanceof Node) {
+            return false;
+        }
+
+        if (! $conditionalNode->cond instanceof FuncCall) {
+            return false;
+        }
+
+        $funcCall = $conditionalNode->cond;
+        if (! $this->nodeNameResolver->isNames($funcCall, ['is_array', 'is_countable'])) {
+            return false;
+        }
+
+        $args = $funcCall->getArgs();
+        if (! array_key_exists(0, $args)) {
+            return false;
+        }
+
+        return $this->nodeComparator->areNodesEqual($args[0], $expr);
     }
 
     private function castToArray(Expr $countedExpr, FuncCall $funcCall): FuncCall
