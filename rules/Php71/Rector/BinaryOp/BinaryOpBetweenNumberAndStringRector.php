@@ -30,7 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class BinaryOpBetweenNumberAndStringRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private ExprAnalyzer $exprAnalyzer
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -91,10 +91,10 @@ CODE_SAMPLE
         if ($node instanceof Coalesce) {
             return null;
         }
-
-        if ($this->exprAnalyzer->isNonTypedFromParam($node->left) || $this->exprAnalyzer->isNonTypedFromParam(
-            $node->right
-        )) {
+        if ($this->exprAnalyzer->isNonTypedFromParam($node->left)) {
+            return null;
+        }
+        if ($this->exprAnalyzer->isNonTypedFromParam($node->right)) {
             return null;
         }
 
