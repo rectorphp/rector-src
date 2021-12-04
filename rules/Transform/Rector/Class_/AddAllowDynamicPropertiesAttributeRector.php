@@ -85,7 +85,7 @@ CODE_SAMPLE,
 
     public function configure(array $configuration): void
     {
-        $this->transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? null;
+        $this->transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? [];
     }
 
     /**
