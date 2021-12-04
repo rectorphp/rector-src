@@ -29,8 +29,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class BinaryOpBetweenNumberAndStringRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private ExprAnalyzer $exprAnalyzer)
-    {
+    public function __construct(
+        private ExprAnalyzer $exprAnalyzer
+    ) {
     }
 
     public function provideMinPhpVersion(): int
@@ -91,7 +92,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->exprAnalyzer->isNonTypedFromParam($node->left) || $this->exprAnalyzer->isNonTypedFromParam($node->right)) {
+        if ($this->exprAnalyzer->isNonTypedFromParam($node->left) || $this->exprAnalyzer->isNonTypedFromParam(
+            $node->right
+        )) {
             return null;
         }
 
