@@ -11,6 +11,7 @@ use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Core\Configuration\Option;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php74\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector;
 use Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector;
 use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
@@ -22,7 +23,6 @@ use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -86,8 +86,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         MyCLabsClassToEnumRector::class,
         SpatieEnumClassToEnumRector::class,
 
-        // temporary skip all with enable ArraySpreadInsteadOfArrayMergeRector
-        ReturnNeverTypeRector::class,
+        // temporary skip non return never type rector
         FinalizePublicClassConstantRector::class,
         MyCLabsMethodCallToEnumConstRector::class,
         Php81ResourceReturnToObjectRector::class,
