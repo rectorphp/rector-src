@@ -11,18 +11,18 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\Accessory\HasOffsetType;
 use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeWithClassName;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeCorrector\PregMatchTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -34,7 +34,8 @@ final class ArrayTypeAnalyzer
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PregMatchTypeCorrector $pregMatchTypeCorrector,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -150,23 +151,20 @@ final class ArrayTypeAnalyzer
             return false;
         }
 
+        // A. local property
         $property = $classLike->getProperty($propertyName);
         if ($property !== null) {
             $propertyProperty = $property->props[0];
             return $propertyProperty->default instanceof Array_;
         }
 
-        // also possible 3rd party vendor
-        if ($node instanceof PropertyFetch) {
-            $propertyOwnerStaticType = $this->nodeTypeResolver->getType($node->var);
-        } else {
-            $propertyOwnerStaticType = $this->nodeTypeResolver->getType($node->class);
+        // B. another object property
+        $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($node);
+        if ($phpPropertyReflection instanceof PhpPropertyReflection) {
+            $nativePropertyReflection = $phpPropertyReflection->getNativeReflection();
+            return is_array($nativePropertyReflection->getDefaultValue());
         }
 
-        if ($propertyOwnerStaticType instanceof ThisType) {
-            return false;
-        }
-
-        return $propertyOwnerStaticType instanceof TypeWithClassName;
+        return false;
     }
 }
