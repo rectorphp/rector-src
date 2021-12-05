@@ -26,11 +26,6 @@ use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
 {
-    /**
-     * @var File[]
-     */
-    private array $notParsedFiles = [];
-
     public function __construct(
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
         private readonly FileProcessor $fileProcessor,
@@ -58,6 +53,8 @@ final class PhpFileProcessor implements FileProcessorInterface
         if ($parsingSystemErrors !== []) {
             // we cannot process this file as the parsing and type resolving itself went wrong
             $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = $parsingSystemErrors;
+            $this->notifyPhase($file, ApplicationPhase::PRINT_SKIP());
+
             return $systemErrorsAndFileDiffs;
         }
 
@@ -74,33 +71,27 @@ final class PhpFileProcessor implements FileProcessorInterface
             $this->refactorNodesWithRectors($file, $configuration);
 
             // 3. apply post rectors
+            $this->notifyPhase($file, ApplicationPhase::POST_RECTORS());
             $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
             // this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($newStmts);
-            $this->notifyPhase($file, ApplicationPhase::POST_RECTORS());
 
             // 4. print to file or string
             $this->currentFileProvider->setFile($file);
 
-            // cannot print file with errors, as print would break everything to original nodes
-            if ($file->hasErrors()) {
-                // cannot print file with errors, as print would b
-                $this->notifyPhase($file, ApplicationPhase::PRINT_SKIP());
-                continue;
-            }
-
             // important to detect if file has changed
-            $this->printFile($file, $configuration);
             $this->notifyPhase($file, ApplicationPhase::PRINT());
+            $this->printFile($file, $configuration);
         } while ($file->hasChanged());
 
         // return json here
         $fileDiff = $file->getFileDiff();
 
-        return [
-            Bridge::SYSTEM_ERRORS => $file->getErrors(),
-            Bridge::FILE_DIFFS => $fileDiff instanceof FileDiff ? [$fileDiff] : [],
-        ];
+        if ($fileDiff instanceof FileDiff) {
+            $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = [$fileDiff];
+        }
+
+        return $systemErrorsAndFileDiffs;
     }
 
     public function supports(File $file, Configuration $configuration): bool
@@ -120,12 +111,14 @@ final class PhpFileProcessor implements FileProcessorInterface
     private function refactorNodesWithRectors(File $file, Configuration $configuration): void
     {
         $this->currentFileProvider->setFile($file);
+        $this->notifyPhase($file, ApplicationPhase::REFACTORING());
 
         $this->fileProcessor->refactor($file, $configuration);
-        $this->notifyPhase($file, ApplicationPhase::REFACTORING());
     }
 
-
+    /**
+     * @return SystemError[]
+     */
     private function parseFileAndDecorateNodes(File $file): array
     {
         $this->currentFileProvider->setFile($file);
@@ -141,7 +134,6 @@ final class PhpFileProcessor implements FileProcessorInterface
                 throw $analysedCodeException;
             }
 
-            $this->notParsedFiles[] = $file;
             $autoloadSystemError = $this->errorFactory->createAutoloadError(
                 $analysedCodeException,
                 $file->getSmartFileInfo()
