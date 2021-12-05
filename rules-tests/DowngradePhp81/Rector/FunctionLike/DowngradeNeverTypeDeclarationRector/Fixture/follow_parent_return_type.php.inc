@@ -20,7 +20,7 @@ namespace Rector\Tests\DowngradePhp81\Rector\FunctionLike\DowngradeNeverTypeDecl
 use Rector\Tests\DowngradePhp81\Rector\FunctionLike\DowngradeNeverTypeDeclarationRector\Source\RunnableInterface;
 
 class ImplementorRunnable implements RunnableInterface {
-    public function run(): \stdClass
+    public function run(): ?\stdClass
     {
         throw new \Exception('test');
     }
