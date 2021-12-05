@@ -14,7 +14,9 @@ use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NonexistentParentClassType;
 use PHPStan\Type\Type;
+use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -48,6 +50,7 @@ final class ParentClassMethodTypeOverrideGuard
         if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs) {
             $parentNativeReturnType = $parametersAcceptor->getNativeReturnType();
             if (! $parentNativeReturnType instanceof MixedType && $classMethod->returnType !== null) {
+                return false;
                 $currentType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($classMethod->returnType);
                 return $currentType->equals($parentNativeReturnType);
             }
@@ -99,7 +102,11 @@ final class ParentClassMethodTypeOverrideGuard
             return null;
         }
 
-        return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($parentNativeReturnType, TypeKind::RETURN());
+        try {
+            return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($parentNativeReturnType, TypeKind::RETURN());
+        } catch (NotImplementedYetException) {
+            return null;
+        }
     }
 
     public function hasParentClassMethod(ClassMethod $classMethod): bool

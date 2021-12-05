@@ -44,9 +44,11 @@ final class PhpDocFromTypeDeclarationDecorator
             $functionLike
         )) {
             $returnType = $this->parentClassMethodTypeOverrideGuard->getParentClassMethodNodeType($functionLike);
-            $functionLike->returnType = $returnType;
+            if ($returnType !== null) {
+                $functionLike->returnType = $returnType;
 
-            return;
+                return;
+            }
         }
 
         $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($functionLike->returnType);
