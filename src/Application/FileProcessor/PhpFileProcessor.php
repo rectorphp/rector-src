@@ -66,12 +66,10 @@ final class PhpFileProcessor implements FileProcessorInterface
             $this->refactorNodesWithRectors($file, $configuration);
 
             // 3. apply post rectors
-            $this->tryCatchWrapper($file, function (File $file): void {
-                $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
-
-                // this is needed for new tokens added in "afterTraverse()"
-                $file->changeNewStmts($newStmts);
-            }, ApplicationPhase::POST_RECTORS());
+            $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
+            // this is needed for new tokens added in "afterTraverse()"
+            $file->changeNewStmts($newStmts);
+            $this->notifyPhase($file, ApplicationPhase::POST_RECTORS());
 
             // 4. print to file or string
             $this->currentFileProvider->setFile($file);
