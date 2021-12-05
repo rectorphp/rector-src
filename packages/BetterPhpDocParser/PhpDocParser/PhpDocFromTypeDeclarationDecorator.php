@@ -20,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 
 final class PhpDocFromTypeDeclarationDecorator
 {
@@ -28,13 +29,18 @@ final class PhpDocFromTypeDeclarationDecorator
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly TypeUnwrapper $typeUnwrapper
+        private readonly TypeUnwrapper $typeUnwrapper,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
     public function decorate(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): void
     {
         if ($functionLike->returnType === null) {
+            return;
+        }
+
+        if ($functionLike instanceof ClassMethod && ! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed($functionLike)) {
             return;
         }
 
