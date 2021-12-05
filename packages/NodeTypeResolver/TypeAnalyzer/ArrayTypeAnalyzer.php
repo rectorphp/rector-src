@@ -161,8 +161,8 @@ final class ArrayTypeAnalyzer
         // B. another object property
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($node);
         if ($phpPropertyReflection instanceof PhpPropertyReflection) {
-            $nativePropertyReflection = $phpPropertyReflection->getNativeReflection();
-            return is_array($nativePropertyReflection->getDefaultValue());
+            $reflectionProperty = $phpPropertyReflection->getNativeReflection();
+            return is_array($reflectionProperty->getDefaultValue());
         }
 
         return false;
