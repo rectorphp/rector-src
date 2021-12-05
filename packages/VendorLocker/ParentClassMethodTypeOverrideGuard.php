@@ -14,7 +14,6 @@ use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NonexistentParentClassType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\PhpParser\AstResolver;
@@ -84,7 +83,8 @@ final class ParentClassMethodTypeOverrideGuard
         return $isCurrentNotInVendor && $isParentNotInVendor;
     }
 
-    public function getParentClassMethodNodeType(ClassMethod $classMethod): ComplexType|Identifier|Name|null {
+    public function getParentClassMethodNodeType(ClassMethod $classMethod): ComplexType|Identifier|Name|null
+    {
         $parentClassMethodReflection = $this->getParentClassMethod($classMethod);
         if (! $parentClassMethodReflection instanceof MethodReflection) {
             return null;

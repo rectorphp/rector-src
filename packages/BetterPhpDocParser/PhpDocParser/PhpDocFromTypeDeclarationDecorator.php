@@ -56,15 +56,6 @@ final class PhpDocFromTypeDeclarationDecorator
         $functionLike->returnType = null;
     }
 
-    private function changePhpDocReturnType(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): void
-    {
-        /** @var $returnType ComplexType|Identifier|Name $returnType */
-        $returnType = $functionLike->returnType;
-        $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
-    }
-
     /**
      * @param array<class-string<Type>> $requiredTypes
      */
@@ -120,6 +111,15 @@ final class PhpDocFromTypeDeclarationDecorator
 
         $this->decorate($functionLike);
         return true;
+    }
+
+    private function changePhpDocReturnType(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): void
+    {
+        /** @var ComplexType|Identifier|Name $returnType $returnType */
+        $returnType = $functionLike->returnType;
+        $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
     }
 
     private function isTypeMatch(ComplexType|Identifier|Name $typeNode, Type $requireType): bool
