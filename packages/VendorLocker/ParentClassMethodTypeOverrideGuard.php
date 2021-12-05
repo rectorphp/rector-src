@@ -14,6 +14,7 @@ use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NonexistentParentClassType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\PhpParser\AstResolver;
@@ -100,20 +101,11 @@ final class ParentClassMethodTypeOverrideGuard
             return null;
         }
 
-        /**
-         * Handle error at DowngradeParentTypeDeclarationRectorTest exception:
-         *
-         *      Rector\Core\Exception\NotImplementedYetException: Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper::mapToPhpParserNode
-         *      for PHPStan\Type\NonexistentParentClassType PHPStan\Type\NonexistentParentClassType
-         *
-         * so return null on usage of PhpDocFromTypeDeclarationDecorator::decorate()
-         * to use original behaviour before PR https://github.com/rectorphp/rector-src/pull/1395
-         */
-        try {
-            return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($parentNativeReturnType, TypeKind::RETURN());
-        } catch (NotImplementedYetException) {
+        if ($parentNativeReturnType instanceof NonexistentParentClassType) {
             return null;
         }
+
+        return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($parentNativeReturnType, TypeKind::RETURN());
     }
 
     public function hasParentClassMethod(ClassMethod $classMethod): bool
