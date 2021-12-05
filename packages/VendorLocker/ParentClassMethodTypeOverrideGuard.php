@@ -16,6 +16,7 @@ use PHPStan\Type\Type;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
@@ -78,6 +79,26 @@ final class ParentClassMethodTypeOverrideGuard
         $isParentNotInVendor = ! str_contains($normalizedFileName, '/vendor/');
 
         return $isCurrentNotInVendor && $isParentNotInVendor;
+    }
+
+    public function getParentClassMethodNodeType(ClassMethod $classMethod): ?Node
+    {
+        $parentClassMethodReflection = $this->getParentClassMethod($classMethod);
+        if (! $parentClassMethodReflection instanceof MethodReflection) {
+            return null;
+        }
+
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethodReflection->getVariants());
+        if (! $parametersAcceptor instanceof FunctionVariantWithPhpDocs) {
+            return null;
+        }
+
+        $parentNativeReturnType = $parametersAcceptor->getNativeReturnType();
+        if ($parentNativeReturnType instanceof MixedType) {
+            return null;
+        }
+
+        return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($parentNativeReturnType, TypeKind::RETURN());
     }
 
     public function hasParentClassMethod(ClassMethod $classMethod): bool
