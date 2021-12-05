@@ -51,8 +51,6 @@ final class ParentClassMethodTypeOverrideGuard
             $parentNativeReturnType = $parametersAcceptor->getNativeReturnType();
             if (! $parentNativeReturnType instanceof MixedType && $classMethod->returnType !== null) {
                 return false;
-                $currentType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($classMethod->returnType);
-                return $currentType->equals($parentNativeReturnType);
             }
         }
 
@@ -102,6 +100,15 @@ final class ParentClassMethodTypeOverrideGuard
             return null;
         }
 
+        /**
+         * Handle error at DowngradeParentTypeDeclarationRectorTest exception:
+         *
+         *      Rector\Core\Exception\NotImplementedYetException: Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper::mapToPhpParserNode
+         *      for PHPStan\Type\NonexistentParentClassType PHPStan\Type\NonexistentParentClassType
+         *
+         * so return null on usage of PhpDocFromTypeDeclarationDecorator::decorate()
+         * to use original behaviour before PR https://github.com/rectorphp/rector-src/pull/1395
+         */
         try {
             return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($parentNativeReturnType, TypeKind::RETURN());
         } catch (NotImplementedYetException) {
