@@ -23,7 +23,7 @@ final class UnconfiguredRemoveAllowDynamicPropertiesAttributeRectorTest extends 
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/Process');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureAllClasses');
     }
 
     public function provideConfigFilePath(): string
