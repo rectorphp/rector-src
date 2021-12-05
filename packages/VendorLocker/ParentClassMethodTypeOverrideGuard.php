@@ -67,10 +67,10 @@ final class ParentClassMethodTypeOverrideGuard
          */
         /** @var Scope $scope */
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        /** @var ClassReflection $classReflection */
-        $classReflection = $scope->getClassReflection();
+        /** @var ClassReflection $currentClassReflection */
+        $currentClassReflection = $scope->getClassReflection();
         /** @var string $currentFileName */
-        $currentFileName = $classReflection->getFileName();
+        $currentFileName = $currentClassReflection->getFileName();
 
         // child (current)
         $normalizedCurrentFileName = $this->pathNormalizer->normalizePath($currentFileName);
