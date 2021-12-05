@@ -16,7 +16,6 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NonexistentParentClassType;
 use PHPStan\Type\Type;
-use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
