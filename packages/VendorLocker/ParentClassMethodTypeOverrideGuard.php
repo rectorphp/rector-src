@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker;
 
-use PhpParser\Node;
+use PhpParser\Node\ComplexType;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -45,7 +47,7 @@ final class ParentClassMethodTypeOverrideGuard
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethodReflection->getVariants());
         if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs) {
             $parentNativeReturnType = $parametersAcceptor->getNativeReturnType();
-            if (! $parentNativeReturnType instanceof MixedType && $classMethod->returnType instanceof Node) {
+            if (! $parentNativeReturnType instanceof MixedType && $classMethod->returnType !== null) {
                 $currentType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($classMethod->returnType);
                 return $currentType->equals($parentNativeReturnType);
             }
@@ -81,8 +83,7 @@ final class ParentClassMethodTypeOverrideGuard
         return $isCurrentNotInVendor && $isParentNotInVendor;
     }
 
-    public function getParentClassMethodNodeType(ClassMethod $classMethod): ?Node
-    {
+    public function getParentClassMethodNodeType(ClassMethod $classMethod): ComplexType|Identifier|Name|null {
         $parentClassMethodReflection = $this->getParentClassMethod($classMethod);
         if (! $parentClassMethodReflection instanceof MethodReflection) {
             return null;
