@@ -48,10 +48,18 @@ final class PhpFileProcessor implements FileProcessorInterface
      */
     public function process(File $file, Configuration $configuration): array
     {
+        $systemErrorsAndFileDiffs = [
+            Bridge::SYSTEM_ERRORS => [],
+            Bridge::FILE_DIFFS => [],
+        ];
+
         // 1. parse files to nodes
-        $this->tryCatchWrapper($file, function (File $file): void {
-            $this->fileProcessor->parseFileInfoToLocalCache($file);
-        }, ApplicationPhase::PARSING());
+        $parsingSystemErrors = $this->parseFileAndDecorateNodes($file);
+        if ($parsingSystemErrors !== []) {
+            // we cannot process this file as the parsing and type resolving itself went wrong
+            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = $parsingSystemErrors;
+            return $systemErrorsAndFileDiffs;
+        }
 
         // 2. change nodes with Rectors
         $loopCounter = 0;
@@ -113,23 +121,18 @@ final class PhpFileProcessor implements FileProcessorInterface
     {
         $this->currentFileProvider->setFile($file);
 
-        $this->tryCatchWrapper($file, function (File $file) use ($configuration): void {
-            $this->fileProcessor->refactor($file, $configuration);
-        }, ApplicationPhase::REFACTORING());
+        $this->fileProcessor->refactor($file, $configuration);
+        $this->notifyPhase($file, ApplicationPhase::REFACTORING());
     }
 
-    private function tryCatchWrapper(File $file, callable $callback, ApplicationPhase $applicationPhase): void
+
+    private function parseFileAndDecorateNodes(File $file): array
     {
         $this->currentFileProvider->setFile($file);
-        $this->notifyPhase($file, $applicationPhase);
+        $this->notifyPhase($file, ApplicationPhase::PARSING());
 
         try {
-            if (in_array($file, $this->notParsedFiles, true)) {
-                // we cannot process this file
-                return;
-            }
-
-            $callback($file);
+            $this->fileProcessor->parseFileInfoToLocalCache($file);
         } catch (ShouldNotHappenException $shouldNotHappenException) {
             throw $shouldNotHappenException;
         } catch (AnalysedCodeException $analysedCodeException) {
@@ -139,8 +142,11 @@ final class PhpFileProcessor implements FileProcessorInterface
             }
 
             $this->notParsedFiles[] = $file;
-            $error = $this->errorFactory->createAutoloadError($analysedCodeException, $file->getSmartFileInfo());
-            //$file->addRectorError($error);
+            $autoloadSystemError = $this->errorFactory->createAutoloadError(
+                $analysedCodeException,
+                $file->getSmartFileInfo()
+            );
+            return [$autoloadSystemError];
         } catch (Throwable $throwable) {
             if ($this->symfonyStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;
@@ -152,8 +158,10 @@ final class PhpFileProcessor implements FileProcessorInterface
                 $throwable->getLine()
             );
 
-            $file->addRectorError($systemError);
+            return [$systemError];
         }
+
+        return [];
     }
 
     private function printFile(File $file, Configuration $configuration): void
