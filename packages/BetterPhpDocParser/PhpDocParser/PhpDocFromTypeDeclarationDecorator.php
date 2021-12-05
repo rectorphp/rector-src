@@ -40,7 +40,9 @@ final class PhpDocFromTypeDeclarationDecorator
             return;
         }
 
-        if ($functionLike instanceof ClassMethod && ! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed($functionLike)) {
+        if ($functionLike instanceof ClassMethod && ! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed(
+            $functionLike
+        )) {
             return;
         }
 
