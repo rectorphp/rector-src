@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\On;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 class MagicSetObjects
 {

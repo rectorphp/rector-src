@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\On;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 #[\Immutable]
 class AppendAttribute
@@ -12,7 +12,7 @@ class AppendAttribute
 -----
 <?php
 
-namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\On;
+namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 #[\Immutable]
 #[\AllowDynamicProperties]

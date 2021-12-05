@@ -10,7 +10,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(AddAllowDynamicPropertiesAttributeRector::class)
         ->call('configure', [[
             AddAllowDynamicPropertiesAttributeRector::TRANSFORM_ON_NAMESPACES => [
-                '*\Fixture\On\*'
+                '*\Fixture\Process\*'
             ]
         ]]);
 };
