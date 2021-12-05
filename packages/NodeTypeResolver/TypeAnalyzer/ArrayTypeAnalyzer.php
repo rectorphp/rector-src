@@ -9,15 +9,19 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\Type\Accessory\HasOffsetType;
 use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeCorrector\PregMatchTypeCorrector;
@@ -30,27 +34,32 @@ final class ArrayTypeAnalyzer
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PregMatchTypeCorrector $pregMatchTypeCorrector,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
     public function isArrayType(Node $node): bool
     {
-        $nodeStaticType = $this->nodeTypeResolver->getType($node);
+        $nodeType = $this->nodeTypeResolver->getType($node);
 
-        $nodeStaticType = $this->pregMatchTypeCorrector->correct($node, $nodeStaticType);
-        if ($this->isIntersectionArrayType($nodeStaticType)) {
+        $nodeType = $this->pregMatchTypeCorrector->correct($node, $nodeType);
+        if ($this->isIntersectionArrayType($nodeType)) {
             return true;
         }
 
         // PHPStan false positive, when variable has type[] docblock, but default array is missing
-        if (($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch) && ! $this->isPropertyFetchWithArrayDefault(
-            $node
-        )) {
-            return false;
+        if (($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch)) {
+            if ($this->isPropertyFetchWithArrayDefault($node)) {
+                return true;
+            }
+
+            if ($this->isPropertyFetchWithArrayDocblockWithoutDefault($node)) {
+                return false;
+            }
         }
 
-        if ($nodeStaticType instanceof MixedType) {
-            if ($nodeStaticType->isExplicitMixed()) {
+        if ($nodeType instanceof MixedType) {
+            if ($nodeType->isExplicitMixed()) {
                 return false;
             }
 
@@ -59,7 +68,7 @@ final class ArrayTypeAnalyzer
             }
         }
 
-        return $nodeStaticType instanceof ArrayType;
+        return $nodeType instanceof ArrayType;
     }
 
     private function isIntersectionArrayType(Type $nodeType): bool
@@ -87,6 +96,41 @@ final class ArrayTypeAnalyzer
         return true;
     }
 
+    private function isPropertyFetchWithArrayDocblockWithoutDefault(Node $node): bool
+    {
+        if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
+            return false;
+        }
+
+        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+        if (! $classLike instanceof ClassLike) {
+            return false;
+        }
+
+        $propertyName = $this->nodeNameResolver->getName($node->name);
+        if ($propertyName === null) {
+            return false;
+        }
+
+        $property = $classLike->getProperty($propertyName);
+        if (! $property instanceof Property) {
+            return false;
+        }
+
+        $propertyProperty = $property->props[0];
+        if ($propertyProperty->default instanceof Array_) {
+            return false;
+        }
+
+        $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+        if (! $propertyPhpDocInfo instanceof PhpDocInfo) {
+            return false;
+        }
+
+        $varType = $propertyPhpDocInfo->getVarType();
+        return $varType instanceof ArrayType || $varType instanceof ArrayShapeNode || $varType instanceof IterableType;
+    }
+
     /**
      * phpstan bug workaround - https://phpstan.org/r/0443f283-244c-42b8-8373-85e7deb3504c
      */
@@ -97,10 +141,6 @@ final class ArrayTypeAnalyzer
         }
 
         $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if ($classLike instanceof Interface_) {
-            return false;
-        }
-
         if (! $classLike instanceof ClassLike) {
             return false;
         }
