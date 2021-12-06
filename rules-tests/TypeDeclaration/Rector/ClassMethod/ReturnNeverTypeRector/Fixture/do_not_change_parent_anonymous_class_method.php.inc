@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\
 use Exception;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\Source\MixedReturn;
 
-final class DoNotChangeParentAnonymousMethodCall
+final class DoNotChangeParentAnonymousClassMethod
 {
     public function run()
     {
@@ -27,7 +27,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\
 use Exception;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\Source\MixedReturn;
 
-final class DoNotChangeParentAnonymousMethodCall
+final class DoNotChangeParentAnonymousClassMethod
 {
     public function run()
     {
