@@ -55,11 +55,7 @@ final class EmptyConfigurableRectorCollector
                     return false;
                 }
 
-                if ($methodCall[1][0] === []) {
-                    return false;
-                }
-
-                return true;
+                return $methodCall[1][0] !== [];
             }
         }
 
