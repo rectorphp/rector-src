@@ -149,13 +149,13 @@ final class PropertyPresenceChecker
     {
         $propertyNames = [];
 
-        $nativeClassReflection = $classReflection->getNativeReflection();
-        foreach ($nativeClassReflection->getProperties() as $nativePropertyReflection) {
-            if ($nativePropertyReflection->isPrivate()) {
+        $reflectionClass = $classReflection->getNativeReflection();
+        foreach ($reflectionClass->getProperties() as $property) {
+            if ($property->isPrivate()) {
                 continue;
             }
 
-            $propertyNames[] = $nativePropertyReflection->getName();
+            $propertyNames[] = $property->getName();
         }
 
         return $propertyNames;
