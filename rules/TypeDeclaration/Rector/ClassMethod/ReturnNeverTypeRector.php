@@ -109,7 +109,9 @@ CODE_SAMPLE
         }
 
         $hasNeverNodes = $this->betterNodeFinder->hasInstancesOf($node, []);
-        $hasNeverNodes = $this->betterNodeFinder->findFirst((array) $node->stmts, function (Node $subNode) use ($node): bool {
+        $hasNeverNodes = $this->betterNodeFinder->findFirst((array) $node->stmts, function (Node $subNode) use (
+            $node
+        ): bool {
             if (! in_array($subNode::class, [Node\Expr\Throw_::class, Throw_::class], true)) {
                 return false;
             }
