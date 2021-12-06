@@ -54,6 +54,12 @@ final class ParentClassMethodTypeOverrideGuard
         /*
          * Below verify that both current file name and parent file name is not in the /vendor/, if yes, then allowed.
          * This can happen when rector run into /vendor/ directory while child and parent both are there.
+         *
+         *  @see https://3v4l.org/Rc0RF#v8.0.13
+         *
+         *     - both in /vendor/ -> allowed
+         *     - one of them in /vendor/ -> not allowed
+         *     - both not in /vendor/ -> allowed
          */
         /** @var Scope $scope */
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
@@ -64,13 +70,13 @@ final class ParentClassMethodTypeOverrideGuard
 
         // child (current)
         $normalizedCurrentFileName = $this->pathNormalizer->normalizePath($currentFileName);
-        $isCurrentNotInVendor = ! str_contains($normalizedCurrentFileName, '/vendor/');
+        $isCurrentInVendor = str_contains($normalizedCurrentFileName, '/vendor/');
 
         // parent
         $normalizedFileName = $this->pathNormalizer->normalizePath($fileName);
-        $isParentNotInVendor = ! str_contains($normalizedFileName, '/vendor/');
+        $isParentInVendor = str_contains($normalizedFileName, '/vendor/');
 
-        return $isCurrentNotInVendor && $isParentNotInVendor;
+        return ($isCurrentInVendor && $isParentInVendor) || (! $isCurrentInVendor && ! $isParentInVendor);
     }
 
     public function hasParentClassMethod(ClassMethod $classMethod): bool
