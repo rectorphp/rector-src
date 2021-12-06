@@ -108,7 +108,19 @@ CODE_SAMPLE
             return true;
         }
 
-        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOf($node, [Node\Expr\Throw_::class, Throw_::class]);
+        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOf($node, []);
+        $hasNeverNodes = $this->betterNodeFinder->findFirst((array) $node->stmts, function (Node $subNode) use ($node): bool {
+            if (! in_array($subNode::class, [Node\Expr\Throw_::class, Throw_::class], true)) {
+                return false;
+            }
+
+            $parentFunctionOrClassMethod = $this->betterNodeFinder->findParentByTypes($subNode, $this->getNodeTypes());
+            if (! $parentFunctionOrClassMethod) {
+                return false;
+            }
+
+            return $parentFunctionOrClassMethod === $node;
+        });
 
         $hasNeverFuncCall = $this->hasNeverFuncCall($node);
         if (! $hasNeverNodes && ! $hasNeverFuncCall) {
