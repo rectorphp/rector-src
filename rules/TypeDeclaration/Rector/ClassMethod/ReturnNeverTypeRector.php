@@ -135,7 +135,8 @@ CODE_SAMPLE
     private function hasNotNeverNodes(ClassMethod | Function_ $functionLike, array $yieldAndConditionalNodes): bool
     {
         return (bool) $this->betterNodeFinder->findFirst((array) $functionLike->stmts, function (Node $subNode) use (
-            $functionLike, $yieldAndConditionalNodes
+            $functionLike,
+            $yieldAndConditionalNodes
         ): bool {
             if (! in_array($subNode::class, $yieldAndConditionalNodes, true)) {
                 return false;
