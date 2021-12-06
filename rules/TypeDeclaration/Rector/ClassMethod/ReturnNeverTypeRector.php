@@ -115,10 +115,6 @@ CODE_SAMPLE
             }
 
             $parentFunctionOrClassMethod = $this->betterNodeFinder->findParentByTypes($subNode, $this->getNodeTypes());
-            if (! $parentFunctionOrClassMethod) {
-                return false;
-            }
-
             return $parentFunctionOrClassMethod === $node;
         });
 
