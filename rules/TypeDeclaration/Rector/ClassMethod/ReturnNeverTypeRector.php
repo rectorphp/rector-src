@@ -103,13 +103,19 @@ CODE_SAMPLE
         }
 
         $yieldAndConditionalNodes = array_merge([Yield_::class], ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES);
-        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, $yieldAndConditionalNodes);
+        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $node,
+            $yieldAndConditionalNodes
+        );
 
         if ($hasNotNeverNodes) {
             return true;
         }
 
-        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, [Node\Expr\Throw_::class, Throw_::class]);
+        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $node,
+            [Node\Expr\Throw_::class, Throw_::class]
+        );
         $hasNeverFuncCall = $this->hasNeverFuncCall($node);
 
         if (! $hasNeverNodes && ! $hasNeverFuncCall) {
