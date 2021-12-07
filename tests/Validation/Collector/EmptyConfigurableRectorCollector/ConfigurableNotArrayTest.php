@@ -6,7 +6,6 @@ namespace Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollecto
 
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * Not array configurable, eg:
