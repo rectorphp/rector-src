@@ -16,8 +16,7 @@ use Symfony\Component\DependencyInjection\Definition;
 final class EmptyConfigurableRectorCollector
 {
     /**
-     * These are rector rules that the default values config are not array
-     * For
+     * These are rector rules that the default values config are not empty array
      *
      * @var array<class-string<RectorInterface>>
      */
