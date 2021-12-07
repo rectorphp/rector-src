@@ -26,6 +26,9 @@ use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
 {
+    /**
+     * @var array{system_errors: SystemError[], file_diffs: FileDiff[]}
+     */
     private array $systemErrorsAndFileDiffs = [
         Bridge::SYSTEM_ERRORS => [],
         Bridge::FILE_DIFFS => [],
@@ -93,12 +96,10 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $this->systemErrorsAndFileDiffs;
         }
 
-        if ($fileDiff instanceof FileDiff) {
-            $this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = array_merge(
-                $this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS],
-                [$fileDiff]
-            );
-        }
+        $this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = array_merge(
+            $this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS],
+            [$fileDiff]
+        );
 
         return $this->systemErrorsAndFileDiffs;
     }
