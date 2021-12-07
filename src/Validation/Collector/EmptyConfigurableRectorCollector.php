@@ -10,6 +10,7 @@ use Rector\Naming\Naming\PropertyNaming;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 
 /**
  * @see \Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollector\EmptyConfigurableRectorCollectorTest
@@ -91,9 +92,6 @@ final class EmptyConfigurableRectorCollector
         $codeSamples = $ruleDefinition->getCodeSamples();
         foreach ($codeSamples as $codeSample) {
             $configuration = $codeSample->getConfiguration();
-            if (! is_array($configuration)) {
-                return false;
-            }
 
             $arrayKeys = array_keys($configuration);
             if ($arrayKeys === [0]) {
