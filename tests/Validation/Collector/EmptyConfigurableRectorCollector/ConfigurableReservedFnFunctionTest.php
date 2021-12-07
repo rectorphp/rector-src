@@ -8,7 +8,7 @@ use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
 /**
- * array configurable with missing values config will show warning
+ * config is not found in property is allowed to pass
  */
 final class ConfigurableReservedFnFunctionTest extends AbstractTestCase
 {
