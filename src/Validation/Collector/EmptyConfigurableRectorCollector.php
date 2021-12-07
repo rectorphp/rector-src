@@ -93,11 +93,6 @@ final class EmptyConfigurableRectorCollector
         foreach ($codeSamples as $codeSample) {
             $configuration = $codeSample->getConfiguration();
 
-            $arrayKeys = array_keys($configuration);
-            if ($arrayKeys === [0]) {
-                return false;
-            }
-
             foreach (array_keys($configuration) as $key) {
                 if (! is_string($key)) {
                     return false;
