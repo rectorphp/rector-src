@@ -52,7 +52,10 @@ final class PhpFileProcessor implements FileProcessorInterface
         $parsingSystemErrors = $this->parseFileAndDecorateNodes($file);
         if ($parsingSystemErrors !== []) {
             // we cannot process this file as the parsing and type resolving itself went wrong
-            $this->systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge($this->systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS], $parsingSystemErrors);
+            $this->systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
+                $this->systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
+                $parsingSystemErrors
+            );
             $this->notifyPhase($file, ApplicationPhase::PRINT_SKIP());
 
             return $this->systemErrorsAndFileDiffs;
@@ -91,7 +94,10 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         if ($fileDiff instanceof FileDiff) {
-            $this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = array_merge($this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS], [$fileDiff]);
+            $this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = array_merge(
+                $this->systemErrorsAndFileDiffs[Bridge::FILE_DIFFS],
+                [$fileDiff]
+            );
         }
 
         return $this->systemErrorsAndFileDiffs;
