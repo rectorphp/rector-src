@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\Validation\Collector;
 
-use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
