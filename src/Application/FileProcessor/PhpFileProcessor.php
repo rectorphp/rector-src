@@ -92,7 +92,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
         // return json here
         $fileDiff = $file->getFileDiff();
-        if ($fileDiff === null) {
+        if (! $fileDiff instanceof FileDiff) {
             return $this->systemErrorsAndFileDiffs;
         }
 
