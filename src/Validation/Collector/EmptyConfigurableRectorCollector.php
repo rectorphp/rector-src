@@ -5,30 +5,21 @@ declare(strict_types=1);
 namespace Rector\Core\Validation\Collector;
 
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
+use Rector\Naming\Naming\PropertyNaming;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 /**
  * @see \Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollector\EmptyConfigurableRectorCollectorTest
  */
 final class EmptyConfigurableRectorCollector
 {
-    /**
-     * These are rector rules that the default values config are not empty array
-     *
-     * @var array<class-string<RectorInterface>>
-     */
-    private const ALLOWED_RULES_FALLBACK_DEFAULT_CONFIG = [
-        'Rector\Php74\Rector\Property\TypedPropertyRector',
-        'Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector',
-        'Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector',
-        'Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector',
-    ];
-
     public function __construct(
-        private readonly ContainerBuilder $containerBuilder
+        private readonly ContainerBuilder $containerBuilder,
+        private readonly PrivatesAccessor $privatesAccessor,
+        private readonly PropertyNaming $propertyNaming
     ) {
     }
 
@@ -54,7 +45,7 @@ final class EmptyConfigurableRectorCollector
                 continue;
             }
 
-            if (in_array($serviceId, self::ALLOWED_RULES_FALLBACK_DEFAULT_CONFIG, true)) {
+            if ($this->shouldSkip($serviceId)) {
                 continue;
             }
 
@@ -77,5 +68,60 @@ final class EmptyConfigurableRectorCollector
         }
 
         return false;
+    }
+
+    /**
+     * Skip the following config property conditions
+     *    - start with exclude
+     *    - not empty array default value
+     *    - property not found by config, eg, on key value pairs in \Rector\Php74\Rector\Function_\ReservedFnFunctionRector
+     *
+     *          [
+     *               'fn' => 'someFunctionName',
+     *          ]
+     *
+     *      which there is no `fn` property in the rector class
+     */
+    private function shouldSkip(string $serviceId): bool
+    {
+        $rector = $this->containerBuilder->get($serviceId);
+        $ruleDefinition = $rector->getRuleDefinition();
+
+        /** @var ConfiguredCodeSample[] $codeSamples */
+        $codeSamples = $ruleDefinition->getCodeSamples();
+        foreach ($codeSamples as $codeSample) {
+            $configuration = $codeSample->getConfiguration();
+            if (! is_array($configuration)) {
+                return false;
+            }
+
+            $arrayKeys = array_keys($configuration);
+            if ($arrayKeys === [0]) {
+                return false;
+            }
+
+            foreach (array_keys($configuration) as $key) {
+                if (! is_string($key)) {
+                    return false;
+                }
+
+                $key = $this->propertyNaming->underscoreToName($key);
+                if (! property_exists($rector, $key)) {
+                    continue;
+                }
+
+                // @see https://github.com/rectorphp/rector-laravel/pull/19
+                if (str_starts_with($key, 'exclude')) {
+                    continue;
+                }
+
+                $value = $this->privatesAccessor->getPrivateProperty($rector, $key);
+                if ($value === []) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
