@@ -190,8 +190,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $ifCondNotIsset = new BooleanNot(new Isset_([$coalesce->left]));
-            $if = $this->ifManipulator->createIfExpr($ifCondNotIsset, new Expression($coalesce->right));
+            $if = $this->createIf($coalesce, $coalesce->right);
             return [$if, new Return_($coalesce->left)];
         }
 
@@ -200,8 +199,7 @@ CODE_SAMPLE
 
     private function createIf(Coalesce $coalesce, Throw_ $throw): If_
     {
-        $condExpr = $this->createCondExpr($coalesce);
-
+        $condExpr = new BooleanNot(new Isset_([$coalesce->left]));
         return new If_($condExpr, [
             'stmts' => [new Expression($throw)],
         ]);
