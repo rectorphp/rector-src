@@ -28,6 +28,7 @@ use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Stringy\Stringy;
+use Symfony\Component\String\UnicodeString;
 
 final class VariableNaming
 {
@@ -36,23 +37,6 @@ final class VariableNaming
         private readonly ValueResolver $valueResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
     ) {
-    }
-
-    public function resolveFromNodeAndType(Node $node, Type $type): ?string
-    {
-        $variableName = $this->resolveBareFromNode($node);
-        if ($variableName === null) {
-            return null;
-        }
-
-        // adjust static to specific class
-        if ($variableName === 'this' && $type instanceof ThisType) {
-            $shortClassName = $this->nodeNameResolver->getShortName($type->getClassName());
-            $variableName = lcfirst($shortClassName);
-        }
-
-        $stringy = new Stringy($variableName);
-        return (string) $stringy->camelize();
     }
 
     public function resolveFromNodeWithScopeCountAndFallbackName(
@@ -105,7 +89,26 @@ final class VariableNaming
         return $this->createCountedValueName($bareName, $scope);
     }
 
-    public function resolveFromNode(Node $node): ?string
+    private function resolveFromNodeAndType(Node $node, Type $type): ?string
+    {
+        $variableName = $this->resolveBareFromNode($node);
+        if ($variableName === null) {
+            return null;
+        }
+
+        // adjust static to specific class
+        if ($variableName === 'this' && $type instanceof ThisType) {
+            $shortClassName = $this->nodeNameResolver->getShortName($type->getClassName());
+            $variableName = lcfirst($shortClassName);
+        } else {
+            $variableName = $this->nodeNameResolver->getShortName($variableName);
+        }
+        $variableNameString = new UnicodeString($variableName);
+        return $variableNameString->camel()
+            ->toString();
+    }
+
+    private function resolveFromNode(Node $node): ?string
     {
         $nodeType = $this->nodeTypeResolver->getType($node);
         return $this->resolveFromNodeAndType($node, $nodeType);
