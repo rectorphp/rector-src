@@ -35,9 +35,9 @@ final class ConstantNaming
 
     private function createUnderscoreUppercaseString(string $propertyName): string
     {
-        $propertyNameString = new UnicodeString($propertyName);
+        $propertyNameUnicodeString = new UnicodeString($propertyName);
 
-        return $propertyNameString->snake()
+        return $propertyNameUnicodeString->snake()
             ->upper()
             ->toString();
     }

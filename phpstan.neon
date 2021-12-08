@@ -621,3 +621,4 @@ parameters:
             message: '#Do not use chained method calls\. Put each on separated lines#'
             paths:
                 - rules/Privatization/Naming/ConstantNaming.php
+                - rules/Naming/Naming/VariableNaming.php
