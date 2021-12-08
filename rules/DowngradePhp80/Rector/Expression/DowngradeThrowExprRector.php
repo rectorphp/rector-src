@@ -190,7 +190,8 @@ CODE_SAMPLE
                 return null;
             }
 
-            $if = $this->createIf($coalesce, $coalesce->right);
+            $ifCondNotIsset = new BooleanNot(new Isset_([$coalesce->left]));
+            $if = $this->ifManipulator->createIfExpr($ifCondNotIsset, new Expression($coalesce->right));
             return [$if, new Return_($coalesce->left)];
         }
 
