@@ -200,6 +200,7 @@ CODE_SAMPLE
     private function createIf(Coalesce $coalesce, Throw_ $throw): If_
     {
         $condExpr = new BooleanNot(new Isset_([$coalesce->left]));
+
         return new If_($condExpr, [
             'stmts' => [new Expression($throw)],
         ]);
