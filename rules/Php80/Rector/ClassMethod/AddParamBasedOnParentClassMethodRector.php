@@ -144,15 +144,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            $isUsedInStmts = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($node, function (Node $subNode) use (
-                $parentClassMethodParam
-            ): bool {
+            $isUsedInStmts = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                $node,
+                function (Node $subNode) use ($parentClassMethodParam): bool {
                 if (! $subNode instanceof Variable) {
                     return false;
                 }
 
                 return $this->nodeComparator->areNodesEqual($subNode, $parentClassMethodParam->var);
-            });
+            }
+            );
 
             if ($isUsedInStmts) {
                 $node->params = $originalParams;
