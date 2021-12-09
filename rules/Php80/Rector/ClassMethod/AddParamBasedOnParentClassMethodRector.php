@@ -113,10 +113,17 @@ CODE_SAMPLE
 
         foreach ($parentClassMethodParams as $key => $parentClassMethodParam) {
             if (isset($currentClassMethodParams[$key])) {
+                $currentParamName = (string) $this->nodeNameResolver->getName($currentClassMethodParams[$key]);
+                $collectParamNamesNextKey = $this->collectParamNamesNextKey($parentClassMethod, $key);
+
+                if (in_array($currentParamName, $collectParamNamesNextKey, true)) {
+                    return null;
+                }
+
                 continue;
             }
 
-            $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
+            $paramName = (string) $this->nodeNameResolver->getName($parentClassMethodParam);
             $node->params[$key] = new Param(
                 new Variable($paramName),
                 $parentClassMethodParam->default,
@@ -130,5 +137,18 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function collectParamNamesNextKey(ClassMethod $classMethod, int $key): array
+    {
+        $paramNames = [];
+
+        foreach ($classMethod->params as $paramKey => $param) {
+            if ($paramKey > $key) {
+                $paramNames[] = (string) $this->nodeNameResolver->getName($param);
+            }
+        }
+
+        return $paramNames;
     }
 }
