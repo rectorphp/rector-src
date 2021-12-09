@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DowngradePhp80\Rector\ArrayDimFetch\DowngradeDereferencableOperationRector;
+namespace Rector\Tests\DowngradePhp80\Rector\ArrayDimFetch\DowngradeDereferenceableOperationRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class DowngradeDereferencableOperationRectorTest extends AbstractRectorTestCase
+final class DowngradeDereferenceableOperationRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

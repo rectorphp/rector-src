@@ -16,13 +16,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/variable_syntax_tweaks
  *
- * @see \Rector\Tests\DowngradePhp80\Rector\ArrayDimFetch\DowngradeDereferencableOperationRector\DowngradeDereferencableOperationRectorTest
+ * @see \Rector\Tests\DowngradePhp80\Rector\ArrayDimFetch\DowngradeDereferenceableOperationRector\DowngradeDereferenceableOperationRectorTest
  */
-final class DowngradeDereferencableOperationRector extends AbstractRector
+final class DowngradeDereferenceableOperationRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add parentheses around non-dereferencable expressions.', [
+        return new RuleDefinition('Add parentheses around non-dereferenceable expressions.', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 function getFirstChar(string $str, string $suffix = '')
