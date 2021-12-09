@@ -15,7 +15,7 @@ use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
+use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\StaticTypeMapper\StaticTypeMapperTest
@@ -50,7 +50,7 @@ final class StaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
-        if ($type instanceof SelfStaticType) {
+        if ($type instanceof SimpleStaticType) {
             return new Name(ObjectReference::SELF()->getValue());
         }
 
