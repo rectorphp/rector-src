@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -84,6 +85,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($this->nodeNameResolver->isName($node, MethodName::CONSTRUCT)) {
+            return null;
+        }
+
         $parentMethodReflection = $this->parentClassMethodTypeOverrideGuard->getParentClassMethod($node);
 
         if (! $parentMethodReflection instanceof MethodReflection) {
