@@ -27,7 +27,7 @@ final class DoNotChangeParentFunction
 {
     public function run()
     {
-        function run()
+        function run(): never
         {
             throw new Exception('test');
         }
