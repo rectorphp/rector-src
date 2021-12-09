@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
@@ -21,7 +24,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AddParamBasedOnParentClassMethodRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly AstResolver $astResolver
     ) {
     }
 
@@ -84,6 +88,22 @@ CODE_SAMPLE
 
         if (! $parentMethodReflection instanceof MethodReflection) {
             return null;
+        }
+
+        $parentClassMethod = $this->astResolver->resolveClassMethodFromMethodReflection($parentMethodReflection);
+        if (! $parentClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        if ($parentClassMethod->isPrivate()) {
+            return null;
+        }
+
+        $currentClassMethodParams = $node->getParams();
+        $parentClassMethodParams  = $parentClassMethod->getParams();
+
+        if (count($currentClassMethodParams) < count($parentClassMethodParams)) {
+            $node->params = $parentClassMethodParams;
         }
 
         return $node;
