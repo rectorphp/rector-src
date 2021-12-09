@@ -8,13 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Analyser\Scope;
-use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
-use PHPStan\Reflection\ClassReflection;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use PHPStan\Reflection\MethodReflection;
 
