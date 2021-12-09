@@ -9,7 +9,7 @@ use PHPStan\Type\StaticType;
 final class SimpleStaticType extends StaticType
 {
     public function __construct(
-        private string $className
+        private readonly string $className
     ) {
     }
 
