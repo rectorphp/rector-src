@@ -433,14 +433,14 @@ final class BetterNodeFinder
         return false;
     }
 
-    public function findFirstInFunctionLikeScoped(ClassMethod | Function_ $functionLike, callable $filter): ?Node
+    public function findFirstInFunctionLikeScoped(ClassMethod | Function_ | Closure $functionLike, callable $filter): ?Node
     {
         $foundNode = $this->findFirst((array) $functionLike->stmts, $filter);
         if (! $foundNode instanceof Node) {
             return null;
         }
 
-        $parentFunctionLike = $this->findParentType($foundNode, $functionLike::class);
+        $parentFunctionLike = $this->findParentByTypes($foundNode, [ClassMethod::class, Function_::class, Closure::class]);
         if ($parentFunctionLike !== $functionLike) {
             return null;
         }
