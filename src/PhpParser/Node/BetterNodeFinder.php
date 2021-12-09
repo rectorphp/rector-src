@@ -415,8 +415,7 @@ final class BetterNodeFinder
     public function hasInstancesOfInFunctionLikeScoped(
         ClassMethod | Function_ | Closure $functionLike,
         string|array $types
-    ): bool
-    {
+    ): bool {
         if (is_string($types)) {
             $types = [$types];
         }
