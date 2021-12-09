@@ -2,9 +2,9 @@
 
 namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Fixture;
 
-use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithMoreParams;
+use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithParams;
 
-class SkipSameParams extends ParentWithMoreParams{
+class SkipSameParams extends ParentWithParams{
     public function execute($foo)
     {
     }
