@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Set\ValueObject;
 
-use Rector\PHPOffice\Set\PHPOfficeSetList;
 use Rector\Set\Contract\SetListInterface;
 
 final class SetList implements SetListInterface
@@ -34,11 +33,6 @@ final class SetList implements SetListInterface
      * @var string
      */
     final public const CODING_STYLE = __DIR__ . '/../../../config/set/coding-style.php';
-
-    /**
-     * @var string
-     */
-    final public const CODING_STYLE_ADVANCED = __DIR__ . '/../../../config/set/coding-style-advanced.php';
 
     /**
      * @var string
@@ -84,17 +78,6 @@ final class SetList implements SetListInterface
      * @var string
      */
     final public const ORDER = __DIR__ . '/../../../config/set/order.php';
-
-    /**
-     * @var string
-     */
-    final public const PHALCON_40 = __DIR__ . '/../../../config/set/phalcon40.php';
-
-    /**
-     * @var string
-     * @deprecated Use PHPOfficeSetList class instead
-     */
-    final public const PHPEXCEL_TO_PHPSPREADSHEET = PHPOfficeSetList::PHPEXCEL_TO_PHPSPREADSHEET;
 
     /**
      * @var string
@@ -205,9 +188,4 @@ final class SetList implements SetListInterface
      * @var string
      */
     final public const EARLY_RETURN = __DIR__ . '/../../../config/set/early-return.php';
-
-    /**
-     * @var string
-     */
-    final public const CARBON_2 = __DIR__ . '/../../../config/set/carbon-2.php';
 }

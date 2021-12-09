@@ -13,7 +13,6 @@
         "clue/ndjson-react": "^1.2",
         "composer/semver": "^3.2",
         "composer/xdebug-handler": "^2.0",
-        "danielstjules/stringy": "^3.1",
         "doctrine/inflector": "^2.0",
         "ergebnis/json-printer": "^3.1",
         "idiosyncratic/editorconfig": "^0.1.3",
@@ -29,39 +28,41 @@
         "react/event-loop": "^1.2",
         "react/socket": "^1.9",
         "rector/extension-installer": "^0.11.1",
-        "rector/rector-cakephp": "^0.11.7",
-        "rector/rector-doctrine": "^0.11.40",
-        "rector/rector-laravel": "^0.11.13",
-        "rector/rector-nette": "^0.11.54",
-        "rector/rector-phpoffice": "^0.11.7",
-        "rector/rector-phpunit": "^0.11.23",
-        "rector/rector-symfony": "^0.11.43",
+        "rector/rector-cakephp": "dev-main",
+        "rector/rector-doctrine": "dev-main",
+        "rector/rector-laravel": "dev-main",
+        "rector/rector-nette": "dev-main",
+        "rector/rector-phpoffice": "dev-main",
+        "rector/rector-phpunit": "dev-main",
+        "rector/rector-symfony": "dev-main",
         "sebastian/diff": "^4.0.4",
-        "ssch/typo3-rector": "^0.11.31",
-        "symfony/console": "^5.4|^6.0",
-        "symfony/contracts": "^2.5",
+        "ssch/typo3-rector": "dev-main",
+        "symfony/console": "^6.0",
+        "symfony/contracts": "^2.5|^3.0",
         "symfony/dependency-injection": "^5.4|^6.0",
-        "symfony/deprecation-contracts": "^2.4",
-        "symfony/finder": "^5.4|^6.0",
-        "symfony/process": "^5.4|^6.0",
+        "symfony/finder": "^6.0",
+        "symfony/process": "^6.0",
+        "symfony/string": "^6.0",
         "symfony/yaml": "^5.4|^6.0",
-        "symplify/astral": "^10.0",
-        "symplify/autowire-array-parameter": "^10.0",
-        "symplify/composer-json-manipulator": "^10.0",
-        "symplify/console-color-diff": "^10.0",
-        "symplify/easy-parallel": "^10.0",
-        "symplify/package-builder": "^10.0-beta11",
-        "symplify/rule-doc-generator-contracts": "^10.0-beta11",
-        "symplify/simple-php-doc-parser": "^10.0",
-        "symplify/skipper": "^10.0",
-        "symplify/smart-file-system": "^10.0",
-        "symplify/symfony-php-config": "^10.0",
-        "symplify/vendor-patches": "^10.0",
+        "symplify/astral": "^10.0.2",
+        "symplify/autowire-array-parameter": "^10.0.2",
+        "symplify/composer-json-manipulator": "^10.0.2",
+        "symplify/console-color-diff": "^10.0.2",
+        "symplify/easy-parallel": "^10.0.2",
+        "symplify/package-builder": "^10.0.2",
+        "symplify/rule-doc-generator-contracts": "^10.0.2",
+        "symplify/simple-php-doc-parser": "^10.0.2",
+        "symplify/skipper": "^10.0.2",
+        "symplify/smart-file-system": "^10.0.2",
+        "symplify/symfony-php-config": "^10.0.2",
+        "symplify/vendor-patches": "^10.0.2",
         "tracy/tracy": "^2.8",
-        "webmozart/assert": "^1.10"
+        "webmozart/assert": "^1.10",
+        "helmich/typo3-typoscript-parser": "dev-master#0ccb3a6"
     },
     "require-dev": {
         "brianium/paratest": "^6.3",
+        "friendsofphp/php-cs-fixer": "dev-master as 3.3",
         "nategood/httpful": "^0.3.2",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-nette": "^1.0",
@@ -69,16 +70,16 @@
         "phpstan/phpstan-webmozart-assert": "^1.0",
         "phpunit/phpunit": "^9.5",
         "rector/phpstan-rules": "^0.4.15",
-        "rector/rector-generator": "^0.4.4",
+        "rector/rector-generator": "^0.4.7",
         "spatie/enum": "^3.10",
-        "symplify/coding-standard": "^10.0",
-        "symplify/easy-ci": "^10.0",
-        "symplify/easy-coding-standard": "^10.0",
-        "symplify/easy-testing": "^10.0",
-        "symplify/monorepo-builder": "^10.0",
-        "symplify/phpstan-extensions": "^10.0",
-        "symplify/phpstan-rules": "^10.0",
-        "symplify/rule-doc-generator": "^10.0",
+        "symplify/coding-standard": "^10.0.2",
+        "symplify/easy-ci": "^10.0.2",
+        "symplify/easy-coding-standard": "^10.0.2",
+        "symplify/easy-testing": "^10.0.2",
+        "symplify/monorepo-builder": "^10.0.2",
+        "symplify/phpstan-extensions": "^10.0.2",
+        "symplify/phpstan-rules": "^10.0.2",
+        "symplify/rule-doc-generator": "^10.0.2",
         "timeweb/phpstan-enum": "dev-22-upgrade-phpstan-to-1.0"
     },
     "replace": {
@@ -142,7 +143,7 @@
         "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify",
         "phpstan-config": "vendor/bin/phpstan analyse config --ansi --error-format symplify",
         "docs": [
-            "vendor/bin/rule-doc-generator generate packages rules --output-file build/rector_rules_overview.md --ansi --categorize",
+            "vendor/bin/rule-doc-generator generate packages rules --output-file build/rector_rules_overview.md --ansi --categorize --configure-method",
             "mv build/rector_rules_overview.md build/target-repository/docs/rector_rules_overview.md",
             "vendor/bin/ecs check-markdown build/target-repository/docs/rector_rules_overview.md --ansi --fix"
         ],
@@ -152,11 +153,11 @@
     },
     "extra": {
         "patches": {
-            "symfony/dependency-injection": [
-                "patches/symfony-dependency-injection-loader-configurator-servicesconfigurator-php.patch"
+            "helmich/typo3-typoscript-parser": [
+                "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/helmich-typo3-typoscript-parser-parser-tokenstream-php.patch"
             ],
-            "danielstjules/stringy": [
-                "patches/danielstjules-stringy-src-stringy-php.patch"
+            "symfony/dependency-injection": [
+                "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/symfony-dependency-injection.patch"
             ]
         },
         "branch-alias": {
@@ -166,7 +167,5 @@
     "config": {
         "sort-packages": true,
         "platform-check": false
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

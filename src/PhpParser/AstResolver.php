@@ -22,6 +22,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -31,10 +32,8 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use ReflectionProperty;
 use Symplify\Astral\PhpParser\SmartPhpParser;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * The nodes provided by this resolver is for read-only analysis only!
@@ -60,7 +59,6 @@ final class AstResolver
 
     public function __construct(
         private readonly SmartPhpParser $smartPhpParser,
-        private readonly SmartFileSystem $smartFileSystem,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -142,7 +140,6 @@ final class AstResolver
             return null;
         }
 
-        $fileContent = $this->smartFileSystem->readFile($fileName);
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === null) {
             return null;
@@ -257,12 +254,12 @@ final class AstResolver
     }
 
     public function resolvePropertyFromPropertyReflection(
-        ReflectionProperty $reflectionProperty
+        PhpPropertyReflection $phpPropertyReflection
     ): Property | Param | null {
-        $reflectionClass = $reflectionProperty->getDeclaringClass();
+        $classReflection = $phpPropertyReflection->getDeclaringClass();
 
-        $fileName = $reflectionClass->getFileName();
-        if ($fileName === false) {
+        $fileName = $classReflection->getFileName();
+        if ($fileName === null) {
             return null;
         }
 
@@ -271,7 +268,8 @@ final class AstResolver
             return null;
         }
 
-        $desiredPropertyName = $reflectionProperty->name;
+        $nativeReflectionProperty = $phpPropertyReflection->getNativeReflection();
+        $desiredPropertyName = $nativeReflectionProperty->getName();
 
         /** @var Property[] $properties */
         $properties = $this->betterNodeFinder->findInstanceOf($nodes, Property::class);

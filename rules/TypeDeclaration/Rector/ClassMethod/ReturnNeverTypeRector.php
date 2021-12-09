@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
@@ -71,11 +72,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -95,22 +96,29 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(ClassMethod | Function_ $node): bool
+    private function shouldSkip(ClassMethod | Function_ | Closure $node): bool
     {
-        $return = $this->betterNodeFinder->findFirstInstanceOf($node, Return_::class);
-        if ($return instanceof Return_) {
+        $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class);
+        if ($hasReturn) {
             return true;
         }
 
         $yieldAndConditionalNodes = array_merge([Yield_::class], ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES);
-        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOf($node, $yieldAndConditionalNodes);
+        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $node,
+            $yieldAndConditionalNodes
+        );
+
         if ($hasNotNeverNodes) {
             return true;
         }
 
-        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOf($node, [Node\Expr\Throw_::class, Throw_::class]);
-
+        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $node,
+            [Node\Expr\Throw_::class, Throw_::class]
+        );
         $hasNeverFuncCall = $this->hasNeverFuncCall($node);
+
         if (! $hasNeverNodes && ! $hasNeverFuncCall) {
             return true;
         }
@@ -128,7 +136,7 @@ CODE_SAMPLE
         return $this->isName($node->returnType, 'never');
     }
 
-    private function hasNeverFuncCall(ClassMethod | Function_ $functionLike): bool
+    private function hasNeverFuncCall(ClassMethod | Function_ | Closure $functionLike): bool
     {
         $hasNeverType = false;
 

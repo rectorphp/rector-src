@@ -413,7 +413,6 @@ parameters:
             paths:
                 - packages/NodeNestingScope/FlowOfControlLocator.php
                 - rules/CodeQuality/Rector/Return_/SimplifyUselessVariableRector.php
-                - rules/CodingStyle/Rector/Assign/ManualJsonStringToJsonEncodeArrayRector.php
                 - rules/Php70/Rector/FuncCall/MultiDirnameRector.php
                 - src/Application/FileProcessor.php
                 - src/PhpParser/Node/BetterNodeFinder.php
@@ -607,3 +606,22 @@ parameters:
             path: src/Application/ApplicationFileProcessor.php
 
         - '#Call to function property_exists\(\) with PhpParser\\Node\\Stmt\\ClassLike and (.*?) will always evaluate to true#'
+
+        # code sample configuration
+        -
+            message: '#new <class\> is limited to 3 "new <class\>\(new <class\>\)\)" nesting to each other\. You have 4 nesting#'
+            paths:
+                - rules/Renaming/Rector/ClassConstFetch/RenameClassConstFetchRector.php
+                - rules/Arguments/Rector/ClassMethod/ArgumentAdderRector.php
+                - rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeDeclarationRector.php
+                - rules/Transform/Rector/Assign/PropertyFetchToMethodCallRector.php
+
+        # fixed in symplify dev-main
+        -
+            message: '#Do not use chained method calls\. Put each on separated lines#'
+            paths:
+                - rules/Privatization/Naming/ConstantNaming.php
+                - rules/Naming/Naming/VariableNaming.php
+
+        # skipped on purpose, as ctor overrie
+        - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'

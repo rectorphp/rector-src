@@ -11,6 +11,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
@@ -41,9 +42,6 @@ final class AddReturnTypeDeclarationRector extends AbstractRector implements Con
     public function getRuleDefinition(): RuleDefinition
     {
         $arrayType = new ArrayType(new MixedType(), new MixedType());
-        $configuration = [
-            self::METHOD_RETURN_TYPES => [new AddReturnTypeDeclaration('SomeClass', 'getData', $arrayType)],
-        ];
 
         return new RuleDefinition('Changes defined return typehint of method and class.', [
             new ConfiguredCodeSample(
@@ -65,7 +63,7 @@ class SomeClass
 }
 CODE_SAMPLE
                 ,
-                $configuration
+                [new AddReturnTypeDeclaration('SomeClass', 'getData', $arrayType)]
             ),
         ]);
     }
@@ -115,7 +113,9 @@ CODE_SAMPLE
     private function processClassMethodNodeWithTypehints(ClassMethod $classMethod, Type $newType): void
     {
         // remove it
-        if ($newType instanceof MixedType) {
+        if ($newType instanceof MixedType && ! $this->phpVersionProvider->isAtLeastPhpVersion(
+            PhpVersionFeature::MIXED_TYPE
+        )) {
             $classMethod->returnType = null;
             return;
         }

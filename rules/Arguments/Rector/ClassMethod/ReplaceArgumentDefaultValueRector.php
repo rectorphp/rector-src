@@ -53,15 +53,13 @@ $someObject->someMethod(false);
 CODE_SAMPLE
                     ,
                     [
-                        self::REPLACED_ARGUMENTS => [
-                            new ReplaceArgumentDefaultValue(
-                                'SomeClass',
-                                'someMethod',
-                                0,
-                                'SomeClass::OLD_CONSTANT',
-                                false
-                            ),
-                        ],
+                        new ReplaceArgumentDefaultValue(
+                            'SomeClass',
+                            'someMethod',
+                            0,
+                            'SomeClass::OLD_CONSTANT',
+                            false
+                        ),
                     ]
                 ),
             ]
@@ -105,7 +103,9 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         $replacedArguments = $configuration[self::REPLACED_ARGUMENTS] ?? $configuration;
+        Assert::isArray($replacedArguments);
         Assert::allIsAOf($replacedArguments, ReplaceArgumentDefaultValue::class);
+
         $this->replacedArguments = $replacedArguments;
     }
 }

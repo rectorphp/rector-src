@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\Assign\ManualJsonStringToJsonEncodeArrayRector;
 use Rector\CodingStyle\Rector\Assign\PHPStormVarAnnotationRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
@@ -21,12 +20,10 @@ use Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector;
 use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\CodingStyle\Rector\Include_\FollowRequireByDirRector;
-use Rector\CodingStyle\Rector\MethodCall\UseMessageVariableForSprintfInSymfonyStyleRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Property\AddFalseDefaultToBoolPropertyRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
-use Rector\CodingStyle\Rector\String_\SplitStringClassConstantToClassConstFetchRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
@@ -44,7 +41,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(TernaryConditionVariableAssignmentRector::class);
     $services->set(SymplifyQuoteEscapeRector::class);
     $services->set(SplitGroupedConstantsAndPropertiesRector::class);
-    $services->set(SplitStringClassConstantToClassConstFetchRector::class);
     $services->set(StringClassNameToClassConstantRector::class);
     $services->set(ConsistentPregDelimiterRector::class);
     $services->set(FollowRequireByDirRector::class);
@@ -55,13 +51,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(EncapsedStringsToSprintfRector::class);
     $services->set(WrapEncapsedVariableInCurlyBracesRector::class);
     $services->set(NewlineBeforeNewAssignSetRector::class);
-    $services->set(ManualJsonStringToJsonEncodeArrayRector::class);
     $services->set(AddArrayDefaultToArrayPropertyRector::class);
     $services->set(AddFalseDefaultToBoolPropertyRector::class);
     $services->set(MakeInheritedMethodVisibilitySameAsParentRector::class);
     $services->set(CallUserFuncArrayToVariadicRector::class);
     $services->set(VersionCompareFuncCallToConstantRector::class);
-    $services->set(UseMessageVariableForSprintfInSymfonyStyleRector::class);
 
     $services->set(FuncCallToConstFetchRector::class)
         ->configure([
