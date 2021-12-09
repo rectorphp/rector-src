@@ -142,7 +142,6 @@ final class AstResolver
             return null;
         }
 
-        $fileContent = $this->smartFileSystem->readFile($fileName);
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === null) {
             return null;

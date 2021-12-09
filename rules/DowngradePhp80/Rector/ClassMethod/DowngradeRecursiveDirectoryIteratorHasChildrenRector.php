@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -15,6 +19,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeRecursiveDirectoryIteratorHasChildrenRector extends AbstractRector
 {
+    public function __construct(private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer)
+    {
+    }
+
     /**
      * @return array<class-string<Node>>
      */
@@ -58,6 +66,29 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! $this->nodeNameResolver->isName($node, 'hasChildren')) {
+            return null;
+        }
+
+        if (! isset($node->params[0])) {
+            return null;
+        }
+
+        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+        if (! $classLike instanceof ClassLike) {
+            return null;
+        }
+
+        $ancestorClassNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($classLike);
+        if (! in_array('RecursiveDirectoryIterator', $ancestorClassNames, true)) {
+            return null;
+        }
+
+        if ($node->params[0]->type === null) {
+            return null;
+        }
+
+        $node->params[0]->type = null;
         return $node;
     }
 }
