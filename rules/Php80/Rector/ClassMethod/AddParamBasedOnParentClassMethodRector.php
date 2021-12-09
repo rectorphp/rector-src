@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
@@ -105,7 +104,7 @@ CODE_SAMPLE
         }
 
         $currentClassMethodParams = $node->getParams();
-        $parentClassMethodParams  = $parentClassMethod->getParams();
+        $parentClassMethodParams = $parentClassMethod->getParams();
 
         if (count($currentClassMethodParams) < count($parentClassMethodParams)) {
             $node->params = $parentClassMethodParams;
