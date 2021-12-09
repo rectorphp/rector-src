@@ -15,13 +15,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use PHPStan\Analyser\Scope;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use PHPStan\Reflection\ClassReflection;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
+use PHPStan\Reflection\MethodReflection;
 
 /**
  * @see \Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\AddParamBasedOnParentClassMethodRectorTest
  */
 final class AddParamBasedOnParentClassMethodRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly ClassChildAnalyzer $classChildAnalyzer)
+    public function __construct(private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard)
     {
     }
 
@@ -80,26 +82,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
+        $parentMethodReflection = $this->parentClassMethodTypeOverrideGuard->getParentClassMethod($node);
+
+        if (! $parentMethodReflection instanceof MethodReflection) {
             return null;
         }
 
         return $node;
-    }
-
-    private function shouldSkip(ClassMethod $classMethod): bool
-    {
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return true;
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
-        $methodName = (string) $this->nodeNameResolver->getName($classMethod);
-        return $this->classChildAnalyzer->hasParentClassMethod($classReflection, $methodName);
     }
 }
