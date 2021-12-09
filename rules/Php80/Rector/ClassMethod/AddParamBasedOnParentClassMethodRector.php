@@ -147,12 +147,12 @@ CODE_SAMPLE
             $isUsedInStmts = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $node,
                 function (Node $subNode) use ($parentClassMethodParam): bool {
-                if (! $subNode instanceof Variable) {
-                    return false;
-                }
+                    if (! $subNode instanceof Variable) {
+                        return false;
+                    }
 
-                return $this->nodeComparator->areNodesEqual($subNode, $parentClassMethodParam->var);
-            }
+                    return $this->nodeComparator->areNodesEqual($subNode, $parentClassMethodParam->var);
+                }
             );
 
             if ($isUsedInStmts) {
