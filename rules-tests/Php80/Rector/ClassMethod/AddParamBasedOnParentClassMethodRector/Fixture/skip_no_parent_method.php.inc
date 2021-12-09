@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 
 class SkipNoParentMethod
 {
-    public function foo()
+    public function execute()
     {
     }
 }
