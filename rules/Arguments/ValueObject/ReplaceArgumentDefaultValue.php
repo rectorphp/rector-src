@@ -6,6 +6,7 @@ namespace Rector\Arguments\ValueObject;
 
 use PHPStan\Type\ObjectType;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
+use Rector\Core\Validation\RectorAssert;
 
 final class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
 {
@@ -25,6 +26,7 @@ final class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueIn
         private $valueBefore,
         private $valueAfter
     ) {
+        RectorAssert::className($class);
     }
 
     public function getObjectType(): ObjectType
