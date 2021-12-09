@@ -12,7 +12,6 @@ use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector
 class SkipDuplicatedPreviousParam extends MultiParams{
     public function execute($bar)
     {
+        echo $bar;
     }
 }
-
-?>
