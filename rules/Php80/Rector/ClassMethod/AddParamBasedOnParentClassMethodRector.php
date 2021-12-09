@@ -111,9 +111,27 @@ CODE_SAMPLE
             return null;
         }
 
+        return $this->processReplaceClassMethodParams(
+            $node,
+            $parentClassMethod,
+            $currentClassMethodParams,
+            $parentClassMethodParams
+        );
+    }
+
+    /**
+     * @param Param[] $currentClassMethodParams
+     * @param Param[] $parentClassMethodParams
+     */
+    private function processReplaceClassMethodParams(
+        ClassMethod $node,
+        ClassMethod $parentClassMethod,
+        array $currentClassMethodParams,
+        array $parentClassMethodParams
+    ): ?ClassMethod {
         foreach ($parentClassMethodParams as $key => $parentClassMethodParam) {
             if (isset($currentClassMethodParams[$key])) {
-                $currentParamName = (string) $this->nodeNameResolver->getName($currentClassMethodParams[$key]);
+                $currentParamName = $this->nodeNameResolver->getName($currentClassMethodParams[$key]);
                 $collectParamNamesNextKey = $this->collectParamNamesNextKey($parentClassMethod, $key);
 
                 if (in_array($currentParamName, $collectParamNamesNextKey, true)) {
@@ -123,7 +141,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramName = (string) $this->nodeNameResolver->getName($parentClassMethodParam);
+            $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
             $node->params[$key] = new Param(
                 new Variable($paramName),
                 $parentClassMethodParam->default,
@@ -139,13 +157,16 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @return string[]
+     */
     private function collectParamNamesNextKey(ClassMethod $classMethod, int $key): array
     {
         $paramNames = [];
 
         foreach ($classMethod->params as $paramKey => $param) {
             if ($paramKey > $key) {
-                $paramNames[] = (string) $this->nodeNameResolver->getName($param);
+                $paramNames[] = $this->nodeNameResolver->getName($param);
             }
         }
 
