@@ -129,16 +129,34 @@ CODE_SAMPLE
         array $currentClassMethodParams,
         array $parentClassMethodParams
     ): ?ClassMethod {
+        $originalParams = $node->params;
+
         foreach ($parentClassMethodParams as $key => $parentClassMethodParam) {
             if (isset($currentClassMethodParams[$key])) {
                 $currentParamName = $this->nodeNameResolver->getName($currentClassMethodParams[$key]);
                 $collectParamNamesNextKey = $this->collectParamNamesNextKey($parentClassMethod, $key);
 
                 if (in_array($currentParamName, $collectParamNamesNextKey, true)) {
+                    $node->params = $originalParams;
                     return null;
                 }
 
                 continue;
+            }
+
+            $isUsedInStmts = (bool) $this->betterNodeFinder->findFirst((array) $node->stmts, function (Node $subNode) use (
+                $parentClassMethodParam
+            ): bool {
+                if (! $subNode instanceof Variable) {
+                    return false;
+                }
+
+                return $this->nodeComparator->areNodesEqual($subNode, $parentClassMethodParam->var);
+            });
+
+            if ($isUsedInStmts) {
+                $node->params = $originalParams;
+                return null;
             }
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
