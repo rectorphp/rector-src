@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -74,8 +73,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classLike = $this->betterNodeFinder->findParentType($node, Class_::class);
+        if (! $classLike instanceof Class_) {
             return null;
         }
 

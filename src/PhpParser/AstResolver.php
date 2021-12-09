@@ -60,7 +60,6 @@ final class AstResolver
 
     public function __construct(
         private readonly SmartPhpParser $smartPhpParser,
-        private readonly SmartFileSystem $smartFileSystem,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
