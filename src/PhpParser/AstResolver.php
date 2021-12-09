@@ -34,7 +34,6 @@ use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symplify\Astral\PhpParser\SmartPhpParser;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * The nodes provided by this resolver is for read-only analysis only!
