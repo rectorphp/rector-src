@@ -6,7 +6,6 @@ namespace Rector\DowngradePhp80\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
@@ -18,8 +17,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeRecursiveDirectoryIteratorHasChildrenRector extends AbstractRector
 {
-    public function __construct(private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer)
-    {
+    public function __construct(
+        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
+    ) {
     }
 
     /**
