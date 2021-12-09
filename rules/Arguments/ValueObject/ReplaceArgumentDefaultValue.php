@@ -16,6 +16,7 @@ final class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueIn
     final public const ANY_VALUE_BEFORE = '*ANY_VALUE_BEFORE*';
 
     /**
+     * @param int<0, max> $position
      * @param mixed $valueBefore
      * @param mixed $valueAfter
      */
