@@ -2,14 +2,9 @@
 
 namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Fixture;
 
-class A
-{
-    public function execute($foo)
-    {
-    }
-}
+use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithMoreParams;
 
-class B extends A{
+class B extends ParentWithMoreParams{
     public function execute()
     {
     }
@@ -21,14 +16,9 @@ class B extends A{
 
 namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Fixture;
 
-class A
-{
-    public function execute($foo)
-    {
-    }
-}
+use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithMoreParams;
 
-class B extends A{
+class B extends ParentWithMoreParams{
     public function execute($foo)
     {
     }
