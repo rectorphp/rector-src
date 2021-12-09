@@ -112,6 +112,10 @@ CODE_SAMPLE
         }
 
         foreach ($parentClassMethodParams as $key => $parentClassMethodParam) {
+            if (isset($currentClassMethodParams[$key])) {
+                continue;
+            }
+
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
             $node->params[$key] = new Param(
                 new Variable($paramName),

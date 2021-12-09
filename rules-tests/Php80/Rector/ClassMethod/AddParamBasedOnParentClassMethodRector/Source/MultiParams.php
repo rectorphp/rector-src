@@ -2,9 +2,9 @@
 
 namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source;
 
-class ParentWithParams
+class MultiParams
 {
-    public function execute($foo)
+    public function execute($foo, $bar)
     {
     }
 }
