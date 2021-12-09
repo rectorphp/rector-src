@@ -436,8 +436,7 @@ final class BetterNodeFinder
     public function findFirstInFunctionLikeScoped(
         ClassMethod | Function_ | Closure $functionLike,
         callable $filter
-    ): ?Node
-    {
+    ): ?Node {
         $foundNode = $this->findFirst((array) $functionLike->stmts, $filter);
         if (! $foundNode instanceof Node) {
             return null;
