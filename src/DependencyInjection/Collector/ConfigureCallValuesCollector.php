@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection\Collector;
 
-use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use ReflectionClass;
 use ReflectionClassConstant;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Definition;
+use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class ConfigureCallValuesCollector
 {
@@ -21,12 +21,12 @@ final class ConfigureCallValuesCollector
 
     private readonly ParametersMerger $parametersMerger;
 
-    private \Symfony\Component\Console\Style\SymfonyStyle $symfonyStyle;
+    private SymfonyStyle $symfonyStyle;
 
     public function __construct()
     {
         $this->parametersMerger = new ParametersMerger();
-        $symfonyStyleFactory = new \Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory();
+        $symfonyStyleFactory = new SymfonyStyleFactory();
         $this->symfonyStyle = $symfonyStyleFactory->create();
     }
 
@@ -71,7 +71,12 @@ final class ConfigureCallValuesCollector
                     $constantNamesToValues = $classReflection->getConstants(ReflectionClassConstant::IS_PUBLIC);
                     foreach ($constantNamesToValues as $constantName => $constantValue) {
                         if ($constantValue === $firstKey) {
-                            $warningMessage = sprintf('The constant for "%s::%s" is deprecated.%sUse "->configure()" directly instead.', $rectorClass, $constantName, PHP_EOL);
+                            $warningMessage = sprintf(
+                                'The constant for "%s::%s" is deprecated.%sUse "->configure()" directly instead.',
+                                $rectorClass,
+                                $constantName,
+                                PHP_EOL
+                            );
                             $this->symfonyStyle->warning($warningMessage);
 
                             $configureValue = $configureValue[$firstKey];
