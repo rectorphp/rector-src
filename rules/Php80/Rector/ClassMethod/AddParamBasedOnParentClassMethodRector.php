@@ -144,7 +144,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $isUsedInStmts = (bool) $this->betterNodeFinder->findFirst((array) $node->stmts, function (Node $subNode) use (
+            $isUsedInStmts = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($node, function (Node $subNode) use (
                 $parentClassMethodParam
             ): bool {
                 if (! $subNode instanceof Variable) {
