@@ -30,11 +30,6 @@ final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector impl
     /**
      * @var string
      */
-    final public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
-
-    /**
-     * @var string
-     */
     private const ATTRIBUTE = 'AllowDynamicProperties';
 
     /**
@@ -71,9 +66,7 @@ class SomeObject {
 }
 CODE_SAMPLE
 ,
-                [
-                    self::TRANSFORM_ON_NAMESPACES => ['Example\*'],
-                ],
+                ['Example\*'],
             ),
         ]);
     }
