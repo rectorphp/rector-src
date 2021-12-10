@@ -9,7 +9,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\DowngradePhp72\NodeAnalyzer\BuiltInMethodAnalyzer;
@@ -27,13 +27,8 @@ use Webmozart\Assert\Assert;
  *
  * @see \Rector\Tests\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector\DowngradeParameterTypeWideningRectorTest
  */
-final class DowngradeParameterTypeWideningRector extends AbstractRector implements ConfigurableRectorInterface
+final class DowngradeParameterTypeWideningRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
-    /**
-     * @var string
-     */
-    final public const UNSAFE_TYPES_TO_METHODS = 'unsafe_types_to_methods';
-
     /**
      * @var array<string, string[]>
      */
@@ -85,7 +80,8 @@ final class SomeClass implements SomeInterface
 CODE_SAMPLE
             ,
                 [
-                    self::UNSAFE_TYPES_TO_METHODS => [],
+                    ContainerInterface::class => ['set', 'get', 'has', 'initialized'],
+                    SomeContainerInterface::class => ['set', 'has'],
                 ]
             ),
         ]);
@@ -128,7 +124,8 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $unsafeTypesToMethods = $configuration[self::UNSAFE_TYPES_TO_METHODS] ?? [];
+        $unsafeTypesToMethods = $configuration;
+
         Assert::isArray($unsafeTypesToMethods);
         foreach ($unsafeTypesToMethods as $key => $value) {
             Assert::string($key);
@@ -228,6 +225,6 @@ CODE_SAMPLE
             }
         }
 
-        return true;
+        return $this->unsafeTypesToMethods !== [];
     }
 }
