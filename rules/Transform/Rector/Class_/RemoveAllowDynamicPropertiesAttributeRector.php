@@ -71,7 +71,7 @@ CODE_SAMPLE
 
     public function configure(array $configuration): void
     {
-        $transformOnNamespaces = $configuration[self::TRANSFORM_ON_NAMESPACES] ?? $configuration;
+        $transformOnNamespaces = $configuration;
 
         Assert::isArray($transformOnNamespaces);
         Assert::allString($transformOnNamespaces);
