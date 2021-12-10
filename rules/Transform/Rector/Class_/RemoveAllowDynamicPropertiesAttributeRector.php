@@ -56,9 +56,7 @@ class SomeObject {
 }
 CODE_SAMPLE
 ,
-                [
-                    'Example\*',
-                ]
+                ['Example\*']
             ),
         ]);
     }
