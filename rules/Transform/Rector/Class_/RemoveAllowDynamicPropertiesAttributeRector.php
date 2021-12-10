@@ -20,7 +20,10 @@ use Webmozart\Assert\Assert;
  */
 final class RemoveAllowDynamicPropertiesAttributeRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
-    public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
+    /**
+     * @var string
+     */
+    final public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
 
     /**
      * @var string
@@ -33,7 +36,7 @@ final class RemoveAllowDynamicPropertiesAttributeRector extends AbstractRector i
     private array $transformOnNamespaces = [];
 
     public function __construct(
-        private PhpAttributeAnalyzer $phpAttributeAnalyzer,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
     ) {
     }
 
@@ -106,7 +109,7 @@ CODE_SAMPLE
                 }
             }
             $attrGroup->attrs = $newAttrs;
-            if (count($attrGroup->attrs) !== 0) {
+            if ($attrGroup->attrs !== []) {
                 $newAttrGroups[] = $attrGroup;
             }
         }
@@ -116,7 +119,7 @@ CODE_SAMPLE
 
     private function shouldRemove(Class_ $class): bool
     {
-        if (count($this->transformOnNamespaces) !== 0) {
+        if ($this->transformOnNamespaces !== []) {
             $className = (string) $this->nodeNameResolver->getName($class);
             foreach ($this->transformOnNamespaces as $transformOnNamespace) {
                 if (! $this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {

@@ -27,7 +27,10 @@ use Webmozart\Assert\Assert;
  */
 final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
-    public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
+    /**
+     * @var string
+     */
+    final public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
 
     /**
      * @var string
@@ -144,7 +147,7 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class): bool
     {
-        if (count($this->transformOnNamespaces) !== 0) {
+        if ($this->transformOnNamespaces !== []) {
             $className = (string) $this->nodeNameResolver->getName($class);
             foreach ($this->transformOnNamespaces as $transformOnNamespace) {
                 if (! $this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
