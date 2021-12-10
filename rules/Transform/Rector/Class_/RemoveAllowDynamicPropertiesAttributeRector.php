@@ -73,7 +73,6 @@ CODE_SAMPLE
     {
         $transformOnNamespaces = $configuration;
 
-        Assert::isArray($transformOnNamespaces);
         Assert::allString($transformOnNamespaces);
 
         $this->transformOnNamespaces = $transformOnNamespaces;
