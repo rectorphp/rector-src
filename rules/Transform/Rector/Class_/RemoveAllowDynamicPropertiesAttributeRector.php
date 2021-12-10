@@ -20,12 +20,12 @@ use Webmozart\Assert\Assert;
  */
 final class RemoveAllowDynamicPropertiesAttributeRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
+    public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
+
     /**
      * @var string
      */
     private const ATTRIBUTE = 'AllowDynamicProperties';
-
-    public const TRANSFORM_ON_NAMESPACES = 'transform_on_namespaces';
 
     /**
      * @var array<array-key, string>
@@ -48,19 +48,18 @@ namespace Example\Domain;
 class SomeObject {
     public string $someProperty = 'hello world';
 }
-CODE_SAMPLE,
-
+CODE_SAMPLE
+,
                 <<<'CODE_SAMPLE'
 namespace Example\Domain;
 
 class SomeObject {
     public string $someProperty = 'hello world';
 }
-CODE_SAMPLE,
+CODE_SAMPLE
+,
                 [
-                    RemoveAllowDynamicPropertiesAttributeRector::TRANSFORM_ON_NAMESPACES => [
-                        'Example\*'
-                    ]
+                    self::TRANSFORM_ON_NAMESPACES => ['Example\*'],
                 ]
             ),
         ]);
