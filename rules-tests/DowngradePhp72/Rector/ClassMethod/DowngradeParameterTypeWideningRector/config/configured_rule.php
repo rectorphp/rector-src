@@ -12,7 +12,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(DowngradeParameterTypeWideningRector::class)
         ->configure([
-                ContainerInterface::class => ['set', 'get', 'has', 'initialized'],
-                SomeContainerInterface::class => ['set', 'has'],
+            ContainerInterface::class => ['set', 'get', 'has', 'initialized'],
+            SomeContainerInterface::class => ['set', 'has'],
         ]);
 };
