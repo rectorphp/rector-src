@@ -101,11 +101,13 @@ CODE_SAMPLE
                     $newAttrs[] = $attribute;
                 }
             }
+
             $attrGroup->attrs = $newAttrs;
             if ($attrGroup->attrs !== []) {
                 $newAttrGroups[] = $attrGroup;
             }
         }
+
         $class->attrGroups = $newAttrGroups;
         return $class;
     }
