@@ -6,11 +6,9 @@ class UpperVoid
 {
     public function upperVoid()
     {
-        new class {
-            public function toString()
-            {
-                return 'test';
-            }
+        function toString()
+        {
+            return 'test';
         };
     }
 }
@@ -25,11 +23,9 @@ class UpperVoid
 {
     public function upperVoid(): void
     {
-        new class {
-            public function toString(): string
-            {
-                return 'test';
-            }
+        function toString(): string
+        {
+            return 'test';
         };
     }
 }
