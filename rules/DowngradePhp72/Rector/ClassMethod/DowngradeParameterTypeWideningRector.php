@@ -208,6 +208,10 @@ CODE_SAMPLE
 
     private function isSafeType(ClassReflection $classReflection, ClassMethod $classMethod): bool
     {
+        if ($this->unsafeTypesToMethods === []) {
+            return false;
+        }
+
         $classReflectionName = $classReflection->getName();
         foreach ($this->unsafeTypesToMethods as $unsafeType => $unsafeMethods) {
             if (! $this->isNames($classMethod, $unsafeMethods)) {
@@ -224,6 +228,6 @@ CODE_SAMPLE
             }
         }
 
-        return $this->unsafeTypesToMethods !== [];
+        return true;
     }
 }
