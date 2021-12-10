@@ -21,7 +21,7 @@ final class ConfigureCallValuesCollector
 
     private readonly ParametersMerger $parametersMerger;
 
-    private SymfonyStyle $symfonyStyle;
+    private readonly SymfonyStyle $symfonyStyle;
 
     public function __construct()
     {
