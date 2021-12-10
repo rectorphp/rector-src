@@ -122,8 +122,8 @@ final class ReturnTypeInferer
     private function resolveTypeWithVoidHandling(FunctionLike $functionLike, Type $resolvedType): Type
     {
         if ($resolvedType instanceof VoidType) {
-            $hasReturnValue = (bool) $this->betterNodeFinder->findFirst(
-                (array) $functionLike->getStmts(),
+            $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                $functionLike,
                 function (Node $subNode): bool {
                     if (! $subNode instanceof Return_) {
                         return false;
