@@ -80,8 +80,8 @@ final class SomeClass implements SomeInterface
 CODE_SAMPLE
             ,
                 [
-                    ContainerInterface::class => ['set', 'get', 'has', 'initialized'],
-                    SomeContainerInterface::class => ['set', 'has'],
+                    'ContainerInterface' => ['set', 'get', 'has', 'initialized'],
+                    'SomeContainerInterface' => ['set', 'has'],
                 ]
             ),
         ]);
@@ -126,7 +126,6 @@ CODE_SAMPLE
     {
         $unsafeTypesToMethods = $configuration;
 
-        Assert::isArray($unsafeTypesToMethods);
         foreach ($unsafeTypesToMethods as $key => $value) {
             Assert::string($key);
             Assert::allString($value);
