@@ -211,7 +211,7 @@ CODE_SAMPLE
             $node->params[$key] = new Param(
                 new Variable($paramName),
                 $paramDefault,
-                $parentClassMethodParam->type,
+                null,
                 $parentClassMethodParam->byRef,
                 $parentClassMethodParam->variadic,
                 [],
