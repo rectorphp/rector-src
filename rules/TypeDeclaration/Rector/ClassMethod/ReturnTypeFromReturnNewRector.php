@@ -88,7 +88,7 @@ CODE_SAMPLE
             $returns = [new Return_($node->expr)];
         } else {
             /** @var Return_[] $returns */
-            $returns = $this->betterNodeFinder->findInstanceOf((array) $node->stmts, Return_::class);
+            $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
         }
 
         if ($returns === []) {
