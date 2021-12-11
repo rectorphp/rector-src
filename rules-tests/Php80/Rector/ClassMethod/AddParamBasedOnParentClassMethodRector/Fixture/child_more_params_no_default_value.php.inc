@@ -21,7 +21,7 @@ use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector
 
 // ref https://3v4l.org/BPFsU
 class ChildMoreParamsNoDefaultValue extends ParentWithParam{
-    public function execute($foo)
+    public function execute($foo, $bar = null)
     {
     }
 }
