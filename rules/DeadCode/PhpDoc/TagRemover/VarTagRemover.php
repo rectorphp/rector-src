@@ -9,6 +9,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\ArrayType;
@@ -103,7 +104,7 @@ final class VarTagRemover
 
     private function isArrayTypeNode(VarTagValueNode $varTagValueNode): bool
     {
-        return $varTagValueNode->type instanceof ArrayTypeNode;
+        return in_array($varTagValueNode->type::class, [ArrayTypeNode::class, SpacingAwareArrayTypeNode::class, ArrayShapeNode::class], true);
     }
 
     private function isArrayOfClass(Node $node, SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode): bool

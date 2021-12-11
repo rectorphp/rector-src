@@ -2,14 +2,17 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class DoNotRemoveCurlyArrayDocblock
+final class DoNotRemoveArrayShapeDocblock
 {
+    const FIRST = 'a';
+    const SECOND = 'b';
+
     /**
      * @var array{a: \stdClass[], b: \DateTime[]}
      */
     private $property = [
-        'a' => [],
-        'b' => [],
+        self::FIRST => [],
+        self::SECOND => [],
     ];
 
     public function getProperty()
@@ -29,14 +32,17 @@ final class DoNotRemoveCurlyArrayDocblock
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class DoNotRemoveCurlyArrayDocblock
+final class DoNotRemoveArrayShapeDocblock
 {
+    const FIRST = 'a';
+    const SECOND = 'b';
+
     /**
      * @var array{a: \stdClass[], b: \DateTime[]}
      */
     private array $property = [
-        'a' => [],
-        'b' => [],
+        self::FIRST => [],
+        self::SECOND => [],
     ];
 
     public function getProperty()
