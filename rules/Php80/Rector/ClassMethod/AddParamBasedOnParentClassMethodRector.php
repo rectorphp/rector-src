@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -207,11 +208,16 @@ CODE_SAMPLE
                 $paramDefault = new ConstFetch(new Name($printParamDefault));
             }
 
+            $typeName = $this->print($parentClassMethodParam->type);
+            $paramType = $parentClassMethodParam->type === null
+                ? null
+                : new Identifier($typeName);
+
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
             $node->params[$key] = new Param(
                 new Variable($paramName),
                 $paramDefault,
-                null,
+                $paramType,
                 $parentClassMethodParam->byRef,
                 $parentClassMethodParam->variadic,
                 [],
