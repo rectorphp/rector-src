@@ -104,7 +104,11 @@ final class VarTagRemover
 
     private function isArrayTypeNode(VarTagValueNode $varTagValueNode): bool
     {
-        return in_array($varTagValueNode->type::class, [ArrayTypeNode::class, SpacingAwareArrayTypeNode::class, ArrayShapeNode::class], true);
+        return in_array(
+            $varTagValueNode->type::class,
+            [ArrayTypeNode::class, SpacingAwareArrayTypeNode::class, ArrayShapeNode::class],
+            true
+        );
     }
 
     private function isArrayOfClass(Node $node, SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode): bool
