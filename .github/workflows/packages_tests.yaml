@@ -52,6 +52,9 @@ jobs:
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
                 if: ${{ github.event_name == 'pull_request' }}
 
+            -   run: composer update rector/rector-generator:dev-main
+                if: ${{ github.event_name == 'pull_request' }}
+
             -   run: composer install --ansi
 
             -   run: vendor/bin/phpunit
