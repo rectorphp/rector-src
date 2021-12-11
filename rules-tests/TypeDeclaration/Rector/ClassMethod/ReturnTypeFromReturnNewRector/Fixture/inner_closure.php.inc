@@ -2,14 +2,12 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-use stdClass;
-
-final class InnerFunction
+final class InnerClosure
 {
     public function __construct()
     {
         $a = function () {
-            return new stdClass;
+            return new \stdClass;
         };
     }
 }
@@ -20,14 +18,12 @@ final class InnerFunction
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-use stdClass;
-
-final class InnerFunction
+final class InnerClosure
 {
     public function __construct()
     {
-        $a = function () {
-            return new stdClass;
+        $a = function (): \stdClass {
+            return new \stdClass;
         };
     }
 }
