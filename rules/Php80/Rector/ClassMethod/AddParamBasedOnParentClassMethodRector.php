@@ -210,7 +210,7 @@ CODE_SAMPLE
 
             $paramType = $parentClassMethodParam->type === null
                 ? null
-                : new Identifier($this->print($parentClassMethodParam->type));
+                : new Identifier($this->nodeNameResolver->getName($parentClassMethodParam->type));
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
             $node->params[$key] = new Param(
