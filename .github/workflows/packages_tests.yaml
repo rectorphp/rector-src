@@ -49,9 +49,7 @@ jobs:
 
             # test with current commit in a pull-request
 
-            -
-                run: composer require --dev rector/rector-generator:dev-main
-                if: ${{ github.event_name == 'pull_request' }}
+            -   run: composer require --dev rector/rector-generator:dev-main
 
             -
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
