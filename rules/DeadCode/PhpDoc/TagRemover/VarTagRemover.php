@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
-use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ObjectType;
@@ -106,7 +105,7 @@ final class VarTagRemover
     {
         return in_array(
             $varTagValueNode->type::class,
-            [ArrayTypeNode::class, SpacingAwareArrayTypeNode::class, ArrayShapeNode::class],
+            [SpacingAwareArrayTypeNode::class, ArrayShapeNode::class],
             true
         );
     }
