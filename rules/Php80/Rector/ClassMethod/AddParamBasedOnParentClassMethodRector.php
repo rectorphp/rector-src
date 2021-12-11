@@ -17,6 +17,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -208,9 +209,12 @@ CODE_SAMPLE
                 $paramDefault = new ConstFetch(new Name($printParamDefault));
             }
 
-            $paramType = $parentClassMethodParam->type === null
-                ? null
-                : new Identifier((string) $this->nodeNameResolver->getName($parentClassMethodParam->type));
+            if ($parentClassMethodParam->type == null) {
+                $paramType = null;
+            } else {
+                $paramType = $parentClassMethodParam->type;
+                $paramType->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
             $node->params[$key] = new Param(
