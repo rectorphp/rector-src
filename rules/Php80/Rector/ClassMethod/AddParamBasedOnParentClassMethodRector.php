@@ -208,10 +208,9 @@ CODE_SAMPLE
                 $paramDefault = new ConstFetch(new Name($printParamDefault));
             }
 
-            $typeName = $this->print($parentClassMethodParam->type);
             $paramType = $parentClassMethodParam->type === null
                 ? null
-                : new Identifier($typeName);
+                : new Identifier($this->print($parentClassMethodParam->type));
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
             $node->params[$key] = new Param(
