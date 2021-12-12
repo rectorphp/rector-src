@@ -95,6 +95,7 @@ CODE_SAMPLE
         if (! $this->isName($node->name, 'fn')) {
             return null;
         }
+
         $newName = self::NEW_ORIGINAL_NAME;
         while ($this->reflectionProvider->hasFunction($newName)) {
             $newName = self::NEW_ORIGINAL_NAME . self::COUNT;
