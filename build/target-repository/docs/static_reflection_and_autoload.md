@@ -104,7 +104,7 @@ Other solution is by register the path of the class to composer.json's `"files"`
 After that, run:
 
 ```bash
-composer update
+composer dump-autoload
 ```
 
 and re-run the rector.
