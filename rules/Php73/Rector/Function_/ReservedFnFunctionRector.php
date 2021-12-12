@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php74\Rector\Function_;
+namespace Rector\Php73\Rector\Function_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
@@ -18,7 +18,7 @@ use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @changelog https://github.com/php/php-src/pull/3941/files#diff-7e3a1a5df28a1cbd8c0fb6db68f243da
- * @see \Rector\Tests\Php74\Rector\Function_\ReservedFnFunctionRector\ReservedFnFunctionRectorTest
+ * @see \Rector\Tests\Php73\Rector\Function_\ReservedFnFunctionRector\ReservedFnFunctionRectorTest
  */
 final class ReservedFnFunctionRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -29,7 +29,7 @@ final class ReservedFnFunctionRector extends AbstractRector implements MinPhpVer
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::RESERVED_FN_FUNCTION_NAME;
+        return PhpVersionFeature::RESERVED_FN_FUNCTION_NAME - 1;
     }
 
     public function getRuleDefinition(): RuleDefinition
