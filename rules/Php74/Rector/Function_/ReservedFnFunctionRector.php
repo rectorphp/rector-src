@@ -39,7 +39,7 @@ final class ReservedFnFunctionRector extends AbstractRector implements MinPhpVer
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::RESERVED_FN_FUNCTION_NAME - 1;
+        return PhpVersionFeature::RESERVED_FN_FUNCTION_NAME;
     }
 
     public function getRuleDefinition(): RuleDefinition
