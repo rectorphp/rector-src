@@ -27,11 +27,6 @@ final class ReservedFnFunctionRector extends AbstractRector implements MinPhpVer
      */
     private const NEW_ORIGINAL_NAME = 'f';
 
-    /**
-     * @var int
-     */
-    private const COUNT = 1;
-
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider
     ) {
@@ -97,8 +92,11 @@ CODE_SAMPLE
         }
 
         $newName = self::NEW_ORIGINAL_NAME;
+        $count = 1;
+
         while ($this->reflectionProvider->hasFunction($newName)) {
-            $newName = self::NEW_ORIGINAL_NAME . self::COUNT;
+            $newName = self::NEW_ORIGINAL_NAME . $count;
+            ++$count;
         }
 
         $node->name = $node instanceof FuncCall ? new Name($newName) : new Identifier($newName);
