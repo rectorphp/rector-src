@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php73\Rector\Function_\ReservedFnFunctionRector;
+namespace Rector\Tests\Php74\Rector\Function_\ReservedFnFunctionRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
@@ -12,7 +12,6 @@ final class ReservedFnFunctionRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
-     * @requires PHP < 7.4
      */
     public function test(SmartFileInfo $fileInfo): void
     {
