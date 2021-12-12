@@ -22,6 +22,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReservedFnFunctionRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const NEW_ORIGINAL_NAME = 'f';
+
+    /**
+     * @var int
+     */
+    private const COUNT = 1;
+
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider
     ) {
@@ -85,13 +95,9 @@ CODE_SAMPLE
         if (! $this->isName($node->name, 'fn')) {
             return null;
         }
-
-        $newOriginalName = 'f';
-        $newName = $newOriginalName;
-
-        $count = 1;
+        $newName = self::NEW_ORIGINAL_NAME;
         while ($this->reflectionProvider->hasFunction($newName)) {
-            $newName = $newOriginalName . $count;
+            $newName = self::NEW_ORIGINAL_NAME . self::COUNT;
         }
 
         $node->name = $node instanceof FuncCall ? new Name($newName) : new Identifier($newName);
