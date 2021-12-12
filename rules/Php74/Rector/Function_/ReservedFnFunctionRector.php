@@ -94,7 +94,7 @@ CODE_SAMPLE
         $newName = self::NEW_ORIGINAL_NAME;
         $count = 1;
 
-        while ($this->reflectionProvider->hasFunction($newName)) {
+        while ($this->reflectionProvider->hasFunction(new Name($newName), null)) {
             $newName = self::NEW_ORIGINAL_NAME . $count;
             ++$count;
         }
