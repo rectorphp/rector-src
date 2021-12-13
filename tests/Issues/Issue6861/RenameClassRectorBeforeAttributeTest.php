@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+namespace Rector\Core\Tests\Issues\Issue6861;
+
+use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
