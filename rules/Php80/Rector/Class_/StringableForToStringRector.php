@@ -124,7 +124,7 @@ CODE_SAMPLE
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($toStringClassMethod, Return_::class);
 
         if (! $hasReturn) {
-            $lastKey = array_key_last((array) $toStringClassMethod->stmts);
+            $lastKey = (int) array_key_last((array) $toStringClassMethod->stmts);
             $toStringClassMethod->stmts[$lastKey + 1] = new Return_(new String_(''));
 
             return;
