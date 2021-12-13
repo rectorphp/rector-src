@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -18,6 +23,8 @@ use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PhpParser\Node\Expr\Cast;
+use PhpParser\Node\Expr\Cast\String_ as CastString_;
 
 /**
  * @changelog https://wiki.php.net/rfc/stringable
@@ -100,7 +107,7 @@ CODE_SAMPLE
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($toStringClassMethod);
         if (! $returnType instanceof StringType) {
-            return null;
+            return $this->processNotStringType($node, $toStringClassMethod);
         }
 
         // add interface
@@ -113,5 +120,42 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function processNotStringType(Class_ $class, ClassMethod $toStringClassMethod): Class_
+    {
+        $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($toStringClassMethod, Return_::class);
+
+        if (! $hasReturn) {
+            $lastKey = array_key_last((array) $toStringClassMethod->stmts);
+            $toStringClassMethod->stmts[$lastKey] = new Return_(new String_(''));
+
+            return $class;
+        }
+
+        $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode) use ($toStringClassMethod): void {
+            if (! $subNode instanceof Return_) {
+                return;
+            }
+
+            $parent = $this->betterNodeFinder->findParentByTypes($subNode, [ClassMethod::class, Function_::class, Closure::class]);
+            if ($parent !== $toStringClassMethod) {
+                return;
+            }
+
+            if (! $subNode->expr instanceof Expr) {
+                $subNode->expr = new String_('');
+                return;
+            }
+
+            $type = $this->nodeTypeResolver->getType($subNode->expr);
+            if ($type instanceof StringType) {
+                return;
+            }
+
+            $subNode->expr = new CastString_($subNode->expr);
+        });
+
+        return $class;
     }
 }

@@ -27,13 +27,13 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\StringableTypedProperty\Fixture;
 
-class Fixture
+class Fixture implements \Stringable
 {
     private ?string $nickname = null;
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->nickname;
+        return (string) $this->nickname;
     }
 
     public function getNickname(): ?string
