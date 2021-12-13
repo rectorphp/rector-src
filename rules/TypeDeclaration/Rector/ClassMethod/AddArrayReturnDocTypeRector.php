@@ -132,7 +132,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $inferredReturnType);
-        if ($hasChanged === false) {
+        if (! $hasChanged) {
             return null;
         }
 

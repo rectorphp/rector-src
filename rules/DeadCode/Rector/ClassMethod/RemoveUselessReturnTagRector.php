@@ -72,7 +72,7 @@ CODE_SAMPLE
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $hasChanged = $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
-        if ($hasChanged === false) {
+        if (! $hasChanged) {
             return null;
         }
 

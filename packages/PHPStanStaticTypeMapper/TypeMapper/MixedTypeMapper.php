@@ -46,12 +46,14 @@ final class MixedTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
-        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
-            if ($type->isExplicitMixed()) {
-                return new Name('mixed');
-            }
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
+            return null;
         }
 
-        return null;
+        if (! $type->isExplicitMixed()) {
+            return null;
+        }
+
+        return new Name('mixed');
     }
 }
