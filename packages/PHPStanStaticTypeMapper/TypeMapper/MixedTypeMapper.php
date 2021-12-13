@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\MixedType;
@@ -46,7 +47,9 @@ final class MixedTypeMapper implements TypeMapperInterface
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
-            return new Node\Name('mixed');
+            if ($type->isExplicitMixed()) {
+                return new Name('mixed');
+            }
         }
 
         return null;

@@ -33,7 +33,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 0,
                 new ObjectType('Doctrine\ORM\EntityManagerInterface')
             ),
-            new AddParamTypeDeclaration(ParentTypeToMixed::class, 'process', 0, new MixedType(),),
+            new AddParamTypeDeclaration(ParentTypeToMixed::class, 'process', 0, new MixedType(true)),
         ]);
 
     $parameters = $containerConfigurator->parameters();
