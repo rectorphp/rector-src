@@ -143,13 +143,7 @@ CODE_SAMPLE
 
     private function addAssignNewVariable(FuncCall $funcCall, Expr $expr, Expr|Variable $variable): void
     {
-        $currentStatement = $funcCall->getAttribute(AttributeKey::CURRENT_STATEMENT);
-
-        if (! $currentStatement instanceof Stmt) {
-            return;
-        }
-
-        $this->addNodeBeforeNode(new Expression(new Assign($variable, $expr)), $currentStatement);
+        $this->addNodeBeforeNode(new Expression(new Assign($variable, $expr)), $funcCall);
     }
 
     private function resolveCastedArray(Expr $expr): Expr|Variable
