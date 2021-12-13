@@ -13,9 +13,11 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Type\StringType;
 
 /**
  * @changelog https://wiki.php.net/rfc/stringable
@@ -30,7 +32,8 @@ final class StringableForToStringRector extends AbstractRector implements MinPhp
     private const STRINGABLE = 'Stringable';
 
     public function __construct(
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
+        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -92,6 +95,11 @@ CODE_SAMPLE
         $classLikeAncestorNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
 
         if (in_array(self::STRINGABLE, $classLikeAncestorNames, true)) {
+            return null;
+        }
+
+        $returnType = $this->returnTypeInferer->inferFunctionLike($toStringClassMethod);
+        if (! $returnType instanceof StringType) {
             return null;
         }
 
