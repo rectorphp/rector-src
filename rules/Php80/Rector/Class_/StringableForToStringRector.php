@@ -106,7 +106,7 @@ CODE_SAMPLE
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($toStringClassMethod);
         if (! $returnType instanceof StringType) {
-            return $this->processNotStringType($node, $toStringClassMethod);
+            $this->processNotStringType($toStringClassMethod);
         }
 
         // add interface
@@ -121,7 +121,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processNotStringType(Class_ $class, ClassMethod $toStringClassMethod): Class_
+    private function processNotStringType(ClassMethod $toStringClassMethod): void
     {
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($toStringClassMethod, Return_::class);
 
@@ -129,7 +129,7 @@ CODE_SAMPLE
             $lastKey = array_key_last((array) $toStringClassMethod->stmts);
             $toStringClassMethod->stmts[$lastKey] = new Return_(new String_(''));
 
-            return $class;
+            return;
         }
 
         $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode) use (
@@ -159,7 +159,5 @@ CODE_SAMPLE
 
             $subNode->expr = new CastString_($subNode->expr);
         });
-
-        return $class;
     }
 }
