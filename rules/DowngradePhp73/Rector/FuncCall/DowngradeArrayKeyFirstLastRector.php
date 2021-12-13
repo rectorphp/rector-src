@@ -106,7 +106,9 @@ CODE_SAMPLE
         $this->nodesToAddCollector->addNodeBeforeNode($resetFuncCall, $funcCall);
 
         $funcCall->name = new Name('key');
-        $funcCall->args[0]->value = $array;
+        if ($originalArray !== $array) {
+            $funcCall->args[0]->value = $array;
+        }
 
         return $funcCall;
     }
@@ -132,7 +134,9 @@ CODE_SAMPLE
         $this->nodesToAddCollector->addNodeBeforeNode($resetFuncCall, $funcCall);
 
         $funcCall->name = new Name('key');
-        $funcCall->args[0]->value = $array;
+        if ($originalArray !== $array) {
+            $funcCall->args[0]->value = $array;
+        }
 
         return $funcCall;
     }
