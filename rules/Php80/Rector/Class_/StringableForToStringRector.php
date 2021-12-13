@@ -127,7 +127,7 @@ CODE_SAMPLE
             $lastKey = array_key_last((array) $toStringClassMethod->stmts);
             $lastKey = $lastKey === null
                 ? 0
-                : $lastKey + 1;
+                : (int) $lastKey + 1;
 
             $toStringClassMethod->stmts[$lastKey] = new Return_(new String_(''));
 
