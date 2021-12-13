@@ -29,7 +29,7 @@ namespace Rector\Core\Tests\Issues\StringableTypedProperty\Fixture;
 
 class Fixture implements \Stringable
 {
-    private string $nickname;
+    private ?string $nickname = null;
 
     public function __toString(): string
     {

@@ -71,22 +71,23 @@ final class GetterPropertyTypeInferer implements PropertyTypeInfererInterface
             return $returnTypes[0];
         }
 
-        if ($this->isUnionTypeInUnionTypes($returnTypes)) {
-            return null;
+        $resolveUnionTypeInUnionTypes = $this->resolveUnionTypeInUnionTypes($returnTypes);
+        if ($resolveUnionTypeInUnionTypes instanceof UnionType) {
+            return $resolveUnionTypeInUnionTypes;
         }
 
         return new UnionType($returnTypes);
     }
 
-    private function isUnionTypeInUnionTypes(array $types): bool
+    private function resolveUnionTypeInUnionTypes(array $types): ?UnionType
     {
         foreach ($types as $type) {
             if ($type instanceof UnionType) {
-                return true;
+                return $type;
             }
         }
 
-        return false;
+        return null;
     }
 
     public function getPriority(): int
