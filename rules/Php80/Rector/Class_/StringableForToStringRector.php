@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -23,8 +24,6 @@ use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PhpParser\Node\Expr\Cast;
-use PhpParser\Node\Expr\Cast\String_ as CastString_;
 
 /**
  * @changelog https://wiki.php.net/rfc/stringable
@@ -133,12 +132,17 @@ CODE_SAMPLE
             return $class;
         }
 
-        $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode) use ($toStringClassMethod): void {
+        $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode) use (
+            $toStringClassMethod
+        ): void {
             if (! $subNode instanceof Return_) {
                 return;
             }
 
-            $parent = $this->betterNodeFinder->findParentByTypes($subNode, [ClassMethod::class, Function_::class, Closure::class]);
+            $parent = $this->betterNodeFinder->findParentByTypes(
+                $subNode,
+                [ClassMethod::class, Function_::class, Closure::class]
+            );
             if ($parent !== $toStringClassMethod) {
                 return;
             }
