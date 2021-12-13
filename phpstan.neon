@@ -590,3 +590,4 @@ parameters:
 
         # complex detection
         - '#Cognitive complexity for "Rector\\Core\\DependencyInjection\\Collector\\ConfigureCallValuesCollector\:\:addConfigureCallValues\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\FunctionLike\\ParamTypeDeclarationRector\:\:refactorParam\(\)" is 11, keep it under 10#'
