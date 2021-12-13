@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Core\Tests\Issues\Issue6861\Fixture;
+
 use Doctrine\DBAL\DBALException;
 
 class Fixture
@@ -16,6 +18,8 @@ class Fixture
 ?>
 -----
 <?php
+
+namespace Rector\Core\Tests\Issues\Issue6861\Fixture;
 
 class Fixture
 {
