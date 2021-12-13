@@ -125,10 +125,6 @@ CODE_SAMPLE
 
         if (! $hasReturn) {
             $lastKey = array_key_last((array) $toStringClassMethod->stmts);
-            if ($lastKey === null) {
-                $toStringClassMethod->stmts[0] = new Return_(new String_(''));
-            }
-
             $toStringClassMethod->stmts[$lastKey + 1] = new Return_(new String_(''));
 
             return;
