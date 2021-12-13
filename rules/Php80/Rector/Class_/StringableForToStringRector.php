@@ -7,13 +7,11 @@ namespace Rector\Php80\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
@@ -136,14 +134,6 @@ CODE_SAMPLE
             $toStringClassMethod
         ): void {
             if (! $subNode instanceof Return_) {
-                return;
-            }
-
-            $parent = $this->betterNodeFinder->findParentByTypes(
-                $subNode,
-                [ClassMethod::class, Function_::class, Closure::class]
-            );
-            if ($parent !== $toStringClassMethod) {
                 return;
             }
 
