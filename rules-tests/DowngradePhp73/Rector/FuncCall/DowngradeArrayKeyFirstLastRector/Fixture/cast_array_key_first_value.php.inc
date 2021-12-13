@@ -8,7 +8,7 @@ class CastArrayKeyFirstValue
 {
     public function run(ClassMethod $classMethod)
     {
-        $firstItemKey = array_key_first((array) $items);
+        $firstItemKey = array_key_first((array) $classMethod->stmts);
     }
 }
 
