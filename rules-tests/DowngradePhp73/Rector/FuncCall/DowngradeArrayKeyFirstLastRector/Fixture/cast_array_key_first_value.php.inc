@@ -2,9 +2,11 @@
 
 namespace Rector\Tests\DowngradePhp73\Rector\FuncCall\DowngradeArrayKeyFirstLastRector\Fixture;
 
+use PhpParser\Node\Stmt\ClassMethod;
+
 class CastArrayKeyFirstValue
 {
-    public function run($items)
+    public function run(ClassMethod $classMethod)
     {
         $firstItemKey = array_key_first((array) $items);
     }
@@ -16,13 +18,15 @@ class CastArrayKeyFirstValue
 
 namespace Rector\Tests\DowngradePhp73\Rector\FuncCall\DowngradeArrayKeyFirstLastRector\Fixture;
 
+use PhpParser\Node\Stmt\ClassMethod;
+
 class CastArrayKeyFirstValue
 {
-    public function run($items)
+    public function run(ClassMethod $classMethod)
     {
-        $arrayItem = (array) $items;
-        reset($arrayItem);
-        $firstItemKey = key($arrayItem);
+        $arrayClassMethodStmts = (array) $classMethod->stmts;
+        reset($arrayClassMethodStmts);
+        $firstItemKey = key($arrayClassMethodStmts);
     }
 }
 
