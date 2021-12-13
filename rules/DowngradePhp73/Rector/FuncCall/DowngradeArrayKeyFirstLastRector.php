@@ -6,9 +6,17 @@ namespace Rector\DowngradePhp73\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Naming\Naming\VariableNaming;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,6 +27,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeArrayKeyFirstLastRector extends AbstractRector
 {
+    public function __construct(
+        private readonly VariableNaming $variableNaming
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Downgrade array_key_first() and array_key_last() functions', [
@@ -82,12 +95,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $array = $funcCall->args[0]->value;
+        $originalArray = $funcCall->args[0]->value;
+        $array = $this->resolveCastedArray($originalArray);
+
+        if ($originalArray !== $array) {
+            $this->addAssignNewVariable($funcCall, $originalArray, $array);
+        }
 
         $resetFuncCall = $this->nodeFactory->createFuncCall('reset', [$array]);
         $this->nodesToAddCollector->addNodeBeforeNode($resetFuncCall, $funcCall);
 
         $funcCall->name = new Name('key');
+        $funcCall->args[0]->value = $array;
 
         return $funcCall;
     }
@@ -102,12 +121,49 @@ CODE_SAMPLE
             return null;
         }
 
-        $array = $funcCall->args[0]->value;
+        $originalArray = $funcCall->args[0]->value;
+        $array = $this->resolveCastedArray($originalArray);
+
+        if ($originalArray !== $array) {
+            $this->addAssignNewVariable($funcCall, $originalArray, $array);
+        }
+
         $resetFuncCall = $this->nodeFactory->createFuncCall('end', [$array]);
         $this->nodesToAddCollector->addNodeBeforeNode($resetFuncCall, $funcCall);
 
         $funcCall->name = new Name('key');
+        $funcCall->args[0]->value = $array;
 
         return $funcCall;
+    }
+
+    private function addAssignNewVariable(FuncCall $funcCall, Expr $expr, Expr|Variable $variable): void
+    {
+        $currentStatement = $funcCall->getAttribute(AttributeKey::CURRENT_STATEMENT);
+
+        if (! $currentStatement instanceof Stmt) {
+            return;
+        }
+
+        $this->addNodeBeforeNode(new Expression(new Assign($variable, $expr)), $currentStatement);
+    }
+
+    private function resolveCastedArray(Expr $expr): Expr|Variable
+    {
+        if (! $expr instanceof Array_) {
+            return $expr;
+        }
+
+        if ($expr->expr instanceof Array_) {
+            return $this->resolveCastedArray($expr->expr);
+        }
+
+        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+        $variableName = $this->variableNaming->createCountedValueName(
+            (string) $this->nodeNameResolver->getName($expr->expr),
+            $scope
+        );
+
+        return new Variable($variableName);
     }
 }

@@ -24,9 +24,9 @@ class CastArrayKeyFirstValue
 {
     public function run(ClassMethod $classMethod)
     {
-        $arrayClassMethodStmts = (array) $classMethod->stmts;
-        reset($arrayClassMethodStmts);
-        $firstItemKey = key($arrayClassMethodStmts);
+        $stmts = (array) $classMethod->stmts;
+        reset($stmts);
+        $firstItemKey = key($stmts);
     }
 }
 

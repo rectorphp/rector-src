@@ -4,11 +4,11 @@ namespace Rector\Tests\DowngradePhp73\Rector\FuncCall\DowngradeArrayKeyFirstLast
 
 use PhpParser\Node\Stmt\ClassMethod;
 
-class CastArrayKeyLastValue
+class DoubleCast
 {
     public function run(ClassMethod $classMethod)
     {
-        $lastItemKey = array_key_last((array) $classMethod->stmts);
+        $lastItemKey = array_key_last((array)(array) $classMethod->stmts);
     }
 }
 
@@ -20,11 +20,11 @@ namespace Rector\Tests\DowngradePhp73\Rector\FuncCall\DowngradeArrayKeyFirstLast
 
 use PhpParser\Node\Stmt\ClassMethod;
 
-class CastArrayKeyLastValue
+class DoubleCast
 {
     public function run(ClassMethod $classMethod)
     {
-        $stmts = (array) $classMethod->stmts;
+        $stmts = (array)(array) $classMethod->stmts;
         end($stmts);
         $lastItemKey = key($stmts);
     }
