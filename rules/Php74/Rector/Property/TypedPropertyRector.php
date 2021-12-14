@@ -11,6 +11,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -96,7 +98,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkipProperty($node)) {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if ($this->shouldSkipProperty($node, $scope)) {
             return null;
         }
 
@@ -210,7 +213,7 @@ CODE_SAMPLE
         $onlyProperty->default = $this->nodeFactory->createNull();
     }
 
-    private function shouldSkipProperty(Property $property): bool
+    private function shouldSkipProperty(Property $property, Scope $scope): bool
     {
         // type is already set → skip
         if ($property->type !== null) {
@@ -237,6 +240,15 @@ CODE_SAMPLE
 
         if ($property->isPrivate()) {
             return $this->propertyAnalyzer->hasForbiddenType($property);
+        }
+
+        if ($property->isProtected()) {
+            $classReflection = $scope->getClassReflection();
+
+            // is we're in final class, the type can be changed
+            if ($classReflection instanceof ClassReflection && $classReflection->isFinal()) {
+                return false;
+            }
         }
 
         return true;

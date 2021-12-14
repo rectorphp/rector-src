@@ -4,7 +4,7 @@ namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\SomeParent;
 
-class ChildClass extends SomeParent
+final class ChildClass extends SomeParent
 {
     /**
      * @var bool
@@ -19,7 +19,7 @@ namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
 use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\SomeParent;
 
-class ChildClass extends SomeParent
+final class ChildClass extends SomeParent
 {
     protected bool $anAlreadyReplacedPropertyInParentClass = true;
 }
