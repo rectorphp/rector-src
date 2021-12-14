@@ -246,7 +246,7 @@ CODE_SAMPLE
             $classReflection = $scope->getClassReflection();
 
             // is we're in final class, the type can be changed
-            if ($classReflection instanceof ClassReflection && $classReflection->isFinal()) {
+            if ($classReflection instanceof ClassReflection && $classReflection->isFinal() && $classReflection->getParents() === []) {
                 return false;
             }
         }
