@@ -91,8 +91,9 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
         }
 
         $classReflection = $this->reflectionProvider->getClass($referencedClass);
+        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
 
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+        foreach ($ancestorClassReflections as $ancestorClassReflection) {
             if (! $ancestorClassReflection->hasMethod($methodName)) {
                 continue;
             }

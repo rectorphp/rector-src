@@ -82,23 +82,16 @@ final class FamilyRelationsAnalyzer
             throw new ShouldNotHappenException();
         }
 
-        $ancestorClassReflections = $classReflection->getAncestors();
-
         $propertyName = $this->nodeNameResolver->getName($property);
         $kindPropertyFetch = $this->getKindPropertyFetch($property);
-
-        $className = $classReflection->getName();
+        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
 
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
-            $ancestorClassName = $ancestorClassReflection->getName();
-            if ($ancestorClassName === $className) {
-                continue;
-            }
-
             if ($ancestorClassReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
                 continue;
             }
 
+            $ancestorClassName = $ancestorClassReflection->getName();
             $class = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection, $ancestorClassName);
             if (! $class instanceof Class_) {
                 continue;

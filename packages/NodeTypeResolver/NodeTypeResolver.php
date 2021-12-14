@@ -326,7 +326,9 @@ final class NodeTypeResolver
         }
 
         $classReflection = $this->reflectionProvider->getClass($resolvedObjectType->getClassName());
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+
+        foreach ($ancestorClassReflections as $ancestorClassReflection) {
             if ($ancestorClassReflection->hasTraitUse($requiredObjectType->getClassName())) {
                 return true;
             }

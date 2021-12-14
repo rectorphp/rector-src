@@ -41,15 +41,13 @@ final class ClassMethodReturnVendorLockResolver
 
     private function isVendorLockedByAncestors(ClassReflection $classReflection, string $methodName): bool
     {
-        foreach ($classReflection->getAncestors() as $ancestorClassReflections) {
-            if ($ancestorClassReflections === $classReflection) {
-                continue;
-            }
-
+        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+        foreach ($ancestorClassReflections as $ancestorClassReflections) {
             $nativeClassReflection = $ancestorClassReflections->getNativeReflection();
+            $hasMethod = $nativeClassReflection->hasMethod($methodName);
 
             // this should avoid detecting @method as real method
-            if (! $nativeClassReflection->hasMethod($methodName)) {
+            if (! $hasMethod) {
                 continue;
             }
 

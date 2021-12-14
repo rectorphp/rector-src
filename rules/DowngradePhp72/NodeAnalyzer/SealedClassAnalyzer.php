@@ -21,6 +21,7 @@ final class SealedClassAnalyzer
             return false;
         }
 
-        return count($classReflection->getAncestors()) === 1;
+        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+        return $ancestorClassReflections === [];
     }
 }

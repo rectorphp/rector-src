@@ -30,7 +30,8 @@ final class ClassConstManipulator
             return false;
         }
 
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+        foreach ($ancestorClassReflections as $ancestorClassReflection) {
             $ancestorClass = $this->astResolver->resolveClassFromClassReflection(
                 $ancestorClassReflection,
                 $ancestorClassReflection->getName()

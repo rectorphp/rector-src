@@ -34,7 +34,8 @@ final class PropertyTypeVendorLockResolver
             return false;
         }
 
-        if (count($classReflection->getAncestors()) === 1) {
+        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+        if ($ancestorClassReflections === []) {
             return false;
         }
 
