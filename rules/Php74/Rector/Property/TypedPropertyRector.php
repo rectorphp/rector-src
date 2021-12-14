@@ -246,13 +246,8 @@ CODE_SAMPLE
         if ($property->isPrivate()) {
             return $this->propertyAnalyzer->hasForbiddenType($property);
         }
-
-        if ($property->isProtected() && $classReflection->isFinal() && $classReflection->getParents() === []) {
-            // is we're in final class, the type can be changed
-            return false;
-        }
-
-        return true;
+        // is we're in final class, the type can be changed
+        return ! ($property->isProtected() && $classReflection->isFinal() && $classReflection->getParents() === []);
     }
 
     private function isModifiedByTrait(ClassLike $classLike, string $propertyName): bool
