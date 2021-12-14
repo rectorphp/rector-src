@@ -39,8 +39,10 @@ final class PropertyTypeDecorator
             } else {
                 $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
             }
+
             return;
         }
+
         $property->type = $typeNode;
 
         $propertyProperty = $property->props[0];
