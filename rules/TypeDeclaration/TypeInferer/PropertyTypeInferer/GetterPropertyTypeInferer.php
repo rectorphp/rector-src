@@ -14,13 +14,12 @@ use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\TypeDeclaration\Contract\TypeInferer\PropertyTypeInfererInterface;
 use Rector\TypeDeclaration\FunctionLikeReturnTypeResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\ClassMethodAndPropertyAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnedNodesReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnTagReturnTypeInferer;
 
-final class GetterPropertyTypeInferer implements PropertyTypeInfererInterface
+final class GetterPropertyTypeInferer
 {
     public function __construct(
         private readonly ReturnTagReturnTypeInferer $returnTagReturnTypeInferer,
@@ -72,11 +71,6 @@ final class GetterPropertyTypeInferer implements PropertyTypeInfererInterface
         }
 
         return new UnionType($returnTypes);
-    }
-
-    public function getPriority(): int
-    {
-        return 1700;
     }
 
     private function inferClassMethodReturnType(ClassMethod $classMethod): Type
