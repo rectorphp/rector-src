@@ -6,6 +6,7 @@ namespace Rector\Renaming\NodeManipulator;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -95,7 +96,11 @@ final class ClassRenamer
             return;
         }
 
-        //$this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
+        if ($node instanceof AttributeGroup) {
+            return;
+        }
+
+        $this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
 
         $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses);
     }

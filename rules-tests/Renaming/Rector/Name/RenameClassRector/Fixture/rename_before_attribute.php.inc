@@ -21,6 +21,8 @@ class RenameBeforeAttribute
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
+use Doctrine\DBAL\DBALException;
+
 class RenameBeforeAttribute
 {
     /**
