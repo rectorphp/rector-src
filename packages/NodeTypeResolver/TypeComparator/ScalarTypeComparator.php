@@ -58,12 +58,13 @@ final class ScalarTypeComparator
         if ($firstType instanceof ClassStringType && $secondType instanceof StringType) {
             return false;
         }
-
-        if ($firstType instanceof StringType && $secondType instanceof ClassStringType) {
-            return false;
+        if (! $firstType instanceof StringType) {
+            return $firstType::class !== $secondType::class;
         }
-
-        return $firstType::class !== $secondType::class;
+        if (! $secondType instanceof ClassStringType) {
+            return $firstType::class !== $secondType::class;
+        }
+        return false;
     }
 
     private function isScalarType(Type $type): bool
