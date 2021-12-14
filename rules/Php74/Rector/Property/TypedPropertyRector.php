@@ -225,9 +225,13 @@ CODE_SAMPLE
             return true;
         }
 
-        $trait = $this->betterNodeFinder->findParentType($property, Trait_::class);
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return true;
+        }
+
         // skip trait properties, as they ar unpredictable based on class context they appear in
-        if ($trait instanceof Trait_) {
+        if ($classReflection->isTrait()) {
             return true;
         }
 
@@ -242,13 +246,9 @@ CODE_SAMPLE
             return $this->propertyAnalyzer->hasForbiddenType($property);
         }
 
-        if ($property->isProtected()) {
-            $classReflection = $scope->getClassReflection();
-
+        if ($property->isProtected() && $classReflection->isFinal() && $classReflection->getParents() === []) {
             // is we're in final class, the type can be changed
-            if ($classReflection instanceof ClassReflection && $classReflection->isFinal() && $classReflection->getParents() === []) {
-                return false;
-            }
+            return false;
         }
 
         return true;
