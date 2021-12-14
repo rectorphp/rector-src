@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeComparator;
 
 use PHPStan\Type\BooleanType;
+use PHPStan\Type\ClassStringType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\StringType;
@@ -53,7 +54,16 @@ final class ScalarTypeComparator
             return false;
         }
 
-        return get_class($firstType) !== get_class($secondType);
+        // treat class-string and string the same
+        if ($firstType instanceof ClassStringType && $secondType instanceof StringType) {
+            return false;
+        }
+
+        if ($firstType instanceof StringType && $secondType instanceof ClassStringType) {
+            return false;
+        }
+
+        return $firstType::class !== $secondType::class;
     }
 
     private function isScalarType(Type $type): bool
