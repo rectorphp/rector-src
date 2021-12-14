@@ -20,7 +20,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\TypeDeclaration\Contract\TypeInferer\PropertyTypeInfererInterface;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class SingleMethodAssignedNodePropertyTypeInferer implements PropertyTypeInfererInterface
+final class SingleMethodAssignedNodePropertyTypeInferer // implements PropertyTypeInfererInterface
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
