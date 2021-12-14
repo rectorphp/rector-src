@@ -7,7 +7,6 @@ namespace Rector\Php74\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Name;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
@@ -31,7 +30,6 @@ use Rector\Php74\TypeAnalyzer\ObjectTypeAnalyzer;
 use Rector\Php74\TypeAnalyzer\PropertyUnionTypeResolver;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -51,17 +49,7 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
     /**
      * @var string
      */
-    final public const CLASS_LIKE_TYPE_ONLY = 'class_like_type_only';
-
-    /**
-     * @var string
-     */
     final public const PRIVATE_PROPERTY_ONLY = 'PRIVATE_PROPERTY_ONLY';
-
-    /**
-     * Useful for refactoring of huge applications. Taking types first narrows scope
-     */
-    private bool $classLikeTypeOnly = false;
 
     /**
      * If want to keep BC, it can be set to true
@@ -74,11 +62,9 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
         private readonly VendorLockResolver $vendorLockResolver,
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly VarTagRemover $varTagRemover,
-        private readonly ReflectionProvider $reflectionProvider,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly PropertyAnalyzer $propertyAnalyzer,
-        private readonly PropertyUnionTypeResolver $propertyUnionTypeResolver,
         private readonly AstResolver $astResolver,
         private readonly ObjectTypeAnalyzer $objectTypeAnalyzer
     ) {
@@ -108,7 +94,6 @@ final class SomeClass
 CODE_SAMPLE
                     ,
                     [
-                        self::CLASS_LIKE_TYPE_ONLY => false,
                         self::PRIVATE_PROPERTY_ONLY => false,
                     ]
                 ),
@@ -159,7 +144,7 @@ CODE_SAMPLE
 
         $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($varType, TypeKind::PROPERTY());
 
-        if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node, $varType)) {
+        if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node)) {
             return null;
         }
 
@@ -189,7 +174,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->classLikeTypeOnly = $configuration[self::CLASS_LIKE_TYPE_ONLY] ?? false;
         $this->privatePropertyOnly = $configuration[self::PRIVATE_PROPERTY_ONLY] ?? false;
     }
 
@@ -201,16 +185,8 @@ CODE_SAMPLE
     private function isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn(
         Name | ComplexType | null $node,
         Property $property,
-        Type $type
     ): bool {
         if (! $node instanceof Node) {
-            return true;
-        }
-
-        $type = $this->propertyUnionTypeResolver->resolve($node, $type);
-
-        // is not class-type and should be skipped
-        if ($this->shouldSkipNonClassLikeType($node, $type)) {
             return true;
         }
 
@@ -224,29 +200,6 @@ CODE_SAMPLE
         }
 
         return true;
-    }
-
-    private function shouldSkipNonClassLikeType(Name|ComplexType $node, Type $type): bool
-    {
-        // unwrap nullable type
-        if ($node instanceof NullableType) {
-            $node = $node->type;
-        }
-
-        $typeName = $this->getName($node);
-        if ($typeName === null) {
-            return false;
-        }
-
-        if (! $this->classLikeTypeOnly) {
-            return false;
-        }
-
-        if ($type instanceof AliasedObjectType) {
-            $typeName = $type->getFullyQualifiedName();
-        }
-
-        return ! $this->reflectionProvider->hasClass($typeName);
     }
 
     private function removeDefaultValueForDoctrineCollection(Property $property, Type $propertyType): void
