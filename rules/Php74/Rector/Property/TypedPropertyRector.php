@@ -231,7 +231,8 @@ CODE_SAMPLE
         }
 
         // skip trait properties, as they ar unpredictable based on class context they appear in
-        if ($classReflection->isTrait()) {
+        $trait = $this->betterNodeFinder->findParentType($property, Trait_::class);
+        if ($trait instanceof Trait_) {
             return true;
         }
 
