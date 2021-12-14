@@ -95,7 +95,7 @@ final class ClassRenamer
             return;
         }
 
-        $this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
+        //$this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
 
         $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses);
     }
