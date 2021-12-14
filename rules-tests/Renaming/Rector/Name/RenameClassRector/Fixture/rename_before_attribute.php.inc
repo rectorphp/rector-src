@@ -1,10 +1,10 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6861\Fixture;
+namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use Doctrine\DBAL\DBALException;
 
-class Fixture
+class RenameBeforeAttribute
 {
     /**
      * @throws DBALException
@@ -19,9 +19,9 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6861\Fixture;
+namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class Fixture
+class RenameBeforeAttribute
 {
     /**
      * @throws \Doctrine\DBAL\Exception
