@@ -1,11 +1,10 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
 final class StaticPropertyWithDefaultNull
 {
     private $cacheFile = null;
-
     private $cacheFiles = null;
 
     /**
@@ -30,15 +29,11 @@ final class StaticPropertyWithDefaultNull
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
 final class StaticPropertyWithDefaultNull
 {
-    /**
-     * @var string|null
-     */
     private ?string $cacheFile = null;
-
     /**
      * @var string[]|null
      */

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
@@ -88,6 +90,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $inferredType = $this->decorateTypeWithNullableIfDefaultPropertyNull($node, $inferredType);
+
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferredType, TypeKind::PROPERTY());
         if ($typeNode === null) {
             return null;
@@ -107,5 +111,23 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function decorateTypeWithNullableIfDefaultPropertyNull(Property $property, Type $inferredType): Type
+    {
+        $defaultExpr = $property->props[0]->default;
+        if (! $defaultExpr instanceof Expr) {
+            return $inferredType;
+        }
+
+        if (! $this->valueResolver->isNull($defaultExpr)) {
+            return $inferredType;
+        }
+
+        if (TypeCombinator::containsNull($inferredType)) {
+            return $inferredType;
+        }
+
+        return TypeCombinator::addNull($inferredType);
     }
 }

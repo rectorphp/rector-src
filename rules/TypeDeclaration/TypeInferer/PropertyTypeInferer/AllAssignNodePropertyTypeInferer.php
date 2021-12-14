@@ -12,7 +12,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\TypeDeclaration\Contract\TypeInferer\PropertyTypeInfererInterface;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 
-final class AllAssignNodePropertyTypeInferer implements PropertyTypeInfererInterface
+final class AllAssignNodePropertyTypeInferer // implements PropertyTypeInfererInterface
 {
     public function __construct(
         private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
@@ -33,8 +33,8 @@ final class AllAssignNodePropertyTypeInferer implements PropertyTypeInfererInter
         return $this->assignToPropertyTypeInferer->inferPropertyInClassLike($propertyName, $classLike);
     }
 
-    public function getPriority(): int
-    {
-        return 1500;
-    }
+//    public function getPriority(): int
+//    {
+//        return 1500;
+//    }
 }
