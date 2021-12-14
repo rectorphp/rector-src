@@ -11,17 +11,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class RectorCategoryInferer implements CategoryInfererInterface
 {
-    /**
-     * @see https://regex101.com/r/wyW01F/1
-     * @var string
-     */
-    private const RECTOR_CATEGORY_REGEX = '#Rector\\\\(?<' . self::CATEGORY . '>\w+)\\\\#';
-
-    /**
-     * @var string
-     */
-    private const CATEGORY = 'category';
-
     public function infer(RuleDefinition $ruleDefinition): ?string
     {
         $matches = Strings::match($ruleDefinition->getRuleClass(), self::RECTOR_CATEGORY_REGEX);

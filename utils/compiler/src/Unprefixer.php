@@ -8,12 +8,6 @@ use Nette\Utils\Strings;
 
 final class Unprefixer
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/P8sXfr/1
-     */
-    private const QUOTED_VALUE_REGEX = '#\'\\\\(\w|@)#';
-
     public static function unprefixQuoted(string $content, string $prefix): string
     {
         $match = sprintf('\'%s\\\\r\\\\n\'', $prefix);

@@ -24,23 +24,6 @@ final class StaticEasyPrefixer
     ];
 
     /**
-     * @var string[]
-     */
-    private const EXCLUDED_NAMESPACES = [
-        // naturally
-        'Rector\*',
-        // we use this API a lot
-        'PhpParser\*',
-        'Ssch\TYPO3Rector\*',
-
-        // phpstan needs to be here, as phpstan/vendor autoload is statically generated and namespaces cannot be changed
-        'PHPStan\*',
-
-        // this is public API of a Rector rule
-        'Symplify\RuleDocGenerator\*',
-    ];
-
-    /**
      * @return string[]
      */
     public static function getExcludedNamespacesAndClasses(): array
