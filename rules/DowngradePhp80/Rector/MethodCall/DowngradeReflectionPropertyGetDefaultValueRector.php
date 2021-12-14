@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -70,8 +73,11 @@ CODE_SAMPLE
             return null;
         }
 
-        // ...
+        $getName = new MethodCall($node->var, 'getName');
+        $node = new MethodCall($node->var, 'getDeclaringClass');
+        $node = new MethodCall($node, 'getDefaultProperties');
+        $node = new ArrayDimFetch($node, $getName);
 
-        return $node;
+        return new Coalesce($node, $this->nodeFactory->createNull());
     }
 }
