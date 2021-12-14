@@ -11,5 +11,3 @@ class SkipDifferentObject
         return $someClass->getDefaultValue();
     }
 }
-
-?>

@@ -11,5 +11,3 @@ class SkipDifferentMethodName
         return $reflectionProperty->getName();
     }
 }
-
-?>
