@@ -246,6 +246,7 @@ CODE_SAMPLE
         if ($property->isPrivate()) {
             return $this->propertyAnalyzer->hasForbiddenType($property);
         }
+
         // is we're in final class, the type can be changed
         return ! ($property->isProtected() && $classReflection->isFinal() && $classReflection->getParents() === []);
     }
