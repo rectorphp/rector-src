@@ -16,7 +16,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
@@ -31,7 +30,7 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -42,19 +41,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\DoctrineTypedPropertyRectorTest
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\ImportedTest
  */
-final class TypedPropertyRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
+final class TypedPropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var string
-     */
-    final public const PRIVATE_PROPERTY_ONLY = 'PRIVATE_PROPERTY_ONLY';
-
-    /**
-     * If want to keep BC, it can be set to true
-     * @see https://3v4l.org/spl4P
-     */
-    private bool $privatePropertyOnly = false;
-
     public function __construct(
         private readonly PropertyTypeInferer $propertyTypeInferer,
         private readonly VendorLockResolver $vendorLockResolver,
@@ -73,7 +61,7 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
         return new RuleDefinition(
             'Changes property `@var` annotations from annotation to type.',
             [
-                new ConfiguredCodeSample(
+                new CodeSample(
                     <<<'CODE_SAMPLE'
 final class SomeClass
 {
@@ -90,10 +78,6 @@ final class SomeClass
     private int $count;
 }
 CODE_SAMPLE
-                    ,
-                    [
-                        self::PRIVATE_PROPERTY_ONLY => false,
-                    ]
                 ),
             ]
         );
@@ -165,14 +149,6 @@ CODE_SAMPLE
         $node->type = $propertyTypeNode;
 
         return $node;
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        $this->privatePropertyOnly = $configuration[self::PRIVATE_PROPERTY_ONLY] ?? false;
     }
 
     public function provideMinPhpVersion(): int
@@ -257,10 +233,6 @@ CODE_SAMPLE
         $classLike = $this->betterNodeFinder->findParentType($property, ClassLike::class);
         if ($classLike instanceof ClassLike && $this->isModifiedByTrait($classLike, $propertyName)) {
             return true;
-        }
-
-        if (! $this->privatePropertyOnly) {
-            return $this->propertyAnalyzer->hasForbiddenType($property);
         }
 
         if ($property->isPrivate()) {
