@@ -10,7 +10,7 @@ final class AssertChoice
      * @var string
      * @Assert\Choice({"chalet", "apartment"})
      */
-    public $type;
+    protected $type;
 }
 
 ?>
@@ -26,7 +26,7 @@ final class AssertChoice
     /**
      * @Assert\Choice({"chalet", "apartment"})
      */
-    public string $type;
+    protected string $type;
 }
 
 ?>
