@@ -39,4 +39,37 @@ final class ScalarTypeComparator
 
         return $secondType instanceof BooleanType;
     }
+
+    /**
+     * E.g. first is string, second is bool
+     */
+    public function areDifferentScalarTypes(Type $firstType, Type $secondType): bool
+    {
+        if (! $this->isScalarType($firstType)) {
+            return false;
+        }
+
+        if (! $this->isScalarType($secondType)) {
+            return false;
+        }
+
+        return get_class($firstType) !== get_class($secondType);
+    }
+
+    private function isScalarType(Type $type): bool
+    {
+        if ($type instanceof StringType) {
+            return true;
+        }
+
+        if ($type instanceof FloatType) {
+            return true;
+        }
+
+        if ($type instanceof IntegerType) {
+            return true;
+        }
+
+        return $type instanceof BooleanType;
+    }
 }

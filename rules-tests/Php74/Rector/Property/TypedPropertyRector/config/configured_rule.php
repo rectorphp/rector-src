@@ -13,7 +13,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(TypedPropertyRector::class);
 
-//    $services->set(TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
+    $services->set(TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
 
     // should be ignored if typed property is used
     $services->set(RemoveNullPropertyInitializationRector::class);
