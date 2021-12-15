@@ -14,6 +14,7 @@ use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\PropertyTypeDecorator;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
@@ -29,6 +30,7 @@ final class TypedPropertyFromAssignsRector extends AbstractRector
         private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
         private readonly PropertyTypeDecorator $propertyTypeDecorator,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly VarTagRemover $varTagRemover,
     ) {
     }
 
@@ -109,6 +111,8 @@ CODE_SAMPLE
         } else {
             $node->type = $typeNode;
         }
+
+        $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
 
         return $node;
     }
