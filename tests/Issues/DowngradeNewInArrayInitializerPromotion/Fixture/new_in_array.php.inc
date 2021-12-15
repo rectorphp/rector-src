@@ -6,6 +6,9 @@ use stdClass;
 
 class NewInArray
 {
+    /**
+     * @param array<string, object> $property
+     */
     public function __construct(public array $property = [
         'a' => new stdClass()
     ])
@@ -23,12 +26,19 @@ use stdClass;
 
 class NewInArray
 {
+    /**
+     * @var array<string, object>
+     */
     public $property;
+    /**
+     * @param array<string, object> $property
+     */
     public function __construct(array $property = null)
     {
-        $this->property = $property ?? [
+        $property ??= [
             'a' => new stdClass()
         ];
+        $this->property = $property;
     }
 }
 
