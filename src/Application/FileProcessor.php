@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
+use PHPStan\Parser\ParserErrorsException;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\PhpParser\Parser\RectorParser;
@@ -25,7 +26,12 @@ final class FileProcessor
     {
         // store tokens by absolute path, so we don't have to print them right now
         $smartFileInfo = $file->getSmartFileInfo();
-        $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokens($smartFileInfo);
+        try {
+            $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokens($smartFileInfo);
+        } catch (ParserErrorsException $parserErrorsException) {
+            // detect if FN token error
+            $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokensWithPHP73($smartFileInfo);
+        }
 
         $oldStmts = $stmtsAndTokens->getStmts();
         $oldTokens = $stmtsAndTokens->getTokens();

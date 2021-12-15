@@ -15,6 +15,7 @@ final class RectorParser
     public function __construct(
         private readonly Lexer $lexer,
         private readonly Parser $parser,
+        private readonly Parser $php73Parser,
     ) {
     }
 
@@ -29,6 +30,14 @@ final class RectorParser
     public function parseFileToStmtsAndTokens(SmartFileInfo $smartFileInfo): StmtsAndTokens
     {
         $stmts = $this->parseFile($smartFileInfo);
+        $tokens = $this->lexer->getTokens();
+
+        return new StmtsAndTokens($stmts, $tokens);
+    }
+
+    public function parseFileToStmtsAndTokensWithPHP73(SmartFileInfo $smartFileInfo): StmtsAndTokens
+    {
+        $stmts = $this->php73Parser->parseFile($smartFileInfo->getRealPath());
         $tokens = $this->lexer->getTokens();
 
         return new StmtsAndTokens($stmts, $tokens);
