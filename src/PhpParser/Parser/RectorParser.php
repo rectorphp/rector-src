@@ -11,9 +11,8 @@ use PHPStan\Parser\Parser;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Core\PhpParser\ValueObject\StmtsAndTokens;
 use Rector\Core\Util\StringUtils;
-use ReflectionProperty;
-use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
+use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class RectorParser
 {
@@ -46,8 +45,10 @@ final class RectorParser
 
             $parser = $this->parser;
 
-            $lexer = &\Closure::bind(static fn&($parser) => $parser->lexer, null, $parser)($parser);
-            $lexer = new Emulative(['phpVersion' => Emulative::PHP_7_3]);
+            $lexer = &\Closure::bind(static fn &($parser) => $parser->lexer, null, $parser)($parser);
+            $lexer = new Emulative([
+                'phpVersion' => Emulative::PHP_7_3,
+            ]);
 
             return $this->parser->parseFile($smartFileInfo->getRealPath());
         }
