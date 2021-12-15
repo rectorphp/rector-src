@@ -143,15 +143,15 @@ CODE_SAMPLE
                     return false;
                 }
 
-                if ($subNode->var instanceof Variable) {
-                    return $this->nodeNameResolver->isName($subNode, $propertyName);
+                if (! $subNode->var instanceof Variable) {
+                    return false;
                 }
 
                 if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
-                    return $this->nodeNameResolver->isName($subNode, $propertyName);
+                    return false;
                 }
 
-                return false;
+                return $this->nodeNameResolver->isName($subNode, $propertyName);
             });
 
             if ($isFound) {
