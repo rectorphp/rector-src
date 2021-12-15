@@ -95,7 +95,11 @@ CODE_SAMPLE
     private function shouldSkip(FunctionLike $functionLike): bool
     {
         foreach ($functionLike->getParams() as $param) {
-            if (! $param->default instanceof New_) {
+            if ($param->default === null) {
+                continue;
+            }
+
+            if (! (bool) $this->betterNodeFinder->findFirstInstanceOf($param->default, New_::class)) {
                 continue;
             }
 
@@ -131,7 +135,11 @@ CODE_SAMPLE
 
         $stmts = [];
         foreach ($functionLike->getParams() as $param) {
-            if (! $param->default instanceof New_) {
+            if ($param->default === null) {
+                continue;
+            }
+
+            if (! (bool) $this->betterNodeFinder->findFirstInstanceOf($param->default, New_::class)) {
                 continue;
             }
 
