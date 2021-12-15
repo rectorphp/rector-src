@@ -126,7 +126,7 @@ final class PHPStanServicesFactory
     private function resolveExtensionConfigs(): array
     {
         // same logic as in PHPStan for extension installed - https://github.com/phpstan/phpstan-src/blob/5956ec4f6cd09c8d7db9466ed4e7f25706f37a43/src/Command/CommandHelper.php#L195-L222
-        if (! class_exists('PHPStan\ExtensionInstaller\GeneratedConfig')) {
+        if (! class_exists(GeneratedConfig::class)) {
             return [];
         }
 
