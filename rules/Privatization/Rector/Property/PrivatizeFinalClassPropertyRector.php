@@ -123,12 +123,17 @@ CODE_SAMPLE
 
             $methods = $classLike->getMethods();
             foreach ($methods as $method) {
-                $isFound = (bool) $this->betterNodeFinder->findFirst((array) $method->stmts, function (Node $subNode) use ($propertyName): bool {
+                $isFound = (bool) $this->betterNodeFinder->findFirst((array) $method->stmts, function (Node $subNode) use (
+                    $propertyName
+                ): bool {
                     if (! $subNode instanceof Node\Expr\PropertyFetch) {
                         return false;
                     }
 
-                    if (! $subNode->var instanceof Node\Expr\Variable && $this->nodeNameResolver->isName($subNode->var, 'this')) {
+                    if (! $subNode->var instanceof Node\Expr\Variable && $this->nodeNameResolver->isName(
+                        $subNode->var,
+                        'this'
+                    )) {
                         return false;
                     }
 
