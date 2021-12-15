@@ -94,12 +94,13 @@ CODE_SAMPLE
 
         $inferredType = $this->decorateTypeWithNullableIfDefaultPropertyNull($node, $inferredType);
 
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferredType, TypeKind::PROPERTY());
         if ($typeNode === null) {
-            return null;
+            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $inferredType);
+            return $node;
         }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
             $this->phpDocTypeChanger->changeVarType($phpDocInfo, $inferredType);
