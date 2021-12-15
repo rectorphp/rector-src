@@ -106,6 +106,12 @@ CODE_SAMPLE
             return $node;
         }
 
+        // public property can be anything
+        if ($node->isPublic()) {
+            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $inferredType);
+            return $node;
+        }
+
         if ($inferredType instanceof UnionType) {
             $this->propertyTypeDecorator->decoratePropertyUnionType($inferredType, $typeNode, $node, $phpDocInfo);
         } else {
