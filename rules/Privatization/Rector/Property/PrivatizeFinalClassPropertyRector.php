@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rector\Privatization\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -116,33 +119,43 @@ CODE_SAMPLE
                 return true;
             }
 
-            $classLike = $this->astResolver->resolveClassFromName($parentClassReflection->getName());
-            if (! $classLike instanceof Node\Stmt\ClassLike) {
-                continue;
+            if ($this->isFoundInParentClassMethods($parentClassReflection, $propertyName)) {
+                return true;
             }
+        }
 
-            $methods = $classLike->getMethods();
-            foreach ($methods as $method) {
-                $isFound = (bool) $this->betterNodeFinder->findFirst((array) $method->stmts, function (Node $subNode) use (
-                    $propertyName
-                ): bool {
-                    if (! $subNode instanceof Node\Expr\PropertyFetch) {
-                        return false;
-                    }
+        return false;
+    }
 
-                    if (! $subNode->var instanceof Node\Expr\Variable && $this->nodeNameResolver->isName(
-                        $subNode->var,
-                        'this'
-                    )) {
-                        return false;
-                    }
+    private function isFoundInParentClassMethods(ClassReflection $parentClassReflection, string $propertyName): bool
+    {
+        $classLike = $this->astResolver->resolveClassFromName($parentClassReflection->getName());
+        if (! $classLike instanceof ClassLike) {
+            return false;
+        }
 
-                    return $this->nodeNameResolver->isName($subNode, $propertyName);
-                });
-
-                if ($isFound) {
-                    return true;
+        $methods = $classLike->getMethods();
+        foreach ($methods as $method) {
+            $isFound = (bool) $this->betterNodeFinder->findFirst((array) $method->stmts, function (Node $subNode) use (
+                $propertyName
+            ): bool {
+                if (! $subNode instanceof PropertyFetch) {
+                    return false;
                 }
+
+                if ($subNode->var instanceof Variable) {
+                    return $this->nodeNameResolver->isName($subNode, $propertyName);
+                }
+
+                if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
+                    return $this->nodeNameResolver->isName($subNode, $propertyName);
+                }
+
+                return false;
+            });
+
+            if ($isFound) {
+                return true;
             }
         }
 
