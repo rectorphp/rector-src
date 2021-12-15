@@ -23,7 +23,6 @@ use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 /**
  * Factory so Symfony app can use services from PHPStan container
- * @see packages/NodeTypeResolver/config/config.yaml:17
  */
 final class PHPStanServicesFactory
 {
