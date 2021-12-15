@@ -13,5 +13,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(TypedPropertyFromAssignsRector::class);
 
     $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersionFeature::TYPED_PROPERTIES);
+    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersionFeature::INTERSECTION_TYPES);
 };
