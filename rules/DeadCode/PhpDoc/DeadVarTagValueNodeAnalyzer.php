@@ -14,7 +14,7 @@ final class DeadVarTagValueNodeAnalyzer
 {
     public function __construct(
         private readonly TypeComparator $typeComparator,
-        private StaticTypeMapper $staticTypeMapper,
+        private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
 
@@ -28,10 +28,8 @@ final class DeadVarTagValueNodeAnalyzer
         $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);
 
-        if ($propertyType instanceof UnionType) {
-            if (! $docType instanceof UnionType) {
-                return true;
-            }
+        if ($propertyType instanceof UnionType && ! $docType instanceof UnionType) {
+            return true;
         }
 
         if (! $this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(

@@ -85,7 +85,7 @@ final class ConstructorPropertyTypeInferer
             $resolvedTypes[] = $this->nodeTypeResolver->getType($assignedExpr);
         }
 
-        if (count($resolvedTypes) === 0) {
+        if ($resolvedTypes === []) {
             return null;
         }
 

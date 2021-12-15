@@ -2,7 +2,6 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
-
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
@@ -32,7 +31,6 @@ final class IncludeNodeVisitor extends NodeVisitorAbstract
 <?php
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
-
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
