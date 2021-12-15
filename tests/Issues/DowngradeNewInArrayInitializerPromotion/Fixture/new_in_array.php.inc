@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DowngradePhp81\Rector\FunctionLike\DowngradeNewInInitializerRector\Fixture;
+namespace Rector\Core\Tests\Issues\DowngradeNewInArrayInitializerPromotion\Fixture;
 
 use stdClass;
 
@@ -17,13 +17,14 @@ class NewInArray
 -----
 <?php
 
-namespace Rector\Tests\DowngradePhp81\Rector\FunctionLike\DowngradeNewInInitializerRector\Fixture;
+namespace Rector\Core\Tests\Issues\DowngradeNewInArrayInitializerPromotion\Fixture;
 
 use stdClass;
 
 class NewInArray
 {
-    public function __construct(public ?array $property = null)
+    public $property;
+    public function __construct(array $property = null)
     {
         $this->property = $property ?? [
             'a' => new stdClass()
