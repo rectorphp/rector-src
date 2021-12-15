@@ -99,6 +99,12 @@ CODE_SAMPLE
             return null;
         }
 
+        // public property can be anything
+        if ($node->isPublic()) {
+            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $varType);
+            return $node;
+        }
+
         $node->type = $propertyTypeNode;
         $node->props[0]->default = null;
 
