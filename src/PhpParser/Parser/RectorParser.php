@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Parser;
 
+use Closure;
 use PhpParser\Lexer;
 use PhpParser\Lexer\Emulative;
 use PhpParser\Node\Stmt;
@@ -24,7 +25,7 @@ final class RectorParser
 
     public function __construct(
         private readonly Lexer $lexer,
-        private Parser $parser,
+        private readonly Parser $parser,
         private readonly PrivatesAccessor $privatesAccessor
     ) {
     }
@@ -45,7 +46,7 @@ final class RectorParser
 
             $parser = $this->parser;
 
-            $lexer = &\Closure::bind(static fn &($parser) => $parser->lexer, null, $parser)($parser);
+            $lexer = &Closure::bind(static fn &($parser) => $parser->lexer, null, $parser)($parser);
             $lexer = new Emulative([
                 'phpVersion' => Emulative::PHP_7_3,
             ]);
