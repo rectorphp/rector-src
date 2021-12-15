@@ -2,8 +2,6 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
-use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
-
 final class NotInTestsTypedPropertyInTests
 {
     /**
@@ -22,8 +20,6 @@ final class NotInTestsTypedPropertyInTests
 <?php
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
-
-use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 
 final class NotInTestsTypedPropertyInTests
 {

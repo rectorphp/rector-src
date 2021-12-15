@@ -83,7 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($varType instanceof  MixedType) {
+        if ($varType instanceof MixedType) {
             return null;
         }
 
