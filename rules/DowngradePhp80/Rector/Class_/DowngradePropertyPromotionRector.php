@@ -209,7 +209,10 @@ CODE_SAMPLE
             $property->type = $param->type;
             $this->decoratePropertyWithParamDocInfo($param, $property);
 
-            if ($param->default !== null && ! $this->betterNodeFinder->findFirstInstanceOf($param->default, New_::class)) {
+            if ($param->default !== null && ! $this->betterNodeFinder->findFirstInstanceOf(
+                $param->default,
+                New_::class
+            )) {
                 $property->props[0]->default = $param->default;
             }
 
