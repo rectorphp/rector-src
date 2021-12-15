@@ -211,10 +211,7 @@ CODE_SAMPLE
 
             $hasNew = $param->default === null
                 ? false
-                : (bool) $this->betterNodeFinder->findFirstInstanceOf(
-                    $param->default,
-                    New_::class
-                );
+                : (bool) $this->betterNodeFinder->findFirstInstanceOf($param->default, New_::class);
 
             if ($param->default !== null && ! $hasNew) {
                 $property->props[0]->default = $param->default;
