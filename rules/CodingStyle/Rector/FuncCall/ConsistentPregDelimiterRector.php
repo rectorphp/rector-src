@@ -196,7 +196,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($matchInnerRegex !== $matchInnerUnionRegex) {
+        if ($matchInnerRegex === $matchInnerUnionRegex) {
             return false;
         }
 
