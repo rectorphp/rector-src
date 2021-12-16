@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\StaticCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -19,6 +20,7 @@ use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector\RemoveParentCallWithoutParentRectorTest
@@ -28,7 +30,8 @@ final class RemoveParentCallWithoutParentRector extends AbstractRector
     public function __construct(
         private readonly ClassMethodManipulator $classMethodManipulator,
         private readonly ParentClassScopeResolver $parentClassScopeResolver,
-        private readonly ClassAnalyzer $classAnalyzer
+        private readonly ClassAnalyzer $classAnalyzer,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -84,6 +87,10 @@ CODE_SAMPLE
         }
 
         if (! $this->isName($node->class, ObjectReference::PARENT()->getValue())) {
+            return null;
+        }
+
+        if ($classLike->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass($classLike->extends->toString())) {
             return null;
         }
 
