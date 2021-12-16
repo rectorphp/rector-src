@@ -193,8 +193,7 @@ final class ReturnTypeInferer
     private function shouldSkipExcludedTypeInferer(
         ReturnTypeInfererInterface $returnTypeInferer,
         array $excludedInferers
-    ): bool
-    {
+    ): bool {
         foreach ($excludedInferers as $excludedInferer) {
             if (is_a($returnTypeInferer, $excludedInferer)) {
                 return true;
