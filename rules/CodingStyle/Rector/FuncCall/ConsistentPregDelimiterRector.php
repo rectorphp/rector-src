@@ -183,7 +183,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isHasNewLineWithUnicodeModifier(string $string): bool
+    private function hasNewLineWithUnicodeModifier(string $string): bool
     {
         $matchInnerRegex = Strings::match($string, self::INNER_REGEX);
         $matchInnerUnionRegex = Strings::match($string, self::INNER_UNICODE_REGEX);
@@ -212,7 +212,7 @@ CODE_SAMPLE
         /** @var String_ $string */
         $string = $arg->value;
 
-        if ($this->isHasNewLineWithUnicodeModifier($string->value)) {
+        if ($this->hasNewLineWithUnicodeModifier($string->value)) {
             return;
         }
 
