@@ -183,6 +183,26 @@ CODE_SAMPLE
         return null;
     }
 
+    private function isHasNewLine(string $string): bool
+    {
+        $matchInnerRegex = Strings::match($string, self::INNER_REGEX);
+        $matchInnerUnionRegex = Strings::match($string, self::INNER_UNICODE_REGEX);
+
+        if (! is_array($matchInnerRegex)) {
+            return false;
+        }
+
+        if (! is_array($matchInnerUnionRegex)) {
+            return false;
+        }
+
+        if ($matchInnerRegex !== $matchInnerUnionRegex) {
+            return false;
+        }
+
+        return StringUtils::isMatch($matchInnerUnionRegex['content'], self::NEW_LINE_REGEX);
+    }
+
     private function refactorArgument(Arg $arg): void
     {
         if (! $arg->value instanceof String_) {
@@ -192,13 +212,8 @@ CODE_SAMPLE
         /** @var String_ $string */
         $string = $arg->value;
 
-        $matchInnerRegex = Strings::match($string->value, self::INNER_REGEX);
-        $matchInnerUnionRegex = Strings::match($string->value, self::INNER_UNICODE_REGEX);
-
-        if ($matchInnerRegex && $matchInnerUnionRegex) {
-            if ($matchInnerUnionRegex === $matchInnerUnionRegex && StringUtils::isMatch($matchInnerUnionRegex['content'], '#(\\r|\\n)#')) {
-                return;
-            }
+        if ($this->isHasNewLine($string->value)) {
+            return;
         }
 
         $string->value = Strings::replace($string->value, self::INNER_REGEX, function (array $match) use (
