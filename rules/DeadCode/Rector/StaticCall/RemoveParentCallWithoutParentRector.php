@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeManipulator\ClassMethodManipulator;
@@ -20,7 +21,6 @@ use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector\RemoveParentCallWithoutParentRectorTest
@@ -90,7 +90,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($classLike->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass($classLike->extends->toString())) {
+        if ($classLike->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+            $classLike->extends->toString()
+        )) {
             return null;
         }
 
