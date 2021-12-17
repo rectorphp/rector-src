@@ -9,9 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
@@ -255,7 +253,7 @@ final class AnonymousFunctionFactory
             $paramNames[] = $this->nodeNameResolver->getName($paramNode);
         }
 
-        $variableNodes = $this->resolveVariableNodes($nodes);
+        $variableNodes = $this->betterNodeFinder->findInstanceOf($nodes, Variable::class);
 
         /** @var Variable[] $filteredVariables */
         $filteredVariables = [];
@@ -292,37 +290,6 @@ final class AnonymousFunctionFactory
         }
 
         return $filteredVariables;
-    }
-
-    /**
-     * @param Node[] $nodes
-     * @return Variable[]
-     */
-    private function resolveVariableNodes(array $nodes): array
-    {
-        return $this->betterNodeFinder->find($nodes, function (Node $subNode): bool {
-            if (! $subNode instanceof Variable) {
-                return false;
-            }
-
-            $parentArrowFunction = $this->betterNodeFinder->findParentType($subNode, ArrowFunction::class);
-            if ($parentArrowFunction instanceof ArrowFunction && $this->isNotLookupParentArrowFunction($parentArrowFunction, $subNode)) {
-                return true;
-            }
-
-            return true;
-        });
-    }
-
-    private function isNotLookupParentArrowFunction(ArrowFunction $parentArrowFunction, Variable $variable): bool
-    {
-        $parentCallLike = $this->betterNodeFinder->findParentType($variable, CallLike::class);
-
-        if (! $parentCallLike instanceof CallLike) {
-            return ! (bool) $this->betterNodeFinder->findParentType($parentArrowFunction, ArrowFunction::class);
-        }
-
-        return false;
     }
 
     /**
