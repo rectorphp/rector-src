@@ -11,6 +11,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
@@ -306,7 +307,11 @@ final class AnonymousFunctionFactory
 
             $parentArrowFunction = $this->betterNodeFinder->findParentType($subNode, ArrowFunction::class);
             if ($parentArrowFunction instanceof ArrowFunction) {
-                return ! (bool) $this->betterNodeFinder->findParentType($parentArrowFunction, ArrowFunction::class);
+                $parentCallLike = $this->betterNodeFinder->findParentType($subNode, CallLike::class);
+
+                if (! $parentCallLike instanceof CallLike) {
+                    return ! (bool) $this->betterNodeFinder->findParentType($parentArrowFunction, ArrowFunction::class);
+                }
             }
 
             return true;
