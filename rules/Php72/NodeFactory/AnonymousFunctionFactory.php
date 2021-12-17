@@ -182,7 +182,7 @@ final class AnonymousFunctionFactory
     {
         $uniqueUses = [];
         foreach ($uses as $use) {
-            if (!is_string($use->var->name)) {
+            if (! is_string($use->var->name)) {
                 continue;
             }
             $variableName = $use->var->name;
