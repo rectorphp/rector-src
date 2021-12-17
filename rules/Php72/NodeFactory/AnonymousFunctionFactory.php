@@ -306,16 +306,23 @@ final class AnonymousFunctionFactory
             }
 
             $parentArrowFunction = $this->betterNodeFinder->findParentType($subNode, ArrowFunction::class);
-            if ($parentArrowFunction instanceof ArrowFunction) {
-                $parentCallLike = $this->betterNodeFinder->findParentType($subNode, CallLike::class);
-
-                if (! $parentCallLike instanceof CallLike) {
-                    return ! (bool) $this->betterNodeFinder->findParentType($parentArrowFunction, ArrowFunction::class);
-                }
+            if ($parentArrowFunction instanceof ArrowFunction && $this->isNotLookupParentArrowFunction($parentArrowFunction, $subNode)) {
+                return true;
             }
 
             return true;
         });
+    }
+
+    private function isNotLookupParentArrowFunction(ArrowFunction $parentArrowFunction, Variable $variable): bool
+    {
+        $parentCallLike = $this->betterNodeFinder->findParentType($variable, CallLike::class);
+
+        if (! $parentCallLike instanceof CallLike) {
+            return ! (bool) $this->betterNodeFinder->findParentType($parentArrowFunction, ArrowFunction::class);
+        }
+
+        return false;
     }
 
     /**
