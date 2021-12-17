@@ -32,7 +32,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
 
             // test for alias used
-            new AnnotationToAttribute('Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestSmth'),
-            new AnnotationToAttribute('Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestOther'),
+            new AnnotationToAttribute(
+                'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestSmth'
+            ),
+            new AnnotationToAttribute(
+                'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestOther'
+            ),
         ]);
 };
