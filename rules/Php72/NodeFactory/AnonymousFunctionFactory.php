@@ -185,6 +185,7 @@ final class AnonymousFunctionFactory
             if (! is_string($use->var->name)) {
                 continue;
             }
+
             $variableName = $use->var->name;
             if (array_key_exists($variableName, $uniqueUses)) {
                 continue;
