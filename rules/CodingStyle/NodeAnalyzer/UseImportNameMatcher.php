@@ -62,7 +62,7 @@ final class UseImportNameMatcher
         return StringUtils::isMatch($tag, $pattern);
     }
 
-    private function resolveName(string $tag, UseUse $useUse): string
+    public function resolveName(string $tag, UseUse $useUse): string
     {
         if ($useUse->alias === null) {
             return $useUse->name->toString();
