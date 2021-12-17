@@ -54,14 +54,6 @@ final class UseImportNameMatcher
         return null;
     }
 
-    private function isUseMatchingName(string $tag, UseUse $useUse): bool
-    {
-        $shortName = $useUse->alias !== null ? $useUse->alias->name : $useUse->name->getLast();
-        $shortNamePattern = preg_quote($shortName, '#');
-        $pattern = sprintf(self::SHORT_NAME_REGEX, $shortNamePattern);
-        return StringUtils::isMatch($tag, $pattern);
-    }
-
     public function resolveName(string $tag, UseUse $useUse): string
     {
         if ($useUse->alias === null) {
@@ -74,5 +66,13 @@ final class UseImportNameMatcher
         }
 
         return $useUse->name . '\\' . $unaliasedShortClass;
+    }
+
+    private function isUseMatchingName(string $tag, UseUse $useUse): bool
+    {
+        $shortName = $useUse->alias !== null ? $useUse->alias->name : $useUse->name->getLast();
+        $shortNamePattern = preg_quote($shortName, '#');
+        $pattern = sprintf(self::SHORT_NAME_REGEX, $shortNamePattern);
+        return StringUtils::isMatch($tag, $pattern);
     }
 }
