@@ -180,18 +180,20 @@ final class AnonymousFunctionFactory
      */
     private function cleanClosureUses(array $uses): array
     {
-        $variableNames = array_map(
-            fn ($use): string => (string) $this->nodeNameResolver->getName($use->var),
-            $uses,
-            []
-        );
-        $variableNames = array_unique($variableNames);
+        $uniqueUses = [];
+        foreach ($uses as $use) {
+            if (!is_string($use->var->name)) {
+                continue;
+            }
+            $variableName = $use->var->name;
+            if (array_key_exists($variableName, $uniqueUses)) {
+                continue;
+            }
 
-        return array_map(
-            static fn ($variableName): ClosureUse => new ClosureUse(new Variable($variableName)),
-            $variableNames,
-            []
-        );
+            $uniqueUses[$variableName] = $use;
+        }
+
+        return array_values($uniqueUses);
     }
 
     private function applyNestedUses(Closure $anonymousFunctionNode, Variable $useVariable): Closure
