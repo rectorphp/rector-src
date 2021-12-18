@@ -171,9 +171,11 @@ CODE_SAMPLE
         if (! $classMethod instanceof ClassMethod) {
             return $this->nodeFactory->createMethodCall(self::THIS, $name, $node->args);
         }
+
         if (! $classMethod->isStatic()) {
             return $this->nodeFactory->createMethodCall(self::THIS, $name, $node->args);
         }
+
         return null;
     }
 }
