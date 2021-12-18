@@ -27,6 +27,7 @@ use Rector\Php80\PhpDoc\PhpDocNodeFinder;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
+use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -56,6 +57,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly AttrGroupsFactory $attrGroupsFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpDocNodeFinder $phpDocNodeFinder,
+        private UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer
     ) {
     }
 
@@ -144,6 +146,8 @@ CODE_SAMPLE
         $annotationsToAttributes = $configuration[self::ANNOTATION_TO_ATTRIBUTE] ?? $configuration;
         Assert::allIsAOf($annotationsToAttributes, AnnotationToAttribute::class);
         $this->annotationsToAttributes = $annotationsToAttributes;
+
+        $this->unwrapableAnnotationAnalyzer->configure($annotationsToAttributes);
     }
 
     public function provideMinPhpVersion(): int
@@ -218,6 +222,7 @@ CODE_SAMPLE
 
             $doctrineTagValueNode = $phpDocChildNode->value;
             $annotationToAttribute = $this->matchAnnotationToAttribute($doctrineTagValueNode);
+
             if (! $annotationToAttribute instanceof AnnotationToAttribute) {
                 continue;
             }
@@ -231,7 +236,17 @@ CODE_SAMPLE
             if ($nestedDoctrineAnnotationTagValueNodes !== [] && ! $this->phpVersionProvider->isAtLeastPhpVersion(
                 PhpVersionFeature::NEW_INITIALIZERS
             )) {
-                continue;
+                if (! $this->unwrapableAnnotationAnalyzer->areUnwrappable($nestedDoctrineAnnotationTagValueNodes)) {
+                    continue;
+                }
+
+                // inline nested
+                foreach ($nestedDoctrineAnnotationTagValueNodes as $nestedDoctrineAnnotationTagValueNode) {
+                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                        $nestedDoctrineAnnotationTagValueNode,
+                        $annotationToAttribute,
+                    );
+                }
             }
 
             $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(

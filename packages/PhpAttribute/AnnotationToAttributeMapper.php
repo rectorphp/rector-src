@@ -14,6 +14,11 @@ use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 final class AnnotationToAttributeMapper
 {
     /**
+     * @var string
+     */
+    public final const REMOVE_ARRAY = 'remove_array';
+
+    /**
      * @param AnnotationToAttributeMapperInterface[] $annotationToAttributeMappers
      */
     public function __construct(
@@ -22,9 +27,9 @@ final class AnnotationToAttributeMapper
     }
 
     /**
-     * @return Expr|Expr[]
+     * @return Expr|Expr[]|string
      */
-    public function map(mixed $value): array|Expr
+    public function map(mixed $value): array|Expr|string
     {
         foreach ($this->annotationToAttributeMappers as $annotationToAttributeMapper) {
             if ($annotationToAttributeMapper->isCandidate($value)) {
@@ -36,6 +41,6 @@ final class AnnotationToAttributeMapper
             return $value;
         }
 
-        throw new NotImplementedYetException();
+        return self::REMOVE_ARRAY;
     }
 }

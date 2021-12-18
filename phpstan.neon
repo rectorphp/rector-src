@@ -613,3 +613,7 @@ parameters:
         -
             path: rules/Php74/Rector/Property/TypedPropertyRector.php
             message: '#Class cognitive complexity is \d+, keep it under 30#'
+
+        -
+            message: '#Cognitive complexity for "Rector\\Php80\\Rector\\Class_\\AnnotationToAttributeRector\:\:processDoctrineAnnotationClasses\(\)" is 12, keep it under 10#'
+            path: rules/Php80/Rector/Class_/AnnotationToAttributeRector.php

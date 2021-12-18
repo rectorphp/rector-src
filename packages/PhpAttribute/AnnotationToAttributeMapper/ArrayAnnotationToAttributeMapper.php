@@ -35,6 +35,8 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
      */
     public function map($value): array|Expr
     {
+        dump($value);
+
         return array_map(fn ($item): Expr|array => $this->annotationToAttributeMapper->map($item), $value);
     }
 }
