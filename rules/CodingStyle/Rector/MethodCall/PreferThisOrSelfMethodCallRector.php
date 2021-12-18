@@ -31,6 +31,11 @@ final class PreferThisOrSelfMethodCallRector extends AbstractRector implements C
     final public const TYPE_TO_PREFERENCE = 'type_to_preference';
 
     /**
+     * @var string
+     */
+    private const THIS = 'this';
+
+    /**
      * @var array<PreferenceSelfThis>
      */
     private array $typeToPreference = [];
@@ -126,7 +131,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof MethodCall && ! $this->isName($node->var, 'this')) {
+        if ($node instanceof MethodCall && ! $this->isName($node->var, self::THIS)) {
             return null;
         }
 
@@ -163,10 +168,12 @@ CODE_SAMPLE
 
         // avoid adding dynamic method call to static method
         $classMethod = $this->betterNodeFinder->findParentByTypes($node, [ClassMethod::class]);
-        if ($classMethod instanceof ClassMethod && $classMethod->isStatic()) {
-            return null;
+        if (! $classMethod instanceof ClassMethod) {
+            return $this->nodeFactory->createMethodCall(self::THIS, $name, $node->args);
         }
-
-        return $this->nodeFactory->createMethodCall('this', $name, $node->args);
+        if (! $classMethod->isStatic()) {
+            return $this->nodeFactory->createMethodCall(self::THIS, $name, $node->args);
+        }
+        return null;
     }
 }
