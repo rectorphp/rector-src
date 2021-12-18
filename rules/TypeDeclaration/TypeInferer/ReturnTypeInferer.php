@@ -30,7 +30,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
-use Rector\TypeDeclaration\Sorter\TypeInfererSorter;
+use Rector\TypeDeclaration\Sorter\PriorityAwareSorter;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeNormalizer;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
@@ -47,15 +47,15 @@ final class ReturnTypeInferer
      */
     public function __construct(
         array $returnTypeInferers,
-        private readonly TypeNormalizer $typeNormalizer,
-        TypeInfererSorter $typeInfererSorter,
-        private readonly GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly ParameterProvider $parameterProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionProvider $reflectionProvider,
+        private  readonly TypeNormalizer $typeNormalizer,
+        PriorityAwareSorter $priorityAwareSorter,
+        private  readonly GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
+        private  readonly PhpVersionProvider $phpVersionProvider,
+        private  readonly ParameterProvider $parameterProvider,
+        private  readonly BetterNodeFinder $betterNodeFinder,
+        private  readonly ReflectionProvider $reflectionProvider,
     ) {
-        $this->returnTypeInferers = $typeInfererSorter->sort($returnTypeInferers);
+        $this->returnTypeInferers = $priorityAwareSorter->sort($returnTypeInferers);
     }
 
     public function inferFunctionLike(FunctionLike $functionLike): Type

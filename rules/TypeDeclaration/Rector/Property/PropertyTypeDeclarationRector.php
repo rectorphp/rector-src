@@ -6,16 +6,21 @@ namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\UnionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @deprecated Split to smaller specific rules.
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\PropertyTypeDeclarationRectorTest
  */
 final class PropertyTypeDeclarationRector extends AbstractRector
@@ -96,6 +101,11 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
+            $this->completeTypedProperty($type, $node);
+            return $node;
+        }
+
         $this->phpDocTypeChanger->changeVarType($phpDocInfo, $type);
 
         return $node;
@@ -111,5 +121,26 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function completeTypedProperty(Type $type, Property $property): void
+    {
+        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY());
+        if ($propertyTypeNode === null) {
+            return;
+        }
+
+        if ($propertyTypeNode instanceof UnionType) {
+            if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
+                $property->type = $propertyTypeNode;
+                return;
+            }
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $type);
+            return;
+        }
+
+        $property->type = $propertyTypeNode;
     }
 }
