@@ -118,9 +118,6 @@ final class PlainValueParser
         // keep the last ")"
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 
-        $quoteTokenIteratorCheck = clone $tokenIterator;
-        $quoteTokenIteratorCheck->next();
-
         if ($tokenIterator->currentTokenValue() !== '"') {
             $tokenIterator->consumeTokenType(Lexer::TOKEN_CLOSE_PARENTHESES);
         }
