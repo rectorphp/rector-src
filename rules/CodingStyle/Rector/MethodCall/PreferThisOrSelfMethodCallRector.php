@@ -45,7 +45,9 @@ final class PreferThisOrSelfMethodCallRector extends AbstractRector implements C
         return new RuleDefinition('Changes $this->... and static:: to self:: or vise versa for given types', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-class SomeClass extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+final class SomeClass extends TestCase
 {
     public function run()
     {
@@ -55,7 +57,9 @@ class SomeClass extends \PHPUnit\Framework\TestCase
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-class SomeClass extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+final class SomeClass extends TestCase
 {
     public function run()
     {
@@ -154,6 +158,12 @@ CODE_SAMPLE
 
         $name = $this->getName($node->name);
         if ($name === null) {
+            return null;
+        }
+
+        // avoid adding dynamic method call to static method
+        $classMethod = $this->betterNodeFinder->findParentByTypes($node, [ClassMethod::class]);
+        if ($classMethod instanceof ClassMethod && $classMethod->isStatic()) {
             return null;
         }
 
