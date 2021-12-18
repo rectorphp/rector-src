@@ -11,6 +11,7 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\Len
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\NotNull;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\NotNumber;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     // covers https://wiki.php.net/rfc/new_in_initializers#nested_attributes
@@ -25,6 +26,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new AnnotationToAttribute(Length::class),
                 new AnnotationToAttribute(NotNull::class),
                 new AnnotationToAttribute(NotNumber::class),
+                new AnnotationToAttribute(GenericAnnotation::class),
             ],
         ]);
 };
