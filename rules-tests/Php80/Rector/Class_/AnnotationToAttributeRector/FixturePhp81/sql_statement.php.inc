@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixturePhp81;
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
@@ -23,7 +23,7 @@ class SqlStatement
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
+namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixturePhp81;
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
