@@ -21,8 +21,8 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\D
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\UniqueConstraint(name: 'user_account_role_unique', columns: ['user_account_id', 'list_user_role_id'])]
 #[ORM\Table(name: 'user_account_role')]
+#[ORM\UniqueConstraint(name: 'user_account_role_unique', columns: ['user_account_id', 'list_user_role_id'])]
 class TableAndUniqueConstraints
 {
 }

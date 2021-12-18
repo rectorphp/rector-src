@@ -34,15 +34,15 @@ final class UnwrapableAnnotationAnalyzer
      */
     public function areUnwrappable(array $doctrineAnnotationTagValueNodes): bool
     {
-        foreach ($doctrineAnnotationTagValueNodes as $nestedDoctrineAnnotationTagValueNode) {
-            $annotationClassName = $nestedDoctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
+        foreach ($doctrineAnnotationTagValueNodes as $doctrineAnnotationTagValueNode) {
+            $annotationClassName = $doctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
                 PhpDocAttributeKey::RESOLVED_CLASS
             );
 
-            $nestedAnnotationToAttribute = $this->matchAnnotationToAttribute($nestedDoctrineAnnotationTagValueNode);
+            $nestedAnnotationToAttribute = $this->matchAnnotationToAttribute($doctrineAnnotationTagValueNode);
 
             // the nested annotation should be convertable
-            if ($nestedAnnotationToAttribute === null) {
+            if (! $nestedAnnotationToAttribute instanceof AnnotationToAttribute) {
                 return false;
             }
 

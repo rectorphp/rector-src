@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PhpAttribute;
 
 use PhpParser\Node\Expr;
-use Rector\Core\Exception\NotImplementedYetException;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 
 /**
@@ -16,7 +15,7 @@ final class AnnotationToAttributeMapper
     /**
      * @var string
      */
-    public final const REMOVE_ARRAY = 'remove_array';
+    final public const REMOVE_ARRAY = 'remove_array';
 
     /**
      * @param AnnotationToAttributeMapperInterface[] $annotationToAttributeMappers

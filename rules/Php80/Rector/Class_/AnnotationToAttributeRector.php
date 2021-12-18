@@ -57,7 +57,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly AttrGroupsFactory $attrGroupsFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpDocNodeFinder $phpDocNodeFinder,
-        private UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer
+        private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer
     ) {
     }
 
@@ -232,6 +232,8 @@ CODE_SAMPLE
                 DoctrineAnnotationTagValueNode::class
             );
 
+            $shouldInlinedNested = false;
+
             // depends on PHP 8.1+ - nested values, skip for now
             if ($nestedDoctrineAnnotationTagValueNodes !== [] && ! $this->phpVersionProvider->isAtLeastPhpVersion(
                 PhpVersionFeature::NEW_INITIALIZERS
@@ -240,6 +242,15 @@ CODE_SAMPLE
                     continue;
                 }
 
+                $shouldInlinedNested = true;
+            }
+
+            $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                $doctrineTagValueNode,
+                $annotationToAttribute,
+            );
+
+            if ($shouldInlinedNested) {
                 // inline nested
                 foreach ($nestedDoctrineAnnotationTagValueNodes as $nestedDoctrineAnnotationTagValueNode) {
                     $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
@@ -248,11 +259,6 @@ CODE_SAMPLE
                     );
                 }
             }
-
-            $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                $doctrineTagValueNode,
-                $annotationToAttribute,
-            );
 
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineTagValueNode);
         }
