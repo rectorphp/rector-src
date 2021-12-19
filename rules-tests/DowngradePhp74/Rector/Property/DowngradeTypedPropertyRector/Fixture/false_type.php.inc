@@ -18,7 +18,7 @@ class Foo
 {
 
     /**
-     * @var \Rector\Tests\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector\Fixture\Bar|\Rector\Tests\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector\Fixture\Foo|false
+     * @var false|\Rector\Tests\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector\Fixture\Bar|\Rector\Tests\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector\Fixture\Foo
      */
     private $prop;
 

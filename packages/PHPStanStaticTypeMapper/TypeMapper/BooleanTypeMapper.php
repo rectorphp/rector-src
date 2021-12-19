@@ -65,13 +65,14 @@ final class BooleanTypeMapper implements TypeMapperInterface
     private function isFalseBooleanTypeWithUnion(Type $type): bool
     {
         if (! $type instanceof ConstantBooleanType) {
+            return $type instanceof BooleanType;
+        }
+
+        if ($type->getValue()) { dump('here 2');
             return false;
         }
 
-        if ($type->getValue()) {
-            return false;
-        }
-
+        dump('here 3');
         return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES);
     }
 }

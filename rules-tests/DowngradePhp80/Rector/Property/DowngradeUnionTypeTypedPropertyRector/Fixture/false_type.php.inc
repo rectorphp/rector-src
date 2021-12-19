@@ -18,7 +18,7 @@ class Foo
 {
 
     /**
-     * @var \Rector\Tests\DowngradePhp80\Rector\Property\DowngradeUnionTypeTypedPropertyRector\Fixture\Bar|\Rector\Tests\DowngradePhp80\Rector\Property\DowngradeUnionTypeTypedPropertyRector\Fixture\Foo|false
+     * @var false|\Rector\Tests\DowngradePhp80\Rector\Property\DowngradeUnionTypeTypedPropertyRector\Fixture\Bar|\Rector\Tests\DowngradePhp80\Rector\Property\DowngradeUnionTypeTypedPropertyRector\Fixture\Foo
      */
     private $prop;
 
