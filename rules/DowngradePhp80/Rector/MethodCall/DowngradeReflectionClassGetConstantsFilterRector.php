@@ -126,7 +126,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $this->nodeNameResolver->isNames($classConstFetch->name, ['IS_PUBLIC', 'IS_PROTECTED', 'IS_PRIVATE'], true);
+        return ! $this->nodeNameResolver->isNames(
+            $classConstFetch->name,
+            ['IS_PUBLIC', 'IS_PROTECTED', 'IS_PRIVATE'],
+            true
+        );
     }
 
     private function shouldSkip(MethodCall $methodCall): bool
