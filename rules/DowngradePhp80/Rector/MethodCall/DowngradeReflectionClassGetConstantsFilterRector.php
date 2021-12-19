@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
@@ -52,11 +54,19 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall$node
+     * @param MethodCall $node
      */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkip($node)) {
+            return null;
+        }
+
+        /** @var Arg[] $args */
+        $args = $node->getArgs();
+        $value = $args[0]->value;
+
+        if (! in_array($value::class, [ClassConstFetch::class, BitwiseOr::class], true)) {
             return null;
         }
 
