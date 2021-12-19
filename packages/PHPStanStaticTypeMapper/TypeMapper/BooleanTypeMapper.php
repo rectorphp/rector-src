@@ -68,11 +68,10 @@ final class BooleanTypeMapper implements TypeMapperInterface
             return $type instanceof BooleanType;
         }
 
-        if ($type->getValue()) { dump('here 2');
+        if ($type->getValue()) {
             return false;
         }
 
-        dump('here 3');
         return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES);
     }
 }
