@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -73,26 +74,31 @@ CODE_SAMPLE
         }
 
         if ($value instanceof ClassConstFetch) {
-            return $this->processClassConstFetch($node, $value);
+            $ifs = [$this->processClassConstFetch($node, $value)];
         }
 
         if ($value instanceof BitwiseOr) {
-            $this->processBitwiseOr($node, $value);
+            $ifs = $this->processBitwiseOr($node, $value);
+        }
+
+        if ($ifs !== []) {
+            // process create definition with array_walk
         }
 
         return $node;
     }
 
-    private function processClassConstFetch(MethodCall $methodCall, ClassConstFetch $classConstFetch): ?MethodCall
+    private function processClassConstFetch(MethodCall $methodCall, ClassConstFetch $classConstFetch): ?If_
     {
         if ($this->shouldSkipClassConstFetch($classConstFetch)) {
             return null;
         }
 
-        return $methodCall;
+        // define if here
+        return new If_();
     }
 
-    private function processBitwiseOr(MethodCall $methodCall, BitwiseOr $value): ?MethodCall
+    private function processBitwiseOr(MethodCall $methodCall, BitwiseOr $value): array
     {
         $values[] = $value->right;
 
@@ -106,10 +112,15 @@ CODE_SAMPLE
         ksort($values);
 
         if ($this->shouldSkipBitwiseOrValues($values)) {
-            return null;
+            return [];
         }
 
-        return $methodCall;
+        $ifs = [];
+        foreach ($values as $value) {
+            $ifs[] = $this->processClassConstFetch($methodCall, $value);
+        }
+
+        return $ifs;
     }
 
     /**
