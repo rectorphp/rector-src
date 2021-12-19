@@ -134,6 +134,7 @@ CODE_SAMPLE
             $values[] = $bitwiseOr->left;
         }
 
+        $values = array_unique($values);
         ksort($values);
 
         if ($this->shouldSkipBitwiseOrValues($values)) {
@@ -149,6 +150,10 @@ CODE_SAMPLE
      */
     private function shouldSkipBitwiseOrValues(array $values): bool
     {
+        if (count($values) > 3) {
+            return true;
+        }
+
         foreach ($values as $value) {
             if (! $value instanceof ClassConstFetch) {
                 return true;
