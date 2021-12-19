@@ -61,6 +61,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $ifs = null;
         if ($this->shouldSkip($node)) {
             return null;
         }
@@ -74,11 +75,11 @@ CODE_SAMPLE
         }
 
         if ($value instanceof ClassConstFetch) {
-            $ifs = [$this->processClassConstFetch($node, $value)];
+            $ifs = [$this->processClassConstFetch($value)];
         }
 
         if ($value instanceof BitwiseOr) {
-            $ifs = $this->processBitwiseOr($node, $value);
+            $ifs = $this->processBitwiseOr($value);
         }
 
         if ($ifs !== []) {
@@ -88,7 +89,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processClassConstFetch(MethodCall $methodCall, ClassConstFetch $classConstFetch): ?If_
+    private function processClassConstFetch(ClassConstFetch $classConstFetch): ?If_
     {
         if ($this->shouldSkipClassConstFetch($classConstFetch)) {
             return null;
@@ -98,15 +99,19 @@ CODE_SAMPLE
         return new If_();
     }
 
-    private function processBitwiseOr(MethodCall $methodCall, BitwiseOr $value): array
+    /**
+     * @return mixed[]
+     */
+    private function processBitwiseOr(BitwiseOr $bitwiseOr): array
     {
-        $values[] = $value->right;
+        $values = [];
+        $values[] = $bitwiseOr->right;
 
-        if ($value->left instanceof BitwiseOr) {
-            $values[] = $value->left->right;
-            $values[] = $value->left->left;
+        if ($bitwiseOr->left instanceof BitwiseOr) {
+            $values[] = $bitwiseOr->left->right;
+            $values[] = $bitwiseOr->left->left;
         } else {
-            $values[] = $value->left;
+            $values[] = $bitwiseOr->left;
         }
 
         ksort($values);
@@ -117,7 +122,7 @@ CODE_SAMPLE
 
         $ifs = [];
         foreach ($values as $value) {
-            $ifs[] = $this->processClassConstFetch($methodCall, $value);
+            $ifs[] = $this->processClassConstFetch($value);
         }
 
         return $ifs;
@@ -153,8 +158,7 @@ CODE_SAMPLE
 
         return ! $this->nodeNameResolver->isNames(
             $classConstFetch->name,
-            ['IS_PUBLIC', 'IS_PROTECTED', 'IS_PRIVATE'],
-            true
+            ['IS_PUBLIC', 'IS_PROTECTED', 'IS_PRIVATE']
         );
     }
 
