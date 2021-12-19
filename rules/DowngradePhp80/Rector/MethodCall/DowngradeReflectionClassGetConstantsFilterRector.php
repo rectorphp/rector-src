@@ -75,34 +75,33 @@ CODE_SAMPLE
         }
 
         if ($value instanceof ClassConstFetch) {
-            $ifs = [$this->processClassConstFetch($value)];
+            $classConstFetches = [$this->resolveClassConstFetch($value)];
         }
 
         if ($value instanceof BitwiseOr) {
-            $ifs = $this->processBitwiseOr($value);
+            $classConstFetches = $this->resolveClassConstFetches($value);
         }
 
-        if ($ifs !== []) {
+        if ($classConstFetches !== []) {
             // process create definition with array_walk
         }
 
         return $node;
     }
 
-    private function processClassConstFetch(ClassConstFetch $classConstFetch): ?If_
+    private function resolveClassConstFetch(ClassConstFetch $classConstFetch): ?ClassConstFetch
     {
         if ($this->shouldSkipClassConstFetch($classConstFetch)) {
             return null;
         }
 
-        // define if here
-        return new If_();
+        return $classConstFetch;
     }
 
     /**
-     * @return mixed[]
+     * @return ClassConstFetch[]
      */
-    private function processBitwiseOr(BitwiseOr $bitwiseOr): array
+    private function resolveClassConstFetches(BitwiseOr $bitwiseOr): array
     {
         $values = [];
         $values[] = $bitwiseOr->right;
@@ -120,12 +119,12 @@ CODE_SAMPLE
             return [];
         }
 
-        $ifs = [];
+        $classConstFetchs = [];
         foreach ($values as $value) {
-            $ifs[] = $this->processClassConstFetch($value);
+            $classConstFetchs[] = $this->resolveClassConstFetch($value);
         }
 
-        return $ifs;
+        return $classConstFetchs;
     }
 
     /**
