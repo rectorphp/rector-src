@@ -165,6 +165,10 @@ CODE_SAMPLE
             );
         }
 
+        $ifs = array_map('serialize', $ifs);
+        $ifs = array_unique($ifs);
+        $ifs = array_map('unserialize', $ifs);
+
         $closure = new Closure();
         $closure->params = [new Param(new Variable('value'))];
         $closure->uses = [new ClosureUse($variableResult, true)];
