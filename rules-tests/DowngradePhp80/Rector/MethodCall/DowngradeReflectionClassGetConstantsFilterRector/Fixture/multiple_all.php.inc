@@ -5,7 +5,7 @@ namespace Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeReflectionClass
 use Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeReflectionClassGetConstantsFilterRector\Source\Foo;
 
 $reflectionClass = new \ReflectionClass(Foo::class);
-$constants = $reflectionClass->getConstants(\ReflectionClassConstant::IS_PUBLIC | \ReflectionClassConstant::IS_PROTECTED);
+$constants = $reflectionClass->getConstants(\ReflectionClassConstant::IS_PUBLIC | \ReflectionClassConstant::IS_PROTECTED | \ReflectionClassConstant::IS_PRIVATE);
 
 ?>
 -----
@@ -23,6 +23,9 @@ array_walk($reflectionClassConstants, function ($value) use (&$result) {
       $result[$value->getName()] = $value->getValue();
    }
    if ($value->isProtected()) {
+      $result[$value->getName()] = $value->getValue();
+   }
+   if ($value->isPrivate()) {
       $result[$value->getName()] = $value->getValue();
    }
 });
