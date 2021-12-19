@@ -225,7 +225,6 @@ CODE_SAMPLE
 
             $doctrineTagValueNode = $phpDocChildNode->value;
             $annotationToAttribute = $this->matchAnnotationToAttribute($doctrineTagValueNode);
-
             if (! $annotationToAttribute instanceof AnnotationToAttribute) {
                 continue;
             }
@@ -253,6 +252,8 @@ CODE_SAMPLE
                     $doctrineTagValueNode,
                     $annotationToAttribute,
                 );
+            } else {
+                $shouldInlinedNested = true;
             }
 
             if ($shouldInlinedNested) {
