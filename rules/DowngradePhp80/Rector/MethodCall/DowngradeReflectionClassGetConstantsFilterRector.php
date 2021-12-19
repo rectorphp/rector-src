@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -70,7 +72,61 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($value instanceof ClassConstFetch) {
+            if ($this->shouldSkipClassConstFetch($value)) {
+                return null;
+            }
+        }
+
+        if ($value instanceof BitwiseOr && $value->right instanceof ClassConstFetch) {
+            $values[] = $value->right;
+
+            if ($value->left instanceof BitwiseOr) {
+                $values[] = $value->left->right;
+                $values[] = $value->left->left;
+            } else {
+                $values[] = $value->left;
+            }
+
+            ksort($values);
+
+            if ($this->shouldSkipBitwiseOrValues($values)) {
+                return null;
+            }
+        }
+
         return $node;
+    }
+
+    /**
+     * @param Node[] $values
+     */
+    private function shouldSkipBitwiseOrValues(array $values): bool
+    {
+        foreach ($values as $value) {
+            if (! $value instanceof ClassConstFetch) {
+                return true;
+            }
+
+            if ($this->shouldSkipClassConstFetch($value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function shouldSkipClassConstFetch(ClassConstFetch $classConstFetch): bool
+    {
+        if (! $classConstFetch->class instanceof FullyQualified) {
+            return true;
+        }
+
+        if (! $classConstFetch->name instanceof Identifier) {
+            return true;
+        }
+
+        return ! $this->nodeNameResolver->isNames($classConstFetch->name, ['IS_PUBLIC', 'IS_PROTECTED', 'IS_PRIVATE'], true);
     }
 
     private function shouldSkip(MethodCall $methodCall): bool
