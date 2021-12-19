@@ -150,18 +150,18 @@ CODE_SAMPLE
 
         $ifs = [];
         $valueVariable = new Variable('value');
+        $key = new MethodCall($valueVariable, 'getName');
+        $value = new MethodCall($valueVariable, 'getValue');
+
+        $arrayDimFetch = new ArrayDimFetch($variableResult, $key);
+        $assignValue = $value;
+
         foreach ($classConstFetchNames as $classConstFetchName) {
             $methodCallName = self::MAP_CONSTANT_TO_METHOD[$classConstFetchName];
 
-            $key = new MethodCall($valueVariable, 'getName');
-            $value = new MethodCall($valueVariable, 'getValue');
-
-            $assignVar = new ArrayDimFetch($variableResult, $key);
-            $assignValue = $value;
-
             $ifs[] = $this->ifManipulator->createIfExpr(
                 new MethodCall($valueVariable, $methodCallName),
-                new Expression(new Assign($assignVar, $assignValue))
+                new Expression(new Assign($arrayDimFetch, $assignValue))
             );
         }
 
