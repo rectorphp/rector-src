@@ -73,29 +73,43 @@ CODE_SAMPLE
         }
 
         if ($value instanceof ClassConstFetch) {
-            if ($this->shouldSkipClassConstFetch($value)) {
-                return null;
-            }
+            return $this->processClassConstFetch($node, $value);
         }
 
-        if ($value instanceof BitwiseOr && $value->right instanceof ClassConstFetch) {
-            $values[] = $value->right;
-
-            if ($value->left instanceof BitwiseOr) {
-                $values[] = $value->left->right;
-                $values[] = $value->left->left;
-            } else {
-                $values[] = $value->left;
-            }
-
-            ksort($values);
-
-            if ($this->shouldSkipBitwiseOrValues($values)) {
-                return null;
-            }
+        if ($value instanceof BitwiseOr) {
+            $this->processBitwiseOr($node, $value);
         }
 
         return $node;
+    }
+
+    private function processClassConstFetch(MethodCall $methodCall, ClassConstFetch $classConstFetch): ?MethodCall
+    {
+        if ($this->shouldSkipClassConstFetch($classConstFetch)) {
+            return null;
+        }
+
+        return $methodCall;
+    }
+
+    private function processBitwiseOr(MethodCall $methodCall, BitwiseOr $value): ?MethodCall
+    {
+        $values[] = $value->right;
+
+        if ($value->left instanceof BitwiseOr) {
+            $values[] = $value->left->right;
+            $values[] = $value->left->left;
+        } else {
+            $values[] = $value->left;
+        }
+
+        ksort($values);
+
+        if ($this->shouldSkipBitwiseOrValues($values)) {
+            return null;
+        }
+
+        return $methodCall;
     }
 
     /**
