@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -194,13 +195,16 @@ CODE_SAMPLE
     private function resolveClassConstFetchNames(BitwiseOr $bitwiseOr): array
     {
         $values = [];
-        $values[] = $bitwiseOr->right;
 
-        if ($bitwiseOr->left instanceof BitwiseOr) {
-            $values[] = $bitwiseOr->left->right;
-            $values[] = $bitwiseOr->left->left;
-        } else {
-            $values[] = $bitwiseOr->left;
+        /** @var BitwiseOr|Expr $bitwiseOr */
+        while ($bitwiseOr instanceof BitwiseOr) {
+            $values[] = $bitwiseOr->right;
+            $bitwiseOr = $bitwiseOr->left;
+
+            if (! $bitwiseOr instanceof BitwiseOr) {
+                $values[] = $bitwiseOr;
+                break;
+            }
         }
 
         krsort($values);
