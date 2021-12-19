@@ -140,16 +140,8 @@ CODE_SAMPLE
             return [];
         }
 
-        /** @var ClassConstFetch[] $classConstFetches */
-        $classConstFetches = [];
         /** @var ClassConstFetch[] $values */
-        foreach ($values as $value) {
-            /** @var ClassConstFetch $result */
-            $result = $this->resolveClassConstFetch($value);
-            $classConstFetches[] = $result;
-        }
-
-        return $classConstFetches;
+        return $values;
     }
 
     /**
