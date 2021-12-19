@@ -115,7 +115,7 @@ CODE_SAMPLE
             return $this->processClassConstFetches($node, $classConstFetches);
         }
 
-        return $node;
+        return null;
     }
 
     /**
