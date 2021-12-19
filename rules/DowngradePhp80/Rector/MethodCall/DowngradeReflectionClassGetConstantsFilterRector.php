@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -21,6 +20,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeReflectionClassGetConstantsFilterRector extends AbstractRector
 {
+    /**
+     * @var array<string, string>
+     */
+    private const MAP_CONSTANT_TO_METHOD = [
+        'IS_PUBLIC' => 'isPublic',
+        'IS_PROTECTED' => 'isProtected',
+        'IS_PRIVATE' => 'isPrivate',
+    ];
+
     /**
      * @return array<class-string<Node>>
      */
@@ -66,7 +74,6 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Arg[] $args */
         $args = $node->getArgs();
         $value = $args[0]->value;
 
@@ -74,8 +81,13 @@ CODE_SAMPLE
             return null;
         }
 
+        $classConstFetches = [];
         if ($value instanceof ClassConstFetch) {
-            $classConstFetches = [$this->resolveClassConstFetch($value)];
+            $classConstFetch = $this->resolveClassConstFetch($value);
+
+            if ($classConstFetch instanceof ClassConstFetch) {
+                $classConstFetches = [$classConstFetch];
+            }
         }
 
         if ($value instanceof BitwiseOr) {
@@ -83,10 +95,19 @@ CODE_SAMPLE
         }
 
         if ($classConstFetches !== []) {
-            // process create definition with array_walk
+            return $this->processClassConstFetches($node, $classConstFetches);
         }
 
         return $node;
+    }
+
+    /**
+     * @param ClassConstFetch[] $classConstFetches
+     */
+    private function processClassConstFetches(MethodCall $methodCall, array $classConstFetches): MethodCall
+    {
+        // to do process create array walk with loop ifs and re-assign result
+        return $methodCall;
     }
 
     private function resolveClassConstFetch(ClassConstFetch $classConstFetch): ?ClassConstFetch
@@ -119,12 +140,16 @@ CODE_SAMPLE
             return [];
         }
 
-        $classConstFetchs = [];
+        /** @var ClassConstFetch[] $classConstFetches */
+        $classConstFetches = [];
+        /** @var ClassConstFetch[] $values */
         foreach ($values as $value) {
-            $classConstFetchs[] = $this->resolveClassConstFetch($value);
+            /** @var ClassConstFetch $result */
+            $result = $this->resolveClassConstFetch($value);
+            $classConstFetches[] = $result;
         }
 
-        return $classConstFetchs;
+        return $classConstFetches;
     }
 
     /**
@@ -155,9 +180,10 @@ CODE_SAMPLE
             return true;
         }
 
+        $constants = array_keys(self::MAP_CONSTANT_TO_METHOD);
         return ! $this->nodeNameResolver->isNames(
             $classConstFetch->name,
-            ['IS_PUBLIC', 'IS_PROTECTED', 'IS_PRIVATE']
+            $constants
         );
     }
 
