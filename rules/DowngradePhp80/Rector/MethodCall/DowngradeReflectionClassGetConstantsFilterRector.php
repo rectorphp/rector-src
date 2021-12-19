@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -24,6 +23,7 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\VariableNaming;
+use Rector\NodeCollector\NodeAnalyzer\BitwiseOrAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -44,7 +44,8 @@ final class DowngradeReflectionClassGetConstantsFilterRector extends AbstractRec
 
     public function __construct(
         private readonly VariableNaming $variableNaming,
-        private readonly IfManipulator $ifManipulator
+        private readonly IfManipulator $ifManipulator,
+        private readonly BitwiseOrAnalyzer $bitwiseOrAnalyzer
     ) {
     }
 
@@ -194,20 +195,7 @@ CODE_SAMPLE
      */
     private function resolveClassConstFetchNames(BitwiseOr $bitwiseOr): array
     {
-        $values = [];
-
-        /** @var BitwiseOr|Expr $bitwiseOr */
-        while ($bitwiseOr instanceof BitwiseOr) {
-            $values[] = $bitwiseOr->right;
-            $bitwiseOr = $bitwiseOr->left;
-
-            if (! $bitwiseOr instanceof BitwiseOr) {
-                $values[] = $bitwiseOr;
-                break;
-            }
-        }
-
-        krsort($values);
+        $values = $this->bitwiseOrAnalyzer->findBitwiseOrConditions($bitwiseOr);
 
         if ($this->shouldSkipBitwiseOrValues($values)) {
             return [];
