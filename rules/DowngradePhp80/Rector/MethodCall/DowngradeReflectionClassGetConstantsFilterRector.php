@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Type\ObjectType;
 use Rector\Core\NodeManipulator\IfManipulator;
@@ -114,10 +115,21 @@ CODE_SAMPLE
     /**
      * @param ClassConstFetch[] $classConstFetches
      */
-    private function processClassConstFetches(MethodCall $methodCall, array $classConstFetches): Variable
+    private function processClassConstFetches(MethodCall $methodCall, array $classConstFetches): ?Variable
     {
         $scope = $methodCall->getAttribute(AttributeKey::SCOPE);
         $reflectionClassConstants = $this->variableNaming->createCountedValueName('reflectionClassConstants', $scope);
+
+        $currentStmt = $methodCall->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStmt instanceof Stmt) {
+            return null;
+        }
+
+        $assign = new Assign(
+            new Variable($this->variableNaming->createCountedValueName($reflectionClassConstants, $scope)),
+            new MethodCall($methodCall->var, 'getReflectionConstants')
+        );
+        $this->addNodeBeforeNode(new Expression($assign), $currentStmt);
 
         return new Variable($reflectionClassConstants);
 
