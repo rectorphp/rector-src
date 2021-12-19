@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
+use Attribute;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Expression;
 use PHPStan\Type\ObjectType;
+use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Naming\Naming\VariableNaming;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -28,6 +35,10 @@ final class DowngradeReflectionClassGetConstantsFilterRector extends AbstractRec
         'IS_PROTECTED' => 'isProtected',
         'IS_PRIVATE' => 'isPrivate',
     ];
+
+    public function __construct(private readonly VariableNaming $variableNaming, private readonly IfManipulator $ifManipulator)
+    {
+    }
 
     /**
      * @return array<class-string<Node>>
@@ -69,7 +80,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $ifs = null;
         if ($this->shouldSkip($node)) {
             return null;
         }
@@ -104,10 +114,19 @@ CODE_SAMPLE
     /**
      * @param ClassConstFetch[] $classConstFetches
      */
-    private function processClassConstFetches(MethodCall $methodCall, array $classConstFetches): MethodCall
+    private function processClassConstFetches(MethodCall $methodCall, array $classConstFetches): Variable
     {
-        // to do process create array walk with loop ifs and re-assign result
-        return $methodCall;
+        $scope = $methodCall->getAttribute(AttributeKey::SCOPE);
+        $reflectionClassConstants = $this->variableNaming->createCountedValueName('reflectionClassConstants', $scope);
+
+        return new Variable($reflectionClassConstants);
+
+       // $assign = new Assign(
+         //   new Variable($reflectionClassConstants),
+          //  new MethodCall($methodCall->var, 'getReflectionConstants')
+        //);
+
+        //return $assign;
     }
 
     private function resolveClassConstFetch(ClassConstFetch $classConstFetch): ?ClassConstFetch
