@@ -27,7 +27,7 @@ final class DowngradeReflectionClassGetConstantsFilterRector extends AbstractRec
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove named argument',
+            'Downgrade ReflectionClass->getConstants(ReflectionClassConstant::IS_*)',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
