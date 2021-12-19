@@ -19,9 +19,12 @@ $reflectionClass = new \ReflectionClass(Foo::class);
 $reflectionClassConstants = $reflectionClass->getReflectionConstants();
 $result = [];
 array_walk($reflectionClassConstants, function ($value) use (&$result) {
-    if ($value->isPublic() || $value->isProtected()) {
+    if ($value->isPublic()) {
        $result[$value->getName()] = $value->getValue();
     }
+    if ($value->isProtected()) {
+        $result[$value->getName()] = $value->getValue();
+     }
 });
 $constants = $result;
 
