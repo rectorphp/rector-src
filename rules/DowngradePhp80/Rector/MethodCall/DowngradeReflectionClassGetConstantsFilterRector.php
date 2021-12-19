@@ -98,30 +98,30 @@ CODE_SAMPLE
             return null;
         }
 
-        $classConstFetches = [];
+        $classConstFetchNames = [];
         if ($value instanceof ClassConstFetch) {
-            $classConstFetch = $this->resolveClassConstFetch($value);
+            $classConstFetchName = $this->resolveClassConstFetchName($value);
 
-            if ($classConstFetch instanceof ClassConstFetch) {
-                $classConstFetches = [$classConstFetch];
+            if (is_string($classConstFetchName)) {
+                $classConstFetchNames = [$classConstFetchName];
             }
         }
 
         if ($value instanceof BitwiseOr) {
-            $classConstFetches = $this->resolveClassConstFetches($value);
+            $classConstFetchNames = $this->resolveClassConstFetchNames($value);
         }
 
-        if ($classConstFetches !== []) {
-            return $this->processClassConstFetches($node, $classConstFetches);
+        if ($classConstFetchNames !== []) {
+            return $this->processClassConstFetches($node, $classConstFetchNames);
         }
 
         return null;
     }
 
     /**
-     * @param ClassConstFetch[] $classConstFetches
+     * @param string[] $classConstFetchNames
      */
-    private function processClassConstFetches(MethodCall $methodCall, array $classConstFetches): ?Variable
+    private function processClassConstFetches(MethodCall $methodCall, array $classConstFetchNames): ?Variable
     {
         $scope = $methodCall->getAttribute(AttributeKey::SCOPE);
         $reflectionClassConstants = $this->variableNaming->createCountedValueName('reflectionClassConstants', $scope);
@@ -148,10 +148,8 @@ CODE_SAMPLE
 
         $ifs = [];
         $valueVariable = new Variable('value');
-        foreach ($classConstFetches as $classConstFetch) {
-            /** @var Identifier $name */
-            $name = $classConstFetch->name;
-            $methodCallName = self::MAP_CONSTANT_TO_METHOD[$name->toString()];
+        foreach ($classConstFetchNames as $classConstFetchName) {
+            $methodCallName = self::MAP_CONSTANT_TO_METHOD[$classConstFetchName];
 
             $key = new MethodCall($valueVariable, 'getName');
             $value = new MethodCall($valueVariable, 'getValue');
@@ -164,10 +162,6 @@ CODE_SAMPLE
                 new Expression(new Assign($assignVar, $assignValue))
             );
         }
-
-        $ifs = array_map('serialize', $ifs);
-        $ifs = array_unique($ifs);
-        $ifs = array_map('unserialize', $ifs);
 
         $closure = new Closure();
         $closure->params = [new Param(new Variable('value'))];
@@ -183,19 +177,21 @@ CODE_SAMPLE
         return $variableResult;
     }
 
-    private function resolveClassConstFetch(ClassConstFetch $classConstFetch): ?ClassConstFetch
+    private function resolveClassConstFetchName(ClassConstFetch $classConstFetch): ?string
     {
         if ($this->shouldSkipClassConstFetch($classConstFetch)) {
             return null;
         }
 
-        return $classConstFetch;
+        /** @var Identifier $name */
+        $name = $classConstFetch->name;
+        return $name->toString();
     }
 
     /**
-     * @return ClassConstFetch[]
+     * @return string[]
      */
-    private function resolveClassConstFetches(BitwiseOr $bitwiseOr): array
+    private function resolveClassConstFetchNames(BitwiseOr $bitwiseOr): array
     {
         $values = [];
         $values[] = $bitwiseOr->right;
@@ -213,8 +209,15 @@ CODE_SAMPLE
             return [];
         }
 
+        $classConstFetchNames = [];
         /** @var ClassConstFetch[] $values */
-        return $values;
+        foreach ($values as $value) {
+            /** @var Identifier $name */
+            $name = $value->name;
+            $classConstFetchNames[] = $name->toString();
+        }
+
+        return array_unique($classConstFetchNames);
     }
 
     /**
