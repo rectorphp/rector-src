@@ -241,6 +241,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($classConstFetch->class->toString() !== 'ReflectionClassConstant') {
+            return true;
+        }
+
         if (! $classConstFetch->name instanceof Identifier) {
             return true;
         }
