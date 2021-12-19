@@ -74,7 +74,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($varType->getName() !== 'ReflectionClass') {
+        if ($varType->getClassName() !== 'ReflectionClass') {
             return true;
         }
 
