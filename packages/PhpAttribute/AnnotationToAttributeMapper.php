@@ -13,11 +13,6 @@ use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 final class AnnotationToAttributeMapper
 {
     /**
-     * @var string
-     */
-    final public const REMOVE_ARRAY = 'remove_array';
-
-    /**
      * @param AnnotationToAttributeMapperInterface[] $annotationToAttributeMappers
      */
     public function __construct(
@@ -40,6 +35,6 @@ final class AnnotationToAttributeMapper
             return $value;
         }
 
-        return self::REMOVE_ARRAY;
+        return Enum\DocTagNodeState::REMOVE_ARRAY;
     }
 }
