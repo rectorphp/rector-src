@@ -20,7 +20,7 @@ $reflectionClassConstants = $reflectionClass->getReflectionConstants();
 $result = [];
 array_walk($reflectionClassConstants, function ($value) use (&$result) {
     if ($value->isPublic()) {
-       $result[$value->getName()] = $value->getValue();
+        $result[$value->getName()] = $value->getValue();
     }
 });
 $constants = $result;

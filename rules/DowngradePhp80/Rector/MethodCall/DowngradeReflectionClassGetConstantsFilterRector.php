@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Rector\MethodCall;
 
-use Attribute;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Type\ObjectType;
@@ -37,8 +41,10 @@ final class DowngradeReflectionClassGetConstantsFilterRector extends AbstractRec
         'IS_PRIVATE' => 'isPrivate',
     ];
 
-    public function __construct(private readonly VariableNaming $variableNaming, private readonly IfManipulator $ifManipulator)
-    {
+    public function __construct(
+        private readonly VariableNaming $variableNaming,
+        private readonly IfManipulator $ifManipulator
+    ) {
     }
 
     /**
@@ -125,20 +131,52 @@ CODE_SAMPLE
             return null;
         }
 
+        $variableReflectionClassConstants = new Variable($this->variableNaming->createCountedValueName(
+            $reflectionClassConstants,
+            $scope
+        ));
         $assign = new Assign(
-            new Variable($this->variableNaming->createCountedValueName($reflectionClassConstants, $scope)),
+            $variableReflectionClassConstants,
             new MethodCall($methodCall->var, 'getReflectionConstants')
         );
         $this->addNodeBeforeNode(new Expression($assign), $currentStmt);
 
-        return new Variable($reflectionClassConstants);
+        $result = $this->variableNaming->createCountedValueName('result', $scope);
+        $variableResult = new Variable($result);
+        $assignVariableResult = new Assign($variableResult, new Array_());
+        $this->addNodeBeforeNode(new Expression($assignVariableResult), $currentStmt);
 
-       // $assign = new Assign(
-         //   new Variable($reflectionClassConstants),
-          //  new MethodCall($methodCall->var, 'getReflectionConstants')
-        //);
+        $ifs = [];
+        $valueVariable = new Variable('value');
+        foreach ($classConstFetches as $classConstFetch) {
+            /** @var Identifier $name */
+            $name = $classConstFetch->name;
+            $methodCallName = self::MAP_CONSTANT_TO_METHOD[$name->toString()];
 
-        //return $assign;
+            $key = new MethodCall($valueVariable, 'getName');
+            $value = new MethodCall($valueVariable, 'getValue');
+
+            $assignVar = new ArrayDimFetch($variableResult, $key);
+            $assignValue = $value;
+
+            $ifs[] = $this->ifManipulator->createIfExpr(
+                new MethodCall($valueVariable, $methodCallName),
+                new Expression(new Assign($assignVar, $assignValue))
+            );
+        }
+
+        $closure = new Closure();
+        $closure->params = [new Param(new Variable('value'))];
+        $closure->uses = [new ClosureUse($variableResult, true)];
+        $closure->stmts = $ifs;
+
+        $funcCall = $this->nodeFactory->createFuncCall(
+            'array_walk',
+            [$variableReflectionClassConstants, $closure]
+        );
+        $this->addNodeBeforeNode(new Expression($funcCall), $currentStmt);
+
+        return $variableResult;
     }
 
     private function resolveClassConstFetch(ClassConstFetch $classConstFetch): ?ClassConstFetch
@@ -165,8 +203,7 @@ CODE_SAMPLE
             $values[] = $bitwiseOr->left;
         }
 
-        $values = array_unique($values);
-        ksort($values);
+        krsort($values);
 
         if ($this->shouldSkipBitwiseOrValues($values)) {
             return [];
@@ -209,10 +246,7 @@ CODE_SAMPLE
         }
 
         $constants = array_keys(self::MAP_CONSTANT_TO_METHOD);
-        return ! $this->nodeNameResolver->isNames(
-            $classConstFetch->name,
-            $constants
-        );
+        return ! $this->nodeNameResolver->isNames($classConstFetch->name, $constants);
     }
 
     private function shouldSkip(MethodCall $methodCall): bool
