@@ -103,8 +103,7 @@ CODE_SAMPLE
         if (! $parentClassReflection instanceof ClassReflection) {
             $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
             if ($parent instanceof Assign && $parent->expr === $node) {
-                $parent->expr = $this->nodeFactory->createNull();
-                return null;
+                return $this->nodeFactory->createNull();
             }
 
             $this->removeNode($node);
