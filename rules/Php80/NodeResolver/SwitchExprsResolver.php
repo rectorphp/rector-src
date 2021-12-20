@@ -110,6 +110,8 @@ final class SwitchExprsResolver
             $caseToMove = $switch->cases[$key];
             unset($switch->cases[$key]);
             $switch->cases[] = $caseToMove;
+
+            break;
         }
     }
 
