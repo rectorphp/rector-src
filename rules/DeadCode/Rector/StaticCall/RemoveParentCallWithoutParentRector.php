@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\StaticCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -100,6 +101,12 @@ CODE_SAMPLE
 
         $parentClassReflection = $this->parentClassScopeResolver->resolveParentClassReflection($scope);
         if (! $parentClassReflection instanceof ClassReflection) {
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parent instanceof Assign && $parent->expr === $node) {
+                $parent->expr = $this->nodeFactory->createNull();
+                return null;
+            }
+
             $this->removeNode($node);
             return null;
         }
