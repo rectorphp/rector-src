@@ -86,9 +86,11 @@ CODE_SAMPLE
         if (! $parent instanceof Ternary) {
             return $ternary;
         }
+
         if (! $this->nodeComparator->areNodesEqual($parent, $ternary)) {
             return $ternary;
         }
+
         return null;
     }
 }
