@@ -84,9 +84,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
         $args = [new Arg($node->var), new Arg(new String_('getAttributes'))];
 
-        return new Ternary($this->nodeFactory->createFuncCall('method_exists', $args), $node, new Array_([]));
+        $ternary = new Ternary($this->nodeFactory->createFuncCall('method_exists', $args), $node, new Array_([]));
+
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Ternary && $this->nodeComparator->areNodesEqual($parent, $ternary)) {
+            return null;
+        }
+
+        $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
+        return $ternary;
     }
 }
