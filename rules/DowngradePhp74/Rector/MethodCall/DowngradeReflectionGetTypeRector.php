@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp74\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -88,8 +90,10 @@ CODE_SAMPLE
         }
 
         $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
+        $args = [new Arg($node->var), new Arg(new String_('getType'))];
+
         return new Ternary(
-            $this->nodeFactory->createFuncCall('method_exists', [$node->var, 'getType']),
+            $this->nodeFactory->createFuncCall('method_exists', $args),
             $node,
             $this->nodeFactory->createNull()
         );
