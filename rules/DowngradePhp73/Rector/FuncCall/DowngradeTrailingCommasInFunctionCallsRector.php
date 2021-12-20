@@ -7,6 +7,7 @@ namespace Rector\DowngradePhp73\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp73\Tokenizer\FollowedByCommaAnalyzer;
@@ -65,7 +66,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class, MethodCall::class, StaticCall::class, Node\Expr\New_::class];
+        return [FuncCall::class, MethodCall::class, StaticCall::class, New_::class];
     }
 
     /**
