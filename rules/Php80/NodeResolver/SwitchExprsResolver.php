@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\ValueObject\CondAndExpr;
 
@@ -24,6 +25,8 @@ final class SwitchExprsResolver
     {
         $condAndExpr = [];
         $collectionEmptyCasesCond = [];
+
+        $switch = $this->moveDefaultLast($switch);
 
         foreach ($switch->cases as $key => $case) {
             if (! $this->isValidCase($case)) {
@@ -83,6 +86,35 @@ final class SwitchExprsResolver
         }
 
         return $condAndExpr;
+    }
+
+    private function moveDefaultLast(Switch_ $switch): Switch_
+    {
+        $keyMoved = null;
+
+        foreach ($switch->cases as $key => $case) {
+            if ($case->cond === null) {
+                // check next
+                $next = $case->getAttribute(AttributeKey::NEXT_NODE);
+                if ($next instanceof Case_) {
+                    for ($loop = $key -1; $loop >=0; --$loop) {
+                        if ($switch->cases[$loop]->stmts === []) {
+                            unset($switch->cases[$loop]);
+                        }
+                    }
+
+                    $keyMoved = $key;
+                }
+            }
+        }
+
+        if (is_int($keyMoved)) {
+            $caseToMove = $switch->cases[$keyMoved];
+            unset($switch->cases[$keyMoved]);
+            $switch->cases[] = $caseToMove;
+        }
+
+        return $switch;
     }
 
     private function isValidCase(Case_ $case): bool
