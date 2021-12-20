@@ -110,6 +110,7 @@ final class SwitchExprsResolver
             }
 
             $keyMoved = $key;
+            break;
         }
 
         if (! is_int($keyMoved)) {
