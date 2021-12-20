@@ -78,12 +78,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // avoid infinite loop
-        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE);
-        if ($createdByRule === self::class) {
-            return null;
-        }
-
         $args = [new Arg($node->var), new Arg(new String_('getAttributes'))];
 
         $ternary = new Ternary($this->nodeFactory->createFuncCall('method_exists', $args), $node, new Array_([]));
@@ -93,7 +87,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
         return $ternary;
     }
 }
