@@ -89,8 +89,6 @@ final class SwitchExprsResolver
 
     private function moveDefaultLast(Switch_ $switch): void
     {
-        $keyMoved = null;
-
         foreach ($switch->cases as $key => $case) {
             if ($case->cond instanceof Expr) {
                 continue;
@@ -109,17 +107,10 @@ final class SwitchExprsResolver
                 unset($switch->cases[$loop]);
             }
 
-            $keyMoved = $key;
-            break;
+            $caseToMove = $switch->cases[$key];
+            unset($switch->cases[$key]);
+            $switch->cases[] = $caseToMove;
         }
-
-        if (! is_int($keyMoved)) {
-            return;
-        }
-
-        $caseToMove = $switch->cases[$keyMoved];
-        unset($switch->cases[$keyMoved]);
-        $switch->cases[] = $caseToMove;
     }
 
     private function isValidCase(Case_ $case): bool
