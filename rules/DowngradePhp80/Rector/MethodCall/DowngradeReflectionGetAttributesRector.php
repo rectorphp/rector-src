@@ -87,10 +87,6 @@ CODE_SAMPLE
         $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
         $args = [new Arg($node->var), new Arg(new String_('getAttributes'))];
 
-        return new Ternary(
-            $this->nodeFactory->createFuncCall('method_exists', $args),
-            $node,
-            new Array_([])
-        );
+        return new Ternary($this->nodeFactory->createFuncCall('method_exists', $args), $node, new Array_([]));
     }
 }
