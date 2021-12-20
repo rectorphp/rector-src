@@ -177,20 +177,20 @@ CODE_SAMPLE
     /**
      * @param Stmt[] $stmts
      */
-    private function unwrapStmts(array $stmts, Node $node): void
+    private function unwrapStmts(array $stmts, If_ $if): void
     {
         // move /* */ doc block from if to first element to keep it
-        $currentPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $currentPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($if);
 
         foreach ($stmts as $key => $stmt) {
             if ($key === 0) {
                 $stmt->setAttribute(AttributeKey::PHP_DOC_INFO, $currentPhpDocInfo);
 
                 // move // comments
-                $stmt->setAttribute(AttributeKey::COMMENTS, $node->getComments());
+                $stmt->setAttribute(AttributeKey::COMMENTS, $if->getComments());
             }
 
-            $this->nodesToAddCollector->addNodeAfterNode($stmt, $node);
+            $this->nodesToAddCollector->addNodeAfterNode($stmt, $if);
         }
     }
 }
