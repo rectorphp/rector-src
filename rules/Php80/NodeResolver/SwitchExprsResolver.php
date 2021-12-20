@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\ValueObject\CondAndExpr;
 
@@ -98,8 +97,7 @@ final class SwitchExprsResolver
             }
 
             // check next
-            $next = $case->getAttribute(AttributeKey::NEXT_NODE);
-            if (! $next instanceof Case_) {
+            if (! isset($switch->cases[$key+1])) {
                 return;
             }
 
