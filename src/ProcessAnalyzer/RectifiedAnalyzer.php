@@ -27,17 +27,14 @@ use Rector\Core\ValueObject\RectifiedNode;
 final class RectifiedAnalyzer
 {
     /**
+     * @var array<class-string<Node>>
+     */
+    private const EXCLUDE_NODES = [Assign::class, Class_::class];
+
+    /**
      * @var array<string, RectifiedNode|null>
      */
     private array $previousFileWithNodes = [];
-
-    /**
-     * @var array<class-string<Node>>
-     */
-    private const EXCLUDE_NODES = [
-        Assign::class,
-        Class_::class,
-    ];
 
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory
