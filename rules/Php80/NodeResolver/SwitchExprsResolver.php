@@ -97,15 +97,9 @@ final class SwitchExprsResolver
                 // check next
                 $next = $case->getAttribute(AttributeKey::NEXT_NODE);
                 if ($next instanceof Case_) {
-<<<<<<< HEAD
-                    for ($loop = $key - 1; $loop >= 0; --$loop) {
-                        if ($switch->cases[$loop]->stmts === []) {
-                            unset($switch->cases[$loop]);
-=======
                     for ($loop = $key -1; $loop >=0; --$loop) {
                         if ($switch->cases[$loop]->stmts !== []) {
                             break;
->>>>>>> d4ad401d1a (break early when in the middle)
                         }
 
                         unset($switch->cases[$loop]);
