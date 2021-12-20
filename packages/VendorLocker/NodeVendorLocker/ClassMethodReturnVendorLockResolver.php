@@ -45,8 +45,9 @@ final class ClassMethodReturnVendorLockResolver
         foreach ($ancestorClassReflections as $ancestorClassReflections) {
             $nativeClassReflection = $ancestorClassReflections->getNativeReflection();
 
+            $nativeClassHasMethod =  $nativeClassReflection->hasMethod($methodName);
             // this should avoid detecting @method as real method
-            if (! $nativeClassReflection->hasMethod($methodName)) {
+            if (! $nativeClassHasMethod) {
                 continue;
             }
 
