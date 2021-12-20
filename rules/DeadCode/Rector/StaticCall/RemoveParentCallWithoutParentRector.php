@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\StaticCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -101,13 +102,7 @@ CODE_SAMPLE
 
         $parentClassReflection = $this->parentClassScopeResolver->resolveParentClassReflection($scope);
         if (! $parentClassReflection instanceof ClassReflection) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parent instanceof Assign && $parent->expr === $node) {
-                return $this->nodeFactory->createNull();
-            }
-
-            $this->removeNode($node);
-            return null;
+            return $this->processNoParentReflection($node);
         }
 
         $classMethod = $this->betterNodeFinder->findParentType($node, ClassMethod::class);
@@ -132,6 +127,17 @@ CODE_SAMPLE
 
         $this->removeNode($node);
 
+        return null;
+    }
+
+    private function processNoParentReflection(StaticCall $staticCall): ?ConstFetch
+    {
+        $parent = $staticCall->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parent instanceof Assign && $parent->expr === $staticCall) {
+            return $this->nodeFactory->createNull();
+        }
+
+        $this->removeNode($staticCall);
         return null;
     }
 }
