@@ -81,6 +81,7 @@ CODE_SAMPLE
             return null;
         }
 
+        // avoid infinite loop
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE);
         if ($createdByRule === self::class) {
             return null;
