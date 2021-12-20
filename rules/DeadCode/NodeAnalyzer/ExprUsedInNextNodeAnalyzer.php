@@ -30,6 +30,9 @@ final class ExprUsedInNextNodeAnalyzer
                     return true;
                 }
 
+                /**
+                 * handle when used along with RemoveAlwaysElseRector
+                 */
                 return $node instanceof If_ && $this->hasIfChangedByRemoveAlwaysElseRector($node);
             }
         );
