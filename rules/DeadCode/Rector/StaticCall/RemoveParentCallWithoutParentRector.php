@@ -133,7 +133,7 @@ CODE_SAMPLE
     private function processNoParentReflection(StaticCall $staticCall): ?ConstFetch
     {
         $parent = $staticCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Assign && $parent->expr === $staticCall) {
+        if (! $parent instanceof Expression) {
             return $this->nodeFactory->createNull();
         }
 
