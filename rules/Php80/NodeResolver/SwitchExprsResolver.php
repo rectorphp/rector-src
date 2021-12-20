@@ -97,7 +97,7 @@ final class SwitchExprsResolver
             }
 
             // check next
-            if (! isset($switch->cases[$key+1])) {
+            if (! isset($switch->cases[$key + 1])) {
                 return;
             }
 
