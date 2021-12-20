@@ -94,7 +94,7 @@ final class SwitchExprsResolver
                 continue;
             }
 
-            // check next
+            // not has next? default is at the end, no need move
             if (! isset($switch->cases[$key + 1])) {
                 return;
             }
