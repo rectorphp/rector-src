@@ -7,6 +7,7 @@ namespace Rector\DowngradePhp74\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Ternary;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -80,6 +81,16 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->nodeFactory->createNull();
+        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE);
+        if ($createdByRule === self::class) {
+            return null;
+        }
+
+        $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
+        return new Ternary(
+            $this->nodeFactory->createFuncCall('method_exists', [$node->var, 'getType']),
+            $node,
+            $this->nodeFactory->createNull()
+        );
     }
 }

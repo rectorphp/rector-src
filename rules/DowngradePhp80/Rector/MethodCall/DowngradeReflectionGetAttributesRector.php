@@ -7,8 +7,10 @@ namespace Rector\DowngradePhp80\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Ternary;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -74,6 +76,16 @@ CODE_SAMPLE
             return null;
         }
 
-        return new Array_([]);
+        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE);
+        if ($createdByRule === self::class) {
+            return null;
+        }
+
+        $node->setAttribute(AttributeKey::CREATED_BY_RULE, self::class);
+        return new Ternary(
+            $this->nodeFactory->createFuncCall('method_exists', [$node->var, 'getAttributes']),
+            $node,
+            new Array_([])
+        );
     }
 }
