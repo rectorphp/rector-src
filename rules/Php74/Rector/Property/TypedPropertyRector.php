@@ -46,7 +46,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class TypedPropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly VarDocPropertyTypeInferer $propertyTypeInferer,
+        private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private readonly VendorLockResolver $vendorLockResolver,
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly VarTagRemover $varTagRemover,
@@ -103,7 +103,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $varType = $this->propertyTypeInferer->inferProperty($node);
+        $varType = $this->varDocPropertyTypeInferer->inferProperty($node);
         if ($varType instanceof MixedType) {
             return null;
         }

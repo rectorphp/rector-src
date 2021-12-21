@@ -24,7 +24,7 @@ final class VarDocPropertyTypeInferer
         private readonly DefaultValuePropertyTypeInferer $defaultValuePropertyTypeInferer,
         private readonly TypeFactory $typeFactory,
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
-        private PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

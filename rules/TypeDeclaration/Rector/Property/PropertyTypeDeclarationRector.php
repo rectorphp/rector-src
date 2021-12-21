@@ -25,7 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class PropertyTypeDeclarationRector extends AbstractRector
 {
     public function __construct(
-        private readonly VarDocPropertyTypeInferer $propertyTypeInferer,
+        private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
@@ -91,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $type = $this->propertyTypeInferer->inferProperty($node);
+        $type = $this->varDocPropertyTypeInferer->inferProperty($node);
         if ($type instanceof MixedType) {
             return null;
         }

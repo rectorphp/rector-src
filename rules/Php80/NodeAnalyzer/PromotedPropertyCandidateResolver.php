@@ -32,7 +32,7 @@ final class PromotedPropertyCandidateResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator,
-        private readonly VarDocPropertyTypeInferer $propertyTypeInferer,
+        private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly TypeComparator $typeComparator,
         private readonly TypeFactory $typeFactory
@@ -242,7 +242,7 @@ final class PromotedPropertyCandidateResolver
         }
 
         // @todo unknown type, not suitable?
-        $propertyType = $this->propertyTypeInferer->inferProperty($property);
+        $propertyType = $this->varDocPropertyTypeInferer->inferProperty($property);
         return $this->hasConflictingParamType($matchedParam, $propertyType);
     }
 }
