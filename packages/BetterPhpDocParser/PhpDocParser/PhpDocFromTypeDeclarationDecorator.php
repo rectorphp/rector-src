@@ -10,10 +10,11 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
@@ -66,7 +67,7 @@ final class PhpDocFromTypeDeclarationDecorator
         $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
 
         if ($functionLike instanceof ClassMethod) {
-            $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
+            $classLike = $this->betterNodeFinder->findParentByTypes($functionLike, [Class_::class, Interface_::class]);
             if ($classLike instanceof ClassLike && $this->isRequireReturnTypeWillChange(
                 $type::class,
                 $classLike,
@@ -141,10 +142,6 @@ final class PhpDocFromTypeDeclarationDecorator
 
     private function isRequireReturnTypeWillChange(string $type, ClassLike $classLike, ClassMethod $classMethod): bool
     {
-        if ($classLike instanceof Trait_) {
-            return false;
-        }
-
         if (! array_key_exists($type, self::ADD_RETURN_TYPE_WILL_CHANGE)) {
             return false;
         }

@@ -7,7 +7,7 @@ use Rector\Tests\DowngradePhp80\Rector\FunctionLike\DowngradeMixedTypeDeclaratio
 class AlreadyHasReturnTypeWillChange extends Options
 {
     #[\ReturnTypeWillChange]
-    public function offsetGet(): mixed
+    public function offsetGet($offset): mixed
     {
     }
 }
@@ -26,7 +26,7 @@ class AlreadyHasReturnTypeWillChange extends Options
      * @return mixed
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet()
+    public function offsetGet($offset)
     {
     }
 }

@@ -6,7 +6,7 @@ use Rector\Tests\DowngradePhp80\Rector\FunctionLike\DowngradeMixedTypeDeclaratio
 
 class ArrayAccessOffsetGet extends Options
 {
-    public function offsetGet(): mixed
+    public function offsetGet($offset): mixed
     {
     }
 }
@@ -25,7 +25,7 @@ class ArrayAccessOffsetGet extends Options
      * @return mixed
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet()
+    public function offsetGet($offset)
     {
     }
 }
