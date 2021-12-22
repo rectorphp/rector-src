@@ -119,7 +119,7 @@ final class PhpDocFromTypeDeclarationDecorator
 
         if ($functionLike instanceof ClassMethod) {
             $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
-            if ($classLike instanceof ClassLike && $this->isRequireReturnAddWillChange($classLike, $functionLike)) {
+            if ($classLike instanceof ClassLike && $this->isRequireReturnTypeWillChange($classLike, $functionLike)) {
                 $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
                     self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
                 );
@@ -132,7 +132,7 @@ final class PhpDocFromTypeDeclarationDecorator
         return true;
     }
 
-    private function isRequireReturnAddWillChange(ClassLike $classLike, ClassMethod $classMethod): bool
+    private function isRequireReturnTypeWillChange(ClassLike $classLike, ClassMethod $classMethod): bool
     {
         if ($classLike instanceof Trait_) {
             return false;
