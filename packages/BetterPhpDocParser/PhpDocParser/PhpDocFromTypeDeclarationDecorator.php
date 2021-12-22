@@ -14,8 +14,8 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Trait_;
-use PHPStan\Type\Type;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
@@ -24,15 +24,20 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use ReturnTypeWillChange;
 
 final class PhpDocFromTypeDeclarationDecorator
 {
+    /**
+     * @var class-string<ReturnTypeWillChange>
+     */
     private const RETURN_TYPE_WILL_CHANGE_ATTRIBUTE = 'ReturnTypeWillChange';
 
+    /**
+     * @var array<string, string[]>
+     */
     private const ADD_RETURN_TYPE_WILL_CHANGE = [
-        'ArrayAccess' => [
-            'offsetGet',
-        ],
+        'ArrayAccess' => ['offsetGet'],
     ];
 
     public function __construct(
@@ -112,11 +117,12 @@ final class PhpDocFromTypeDeclarationDecorator
             return false;
         }
 
-
         if ($functionLike instanceof ClassMethod) {
             $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
             if ($classLike instanceof ClassLike && $this->isRequireReturnAddWillChange($classLike, $functionLike)) {
-                $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE);
+                $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
+                    self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
+                );
                 $functionLike->attrGroups[] = $attributeGroup;
             }
         }
@@ -132,15 +138,21 @@ final class PhpDocFromTypeDeclarationDecorator
             return false;
         }
 
-        $className  = (string) $this->nodeNameResolver->getName($classLike);
+        $className = (string) $this->nodeNameResolver->getName($classLike);
         $objectClass = new ObjectType($className);
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
         foreach (self::ADD_RETURN_TYPE_WILL_CHANGE as $class => $methods) {
             $objectClassConfig = new ObjectType($class);
-            if ($objectClassConfig->isSuperTypeOf($objectClass)->yes() && in_array($methodName, $methods, true)) {
-                return true;
+            if (! $objectClassConfig->isSuperTypeOf($objectClass)->yes()) {
+                continue;
             }
+
+            if (! in_array($methodName, $methods, true)) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
