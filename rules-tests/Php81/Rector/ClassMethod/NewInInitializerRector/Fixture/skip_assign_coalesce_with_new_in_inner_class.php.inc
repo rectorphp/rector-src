@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 
-class SkipAssignInInnerClass
+class SkipAssignCoalesceWithNewInInnerClass
 {
     private ?Logger $logger = null;
 
