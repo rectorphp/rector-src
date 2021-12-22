@@ -128,7 +128,6 @@ final class PhpDocFromTypeDeclarationDecorator
         }
 
         $this->decorate($functionLike);
-
         return true;
     }
 
