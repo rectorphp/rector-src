@@ -134,7 +134,7 @@ final class PhpDocFromTypeDeclarationDecorator
 
         $className  = (string) $this->nodeNameResolver->getName($classLike);
         $objectClass = new ObjectType($className);
-        $methodName = (string) $this->nodeNameResolver->getName($classMethod);
+        $methodName = $this->nodeNameResolver->getName($classMethod);
 
         foreach (self::ADD_RETURN_TYPE_WILL_CHANGE as $class => $methods) {
             $objectClassConfig = new ObjectType($class);
