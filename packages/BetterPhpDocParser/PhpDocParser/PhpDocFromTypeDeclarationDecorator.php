@@ -21,6 +21,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -49,7 +50,8 @@ final class PhpDocFromTypeDeclarationDecorator
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly TypeUnwrapper $typeUnwrapper,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory
+        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -158,6 +160,10 @@ final class PhpDocFromTypeDeclarationDecorator
             }
 
             if (! in_array($methodName, $methods, true)) {
+                continue;
+            }
+
+            if ($this->phpAttributeAnalyzer->hasPhpAttribute($classMethod, self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE)) {
                 continue;
             }
 
