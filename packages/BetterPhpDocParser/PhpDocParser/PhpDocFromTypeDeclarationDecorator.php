@@ -34,10 +34,12 @@ final class PhpDocFromTypeDeclarationDecorator
     private const RETURN_TYPE_WILL_CHANGE_ATTRIBUTE = 'ReturnTypeWillChange';
 
     /**
-     * @var array<string, string[]>
+     * @var array<string, array<string, string[]>>
      */
     private const ADD_RETURN_TYPE_WILL_CHANGE = [
-        'ArrayAccess' => ['offsetGet'],
+        'PHPStan\Type\MixedType' => [
+            'ArrayAccess' => ['offsetGet'],
+        ],
     ];
 
     public function __construct(
@@ -63,7 +65,11 @@ final class PhpDocFromTypeDeclarationDecorator
 
         if ($functionLike instanceof ClassMethod) {
             $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
-            if ($classLike instanceof ClassLike && $this->isRequireReturnTypeWillChange($classLike, $functionLike)) {
+            if ($classLike instanceof ClassLike && $this->isRequireReturnTypeWillChange(
+                $type::class,
+                $classLike,
+                $functionLike
+            )) {
                 $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
                     self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
                 );
@@ -131,9 +137,13 @@ final class PhpDocFromTypeDeclarationDecorator
         return true;
     }
 
-    private function isRequireReturnTypeWillChange(ClassLike $classLike, ClassMethod $classMethod): bool
+    private function isRequireReturnTypeWillChange(string $type, ClassLike $classLike, ClassMethod $classMethod): bool
     {
         if ($classLike instanceof Trait_) {
+            return false;
+        }
+
+        if (! array_key_exists($type, self::ADD_RETURN_TYPE_WILL_CHANGE)) {
             return false;
         }
 
@@ -141,7 +151,7 @@ final class PhpDocFromTypeDeclarationDecorator
         $objectClass = new ObjectType($className);
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
-        foreach (self::ADD_RETURN_TYPE_WILL_CHANGE as $class => $methods) {
+        foreach (self::ADD_RETURN_TYPE_WILL_CHANGE[$type] as $class => $methods) {
             $objectClassConfig = new ObjectType($class);
             if (! $objectClassConfig->isSuperTypeOf($objectClass)->yes()) {
                 continue;
