@@ -99,7 +99,7 @@ CODE_SAMPLE
 
         foreach ($this->classMethodsOfClass as $class => $methods) {
             $configuredClassObjectType = new ObjectType($class);
-            if (! $configuredClassObjectType->isSuperTypeOf($objectType)) {
+            if (! $configuredClassObjectType->isSuperTypeOf($objectType)->yes()) {
                 continue;
             }
 
