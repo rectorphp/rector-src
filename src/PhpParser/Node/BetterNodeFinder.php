@@ -213,8 +213,7 @@ final class BetterNodeFinder
     public function findInFunctionlikeScoped(
         ClassMethod | Function_ | Closure $functionLike,
         callable $filter
-    ): array
-    {
+    ): array {
         $nodes = $this->find((array) $functionLike->stmts, $filter);
         $filteredNodes = [];
 
