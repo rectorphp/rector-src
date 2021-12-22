@@ -16,7 +16,7 @@ use Rector\Core\ValueObject\RectifiedNode;
  *
  *        Same Rector Rule <-> Same Node <-> Same File
  *
- * Limitations:
+ * Limitation:
  *
  *   It only check against Node which not Assign or Class_
  *
