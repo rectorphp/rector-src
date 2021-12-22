@@ -96,6 +96,7 @@ CODE_SAMPLE
         $className = (string) $this->nodeNameResolver->getName($classLike);
         $objectType = new ObjectType($className);
         $methodName = $this->nodeNameResolver->getName($node);
+        $hasChanged = false;
 
         foreach ($this->classMethodsOfClass as $class => $methods) {
             $configuredClassObjectType = new ObjectType($class);
@@ -111,8 +112,13 @@ CODE_SAMPLE
                 self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
             );
             $node->attrGroups[] = $attributeGroup;
+            $hasChanged = true;
 
             break;
+        }
+
+        if (! $hasChanged) {
+            return null;
         }
 
         return $node;
