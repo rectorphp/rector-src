@@ -4,31 +4,45 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
-use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\Type;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class PhpDocFromTypeDeclarationDecorator
 {
+    private const RETURN_TYPE_WILL_CHANGE_ATTRIBUTE = 'ReturnTypeWillChange';
+
+    private const ADD_RETURN_TYPE_WILL_CHANGE = [
+        'ArrayAccess' => [
+            'offsetGet',
+        ],
+    ];
+
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly TypeUnwrapper $typeUnwrapper
+        private readonly TypeUnwrapper $typeUnwrapper,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory
     ) {
     }
 
@@ -98,8 +112,38 @@ final class PhpDocFromTypeDeclarationDecorator
             return false;
         }
 
+
+        if ($functionLike instanceof ClassMethod) {
+            $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
+            if ($classLike instanceof ClassLike && $this->isRequireReturnAddWillChange($classLike, $functionLike)) {
+                $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE);
+                $functionLike->attrGroups[] = $attributeGroup;
+            }
+        }
+
         $this->decorate($functionLike);
+
         return true;
+    }
+
+    private function isRequireReturnAddWillChange(ClassLike $classLike, ClassMethod $classMethod): bool
+    {
+        if ($classLike instanceof Trait_) {
+            return false;
+        }
+
+        $className  = (string) $this->nodeNameResolver->getName($classLike);
+        $objectClass = new ObjectType($className);
+        $methodName = (string) $this->nodeNameResolver->getName($classMethod);
+
+        foreach (self::ADD_RETURN_TYPE_WILL_CHANGE as $class => $methods) {
+            $objectClassConfig = new ObjectType($class);
+            if ($objectClassConfig->isSuperTypeOf($objectClass)->yes() && in_array($methodName, $methods, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isTypeMatch(ComplexType|Identifier|Name $typeNode, Type $requireType): bool
