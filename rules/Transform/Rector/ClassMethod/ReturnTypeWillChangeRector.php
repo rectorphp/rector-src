@@ -84,6 +84,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->returnType !== null) {
+            return null;
+        }
+
         $classLike = $this->betterNodeFinder->findParentByTypes($node, [Class_::class, Interface_::class]);
         if (! $classLike instanceof ClassLike) {
             return null;
