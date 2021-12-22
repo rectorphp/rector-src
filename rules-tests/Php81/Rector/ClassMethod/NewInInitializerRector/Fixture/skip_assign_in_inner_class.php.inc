@@ -4,10 +4,10 @@ namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 
 class SkipAssignInInnerClass
 {
-    private Logger $logger;
+    private ?Logger $logger = null;
 
     public function __construct(
-        ?Logger $logger = null,
+        ?Logger $logger = null
     ) {
         new class {
             public $logger;
@@ -17,5 +17,7 @@ class SkipAssignInInnerClass
                 $this->logger = $logger ?? new NullLogger;
             }
         };
+
+        $this->logger = $logger;
     }
 }
