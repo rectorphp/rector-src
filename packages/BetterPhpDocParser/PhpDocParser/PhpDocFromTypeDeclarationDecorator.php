@@ -61,6 +61,16 @@ final class PhpDocFromTypeDeclarationDecorator
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
         $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
 
+        if ($functionLike instanceof ClassMethod) {
+            $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
+            if ($classLike instanceof ClassLike && $this->isRequireReturnTypeWillChange($classLike, $functionLike)) {
+                $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
+                    self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
+                );
+                $functionLike->attrGroups[] = $attributeGroup;
+            }
+        }
+
         $functionLike->returnType = null;
     }
 
@@ -115,16 +125,6 @@ final class PhpDocFromTypeDeclarationDecorator
 
         if (! $this->isTypeMatch($functionLike->returnType, $requireType)) {
             return false;
-        }
-
-        if ($functionLike instanceof ClassMethod) {
-            $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
-            if ($classLike instanceof ClassLike && $this->isRequireReturnTypeWillChange($classLike, $functionLike)) {
-                $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
-                    self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
-                );
-                $functionLike->attrGroups[] = $attributeGroup;
-            }
         }
 
         $this->decorate($functionLike);
