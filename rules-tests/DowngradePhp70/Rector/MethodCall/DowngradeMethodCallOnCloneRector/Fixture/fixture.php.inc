@@ -26,7 +26,7 @@ class Fixture
     public function run()
     {
         $object = clone $this;
-        ($object)->execute();
+        $object->execute();
     }
 
     public function execute()

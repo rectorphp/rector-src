@@ -91,6 +91,7 @@ CODE_SAMPLE
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
         $this->nodesToAddCollector->addNodeBeforeNode(new Expression($assign), $currentStatement);
         $node->var = $variable;
+        $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
         return $node;
     }

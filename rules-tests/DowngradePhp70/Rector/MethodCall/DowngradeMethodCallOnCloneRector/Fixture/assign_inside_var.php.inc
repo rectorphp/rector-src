@@ -26,7 +26,7 @@ class AssignInsidevar
     public function run()
     {
         $object = $object2 = clone $this;
-        ($object)->execute();
+        $object->execute();
     }
 
     public function execute()
