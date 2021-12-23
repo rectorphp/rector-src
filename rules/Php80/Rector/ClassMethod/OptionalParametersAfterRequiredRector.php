@@ -111,10 +111,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent(
-            $classMethodReflection,
-            $classMethod->params
-        );
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($classMethodReflection);
         if ($expectedArgOrParamOrder === null) {
             return null;
         }
@@ -141,7 +138,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $new->args);
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection);
         if ($expectedArgOrParamOrder === null) {
             return null;
         }
@@ -159,10 +156,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent(
-            $methodReflection,
-            $methodCall->args
-        );
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection);
         if ($expectedArgOrParamOrder === null) {
             return null;
         }
@@ -183,13 +177,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<Node\Arg|Node\Param> $argsOrParams
      * @return int[]|null
      */
-    private function resolveExpectedArgParamOrderIfDifferent(
-        MethodReflection $methodReflection,
-        array $argsOrParams
-    ): ?array {
+    private function resolveExpectedArgParamOrderIfDifferent(MethodReflection $methodReflection): ?array {
         if ($this->vendorLocationDetector->detectMethodReflection($methodReflection)) {
             return null;
         }
