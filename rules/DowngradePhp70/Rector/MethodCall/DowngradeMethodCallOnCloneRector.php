@@ -60,17 +60,37 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?MethodCall
     {
+        $isFoundCloneInAssign = false;
+
         if (! $node->var instanceof Clone_) {
-            return null;
+            if (! $node->var instanceof Assign) {
+                return null;
+            }
+
+            $isFoundCloneInAssign = (bool) $this->betterNodeFinder->findFirstInstanceOf(
+                $node->var->expr,
+                Clone_::class
+            );
+
+            if (! $isFoundCloneInAssign) {
+                return null;
+            }
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        $newVariableName = $this->variableNaming->createCountedValueName('object', $scope);
-        $variable = new Variable($newVariableName);
+        if ($isFoundCloneInAssign) {
+            $assign = $node->var;
+            $variable = $node->var->var;
+        } else {
+            $scope = $node->getAttribute(AttributeKey::SCOPE);
+            $newVariableName = $this->variableNaming->createCountedValueName('object', $scope);
+            $variable = new Variable($newVariableName);
+            $assign = new Assign($variable, $node->var);
+        }
+
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
 
         $this->nodesToAddCollector->addNodeBeforeNode(
-            new Expression(new Assign($variable, $node->var)),
+            new Expression($assign),
             $currentStatement
         );
         $node->var = $variable;
