@@ -199,10 +199,6 @@ CODE_SAMPLE
             $methodReflection
         );
 
-        if (count($argsOrParams) !== count($parametersAcceptor->getParameters())) {
-            return null;
-        }
-
         if ($expectedParameterReflections === $parametersAcceptor->getParameters()) {
             return null;
         }
