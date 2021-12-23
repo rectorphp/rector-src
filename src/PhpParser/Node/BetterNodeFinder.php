@@ -210,20 +210,14 @@ final class BetterNodeFinder
     /**
      * @return Node[]
      */
-    public function findInFunctionlikeScoped(
-        ClassMethod | Function_ | Closure $functionLike,
-        callable $filter
-    ): array {
-        $nodes = $this->find((array) $functionLike->stmts, $filter);
+    public function findInClassMethodScoped(ClassMethod $classMethod, callable $filter): array {
+        $nodes = $this->find((array) $classMethod->stmts, $filter);
         $filteredNodes = [];
 
         foreach ($nodes as $node) {
-            $parentFunctionLike = $this->findParentByTypes(
-                $node,
-                [ClassMethod::class, Function_::class, Closure::class]
-            );
+            $parentFunctionLike = $this->findParentType($node, ClassMethod::class);
 
-            if ($parentFunctionLike !== $functionLike) {
+            if ($parentFunctionLike !== $classMethod) {
                 continue;
             }
 
@@ -262,7 +256,7 @@ final class BetterNodeFinder
      */
     public function findClassMethodAssignsToLocalProperty(ClassMethod $classMethod, string $propertyName): array
     {
-        return $this->findInFunctionlikeScoped($classMethod, function (Node $node) use ($propertyName): bool {
+        return $this->findInClassMethodScoped($classMethod, function (Node $node) use ($propertyName): bool {
             if (! $node instanceof Assign) {
                 return false;
             }
