@@ -78,8 +78,9 @@ CODE_SAMPLE
         }
 
         if ($isFoundCloneInAssign) {
+            /** @var Assign $assign */
             $assign = $node->var;
-            $variable = $node->var->var;
+            $variable = $assign->var;
         } else {
             $scope = $node->getAttribute(AttributeKey::SCOPE);
             $newVariableName = $this->variableNaming->createCountedValueName('object', $scope);
