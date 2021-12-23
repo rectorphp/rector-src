@@ -130,7 +130,7 @@ CODE_SAMPLE
         $this->usePhpdoc = $usePhpdoc;
     }
 
-    private function changePhpDocToVoidIfNotNever(ClassMethod|Function_|Closure|Node $node)
+    private function changePhpDocToVoidIfNotNever(ClassMethod|Function_|Closure|Node $node): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
