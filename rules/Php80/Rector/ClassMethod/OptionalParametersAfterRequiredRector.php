@@ -179,7 +179,8 @@ CODE_SAMPLE
     /**
      * @return int[]|null
      */
-    private function resolveExpectedArgParamOrderIfDifferent(MethodReflection $methodReflection): ?array {
+    private function resolveExpectedArgParamOrderIfDifferent(MethodReflection $methodReflection): ?array
+    {
         if ($this->vendorLocationDetector->detectMethodReflection($methodReflection)) {
             return null;
         }
