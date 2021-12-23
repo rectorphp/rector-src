@@ -34,6 +34,9 @@ cd rector-build
 # avoid syntax error in php 7.1 and 7.2
 rm rector.php
 
+cp ../build/target-repository/bootstrap.php .
+cp ../preload.php .
+
 # Update to your local php 7.1 path
 /opt/homebrew/Cellar/php@7.1/7.1.33_4/bin/php bin/rector list --ansi
 
