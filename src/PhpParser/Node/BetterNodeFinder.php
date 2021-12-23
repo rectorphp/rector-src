@@ -210,7 +210,8 @@ final class BetterNodeFinder
     /**
      * @return Node[]
      */
-    public function findInClassMethodScoped(ClassMethod $classMethod, callable $filter): array {
+    public function findInClassMethodScoped(ClassMethod $classMethod, callable $filter): array
+    {
         $nodes = $this->find((array) $classMethod->stmts, $filter);
         $filteredNodes = [];
 
