@@ -29,10 +29,10 @@ rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests r
 
 sh build/downgrade-rector.sh rector-build
 
+cd rector-build
+
 # avoid syntax error in php 7.1 and 7.2
 rm rector.php
-
-cd rector-build
 
 # Update to your local php 7.1 path
 /opt/homebrew/Cellar/php@7.1/7.1.33_4/bin/php bin/rector list --ansi
