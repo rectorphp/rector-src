@@ -7,6 +7,7 @@ namespace Rector\Php74\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
@@ -34,6 +35,7 @@ use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -248,7 +250,7 @@ CODE_SAMPLE
         }
 
         // is we're in final class, the type can be changed
-        return ! ($this->isSafeProtectedProperty($property, $classReflection));
+        return ! ($this->isSafeProtectedProperty($property, $classReflection, $classLike));
     }
 
     private function isModifiedByTrait(ClassLike $classLike, string $propertyName): bool
@@ -273,7 +275,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isSafeProtectedProperty(Property $property, ClassReflection $classReflection): bool
+    private function isSafeProtectedProperty(Property $property, ClassReflection $classReflection, ?ClassLike $classLike): bool
     {
         if (! $property->isProtected()) {
             return false;
@@ -283,6 +285,8 @@ CODE_SAMPLE
             return false;
         }
 
-        return $classReflection->getParents() === [];
+        // there is no final interface
+        Assert::isInstanceOf($classLike, Class_::class);
+        return ! $classLike->extends instanceof FullyQualified;
     }
 }
