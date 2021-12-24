@@ -279,8 +279,7 @@ CODE_SAMPLE
         Property $property,
         ClassReflection $classReflection,
         ?ClassLike $classLike
-    ): bool
-    {
+    ): bool {
         if (! $property->isProtected()) {
             return false;
         }
