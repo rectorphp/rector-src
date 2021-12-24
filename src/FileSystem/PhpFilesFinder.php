@@ -5,20 +5,12 @@ declare(strict_types=1);
 namespace Rector\Core\FileSystem;
 
 use Rector\Caching\UnchangedFilesFilter;
+use Rector\Core\Util\StringUtils;
+use Rector\Core\ValueObject\StaticNonPhpFileSuffixes;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PhpFilesFinder
 {
-    /**
-     * @var string[]
-     */
-    private const NON_PHP_FILE_EXTENSIONS = [
-        // Laravel
-        '.blade.php',
-        // Smarty
-        '.tpl',
-    ];
-
     public function __construct(
         private readonly FilesFinder $filesFinder,
         private readonly UnchangedFilesFilter $unchangedFilesFilter
@@ -36,11 +28,8 @@ final class PhpFilesFinder
         // filter out non-PHP files
         foreach ($phpFileInfos as $key => $phpFileInfo) {
             $pathName = $phpFileInfo->getPathname();
-            foreach (self::NON_PHP_FILE_EXTENSIONS as $nonPHPFileExtension) {
-                if (str_ends_with($pathName, $nonPHPFileExtension)) {
-                    unset($phpFileInfos[$key]);
-                    continue 2;
-                }
+            if (StringUtils::isMatch($pathName, StaticNonPhpFileSuffixes::getSuffixRegexPattern())) {
+                unset($phpFileInfos[$key]);
             }
         }
 
