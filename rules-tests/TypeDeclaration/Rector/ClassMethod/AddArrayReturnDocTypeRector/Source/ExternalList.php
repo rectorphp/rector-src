@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Renaming\Rector\ConstFetch\RenameConstantRector\Source;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector\Source;
 
 final class ExternalList
 {
