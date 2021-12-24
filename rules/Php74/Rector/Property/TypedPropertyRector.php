@@ -9,7 +9,6 @@ use PhpParser\Node\ComplexType;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
@@ -272,7 +271,8 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isSafeProtectedProperty(Property $property, Class_ $class): bool {
+    private function isSafeProtectedProperty(Property $property, Class_ $class): bool
+    {
         if (! $property->isProtected()) {
             return false;
         }
