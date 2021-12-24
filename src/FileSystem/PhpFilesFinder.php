@@ -24,10 +24,7 @@ final class PhpFilesFinder
     public function findInPaths(array $paths): array
     {
         $phpFileInfos = $this->filesFinder->findInDirectoriesAndFiles($paths);
-
         $suffixRegexPattern = StaticNonPhpFileSuffixes::getSuffixRegexPattern();
-        // .blade.php will be checked early
-        $suffixRegexPattern = str_replace('blade\.php|', '', $suffixRegexPattern);
 
         // filter out non-PHP files
         foreach ($phpFileInfos as $key => $phpFileInfo) {
