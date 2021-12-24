@@ -35,7 +35,6 @@ use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -277,10 +276,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isSafeProtectedProperty(
-        Property $property,
-        Class_ $class
-    ): bool {
+    private function isSafeProtectedProperty(Property $property, Class_ $class): bool {
         if (! $property->isProtected()) {
             return false;
         }
