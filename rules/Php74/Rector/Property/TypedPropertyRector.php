@@ -232,8 +232,10 @@ CODE_SAMPLE
             return true;
         }
 
-        // skip trait properties, as they ar unpredictable based on class context they appear in
-        // skip interface properties, as interface not allowed to have property
+        /**
+         * - skip trait properties, as they ar unpredictable based on class context they appear in
+         * - skip interface properties as well, as interface not allowed to have property
+         */
         $class = $this->betterNodeFinder->findParentType($property, Class_::class);
         if (! $class instanceof Class_) {
             return true;
