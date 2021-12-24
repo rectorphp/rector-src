@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Clone_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\VariableNaming;
@@ -77,6 +78,11 @@ CODE_SAMPLE
             }
         }
 
+        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStatement instanceof Stmt) {
+            return null;
+        }
+
         if ($isFoundCloneInAssign) {
             /** @var Assign $assign */
             $assign = $node->var;
@@ -88,7 +94,6 @@ CODE_SAMPLE
             $assign = new Assign($variable, $node->var);
         }
 
-        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
         $this->nodesToAddCollector->addNodeBeforeNode(new Expression($assign), $currentStatement);
         $node->var = $variable;
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
