@@ -233,15 +233,15 @@ CODE_SAMPLE
         }
 
         // skip trait properties, as they ar unpredictable based on class context they appear in
-        $trait = $this->betterNodeFinder->findParentType($property, Trait_::class);
-        if ($trait instanceof Trait_) {
+        // skip interface properties, as interface not allowed to have property
+        $class = $this->betterNodeFinder->findParentType($property, Class_::class);
+        if (! $class instanceof Class_) {
             return true;
         }
 
         $propertyName = $this->getName($property);
 
-        $classLike = $this->betterNodeFinder->findParentType($property, ClassLike::class);
-        if ($classLike instanceof ClassLike && $this->isModifiedByTrait($classLike, $propertyName)) {
+        if ($this->isModifiedByTrait($class, $propertyName)) {
             return true;
         }
 
@@ -250,7 +250,7 @@ CODE_SAMPLE
         }
 
         // is we're in final class, the type can be changed
-        return ! ($this->isSafeProtectedProperty($property, $classReflection, $classLike));
+        return ! ($this->isSafeProtectedProperty($property, $class));
     }
 
     private function isModifiedByTrait(ClassLike $classLike, string $propertyName): bool
@@ -277,19 +277,16 @@ CODE_SAMPLE
 
     private function isSafeProtectedProperty(
         Property $property,
-        ClassReflection $classReflection,
-        ?ClassLike $classLike
+        Class_ $class
     ): bool {
         if (! $property->isProtected()) {
             return false;
         }
 
-        if (! $classReflection->isFinal()) {
+        if (! $class->isFinal()) {
             return false;
         }
 
-        // there is no final interface
-        Assert::isInstanceOf($classLike, Class_::class);
-        return ! $classLike->extends instanceof FullyQualified;
+        return ! $class->extends instanceof FullyQualified;
     }
 }
