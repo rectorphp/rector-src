@@ -25,10 +25,11 @@ final class PhpFilesFinder
     {
         $phpFileInfos = $this->filesFinder->findInDirectoriesAndFiles($paths);
 
+        $suffixRegexPattern = StaticNonPhpFileSuffixes::getSuffixRegexPattern();
         // filter out non-PHP files
         foreach ($phpFileInfos as $key => $phpFileInfo) {
             $pathName = $phpFileInfo->getPathname();
-            if (StringUtils::isMatch($pathName, StaticNonPhpFileSuffixes::getSuffixRegexPattern())) {
+            if (StringUtils::isMatch($pathName, $suffixRegexPattern)) {
                 unset($phpFileInfos[$key]);
             }
         }
