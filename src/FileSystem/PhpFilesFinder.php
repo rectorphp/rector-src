@@ -27,7 +27,7 @@ final class PhpFilesFinder
 
         $suffixRegexPattern = StaticNonPhpFileSuffixes::getSuffixRegexPattern();
         // .blade.php will be checked early
-        $suffixRegexPattern = str_replace('blade\.php', '', $suffixRegexPattern);
+        $suffixRegexPattern = str_replace('blade\.php|', '', $suffixRegexPattern);
 
         // filter out non-PHP files
         foreach ($phpFileInfos as $key => $phpFileInfo) {
