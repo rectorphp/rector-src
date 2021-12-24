@@ -254,13 +254,9 @@ CODE_SAMPLE
         return ! ($this->isSafeProtectedProperty($property, $class));
     }
 
-    private function isModifiedByTrait(ClassLike $classLike, string $propertyName): bool
+    private function isModifiedByTrait(Class_ $class, string $propertyName): bool
     {
-        if (! $classLike instanceof Class_) {
-            return false;
-        }
-
-        foreach ($classLike->getTraitUses() as $traitUse) {
+        foreach ($class->getTraitUses() as $traitUse) {
             foreach ($traitUse->traits as $traitName) {
                 $trait = $this->astResolver->resolveClassFromName($traitName->toString());
                 if (! $trait instanceof Trait_) {
