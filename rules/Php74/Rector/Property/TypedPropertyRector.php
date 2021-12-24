@@ -275,7 +275,11 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isSafeProtectedProperty(Property $property, ClassReflection $classReflection, ?ClassLike $classLike): bool
+    private function isSafeProtectedProperty(
+        Property $property,
+        ClassReflection $classReflection,
+        ?ClassLike $classLike
+    ): bool
     {
         if (! $property->isProtected()) {
             return false;
