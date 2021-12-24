@@ -232,7 +232,7 @@ CODE_SAMPLE
         }
 
         /**
-         * - skip trait properties, as they ar unpredictable based on class context they appear in
+         * - skip trait properties, as they are unpredictable based on class context they appear in
          * - skip interface properties as well, as interface not allowed to have property
          */
         $class = $this->betterNodeFinder->findParentType($property, Class_::class);
