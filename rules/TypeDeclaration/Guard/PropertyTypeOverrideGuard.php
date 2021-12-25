@@ -13,7 +13,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class PropertyTypeOverrideGuard
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver,
+        private readonly NodeNameResolver $nodeNameResolver,
     ) {
     }
 
