@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
+use Nette\Application\UI\Control;
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -207,6 +210,17 @@ CODE_SAMPLE
 
         if ($this->vendorLockResolver->isClassMethodParamLockedIn($functionLike)) {
             return true;
+        }
+
+        // is nette return type?
+        $returnType = $functionLike->returnType;
+        if ($returnType instanceof FullyQualified) {
+            $controlType = new ObjectType(Control::class);
+            $returnObjectType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+
+            if ($controlType->isSuperTypeOf($returnObjectType)->yes()) {
+                return true;
+            }
         }
 
         // no type → check it
