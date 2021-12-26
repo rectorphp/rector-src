@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp56\Rector\FuncCall;
 
+use Attribute;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Naming\Naming\VariableNaming;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -20,6 +29,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeArrayFilterUseConstantRector extends AbstractRector
 {
+    public function __construct(private readonly VariableNaming $variableNaming)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Replace use ARRAY_FILTER_USE_BOTH and ARRAY_FILTER_USE_KEY to loop to filter it', [
@@ -75,6 +88,39 @@ CODE_SAMPLE
 
     private function processClosure(FuncCall $funcCall, array $args): Variable
     {
+        /** @var Closure $closure */
+        $closure = $args[1]->value;
+        /** @var Return_[] $returns */
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($closure, Return_::class);
+
+        if ($returns === []) {
+            throw new ShouldNotHappenException();
+        }
+
+        /** @var Variable */
+        $key = $closure->params[0]->var;
+        $ifs = [];
+        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+        $result = new Variable($this->variableNaming->createCountedValueName('result', $scope));
+
+        foreach ($returns as $return) {
+            $ifs[] = new If_($return->expr, [
+                'stmts' => [
+                    new Expression(
+                        new Assign(
+                            new ArrayDimFetch(
+                                $result,
+                                $key
+                            ),
+                            new Variable('v')
+                        )
+                    )
+                ]
+            ]);
+        }
+
+        print_node($ifs);
+
         return new Variable('result');
     }
 
