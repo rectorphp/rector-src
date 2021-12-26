@@ -178,6 +178,10 @@ final class ReturnTypeInferer
             return $unionType;
         }
 
+        if ($returnsWithExpr === []) {
+            return $unionType;
+        }
+
         foreach ($returnsWithExpr as $returnWithExpr) {
             /** @var Expr $expr */
             $expr = $returnWithExpr->expr;
