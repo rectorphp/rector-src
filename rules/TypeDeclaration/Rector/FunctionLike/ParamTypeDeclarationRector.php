@@ -215,10 +215,10 @@ CODE_SAMPLE
         // is nette return type?
         $returnType = $functionLike->returnType;
         if ($returnType instanceof FullyQualified) {
-            $controlType = new ObjectType(Control::class);
+            $objectType = new ObjectType(Control::class);
             $returnObjectType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
 
-            if ($controlType->isSuperTypeOf($returnObjectType)->yes()) {
+            if ($objectType->isSuperTypeOf($returnObjectType)->yes()) {
                 return true;
             }
         }
