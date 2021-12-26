@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\DowngradePhp56\Rector\CallLike;
+namespace Rector\DowngradePhp56\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
