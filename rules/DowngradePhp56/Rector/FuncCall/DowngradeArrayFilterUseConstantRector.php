@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp56\Rector\FuncCall;
 
-use Attribute;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -29,8 +28,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeArrayFilterUseConstantRector extends AbstractRector
 {
-    public function __construct(private readonly VariableNaming $variableNaming)
-    {
+    public function __construct(
+        private readonly VariableNaming $variableNaming
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -97,7 +97,7 @@ CODE_SAMPLE
             throw new ShouldNotHappenException();
         }
 
-        /** @var Variable */
+        /** @var Variable $key */
         $key = $closure->params[0]->var;
         $ifs = [];
         $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
@@ -105,17 +105,7 @@ CODE_SAMPLE
 
         foreach ($returns as $return) {
             $ifs[] = new If_($return->expr, [
-                'stmts' => [
-                    new Expression(
-                        new Assign(
-                            new ArrayDimFetch(
-                                $result,
-                                $key
-                            ),
-                            new Variable('v')
-                        )
-                    )
-                ]
+                'stmts' => [new Expression(new Assign(new ArrayDimFetch($result, $key), new Variable('v')))],
             ]);
         }
 
