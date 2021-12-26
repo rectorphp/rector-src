@@ -172,22 +172,23 @@ final class ReturnTypeInferer
         }
 
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
-        $returns = array_filter($returns, fn ($v): bool => $v->expr instanceof Expr);
+        $returnsWithExpr = array_filter($returns, fn ($v): bool => $v->expr instanceof Expr);
 
-        if (count($returns) !== 1) {
+        if ($returns !== $returnsWithExpr) {
             return $unionType;
         }
 
-        $return = current($returns);
-        /** @var Expr $expr */
-        $expr = $return->expr;
-        $type = $this->nodeTypeResolver->getType($expr);
+        foreach ($returnsWithExpr as $returnWithExpr) {
+            /** @var Expr $expr */
+            $expr = $returnWithExpr->expr;
+            $type = $this->nodeTypeResolver->getType($expr);
 
-        if ($type instanceof BenevolentUnionType) {
-            return $types[0];
+            if (! $type instanceof BenevolentUnionType) {
+                return $unionType;
+            }
         }
 
-        return $unionType;
+        return $types[0];
     }
 
     private function isAutoImportWithFullyQualifiedReturn(bool $isAutoImport, FunctionLike $functionLike): bool
