@@ -16,7 +16,10 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\BenevolentUnionType;
+use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
@@ -28,6 +31,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\Sorter\PriorityAwareSorter;
@@ -54,6 +58,7 @@ final class ReturnTypeInferer
         private  readonly ParameterProvider $parameterProvider,
         private  readonly BetterNodeFinder $betterNodeFinder,
         private  readonly ReflectionProvider $reflectionProvider,
+        private  readonly NodeTypeResolver $nodeTypeResolver
     ) {
         $this->returnTypeInferers = $priorityAwareSorter->sort($returnTypeInferers);
     }
@@ -102,7 +107,9 @@ final class ReturnTypeInferer
             // normalize ConstStringType to ClassStringType
             $resolvedType = $this->genericClassStringTypeNormalizer->normalize($type);
 
-            return $this->resolveTypeWithVoidHandling($functionLike, $resolvedType);
+            if (! $functionLike instanceof ArrowFunction) {
+                return $this->resolveTypeWithVoidHandling($functionLike, $resolvedType);
+            }
         }
 
         return new MixedType();
@@ -122,10 +129,9 @@ final class ReturnTypeInferer
         return $type;
     }
 
-    private function resolveTypeWithVoidHandling(FunctionLike $functionLike, Type $resolvedType): Type
+    private function resolveTypeWithVoidHandling(ClassMethod|Function_|Closure $functionLike, Type $resolvedType): Type
     {
         if ($resolvedType instanceof VoidType && ! $functionLike instanceof ArrowFunction) {
-            /** @var ClassMethod|Function_|Closure $functionLike */
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $functionLike,
                 function (Node $subNode): bool {
@@ -139,6 +145,29 @@ final class ReturnTypeInferer
 
             if ($hasReturnValue) {
                 return new MixedType();
+            }
+        }
+
+        if ($resolvedType instanceof UnionType) {
+            $types = $resolvedType->getTypes();
+            if (count($types) === 2 && $types[0] instanceof IntegerType && $types[1] instanceof StringType) {
+                $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
+                    $functionLike,
+                    Return_::class
+                );
+                $returns = array_filter($returns, fn ($v): bool => $v->expr instanceof Expr);
+
+                if (count($returns) !== 1) {
+                    return $resolvedType;
+                }
+
+                $return = current($returns);
+                $expr = $return->expr;
+                $type = $this->nodeTypeResolver->getType($expr);
+
+                if ($type instanceof BenevolentUnionType) {
+                    return $types[0];
+                }
             }
         }
 

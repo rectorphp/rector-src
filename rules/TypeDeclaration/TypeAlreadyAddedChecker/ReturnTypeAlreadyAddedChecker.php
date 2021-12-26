@@ -124,13 +124,8 @@ final class ReturnTypeAlreadyAddedChecker
 
         $classMethodReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnTypeNode);
 
-        if ($classMethodReturnType instanceof FullyQualifiedObjectType) {
-            return $classMethodReturnType->isSuperTypeOf($type)
+        return $classMethodReturnType->isSuperTypeOf($type)
                 ->yes();
-        }
-
-        return $type->isSuperTypeOf($classMethodReturnType)
-            ->yes();
     }
 
     private function isStaticTypeIterable(Type $type): bool
