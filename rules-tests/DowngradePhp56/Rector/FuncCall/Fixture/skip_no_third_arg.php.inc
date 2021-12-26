@@ -8,8 +8,8 @@ final class SkipNoThirdArg
     {
         $arr = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
 
-        var_dump(array_filter($arr, function($v) {
+        array_filter($arr, function($v) {
             return $v == 4;
-        }));
+        });
     }
 }

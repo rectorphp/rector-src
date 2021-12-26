@@ -64,12 +64,15 @@ CODE_SAMPLE
             return null;
         }
 
+        $thirdArg = $args[2]->value;
+        dump($thirdArg);
+
         return $node;
     }
 
     private function shouldSkip(FuncCall $funcCall, array $args): bool
     {
-        if (! $this->nodeNameResolver->isName($funcCall->name, 'array_filter')) {
+        if (! $this->nodeNameResolver->isName($funcCall, 'array_filter')) {
             return true;
         }
 
@@ -82,7 +85,7 @@ CODE_SAMPLE
         }
 
         return ! $this->nodeNameResolver->isNames(
-            $args[2]->value->name,
+            $args[2]->value,
             ['ARRAY_FILTER_USE_KEY', 'ARRAY_FILTER_USE_BOTH']
         );
     }
