@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp56\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Variable;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -64,10 +66,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $thirdArg = $args[2]->value;
-        dump($thirdArg);
+        if ($args[1]->value instanceof Closure) {
+            return $this->processClosure($node, $args);
+        }
 
         return $node;
+    }
+
+    private function processClosure(FuncCall $funcCall, array $args): Variable
+    {
+        return new Variable('result');
     }
 
     private function shouldSkip(FuncCall $funcCall, array $args): bool
