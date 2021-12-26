@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\TypeInferer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name\FullyQualified;
@@ -63,7 +62,7 @@ final class ReturnTypeInferer
         $this->returnTypeInferers = $priorityAwareSorter->sort($returnTypeInferers);
     }
 
-    public function inferFunctionLike(FunctionLike $functionLike): Type
+    public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
     {
         return $this->inferFunctionLikeWithExcludedInferers($functionLike, []);
     }
@@ -71,8 +70,10 @@ final class ReturnTypeInferer
     /**
      * @param array<class-string<ReturnTypeInfererInterface>> $excludedInferers
      */
-    public function inferFunctionLikeWithExcludedInferers(FunctionLike $functionLike, array $excludedInferers): Type
-    {
+    public function inferFunctionLikeWithExcludedInferers(
+        ClassMethod|Function_|Closure $functionLike,
+        array $excludedInferers
+    ): Type {
         $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
             PhpVersionFeature::STATIC_RETURN_TYPE
         );
@@ -106,10 +107,7 @@ final class ReturnTypeInferer
 
             // normalize ConstStringType to ClassStringType
             $resolvedType = $this->genericClassStringTypeNormalizer->normalize($type);
-
-            if (! $functionLike instanceof ArrowFunction) {
-                return $this->resolveTypeWithVoidHandling($functionLike, $resolvedType);
-            }
+            return $this->resolveTypeWithVoidHandling($functionLike, $resolvedType);
         }
 
         return new MixedType();
@@ -131,7 +129,7 @@ final class ReturnTypeInferer
 
     private function resolveTypeWithVoidHandling(ClassMethod|Function_|Closure $functionLike, Type $resolvedType): Type
     {
-        if ($resolvedType instanceof VoidType && ! $functionLike instanceof ArrowFunction) {
+        if ($resolvedType instanceof VoidType) {
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $functionLike,
                 function (Node $subNode): bool {
@@ -149,29 +147,47 @@ final class ReturnTypeInferer
         }
 
         if ($resolvedType instanceof UnionType) {
-            $types = $resolvedType->getTypes();
-            if (count($types) === 2 && $types[0] instanceof IntegerType && $types[1] instanceof StringType) {
-                $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
-                    $functionLike,
-                    Return_::class
-                );
-                $returns = array_filter($returns, fn ($v): bool => $v->expr instanceof Expr);
-
-                if (count($returns) !== 1) {
-                    return $resolvedType;
-                }
-
-                $return = current($returns);
-                $expr = $return->expr;
-                $type = $this->nodeTypeResolver->getType($expr);
-
-                if ($type instanceof BenevolentUnionType) {
-                    return $types[0];
-                }
+            $benevolentUnionTypeIntegerType = $this->resolveBenevolentUnionTypeInteger($functionLike, $resolvedType);
+            if ($benevolentUnionTypeIntegerType instanceof IntegerType) {
+                return $benevolentUnionTypeIntegerType;
             }
         }
 
         return $resolvedType;
+    }
+
+    private function resolveBenevolentUnionTypeInteger(
+        ClassMethod|Function_|Closure $functionLike,
+        UnionType $unionType
+    ): UnionType|IntegerType {
+        $types = $unionType->getTypes();
+        $countTypes = count($types);
+
+        if ($countTypes !== 2) {
+            return $unionType;
+        }
+
+        if (! ($types[0] instanceof IntegerType && $types[1] instanceof StringType)) {
+            return $unionType;
+        }
+
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
+        $returns = array_filter($returns, fn ($v): bool => $v->expr instanceof Expr);
+
+        if (count($returns) !== 1) {
+            return $unionType;
+        }
+
+        $return = current($returns);
+        /** @var Expr $expr */
+        $expr = $return->expr;
+        $type = $this->nodeTypeResolver->getType($expr);
+
+        if ($type instanceof BenevolentUnionType) {
+            return $types[0];
+        }
+
+        return $unionType;
     }
 
     private function isAutoImportWithFullyQualifiedReturn(bool $isAutoImport, FunctionLike $functionLike): bool
