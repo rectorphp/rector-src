@@ -27,6 +27,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Traversable;
 
 final class ReturnTypeAlreadyAddedChecker
@@ -123,7 +124,12 @@ final class ReturnTypeAlreadyAddedChecker
 
         $classMethodReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnTypeNode);
 
-        return $classMethodReturnType->isSuperTypeOf($type)
+        if ($classMethodReturnType instanceof FullyQualifiedObjectType) {
+            return $classMethodReturnType->isSuperTypeOf($type)
+                ->yes();
+        }
+
+        return $type->isSuperTypeOf($classMethodReturnType)
             ->yes();
     }
 
