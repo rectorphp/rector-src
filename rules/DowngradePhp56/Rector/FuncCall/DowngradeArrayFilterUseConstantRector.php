@@ -60,15 +60,19 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $args = $node->getArgs();
-        if ($this->shouldSkip($args)) {
+        if ($this->shouldSkip($node, $args)) {
             return null;
         }
 
         return $node;
     }
 
-    private function shouldSkip(array $args): bool
+    private function shouldSkip(FuncCall $funcCall, array $args): bool
     {
+        if (! $this->nodeNameResolver->isName($funcCall->name, 'array_filter')) {
+            return true;
+        }
+
         if (! isset($args[2])) {
             return true;
         }
