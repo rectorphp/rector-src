@@ -8,7 +8,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 
 final class KeyOfFuncCallArg2
 {
-    public function getKey(FuncCall $funcCall, Arg $desiredArg)
+    public function getKey(FuncCall $funcCall)
     {
         foreach ($funcCall->args as $position => $arg) {
             if (rand(0, 1)) {
@@ -36,7 +36,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 
 final class KeyOfFuncCallArg2
 {
-    public function getKey(FuncCall $funcCall, Arg $desiredArg): int
+    public function getKey(FuncCall $funcCall): int
     {
         foreach ($funcCall->args as $position => $arg) {
             if (rand(0, 1)) {
