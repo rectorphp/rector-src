@@ -112,44 +112,6 @@ final class WorkerCommandLineFactory
 //        return $optionNames;
 //    }
 
-    /**
-     * Keeps all options that are allowed in check command options
-     *
-     * @return string[]
-     */
-    private function createProcessCommandOptions(Command $command): array
-    {
-        $inputDefinition = $command->getDefinition();
-        $processCommandOptions = [];
-
-        foreach ($inputDefinition->getOptions() as $inputOption) {
-            if ($this->shouldSkipOption($input, $checkCommandOptionName)) {
-                continue;
-            }
-
-            /** @var bool|string|null $optionValue */
-            $optionValue = $input->getOption($checkCommandOptionName);
-
-            // skip clutter
-            if ($optionValue === null) {
-                continue;
-            }
-
-            if (is_bool($optionValue)) {
-                if ($optionValue) {
-                    $processCommandOptions[] = sprintf('--%s', $checkCommandOptionName);
-                }
-
-                continue;
-            }
-
-            $processCommandOptions[] = self::OPTION_DASHES . $checkCommandOptionName;
-            $processCommandOptions[] = escapeshellarg($optionValue);
-        }
-
-        return $processCommandOptions;
-    }
-
     private function shouldSkipOption(InputInterface $input, string $optionName): bool
     {
         if (! $input->hasOption($optionName)) {

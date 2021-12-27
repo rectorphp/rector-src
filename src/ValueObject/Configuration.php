@@ -101,4 +101,9 @@ final class Configuration
     {
         return $this->isParallel;
     }
+
+    public function getConfig(): string|null
+    {
+        return $this->getMainConfigFilePath();
+    }
 }

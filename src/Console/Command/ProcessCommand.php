@@ -112,7 +112,7 @@ final class ProcessCommand extends AbstractProcessCommand
 
         // MAIN PHASE
         // 5. run Rector
-        $systemErrorsAndFileDiffs = $this->applicationFileProcessor->run($files, $configuration);
+        $systemErrorsAndFileDiffs = $this->applicationFileProcessor->run($files, $configuration, $input);
 
         // REPORTING PHASE
         // 6. reporting phase
