@@ -110,6 +110,7 @@ CODE_SAMPLE
         if (! $currentStatement instanceof Stmt) {
             return null;
         }
+
         $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
         $variable = new Variable($this->variableNaming->createCountedValueName('result', $scope));
 
