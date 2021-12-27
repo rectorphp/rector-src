@@ -10,7 +10,8 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Type\ObjectType;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\BetterPhpDocParser\PhpDocParser\PhpDocFromTypeDeclarationDecorator;
+use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -19,13 +20,8 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class ReturnTypeWillChangeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
+final class ReturnTypeWillChangeRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
-    /**
-     * @var class-string<ReturnTypeWillChange>
-     */
-    private const RETURN_TYPE_WILL_CHANGE_ATTRIBUTE = 'ReturnTypeWillChange';
-
     /**
      * @var array<string, string[]>
      */
@@ -109,7 +105,7 @@ CODE_SAMPLE
             }
 
             $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
-                self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
+                PhpDocFromTypeDeclarationDecorator::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
             );
             $node->attrGroups[] = $attributeGroup;
             $hasChanged = true;
@@ -129,7 +125,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->classMethodsOfClass = $configuration;
+        $this->classMethodsOfClass = $configuration ?? array_values(PhpDocFromTypeDeclarationDecorator::ADD_RETURN_TYPE_WILL_CHANGE);
     }
 
     public function provideMinPhpVersion(): int
