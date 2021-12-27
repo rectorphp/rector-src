@@ -134,8 +134,8 @@ final class ApplicationFileProcessor
     private function configureCustomErrorHandler(): void
     {
         $errorHandlerCallback = function (int $code, string $message, string $file, int $line): bool {
-            $reportingLevel = error_reporting();
-            if (error_reporting() & $code === 0) {
+            error_reporting();
+            if ((error_reporting() & $code === 0) !== 0) {
                 // silence @ operator
                 return true;
             }
