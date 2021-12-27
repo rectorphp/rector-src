@@ -89,6 +89,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $this->classMethodsOfClass = array_merge($this->resolveDefaultConfig(), $this->classMethodsOfClass);
         $className = (string) $this->nodeNameResolver->getName($classLike);
         $objectType = new ObjectType($className);
         $methodName = $this->nodeNameResolver->getName($node);
@@ -120,12 +121,24 @@ CODE_SAMPLE
         return $node;
     }
 
+    private function resolveDefaultConfig()
+    {
+        $configuration = [];
+        foreach(PhpDocFromTypeDeclarationDecorator::ADD_RETURN_TYPE_WILL_CHANGE as $classWithMethods) {
+            foreach ($classWithMethods as $class => $methods) {
+                $configuration[$class] = array_merge($configuration[$class] ?? [], $methods);
+            }
+        }
+
+        return $configuration;
+    }
+
     /**
      * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {
-        $this->classMethodsOfClass = $configuration ?? array_values(PhpDocFromTypeDeclarationDecorator::ADD_RETURN_TYPE_WILL_CHANGE);
+        $this->classMethodsOfClass = $configuration;
     }
 
     public function provideMinPhpVersion(): int
