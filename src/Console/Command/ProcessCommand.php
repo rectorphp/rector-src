@@ -30,6 +30,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symplify\PackageBuilder\Console\Command\CommandNaming;
 
 final class ProcessCommand extends AbstractProcessCommand
 {
@@ -57,16 +58,14 @@ final class ProcessCommand extends AbstractProcessCommand
 
     protected function configure(): void
     {
+        $this->setName(CommandNaming::classToName(self::class));
         $this->setDescription('Upgrades or refactors source code with provided rectors');
 
-        $names = $this->outputFormatterCollector->getNames();
-
-        $description = sprintf('Select output format: "%s".', implode('", "', $names));
         $this->addOption(
             Option::OUTPUT_FORMAT,
             Option::OUTPUT_FORMAT_SHORT,
             InputOption::VALUE_OPTIONAL,
-            $description,
+            'Select output format',
             ConsoleOutputFormatter::NAME
         );
 

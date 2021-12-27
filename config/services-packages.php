@@ -29,4 +29,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     // parallel
     $services->set(ParametersMerger::class);
+
+    $services->set(\Symplify\EasyParallel\ScheduleFactory::class);
+    $services->set(\Symplify\EasyParallel\FileSystem\FilePathNormalizer::class);
+    $services->set(\Symplify\EasyParallel\CpuCoreCountProvider::class);
 };
