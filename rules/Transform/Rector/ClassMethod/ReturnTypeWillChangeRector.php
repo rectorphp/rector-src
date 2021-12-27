@@ -20,6 +20,9 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\ReturnTypeWillChangeRectorTest
+ */
 final class ReturnTypeWillChangeRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
@@ -89,13 +92,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->classMethodsOfClass = array_merge($this->resolveDefaultConfig(), $this->classMethodsOfClass);
+        /** @var array<string, string[]> $classMethodsOfClass */
+        $classMethodsOfClass = [...$this->resolveDefaultConfig(), ...$this->classMethodsOfClass];
         $className = (string) $this->nodeNameResolver->getName($classLike);
         $objectType = new ObjectType($className);
         $methodName = $this->nodeNameResolver->getName($node);
         $hasChanged = false;
 
-        foreach ($this->classMethodsOfClass as $class => $methods) {
+        foreach ($classMethodsOfClass as $class => $methods) {
             $configuredClassObjectType = new ObjectType($class);
             if (! $configuredClassObjectType->isSuperTypeOf($objectType)->yes()) {
                 continue;
@@ -121,9 +125,13 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveDefaultConfig()
+    /**
+     * @return array<string, string[]>
+     */
+    private function resolveDefaultConfig(): array
     {
         $configuration = [];
+
         foreach(PhpDocFromTypeDeclarationDecorator::ADD_RETURN_TYPE_WILL_CHANGE as $classWithMethods) {
             foreach ($classWithMethods as $class => $methods) {
                 $configuration[$class] = array_merge($configuration[$class] ?? [], $methods);
