@@ -22,6 +22,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\VariableNaming;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -33,7 +34,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeArrayFilterUseConstantRector extends AbstractRector
 {
     public function __construct(
-        private readonly VariableNaming $variableNaming
+        private readonly VariableNaming $variableNaming,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -140,10 +142,10 @@ CODE_SAMPLE
                 $key
             );
 
-            $this->traverseNodesWithCallable($closure, function (Node &$subNode) use ($result, $key, $arrayValue): void {
-
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable($closure->stmts, function (Node $subNode) use ($result, $key, $arrayValue): ?If_ {
+                $subNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
                 if (! $subNode instanceof Return_) {
-                    return;
+                    return null;
                 }
 
                 $subNode = new If_($subNode->expr, [
@@ -156,13 +158,10 @@ CODE_SAMPLE
                         )
                     ],
                 ]);
-
-                print_node($subNode);
-                dump('here');die;
-
+                return $subNode;
             });
-
-            print_node($closure->stmts);die;
+            $closure->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $foreach->stmts = $closure->stmts;
 
             $this->nodesToAddCollector->addNodeBeforeNode(
                 $foreach,
