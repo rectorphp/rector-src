@@ -63,8 +63,7 @@ final class ApplicationFileProcessor
     public function run(array $files, Configuration $configuration, InputInterface $input): array
     {
         // no files found
-        $filesCount = count($files);
-        if ($filesCount === 0) {
+        if ($files === []) {
             return [
                 Bridge::SYSTEM_ERRORS => [],
                 Bridge::FILE_DIFFS => [],
@@ -83,12 +82,12 @@ final class ApplicationFileProcessor
 
             $this->fileDiffFileDecorator->decorate($files);
             $this->printFiles($files, $configuration);
-
-            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
-                $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
-                $this->systemErrors
-            );
         }
+
+        $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
+            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
+            $this->systemErrors
+        );
 
         $this->restoreErrorHandler();
 

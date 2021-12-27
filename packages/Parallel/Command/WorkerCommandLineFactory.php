@@ -53,10 +53,11 @@ final class WorkerCommandLineFactory
         }
 
         $mainCommandName = $mainCommand->getName();
+        $mainCommandNames = [$mainCommandName, $mainCommandName[0]];
 
         foreach ($args as $arg) {
             // skip command name
-            if ($arg === $mainCommandName) {
+            if (in_array($arg, $mainCommandNames, true)) {
                 break;
             }
 
@@ -96,21 +97,6 @@ final class WorkerCommandLineFactory
 
         return implode(' ', $processCommandArray);
     }
-
-//    /**
-//     * @return string[]
-//     */
-//    private function getCheckCommandOptionNames(): array
-//    {
-//        $inputDefinition = $this->processCommand->getDefinition();
-//
-//        $optionNames = [];
-//        foreach ($inputDefinition->getOptions() as $inputOption) {
-//            $optionNames[] = $inputOption->getName();
-//        }
-//
-//        return $optionNames;
-//    }
 
     private function shouldSkipOption(InputInterface $input, string $optionName): bool
     {

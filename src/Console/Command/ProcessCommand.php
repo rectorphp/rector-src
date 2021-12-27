@@ -6,7 +6,6 @@ namespace Rector\Core\Console\Command;
 
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
@@ -27,7 +26,6 @@ use Rector\VersionBonding\Application\MissedRectorDueVersionChecker;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\PackageBuilder\Console\Command\CommandNaming;
@@ -60,14 +58,6 @@ final class ProcessCommand extends AbstractProcessCommand
     {
         $this->setName(CommandNaming::classToName(self::class));
         $this->setDescription('Upgrades or refactors source code with provided rectors');
-
-        $this->addOption(
-            Option::OUTPUT_FORMAT,
-            Option::OUTPUT_FORMAT_SHORT,
-            InputOption::VALUE_OPTIONAL,
-            'Select output format',
-            ConsoleOutputFormatter::NAME
-        );
 
         parent::configure();
     }
@@ -120,7 +110,6 @@ final class ProcessCommand extends AbstractProcessCommand
         $outputFormatter = $this->outputFormatterCollector->getByName($outputFormat);
 
         $processResult = $this->processResultFactory->create($systemErrorsAndFileDiffs);
-
         $outputFormatter->report($processResult, $configuration);
 
         // invalidate affected files

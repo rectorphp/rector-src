@@ -150,6 +150,7 @@ final class ParallelFileProcessor
             );
 
             $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, self::TIMEOUT_IN_SECONDS);
+
             $parallelProcess->start(
                 // 1. callable on data
                 function (array $json) use (
@@ -162,7 +163,6 @@ final class ParallelFileProcessor
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier
                 ): void {
-
                     // decode arrays to objects
                     foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
                         if (is_string($jsonError)) {
