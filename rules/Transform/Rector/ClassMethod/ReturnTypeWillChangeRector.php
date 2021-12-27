@@ -126,22 +126,6 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<string, string[]>
-     */
-    private function resolveDefaultConfig(): array
-    {
-        $configuration = [];
-
-        foreach(PhpDocFromTypeDeclarationDecorator::ADD_RETURN_TYPE_WILL_CHANGE as $classWithMethods) {
-            foreach ($classWithMethods as $class => $methods) {
-                $configuration[$class] = array_merge($configuration[$class] ?? [], $methods);
-            }
-        }
-
-        return $configuration;
-    }
-
-    /**
      * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
@@ -152,5 +136,21 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE;
+    }
+
+    /**
+     * @return array<string, string[]>
+     */
+    private function resolveDefaultConfig(): array
+    {
+        $configuration = [];
+
+        foreach (PhpDocFromTypeDeclarationDecorator::ADD_RETURN_TYPE_WILL_CHANGE as $classWithMethods) {
+            foreach ($classWithMethods as $class => $methods) {
+                $configuration[$class] = array_merge($configuration[$class] ?? [], $methods);
+            }
+        }
+
+        return $configuration;
     }
 }
