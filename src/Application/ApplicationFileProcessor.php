@@ -54,8 +54,8 @@ final class ApplicationFileProcessor
 
         $this->restoreErrorHandler();
 
-        $systemErrorsAndFileDiffs['system_errors'] = array_merge(
-            $systemErrorsAndFileDiffs['system_errors'],
+        $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
+            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
             $this->systemErrors
         );
 
