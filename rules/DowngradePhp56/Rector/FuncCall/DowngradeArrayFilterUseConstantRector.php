@@ -125,28 +125,31 @@ CODE_SAMPLE
 
             $key = $closure->params[0]->var;
             $foreach = new Foreach_($arrayKeys, $key);
+            $stmts = [];
 
             $this->simpleCallableNodeTraverser->traverseNodesWithCallable($closure->stmts, function (Node $subNode) use (
                 $result,
                 $key,
-                $arrayValue
-            ): ?If_ {
-                $subNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-                if (! $subNode instanceof Return_) {
-                    return null;
+                $arrayValue,
+                &$stmts
+            ): void {
+                if (! $subNode instanceof Stmt) {
+                    return;
                 }
 
-                $subNode = new If_($subNode->expr, [
+                if (! $subNode instanceof Return_) {
+                    $stmts[] = $subNode;
+                }
+
+                $stmts[] = new If_($subNode->expr, [
                     'stmts' => [
                         new Expression(
                             new Assign(new ArrayDimFetch($result, $key), new ArrayDimFetch($arrayValue, $key))
                         ),
                     ],
                 ]);
-                return $subNode;
             });
-            $closure->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            $foreach->stmts = $closure->stmts;
+            $foreach->stmts = $stmts;
 
             $this->nodesToAddCollector->addNodeBeforeNode($foreach, $currentStatement);
         }
