@@ -12,6 +12,7 @@ use Rector\Core\ValueObject\Application\SystemError;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\FileFormatter\FileFormatter;
+use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\ValueObject\Bridge;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
@@ -34,6 +35,7 @@ final class ApplicationFileProcessor
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly SymfonyStyle $symfonyStyle,
         private readonly ParametersMerger $parametersMerger,
+        private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly array $fileProcessors = []
     ) {
     }
@@ -44,20 +46,32 @@ final class ApplicationFileProcessor
      */
     public function run(array $files, Configuration $configuration): array
     {
+        // no files found
+        $filesCount = count($files);
+        if ($filesCount === 0) {
+            return [];
+        }
+
         $this->configureCustomErrorHandler();
 
-        $systemErrorsAndFileDiffs = $this->processFiles($files, $configuration);
-        $this->fileFormatter->format($files);
+        dump($configuration->isParallel());
+        die;
 
-        $this->fileDiffFileDecorator->decorate($files);
-        $this->printFiles($files, $configuration);
+        if ($configuration->isParallel()) {
+        } else {
+            $systemErrorsAndFileDiffs = $this->processFiles($files, $configuration);
+            $this->fileFormatter->format($files);
+
+            $this->fileDiffFileDecorator->decorate($files);
+            $this->printFiles($files, $configuration);
+
+            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
+                $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
+                $this->systemErrors
+            );
+        }
 
         $this->restoreErrorHandler();
-
-        $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
-            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
-            $this->systemErrors
-        );
 
         return $systemErrorsAndFileDiffs;
     }
