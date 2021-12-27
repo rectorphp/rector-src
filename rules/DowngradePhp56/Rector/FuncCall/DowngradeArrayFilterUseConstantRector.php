@@ -17,8 +17,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\NodeTraverser;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\VariableNaming;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -114,12 +112,7 @@ CODE_SAMPLE
         $result = new Variable($this->variableNaming->createCountedValueName('result', $scope));
 
         $this->nodesToAddCollector->addNodeBeforeNode(
-            new Expression(
-                new Assign(
-                    $result,
-                    new Array_([])
-                )
-            ),
+            new Expression(new Assign($result, new Array_([]))),
             $currentStatement
         );
 
@@ -127,22 +120,17 @@ CODE_SAMPLE
         $constant = $args[2]->value;
 
         if ($this->nodeNameResolver->isName($constant, 'ARRAY_FILTER_USE_KEY')) {
-
             $arrayValue = $args[0]->value;
-            $arrayKeys = $this->nodeFactory->createFuncCall(
-                'array_keys',
-                [
-                    $arrayValue
-                ]
-            );
+            $arrayKeys = $this->nodeFactory->createFuncCall('array_keys', [$arrayValue]);
 
             $key = $closure->params[0]->var;
-            $foreach = new Foreach_(
-                $arrayKeys,
-                $key
-            );
+            $foreach = new Foreach_($arrayKeys, $key);
 
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable($closure->stmts, function (Node $subNode) use ($result, $key, $arrayValue): ?If_ {
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable($closure->stmts, function (Node $subNode) use (
+                $result,
+                $key,
+                $arrayValue
+            ): ?If_ {
                 $subNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
                 if (! $subNode instanceof Return_) {
                     return null;
@@ -151,11 +139,8 @@ CODE_SAMPLE
                 $subNode = new If_($subNode->expr, [
                     'stmts' => [
                         new Expression(
-                            new Assign(
-                                new ArrayDimFetch($result, $key),
-                                new ArrayDimFetch($arrayValue, $key)
-                            )
-                        )
+                            new Assign(new ArrayDimFetch($result, $key), new ArrayDimFetch($arrayValue, $key))
+                        ),
                     ],
                 ]);
                 return $subNode;
@@ -163,10 +148,7 @@ CODE_SAMPLE
             $closure->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             $foreach->stmts = $closure->stmts;
 
-            $this->nodesToAddCollector->addNodeBeforeNode(
-                $foreach,
-                $currentStatement
-            );
+            $this->nodesToAddCollector->addNodeBeforeNode($foreach, $currentStatement);
         }
 
         return $result;
