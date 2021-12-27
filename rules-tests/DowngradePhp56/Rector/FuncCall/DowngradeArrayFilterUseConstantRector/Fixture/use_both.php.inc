@@ -25,10 +25,9 @@ final class UseBoth
     public function run()
     {
         $arr = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
-
         $result = [];
         foreach ($arr as $k => $v) {
-            if ($v === 4 || $k === 'b') {
+            if ($k == 'b' || $v == 4) {
                 $result[$k] = $v;
             }
         }

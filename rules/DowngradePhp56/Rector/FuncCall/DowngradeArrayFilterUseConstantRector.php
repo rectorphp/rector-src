@@ -121,10 +121,11 @@ CODE_SAMPLE
 
         /** @var ConstFetch $constant */
         $constant = $args[2]->value;
+        $foreach = $this->nodeNameResolver->isName($constant, 'ARRAY_FILTER_USE_KEY')
+            ? $this->applyArrayFilterUseKey($args, $closure, $variable)
+            : $this->applyArrayFilterUseBoth($args, $closure, $variable);
 
-        if ($this->nodeNameResolver->isName($constant, 'ARRAY_FILTER_USE_KEY')) {
-            $this->applyArrayFilterUseKey($args, $closure, $variable, $currentStatement);
-        }
+        $this->addNodeBeforeNode($foreach, $currentStatement);
 
         return $variable;
     }
@@ -132,7 +133,51 @@ CODE_SAMPLE
     /**
      * @param Arg[] $args
      */
-    private function applyArrayFilterUseKey(array $args, Closure $closure, Variable $variable, Stmt $stmt): void
+    private function applyArrayFilterUseBoth(array $args, Closure $closure, Variable $variable): Foreach_
+    {
+        $arrayValue = $args[0]->value;
+        $value = $closure->params[0]->var;
+        $key = $closure->params[1]->var;
+        $foreach = new Foreach_($arrayValue, $value, [
+            'keyVar' => $key,
+        ]);
+        $stmts = [];
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($closure->stmts, function (Node $subNode) use (
+            $variable,
+            $key,
+            $value,
+            &$stmts
+        ): void {
+            if (! $subNode instanceof Stmt) {
+                return;
+            }
+
+            if (! $subNode instanceof Return_) {
+                $stmts[] = $subNode;
+                return;
+            }
+
+            if (! $subNode->expr instanceof Expr) {
+                $stmts[] = $subNode;
+                return;
+            }
+
+            $assign = new Assign(new ArrayDimFetch($variable, $key), $value);
+
+            $stmts[] = new If_($subNode->expr, [
+                'stmts' => [new Expression($assign)],
+            ]);
+        });
+
+        $foreach->stmts = $stmts;
+        return $foreach;
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function applyArrayFilterUseKey(array $args, Closure $closure, Variable $variable): Foreach_
     {
         $arrayValue = $args[0]->value;
         $funcCall = $this->nodeFactory->createFuncCall('array_keys', [$arrayValue]);
@@ -169,8 +214,7 @@ CODE_SAMPLE
         });
 
         $foreach->stmts = $stmts;
-
-        $this->nodesToAddCollector->addNodeBeforeNode($foreach, $stmt);
+        return $foreach;
     }
 
     /**
