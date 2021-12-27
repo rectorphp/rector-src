@@ -93,7 +93,7 @@ CODE_SAMPLE
         }
 
         /** @var array<string, string[]> $classMethodsOfClass */
-        $classMethodsOfClass = [...$this->resolveDefaultConfig(), ...$this->classMethodsOfClass];
+        $classMethodsOfClass = array_merge_recursive($this->resolveDefaultConfig(), $this->classMethodsOfClass);
         $className = (string) $this->nodeNameResolver->getName($classLike);
         $objectType = new ObjectType($className);
         $methodName = $this->nodeNameResolver->getName($node);
