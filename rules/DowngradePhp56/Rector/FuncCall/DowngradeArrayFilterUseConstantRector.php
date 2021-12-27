@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp56\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -90,6 +92,9 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @param Arg[] $args
+     */
     private function processClosure(FuncCall $funcCall, array $args): ?Variable
     {
         /** @var Closure $closure */
@@ -105,14 +110,11 @@ CODE_SAMPLE
         if (! $currentStatement instanceof Stmt) {
             return null;
         }
-
-        /** @var Variable $key */
-        $key = $closure->params[0]->var;
         $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
-        $result = new Variable($this->variableNaming->createCountedValueName('result', $scope));
+        $variable = new Variable($this->variableNaming->createCountedValueName('result', $scope));
 
         $this->nodesToAddCollector->addNodeBeforeNode(
-            new Expression(new Assign($result, new Array_([]))),
+            new Expression(new Assign($variable, new Array_([]))),
             $currentStatement
         );
 
@@ -120,43 +122,59 @@ CODE_SAMPLE
         $constant = $args[2]->value;
 
         if ($this->nodeNameResolver->isName($constant, 'ARRAY_FILTER_USE_KEY')) {
-            $arrayValue = $args[0]->value;
-            $arrayKeys = $this->nodeFactory->createFuncCall('array_keys', [$arrayValue]);
-
-            $key = $closure->params[0]->var;
-            $foreach = new Foreach_($arrayKeys, $key);
-            $stmts = [];
-
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable($closure->stmts, function (Node $subNode) use (
-                $result,
-                $key,
-                $arrayValue,
-                &$stmts
-            ): void {
-                if (! $subNode instanceof Stmt) {
-                    return;
-                }
-
-                if (! $subNode instanceof Return_) {
-                    $stmts[] = $subNode;
-                }
-
-                $stmts[] = new If_($subNode->expr, [
-                    'stmts' => [
-                        new Expression(
-                            new Assign(new ArrayDimFetch($result, $key), new ArrayDimFetch($arrayValue, $key))
-                        ),
-                    ],
-                ]);
-            });
-            $foreach->stmts = $stmts;
-
-            $this->nodesToAddCollector->addNodeBeforeNode($foreach, $currentStatement);
+            $this->applyArrayFilterUseKey($args, $closure, $variable, $currentStatement);
         }
 
-        return $result;
+        return $variable;
     }
 
+    /**
+     * @param Arg[] $args
+     */
+    private function applyArrayFilterUseKey(array $args, Closure $closure, Variable $variable, Stmt $stmt): void
+    {
+        $arrayValue = $args[0]->value;
+        $funcCall = $this->nodeFactory->createFuncCall('array_keys', [$arrayValue]);
+
+        $key = $closure->params[0]->var;
+        $foreach = new Foreach_($funcCall, $key);
+        $stmts = [];
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($closure->stmts, function (Node $subNode) use (
+            $variable,
+            $key,
+            $arrayValue,
+            &$stmts
+        ): void {
+            if (! $subNode instanceof Stmt) {
+                return;
+            }
+
+            if (! $subNode instanceof Return_) {
+                $stmts[] = $subNode;
+                return;
+            }
+
+            if (! $subNode->expr instanceof Expr) {
+                $stmts[] = $subNode;
+                return;
+            }
+
+            $assign = new Assign(new ArrayDimFetch($variable, $key), new ArrayDimFetch($arrayValue, $key));
+
+            $stmts[] = new If_($subNode->expr, [
+                'stmts' => [new Expression($assign)],
+            ]);
+        });
+
+        $foreach->stmts = $stmts;
+
+        $this->nodesToAddCollector->addNodeBeforeNode($foreach, $stmt);
+    }
+
+    /**
+     * @param Arg[] $args
+     */
     private function shouldSkip(FuncCall $funcCall, array $args): bool
     {
         if (! $this->nodeNameResolver->isName($funcCall, 'array_filter')) {
