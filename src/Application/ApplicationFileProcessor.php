@@ -135,7 +135,7 @@ final class ApplicationFileProcessor
     {
         $errorHandlerCallback = function (int $code, string $message, string $file, int $line): bool {
             $reportingLevel = error_reporting();
-            if ($reportingLevel === 0) {
+            if (error_reporting() & $code === 0) {
                 // silence @ operator
                 return true;
             }
