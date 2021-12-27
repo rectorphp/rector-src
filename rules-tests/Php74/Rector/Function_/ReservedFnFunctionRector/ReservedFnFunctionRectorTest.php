@@ -15,7 +15,7 @@ final class ReservedFnFunctionRectorTest extends AbstractRectorTestCase
      */
     public function test(SmartFileInfo $fileInfo): void
     {
-        $this->markTestSkipped('Requires PHP Parser to verify `fn` as valid function to simulate php <7.4');
+        $this->markTestSkipped('Requires tweaked PHP Parser to verify `fn` as valid function to simulate php <7.4');
         $this->doTestFileInfo($fileInfo);
     }
 
