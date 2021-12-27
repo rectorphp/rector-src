@@ -26,9 +26,9 @@ final class UseKey
     {
         $arr = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
         $result = [];
-        foreach ($arr as $k => $v) {
+        foreach (array_keys($arr) as $k) {
             if ($k === 'a') {
-                $result[$k] = $v;
+                $result[$k] = $arr[$k];
             }
         }
 
