@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://www.php.net/manual/en/function.array-filter.php
  *
- * @see \Rector\Tests\DowngradePhp56\Rector\CallLike\DowngradeArrayFilterUseConstantRector\DowngradeArrayFilterUseConstantRectorTest
+ * @see \Rector\Tests\DowngradePhp56\Rector\FuncCall\DowngradeArrayFilterUseConstantRector\DowngradeArrayFilterUseConstantRectorTest
  */
 final class DowngradeArrayFilterUseConstantRector extends AbstractRector
 {
