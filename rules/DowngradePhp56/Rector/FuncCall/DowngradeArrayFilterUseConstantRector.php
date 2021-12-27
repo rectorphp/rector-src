@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp56\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -86,7 +88,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processClosure(FuncCall $funcCall, array $args): Variable
+    private function processClosure(FuncCall $funcCall, array $args): ?Variable
     {
         /** @var Closure $closure */
         $closure = $args[1]->value;
@@ -94,7 +96,12 @@ CODE_SAMPLE
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($closure, Return_::class);
 
         if ($returns === []) {
-            throw new ShouldNotHappenException();
+            return null;
+        }
+
+        $currentStatement = $funcCall->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStatement instanceof Stmt) {
+            return null;
         }
 
         /** @var Variable $key */
@@ -102,6 +109,16 @@ CODE_SAMPLE
         $ifs = [];
         $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
         $result = new Variable($this->variableNaming->createCountedValueName('result', $scope));
+
+        $this->nodesToAddCollector->addNodeBeforeNode(
+            new Expression(
+                new Assign(
+                    $result,
+                    new Array_([])
+                )
+            ),
+            $currentStatement
+        );
 
         foreach ($returns as $return) {
             $ifs[] = new If_($return->expr, [
