@@ -140,8 +140,7 @@ CODE_SAMPLE
                 $key
             );
 
-            $foreach->stmts = $closure->stmts;
-            $this->traverseNodesWithCallable($foreach->stmts, function (Node $subNode) use ($result, $key, $arrayValue): void {
+            $this->traverseNodesWithCallable($closure, function (Node &$subNode) use ($result, $key, $arrayValue): void {
 
                 if (! $subNode instanceof Return_) {
                     return;
@@ -157,7 +156,13 @@ CODE_SAMPLE
                         )
                     ],
                 ]);
+
+                print_node($subNode);
+                dump('here');die;
+
             });
+
+            print_node($closure->stmts);die;
 
             $this->nodesToAddCollector->addNodeBeforeNode(
                 $foreach,
