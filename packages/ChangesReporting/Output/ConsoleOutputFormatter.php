@@ -45,6 +45,8 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
             return;
         }
 
+        $this->outputStyle->newline();
+
         $message = $this->createSuccessMessage($processResult, $configuration);
         $this->outputStyle->success($message);
     }
