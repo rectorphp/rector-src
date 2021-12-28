@@ -48,10 +48,10 @@ final class ApplicationFileProcessor
         private readonly SymfonyStyle $symfonyStyle,
         private readonly ParametersMerger $parametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
-        private ParameterProvider $parameterProvider,
-        private ScheduleFactory $scheduleFactory,
-        private FilePathNormalizer $filePathNormalizer,
-        private CpuCoreCountProvider $cpuCoreCountProvider,
+        private readonly ParameterProvider $parameterProvider,
+        private readonly ScheduleFactory $scheduleFactory,
+        private readonly FilePathNormalizer $filePathNormalizer,
+        private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly array $fileProcessors = []
     ) {
     }
