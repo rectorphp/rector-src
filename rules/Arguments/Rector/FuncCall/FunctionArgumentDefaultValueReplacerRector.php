@@ -69,6 +69,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): FuncCall
     {
+        $hasChanged = false;
         foreach ($this->replacedArguments as $replacedArgument) {
             if (! $this->isName($node->name, $replacedArgument->getFunction())) {
                 continue;

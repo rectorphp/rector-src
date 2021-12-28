@@ -65,7 +65,7 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
             }
         }
 
-        return $node;
+        return null;
     }
 
     public function provideMinPhpVersion(): int
