@@ -51,8 +51,10 @@ final class NonPhpFileProcessor implements FileProcessorInterface
             $file->changeFileContent($newFileContent);
         }
 
-        $fileDiff = $this->fileDiffFactory->createFileDiff($file, $oldFileContent, $newFileContent);
-        $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS][] = $fileDiff;
+        if ($oldFileContent !== $newFileContent) {
+            $fileDiff = $this->fileDiffFactory->createFileDiff($file, $oldFileContent, $newFileContent);
+            $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS][] = $fileDiff;
+        }
 
         return $systemErrorsAndFileDiffs;
     }
