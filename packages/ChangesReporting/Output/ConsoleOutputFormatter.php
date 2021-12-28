@@ -106,7 +106,7 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
 
             $message = sprintf(
                 'Could not process "%s" file%s, due to: %s"%s".',
-                $error->getFileWithLine(),
+                $error->getFile(),
                 $error->getRectorClass() !== null ? ' by "' . $error->getRectorClass() . '"' : '',
                 PHP_EOL,
                 $errorMessage
