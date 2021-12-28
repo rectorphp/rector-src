@@ -13,6 +13,7 @@ use Symplify\EasyParallel\Reflection\CommandFromReflectionFactory;
 
 /**
  * @see \Rector\Tests\Parallel\Command\WorkerCommandLineFactoryTest
+ * @todo possibly extract to symplify/easy-parallel
  */
 final class WorkerCommandLineFactory
 {
