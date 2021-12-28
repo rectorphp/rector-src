@@ -105,6 +105,8 @@ final class ApplicationFileProcessor
     }
 
     /**
+     * @internal Use only for tests
+     *
      * @param File[] $files
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
