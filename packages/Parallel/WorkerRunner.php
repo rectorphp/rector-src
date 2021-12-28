@@ -7,6 +7,7 @@ namespace Rector\Parallel;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Rector\Core\Application\FileProcessor;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
@@ -27,7 +28,8 @@ final class WorkerRunner
 
     public function __construct(
         private readonly FileProcessor $fileProcessor,
-        private readonly ParametersMerger $parametersMerger
+        private readonly ParametersMerger $parametersMerger,
+        private CurrentFileProvider $currentFileProvider,
     ) {
     }
 
@@ -35,7 +37,7 @@ final class WorkerRunner
     {
         // 1. handle system error
         $handleErrorCallback = static function (Throwable $throwable) use ($encoder): void {
-            $systemErrors = new SystemError($throwable->getLine(), $throwable->getMessage(), $throwable->getFile());
+            $systemErrors = new SystemError($throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
 
             $encoder->write([
                 ReactCommand::ACTION => Action::RESULT,
@@ -68,7 +70,10 @@ final class WorkerRunner
             foreach ($filePaths as $filePath) {
                 try {
                     $smartFileInfo = new SmartFileInfo($filePath);
+
                     $file = new File($smartFileInfo, $smartFileInfo->getContents());
+                    $this->currentFileProvider->setFile($file);
+
                     $currentErrorsAndFileDiffs = $this->fileProcessor->refactor($file, $configuration);
 
                     $errorAndFileDiffs = $this->parametersMerger->merge(
@@ -78,9 +83,9 @@ final class WorkerRunner
                 } catch (Throwable $throwable) {
                     ++$systemErrorsCount;
 
-                    $errorMessage = sprintf('System error: "%s"', $throwable->getMessage());
+                    $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
                     $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
-                    $systemErrors[] = new SystemError($throwable->getLine(), $errorMessage, $filePath);
+                    $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
                 }
             }
 

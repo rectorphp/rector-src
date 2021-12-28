@@ -122,9 +122,9 @@ final class ParallelFileProcessor
             &$reachedSystemErrorsCountLimit
         ): void {
             $systemErrors[] = new SystemError(
-                $throwable->getLine(),
                 $throwable->getMessage(),
-                $throwable->getFile()
+                $throwable->getFile(),
+                $throwable->getLine(),
             );
 
             ++$systemErrorsCount;
