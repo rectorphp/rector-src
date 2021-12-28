@@ -67,7 +67,7 @@ CODE_SAMPLE
     /**
      * @param FuncCall $node
      */
-    public function refactor(Node $node): FuncCall
+    public function refactor(Node $node): FuncCall|null
     {
         $hasChanged = false;
         foreach ($this->replacedArguments as $replacedArgument) {
@@ -75,10 +75,17 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->argumentDefaultValueReplacer->processReplaces($node, $replacedArgument);
+            $changedNode = $this->argumentDefaultValueReplacer->processReplaces($node, $replacedArgument);
+            if ($changedNode instanceof \PhpParser\Node) {
+                $hasChanged = true;
+            }
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     /**
