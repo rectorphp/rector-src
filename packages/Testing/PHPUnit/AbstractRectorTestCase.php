@@ -19,7 +19,6 @@ use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\Dy
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
 use Rector\Testing\PHPUnit\Behavior\MultipleFilesChangedTrait;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\EasyTesting\DataProvider\StaticFixtureUpdater;
 use Symplify\EasyTesting\StaticFixtureSplitter;
@@ -175,7 +174,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $configuration = $configurationFactory->createForTests();
 
         $file = new File($fileInfo, $fileInfo->getContents());
-        $this->applicationFileProcessor->run([$file], $configuration, new ArrayInput([]));
+        $this->applicationFileProcessor->run([$file], $configuration);
 
         return $file->getFileContent();
     }

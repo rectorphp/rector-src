@@ -12,6 +12,7 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
+use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\FileFormatter\FileFormatter;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\ValueObject\Bridge;
@@ -23,6 +24,7 @@ use Symplify\EasyParallel\FileSystem\FilePathNormalizer;
 use Symplify\EasyParallel\ScheduleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
+use Symplify\SmartFileSystem\SmartFileInfo;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class ApplicationFileProcessor
@@ -46,6 +48,7 @@ final class ApplicationFileProcessor
         private readonly FileFormatter $fileFormatter,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly SymfonyStyle $symfonyStyle,
+        private FileFactory $fileFactory,
         private readonly ParametersMerger $parametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ParameterProvider $parameterProvider,
@@ -57,13 +60,14 @@ final class ApplicationFileProcessor
     }
 
     /**
-     * @param File[] $files
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    public function run(array $files, Configuration $configuration, InputInterface $input): array
+    public function run(Configuration $configuration, InputInterface $input): array
     {
+        $fileInfos = $this->fileFactory->createFileInfosFromPaths($configuration->getPaths(), $configuration);
+
         // no files found
-        if ($files === []) {
+        if ($fileInfos === []) {
             return [
                 Bridge::SYSTEM_ERRORS => [],
                 Bridge::FILE_DIFFS => [],
@@ -73,10 +77,14 @@ final class ApplicationFileProcessor
         $this->configureCustomErrorHandler();
 
         if ($configuration->isParallel()) {
-            $systemErrorsAndFileDiffs = $this->runParallel($files, $configuration, $input);
-
-        // @todo
+            $systemErrorsAndFileDiffs = $this->runParallel($fileInfos, $configuration, $input);
         } else {
+            // 1. collect all files from files+dirs provided paths
+            $files = $this->fileFactory->createFromPaths($configuration->getPaths(), $configuration);
+
+            // 2. PHPStan has to know about all files too
+            $this->configurePHPStanNodeScopeResolver($files);
+
             $systemErrorsAndFileDiffs = $this->processFiles($files, $configuration);
             $this->fileFormatter->format($files);
 
@@ -190,16 +198,11 @@ final class ApplicationFileProcessor
     }
 
     /**
-     * @param File[] $files
+     * @param SmartFileInfo[] $fileInfos
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    private function runParallel(array $files, Configuration $configuration, InputInterface $input): array
+    private function runParallel(array $fileInfos, Configuration $configuration, InputInterface $input): array
     {
-        $fileInfos = [];
-        foreach ($files as $file) {
-            $fileInfos[] = $file->getSmartFileInfo();
-        }
-
         // must be a string, otherwise the serialization returns empty arrays
         $filePaths = $this->filePathNormalizer->resolveFilePathsFromFileInfos($fileInfos);
 
@@ -263,5 +266,34 @@ final class ApplicationFileProcessor
         }
 
         return $potentialEcsBinaryPath;
+    }
+
+    /**
+     * @param File[] $files
+     */
+    private function configurePHPStanNodeScopeResolver(array $files): void
+    {
+        $filePaths = $this->resolvePhpFilePaths($files);
+        $this->nodeScopeResolver->setAnalysedFiles($filePaths);
+    }
+
+    /**
+     * @param File[] $files
+     * @return string[]
+     */
+    private function resolvePhpFilePaths(array $files): array
+    {
+        $filePaths = [];
+
+        foreach ($files as $file) {
+            $smartFileInfo = $file->getSmartFileInfo();
+            $pathName = $smartFileInfo->getPathname();
+
+            if (\str_ends_with($pathName, '.php')) {
+                $filePaths[] = $pathName;
+            }
+        }
+
+        return $filePaths;
     }
 }
