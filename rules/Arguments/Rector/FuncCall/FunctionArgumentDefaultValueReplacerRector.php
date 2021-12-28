@@ -76,7 +76,7 @@ CODE_SAMPLE
             }
 
             $changedNode = $this->argumentDefaultValueReplacer->processReplaces($node, $replacedArgument);
-            if ($changedNode instanceof \PhpParser\Node) {
+            if ($changedNode instanceof Node) {
                 $hasChanged = true;
             }
         }
