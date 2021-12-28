@@ -171,10 +171,10 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         /** @var ConfigurationFactory $configurationFactory */
         $configurationFactory = $this->getService(ConfigurationFactory::class);
-        $configuration = $configurationFactory->createForTests();
+        $configuration = $configurationFactory->createForTests([$fileInfo->getRealPath()]);
 
         $file = new File($fileInfo, $fileInfo->getContents());
-        $this->applicationFileProcessor->run([$file], $configuration);
+        $this->applicationFileProcessor->processFiles([$file], $configuration);
 
         return $file->getFileContent();
     }

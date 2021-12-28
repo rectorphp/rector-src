@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Console\Command;
 
-use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
@@ -19,7 +18,6 @@ use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Validation\EmptyConfigurableRectorChecker;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\ProcessResult;
-use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Core\ValueObjectFactory\ProcessResultFactory;
 use Rector\VersionBonding\Application\MissedRectorDueVersionChecker;
 use Symfony\Component\Console\Application;
@@ -39,10 +37,8 @@ final class ProcessCommand extends AbstractProcessCommand
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly MissingRectorRulesReporter $missingRectorRulesReporter,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly FileFactory $fileFactory,
         private readonly BootstrapFilesIncluder $bootstrapFilesIncluder,
         private readonly ProcessResultFactory $processResultFactory,
-        private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly MissedRectorDueVersionChecker $missedRectorDueVersionChecker,
         private readonly EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,

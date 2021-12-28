@@ -37,6 +37,7 @@ final class FileFactory
         }
 
         $supportedFileExtensions = $this->resolveSupportedFileExtensions($configuration);
+
         return $this->filesFinder->findInDirectoriesAndFiles($paths, $supportedFileExtensions);
     }
 

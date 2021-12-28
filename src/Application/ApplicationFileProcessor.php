@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
+use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Configuration\Option;
@@ -49,6 +50,7 @@ final class ApplicationFileProcessor
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly SymfonyStyle $symfonyStyle,
         private FileFactory $fileFactory,
+        private NodeScopeResolver $nodeScopeResolver,
         private readonly ParametersMerger $parametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ParameterProvider $parameterProvider,
@@ -106,7 +108,7 @@ final class ApplicationFileProcessor
      * @param File[] $files
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    private function processFiles(array $files, Configuration $configuration): array
+    public function processFiles(array $files, Configuration $configuration): array
     {
         if ($configuration->shouldShowProgressBar()) {
             $fileCount = count($files);
