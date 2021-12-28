@@ -6,7 +6,7 @@ namespace Rector\Parallel;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
-use Rector\Core\Application\FileProcessor;
+use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
@@ -27,9 +27,9 @@ final class WorkerRunner
     private const RESULT = 'result';
 
     public function __construct(
-        private readonly FileProcessor $fileProcessor,
         private readonly ParametersMerger $parametersMerger,
-        private CurrentFileProvider $currentFileProvider,
+        private readonly CurrentFileProvider $currentFileProvider,
+        private readonly PhpFileProcessor $phpFileProcessor,
     ) {
     }
 
@@ -74,7 +74,7 @@ final class WorkerRunner
                     $file = new File($smartFileInfo, $smartFileInfo->getContents());
                     $this->currentFileProvider->setFile($file);
 
-                    $currentErrorsAndFileDiffs = $this->fileProcessor->refactor($file, $configuration);
+                    $currentErrorsAndFileDiffs = $this->phpFileProcessor->process($file, $configuration);
 
                     $errorAndFileDiffs = $this->parametersMerger->merge(
                         $errorAndFileDiffs,

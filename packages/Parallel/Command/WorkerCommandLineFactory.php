@@ -21,7 +21,7 @@ final class WorkerCommandLineFactory
      */
     private const OPTION_DASHES = '--';
 
-    private CommandFromReflectionFactory $commandFromReflectionFactory;
+    private readonly CommandFromReflectionFactory $commandFromReflectionFactory;
 
     public function __construct()
     {
