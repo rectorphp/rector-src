@@ -45,7 +45,10 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
             return;
         }
 
-        $this->outputStyle->newline();
+        // to keep space between progress bar and success message
+        if ($configuration->shouldShowProgressBar() && $processResult->getFileDiffs() === []) {
+            $this->outputStyle->newline();
+        }
 
         $message = $this->createSuccessMessage($processResult, $configuration);
         $this->outputStyle->success($message);
