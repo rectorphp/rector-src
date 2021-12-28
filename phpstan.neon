@@ -624,3 +624,6 @@ parameters:
             message: '#Named arguments do not add any value here\. Use normal arguments in the same order#'
             paths:
                 - tests/Application/ApplicationFileProcessor/ApplicationFileProcessorTest.php
+
+        # impossible to validate json string is a class-string
+        - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface\>\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
