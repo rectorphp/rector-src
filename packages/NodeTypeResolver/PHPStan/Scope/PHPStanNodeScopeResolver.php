@@ -13,7 +13,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
-use PHPStan\BetterReflection\Reflector\ClassReflector;
+use PHPStan\BetterReflection\Reflector\MemoizingReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use PHPStan\Node\UnreachableStatementNode;
@@ -198,11 +198,13 @@ final class PHPStanNodeScopeResolver
         NodeScopeResolver $nodeScopeResolver
     ): void {
         // 1. get PHPStan locator
-        /** @var ClassReflector $classReflector */
-        $classReflector = $this->privatesAccessor->getPrivateProperty($nodeScopeResolver, 'classReflector');
+        /** @var MemoizingReflector $classReflector */
+        $classReflector = $this->privatesAccessor->getPrivateProperty($nodeScopeResolver, 'reflector');
+
+        $reflector = $this->privatesAccessor->getPrivateProperty($classReflector, 'reflector');
 
         /** @var SourceLocator $sourceLocator */
-        $sourceLocator = $this->privatesAccessor->getPrivateProperty($classReflector, 'sourceLocator');
+        $sourceLocator = $this->privatesAccessor->getPrivateProperty($reflector, 'sourceLocator');
 
         // 2. get Rector locator
         $aggregateSourceLocator = new AggregateSourceLocator([
@@ -210,6 +212,6 @@ final class PHPStanNodeScopeResolver
             $this->renamedClassesSourceLocator,
             $this->parentAttributeSourceLocator,
         ]);
-        $this->privatesAccessor->setPrivateProperty($classReflector, 'sourceLocator', $aggregateSourceLocator);
+        $this->privatesAccessor->setPrivateProperty($reflector, 'sourceLocator', $aggregateSourceLocator);
     }
 }
