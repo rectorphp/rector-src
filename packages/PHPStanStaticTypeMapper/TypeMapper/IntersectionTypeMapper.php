@@ -10,6 +10,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
@@ -80,7 +81,12 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             $resolvedType = $this->phpStanStaticTypeMapper->mapToPhpParserNode($intersectionedType, $typeKind);
 
             if (! $resolvedType instanceof Name) {
-                return null;
+                throw new ShouldNotHappenException();
+            }
+
+            $resolvedTypeName = (string) $resolvedType;
+            if ($resolvedTypeName === 'string') {
+                return $resolvedType;
             }
 
             $intersectionedTypeNodes[] = $resolvedType;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Accessory\AccessoryNumericStringType;
@@ -38,6 +39,6 @@ final class AccessoryNumericStringTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
     {
-        return null;
+        return new Name('string');
     }
 }
