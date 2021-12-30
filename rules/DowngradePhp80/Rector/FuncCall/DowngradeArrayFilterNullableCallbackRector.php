@@ -95,13 +95,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $type = $this->nodeTypeResolver->getType($args[1]->value);
         // need exact compare null to handle variable
-        if ($this->valueResolver->isNull($args[1]->value)) {
-            return null;
-        }
-
-        if (! $type instanceof MixedType) {
+        if (! $this->valueResolver->isNull($args[1]->value)) {
             return null;
         }
 
@@ -109,6 +104,11 @@ CODE_SAMPLE
             $args = [$args[0]];
             $node->args = $args;
             return $node;
+        }
+
+        $type = $this->nodeTypeResolver->getType($args[1]->value);
+        if (! $type instanceof MixedType) {
+            return null;
         }
 
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
