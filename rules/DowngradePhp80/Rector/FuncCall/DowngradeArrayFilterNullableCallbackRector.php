@@ -7,9 +7,7 @@ namespace Rector\DowngradePhp80\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
@@ -18,14 +16,12 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\If_;
+use PHPStan\Type\MixedType;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Type\MixedType;
 
 /**
  * @changelog https://www.php.net/manual/en/function.array-filter.php#refsect1-function.array-filter-changelog
@@ -34,8 +30,9 @@ use PHPStan\Type\MixedType;
  */
 final class DowngradeArrayFilterNullableCallbackRector extends AbstractRector
 {
-    public function __construct(private readonly IfManipulator $ifManipulator)
-    {
+    public function __construct(
+        private readonly IfManipulator $ifManipulator
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -119,12 +116,9 @@ CODE_SAMPLE
         $node->args[1] = new Arg(
             new ArrowFunction(
                 [
-                    'params' => [
-                        new Param(new Variable('v')),
-                        new Param(new Variable('k'))
-                    ],
+                    'params' => [new Param(new Variable('v')), new Param(new Variable('k'))],
                     'returnType' => new Identifier('bool'),
-                    'expr' => new BooleanNot(new Empty_(new Variable('v')))
+                    'expr' => new BooleanNot(new Empty_(new Variable('v'))),
                 ]
             )
         );
