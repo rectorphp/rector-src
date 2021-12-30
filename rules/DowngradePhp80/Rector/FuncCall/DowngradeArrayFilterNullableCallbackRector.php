@@ -26,12 +26,13 @@ final class DowngradeArrayFilterNullableCallbackRector extends AbstractRector
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run()
+    public function run($callback = null)
     {
         $data = [[]];
         var_dump(array_filter($data, null));
         var_dump(array_filter($data, null, ARRAY_FILTER_USE_KEY));
         var_dump(array_filter($data, null, ARRAY_FILTER_USE_BOTH));
+        var_dump(array_filter($data, $callback));
     }
 }
 CODE_SAMPLE
@@ -39,12 +40,17 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run()
+    public function run($callback = null)
     {
         $data = [[]];
         var_dump(array_filter($data));
         var_dump(array_filter($data));
         var_dump(array_filter($data));
+        if ($callback === null) {
+            var_dump(array_filter($data, fn ($v, $k) => ! empty($v), ARRAY_FILTER_USE_BOTH));
+        } else {
+            var_dump(array_filter($data, $callback));
+        }
     }
 }
 CODE_SAMPLE
