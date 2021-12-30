@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Type;
+use PHPStan\Type\VerbosityLevel;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
@@ -46,8 +47,10 @@ final class GenericTypeMapper implements PhpDocTypeMapperInterface
     public function mapToPHPStanType(TypeNode $typeNode, Node $node, NameScope $nameScope): Type
     {
         $mainTypeNode = $typeNode->type;
+
         if ($mainTypeNode->name === 'array') {
             $genericTypes = [];
+
             foreach ($typeNode->genericTypes as $genericTypeNode) {
                 $genericTypes[] = $this->phpDocTypeMapper->mapToPHPStanType($genericTypeNode, $node, $nameScope);
             }
