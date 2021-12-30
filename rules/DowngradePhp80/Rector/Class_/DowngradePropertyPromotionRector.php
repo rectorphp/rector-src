@@ -241,6 +241,11 @@ CODE_SAMPLE
             return;
         }
 
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($name);
+        if ($paramTagValueNode === null) {
+            return;
+        }
+
         $type = $phpDocInfo->getParamType($name);
 
         // MixedType likely means there was no param type defined
@@ -249,6 +254,6 @@ CODE_SAMPLE
         }
 
         $propertyDocInfo = $this->phpDocInfoFactory->createEmpty($property);
-        $this->phpDocTypeChanger->changeVarType($propertyDocInfo, $type);
+        $this->phpDocTypeChanger->changeVarTypeNode($propertyDocInfo, $paramTagValueNode->type);
     }
 }
