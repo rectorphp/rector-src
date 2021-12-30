@@ -107,6 +107,7 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($args[1]->value);
+        dump($type);
         if (! $type instanceof MixedType) {
             return null;
         }
