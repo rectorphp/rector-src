@@ -96,9 +96,11 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($args[1]->value);
-
         // need exact compare null to handle variable
-        if ($this->valueResolver->isNull($args[1]->value) || ! $type instanceof MixedType) {
+        if ($this->valueResolver->isNull($args[1]->value)) {
+            return null;
+        }
+        if (! $type instanceof MixedType) {
             return null;
         }
 
