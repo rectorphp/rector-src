@@ -112,10 +112,10 @@ CODE_SAMPLE
     private function createNewArgFirstTernary(array $args): Ternary
     {
         $identical = new Identical($args[1]->value, $this->nodeFactory->createNull());
-        $arrowFunction = new ArrowFunction();
-        $arrowFunction->params = [new Param(new Variable('v')), new Param(new Variable('k'))];
+        $vVariable = new Variable('v');
+        $arrowFunction = new ArrowFunction(['expr' => new BooleanNot(new Empty_($vVariable))]);
+        $arrowFunction->params = [new Param($vVariable), new Param(new Variable('k'))];
         $arrowFunction->returnType = new Identifier('bool');
-        $arrowFunction->expr = new BooleanNot(new Empty_(new Variable('v')));
 
         return new Ternary($identical, $arrowFunction, $args[1]->value);
     }
