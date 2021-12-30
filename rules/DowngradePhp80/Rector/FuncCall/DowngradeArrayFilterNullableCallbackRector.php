@@ -84,7 +84,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $args[1]) {
+        if (! isset($args[1])) {
             return true;
         }
 
