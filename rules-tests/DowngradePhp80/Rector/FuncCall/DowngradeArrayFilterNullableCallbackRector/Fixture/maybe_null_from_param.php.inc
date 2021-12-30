@@ -20,7 +20,11 @@ class MayBeNullFromParam
 {
     public function run(array $data, $callback = null)
     {
-        var_dump(array_filter($data, fn($v, $k): bool => !empty($v), ARRAY_FILTER_USE_BOTH));
+        if ($callback === null) {
+            var_dump(array_filter($data, fn($v, $k): bool => !empty($v), ARRAY_FILTER_USE_BOTH));
+        } else {
+            var_dump(array_filter($data, $callback));
+        }
     }
 }
 

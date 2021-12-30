@@ -64,7 +64,11 @@ class SomeClass
         var_dump(array_filter($data));
         var_dump(array_filter($data));
         var_dump(array_filter($data));
-        var_dump(array_filter($data, fn($v, $k): bool => !empty($v), ARRAY_FILTER_USE_BOTH));
+        if ($callback === null) {
+            var_dump(array_filter($data, fn($v, $k): bool => !empty($v), ARRAY_FILTER_USE_BOTH));
+        } else {
+            var_dump(array_filter($data, $callback));
+        }
     }
 }
 CODE_SAMPLE
@@ -95,12 +99,8 @@ CODE_SAMPLE
             return null;
         }
 
-        // need exact compare null to handle variable
-        if (! $this->valueResolver->isNull($args[1]->value)) {
-            return null;
-        }
-
-        if ($args[1]->value instanceof ConstFetch) {
+        // direct null check ConstFetch
+        if ($args[1]->value instanceof ConstFetch && $this->valueResolver->isNull($args[1]->value)) {
             $args = [$args[0]];
             $node->args = $args;
             return $node;
