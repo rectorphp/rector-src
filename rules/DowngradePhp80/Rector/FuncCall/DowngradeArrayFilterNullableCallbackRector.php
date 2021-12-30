@@ -100,6 +100,7 @@ CODE_SAMPLE
         if ($this->valueResolver->isNull($args[1]->value)) {
             return null;
         }
+
         if (! $type instanceof MixedType) {
             return null;
         }
