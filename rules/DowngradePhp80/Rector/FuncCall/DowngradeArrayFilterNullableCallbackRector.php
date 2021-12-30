@@ -113,7 +113,9 @@ CODE_SAMPLE
     {
         $identical = new Identical($args[1]->value, $this->nodeFactory->createNull());
         $vVariable = new Variable('v');
-        $arrowFunction = new ArrowFunction(['expr' => new BooleanNot(new Empty_($vVariable))]);
+        $arrowFunction = new ArrowFunction([
+            'expr' => new BooleanNot(new Empty_($vVariable)),
+        ]);
         $arrowFunction->params = [new Param($vVariable), new Param(new Variable('k'))];
         $arrowFunction->returnType = new Identifier('bool');
 
