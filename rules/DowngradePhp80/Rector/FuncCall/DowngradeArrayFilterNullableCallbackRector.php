@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -73,27 +74,24 @@ CODE_SAMPLE
     public function refactor(Node $node): ?FuncCall
     {
         $args = $node->getArgs();
-        if (! $this->shouldSkip($node, $args)) {
+        if (! $this->isName($node, 'array_filter')) {
             return null;
         }
 
-        return $node;
-    }
-
-    /**
-     * @param Args[] $args
-     * @return FuncCall
-     */
-    private function shouldSkip(FuncCall $funcCall, array $args): bool
-    {
-        if (! $this->isName($funcCall, 'array_filter')) {
-            return true;
-        }
-
         if (! isset($args[1])) {
-            return true;
+            return null;
         }
 
-        return ! $this->valueResolver->isNull($args[1]->value);
+        if (! $this->valueResolver->isNull($args[1]->value)) {
+            return null;
+        }
+
+        if ($args[1]->value instanceof ConstFetch) {
+            $args = [$args[0]];
+            $node->args = $args;
+            return $node;
+        }
+
+        return $node;
     }
 }
