@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Rector\FuncCall;
 
+use PHPStan\Type\Constant\ConstantArrayType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -118,7 +119,12 @@ CODE_SAMPLE
 
     private function shouldSkipSecondArg(Expr $expr): bool
     {
-        return in_array($expr::class, [String_::class, Closure::class, ArrowFunction::class], true);
+        if (in_array($expr::class, [String_::class, Closure::class, ArrowFunction::class], true)) {
+            return true;
+        }
+
+        $type = $this->nodeTypeResolver->getType($expr);
+        return $type instanceof ConstantArrayType;
     }
 
     /**
