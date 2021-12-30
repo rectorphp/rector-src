@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Rector\FuncCall;
 
+use PHPStan\Type\StringType;
+use PHPStan\Type\Constant\ConstantStringType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
@@ -121,12 +124,12 @@ CODE_SAMPLE
 
     private function shouldSkipSecondArg(Expr $expr): bool
     {
-        if (in_array($expr::class, [String_::class, Closure::class, ArrowFunction::class], true)) {
+        if (in_array($expr::class, [String_::class, Closure::class, ArrowFunction::class, Array_::class], true)) {
             return true;
         }
 
         $type = $this->nodeTypeResolver->getType($expr);
-        return in_array($type::class, [ArrayType::class, ConstantArrayType::class, ClosureType::class], true);
+        return in_array($type::class, [StringType::class, ConstantStringType::class, ArrayType::class, ClosureType::class], true);
     }
 
     /**
