@@ -7,19 +7,19 @@ namespace Rector\DowngradePhp80\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PHPStan\Type\MixedType;
-use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,11 +30,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeArrayFilterNullableCallbackRector extends AbstractRector
 {
-    public function __construct(
-        private readonly IfManipulator $ifManipulator
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -48,9 +43,6 @@ class SomeClass
     {
         $data = [[]];
         var_dump(array_filter($data, null));
-        var_dump(array_filter($data, null, ARRAY_FILTER_USE_KEY));
-        var_dump(array_filter($data, null, ARRAY_FILTER_USE_BOTH));
-        var_dump(array_filter($data, $callback));
     }
 }
 CODE_SAMPLE
@@ -62,13 +54,6 @@ class SomeClass
     {
         $data = [[]];
         var_dump(array_filter($data));
-        var_dump(array_filter($data));
-        var_dump(array_filter($data));
-        if ($callback === null) {
-            var_dump(array_filter($data, fn($v, $k): bool => !empty($v), ARRAY_FILTER_USE_BOTH));
-        } else {
-            var_dump(array_filter($data, $callback));
-        }
     }
 }
 CODE_SAMPLE
@@ -88,10 +73,15 @@ CODE_SAMPLE
     /**
      * @param FuncCall $node
      */
-    public function refactor(Node $node): ?FuncCall
+    public function refactor(Node $node): FuncCall|Ternary|null
     {
         $args = $node->getArgs();
+
         if (! $this->isName($node, 'array_filter')) {
+            return null;
+        }
+
+        if ($this->hasNamedArg($args)) {
             return null;
         }
 
@@ -111,27 +101,53 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStatement instanceof Stmt) {
-            return null;
-        }
+        $node->args[1] = $this->createNewArgFirst($args);
+        $node->args[2] = $this->createNewArgSecond($args);
 
-        $newCurrentStatement = clone $currentStatement;
-        $newNode = clone $node;
+        return $node;
+    }
 
-        $newNode->args[1] = new Arg(
+    /**
+     * @param Arg[] $args
+     */
+    private function createNewArgFirst(array $args): Arg
+    {
+        return new Arg(new Ternary(
+            new Identical($args[1]->value, $this->nodeFactory->createNull()),
             new ArrowFunction(
                 [
                     'params' => [new Param(new Variable('v')), new Param(new Variable('k'))],
                     'returnType' => new Identifier('bool'),
                     'expr' => new BooleanNot(new Empty_(new Variable('v'))),
                 ]
-            )
-        );
-        $newNode->args[2] = new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH'));
+            ),
+            $args[1]->value
+        ));
+    }
 
-        $stmts = [];
+    /**
+     * @param Arg[] $args
+     */
+    private function createNewArgSecond(array $args): Arg
+    {
+        return new Arg(new Ternary(
+            new Identical($args[1]->value, $this->nodeFactory->createNull()),
+            new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH')),
+            isset($args[2]) ? $args[2]->value : new ConstFetch(new Name('0'))
+        ));
+    }
 
-        return $node;
+    /**
+     * @param Arg[] $args
+     */
+    private function hasNamedArg(array $args): bool
+    {
+        foreach ($args as $arg) {
+            if ($arg->name instanceof Identifier) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
