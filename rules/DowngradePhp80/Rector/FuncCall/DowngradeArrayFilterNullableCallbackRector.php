@@ -107,7 +107,6 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($args[1]->value);
-        dump($type);
         if (! $type instanceof MixedType) {
             return null;
         }
@@ -117,7 +116,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args[1] = new Arg(
+        $newCurrentStatement = clone $currentStatement;
+        $newNode = clone $node;
+
+        $newNode->args[1] = new Arg(
             new ArrowFunction(
                 [
                     'params' => [new Param(new Variable('v')), new Param(new Variable('k'))],
@@ -126,8 +128,10 @@ CODE_SAMPLE
                 ]
             )
         );
+        $newNode->args[2] = new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH'));
 
-        $node->args[2] = new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH'));
+        $stmts = [];
+
         return $node;
     }
 }
