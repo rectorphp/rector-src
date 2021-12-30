@@ -207,6 +207,7 @@ CODE_SAMPLE
             $property = $this->nodeFactory->createProperty($name);
             $property->flags = $param->flags;
             $property->type = $param->type;
+
             $this->decoratePropertyWithParamDocInfo($param, $property);
 
             $hasNew = $param->default === null
