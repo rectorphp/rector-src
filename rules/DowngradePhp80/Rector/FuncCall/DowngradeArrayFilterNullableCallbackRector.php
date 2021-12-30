@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt;
 use PHPStan\Type\MixedType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -101,8 +100,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->args[1] = $this->createNewArgFirst($args);
-        $node->args[2] = $this->createNewArgSecond($args);
+        $node->args[1] = new Arg($this->createNewArgFirstTernary($args));
+        $node->args[2] = new Arg($this->createNewArgSecondTernary($args));
 
         return $node;
     }
@@ -110,31 +109,30 @@ CODE_SAMPLE
     /**
      * @param Arg[] $args
      */
-    private function createNewArgFirst(array $args): Arg
+    private function createNewArgFirstTernary(array $args): Ternary
     {
-        return new Arg(new Ternary(
-            new Identical($args[1]->value, $this->nodeFactory->createNull()),
-            new ArrowFunction(
-                [
-                    'params' => [new Param(new Variable('v')), new Param(new Variable('k'))],
-                    'returnType' => new Identifier('bool'),
-                    'expr' => new BooleanNot(new Empty_(new Variable('v'))),
-                ]
-            ),
-            $args[1]->value
-        ));
+        $identical = new Identical($args[1]->value, $this->nodeFactory->createNull());
+        $arrowFunction = new ArrowFunction();
+        $arrowFunction->params = [new Param(new Variable('v')), new Param(new Variable('k'))];
+        $arrowFunction->returnType = new Identifier('bool');
+        $arrowFunction->expr = new BooleanNot(new Empty_(new Variable('v')));
+
+        return new Ternary($identical, $arrowFunction, $args[1]->value);
     }
 
     /**
      * @param Arg[] $args
      */
-    private function createNewArgSecond(array $args): Arg
+    private function createNewArgSecondTernary(array $args): Ternary
     {
-        return new Arg(new Ternary(
-            new Identical($args[1]->value, $this->nodeFactory->createNull()),
-            new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH')),
+        $identical = new Identical($args[1]->value, $this->nodeFactory->createNull());
+        $constFetch = new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH'));
+
+        return new Ternary(
+            $identical,
+            $constFetch,
             isset($args[2]) ? $args[2]->value : new ConstFetch(new Name('0'))
-        ));
+        );
     }
 
     /**
