@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Rector\FuncCall;
 
+use PHPStan\Type\ClosureType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -124,7 +125,7 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($expr);
-        return $type instanceof ConstantArrayType;
+        return in_array($type::class, [ConstantArrayType::class, ClosureType::class], true);
     }
 
     /**
