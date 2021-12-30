@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp80\Rector\FuncCall;
 
-use PHPStan\Type\StringType;
-use PHPStan\Type\Constant\ConstantStringType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -25,7 +23,8 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ClosureType;
-use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -129,7 +128,11 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($expr);
-        return in_array($type::class, [StringType::class, ConstantStringType::class, ArrayType::class, ClosureType::class], true);
+        return in_array(
+            $type::class,
+            [StringType::class, ConstantStringType::class, ArrayType::class, ClosureType::class],
+            true
+        );
     }
 
     /**
