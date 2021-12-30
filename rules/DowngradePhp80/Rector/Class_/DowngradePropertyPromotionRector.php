@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Type\MixedType;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -242,14 +242,7 @@ CODE_SAMPLE
         }
 
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($name);
-        if ($paramTagValueNode === null) {
-            return;
-        }
-
-        $type = $phpDocInfo->getParamType($name);
-
-        // MixedType likely means there was no param type defined
-        if ($type instanceof MixedType && ! $type->isExplicitMixed()) {
+        if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return;
         }
 

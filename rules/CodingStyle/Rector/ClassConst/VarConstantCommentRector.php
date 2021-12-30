@@ -28,7 +28,8 @@ final class VarConstantCommentRector extends AbstractRector
 {
     public function __construct(
         private readonly TypeComparator $typeComparator,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private \Rector\Privatization\TypeManipulator\TypeNormalizer $typeNormalizer,
     ) {
     }
 
@@ -80,6 +81,9 @@ CODE_SAMPLE
         if ($constType instanceof MixedType) {
             return null;
         }
+
+        // generalize false/true type to bool, as mostly default value but accepts both
+        $constType = $this->typeNormalizer->generalizeConstantBoolTypes($constType);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
