@@ -25,7 +25,7 @@ final class PropertyTypeDecorator
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private TypeNormalizer $typeNormalizer,
+        private readonly TypeNormalizer $typeNormalizer,
     ) {
     }
 

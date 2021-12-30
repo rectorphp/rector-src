@@ -44,7 +44,7 @@ final class AddArrayReturnDocTypeRector extends AbstractRector
         private readonly NormalizeTypeToRespectArrayScalarType $normalizeTypeToRespectArrayScalarType,
         private readonly ReturnTagRemover $returnTagRemover,
         private readonly DetailedTypeAnalyzer $detailedTypeAnalyzer,
-        private TypeNormalizer $typeNormalizer,
+        private readonly TypeNormalizer $typeNormalizer,
     ) {
     }
 

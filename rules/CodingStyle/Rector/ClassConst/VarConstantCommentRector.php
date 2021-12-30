@@ -18,6 +18,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,7 +30,7 @@ final class VarConstantCommentRector extends AbstractRector
     public function __construct(
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private \Rector\Privatization\TypeManipulator\TypeNormalizer $typeNormalizer,
+        private readonly TypeNormalizer $typeNormalizer,
     ) {
     }
 
