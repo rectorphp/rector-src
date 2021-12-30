@@ -5,11 +5,27 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
+use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Type\MixedType;
 
 /**
  * @changelog https://www.php.net/manual/en/function.array-filter.php#refsect1-function.array-filter-changelog
@@ -18,6 +34,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeArrayFilterNullableCallbackRector extends AbstractRector
 {
+    public function __construct(private readonly IfManipulator $ifManipulator)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -47,11 +67,7 @@ class SomeClass
         var_dump(array_filter($data));
         var_dump(array_filter($data));
         var_dump(array_filter($data));
-        if ($callback === null) {
-            var_dump(array_filter($data, fn ($v, $k) => ! empty($v), ARRAY_FILTER_USE_BOTH));
-        } else {
-            var_dump(array_filter($data, $callback));
-        }
+        var_dump(array_filter($data, fn($v, $k): bool => !empty($v), ARRAY_FILTER_USE_BOTH));
     }
 }
 CODE_SAMPLE
@@ -82,7 +98,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->valueResolver->isNull($args[1]->value)) {
+        $type = $this->nodeTypeResolver->getType($args[1]->value);
+
+        // need exact compare null to handle variable
+        if ($this->valueResolver->isNull($args[1]->value) || ! $type instanceof MixedType) {
             return null;
         }
 
@@ -92,6 +111,25 @@ CODE_SAMPLE
             return $node;
         }
 
+        $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStatement instanceof Stmt) {
+            return null;
+        }
+
+        $node->args[1] = new Arg(
+            new ArrowFunction(
+                [
+                    'params' => [
+                        new Param(new Variable('v')),
+                        new Param(new Variable('k'))
+                    ],
+                    'returnType' => new Identifier('bool'),
+                    'expr' => new BooleanNot(new Empty_(new Variable('v')))
+                ]
+            )
+        );
+
+        $node->args[2] = new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH'));
         return $node;
     }
 }
