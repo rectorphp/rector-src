@@ -18,7 +18,9 @@ namespace Rector\Tests\DowngradePhp80\Rector\Class_\DowngradePropertyPromotionRe
 
 class MixedTypeInPhpDoc
 {
-    /** @var mixed */
+    /**
+     * @var mixed
+     */
     public $value;
     /** @param mixed $value */
     public function __construct($value)

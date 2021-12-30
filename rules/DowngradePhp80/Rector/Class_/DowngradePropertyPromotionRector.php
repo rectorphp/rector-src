@@ -244,7 +244,7 @@ CODE_SAMPLE
         $type = $phpDocInfo->getParamType($name);
 
         // MixedType likely means there was no param type defined
-        if ($type instanceof MixedType) {
+        if ($type instanceof MixedType && ! $type->isExplicitMixed()) {
             return;
         }
 

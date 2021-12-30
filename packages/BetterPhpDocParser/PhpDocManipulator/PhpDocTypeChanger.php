@@ -62,6 +62,7 @@ final class PhpDocTypeChanger
         } else {
             // add completely new one
             $varTagValueNode = new VarTagValueNode($newPHPStanPhpDocType, '', '');
+
             $phpDocInfo->addTagValueNode($varTagValueNode);
         }
     }
