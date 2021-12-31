@@ -151,6 +151,8 @@ final class PropertyFetchFinder
 
     private function isNamePropertyNameEquals(PropertyFetch $propertyFetch, string $propertyName): bool
     {
+        // early check if property fetch name is not equals with property name
+        // so next check is check var type only
         if (! $this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
             return false;
         }
