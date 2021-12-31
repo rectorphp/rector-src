@@ -11,11 +11,13 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Type\ThisType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class PropertyFetchFinder
 {
@@ -29,6 +31,7 @@ final class PropertyFetchFinder
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AstResolver $astResolver,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -149,7 +152,13 @@ final class PropertyFetchFinder
     private function isNamePropertyNameEquals(PropertyFetch $propertyFetch, string $propertyName): bool
     {
         if (! $this->nodeNameResolver->isName($propertyFetch->var, self::THIS)) {
-            return false;
+            $classLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
+            if (! $classLike instanceof Class_) {
+                return false;
+            }
+
+            $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
+            return $propertyFetchVarType instanceof ThisType;
         }
 
         return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
