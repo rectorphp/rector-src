@@ -461,7 +461,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
         if (in_array(static::class, $createdByRule, true)) {
-            return $node === $originalNode;
+            return $node !== $originalNode;
         }
 
         $rectifiedNode = $this->rectifiedAnalyzer->verify($this, $node, $this->file);
