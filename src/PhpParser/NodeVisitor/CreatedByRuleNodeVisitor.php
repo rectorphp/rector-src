@@ -17,7 +17,14 @@ final class CreatedByRuleNodeVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        $node->setAttribute(AttributeKey::CREATED_BY_RULE, $this->rectorClass);
+        $node->setAttribute(
+            AttributeKey::CREATED_BY_RULE,
+            array_unique(array_merge(
+                $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [],
+                [$this->rectorClass]
+            ))
+        );
+
         return $node;
     }
 }

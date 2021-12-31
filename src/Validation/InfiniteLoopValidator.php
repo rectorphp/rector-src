@@ -40,10 +40,10 @@ final class InfiniteLoopValidator
             return;
         }
 
-        $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE);
+        $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
         // special case
-        if ($createdByRule === $rectorClass) {
+        if (in_array($rectorClass, $createdByRule, true)) {
             // does it contain the same node type as input?
             $originalNodeClass = $originalNode::class;
 
