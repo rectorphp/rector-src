@@ -253,7 +253,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return $originalNode;
         }
 
-        // changed!
+        // not changed, return node early
         if (! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
             return $node;
         }
