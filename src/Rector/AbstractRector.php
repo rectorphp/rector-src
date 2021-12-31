@@ -306,7 +306,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     }
 
     protected function isName(Node $node, string $name): bool
-    {        return $this->nodeNameResolver->isName($node, $name);
+    {
+        return $this->nodeNameResolver->isName($node, $name);
     }
 
     /**
