@@ -84,17 +84,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->class instanceof Name) {
-            return null;
-        }
-
-        if (! $this->isName($node->class, ObjectReference::PARENT()->getValue())) {
-            return null;
-        }
-
-        if ($classLike->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
-            $classLike->extends->toString()
-        )) {
+        if ($this->shouldSkip($node, $classLike)) {
             return null;
         }
 
@@ -131,6 +121,21 @@ CODE_SAMPLE
         $this->removeNode($node);
 
         return null;
+    }
+
+    private function shouldSkip(StaticCall $staticCall, Class_ $class): bool
+    {
+        if (! $staticCall->class instanceof Name) {
+            return true;
+        }
+
+        if (! $this->isName($staticCall->class, ObjectReference::PARENT()->getValue())) {
+            return true;
+        }
+
+        return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+            $class->extends->toString()
+        );
     }
 
     private function processNoParentReflection(StaticCall $staticCall): ?ConstFetch
