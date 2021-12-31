@@ -473,7 +473,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return $this->isInExistingCreatedByRule($node);
         }
 
-        // multiple use of rule on MethodCall can happen in fluent call
+        // multiple use of current rule repeatedly on Method Call can happen in fluent call
         // eg on Rector\Laravel\Rector\MethodCall\RemoveAllOnDispatchingMethodsWithJobChainingRector
         $resolveRootMethodCall = $this->fluentChainMethodCallNodeAnalyzer->resolveRootMethodCall($node);
         if ($resolveRootMethodCall instanceof MethodCall) {
