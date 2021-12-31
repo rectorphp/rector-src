@@ -7,7 +7,6 @@ namespace Rector\Core\PhpParser\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class CreatedByRuleNodeVisitor extends NodeVisitorAbstract
 {
