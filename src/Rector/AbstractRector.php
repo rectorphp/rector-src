@@ -267,11 +267,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->mirrorAttributes($originalAttributes, $node);
         $this->connectParentNodes($node);
 
-        // is different node type? do not traverse children to avoid looping
+        // is equals node type? return node early
         if ($originalNode::class === $node::class) {
             return $node;
         }
 
+        // is different node type? do not traverse children to avoid looping
         $this->infiniteLoopValidator->process($node, $originalNode, static::class);
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
