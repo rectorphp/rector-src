@@ -121,7 +121,7 @@ final class PropertyFetchFinder
                 return false;
             }
 
-            return $this->isNamePropertyNameEquals($propertyFetch, $propertyName);
+            return $this->isNamePropertyNameEquals($propertyFetch, $propertyName, $class);
         });
 
         /** @var StaticPropertyFetch[] $staticPropertyFetches */
@@ -149,7 +149,7 @@ final class PropertyFetchFinder
         return $parent !== $class && ! $hasTrait;
     }
 
-    private function isNamePropertyNameEquals(PropertyFetch $propertyFetch, string $propertyName): bool
+    private function isNamePropertyNameEquals(PropertyFetch $propertyFetch, string $propertyName, Class_ $class): bool
     {
         // early check if property fetch name is not equals with property name
         // so next check is check var name and var type only
@@ -161,18 +161,13 @@ final class PropertyFetchFinder
             return true;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
-        if (! $classLike instanceof Class_) {
-            return false;
-        }
-
         $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
         if (! $propertyFetchVarType instanceof TypeWithClassName) {
             return false;
         }
 
         $propertyFetchVarTypeClassName = $propertyFetchVarType->getClassName();
-        $classLikeName = $this->nodeNameResolver->getName($classLike);
+        $classLikeName = $this->nodeNameResolver->getName($class);
 
         return $propertyFetchVarTypeClassName === $classLikeName;
     }
