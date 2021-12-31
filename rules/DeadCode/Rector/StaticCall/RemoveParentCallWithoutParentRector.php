@@ -22,6 +22,7 @@ use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Analyser\Scope;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector\RemoveParentCallWithoutParentRectorTest
@@ -98,6 +99,9 @@ CODE_SAMPLE
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
 
         $parentClassReflection = $this->parentClassScopeResolver->resolveParentClassReflection($scope);
         if (! $parentClassReflection instanceof ClassReflection) {
