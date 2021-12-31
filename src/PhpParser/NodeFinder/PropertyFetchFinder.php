@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Type\ThisType;
+use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -158,7 +158,11 @@ final class PropertyFetchFinder
             }
 
             $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
-            if (! $propertyFetchVarType instanceof ThisType) {
+            if (! $propertyFetchVarType instanceof TypeWithClassName) {
+                return false;
+            }
+
+            if ($propertyFetchVarType->getClassName() !== $this->nodeNameResolver->getName($classLike)) {
                 return false;
             }
 
