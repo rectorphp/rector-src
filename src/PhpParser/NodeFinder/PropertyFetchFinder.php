@@ -162,7 +162,10 @@ final class PropertyFetchFinder
                 return false;
             }
 
-            if ($propertyFetchVarType->getClassName() !== $this->nodeNameResolver->getName($classLike)) {
+            $propertyFetchVarTypeClassName = $propertyFetchVarType->getClassName();
+            $classLikeName = $this->nodeNameResolver->getName($classLike);
+
+            if ($propertyFetchVarTypeClassName !== $classLikeName) {
                 return false;
             }
 
