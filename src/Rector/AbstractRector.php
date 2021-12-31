@@ -268,20 +268,20 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->connectParentNodes($node);
 
         // is different node type? do not traverse children to avoid looping
-        if ($originalNode::class !== $node::class) {
-            $this->infiniteLoopValidator->process($node, $originalNode, static::class);
-
-            // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-            $originalNodeHash = spl_object_hash($originalNode);
-
-            if ($originalNode instanceof Stmt && $node instanceof Expr) {
-                $node = new Expression($node);
-            }
-
-            $this->nodesToReturn[$originalNodeHash] = $node;
-
+        if ($originalNode::class === $node::class) {
             return $node;
         }
+
+        $this->infiniteLoopValidator->process($node, $originalNode, static::class);
+
+        // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
+        $originalNodeHash = spl_object_hash($originalNode);
+
+        if ($originalNode instanceof Stmt && $node instanceof Expr) {
+            $node = new Expression($node);
+        }
+
+        $this->nodesToReturn[$originalNodeHash] = $node;
 
         return $node;
     }
