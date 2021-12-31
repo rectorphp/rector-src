@@ -55,7 +55,7 @@ final class PHPStanNodeScopeResolver
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly RenamedClassesSourceLocator $renamedClassesSourceLocator,
-        private readonly ParentAttributeSourceLocator $parentAttributeSourceLocator,
+        private readonly ParentAttributeSourceLocator $parentAttributeSourceLocator
     ) {
     }
 
@@ -119,10 +119,37 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        $countDeepStmts = $this->countDeepStmts($stmts);
+
+        if ($countDeepStmts < 20) {
+            $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        }
+
         $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $smartFileInfo);
 
         return $stmts;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function countDeepStmts(array $stmts, int $lastCount = 0): int
+    {
+        foreach ($stmts as $stmt) {
+            if (! property_exists($stmt, 'stmts')) {
+                return $lastCount;
+            }
+
+            ++$lastCount;
+            if (! isset($stmt->stmts[0])) {
+                return $lastCount;
+            }
+
+            $stmt = $stmt->stmts[0];
+            $lastCount = $this->countDeepStmts([$stmt], $lastCount);
+        }
+
+        return $lastCount;
     }
 
     /**
