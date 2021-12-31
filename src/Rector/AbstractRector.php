@@ -7,7 +7,6 @@ namespace Rector\Core\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -40,7 +39,6 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Validation\InfiniteLoopValidator;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
-use Rector\Defluent\NodeAnalyzer\FluentChainMethodCallNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -132,8 +130,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
-    private FluentChainMethodCallNodeAnalyzer $fluentChainMethodCallNodeAnalyzer;
-
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -161,8 +157,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         ChangedNodeAnalyzer $changedNodeAnalyzer,
         InfiniteLoopValidator $infiniteLoopValidator,
         RectifiedAnalyzer $rectifiedAnalyzer,
-        CreatedByRuleDecorator $createdByRuleDecorator,
-        FluentChainMethodCallNodeAnalyzer $fluentChainMethodCallNodeAnalyzer
+        CreatedByRuleDecorator $createdByRuleDecorator
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -190,7 +185,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->infiniteLoopValidator = $infiniteLoopValidator;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
-        $this->fluentChainMethodCallNodeAnalyzer = $fluentChainMethodCallNodeAnalyzer;
     }
 
     /**
@@ -469,22 +463,17 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return true;
         }
 
-        if (! $node instanceof MethodCall) {
-            return $this->isInExistingCreatedByRule($node);
-        }
-
-        // multiple use of current rule repeatedly on Method Call can happen in fluent call
-        // eg on Rector\Laravel\Rector\MethodCall\RemoveAllOnDispatchingMethodsWithJobChainingRector
-        $resolveRootMethodCall = $this->fluentChainMethodCallNodeAnalyzer->resolveRootMethodCall($node);
-        if ($resolveRootMethodCall instanceof MethodCall) {
-            return false;
-        }
-
         return $this->isInExistingCreatedByRule($node);
     }
 
     private function isInExistingCreatedByRule(Node $node): bool
     {
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if ($originalNode instanceof Node) {
+            $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+            return in_array(static::class, $createdByRule, true);
+        }
+
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
         return in_array(static::class, $createdByRule, true);
     }
