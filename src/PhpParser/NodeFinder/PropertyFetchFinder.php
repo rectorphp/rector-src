@@ -158,7 +158,11 @@ final class PropertyFetchFinder
             }
 
             $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
-            return $propertyFetchVarType instanceof ThisType;
+            if (! $propertyFetchVarType instanceof ThisType) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
         }
 
         return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
