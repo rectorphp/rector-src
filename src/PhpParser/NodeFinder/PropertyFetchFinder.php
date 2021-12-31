@@ -151,8 +151,12 @@ final class PropertyFetchFinder
 
     private function isNamePropertyNameEquals(PropertyFetch $propertyFetch, string $propertyName): bool
     {
+        if (! $this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
+            return false;
+        }
+
         if ($this->nodeNameResolver->isName($propertyFetch->var, self::THIS)) {
-            return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
+            return true;
         }
 
         $classLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
@@ -168,11 +172,7 @@ final class PropertyFetchFinder
         $propertyFetchVarTypeClassName = $propertyFetchVarType->getClassName();
         $classLikeName = $this->nodeNameResolver->getName($classLike);
 
-        if ($propertyFetchVarTypeClassName !== $classLikeName) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
+        return $propertyFetchVarTypeClassName === $classLikeName;
     }
 
     private function resolvePropertyName(Property | Param $propertyOrPromotedParam): ?string
