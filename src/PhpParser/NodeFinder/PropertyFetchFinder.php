@@ -151,25 +151,25 @@ final class PropertyFetchFinder
 
     private function isNamePropertyNameEquals(PropertyFetch $propertyFetch, string $propertyName): bool
     {
-        if (! $this->nodeNameResolver->isName($propertyFetch->var, self::THIS)) {
-            $classLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
-            if (! $classLike instanceof Class_) {
-                return false;
-            }
-
-            $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
-            if (! $propertyFetchVarType instanceof TypeWithClassName) {
-                return false;
-            }
-
-            $propertyFetchVarTypeClassName = $propertyFetchVarType->getClassName();
-            $classLikeName = $this->nodeNameResolver->getName($classLike);
-
-            if ($propertyFetchVarTypeClassName !== $classLikeName) {
-                return false;
-            }
-
+        if ($this->nodeNameResolver->isName($propertyFetch->var, self::THIS)) {
             return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
+        }
+
+        $classLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
+        if (! $classLike instanceof Class_) {
+            return false;
+        }
+
+        $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
+        if (! $propertyFetchVarType instanceof TypeWithClassName) {
+            return false;
+        }
+
+        $propertyFetchVarTypeClassName = $propertyFetchVarType->getClassName();
+        $classLikeName = $this->nodeNameResolver->getName($classLike);
+
+        if ($propertyFetchVarTypeClassName !== $classLikeName) {
+            return false;
         }
 
         return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
