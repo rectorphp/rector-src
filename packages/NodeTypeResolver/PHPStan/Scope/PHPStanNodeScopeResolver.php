@@ -121,10 +121,11 @@ final class PHPStanNodeScopeResolver
     ): array {
         $countDeepStmts = $this->countDeepStmts($stmts);
 
-        if ($countDeepStmts < 20) {
-            $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        if ($countDeepStmts >= 20) {
+            return $stmts;
         }
 
+        $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
         $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $smartFileInfo);
 
         return $stmts;
