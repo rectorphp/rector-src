@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\NodeTraverser\InfiniteLoopTraversingException;
+use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeVisitor\CreatedByRuleNodeVisitor;
 use Rector\DowngradePhp74\Rector\ArrowFunction\ArrowFunctionToAnonymousFunctionRector;
@@ -27,7 +28,8 @@ final class InfiniteLoopValidator
     ];
 
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly CreatedByRuleDecorator $createdByRuleDecorator
     ) {
     }
 
@@ -63,7 +65,7 @@ final class InfiniteLoopValidator
     {
         $nodeTraverser = new NodeTraverser();
 
-        $createdByRuleNodeVisitor = new CreatedByRuleNodeVisitor($rectorClass);
+        $createdByRuleNodeVisitor = new CreatedByRuleNodeVisitor($this->createdByRuleDecorator, $rectorClass);
         $nodeTraverser->addVisitor($createdByRuleNodeVisitor);
 
         $nodeTraverser->traverse([$node]);

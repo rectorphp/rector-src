@@ -27,6 +27,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeAnalyzer\ChangedNodeAnalyzer;
+use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -127,6 +128,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     private RectifiedAnalyzer $rectifiedAnalyzer;
 
+    private CreatedByRuleDecorator $createdByRuleDecorator;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -153,7 +156,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         CurrentFileProvider $currentFileProvider,
         ChangedNodeAnalyzer $changedNodeAnalyzer,
         InfiniteLoopValidator $infiniteLoopValidator,
-        RectifiedAnalyzer $rectifiedAnalyzer
+        RectifiedAnalyzer $rectifiedAnalyzer,
+        CreatedByRuleDecorator $createdByRuleDecorator
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -180,6 +184,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->changedNodeAnalyzer = $changedNodeAnalyzer;
         $this->infiniteLoopValidator = $infiniteLoopValidator;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
+        $this->createdByRuleDecorator = $createdByRuleDecorator;
     }
 
     /**
@@ -234,7 +239,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         if (is_array($node)) {
-            $this->setCreatedByRuleAttribute($originalNode);
+            $this->createdByRuleDecorator->decorate($originalNode, static::class);
 
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $node;
@@ -253,7 +258,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return $node;
         }
 
-        $this->setCreatedByRuleAttribute($node);
+        $this->createdByRuleDecorator->decorate($node, static::class);
 
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
@@ -279,17 +284,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         return $node;
-    }
-
-    private function setCreatedByRuleAttribute(Node $originalNode): void
-    {
-        $originalNode->setAttribute(
-            AttributeKey::CREATED_BY_RULE,
-            array_unique(array_merge(
-                $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [],
-                [static::class]
-            ))
-        );
     }
 
     /**
