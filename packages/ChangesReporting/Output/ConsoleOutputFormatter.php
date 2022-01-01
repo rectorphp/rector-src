@@ -101,11 +101,15 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
     }
 
     /**
-     * @param SystemError[] $errors
+     * @param array<SystemError|string> $errors
      */
     private function reportErrors(array $errors): void
     {
         foreach ($errors as $error) {
+            if (! $error instanceof SystemError) {
+                $this->outputStyle->error($error);
+                continue;
+            }
             $errorMessage = $error->getMessage();
             $errorMessage = $this->normalizePathsToRelativeWithLine($errorMessage);
 

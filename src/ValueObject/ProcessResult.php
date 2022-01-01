@@ -16,7 +16,7 @@ final class ProcessResult
 {
     /**
      * @param FileDiff[] $fileDiffs
-     * @param SystemError[] $systemErrors
+     * @param array<SystemError|string> $systemErrors
      */
     public function __construct(
         private readonly array $systemErrors,
@@ -26,7 +26,6 @@ final class ProcessResult
         private readonly int $removedNodeCount
     ) {
         Assert::allIsAOf($fileDiffs, FileDiff::class);
-        Assert::allIsAOf($systemErrors, SystemError::class);
     }
 
     /**
@@ -38,7 +37,7 @@ final class ProcessResult
     }
 
     /**
-     * @return SystemError[]
+     * @return array<SystemError|string>
      */
     public function getErrors(): array
     {
