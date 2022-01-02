@@ -13,6 +13,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\VariableNaming;
+use Rector\NodeCollector\BinaryOpConditionsCollector;
+use Rector\NodeCollector\BinaryOpTreeRootLocator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,6 +28,8 @@ final class DowngradeInstanceofThrowableRector extends AbstractRector
 {
     public function __construct(
         private readonly VariableNaming $variableNaming,
+        private readonly BinaryOpConditionsCollector $binaryOpConditionsCollector,
+        private readonly BinaryOpTreeRootLocator $binaryOpTreeRootLocator,
     ) {
     }
 
@@ -98,17 +102,33 @@ CODE_SAMPLE
     {
         /** @var Node $parentNode */
         $parentNode = $instanceof_->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof BooleanOr || $parentNode->left !== $instanceof_) {
+        if (! $parentNode instanceof BooleanOr) {
             return false;
         }
 
-        $hasVariableToFindInRight = ($var = $instanceof_->expr) instanceof Variable || ($instanceof_->expr instanceof Assign && ($var = $instanceof_->expr->var) instanceof Variable);
-        if (! $hasVariableToFindInRight) {
+        $hasVariableToFindInDisjunction = ($var = $instanceof_->expr) instanceof Variable || ($instanceof_->expr instanceof Assign && ($var = $instanceof_->expr->var) instanceof Variable);
+        if (! $hasVariableToFindInDisjunction) {
             return false;
         }
 
-        $expectedRight = $this->createFallbackCheck($var);
-        return $this->nodeComparator->areNodesEqual($expectedRight, $parentNode->right);
+        $disjunctionTree = $this->binaryOpTreeRootLocator->findOperationRoot($instanceof_, BooleanOr::class);
+        if ($disjunctionTree !== null) {
+            $disjuncts = $this->binaryOpConditionsCollector->findConditions($disjunctionTree, BooleanOr::class);
+        } else {
+            // No disjuncts found.
+            return false;
+        }
+        // If we transformed it ourselves, the second check can only be to the right
+        // since it uses the assigned variable.
+        if ($instanceof_->expr instanceof Assign) {
+            $index = array_search($instanceof_, $disjuncts, true);
+            if ($index !== false) {
+                $disjuncts = array_slice($disjuncts, $index);
+            }
+        }
+
+        $expectedDisjunct = $this->createFallbackCheck($var);
+        return $this->nodeComparator->isNodeEqual($expectedDisjunct, $disjuncts);
     }
 
     private function createFallbackCheck(Variable $variable): Instanceof_
