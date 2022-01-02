@@ -73,7 +73,7 @@ final class BinaryOpTreeRootLocatorTest extends TestCase
         $this->assertSame($ab, $locator->findOperationRoot($a, Plus::class));
         $this->assertSame($ab, $locator->findOperationRoot($b, Plus::class));
         $this->assertSame($ab, $locator->findOperationRoot($ab, Plus::class));
-        $this->assertSame(null, $locator->findOperationRoot($c, Plus::class));
+        $this->assertSame($c, $locator->findOperationRoot($c, Plus::class));
     }
 
     public function testInnerNodeDifferentOp(): void
@@ -91,8 +91,8 @@ final class BinaryOpTreeRootLocatorTest extends TestCase
         $ab->setAttribute(AttributeKey::PARENT_NODE, $tree);
         $c->setAttribute(AttributeKey::PARENT_NODE, $tree);
 
-        $this->assertSame(null, $locator->findOperationRoot($a, Plus::class));
-        $this->assertSame(null, $locator->findOperationRoot($b, Plus::class));
+        $this->assertSame($a, $locator->findOperationRoot($a, Plus::class));
+        $this->assertSame($b, $locator->findOperationRoot($b, Plus::class));
         $this->assertSame($tree, $locator->findOperationRoot($ab, Plus::class));
         $this->assertSame($tree, $locator->findOperationRoot($c, Plus::class));
     }

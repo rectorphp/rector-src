@@ -18,12 +18,12 @@ final class BinaryOpTreeRootLocator
      *
      * @param class-string<BinaryOp> $binaryOpClass
      */
-    public function findOperationRoot(Expr $expr, string $binaryOpClass): ?BinaryOp
+    public function findOperationRoot(Expr $expr, string $binaryOpClass): Expr
     {
         /** @var ?Expr $parentNode */
         $parentNode = $expr->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode === null || $parentNode::class !== $binaryOpClass) {
-            return $expr::class === $binaryOpClass && $expr instanceof BinaryOp ? $expr : null;
+            return $expr;
         }
 
         assert($parentNode instanceof BinaryOp);
@@ -34,7 +34,6 @@ final class BinaryOpTreeRootLocator
             return $this->findOperationRoot($parentNode, $binaryOpClass);
         }
 
-        assert($expr instanceof BinaryOp);
         return $expr;
     }
 }

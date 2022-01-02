@@ -112,12 +112,8 @@ CODE_SAMPLE
         }
 
         $disjunctionTree = $this->binaryOpTreeRootLocator->findOperationRoot($instanceof_, BooleanOr::class);
-        if ($disjunctionTree !== null) {
-            $disjuncts = $this->binaryOpConditionsCollector->findConditions($disjunctionTree, BooleanOr::class);
-        } else {
-            // No disjuncts found.
-            return false;
-        }
+        $disjuncts = $this->binaryOpConditionsCollector->findConditions($disjunctionTree, BooleanOr::class);
+
         // If we transformed it ourselves, the second check can only be to the right
         // since it uses the assigned variable.
         if ($instanceof_->expr instanceof Assign) {

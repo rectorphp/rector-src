@@ -24,9 +24,11 @@ final class BinaryOpConditionsCollector
      * @param class-string<BinaryOp> $binaryOpClass
      * @return array<int, Expr>
      */
-    public function findConditions(BinaryOp $binaryOp, string $binaryOpClass): array
+    public function findConditions(Expr $binaryOp, string $binaryOpClass): array
     {
         if ($binaryOp::class !== $binaryOpClass) {
+            // Different binary operators, as well as non-BinaryOp expressions
+            // are considered trivial case of a single operand (no operators).
             return [$binaryOp];
         }
 
