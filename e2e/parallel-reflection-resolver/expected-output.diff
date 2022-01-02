@@ -1,0 +1,19 @@
+1 file with changes
+===================
+
+1) src/SomeClass.php:3
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class SomeClass
+ {
+-    private $foo;
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnusedPrivatePropertyRector
+
+
+ [OK] 1 file would have changed (dry-run) by Rector
