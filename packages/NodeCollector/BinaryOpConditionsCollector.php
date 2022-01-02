@@ -22,7 +22,7 @@ final class BinaryOpConditionsCollector
      * the implicit parenthesization (`[a, b ?? c]`) might not match the expectations.
      *
      * @param class-string<BinaryOp> $binaryOpClass
-     * @return Expr[]
+     * @return array<int, Expr>
      */
     public function findConditions(BinaryOp $binaryOp, string $binaryOpClass): array
     {
