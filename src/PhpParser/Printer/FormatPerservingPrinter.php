@@ -6,7 +6,6 @@ namespace Rector\Core\PhpParser\Printer;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Expression;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\ValueObject\Application\File;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -66,23 +65,13 @@ final class FormatPerservingPrinter
      */
     private function resolveNewStmts(File $file): array
     {
-        $newStmts = $file->getNewStmts();
-
-        if (count($newStmts) !== 1) {
-            return $newStmts;
+        if (count($file->getNewStmts()) === 1) {
+            $onlyStmt = $file->getNewStmts()[0];
+            if ($onlyStmt instanceof FileWithoutNamespace) {
+                return $onlyStmt->stmts;
+            }
         }
 
-        if (isset($newStmts[1])) {
-            return array_merge([$file->getOldStmts()[0]], $newStmts);
-        }
-
-        /** @var Expression|FileWithoutNamespace $onlyStmt */
-        $onlyStmt = $newStmts[0];
-
-        if (! $onlyStmt instanceof FileWithoutNamespace) {
-            return $newStmts;
-        }
-
-        return $onlyStmt->stmts;
+        return $file->getNewStmts();
     }
 }
