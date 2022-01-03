@@ -1,7 +1,22 @@
-1 file with changes
-===================
+2 files with changes
+====================
 
-1) src/SomeClass.php:3
+1) src/NamespacedSomeClassFound.php:5
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class NamespacedSomeClassFound
+ {
+-    private $foo;
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnusedPrivatePropertyRector
+
+
+2) src/SomeClass.php:3
 
     ---------- begin diff ----------
 @@ @@
@@ -16,4 +31,4 @@ Applied rules:
  * RemoveUnusedPrivatePropertyRector
 
 
- [OK] 1 file would have changed (dry-run) by Rector
+ [OK] 2 files would have changed (dry-run) by Rector
