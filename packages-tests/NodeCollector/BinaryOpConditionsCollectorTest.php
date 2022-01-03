@@ -14,15 +14,15 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 {
     public function testLeftAssociative(): void
     {
-        $collector = new BinaryOpConditionsCollector();
+        $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Plus (Plus a b) c)
         $a = new Variable('a');
         $b = new Variable('b');
         $c = new Variable('c');
-        $tree = new Plus(new Plus($a, $b), $c);
+        $plus = new Plus(new Plus($a, $b), $c);
 
-        $result = $collector->findConditions($tree, Plus::class);
+        $result = $binaryOpConditionsCollector->findConditions($plus, Plus::class);
 
         $this->assertEquals([
             2 => $a,
@@ -33,7 +33,7 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
     public function testRightAssociative(): void
     {
-        $collector = new BinaryOpConditionsCollector();
+        $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Plus a (Plus b c))
         $a = new Variable('a');
@@ -42,7 +42,7 @@ final class BinaryOpConditionsCollectorTest extends TestCase
         $bc = new Plus($b, $c);
         $tree = new Plus($a, $bc);
 
-        $result = $collector->findConditions($tree, Plus::class);
+        $result = $binaryOpConditionsCollector->findConditions($tree, Plus::class);
 
         $this->assertEquals([
             1 => $a,
@@ -52,36 +52,36 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
     public function testWrongRootOp(): void
     {
-        $collector = new BinaryOpConditionsCollector();
+        $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Minus (Plus a b) c)
         $a = new Variable('a');
         $b = new Variable('b');
         $c = new Variable('c');
-        $tree = new Minus(new Plus($a, $b), $c);
+        $minus = new Minus(new Plus($a, $b), $c);
 
-        $result = $collector->findConditions($tree, Plus::class);
+        $result = $binaryOpConditionsCollector->findConditions($minus, Plus::class);
 
         $this->assertEquals([
-            0 => $tree,
+            0 => $minus,
         ], $result);
     }
 
     public function testInnerNodeDifferentOp(): void
     {
-        $collector = new BinaryOpConditionsCollector();
+        $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Plus (Minus a b) c)
         $a = new Variable('a');
         $b = new Variable('b');
         $c = new Variable('c');
-        $ab = new Minus($a, $b);
-        $tree = new Plus($ab, $c);
+        $minus = new Minus($a, $b);
+        $plus = new Plus($minus, $c);
 
-        $result = $collector->findConditions($tree, Plus::class);
+        $result = $binaryOpConditionsCollector->findConditions($plus, Plus::class);
 
         $this->assertEquals([
-            1 => $ab,
+            1 => $minus,
             0 => $c,
         ], $result);
     }
