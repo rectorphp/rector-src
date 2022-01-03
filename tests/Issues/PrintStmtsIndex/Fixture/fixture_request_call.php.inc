@@ -13,6 +13,8 @@ Route::middleware('something')->group(function () {
 -----
 <?php
 
+use Illuminate\Http\Request;
+
 \Illuminate\Support\Facades\Route::middleware('something')->group(function () {
     \Illuminate\Support\Facades\Route::get('/some', 'SomeController@some');
     \Illuminate\Support\Facades\Route::get('/some/{id?}', 'SomeController@some');

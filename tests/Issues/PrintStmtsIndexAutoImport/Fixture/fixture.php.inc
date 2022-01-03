@@ -12,6 +12,7 @@ Route::middleware('something')->group(function () {
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::middleware('something')->group(function () {
     Route::get('/some', 'SomeController@some');

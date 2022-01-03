@@ -59,7 +59,7 @@ final class UseImportsRemover
     {
         foreach ($use->uses as $usesKey => $useUse) {
             foreach ($removedShortUses as $removedShortUse) {
-                if ($useUse->name->getLast() === $removedShortUse) {
+                if ($useUse->name->getLast() === $removedShortUse && ! str_contains($useUse->name->toString(), '\\')) {
                     unset($use->uses[$usesKey]);
                 }
 
