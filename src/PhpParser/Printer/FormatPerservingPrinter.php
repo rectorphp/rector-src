@@ -72,9 +72,12 @@ final class FormatPerservingPrinter
             return $newStmts;
         }
 
-        $newStmtsCheck = $newStmts;
+        if (isset($newStmts[1])) {
+            return array_merge([$file->getOldStmts()[0]], $newStmts);
+        }
+
         /** @var Expression|FileWithoutNamespace $onlyStmt */
-        $onlyStmt = current($newStmtsCheck);
+        $onlyStmt = $newStmts[0];
 
         if (! $onlyStmt instanceof FileWithoutNamespace) {
             return $newStmts;
