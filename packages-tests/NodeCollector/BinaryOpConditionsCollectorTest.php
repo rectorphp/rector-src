@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeCollector;
 
-use PHPUnit\Framework\TestCase;
-use Rector\NodeCollector\BinaryOpConditionsCollector;
 use PhpParser\Node\Expr\BinaryOp\Minus;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\Variable;
+use PHPUnit\Framework\TestCase;
+use Rector\NodeCollector\BinaryOpConditionsCollector;
 
 final class BinaryOpConditionsCollectorTest extends TestCase
 {
@@ -24,7 +24,11 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $collector->findConditions($tree, Plus::class);
 
-        $this->assertEquals([2 => $a, 1 => $b, 0 => $c], $result);
+        $this->assertEquals([
+            2 => $a,
+            1 => $b,
+            0 => $c,
+        ], $result);
     }
 
     public function testRightAssociative(): void
@@ -40,7 +44,10 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $collector->findConditions($tree, Plus::class);
 
-        $this->assertEquals([1 => $a, 0 => $bc], $result);
+        $this->assertEquals([
+            1 => $a,
+            0 => $bc,
+        ], $result);
     }
 
     public function testWrongRootOp(): void
@@ -55,7 +62,9 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $collector->findConditions($tree, Plus::class);
 
-        $this->assertEquals([0 => $tree], $result);
+        $this->assertEquals([
+            0 => $tree,
+        ], $result);
     }
 
     public function testInnerNodeDifferentOp(): void
@@ -71,6 +80,9 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $collector->findConditions($tree, Plus::class);
 
-        $this->assertEquals([1 => $ab, 0 => $c], $result);
+        $this->assertEquals([
+            1 => $ab,
+            0 => $c,
+        ], $result);
     }
 }
