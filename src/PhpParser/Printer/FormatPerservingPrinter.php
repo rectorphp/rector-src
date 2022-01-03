@@ -66,7 +66,7 @@ final class FormatPerservingPrinter
     private function resolveNewStmts(File $file): array
     {
         if (count($file->getNewStmts()) === 1) {
-            $onlyStmt = $file->getNewStmts()[0];
+            $onlyStmt = array_values($file->getNewStmts())[0];
             if ($onlyStmt instanceof FileWithoutNamespace) {
                 return $onlyStmt->stmts;
             }
