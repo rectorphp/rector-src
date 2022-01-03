@@ -6,6 +6,7 @@ namespace Rector\Core\PhpParser\Printer;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\ValueObject\Application\File;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -72,6 +73,7 @@ final class FormatPerservingPrinter
         }
 
         $newStmtsCheck = $newStmts;
+        /** @var Expression|FileWithoutNamespace $onlyStmt */
         $onlyStmt = current($newStmtsCheck);
 
         if (! $onlyStmt instanceof FileWithoutNamespace) {
