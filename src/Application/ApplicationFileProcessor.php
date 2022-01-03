@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
-use Nette\Utils\Strings;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
@@ -39,15 +38,15 @@ final class ApplicationFileProcessor
     private const ARGV = 'argv';
 
     /**
-     * @var SystemError[]
-     */
-    private array $systemErrors = [];
-
-    /**
      * @var string
      * @see https://regex101.com/r/fD77Jt/1
      */
     private const CLASS_NOT_FOUND_REGEX = '#^System error: "Class .* was not found while trying to analyse it - discovering symbols is probably not configured properly."#';
+
+    /**
+     * @var SystemError[]
+     */
+    private array $systemErrors = [];
 
     /**
      * @param FileProcessorInterface[] $fileProcessors
