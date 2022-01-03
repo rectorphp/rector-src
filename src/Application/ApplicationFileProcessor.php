@@ -109,9 +109,7 @@ final class ApplicationFileProcessor
                     unset($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS][$key]);
                     $newSystemErrorsAndFileDiffs = $this->run($fallbackConfiguration, $input);
 
-                    /**
-                     * @var array{system_errors: SystemError[], file_diffs: FileDiff[]} $systemErrorsAndFileDiffs
-                     */
+                    /** @var array{system_errors: SystemError[], file_diffs: FileDiff[]} $systemErrorsAndFileDiffs */
                     $systemErrorsAndFileDiffs = array_merge_recursive(
                         $systemErrorsAndFileDiffs,
                         $newSystemErrorsAndFileDiffs
