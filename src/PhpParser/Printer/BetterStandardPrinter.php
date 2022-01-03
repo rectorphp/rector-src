@@ -435,11 +435,18 @@ final class BetterStandardPrinter extends Standard
      */
     private function resolveNewStmts(array $stmts): array
     {
-        if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
-            return $this->resolveNewStmts($stmts[0]->stmts);
+        if (count($stmts) !== 1) {
+            return $stmts;
         }
 
-        return $stmts;
+        $newStmtsCheck = $stmts;
+        $onlyStmt = current($newStmtsCheck);
+
+        if (! $onlyStmt instanceof FileWithoutNamespace) {
+            return $stmts;
+        }
+
+        return $this->resolveNewStmts($onlyStmt->stmts);
     }
 
     /**
