@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-final class SomeClass
+final class SomeClassNotFound
 {
     private $foo;
 }

@@ -16,12 +16,12 @@ Applied rules:
  * RemoveUnusedPrivatePropertyRector
 
 
-2) src/SomeClass.php:3
+2) src/SomeClassNotFound.php:3
 
     ---------- begin diff ----------
 @@ @@
 
- final class SomeClass
+ final class SomeClassNotFound
  {
 -    private $foo;
  }
