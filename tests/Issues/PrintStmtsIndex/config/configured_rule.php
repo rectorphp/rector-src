@@ -10,6 +10,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(RenameClassRector::class)
         ->configure([
+            'Route' => 'Illuminate\Support\Facades\Route',
             'Request' => 'Illuminate\Http\Request',
         ]);
 };
