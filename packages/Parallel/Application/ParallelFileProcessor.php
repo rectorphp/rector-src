@@ -74,6 +74,7 @@ final class ParallelFileProcessor
 
         // initial counters
         $fileDiffs = [];
+        /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
         $tcpServer = new TcpServer('127.0.0.1:0', $streamSelectLoop);
