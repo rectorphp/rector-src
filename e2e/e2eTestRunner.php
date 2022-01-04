@@ -9,6 +9,11 @@ $rectorBin = $projectRoot .'bin/rector';
 $autoloadFile = $projectRoot .'vendor/autoload.php';
 
 $e2eCommand = 'php '. $rectorBin .' process --dry-run --no-ansi --no-progress-bar -a '. $autoloadFile;
+
+if (isset($argv[1]) && $argv[1] === '-c') {
+    $e2eCommand .= ' -c ' . $argv[2];
+}
+
 exec($e2eCommand, $output, $exitCode);
 $output = trim(implode("\n", $output));
 
