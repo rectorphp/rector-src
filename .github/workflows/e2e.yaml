@@ -47,8 +47,8 @@ jobs:
 
             # run e2e test
             -   run: php ../e2eTestRunner.php -c custom/config/rector.php
-                if: ${{ matrix.path == 'parallel-custom-config' }}
+                if: ${{ matrix.directory == 'parallel-custom-config' }}
 
             -   run: php ../e2eTestRunner.php
-                if: ${{ matrix.path != 'parallel-custom-config' }}
+                if: ${{ matrix.directory != 'parallel-custom-config' }}
 
