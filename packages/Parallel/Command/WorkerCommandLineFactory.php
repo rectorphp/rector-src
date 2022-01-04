@@ -95,8 +95,11 @@ final class WorkerCommandLineFactory
         // disable colors, breaks json_decode() otherwise
         // @see https://github.com/symfony/symfony/issues/1238
         $workerCommandArray[] = '--no-ansi';
-        $workerCommandArray[] = '--config';
-        $workerCommandArray[] = $input->getOption(Option::CONFIG);
+
+        if ($input->hasOption(Option::CONFIG)) {
+            $workerCommandArray[] = '--config';
+            $workerCommandArray[] = $input->getOption(Option::CONFIG);
+        }
 
         return implode(' ', $workerCommandArray);
     }
