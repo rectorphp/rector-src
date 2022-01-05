@@ -15,7 +15,6 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use PHPStan\Type\VerbosityLevel;
 use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
