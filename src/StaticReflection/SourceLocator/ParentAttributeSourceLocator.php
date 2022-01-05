@@ -55,7 +55,7 @@ final class ParentAttributeSourceLocator implements SourceLocator
 
             $class->namespacedName = new FullyQualified($identifierName);
             $fakeLocatedSource = new LocatedSource('virtual', null);
-            $memoizingReflector = new MemoizingReflector($this);
+            $memoizingReflector = new MemoizingReflector(new ClassReflector($this));
 
             return ReflectionClass::createFromNode(
                 $memoizingReflector,
