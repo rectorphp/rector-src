@@ -15,6 +15,7 @@ use PHPStan\BetterReflection\Reflector\ClassReflector;
 use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Located\LocatedSource;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
+use PHPStan\Reflection\BetterReflection\Reflector\MemoizingReflector;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\PhpParser\AstResolver;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -55,10 +56,10 @@ final class ParentAttributeSourceLocator implements SourceLocator
 
             $class->namespacedName = new FullyQualified($identifierName);
             $fakeLocatedSource = new LocatedSource('virtual', null);
-            $classReflector = new ClassReflector($this);
+            $memoizingReflector = new MemoizingReflector($this);
 
             return ReflectionClass::createFromNode(
-                $classReflector,
+                $memoizingReflector,
                 $class,
                 $fakeLocatedSource,
                 new Namespace_(new Name('Symfony\Component\DependencyInjection\Attribute'))

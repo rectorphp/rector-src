@@ -12,6 +12,7 @@ use PHPStan\BetterReflection\Reflector\ClassReflector;
 use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Located\LocatedSource;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
+use PHPStan\Reflection\BetterReflection\Reflector\MemoizingReflector;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Symplify\Astral\ValueObject\NodeBuilder\ClassBuilder;
 
@@ -54,7 +55,7 @@ final class RenamedClassesSourceLocator implements SourceLocator
         $class = $classBuilder->getNode();
         $fakeLocatedSource = new LocatedSource('virtual', null);
 
-        $classReflector = new ClassReflector($this);
-        return ReflectionClass::createFromNode($classReflector, $class, $fakeLocatedSource);
+        $memoizingReflector = new MemoizingReflector($this);
+        return ReflectionClass::createFromNode($memoizingReflector, $class, $fakeLocatedSource);
     }
 }
