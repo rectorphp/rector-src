@@ -107,9 +107,11 @@ CODE_SAMPLE
             if (! $arg->name instanceof Identifier) {
                 continue;
             }
+
             if (! $this->nodeNameResolver->isName($arg->name, $ArgName)) {
                 continue;
             }
+
             return true;
         }
 
