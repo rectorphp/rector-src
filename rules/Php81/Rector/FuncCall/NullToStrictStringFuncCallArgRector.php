@@ -29,8 +29,9 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
         'explode' => [1, 'string'],
     ];
 
-    public function __construct(private readonly ArgsAnalyzer $argsAnalyzer)
-    {
+    public function __construct(
+        private readonly ArgsAnalyzer $argsAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -88,6 +89,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
+    }
+
     private function hasNamedArgDefined(FuncCall $funcCall, array $args): bool
     {
         $functionName = $this->nodeNameResolver->getName($funcCall);
@@ -111,10 +117,5 @@ CODE_SAMPLE
     {
         $functionNames = array_keys(self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING);
         return ! $this->nodeNameResolver->isNames($funcCall, $functionNames);
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
     }
 }
