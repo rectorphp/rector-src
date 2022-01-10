@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -20,19 +20,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, array<int, string>>
      */
     private const ARG_POSITION_NAME_NULL_TO_STRICT_STRING = [
-        'preg_split' => [1, 'subject'],
-        'preg_match' => [1, 'subject'],
-        'preg_match_all' => [1, 'subject'],
-        'explode' => [1, 'string'],
+        'preg_split' => [1 => 'subject'],
+        'preg_match' => [1 => 'subject'],
+        'preg_match_all' => [1 => 'subject'],
+        'explode' => [1 => 'string'],
     ];
-
-    public function __construct(
-        private readonly ArgsAnalyzer $argsAnalyzer
-    ) {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -94,6 +89,9 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
     }
 
+    /**
+     * @param Arg[] $args
+     */
     private function hasNamedArgDefined(FuncCall $funcCall, array $args): bool
     {
         $functionName = $this->nodeNameResolver->getName($funcCall);
@@ -108,7 +106,10 @@ CODE_SAMPLE
         return false;
     }
 
-    private function processNamedArgDefined(FuncCall $funcCall, array $args): ?FuncCall
+    /**
+     * @param Arg[] $args
+     */
+    private function processNamedArgDefined(FuncCall $funcCall, array $args): FuncCall
     {
         return $funcCall;
     }
