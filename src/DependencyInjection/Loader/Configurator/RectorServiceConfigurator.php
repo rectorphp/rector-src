@@ -6,6 +6,7 @@ namespace Rector\Core\DependencyInjection\Loader\Configurator;
 
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServiceConfigurator;
 use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
@@ -40,6 +41,11 @@ final class RectorServiceConfigurator extends ServiceConfigurator
     {
         if ($class === null) {
             throw new InvalidConfigurationException('The class is missing');
+        }
+
+        $serviceDefinition = $this->get($class);
+        if($serviceDefinition->definition instanceof Definition) {
+            $class = $serviceDefinition->definition->getClass() ?? $class;
         }
 
         if (! is_a($class, ConfigurableRectorInterface::class, true)) {
