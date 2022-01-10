@@ -14,9 +14,6 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\NullToStrictStringFuncCallArgRectorTest
- */
 final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
@@ -87,7 +84,7 @@ CODE_SAMPLE
 
         $args = $node->getArgs();
         if ($this->hasNamedArgDefined($node, $args)) {
-            return $this->processNamedArgDefined($node, $args);
+            return $this->processNamedArgDefined($node);
         }
 
         return $node;
@@ -107,18 +104,19 @@ CODE_SAMPLE
         [, $ArgName] = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
 
         foreach ($args as $arg) {
-            if ($arg->name instanceof Identifier && $this->nodeNameResolver->isName($arg->name, $ArgName)) {
-                return true;
+            if (! $arg->name instanceof Identifier) {
+                continue;
             }
+            if (! $this->nodeNameResolver->isName($arg->name, $ArgName)) {
+                continue;
+            }
+            return true;
         }
 
         return false;
     }
 
-    /**
-     * @param Arg[] $args
-     */
-    private function processNamedArgDefined(FuncCall $funcCall, array $args): FuncCall
+    private function processNamedArgDefined(FuncCall $funcCall): FuncCall
     {
         return $funcCall;
     }
