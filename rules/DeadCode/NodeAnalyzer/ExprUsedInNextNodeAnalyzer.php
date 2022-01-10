@@ -6,9 +6,8 @@ namespace Rector\DeadCode\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt\If_;
+use PHPStan\Analyser\Scope;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprUsedInNextNodeAnalyzer
@@ -30,17 +29,9 @@ final class ExprUsedInNextNodeAnalyzer
                     return true;
                 }
 
-                /**
-                 * handle when used along with RemoveAlwaysElseRector
-                 */
-                return $node instanceof If_ && $this->hasIfChangedByRemoveAlwaysElseRector($node);
+                $scope = $node->getAttribute(AttributeKey::SCOPE);
+                return ! $scope instanceof Scope;
             }
         );
-    }
-
-    private function hasIfChangedByRemoveAlwaysElseRector(If_ $if): bool
-    {
-        $createdByRule = $if->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-        return in_array(RemoveAlwaysElseRector::class, $createdByRule, true);
     }
 }
