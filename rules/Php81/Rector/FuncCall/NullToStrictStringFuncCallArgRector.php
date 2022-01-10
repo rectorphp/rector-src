@@ -23,10 +23,19 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
      * @var array<string, array<int, string>>
      */
     private const ARG_POSITION_NAME_NULL_TO_STRICT_STRING = [
-        'preg_split' => [1 => 'subject'],
-        'preg_match' => [1 => 'subject'],
-        'preg_match_all' => [1 => 'subject'],
-        'explode' => [1 => 'string'],
+        'preg_split' => [
+            1 => 'subject',
+        ],
+        'preg_match' => [
+            1 => 'subject',
+        ],
+        'preg_match_all' => [
+            1 => 'subject',
+        ],
+        'explode' => [
+            1
+             => 'string',
+        ],
     ];
 
     public function getRuleDefinition(): RuleDefinition
