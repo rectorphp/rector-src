@@ -101,8 +101,18 @@ final class TypeNormalizer
                 assert($traversedType instanceof ConstantArrayType);
 
                 // not sure why, but with direct new node everything gets nulled to MixedType
-                $this->privatesAccessor->setPrivatePropertyOfClass($traversedType, 'keyType', new MixedType(), Type::class);
-                $this->privatesAccessor->setPrivatePropertyOfClass($traversedType, 'itemType', new MixedType(), Type::class);
+                $this->privatesAccessor->setPrivatePropertyOfClass(
+                    $traversedType,
+                    'keyType',
+                    new MixedType(),
+                    Type::class
+                );
+                $this->privatesAccessor->setPrivatePropertyOfClass(
+                    $traversedType,
+                    'itemType',
+                    new MixedType(),
+                    Type::class
+                );
 
                 return $traversedType;
             }
