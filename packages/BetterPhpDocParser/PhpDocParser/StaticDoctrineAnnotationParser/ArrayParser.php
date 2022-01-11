@@ -80,6 +80,20 @@ final class ArrayParser
         // skip newlines
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 
+        $key = null;
+
+        // join "::" to identifier
+        if ($tokenIterator->isNextTokenTypes([Lexer::TOKEN_DOUBLE_COLON])) {
+            $key = $tokenIterator->currentTokenValue();
+
+            // "::"
+            $tokenIterator->next();
+            $key .= $tokenIterator->currentTokenValue();
+
+            $tokenIterator->next();
+            $key .= $tokenIterator->currentTokenValue();
+        }
+
         if ($tokenIterator->isNextTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON])) {
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_EQUAL);
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_COLON);
@@ -97,7 +111,7 @@ final class ArrayParser
             return [$key, $this->plainValueParser->parseValue($tokenIterator)];
         }
 
-        return [null, $this->plainValueParser->parseValue($tokenIterator)];
+        return [$key, $this->plainValueParser->parseValue($tokenIterator)];
     }
 
     /**
