@@ -19,6 +19,7 @@ use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\BetterReflection\Reflector\MemoizingReflector;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
@@ -85,12 +86,14 @@ final class PHPStanNodeScopeResolver
                     self::CONTEXT,
                     ScopeContext::class
                 );
+
                 $traitContext = clone $scopeContext;
+
                 $this->privatesAccessor->setPrivatePropertyOfClass(
                     $traitContext,
                     'classReflection',
                     $traitReflectionClass,
-                    ScopeContext::class
+                    ClassReflection::class
                 );
                 $this->privatesAccessor->setPrivatePropertyOfClass(
                     $traitScope,
