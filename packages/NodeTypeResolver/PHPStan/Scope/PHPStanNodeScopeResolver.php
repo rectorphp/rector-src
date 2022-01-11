@@ -14,6 +14,7 @@ use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
+use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use PHPStan\Node\UnreachableStatementNode;
@@ -27,7 +28,6 @@ use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
-use Reflector;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -218,10 +218,14 @@ final class PHPStanNodeScopeResolver
         $classReflector = $this->privatesAccessor->getPrivatePropertyOfClass(
             $nodeScopeResolver,
             'reflector',
-            MemoizingReflector::class
+            Reflector::class
         );
 
-        $reflector = $this->privatesAccessor->getPrivatePropertyOfClass($classReflector, 'reflector', MemoizingReflector::class);
+        $reflector = $this->privatesAccessor->getPrivatePropertyOfClass(
+            $classReflector,
+            'reflector',
+            Reflector::class
+        );
 
         /** @var SourceLocator $sourceLocator */
         $sourceLocator = $this->privatesAccessor->getPrivatePropertyOfClass(
