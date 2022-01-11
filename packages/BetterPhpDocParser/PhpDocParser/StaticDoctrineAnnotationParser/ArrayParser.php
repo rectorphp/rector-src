@@ -82,7 +82,7 @@ final class ArrayParser
 
         $key = null;
 
-        // join "::" to identifier
+        // join "ClassName::CONSTANT_REFERENCE" to identifier
         if ($tokenIterator->isNextTokenTypes([Lexer::TOKEN_DOUBLE_COLON])) {
             $key = $tokenIterator->currentTokenValue();
 
@@ -90,19 +90,23 @@ final class ArrayParser
             $tokenIterator->next();
             $key .= $tokenIterator->currentTokenValue();
 
-            $tokenIterator->next();
+            $tokenIterator->consumeTokenType(Lexer::TOKEN_DOUBLE_COLON);
             $key .= $tokenIterator->currentTokenValue();
+
+            $tokenIterator->next();
         }
 
-        if ($tokenIterator->isNextTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON])) {
+        if ($tokenIterator->isCurrentTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON]) || $tokenIterator->isNextTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON])) {
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_EQUAL);
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_COLON);
 
-            if ($tokenIterator->isNextTokenType(Lexer::TOKEN_IDENTIFIER)) {
-                $key = $this->plainValueParser->parseValue($tokenIterator);
-            } else {
-                $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_COMMA);
-                $key = $this->plainValueParser->parseValue($tokenIterator);
+            if ($key === null) {
+                if ($tokenIterator->isNextTokenType(Lexer::TOKEN_IDENTIFIER)) {
+                    $key = $this->plainValueParser->parseValue($tokenIterator);
+                } else {
+                    $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_COMMA);
+                    $key = $this->plainValueParser->parseValue($tokenIterator);
+                }
             }
 
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_EQUAL);
