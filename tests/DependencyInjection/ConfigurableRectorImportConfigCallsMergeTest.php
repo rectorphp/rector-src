@@ -39,7 +39,7 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         $renamedClassesDataCollector = $this->getService(RenamedClassesDataCollector::class);
 
         $this->assertSame([
-            'old_1' => 'new_1'
+            'old_1' => 'new_1',
         ], $renamedClassesDataCollector->getOldToNewClasses());
     }
 

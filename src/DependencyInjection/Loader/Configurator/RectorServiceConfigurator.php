@@ -44,7 +44,7 @@ final class RectorServiceConfigurator extends ServiceConfigurator
         }
 
         $serviceDefinition = $this->get($class);
-        if($serviceDefinition->definition instanceof Definition) {
+        if ($serviceDefinition->definition instanceof Definition) {
             $class = $serviceDefinition->definition->getClass() ?? $class;
         }
 

@@ -7,8 +7,9 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
-    $services->set('custom_id')->class(RenameClassRector::class)
-             ->configure([
-                 'old_1' => 'new_1',
-             ]);
+    $services->set('custom_id')
+        ->class(RenameClassRector::class)
+        ->configure([
+            'old_1' => 'new_1',
+        ]);
 };
