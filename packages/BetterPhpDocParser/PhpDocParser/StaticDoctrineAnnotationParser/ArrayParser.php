@@ -96,7 +96,9 @@ final class ArrayParser
             $tokenIterator->next();
         }
 
-        if ($tokenIterator->isCurrentTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON]) || $tokenIterator->isNextTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON])) {
+        if ($tokenIterator->isCurrentTokenTypes(
+            [Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON]
+        ) || $tokenIterator->isNextTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON])) {
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_EQUAL);
             $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_COLON);
 
