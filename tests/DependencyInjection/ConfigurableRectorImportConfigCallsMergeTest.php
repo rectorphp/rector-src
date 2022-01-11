@@ -28,6 +28,21 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         $this->assertSame($expectedConfiguration, $renamedClassesDataCollector->getOldToNewClasses());
     }
 
+    public function testConfigFileWithCustomServiceId(): void
+    {
+        $configFile = __DIR__ . '/config/set_with_custom_id.php';
+        $this->bootFromConfigFiles([$configFile]);
+
+        $this->getService('custom_id');
+
+        /** @var RenamedClassesDataCollector $renamedClassesDataCollector */
+        $renamedClassesDataCollector = $this->getService(RenamedClassesDataCollector::class);
+
+        $this->assertSame([
+            'old_1' => 'new_1'
+        ], $renamedClassesDataCollector->getOldToNewClasses());
+    }
+
     public function provideData(): Iterator
     {
         yield [
