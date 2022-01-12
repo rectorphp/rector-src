@@ -105,7 +105,7 @@ final class TypeComparator
             return false;
         }
 
-        return true;
+        return $this->isThisTypeInFinalClass($phpStanDocType, $phpParserNodeType, $node);
     }
 
     public function isSubtype(Type $checkedType, Type $mainType): bool
@@ -265,5 +265,17 @@ final class TypeComparator
             && $phpStanDocType instanceof ConstantScalarType
             && $phpParserNodeType->isSuperTypeOf($phpStanDocType)
                 ->yes();
+    }
+
+    private function isThisTypeInFinalClass(Type $phpStanDocType, Type $phpParserNodeType, Node $node): bool
+    {
+
+        /**
+         * Special case for $this/(self|static) compare
+         *
+         * $this refers to the exact object identity, not just the same type. Therefore, it's valid and should not be removed
+         * @see https://wiki.php.net/rfc/this_return_type for more context
+         */
+        return ! ($phpStanDocType instanceof ThisType && $phpParserNodeType instanceof StaticType);
     }
 }
