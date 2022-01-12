@@ -98,8 +98,8 @@ final class ArrayParser
 
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 
-        if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_CLOSE_CURLY_BRACKET)) {
-            // it's a trailing value, not a key
+        if ($tokenIterator->isCurrentTokenTypes([Lexer::TOKEN_CLOSE_CURLY_BRACKET, Lexer::TOKEN_COMMA])) {
+            // it's a value, not a key
             return [null, $key];
         }
 
