@@ -7,7 +7,12 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Constant
 
 /**
  * @GenericAnnotation(
- *     ConstantReference::FIRST_NAME = {"John"}
+ *     some={
+ *          ConstantReference::FIRST_NAME={
+ *              foo: {bar:{"baz"}}
+ *          },
+ *          ConstantReference::LAST_NAME
+ *     }
  * )
  */
 final class ArrayWithConstantAsKey
@@ -23,7 +28,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\ConstantReference;
 
-#[GenericAnnotation(ConstantReference::FIRST_NAME: ['John'])]
+#[GenericAnnotation(some: [ConstantReference::FIRST_NAME => ['foo' => ['bar' => ['baz']]], ConstantReference::LAST_NAME])]
 final class ArrayWithConstantAsKey
 {
 }
