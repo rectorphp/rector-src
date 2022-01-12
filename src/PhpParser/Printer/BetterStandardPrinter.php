@@ -22,6 +22,8 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitorAbstract;
 use PhpParser\PrettyPrinter\Standard;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -456,13 +458,22 @@ final class BetterStandardPrinter extends Standard
     private function moveCommentsFromAttributeObjectToCommentsAttribute(array $nodes): void
     {
         // move phpdoc from node to "comment" attribute
-        foreach ($nodes as $node) {
-            if (! $node instanceof Node) {
-                continue;
+        $nodeTraverser = new NodeTraverser();
+
+        $nodeTraverser->addVisitor(new class($this->docBlockUpdater) extends NodeVisitorAbstract {
+            public function __construct(
+                private DocBlockUpdater $docBlockUpdater
+            ) {
             }
 
-            $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
-        }
+            public function enterNode(Node $node)
+            {
+                $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
+                return $node;
+            }
+        });
+
+        $nodeTraverser->traverse($nodes);
     }
 
     /**
