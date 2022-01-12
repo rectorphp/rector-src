@@ -133,7 +133,6 @@ final class ArrayParser
      */
     private function createArrayFromValues(array $values): array
     {
-        var_dump($values);
         $array = [];
 
         foreach ($values as $value) {
