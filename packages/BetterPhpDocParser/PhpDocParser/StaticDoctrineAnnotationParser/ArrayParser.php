@@ -96,6 +96,13 @@ final class ArrayParser
             $tokenIterator->next();
         }
 
+        $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
+
+        if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_CLOSE_CURLY_BRACKET)) {
+            // it's a trailing value, not a key
+            return [null, $key];
+        }
+
         if ($tokenIterator->isCurrentTokenTypes(
             [Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON]
         ) || $tokenIterator->isNextTokenTypes([Lexer::TOKEN_EQUAL, Lexer::TOKEN_COLON])) {
@@ -126,6 +133,7 @@ final class ArrayParser
      */
     private function createArrayFromValues(array $values): array
     {
+        var_dump($values);
         $array = [];
 
         foreach ($values as $value) {
