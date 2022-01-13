@@ -36,14 +36,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string[]>
      */
     private const ARG_POSITION_NAME_NULL_TO_STRICT_STRING = [
-        'preg_split' => 'subject',
-        'preg_match' => 'subject',
-        'preg_match_all' => 'subject',
-        'explode' => 'string',
-        'strlen' => 'string',
+        'preg_split' => ['subject'],
+        'preg_match' => ['subject'],
+        'preg_match_all' => ['subject'],
+        'explode' => ['string'],
+        'strlen' => ['string'],
+        'str_contains' => ['haystack', 'needle'],
     ];
 
     public function __construct(
@@ -101,11 +102,28 @@ CODE_SAMPLE
         }
 
         $args = $node->getArgs();
-        $position = $this->argsAnalyzer->hasNamedArg($args)
-            ? $this->resolveNamedPosition($node, $args)
-            : $this->resolveOriginalPosition($node);
+        $positions = $this->argsAnalyzer->hasNamedArg($args)
+            ? $this->resolveNamedPositions($node, $args)
+            : $this->resolveOriginalPositions($node);
 
-        return $this->processNullToStrictStringOnNodePosition($node, $args, $position);
+        if ($positions === []) {
+            return null;
+        }
+
+        $isChanged = false;
+        foreach ($positions as $position) {
+            $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position);
+            if ($result instanceof Node) {
+                $node = $result;
+                $isChanged = true;
+            }
+        }
+
+        if ($isChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     public function provideMinPhpVersion(): int
@@ -115,36 +133,37 @@ CODE_SAMPLE
 
     /**
      * @param Arg[] $args
+     * @return int[]|string[]
      */
-    private function resolveNamedPosition(FuncCall $funcCall, array $args): ?int
+    private function resolveNamedPositions(FuncCall $funcCall, array $args): array
     {
         $functionName = $this->nodeNameResolver->getName($funcCall);
-        $argName = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
+        $argNames = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
+        $positions = [];
 
         foreach ($args as $position => $arg) {
             if (! $arg->name instanceof Identifier) {
                 continue;
             }
 
-            if (! $this->nodeNameResolver->isName($arg->name, $argName)) {
+            if (! $this->nodeNameResolver->isNames($arg->name, $argNames)) {
                 continue;
             }
 
-            return $position;
+            $positions[] = $position;
         }
 
-        return null;
+        return $positions;
     }
 
     /**
      * @param Arg[] $args
      */
-    private function processNullToStrictStringOnNodePosition(FuncCall $funcCall, array $args, ?int $position): ?FuncCall
-    {
-        if (! is_int($position)) {
-            return null;
-        }
-
+    private function processNullToStrictStringOnNodePosition(
+        FuncCall $funcCall,
+        array $args,
+        int|string $position
+    ): ?FuncCall {
         $argValue = $args[$position]->value;
 
         if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
@@ -195,24 +214,28 @@ CODE_SAMPLE
         return false;
     }
 
-    private function resolveOriginalPosition(FuncCall $funcCall): ?int
+    /**
+     * @return int[]|string[]
+     */
+    private function resolveOriginalPositions(FuncCall $funcCall): array
     {
         $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($funcCall);
         if (! $functionReflection instanceof NativeFunctionReflection) {
-            return null;
+            return [];
         }
 
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionReflection->getVariants());
         $functionName = $this->nodeNameResolver->getName($funcCall);
-        $argName = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
+        $argNames = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
+        $positions = [];
 
         foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
-            if ($parameterReflection->getName() === $argName) {
-                return $position;
+            if (in_array($parameterReflection->getName(), $argNames, true)) {
+                $positions[] = $position;
             }
         }
 
-        return null;
+        return $positions;
     }
 
     private function shouldSkip(FuncCall $funcCall): bool
