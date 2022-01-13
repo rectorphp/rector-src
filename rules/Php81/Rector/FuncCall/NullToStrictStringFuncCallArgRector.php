@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
@@ -22,7 +24,6 @@ use Rector\Php73\NodeTypeAnalyzer\NodeTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Analyser\Scope;
 
 /**
  * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\NullToStrictStringFuncCallArgRectorTest
@@ -95,49 +96,56 @@ CODE_SAMPLE
         }
 
         $args = $node->getArgs();
-        if (! $this->argsAnalyzer->hasNamedArg($args)) {
-            $originalPosition = $this->resolveOriginalPosition($node);
-            $argValue = $args[$originalPosition]->value;
+        if ($this->argsAnalyzer->hasNamedArg($args)) {
+            return null;
+        }
 
-            if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
-                $args[$originalPosition]->value = new String_('');
-                $node->args = $args;
+        $originalPosition = $this->resolveOriginalPosition($node);
+        $argValue = $args[$originalPosition]->value;
 
-                return $node;
-            }
+        if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
+            $args[$originalPosition]->value = new String_('');
+            $node->args = $args;
 
-            if ($args[$originalPosition]->value instanceof MethodCall) {
-                $trait = $this->betterNodeFinder->findParentType($node, Trait_::class);
-                if ($trait instanceof Trait_) {
-                    return null;
-                }
-            }
+            return $node;
+        }
 
-            $type = $this->nodeTypeResolver->getType($args[$originalPosition]->value);
-            if (! $this->nodeTypeAnalyzer->isStringyType($type)) {
-                $scope = $args[$originalPosition]->value->getAttribute(AttributeKey::SCOPE);
-                if (! $scope instanceof Scope) {
-                    return null;
-                }
-
-                $parentScope = $scope->getParentScope();
-                if ($parentScope instanceof Scope) {
-                    return null;
-                }
-
-                $args[$originalPosition]->value = new CastString_($args[$originalPosition]->value);
-                $node->args = $args;
-
-                return $node;
+        if ($args[$originalPosition]->value instanceof MethodCall) {
+            $trait = $this->betterNodeFinder->findParentType($node, Trait_::class);
+            if ($trait instanceof Trait_) {
+                return null;
             }
         }
 
-        return null;
+        $type = $this->nodeTypeResolver->getType($args[$originalPosition]->value);
+        if ($this->nodeTypeAnalyzer->isStringyType($type)) {
+            return null;
+        }
+
+        if ($this->isItsScopeHasParentScope($args[$originalPosition]->value)) {
+            return null;
+        }
+
+        $args[$originalPosition]->value = new CastString_($args[$originalPosition]->value);
+        $node->args = $args;
+
+        return $node;
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
+    }
+
+    private function isItsScopeHasParentScope(Expr $expr): bool
+    {
+        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return false;
+        }
+
+        $parentScope = $scope->getParentScope();
+        return $parentScope instanceof Scope;
     }
 
     private function resolveOriginalPosition(FuncCall $funcCall): ?int
