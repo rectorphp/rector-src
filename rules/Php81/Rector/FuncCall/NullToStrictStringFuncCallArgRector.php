@@ -125,7 +125,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isItsScopeHasParentScope($args[$originalPosition]->value, $type)) {
+        if ($this->isAnErrorTypeFromParentScope($args[$originalPosition]->value, $type)) {
             return null;
         }
 
@@ -140,7 +140,7 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
     }
 
-    private function isItsScopeHasParentScope(Expr $expr, Type $type): bool
+    private function isAnErrorTypeFromParentScope(Expr $expr, Type $type): bool
     {
         if (! $type instanceof MixedType) {
             return false;
