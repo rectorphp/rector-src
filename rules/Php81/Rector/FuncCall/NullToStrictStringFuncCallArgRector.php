@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\String_;
+use PHPStan\Reflection\Native\NativeFunctionReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
+use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,23 +24,21 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array<string, array<int, string>>
+     * @var array<string, string>
      */
     private const ARG_POSITION_NAME_NULL_TO_STRICT_STRING = [
-        'preg_split' => [
-            1 => 'subject',
-        ],
-        'preg_match' => [
-            1 => 'subject',
-        ],
-        'preg_match_all' => [
-            1 => 'subject',
-        ],
-        'explode' => [
-            1
-             => 'string',
-        ],
+        'preg_split' => 'subject',
+        'preg_match' => 'subject',
+        'preg_match_all' => 'subject',
+        'explode' => 'string',
+        'strlen' => 'string',
     ];
+
+    public function __construct(
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ArgsAnalyzer $argsAnalyzer
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -86,11 +88,19 @@ CODE_SAMPLE
         }
 
         $args = $node->getArgs();
-        if ($this->hasNamedArgDefined($node, $args)) {
-            return $this->processNamedArgDefined($node);
+        if (! $this->argsAnalyzer->hasNamedArg($args)) {
+            $originalPosition = $this->resolveOriginalPosition($node);
+            $argValue = $args[$originalPosition]->value;
+
+            if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
+                $args[$originalPosition]->value = new String_('');
+                $node->args = $args;
+
+                return $node;
+            }
         }
 
-        return $node;
+        return null;
     }
 
     public function provideMinPhpVersion(): int
@@ -98,32 +108,24 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
     }
 
-    /**
-     * @param Arg[] $args
-     */
-    private function hasNamedArgDefined(FuncCall $funcCall, array $args): bool
+    private function resolveOriginalPosition(FuncCall $funcCall): ?int
     {
-        $functionName = $this->nodeNameResolver->getName($funcCall);
-        [, $ArgName] = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
-
-        foreach ($args as $arg) {
-            if (! $arg->name instanceof Identifier) {
-                continue;
-            }
-
-            if (! $this->nodeNameResolver->isName($arg->name, $ArgName)) {
-                continue;
-            }
-
-            return true;
+        $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($funcCall);
+        if (! $functionReflection instanceof NativeFunctionReflection) {
+            return null;
         }
 
-        return false;
-    }
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionReflection->getVariants());
+        $functionName = $this->nodeNameResolver->getName($funcCall);
+        $argName = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
 
-    private function processNamedArgDefined(FuncCall $funcCall): FuncCall
-    {
-        return $funcCall;
+        foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
+            if ($parameterReflection->getName() === $argName) {
+                return $position;
+            }
+        }
+
+        return null;
     }
 
     private function shouldSkip(FuncCall $funcCall): bool
