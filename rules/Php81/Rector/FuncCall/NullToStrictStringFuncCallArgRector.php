@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
@@ -100,17 +101,39 @@ CODE_SAMPLE
         }
 
         $args = $node->getArgs();
-        if ($this->argsAnalyzer->hasNamedArg($args)) {
-            return null;
-        }
+        $position = $this->argsAnalyzer->hasNamedArg($args)
+            ? $this->resolveNamedPosition($node, $args)
+            : $this->resolveOriginalPosition($node);
 
-        $originalPosition = $this->resolveOriginalPosition($node);
-        return $this->processNullToStrictStringOnNodePosition($node, $args, $originalPosition);
+        return $this->processNullToStrictStringOnNodePosition($node, $args, $position);
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function resolveNamedPosition(FuncCall $funcCall, array $args): ?int
+    {
+        $functionName = $this->nodeNameResolver->getName($funcCall);
+        $argName = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
+
+        foreach ($args as $position => $arg) {
+            if (!$arg->name instanceof Identifier) {
+                continue;
+            }
+
+            if (!$this->nodeNameResolver->isName($arg->name, $argName)) {
+                continue;
+            }
+
+            return $position;
+        }
+
+        return null;
     }
 
     /**
