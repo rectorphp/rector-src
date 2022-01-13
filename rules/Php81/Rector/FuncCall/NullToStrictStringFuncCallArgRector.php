@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\ConstFetch;
@@ -104,40 +105,52 @@ CODE_SAMPLE
         }
 
         $originalPosition = $this->resolveOriginalPosition($node);
-        $argValue = $args[$originalPosition]->value;
-
-        if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
-            $args[$originalPosition]->value = new String_('');
-            $node->args = $args;
-
-            return $node;
-        }
-
-        if ($args[$originalPosition]->value instanceof MethodCall) {
-            $trait = $this->betterNodeFinder->findParentType($node, Trait_::class);
-            if ($trait instanceof Trait_) {
-                return null;
-            }
-        }
-
-        $type = $this->nodeTypeResolver->getType($args[$originalPosition]->value);
-        if ($this->nodeTypeAnalyzer->isStringyType($type)) {
-            return null;
-        }
-
-        if ($this->isAnErrorTypeFromParentScope($args[$originalPosition]->value, $type)) {
-            return null;
-        }
-
-        $args[$originalPosition]->value = new CastString_($args[$originalPosition]->value);
-        $node->args = $args;
-
-        return $node;
+        return $this->processNullToStrictStringOnNodePosition($node, $args, $originalPosition);
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
+    }
+
+    /**
+     * @param Arg[] $args
+     */
+    private function processNullToStrictStringOnNodePosition(FuncCall $funcCall, array $args, ?int $position): ?FuncCall
+    {
+        if (! is_int($position)) {
+            return null;
+        }
+
+        $argValue = $args[$position]->value;
+
+        if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
+            $args[$position]->value = new String_('');
+            $funcCall->args = $args;
+
+            return $funcCall;
+        }
+
+        if ($args[$position]->value instanceof MethodCall) {
+            $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
+            if ($trait instanceof Trait_) {
+                return null;
+            }
+        }
+
+        $type = $this->nodeTypeResolver->getType($args[$position]->value);
+        if ($this->nodeTypeAnalyzer->isStringyType($type)) {
+            return null;
+        }
+
+        if ($this->isAnErrorTypeFromParentScope($args[$position]->value, $type)) {
+            return null;
+        }
+
+        $args[$position]->value = new CastString_($args[$position]->value);
+        $funcCall->args = $args;
+
+        return $funcCall;
     }
 
     private function isAnErrorTypeFromParentScope(Expr $expr, Type $type): bool
