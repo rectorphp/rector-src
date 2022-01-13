@@ -8,13 +8,16 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php73\NodeTypeAnalyzer\NodeTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -100,6 +103,13 @@ CODE_SAMPLE
                 $node->args = $args;
 
                 return $node;
+            }
+
+            if ($args[$originalPosition]->value instanceof MethodCall) {
+                $trait = $this->betterNodeFinder->findParentType($node, Trait_::class);
+                if ($trait instanceof Trait_) {
+                    return null;
+                }
             }
 
             $type = $this->nodeTypeResolver->getType($args[$originalPosition]->value);
