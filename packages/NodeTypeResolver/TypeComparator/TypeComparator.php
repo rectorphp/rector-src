@@ -259,8 +259,7 @@ final class TypeComparator
         Type $phpStanDocType,
         Type $phpParserNodeType,
         TypeNode $phpStanDocTypeNode
-    ): bool
-    {
+    ): bool {
         return $phpStanDocType instanceof StaticType
             && $phpParserNodeType instanceof ThisType
             && $phpStanDocTypeNode->getAttribute(PhpDocAttributeKey::PARENT) instanceof ParamTagValueNode;
