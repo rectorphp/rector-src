@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
@@ -17,6 +18,8 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\StringType;
 
 /**
  * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\NullToStrictStringFuncCallArgRectorTest
@@ -94,6 +97,14 @@ CODE_SAMPLE
 
             if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
                 $args[$originalPosition]->value = new String_('');
+                $node->args = $args;
+
+                return $node;
+            }
+
+            $type = $this->nodeTypeResolver->getType($args[$originalPosition]->value);
+            if (! in_array($type::class, [ConstantStringType::class, StringType::class], true)) {
+                $args[$originalPosition]->value = new CastString_($args[$originalPosition]->value);
                 $node->args = $args;
 
                 return $node;
