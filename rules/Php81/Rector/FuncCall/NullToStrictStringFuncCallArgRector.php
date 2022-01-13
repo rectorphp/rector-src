@@ -15,6 +15,9 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\ErrorType;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -122,7 +125,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isItsScopeHasParentScope($args[$originalPosition]->value)) {
+        if ($this->isItsScopeHasParentScope($args[$originalPosition]->value, $type)) {
             return null;
         }
 
@@ -137,15 +140,23 @@ CODE_SAMPLE
         return PhpVersionFeature::DEPRECATE_NULL_ARG_IN_STRING_FUNCTION;
     }
 
-    private function isItsScopeHasParentScope(Expr $expr): bool
+    private function isItsScopeHasParentScope(Expr $expr, Type $type): bool
     {
+        if (! $type instanceof MixedType) {
+            return false;
+        }
+
         $scope = $expr->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return false;
         }
 
         $parentScope = $scope->getParentScope();
-        return $parentScope instanceof Scope;
+        if ($parentScope instanceof Scope) {
+            return $parentScope->getType($expr) instanceof ErrorType;
+        }
+
+        return false;
     }
 
     private function resolveOriginalPosition(FuncCall $funcCall): ?int
