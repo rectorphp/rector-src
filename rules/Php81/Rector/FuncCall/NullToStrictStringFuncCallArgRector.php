@@ -131,13 +131,6 @@ CODE_SAMPLE
             return $funcCall;
         }
 
-        if ($args[$position]->value instanceof MethodCall) {
-            $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
-            if ($trait instanceof Trait_) {
-                return null;
-            }
-        }
-
         $type = $this->nodeTypeResolver->getType($args[$position]->value);
         if ($this->nodeTypeAnalyzer->isStringyType($type)) {
             return null;
@@ -145,6 +138,13 @@ CODE_SAMPLE
 
         if ($this->isAnErrorTypeFromParentScope($args[$position]->value, $type)) {
             return null;
+        }
+
+        if ($args[$position]->value instanceof MethodCall) {
+            $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
+            if ($trait instanceof Trait_) {
+                return null;
+            }
         }
 
         $args[$position]->value = new CastString_($args[$position]->value);
