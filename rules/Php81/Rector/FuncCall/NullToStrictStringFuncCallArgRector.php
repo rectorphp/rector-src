@@ -122,11 +122,11 @@ CODE_SAMPLE
         $argName = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
 
         foreach ($args as $position => $arg) {
-            if (!$arg->name instanceof Identifier) {
+            if (! $arg->name instanceof Identifier) {
                 continue;
             }
 
-            if (!$this->nodeNameResolver->isName($arg->name, $argName)) {
+            if (! $this->nodeNameResolver->isName($arg->name, $argName)) {
                 continue;
             }
 
