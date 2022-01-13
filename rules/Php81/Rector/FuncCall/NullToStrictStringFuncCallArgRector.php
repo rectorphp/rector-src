@@ -22,6 +22,7 @@ use Rector\Php73\NodeTypeAnalyzer\NodeTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Analyser\Scope;
 
 /**
  * @see \Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\NullToStrictStringFuncCallArgRectorTest
@@ -114,6 +115,16 @@ CODE_SAMPLE
 
             $type = $this->nodeTypeResolver->getType($args[$originalPosition]->value);
             if (! $this->nodeTypeAnalyzer->isStringyType($type)) {
+                $scope = $args[$originalPosition]->value->getAttribute(AttributeKey::SCOPE);
+                if (! $scope instanceof Scope) {
+                    return null;
+                }
+
+                $parentScope = $scope->getParentScope();
+                if ($parentScope instanceof Scope) {
+                    return null;
+                }
+
                 $args[$originalPosition]->value = new CastString_($args[$originalPosition]->value);
                 $node->args = $args;
 
