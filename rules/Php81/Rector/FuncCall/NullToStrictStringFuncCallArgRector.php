@@ -11,12 +11,11 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Type\Constant\ConstantStringType;
-use PHPStan\Type\StringType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php73\NodeTypeAnalyzer\NodeTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -39,7 +38,8 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
 
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly NodeTypeAnalyzer $nodeTypeAnalyzer
     ) {
     }
 
@@ -103,7 +103,7 @@ CODE_SAMPLE
             }
 
             $type = $this->nodeTypeResolver->getType($args[$originalPosition]->value);
-            if (! in_array($type::class, [ConstantStringType::class, StringType::class], true)) {
+            if (! $this->nodeTypeAnalyzer->isStringyType($type)) {
                 $args[$originalPosition]->value = new CastString_($args[$originalPosition]->value);
                 $node->args = $args;
 
