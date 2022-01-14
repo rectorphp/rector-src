@@ -151,20 +151,7 @@ final class BetterStandardPrinter extends Standard
         $content = parent::p($node, $parentFormatPreserved);
 
         if ($node instanceof Expr) {
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof ArrowFunction && $parentNode->expr === $node && $parentNode->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
-                $comments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
-                if ($comments !== []) {
-                    $text = '';
-                    foreach ($comments as $comment) {
-                        $text .= $comment->getText() . "\n";
-                    }
-
-                    if ($text !== '') {
-                        $content = $text . $content;
-                    }
-                }
-            }
+            $content = $this->resolveContentOnExpr($node, $content);
         }
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
@@ -454,6 +441,35 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $result;
+    }
+
+    private function resolveContentOnExpr(Expr $expr, string $content): string
+    {
+        $parentNode = $expr->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof ArrowFunction) {
+            return $content;
+        }
+
+        if ($parentNode->expr !== $expr) {
+            return $content;
+        }
+
+        if (! $parentNode->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
+            return $content;
+        }
+
+        $comments = $expr->getAttribute(AttributeKey::COMMENTS) ?? [];
+
+        if ($comments === []) {
+            return $content;
+        }
+
+        $text = '';
+        foreach ($comments as $comment) {
+            $text .= $comment->getText() . "\n";
+        }
+
+        return $content = $text . $content;
     }
 
     /**
