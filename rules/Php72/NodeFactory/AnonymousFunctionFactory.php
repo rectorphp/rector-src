@@ -201,12 +201,14 @@ final class AnonymousFunctionFactory
     {
         $parent = $this->betterNodeFinder->findParentType($useVariable, Closure::class);
 
-        if ($parent instanceof Closure) {
-            $paramNames = $this->nodeNameResolver->getNames($parent->params);
+        if (! $parent instanceof Closure) {
+            return $anonymousFunctionNode;
+        }
 
-            if ($this->nodeNameResolver->isNames($useVariable, $paramNames)) {
-                return $anonymousFunctionNode;
-            }
+        $paramNames = $this->nodeNameResolver->getNames($parent->params);
+
+        if ($this->nodeNameResolver->isNames($useVariable, $paramNames)) {
+            return $anonymousFunctionNode;
         }
 
         $anonymousFunctionNode = clone $anonymousFunctionNode;
