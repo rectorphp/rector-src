@@ -6,7 +6,7 @@ namespace Rector\Php81\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
-use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -96,7 +96,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($toPropertyAssign->expr->right instanceof StaticCall) {
+                if (! $toPropertyAssign->expr->right instanceof New_) {
                     continue;
                 }
 
