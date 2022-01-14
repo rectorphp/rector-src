@@ -140,7 +140,7 @@ CODE_SAMPLE
         return PhpVersionFeature::SPACESHIP;
     }
 
-    private function processReturnSpaceship($firstValue, $secondValue): Return_
+    private function processReturnSpaceship(Expr $firstValue, Expr $secondValue): Return_
     {
         if ($this->nextNode !== null) {
             $this->removeNode($this->nextNode);
