@@ -125,7 +125,9 @@ final class ParallelFileProcessor
         };
 
         $timeoutInSeconds = $this->parameterProvider->provideIntParameter(Option::PARALLEL_TIMEOUT_IN_SECONDS);
-        $systemErrorCountLimit = $this->parameterProvider->provideIntParameter(Option::PARALLEL_SYSTEM_ERROR_COUNT_LIMIT);
+        $systemErrorCountLimit = $this->parameterProvider->provideIntParameter(
+            Option::PARALLEL_SYSTEM_ERROR_COUNT_LIMIT
+        );
 
         for ($i = 0; $i < $numberOfProcesses; ++$i) {
             // nothing else to process, stop now
@@ -143,11 +145,7 @@ final class ParallelFileProcessor
                 $serverPort,
             );
 
-            $parallelProcess = new ParallelProcess(
-                $workerCommandLine,
-                $streamSelectLoop,
-                $timeoutInSeconds
-            );
+            $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
 
             $parallelProcess->start(
                 // 1. callable on data
