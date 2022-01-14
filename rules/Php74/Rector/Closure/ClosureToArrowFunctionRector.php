@@ -87,6 +87,7 @@ CODE_SAMPLE
             $arrowFunction->static = true;
         }
 
+        $this->mirrorComments($arrowFunction->expr, $node->stmts[0]);
         return $arrowFunction;
     }
 

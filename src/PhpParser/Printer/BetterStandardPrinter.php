@@ -6,7 +6,9 @@ namespace Rector\Core\PhpParser\Printer;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Ternary;
@@ -147,6 +149,23 @@ final class BetterStandardPrinter extends Standard
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
         $content = parent::p($node, $parentFormatPreserved);
+
+        if ($node instanceof Expr) {
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentNode instanceof ArrowFunction && $parentNode->expr === $node) {
+                $comments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
+                if ($comments !== []) {
+                    $text = '';
+                    foreach ($comments as $comment) {
+                        $text .= $comment->getText() . "\n";
+                    }
+
+                    if ($text !== '') {
+                        $content = $text . $content;
+                    }
+                }
+            }
+        }
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
             ? ('(' . $content . ')')
