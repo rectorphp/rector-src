@@ -39,16 +39,6 @@ use Throwable;
  */
 final class ParallelFileProcessor
 {
-    /**
-     * @var int
-     */
-    final public const TIMEOUT_IN_SECONDS = 120;
-
-    /**
-     * @var int
-     */
-    final public const SYSTEM_ERROR_COUNT_LIMIT = 20;
-
     private ProcessPool|null $processPool = null;
 
     public function __construct(
