@@ -6,7 +6,9 @@ namespace Rector\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -35,6 +37,7 @@ use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -65,6 +68,7 @@ final class NodeTypeResolver
         private readonly IdentifierTypeResolver $identifierTypeResolver,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeComparator $nodeComparator,
         array $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
@@ -115,6 +119,23 @@ final class NodeTypeResolver
 
     public function getType(Node $node): Type
     {
+        $previousCastedAssign = $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $subNode) use ($node): bool {
+            if (! $subNode instanceof Assign) {
+                return false;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($subNode->var, $node)) {
+                return false;
+            }
+
+            return $subNode->expr instanceof Cast;
+        });
+
+        if ($previousCastedAssign instanceof Assign) {
+            $cast = $previousCastedAssign->expr;
+            return $this->getType($cast);
+        }
+
         if ($node instanceof NullableType) {
             if ($node->type instanceof Name && $node->type->hasAttribute(AttributeKey::NAMESPACED_NAME)) {
                 $node->type = new FullyQualified($node->type->getAttribute(AttributeKey::NAMESPACED_NAME));
