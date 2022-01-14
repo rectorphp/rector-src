@@ -134,8 +134,6 @@ final class EregToPcreTransformer
                 }
 
                 $start = true;
-
-                $i = (int) $i;
                 [$cls, $i] = $this->processSquareBracket($content, $i, $l, $cls, $start);
 
                 if ($i >= $l) {
@@ -190,8 +188,6 @@ final class EregToPcreTransformer
                 $r[$rr] .= $char;
                 ++$i;
             } elseif ($char === '{') {
-                $i = (int) $i;
-
                 $i = $this->processCurlyBracket($content, $i, $r, $rr);
             }
         }
