@@ -185,7 +185,9 @@ final class ParallelFileProcessor
                     $postFileCallback($json[Bridge::FILES_COUNT]);
 
                     $systemErrorsCount += $json[Bridge::SYSTEM_ERRORS_COUNT];
-                    if ($systemErrorsCount >= $this->parameterProvider->provideIntParameter(Option::PARALLEL_SYSTEM_ERROR_COUNT_LIMIT)) {
+                    if ($systemErrorsCount >= $this->parameterProvider->provideIntParameter(
+                        Option::PARALLEL_SYSTEM_ERROR_COUNT_LIMIT
+                    )) {
                         $reachedInternalErrorsCountLimit = true;
                         $this->processPool->quitAll();
                     }
