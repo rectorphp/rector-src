@@ -347,7 +347,7 @@ final class AnonymousFunctionFactory
         return $innerMethodCall;
     }
 
-    private function normalizeClassConstFetchForStatic(Expr $expr): null | FullyQualified | Expr
+    private function normalizeClassConstFetchForStatic(Expr $expr): null | Name | FullyQualified | Expr
     {
         if (! $expr instanceof ClassConstFetch) {
             return $expr;
@@ -361,6 +361,11 @@ final class AnonymousFunctionFactory
         $className = $this->nodeNameResolver->getName($expr->class);
         if ($className === null) {
             return null;
+        }
+
+        $name = new Name($className);
+        if ($name->isSpecialClassName()) {
+            return $name;
         }
 
         return new FullyQualified($className);
