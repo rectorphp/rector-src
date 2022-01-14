@@ -135,6 +135,11 @@ CODE_SAMPLE
         return $this->processReturnSpaceship($this->firstValue, $this->secondValue);
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SPACESHIP;
+    }
+
     private function processReturnSpaceship($firstValue, $secondValue): Return_
     {
         if ($this->nextNode !== null) {
@@ -145,11 +150,6 @@ CODE_SAMPLE
         $spaceship = new Spaceship($secondValue, $firstValue);
 
         return new Return_($spaceship);
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::SPACESHIP;
     }
 
     private function reset(): void
