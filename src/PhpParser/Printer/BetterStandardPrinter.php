@@ -152,7 +152,7 @@ final class BetterStandardPrinter extends Standard
 
         if ($node instanceof Expr) {
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof ArrowFunction && $parentNode->expr === $node) {
+            if ($parentNode instanceof ArrowFunction && $parentNode->expr === $node && $parentNode->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
                 $comments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
                 if ($comments !== []) {
                     $text = '';
