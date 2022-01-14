@@ -119,7 +119,9 @@ final class NodeTypeResolver
 
     public function getType(Node $node): Type
     {
-        $previousCastedAssign = $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $subNode) use ($node): bool {
+        $previousCastedAssign = $this->betterNodeFinder->findFirstPreviousOfNode($node, function (Node $subNode) use (
+            $node
+        ): bool {
             if (! $subNode instanceof Assign) {
                 return false;
             }
