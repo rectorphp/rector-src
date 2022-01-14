@@ -123,17 +123,26 @@ CODE_SAMPLE
             return null;
         }
 
+        if ([$this->onGreater, $this->onEqual, $this->onSmaller] === [1, 0, -1]) {
+            return $this->processReturnSpaceship($this->secondValue, $this->firstValue);
+        }
+
         // is spaceship return values?
         if ([$this->onGreater, $this->onEqual, $this->onSmaller] !== [-1, 0, 1]) {
             return null;
         }
 
+        return $this->processReturnSpaceship($this->firstValue, $this->secondValue);
+    }
+
+    private function processReturnSpaceship($firstValue, $secondValue): Return_
+    {
         if ($this->nextNode !== null) {
             $this->removeNode($this->nextNode);
         }
 
         // spaceship ready!
-        $spaceship = new Spaceship($this->secondValue, $this->firstValue);
+        $spaceship = new Spaceship($secondValue, $firstValue);
 
         return new Return_($spaceship);
     }
