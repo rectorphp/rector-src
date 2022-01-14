@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
 use Rector\Core\Configuration\Option;
+use Rector\Parallel\Application\ParallelFileProcessor;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -21,6 +22,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::PARALLEL, false);
     $parameters->set(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, 16);
     $parameters->set(Option::PARALLEL_JOB_SIZE, 20);
+    $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, ParallelFileProcessor::TIMEOUT_IN_SECONDS);
+    $parameters->set(Option::PARALLEL_SYSTEM_ERROR_COUNT_LIMIT, ParallelFileProcessor::SYSTEM_ERROR_COUNT_LIMIT);
 
     // FQN class importing
     $parameters->set(Option::AUTO_IMPORT_NAMES, false);

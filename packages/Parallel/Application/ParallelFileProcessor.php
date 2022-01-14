@@ -28,6 +28,7 @@ use Symplify\EasyParallel\ValueObject\ParallelProcess;
 use Symplify\EasyParallel\ValueObject\ProcessPool;
 use Symplify\EasyParallel\ValueObject\Schedule;
 use Symplify\PackageBuilder\Console\Command\CommandNaming;
+use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Throwable;
 
 /**
@@ -46,12 +47,13 @@ final class ParallelFileProcessor
     /**
      * @var int
      */
-    private const SYSTEM_ERROR_COUNT_LIMIT = 20;
+    final public const SYSTEM_ERROR_COUNT_LIMIT = 20;
 
     private ProcessPool|null $processPool = null;
 
     public function __construct(
-        private readonly WorkerCommandLineFactory $workerCommandLineFactory
+        private readonly WorkerCommandLineFactory $workerCommandLineFactory,
+        private readonly ParameterProvider $parameterProvider
     ) {
     }
 
@@ -148,7 +150,11 @@ final class ParallelFileProcessor
                 $serverPort,
             );
 
-            $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, self::TIMEOUT_IN_SECONDS);
+            $parallelProcess = new ParallelProcess(
+                $workerCommandLine,
+                $streamSelectLoop,
+                $this->parameterProvider->provideIntParameter(Option::PARALLEL_TIMEOUT_IN_SECONDS)
+            );
 
             $parallelProcess->start(
                 // 1. callable on data
@@ -179,7 +185,7 @@ final class ParallelFileProcessor
                     $postFileCallback($json[Bridge::FILES_COUNT]);
 
                     $systemErrorsCount += $json[Bridge::SYSTEM_ERRORS_COUNT];
-                    if ($systemErrorsCount >= self::SYSTEM_ERROR_COUNT_LIMIT) {
+                    if ($systemErrorsCount >= $this->parameterProvider->provideIntParameter(Option::PARALLEL_SYSTEM_ERROR_COUNT_LIMIT)) {
                         $reachedInternalErrorsCountLimit = true;
                         $this->processPool->quitAll();
                     }
@@ -222,7 +228,7 @@ final class ParallelFileProcessor
         if ($reachedSystemErrorsCountLimit) {
             $systemErrors[] = new SystemError(sprintf(
                 'Reached system errors count limit of %d, exiting...',
-                self::SYSTEM_ERROR_COUNT_LIMIT
+                $this->parameterProvider->provideIntParameter(Option::PARALLEL_SYSTEM_ERROR_COUNT_LIMIT)
             ));
         }
 
