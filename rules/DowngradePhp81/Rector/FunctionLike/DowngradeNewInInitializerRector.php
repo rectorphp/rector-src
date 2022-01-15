@@ -91,8 +91,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $node = $this->convertArrowFunctionToClosure($node);
         /** @var ClassMethod|Closure|Function_ $node */
+        $node = $this->convertArrowFunctionToClosure($node);
         return $this->replaceNewInParams($node);
     }
 
