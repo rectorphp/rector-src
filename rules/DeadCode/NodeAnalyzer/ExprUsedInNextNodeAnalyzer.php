@@ -20,7 +20,7 @@ final class ExprUsedInNextNodeAnalyzer
     {
         return (bool) $this->betterNodeFinder->findFirstNext(
             $expr,
-            fn (Node $node) : bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr)
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr)
         );
     }
 }
