@@ -139,9 +139,7 @@ CODE_SAMPLE
         return $param->type instanceof IntersectionType;
     }
 
-    /**
-     * @param ClassMethod|Closure|Function_ $functionLike
-     */
+
     private function replaceNewInParams(ClassMethod|Closure|Function_ $functionLike): ClassMethod|Closure|Function_
     {
         $isConstructor = $functionLike instanceof ClassMethod && $this->isName($functionLike, MethodName::CONSTRUCT);
