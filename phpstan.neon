@@ -627,7 +627,3 @@ parameters:
 
         # impossible to validate json string is a class-string
         - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface\>\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
-
-        -
-            message: '#Access to an undefined property PhpParser\\Node\\FunctionLike\:\:\$stmts#'
-            path: rules/DowngradePhp81/Rector/FunctionLike/DowngradeNewInInitializerRector.php #171
