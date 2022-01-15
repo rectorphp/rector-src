@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Throw_;
 use PHPStan\Type\NeverType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
@@ -99,10 +98,6 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod | Function_ | Closure $node): bool
     {
-        if ($node instanceof ClassMethod && $this->nodeNameResolver->isName($node, MethodName::CONSTRUCT)) {
-            return true;
-        }
-
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class);
         if ($hasReturn) {
             return true;
