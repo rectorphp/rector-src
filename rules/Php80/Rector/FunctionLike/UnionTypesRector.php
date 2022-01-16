@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\FunctionLike;
 
 use PhpParser\Node;
+use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
@@ -241,8 +243,8 @@ CODE_SAMPLE
     }
 
     private function shouldSkipParamTypeRefactor(
-        Name|Node\Identifier|Node\ComplexType|null $type,
-        Name|Node\ComplexType|Node|null $phpParserUnionType
+        Name|Identifier|ComplexType|null $type,
+        Name|ComplexType|Node|null $phpParserUnionType
     ): bool {
         if (! $phpParserUnionType instanceof PhpParserUnionType) {
             return true;
