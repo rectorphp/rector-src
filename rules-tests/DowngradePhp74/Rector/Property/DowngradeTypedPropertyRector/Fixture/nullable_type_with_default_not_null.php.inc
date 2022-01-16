@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector\Fixture;
 
-class WithDefaultValue
+class NullableTypeWithDefaultNotNull
 {
     protected ?string $test = "test";
 }
@@ -13,7 +13,7 @@ class WithDefaultValue
 
 namespace Rector\Tests\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector\Fixture;
 
-class WithDefaultValue
+class NullableTypeWithDefaultNotNull
 {
     /**
      * @var string|null
