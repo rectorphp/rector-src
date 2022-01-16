@@ -96,6 +96,7 @@ final class AutoloadIncluder
      */
     public function autoloadProjectAutoloaderFile(): void
     {
+        $this->loadIfExistsAndNotLoadedYet(__DIR__ . '/../../../autoload.php');
         $this->loadIfExistsAndNotLoadedYet(getcwd() . '/vendor/autoload.php');
     }
 
