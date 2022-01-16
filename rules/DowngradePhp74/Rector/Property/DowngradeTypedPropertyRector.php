@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp74\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
@@ -67,7 +68,7 @@ CODE_SAMPLE
         }
 
         $default = $node->props[0]->default;
-        if ($node->type instanceof NullableType && $default instanceof Node && $this->valueResolver->isNull($default)) {
+        if ($node->type instanceof NullableType && $default instanceof Expr && $this->valueResolver->isNull($default)) {
             $node->props[0]->default = null;
         }
 
