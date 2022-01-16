@@ -243,8 +243,7 @@ CODE_SAMPLE
     private function shouldSkipParamTypeRefactor(
         Name|Node\Identifier|Node\ComplexType|null $type,
         Name|Node\ComplexType|Node|null $phpParserUnionType
-    ): bool
-    {
+    ): bool {
         if (! $phpParserUnionType instanceof PhpParserUnionType) {
             return true;
         }
