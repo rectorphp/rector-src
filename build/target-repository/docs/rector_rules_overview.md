@@ -1261,7 +1261,7 @@ Simplify array_search to in_array
 
 ### SimplifyBoolIdenticalTrueRector
 
-Simplify bool value compare to true or false
+Symplify bool value compare to true or false
 
 - class: [`Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector`](../rules/CodeQuality/Rector/Identical/SimplifyBoolIdenticalTrueRector.php)
 
