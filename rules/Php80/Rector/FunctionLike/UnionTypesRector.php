@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -155,11 +156,7 @@ CODE_SAMPLE
                 TypeKind::PARAM()
             );
 
-            if (! $phpParserUnionType instanceof PhpParserUnionType) {
-                continue;
-            }
-
-            if ($param->type instanceof PhpParserUnionType) {
+            if($this->shouldSkipParamTypeRefactor($param->type, $phpParserUnionType)) {
                 continue;
             }
 
@@ -241,5 +238,32 @@ CODE_SAMPLE
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($singleArrayTypes);
+    }
+
+    private function shouldSkipParamTypeRefactor(Name|Node\Identifier|Node\ComplexType|null $type, Name|Node\ComplexType|Node|null $phpParserUnionType): bool
+    {
+        if (! $phpParserUnionType instanceof PhpParserUnionType) {
+            return true;
+        }
+
+        if ($type instanceof PhpParserUnionType) {
+            return true;
+        }
+
+        if(count($phpParserUnionType->types) > 1) {
+            return false;
+        }
+
+        $firstType = $phpParserUnionType->types[0];
+
+        if(!$firstType instanceof FullyQualified) {
+            return false;
+        }
+
+        if(!$type instanceof FullyQualified) {
+            return false;
+        }
+
+        return $type->toString() === $firstType->toString();
     }
 }
