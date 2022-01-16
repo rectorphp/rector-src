@@ -66,7 +66,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->type instanceof NullableType) {
+        $default = $node->props[0]->default;
+        if ($node->type instanceof NullableType && $default instanceof Node && $this->valueResolver->isNull($default)) {
             $node->props[0]->default = null;
         }
 
