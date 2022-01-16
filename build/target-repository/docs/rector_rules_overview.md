@@ -1,4 +1,4 @@
-# 516 Rules Overview
+# 517 Rules Overview
 
 <br>
 
@@ -78,7 +78,7 @@
 
 - [Php80](#php80) (18)
 
-- [Php81](#php81) (8)
+- [Php81](#php81) (9)
 
 - [PhpSpecToPHPUnit](#phpspectophpunit) (7)
 
@@ -8518,6 +8518,25 @@ Replace property declaration of new state with direct new
 +        private Logger $logger = new NullLogger,
      ) {
 -        $this->logger = $logger ?? new NullLogger;
+     }
+ }
+```
+
+<br>
+
+### NullToStrictStringFuncCallArgRector
+
+Change null to strict string defined function call args
+
+- class: [`Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector`](../rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function run()
+     {
+-        preg_split("#a#", null);
++        preg_split("#a#", '');
      }
  }
 ```
