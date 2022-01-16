@@ -156,7 +156,7 @@ CODE_SAMPLE
                 TypeKind::PARAM()
             );
 
-            if($this->shouldSkipParamTypeRefactor($param->type, $phpParserUnionType)) {
+            if ($this->shouldSkipParamTypeRefactor($param->type, $phpParserUnionType)) {
                 continue;
             }
 
@@ -240,7 +240,10 @@ CODE_SAMPLE
         return $this->typeFactory->createMixedPassedOrUnionType($singleArrayTypes);
     }
 
-    private function shouldSkipParamTypeRefactor(Name|Node\Identifier|Node\ComplexType|null $type, Name|Node\ComplexType|Node|null $phpParserUnionType): bool
+    private function shouldSkipParamTypeRefactor(
+        Name|Node\Identifier|Node\ComplexType|null $type,
+        Name|Node\ComplexType|Node|null $phpParserUnionType
+    ): bool
     {
         if (! $phpParserUnionType instanceof PhpParserUnionType) {
             return true;
@@ -250,17 +253,17 @@ CODE_SAMPLE
             return true;
         }
 
-        if(count($phpParserUnionType->types) > 1) {
+        if (count($phpParserUnionType->types) > 1) {
             return false;
         }
 
         $firstType = $phpParserUnionType->types[0];
 
-        if(!$firstType instanceof FullyQualified) {
+        if (! $firstType instanceof FullyQualified) {
             return false;
         }
 
-        if(!$type instanceof FullyQualified) {
+        if (! $type instanceof FullyQualified) {
             return false;
         }
 
