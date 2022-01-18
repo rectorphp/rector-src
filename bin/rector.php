@@ -94,10 +94,7 @@ final class AutoloadIncluder
      */
     public function autoloadProjectAutoloaderFile(): void
     {
-        $this->loadIfExistsAndNotLoadedYet(__DIR__ . '/../../../autoload.php');
-        if (is_dir('vendor/rector/rector')) {
-            $this->loadIfExistsAndNotLoadedYet('vendor/autoload.php');
-        }
+        $this->loadIfExistsAndNotLoadedYet(getcwd() . '/vendor/autoload.php');
     }
 
     public function autoloadFromCommandLine(): void
@@ -120,7 +117,9 @@ final class AutoloadIncluder
 
     public function loadIfExistsAndNotLoadedYet(string $filePath): void
     {
-        if (! file_exists($filePath)) {
+        $filePath = realpath($filePath);
+
+        if ($filePath === false) {
             return;
         }
 
@@ -128,7 +127,7 @@ final class AutoloadIncluder
             return;
         }
 
-        $this->alreadyLoadedAutoloadFiles[] = realpath($filePath);
+        $this->alreadyLoadedAutoloadFiles[] = $filePath;
 
         require_once $filePath;
     }
