@@ -75,24 +75,6 @@ final class ClassMethodAssignManipulator
         return $this->variableManipulator->filterOutChangedVariables($readOnlyVariableAssigns, $classMethod);
     }
 
-    /**
-     * @param Assign[] $variableAssigns
-     * @return Assign[]
-     */
-    private function filterOutNeverUsedNext($readOnlyVariableAssigns)
-    {
-        /** @var Assign[] */
-        $filterOutNeverUsedNext = [];
-
-        foreach ($readOnlyVariableAssigns as $readOnlyVariableAssign) {
-            if ($this->exprUsedInNextNodeAnalyzer->isUsed($readOnlyVariableAssign->var)) {
-                $filterOutNeverUsedNext[] = $readOnlyVariableAssign;
-            }
-        }
-
-        return $filterOutNeverUsedNext;
-    }
-
     public function addParameterAndAssignToMethod(
         ClassMethod $classMethod,
         string $name,
@@ -108,6 +90,23 @@ final class ClassMethodAssignManipulator
 
         $classMethodHash = spl_object_hash($classMethod);
         $this->alreadyAddedClassMethodNames[$classMethodHash][] = $name;
+    }
+
+    /**
+     * @return Assign[]
+     */
+    private function filterOutNeverUsedNext($readOnlyVariableAssigns)
+    {
+        /** @var Assign[] */
+        $filterOutNeverUsedNext = [];
+
+        foreach ($readOnlyVariableAssigns as $readOnlyVariableAssign) {
+            if ($this->exprUsedInNextNodeAnalyzer->isUsed($readOnlyVariableAssign->var)) {
+                $filterOutNeverUsedNext[] = $readOnlyVariableAssign;
+            }
+        }
+
+        return $filterOutNeverUsedNext;
     }
 
     /**
