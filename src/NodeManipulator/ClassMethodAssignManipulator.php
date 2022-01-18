@@ -93,8 +93,8 @@ final class ClassMethodAssignManipulator
     }
 
     /**
+     * @param Assign[] $readOnlyVariableAssigns
      * @return Assign[]
-     * @param mixed[] $readOnlyVariableAssigns
      */
     private function filterOutNeverUsedNext(array $readOnlyVariableAssigns): array
     {
