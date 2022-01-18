@@ -94,10 +94,10 @@ final class ClassMethodAssignManipulator
 
     /**
      * @return Assign[]
+     * @param mixed[] $readOnlyVariableAssigns
      */
-    private function filterOutNeverUsedNext($readOnlyVariableAssigns)
+    private function filterOutNeverUsedNext(array $readOnlyVariableAssigns): array
     {
-        /** @var Assign[] */
         $filterOutNeverUsedNext = [];
 
         foreach ($readOnlyVariableAssigns as $readOnlyVariableAssign) {
