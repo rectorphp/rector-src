@@ -228,7 +228,7 @@ CODE_SAMPLE
         }
     }
 
-    private function processTernary(Ternary $ternary, ?Return_ $nextNode): void
+    private function processTernary(Ternary $ternary, ?Return_ $return): void
     {
         if ($ternary->cond instanceof Smaller) {
             $this->firstValue = $ternary->cond->left;
@@ -239,7 +239,7 @@ CODE_SAMPLE
             }
 
             $this->onGreater = $this->valueResolver->getValue($ternary->else);
-            $this->nextNode = $nextNode;
+            $this->nextNode = $return;
         } elseif ($ternary->cond instanceof Greater) {
             $this->firstValue = $ternary->cond->right;
             $this->secondValue = $ternary->cond->left;
@@ -249,7 +249,7 @@ CODE_SAMPLE
             }
 
             $this->onSmaller = $this->valueResolver->getValue($ternary->else);
-            $this->nextNode = $nextNode;
+            $this->nextNode = $return;
         }
     }
 }
