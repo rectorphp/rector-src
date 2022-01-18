@@ -24,6 +24,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -41,7 +42,8 @@ final class ClassMethodAssignManipulator
         private readonly VariableManipulator $variableManipulator,
         private readonly NodeComparator $nodeComparator,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArrayDestructVariableFilter $arrayDestructVariableFilter
+        private readonly ArrayDestructVariableFilter $arrayDestructVariableFilter,
+        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -64,7 +66,31 @@ final class ClassMethodAssignManipulator
         $readOnlyVariableAssigns = $this->filterOutMultiAssigns($readOnlyVariableAssigns);
         $readOnlyVariableAssigns = $this->filterOutForeachVariables($readOnlyVariableAssigns);
 
+        /**
+         * Remove unused variable assign is task of RemoveUnusedVariableAssignRector
+         * so no need to move to constant early
+         */
+        $readOnlyVariableAssigns = $this->filterOutNeverUsedNext($readOnlyVariableAssigns);
+
         return $this->variableManipulator->filterOutChangedVariables($readOnlyVariableAssigns, $classMethod);
+    }
+
+    /**
+     * @param Assign[] $variableAssigns
+     * @return Assign[]
+     */
+    private function filterOutNeverUsedNext($readOnlyVariableAssigns)
+    {
+        /** @var Assign[] */
+        $filterOutNeverUsedNext = [];
+
+        foreach ($readOnlyVariableAssigns as $readOnlyVariableAssign) {
+            if ($this->exprUsedInNextNodeAnalyzer->isUsed($readOnlyVariableAssign->var)) {
+                $filterOutNeverUsedNext[] = $readOnlyVariableAssign;
+            }
+        }
+
+        return $filterOutNeverUsedNext;
     }
 
     public function addParameterAndAssignToMethod(
