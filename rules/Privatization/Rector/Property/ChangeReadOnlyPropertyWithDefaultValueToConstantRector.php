@@ -130,6 +130,14 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->isObjectType($classLike, new ObjectType('PHP_CodeSniffer\Sniffs\Sniff'));
+        if ($property->getAttributes() !== []) {
+            return true;
+        }
+
+        if ($this->isObjectType($classLike, new ObjectType('PHP_CodeSniffer\Sniffs\Sniff'))) {
+            return true;
+        }
+
+        return false;
     }
 }
