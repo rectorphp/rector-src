@@ -98,15 +98,10 @@ final class ClassMethodAssignManipulator
      */
     private function filterOutNeverUsedNext(array $readOnlyVariableAssigns): array
     {
-        $filterOutNeverUsedNext = [];
-
-        foreach ($readOnlyVariableAssigns as $readOnlyVariableAssign) {
-            if ($this->exprUsedInNextNodeAnalyzer->isUsed($readOnlyVariableAssign->var)) {
-                $filterOutNeverUsedNext[] = $readOnlyVariableAssign;
-            }
-        }
-
-        return $filterOutNeverUsedNext;
+        return array_filter(
+            $readOnlyVariableAssigns,
+            fn (Assign $assign): bool => $this->exprUsedInNextNodeAnalyzer->isUsed($assign->var)
+        );
     }
 
     /**
