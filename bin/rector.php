@@ -96,7 +96,7 @@ final class AutoloadIncluder
     {
         $this->loadIfExistsAndNotLoadedYet(__DIR__ . '/../../../autoload.php');
 
-        if (dirname(__DIR__) !== dirname(getcwd(), 2)) {
+        if (dirname(__DIR__) !== dirname(getcwd(), 2) && ! is_dir('vendor/rector/rector')) {
             $this->loadIfExistsAndNotLoadedYet('vendor/autoload.php');
         }
     }
