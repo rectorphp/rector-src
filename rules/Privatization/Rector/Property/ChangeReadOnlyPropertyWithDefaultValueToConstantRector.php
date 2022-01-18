@@ -133,6 +133,7 @@ CODE_SAMPLE
         if ($property->attrGroups !== []) {
             return true;
         }
+
         return $this->isObjectType($classLike, new ObjectType('PHP_CodeSniffer\Sniffs\Sniff'));
     }
 }
