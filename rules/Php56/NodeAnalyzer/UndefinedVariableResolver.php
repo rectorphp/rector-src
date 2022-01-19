@@ -90,9 +90,9 @@ final class UndefinedVariableResolver
         return array_unique($undefinedVariables);
     }
 
-    private function issetOrUnsetParent(Node $parentNode): bool
+    private function issetOrUnsetOrEmptyParent(Node $parentNode): bool
     {
-        return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class], true);
+        return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true);
     }
 
     private function isAsCoalesceLeft(Node $parentNode, Variable $variable): bool
@@ -124,11 +124,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->issetOrUnsetParent($parentNode)) {
-            return true;
-        }
-
-        if ($this->hasEmptyCheck($parentNode)) {
+        if ($this->issetOrUnsetOrEmptyParent($parentNode)) {
             return true;
         }
 
@@ -162,11 +158,6 @@ final class UndefinedVariableResolver
         }
 
         return $this->hasPreviousCheckedWithEmpty($variable);
-    }
-
-    private function hasEmptyCheck(Node $node): bool
-    {
-        return $node instanceof Empty_;
     }
 
     private function hasPreviousCheckedWithIsset(Variable $variable): bool
@@ -206,14 +197,12 @@ final class UndefinedVariableResolver
     private function isStaticVariable(Node $parentNode): bool
     {
         // definition of static variable
-        if ($parentNode instanceof StaticVar) {
-            $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentParentNode instanceof Static_) {
-                return true;
-            }
+        if (! $parentNode instanceof StaticVar) {
+            return false;
         }
 
-        return false;
+        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        return $parentParentNode instanceof Static_;
     }
 
     private function isListAssign(Node $node): bool
