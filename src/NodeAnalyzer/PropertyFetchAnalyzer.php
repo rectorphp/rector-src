@@ -24,6 +24,11 @@ use Rector\NodeNameResolver\NodeNameResolver;
 
 final class PropertyFetchAnalyzer
 {
+    /**
+     * @var string
+     */
+    private const THIS = 'this';
+
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -39,7 +44,7 @@ final class PropertyFetchAnalyzer
                 return false;
             }
 
-            return $this->nodeNameResolver->isName($node->var, 'this');
+            return $this->nodeNameResolver->isName($node->var, self::THIS);
         }
 
         if ($node instanceof StaticPropertyFetch) {
@@ -72,7 +77,7 @@ final class PropertyFetchAnalyzer
 
     public function isPropertyToSelf(PropertyFetch | StaticPropertyFetch $expr): bool
     {
-        if ($expr instanceof PropertyFetch && ! $this->nodeNameResolver->isName($expr->var, 'this')) {
+        if ($expr instanceof PropertyFetch && ! $this->nodeNameResolver->isName($expr->var, self::THIS)) {
             return false;
         }
 
@@ -190,7 +195,7 @@ final class PropertyFetchAnalyzer
                 continue;
             }
 
-            if (! $this->nodeNameResolver->isName($methodCall->var, 'this')) {
+            if (! $this->nodeNameResolver->isName($methodCall->var, self::THIS)) {
                 continue;
             }
 
@@ -210,6 +215,19 @@ final class PropertyFetchAnalyzer
         return false;
     }
 
+    /**
+     * @param string[] $propertyNames
+     */
+    public function isLocalPropertyOfNames(Node $node, array $propertyNames): bool
+    {
+        if (! $this->isLocalPropertyFetch($node)) {
+            return false;
+        }
+
+        /** @var PropertyFetch $node */
+        return $this->nodeNameResolver->isNames($node->name, $propertyNames);
+    }
+
     private function isPropertyAssignFoundInClassMethod(ClassMethod $classMethod, PropertyFetch $propertyFetch): bool
     {
         return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
@@ -226,19 +244,6 @@ final class PropertyFetchAnalyzer
                 return $this->nodeComparator->areNodesEqual($propertyFetch, $subNode->var);
             }
         );
-    }
-
-    /**
-     * @param string[] $propertyNames
-     */
-    public function isLocalPropertyOfNames(Node $node, array $propertyNames): bool
-    {
-        if (! $this->isLocalPropertyFetch($node)) {
-            return false;
-        }
-
-        /** @var PropertyFetch $node */
-        return $this->nodeNameResolver->isNames($node->name, $propertyNames);
     }
 
     /**
