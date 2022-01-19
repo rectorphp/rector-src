@@ -16,6 +16,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Type;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -58,11 +59,7 @@ final class CountableAnalyzer
             return false;
         }
 
-        if (is_a($callerObjectType->getClassName(), Stmt::class, true)) {
-            return false;
-        }
-
-        if (is_a($callerObjectType->getClassName(), Array_::class, true)) {
+        if ($this->isCallerObjectClassNameStmtOrArray($callerObjectType)) {
             return false;
         }
 
@@ -87,8 +84,21 @@ final class CountableAnalyzer
             return false;
         }
 
+        if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($expr)) {
+            return false;
+        }
+
         $propertyDefaultValue = $propertiesDefaults[$propertyName];
         return $propertyDefaultValue === null;
+    }
+
+    private function isCallerObjectClassNameStmtOrArray(TypeWithClassName $typeWithClassName): bool
+    {
+        if (is_a($typeWithClassName->getClassName(), Stmt::class, true)) {
+            return true;
+        }
+
+        return is_a($typeWithClassName->getClassName(), Array_::class, true);
     }
 
     private function isIterableOrFilledByConstructParam(Type $nativeType, PropertyFetch $propertyFetch): bool
