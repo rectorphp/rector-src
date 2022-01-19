@@ -15,7 +15,18 @@ class SkipEmptyCheck
             : 'default';
     }
 
-    public function run2()
+    public function run2($check)
+    {
+        if ($check) {
+            $data = 'value';
+        }
+
+        return empty($data)
+            ? 'default'
+            : $data;
+    }
+
+    public function run3()
     {
         if (empty($data)) {
             $data[] = 'test';

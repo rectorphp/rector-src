@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\Cast\Unset_ as UnsetCast;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
@@ -48,10 +49,8 @@ final class UndefinedVariableResolver
     {
         $undefinedVariables = [];
 
-        $variableNamesFromParams = $this->collectVariableNamesFromParams($node);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (
-            &$undefinedVariables,
-            $variableNamesFromParams
+            &$undefinedVariables
         ): ?int {
             // entering new scope - break!
             if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
@@ -83,31 +82,12 @@ final class UndefinedVariableResolver
                 return null;
             }
 
-            if (in_array($variableName, $variableNamesFromParams, true)) {
-                return null;
-            }
-
             $undefinedVariables[] = $variableName;
 
             return null;
         });
 
         return array_unique($undefinedVariables);
-    }
-
-    /**
-     * @return string[]
-     */
-    private function collectVariableNamesFromParams(ClassMethod | Function_ | Closure $node): array
-    {
-        $variableNames = [];
-        foreach ($node->getParams() as $param) {
-            if ($param->var instanceof Variable) {
-                $variableNames[] = (string) $this->nodeNameResolver->getName($param->var);
-            }
-        }
-
-        return $variableNames;
     }
 
     private function issetOrUnsetParent(Node $parentNode): bool
@@ -148,22 +128,16 @@ final class UndefinedVariableResolver
             return true;
         }
 
+        if ($this->hasEmptyCheck($parentNode)) {
+            return true;
+        }
+
         if ($this->isAsCoalesceLeft($parentNode, $variable)) {
             return true;
         }
 
         // list() = | [$values] = defines variables as null
         if ($this->isListAssign($parentNode)) {
-            return true;
-        }
-
-        $nodeScope = $variable->getAttribute(AttributeKey::SCOPE);
-        if (! $nodeScope instanceof Scope) {
-            return true;
-        }
-
-        $originalNode = $variable->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $this->nodeComparator->areNodesEqual($variable, $originalNode)) {
             return true;
         }
 
@@ -178,7 +152,16 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        return $this->hasPreviousCheckedWithIsset($variable);
+        if ($this->hasPreviousCheckedWithIsset($variable)) {
+            return true;
+        }
+
+        return $this->hasPreviousCheckedWithEmpty($variable);
+    }
+
+    private function hasEmptyCheck(Node $node): bool
+    {
+        return $node instanceof Empty_;
     }
 
     private function hasPreviousCheckedWithIsset(Variable $variable): bool
@@ -198,6 +181,20 @@ final class UndefinedVariableResolver
             }
 
             return false;
+        });
+    }
+
+    private function hasPreviousCheckedWithEmpty(Variable $variable): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $subNode) use (
+            $variable
+        ): bool {
+            if (! $subNode instanceof Empty_) {
+                return false;
+            }
+
+            $variable = $subNode->expr;
+            return $this->nodeComparator->areNodesEqual($variable, $variable);
         });
     }
 
