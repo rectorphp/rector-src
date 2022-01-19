@@ -1,0 +1,44 @@
+<?php
+
+namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
+
+use OpenApi\Annotations as OA;
+
+class TestResponse
+{
+    /**
+     * @OA\Property(
+     *     type="array",
+     *     @OA\Items(ref=@Model(type=TestItem::class))
+     * )
+     */
+    public array $items;
+
+    public function __construct(array $items = [])
+    {
+        $this->items = $items;
+    }
+}
+?>
+-----
+<?php
+
+namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
+
+use OpenApi\Annotations as OA;
+
+class TestResponse
+{
+    public function __construct(
+        /**
+         * @OA\Property(
+         *     type="array",
+         *     @OA\Items(ref=@Model(type=TestItem::class))
+         * )
+         */
+        public array $items = []
+    )
+    {
+    }
+}
+?>
