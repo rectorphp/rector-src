@@ -189,8 +189,8 @@ final class UndefinedVariableResolver
                 return false;
             }
 
-            $variable = $subNode->expr;
-            return $this->nodeComparator->areNodesEqual($variable, $variable);
+            $subNodeExpr = $subNode->expr;
+            return $this->nodeComparator->areNodesEqual($subNodeExpr, $variable);
         });
     }
 
