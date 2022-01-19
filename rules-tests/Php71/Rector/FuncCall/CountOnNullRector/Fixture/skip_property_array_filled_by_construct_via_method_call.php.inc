@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\Fixture;
 
-final class SkipPropertyArrayFilledByConstruct2
+final class SkipPropertyArrayFilledByConstructViaMethodCall
 {
     /** @var array */
     private $property;
