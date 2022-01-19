@@ -196,11 +196,11 @@ final class UndefinedVariableResolver
 
     private function isStaticVariable(Node $parentNode): bool
     {
-        // definition of static variable
         if (! $parentNode instanceof StaticVar) {
             return false;
         }
 
+        // definition of static variable
         $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         return $parentParentNode instanceof Static_;
     }
