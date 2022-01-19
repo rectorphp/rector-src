@@ -141,6 +141,11 @@ final class UndefinedVariableResolver
             return true;
         }
 
+        $nodeScope = $variable->getAttribute(AttributeKey::SCOPE);
+        if (! $nodeScope instanceof Scope) {
+            return true;
+        }
+
         $variableName = $this->nodeNameResolver->getName($variable);
 
         // skip $this, as probably in outer scope
