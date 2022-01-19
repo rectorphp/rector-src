@@ -1,0 +1,22 @@
+1 file with changes
+===================
+
+1) src/SomeClassWithArrayPropertyValue.php:5
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class SomeClassWithArrayPropertyValue
+ {
+-    private $config = [
++    private array $config = [
+         'templates' => [
+             'foo' => [
+                 'single' => 'E2e\TypedPropertyNamespacedString\View\single',
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyRector (https://wiki.php.net/rfc/typed_properties_v2#proposal)
+
+
+ [OK] 1 file would have changed (dry-run) by Rector

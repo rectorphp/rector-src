@@ -19,6 +19,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $e2eCommand = 'php '. $rectorBin .' process --dry-run --no-ansi --no-progress-bar -a '. $autoloadFile . ' --clear-cache';
 
+if (isset($argv[1]) && $argv[1] === '-a') {
+    $e2eCommand .= ' -a ' . $argv[2];
+}
+
 if (isset($argv[1]) && $argv[1] === '-c') {
     $e2eCommand .= ' -c ' . $argv[2];
 }

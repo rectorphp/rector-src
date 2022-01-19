@@ -28,6 +28,7 @@ jobs:
                     - 'e2e/parallel-custom-config'
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/no-parallel-reflection-resolver'
+                    - 'typed-property-namespaced-string'
 
         name: End to end test - ${{ matrix.directory }}
 
@@ -59,3 +60,7 @@ jobs:
             -   run: php ../e2eTestRunner.php
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory != 'e2e/parallel-custom-config' }}
+
+            -   run: php ../e2eTestRunner.php -a vendor/autoload.php
+                working-directory: ${{ matrix.directory }}
+                if: ${{ matrix.directory == 'typed-property-namespaced-string' }}
