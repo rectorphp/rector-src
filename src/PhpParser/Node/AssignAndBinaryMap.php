@@ -49,7 +49,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class AssignAndBinaryMap
 {
     /**
-     * @var array<class-string<BinaryOp>, class-string<BinaryOp>>
+     * @var mixed[]
      */
     private const BINARY_OP_TO_INVERSE_CLASSES = [
         Identical::class => NotIdentical::class,
@@ -63,7 +63,7 @@ final class AssignAndBinaryMap
     ];
 
     /**
-     * @var array<class-string<AssignOp>, class-string<BinaryOp>>
+     * @var mixed[]
      */
     private const ASSIGN_OP_TO_BINARY_OP_CLASSES = [
         AssignBitwiseOr::class => BitwiseOr::class,

@@ -28,6 +28,9 @@ final class AnnotationExtractorTest extends TestCase
         $this->assertSame($expected, $value);
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function extractAnnotationProvider(): Iterator
     {
         yield 'Class with changelog annotation' => [

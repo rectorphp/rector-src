@@ -29,7 +29,7 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 final class CastTypeResolver implements NodeTypeResolverInterface
 {
     /**
-     * @var array<class-string<Node>, class-string<Type>>
+     * @var mixed[]
      */
     private const CAST_CLASS_TO_TYPE_MAP = [
         Bool_::class => BooleanType::class,

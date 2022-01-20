@@ -57,7 +57,7 @@ final class ChangedFilesDetector
     }
 
     /**
-     * @return SmartFileInfo[]
+     * @return mixed[]|SmartFileInfo[]
      */
     public function getDependentFileInfos(SmartFileInfo $fileInfo): array
     {

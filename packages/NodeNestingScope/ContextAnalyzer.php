@@ -7,7 +7,6 @@ namespace Rector\NodeNestingScope;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
@@ -25,12 +24,12 @@ final class ContextAnalyzer
 {
     /**
      * Nodes that break the scope they way up, e.g. class method
-     * @var array<class-string<FunctionLike>>
+     * @var mixed[]
      */
     private const BREAK_NODES = [FunctionLike::class, ClassMethod::class];
 
     /**
-     * @var array<class-string<Stmt>>
+     * @var mixed[]
      */
     private const LOOP_NODES = [For_::class, Foreach_::class, While_::class, Do_::class];
 

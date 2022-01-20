@@ -56,7 +56,7 @@ final class UnionTypeAnalyzer
     }
 
     /**
-     * @return TypeWithClassName[]
+     * @return mixed[]|TypeWithClassName[]
      */
     public function matchExclusiveTypesWithClassNames(UnionType $unionType): array
     {

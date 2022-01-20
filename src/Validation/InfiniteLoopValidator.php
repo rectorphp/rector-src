@@ -19,7 +19,7 @@ use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 final class InfiniteLoopValidator
 {
     /**
-     * @var array<class-string<RectorInterface>>
+     * @var mixed[]
      */
     private const ALLOWED_INFINITE_RECTOR_CLASSES = [
         DowngradeNullsafeToTernaryOperatorRector::class,

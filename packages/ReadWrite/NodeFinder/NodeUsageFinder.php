@@ -25,7 +25,7 @@ final class NodeUsageFinder
 
     /**
      * @param Node[] $nodes
-     * @return Variable[]
+     * @return mixed[]|Node[]
      */
     public function findVariableUsages(array $nodes, Variable $variable): array
     {

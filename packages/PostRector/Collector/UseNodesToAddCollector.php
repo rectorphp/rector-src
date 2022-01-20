@@ -130,7 +130,7 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * @return AliasedObjectType[]|FullyQualifiedObjectType[]
+     * @return mixed[]|AliasedObjectType[]|FullyQualifiedObjectType[]
      */
     public function getObjectImportsByFileInfo(SmartFileInfo $smartFileInfo): array
     {
@@ -138,7 +138,7 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * @return FullyQualifiedObjectType[]
+     * @return mixed[]|FullyQualifiedObjectType[]
      */
     public function getFunctionImportsByFileInfo(SmartFileInfo $smartFileInfo): array
     {

@@ -7,7 +7,7 @@ namespace Rector\Core\ValueObject;
 final class StaticNonPhpFileSuffixes
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     final public const SUFFIXES = ['neon', 'yaml', 'xml', 'yml', 'twig', 'latte', 'blade.php', 'tpl'];
 

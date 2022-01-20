@@ -81,7 +81,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * @return Stmt[]
+     * @return mixed[]|Stmt[]
      */
     public function getNodesToAddAfterNode(Node $node): array
     {
@@ -90,7 +90,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * @return Stmt[]
+     * @return mixed[]|Stmt[]
      */
     public function getNodesToAddBeforeNode(Node $node): array
     {

@@ -65,7 +65,7 @@ final class FilesFinder
     /**
      * @param string[] $directories
      * @param string[] $suffixes
-     * @return SmartFileInfo[]
+     * @return mixed[]|SmartFileInfo[]
      */
     private function findInDirectories(array $directories, array $suffixes): array
     {

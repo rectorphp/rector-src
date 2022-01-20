@@ -28,6 +28,9 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         $this->assertSame($expectedConfiguration, $renamedClassesDataCollector->getOldToNewClasses());
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideData(): Iterator
     {
         yield [

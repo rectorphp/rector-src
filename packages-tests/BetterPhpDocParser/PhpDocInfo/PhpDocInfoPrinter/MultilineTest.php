@@ -34,6 +34,9 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
         $this->assertSame($docComment, $printedPhpDocInfo, $relativeFilePathFromCwd);
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/Multiline/multiline1.txt', new Nop()];
@@ -52,6 +55,9 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
         yield [__DIR__ . '/Source/Multiline/table.txt', new Class_(TableClass::class)];
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideDataForProperty(): Iterator
     {
         $property = $this->createPublicPropertyUnderClass('manyTo');

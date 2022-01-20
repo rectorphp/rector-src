@@ -37,7 +37,7 @@ use Symplify\SimplePhpDocParser\PhpDocNodeTraverser;
 final class PhpDocInfo
 {
     /**
-     * @var array<class-string<PhpDocTagValueNode>, string>
+     * @var mixed[]
      */
     private const TAGS_TYPES_TO_NAMES = [
         ReturnTagValueNode::class => '@return',

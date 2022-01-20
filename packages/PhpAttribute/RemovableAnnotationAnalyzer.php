@@ -14,7 +14,7 @@ final class RemovableAnnotationAnalyzer
      * Annotation classes that only holds nested annotation, but have no alternative in attributes.
      * Can be removed.
      *
-     * @var string[]
+     * @var mixed[]
      */
     private const REMOVABLE_ANNOTATION_CLASSES = ['Doctrine\ORM\Mapping\JoinColumns'];
 

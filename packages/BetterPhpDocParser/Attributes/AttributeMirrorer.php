@@ -10,7 +10,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 final class AttributeMirrorer
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const ATTRIBUTES_TO_MIRROR = [
         PhpDocAttributeKey::PARENT,

@@ -57,6 +57,9 @@ final class ArrayTypeMapperTest extends AbstractTestCase
         yield [$arrayType, 'string[]'];
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideDataUnionedWithoutKeys(): Iterator
     {
         $stringAndIntegerUnionType = new UnionType([new StringType(), new IntegerType()]);
@@ -70,6 +73,9 @@ final class ArrayTypeMapperTest extends AbstractTestCase
         yield [$evenMoreNestedUnionArrayType, 'int[][][]|string[][][]'];
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideDataWithKeys(): Iterator
     {
         $arrayMixedToStringType = new ArrayType(new MixedType(), new StringType());

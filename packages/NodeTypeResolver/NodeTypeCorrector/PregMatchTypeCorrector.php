@@ -79,7 +79,7 @@ final class PregMatchTypeCorrector
     }
 
     /**
-     * @return Node[]
+     * @return mixed[]|Node[]
      */
     private function getVariableUsages(Variable $variable): array
     {

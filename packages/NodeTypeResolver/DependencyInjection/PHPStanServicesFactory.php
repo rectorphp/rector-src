@@ -120,7 +120,7 @@ final class PHPStanServicesFactory
     }
 
     /**
-     * @return string[]
+     * @return mixed[]|string[]
      */
     private function resolveExtensionConfigs(): array
     {

@@ -25,7 +25,7 @@ final class UnionTypeCommonTypeNarrower
     /**
      * Key = the winner Array = the group of types matched
      *
-     * @var array<string, array<class-string<Node>|class-string<\PHPStan\PhpDocParser\Ast\Node>|class-string<RectorInterface>>>
+     * @var mixed[]
      */
     private const PRIORITY_TYPES = [
         ClassLike::class => [ClassLike::class],
@@ -96,7 +96,7 @@ final class UnionTypeCommonTypeNarrower
     }
 
     /**
-     * @return string[]
+     * @return mixed[]|string[]
      */
     private function narrowToSharedTypes(UnionType $unionType): array
     {
@@ -125,7 +125,7 @@ final class UnionTypeCommonTypeNarrower
     }
 
     /**
-     * @return ClassReflection[]
+     * @return mixed[]|ClassReflection[]
      */
     private function resolveClassParentClassesAndInterfaces(ObjectType $objectType): array
     {
@@ -149,7 +149,7 @@ final class UnionTypeCommonTypeNarrower
 
     /**
      * @param string[][] $availableTypes
-     * @return string[]
+     * @return mixed[]|string[]
      */
     private function narrowAvailableTypes(array $availableTypes): array
     {

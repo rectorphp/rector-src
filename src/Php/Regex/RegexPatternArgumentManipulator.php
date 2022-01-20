@@ -26,7 +26,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 final class RegexPatternArgumentManipulator
 {
     /**
-     * @var array<string, int>
+     * @var mixed[]
      */
     private const FUNCTIONS_WITH_PATTERNS_TO_ARGUMENT_POSITION = [
         'preg_match' => 0,
@@ -39,7 +39,7 @@ final class RegexPatternArgumentManipulator
     ];
 
     /**
-     * @var array<string, array<string, int>>
+     * @var mixed[]
      */
     private const STATIC_METHODS_WITH_PATTERNS_TO_ARGUMENT_POSITION = [
         Strings::class => [
@@ -72,7 +72,7 @@ final class RegexPatternArgumentManipulator
     }
 
     /**
-     * @return String_[]
+     * @return mixed[]|String_[]
      */
     private function processFuncCall(FuncCall $funcCall): array
     {
@@ -96,7 +96,7 @@ final class RegexPatternArgumentManipulator
     }
 
     /**
-     * @return String_[]
+     * @return mixed[]|String_[]
      */
     private function processStaticCall(StaticCall $staticCall): array
     {
@@ -126,7 +126,7 @@ final class RegexPatternArgumentManipulator
     }
 
     /**
-     * @return String_[]
+     * @return mixed[]|String_[]
      */
     private function resolveArgumentValues(Expr $expr): array
     {
@@ -154,7 +154,7 @@ final class RegexPatternArgumentManipulator
     }
 
     /**
-     * @return Assign[]
+     * @return mixed[]|Node[]
      */
     private function findAssignerForVariable(Variable $variable): array
     {

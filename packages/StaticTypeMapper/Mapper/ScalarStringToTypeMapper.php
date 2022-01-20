@@ -24,7 +24,7 @@ use PHPStan\Type\VoidType;
 final class ScalarStringToTypeMapper
 {
     /**
-     * @var array<class-string<Type>, string[]>
+     * @var mixed[]
      */
     private const SCALAR_NAME_BY_TYPE = [
         StringType::class => ['string'],

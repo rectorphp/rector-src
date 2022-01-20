@@ -17,7 +17,7 @@ use Stringable;
 final class Indent implements Stringable
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     final public const CHARACTERS = [
         self::SPACE => ' ',

@@ -22,7 +22,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 final class CallAnalyzer
 {
     /**
-     * @var array<class-string<Expr>>
+     * @var mixed[]
      */
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 

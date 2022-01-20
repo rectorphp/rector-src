@@ -20,7 +20,7 @@ final class MethodParameterTypeResolver
     }
 
     /**
-     * @return Type[]
+     * @return mixed[]|Type[]
      */
     public function provideParameterTypesByStaticCall(StaticCall $staticCall): array
     {
@@ -33,7 +33,7 @@ final class MethodParameterTypeResolver
     }
 
     /**
-     * @return Type[]
+     * @return mixed[]|Type[]
      */
     public function provideParameterTypesByClassMethod(ClassMethod $classMethod): array
     {
@@ -46,7 +46,7 @@ final class MethodParameterTypeResolver
     }
 
     /**
-     * @return Type[]
+     * @return mixed[]|Type[]
      */
     private function provideParameterTypesFromMethodReflection(MethodReflection $methodReflection): array
     {

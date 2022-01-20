@@ -43,6 +43,9 @@ final class StaticTypeMapperTest extends AbstractTestCase
         $this->assertInstanceOf($expectedType, $phpStanType);
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType(): Iterator
     {
         $genericTypeNode = new GenericTypeNode(new IdentifierTypeNode('Traversable'), []);

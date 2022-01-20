@@ -30,7 +30,7 @@ final class NewLine implements Stringable
     final public const CARRIAGE_RETURN_LINE_FEED = 'crlf';
 
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const ALLOWED_END_OF_LINE = [
         self::LINE_FEED => "\n",

@@ -7,12 +7,12 @@ namespace Rector\Core\Stubs;
 final class PHPStanStubLoader
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const STUBS = ['ReflectionUnionType.php', 'Attribute.php'];
 
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const VENDOR_PATHS = [
         // 1. relative path with composer require rector/rector and run vendor/bin/rector

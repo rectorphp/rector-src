@@ -29,6 +29,9 @@ final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
         $this->assertSame($docComment, $printedPhpDocInfo, $relativeFilePathFromCwd);
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideDataClass(): Iterator
     {
         yield [__DIR__ . '/Source/Doctrine/index_in_table.txt', new Class_(IndexInTable::class)];

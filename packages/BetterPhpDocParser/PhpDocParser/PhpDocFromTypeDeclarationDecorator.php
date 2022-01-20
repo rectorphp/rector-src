@@ -26,17 +26,16 @@ use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\Printer\PhpAttributeGroupFactory;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use ReturnTypeWillChange;
 
 final class PhpDocFromTypeDeclarationDecorator
 {
     /**
-     * @var class-string<ReturnTypeWillChange>
+     * @var string
      */
     final public const RETURN_TYPE_WILL_CHANGE_ATTRIBUTE = 'ReturnTypeWillChange';
 
     /**
-     * @var array<string, array<string, string[]>>
+     * @var mixed[]
      */
     final public const ADD_RETURN_TYPE_WILL_CHANGE = [
         'PHPStan\Type\MixedType' => [

@@ -75,7 +75,7 @@ final class PropertyToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * @return ClassConst[]
+     * @return mixed[]|array<string, ClassConst>
      */
     public function getConstantsByClass(Class_ $class): array
     {
@@ -84,7 +84,7 @@ final class PropertyToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * @return PropertyMetadata[]
+     * @return mixed[]|PropertyMetadata[]
      */
     public function getPropertiesByClass(Class_ $class): array
     {

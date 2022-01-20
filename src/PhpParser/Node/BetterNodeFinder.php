@@ -378,7 +378,7 @@ final class BetterNodeFinder
     }
 
     /**
-     * @return Expr[]
+     * @return mixed[]|PropertyFetch[]|StaticPropertyFetch[]|Variable[]
      */
     public function findSameNamedExprs(Expr | Variable | Property | PropertyFetch | StaticPropertyFetch $expr): array
     {

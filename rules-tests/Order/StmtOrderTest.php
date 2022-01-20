@@ -15,7 +15,7 @@ use Rector\Testing\PHPUnit\AbstractTestCase;
 final class StmtOrderTest extends AbstractTestCase
 {
     /**
-     * @var int[]
+     * @var mixed[]
      */
     private const OLD_TO_NEW_KEYS = [
         0 => 0,

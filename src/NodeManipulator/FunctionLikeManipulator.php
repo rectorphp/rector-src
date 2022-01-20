@@ -22,7 +22,7 @@ final class FunctionLikeManipulator
     }
 
     /**
-     * @return string[]
+     * @return mixed[]|string[]
      */
     public function getReturnedLocalPropertyNames(FunctionLike $functionLike): array
     {

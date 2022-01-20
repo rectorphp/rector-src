@@ -9,7 +9,7 @@ use Nette\Utils\Strings;
 final class RegexPatternDetector
 {
     /**
-     * @var string[]
+     * @var mixed[]
      *
      * This prevents miss matching like "aMethoda"
      */

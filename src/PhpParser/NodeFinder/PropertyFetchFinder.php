@@ -36,7 +36,7 @@ final class PropertyFetchFinder
     }
 
     /**
-     * @return PropertyFetch[]|StaticPropertyFetch[]
+     * @return mixed[]|PropertyFetch[]|StaticPropertyFetch[]
      */
     public function findPrivatePropertyFetches(Property | Param $propertyOrPromotedParam): array
     {

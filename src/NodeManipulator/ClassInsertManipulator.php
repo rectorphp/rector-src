@@ -19,7 +19,7 @@ use Rector\PostRector\ValueObject\PropertyMetadata;
 final class ClassInsertManipulator
 {
     /**
-     * @var array<class-string<Stmt>>
+     * @var mixed[]
      */
     private const BEFORE_TRAIT_TYPES = [TraitUse::class, Property::class, ClassMethod::class];
 

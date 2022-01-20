@@ -38,6 +38,9 @@ final class StaticDoctrineAnnotationParserTest extends AbstractTestCase
         $this->assertEquals($expectedValue, $value);
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideData(): Iterator
     {
         $curlyListNode = new CurlyListNode(['"chalet"', '"apartment"']);

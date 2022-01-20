@@ -8,7 +8,7 @@ final class ReservedKeywordAnalyzer
 {
     /**
      * @see https://www.php.net/manual/en/reserved.keywords.php
-     * @var string[]
+     * @var mixed[]
      */
     private const RESERVED_KEYWORDS = [
         '__halt_compiler',
@@ -82,7 +82,7 @@ final class ReservedKeywordAnalyzer
     ];
 
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const NATIVE_VARIABLE_NAMES = [
         '_ENV',

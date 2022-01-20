@@ -27,7 +27,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class ClassMethodReturnTypeOverrideGuard
 {
     /**
-     * @var array<class-string, array<string>>
+     * @var mixed[]
      */
     private const CHAOTIC_CLASS_METHOD_NAMES = [
         'PhpParser\NodeVisitor' => ['enterNode', 'leaveNode', 'beforeTraverse', 'afterTraverse'],

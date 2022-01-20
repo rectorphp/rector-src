@@ -35,6 +35,9 @@ final class ArrayParserTest extends AbstractTestCase
         $this->assertSame($expectedArray, $array);
     }
 
+    /**
+     * @return Iterator<mixed[]>
+     */
     public function provideData(): Iterator
     {
         yield ['{key: "value"}', [

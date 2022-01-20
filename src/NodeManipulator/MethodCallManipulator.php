@@ -95,7 +95,7 @@ final class MethodCallManipulator
     }
 
     /**
-     * @return MethodCall[]
+     * @return mixed[]|Node[]
      */
     public function findMethodCallsOnVariable(Variable $variable): array
     {

@@ -58,7 +58,7 @@ use Symplify\Skipper\Skipper\Skipper;
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const ATTRIBUTES_TO_MIRROR = [
         AttributeKey::USE_NODES,

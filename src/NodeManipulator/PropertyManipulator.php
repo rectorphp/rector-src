@@ -40,7 +40,7 @@ use Symplify\PackageBuilder\Php\TypeChecker;
 final class PropertyManipulator
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES = [
         'Doctrine\ORM\Mapping\Entity',

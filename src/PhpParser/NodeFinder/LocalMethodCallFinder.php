@@ -22,7 +22,7 @@ final class LocalMethodCallFinder
     }
 
     /**
-     * @return MethodCall[]
+     * @return mixed[]|MethodCall[]
      */
     public function match(ClassMethod $classMethod): array
     {

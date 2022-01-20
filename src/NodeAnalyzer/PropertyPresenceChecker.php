@@ -71,7 +71,7 @@ final class PropertyPresenceChecker
     }
 
     /**
-     * @return PhpPropertyReflection[]
+     * @return mixed[]|PhpPropertyReflection[]
      */
     private function getParentClassNonPrivatePropertyReflections(string $className): array
     {

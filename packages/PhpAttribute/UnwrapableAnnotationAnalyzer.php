@@ -15,7 +15,7 @@ final class UnwrapableAnnotationAnalyzer
     /**
      * List of annotation classes that can be un-wrapped
      * @see https://github.com/doctrine/orm/commit/b6b3c974361d7042e4b7d868fb34daca76bb2a48 - repeatable attributes
-     * @var string[]
+     * @var mixed[]
      */
     private const UNWRAPEABLE_ANNOTATION_CLASSES = [
         'Doctrine\ORM\Mapping\UniqueConstraint',

@@ -179,7 +179,7 @@ final class IfManipulator
     }
 
     /**
-     * @return If_[]
+     * @return mixed[]
      */
     public function collectNestedIfsWithNonBreaking(Foreach_ $foreach): array
     {
