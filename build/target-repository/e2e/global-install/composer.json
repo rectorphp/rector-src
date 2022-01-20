@@ -1,0 +1,8 @@
+{
+    "autoload": {
+        "GlobalInstall\\": "src"
+    },
+    "require": {
+        "codeigniter4/framework": "4.1.7"
+    }
+}
