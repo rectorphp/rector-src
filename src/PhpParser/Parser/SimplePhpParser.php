@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser\Parser;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use PhpParser\Parser;
@@ -24,7 +23,7 @@ final class SimplePhpParser
     }
 
     /**
-     * @return Stmt[]
+     * @return mixed[]|Node[]
      */
     public function parseFile(string $filePath): array
     {

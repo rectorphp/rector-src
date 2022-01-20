@@ -60,7 +60,7 @@ final class RegexPatternArgumentManipulator
     }
 
     /**
-     * @return String_[]
+     * @return mixed[]|String_[]
      */
     public function matchCallArgumentWithRegexPattern(FuncCall|StaticCall $call): array
     {
