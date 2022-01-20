@@ -36,5 +36,5 @@ jobs:
                 working-directory: ${{ matrix.directory }}
 
             -
-                run: rector process src --dry-run -vvv --clear-cache
+                run: rector process --ansi --clear-cache
                 working-directory: ${{ matrix.directory }}
