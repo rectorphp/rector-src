@@ -26,6 +26,9 @@ jobs:
                     php-version: ${{ matrix.php_version }}
                     coverage: none
 
+            # wait for deploy to packagist
+            -   run: sleep 70
+
             -
                 run: |
                     composer global require --dev rector/rector:dev-main
