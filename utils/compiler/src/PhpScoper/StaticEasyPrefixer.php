@@ -7,7 +7,7 @@ namespace Rector\Compiler\PhpScoper;
 final class StaticEasyPrefixer
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     final public const EXCLUDED_CLASSES = [
         // part of public interface of configs.php
@@ -24,7 +24,7 @@ final class StaticEasyPrefixer
     ];
 
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const EXCLUDED_NAMESPACES = [
         // naturally
