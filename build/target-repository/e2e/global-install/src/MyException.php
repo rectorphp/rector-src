@@ -2,9 +2,9 @@
 
 namespace GlobalInstall;
 
-use CodeIgniter\Exceptions\ExceptionInterface;
+use App\ExceptionInterface;
 
-class MyException extends RuntimeException implements ExceptionInterface
+class MyException extends \RuntimeException implements ExceptionInterface
 {
     public static function forAnything(string $content)
     {
