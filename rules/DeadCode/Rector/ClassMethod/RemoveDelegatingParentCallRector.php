@@ -24,12 +24,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveDelegatingParentCallRector extends AbstractRector
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const ALLOWED_ANNOTATIONS = ['Route', 'required'];
 
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const ALLOWED_ATTRIBUTES = [
         'Symfony\Component\Routing\Annotation\Route',

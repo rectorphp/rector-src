@@ -9,7 +9,7 @@ use Rector\Core\ValueObject\MethodName;
 final class ObjectMagicMethods
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     final public const METHOD_NAMES = [
         '__call',

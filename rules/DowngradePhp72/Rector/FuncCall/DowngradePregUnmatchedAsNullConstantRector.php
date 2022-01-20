@@ -36,7 +36,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradePregUnmatchedAsNullConstantRector extends AbstractRector
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const REGEX_FUNCTION_NAMES = ['preg_match', 'preg_match_all'];
 

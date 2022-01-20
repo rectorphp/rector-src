@@ -27,12 +27,12 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 final class SideEffectNodeDetector
 {
     /**
-     * @var array<class-string<Expr>>
+     * @var mixed[]
      */
     private const SIDE_EFFECT_NODE_TYPES = [Encapsed::class, New_::class, Concat::class, PropertyFetch::class];
 
     /**
-     * @var array<class-string<Expr>>
+     * @var mixed[]
      */
     private const CALL_EXPR_SIDE_EFFECT_NODE_TYPES = [
         MethodCall::class,

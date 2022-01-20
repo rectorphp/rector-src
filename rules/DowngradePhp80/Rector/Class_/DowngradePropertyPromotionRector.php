@@ -114,7 +114,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Param[]
+     * @return mixed[]|Param[]
      */
     private function resolvePromotedParams(Class_ $class): array
     {

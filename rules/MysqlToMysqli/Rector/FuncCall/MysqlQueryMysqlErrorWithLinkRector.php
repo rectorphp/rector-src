@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class MysqlQueryMysqlErrorWithLinkRector extends AbstractRector
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const FUNCTION_RENAME_MAP = [
         'mysql_affected_rows' => 'mysqli_affected_rows',
@@ -51,7 +51,7 @@ final class MysqlQueryMysqlErrorWithLinkRector extends AbstractRector
     ];
 
     /**
-     * @var array<string, int>
+     * @var mixed[]
      */
     private const FUNCTION_CONNECTION_PARAMETER_POSITION_MAP = [
         'mysql_affected_rows' => 0,

@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RandomFunctionRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const OLD_TO_NEW_FUNCTION_NAMES = [
         'getrandmax' => 'mt_getrandmax',

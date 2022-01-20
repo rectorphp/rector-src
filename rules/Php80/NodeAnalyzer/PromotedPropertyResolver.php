@@ -12,7 +12,7 @@ use Rector\Core\ValueObject\MethodName;
 final class PromotedPropertyResolver
 {
     /**
-     * @return Param[]
+     * @return mixed[]|Param[]
      */
     public function resolveFromClass(Class_ $class): array
     {

@@ -15,7 +15,7 @@ use Rector\Php70\Exception\InvalidEregException;
 final class EregToPcreTransformer
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const CHARACTER_CLASS_MAP = [
         ':alnum:' => '[:alnum:]',

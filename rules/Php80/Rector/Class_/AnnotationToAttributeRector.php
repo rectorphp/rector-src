@@ -204,7 +204,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return AttributeGroup[]
+     * @return mixed[]|AttributeGroup[]
      */
     private function processDoctrineAnnotationClasses(PhpDocInfo $phpDocInfo): array
     {

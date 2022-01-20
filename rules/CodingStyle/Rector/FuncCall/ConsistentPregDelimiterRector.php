@@ -59,7 +59,7 @@ final class ConsistentPregDelimiterRector extends AbstractRector implements Allo
 
     /**
      * All with pattern as 1st argument
-     * @var array<string, int>
+     * @var mixed[]
      */
     private const FUNCTIONS_WITH_REGEX_PATTERN = [
         'preg_match' => 0,
@@ -73,7 +73,7 @@ final class ConsistentPregDelimiterRector extends AbstractRector implements Allo
 
     /**
      * All with pattern as 2st argument
-     * @var array<string, array<string, int>>
+     * @var mixed[]
      */
     private const STATIC_METHODS_WITH_REGEX_PATTERN = [
         'Nette\Utils\Strings' => [

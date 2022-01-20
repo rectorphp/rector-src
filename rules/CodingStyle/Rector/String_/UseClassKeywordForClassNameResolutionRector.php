@@ -76,7 +76,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return string[]
+     * @return mixed[]
      */
     public function getExistingClasses(String_ $string): array
     {

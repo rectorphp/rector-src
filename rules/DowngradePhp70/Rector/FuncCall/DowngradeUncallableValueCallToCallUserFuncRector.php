@@ -24,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeUncallableValueCallToCallUserFuncRector extends AbstractRector
 {
     /**
-     * @var array<class-string<Expr>>
+     * @var mixed[]
      */
     private const INDIRECT_CALLABLE_EXPR = [
         // Interpreted as MethodCall without parentheses.

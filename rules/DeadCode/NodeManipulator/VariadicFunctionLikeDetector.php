@@ -14,7 +14,7 @@ use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 final class VariadicFunctionLikeDetector
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const VARIADIC_FUNCTION_NAMES = ['func_get_arg', 'func_get_args', 'func_num_args'];
 

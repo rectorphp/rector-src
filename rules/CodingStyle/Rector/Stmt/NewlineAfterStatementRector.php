@@ -38,7 +38,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NewlineAfterStatementRector extends AbstractRector
 {
     /**
-     * @var array<class-string<Node>>
+     * @var mixed[]
      */
     private const STMTS_TO_HAVE_NEXT_NEWLINE = [
         ClassMethod::class,

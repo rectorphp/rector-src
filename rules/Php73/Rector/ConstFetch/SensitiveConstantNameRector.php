@@ -25,7 +25,7 @@ final class SensitiveConstantNameRector extends AbstractRector implements MinPhp
 {
     /**
      * @see http://php.net/manual/en/reserved.constants.php
-     * @var string[]
+     * @var mixed[]
      */
     private const PHP_RESERVED_CONSTANTS = [
         'PHP_VERSION',

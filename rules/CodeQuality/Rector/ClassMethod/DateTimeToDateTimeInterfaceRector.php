@@ -34,7 +34,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DateTimeToDateTimeInterfaceRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const METHODS_RETURNING_CLASS_INSTANCE_MAP = [
         'add', 'modify', MethodName::SET_STATE, 'setDate', 'setISODate', 'setTime', 'setTimestamp', 'setTimezone', 'sub',

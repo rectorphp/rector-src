@@ -11,7 +11,7 @@ final class AnnotationTargetResolver
 {
     /**
      * @see https://github.com/doctrine/annotations/blob/e6e7b7d5b45a2f2abc5460cc6396480b2b1d321f/lib/Doctrine/Common/Annotations/Annotation/Target.php#L24-L29
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const TARGET_TO_CONSTANT_MAP = [
         'METHOD' => 'TARGET_METHOD',

@@ -23,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class StringifyStrNeedlesRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const NEEDLE_STRING_SENSITIVE_FUNCTIONS = [
         'strpos',

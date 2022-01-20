@@ -208,7 +208,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return If_[]
+     * @return mixed[]|If_[]
      */
     private function getIfsBefore(Return_ $return): array
     {
@@ -231,7 +231,7 @@ CODE_SAMPLE
 
     /**
      * @param If_[] $stmts
-     * @return If_[]
+     * @return mixed[]|If_[]
      */
     private function collectIfs(array $stmts, Return_ $return): array
     {

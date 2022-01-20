@@ -31,7 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnreachableStatementRector extends AbstractRector
 {
     /**
-     * @var array<class-string<Node>>
+     * @var mixed[]
      */
     private const STMTS_WITH_IS_UNREACHABLE = [If_::class, While_::class, Do_::class];
 

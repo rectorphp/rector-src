@@ -19,7 +19,7 @@ final class AliasUsesResolver
     }
 
     /**
-     * @return string[]
+     * @return mixed[]|string[]
      */
     public function resolveFromNode(Node $node): array
     {

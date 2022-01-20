@@ -19,7 +19,7 @@ final class CallTypeAnalyzer
     }
 
     /**
-     * @return Type[]
+     * @return mixed[]|Type[]
      */
     public function resolveMethodParameterTypes(MethodCall | StaticCall $call): array
     {

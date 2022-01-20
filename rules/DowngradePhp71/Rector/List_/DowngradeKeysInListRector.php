@@ -127,7 +127,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Expression[]
+     * @return mixed[]|Expression[]
      */
     private function processExtractToItsOwnVariable(List_ | Array_ $node, Node $parent, Node $parentExpression): array
     {

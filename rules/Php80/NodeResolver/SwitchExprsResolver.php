@@ -18,7 +18,7 @@ use Rector\Php80\ValueObject\CondAndExpr;
 final class SwitchExprsResolver
 {
     /**
-     * @return CondAndExpr[]
+     * @return mixed[]|CondAndExpr[]
      */
     public function resolve(Switch_ $switch): array
     {

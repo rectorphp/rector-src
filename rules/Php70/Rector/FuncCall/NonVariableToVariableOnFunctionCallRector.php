@@ -125,7 +125,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
     }
 
     /**
-     * @return Expr[]
+     * @return mixed[]|Expr[]
      */
     private function getNonVariableArguments(FuncCall | MethodCall | StaticCall $call): array
     {

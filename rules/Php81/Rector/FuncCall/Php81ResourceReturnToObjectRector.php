@@ -22,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class Php81ResourceReturnToObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const COLLECTION_FUNCTION_TO_RETURN_OBJECT = [
         // finfo

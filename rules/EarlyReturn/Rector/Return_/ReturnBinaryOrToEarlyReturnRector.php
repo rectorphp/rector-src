@@ -101,7 +101,7 @@ CODE_SAMPLE
 
     /**
      * @param If_[] $ifs
-     * @return If_[]
+     * @return mixed[]|If_[]
      */
     private function createMultipleIfs(Expr $expr, Return_ $return, array $ifs): array
     {
@@ -129,7 +129,7 @@ CODE_SAMPLE
 
     /**
      * @param If_[] $ifs
-     * @return If_[]
+     * @return mixed[]|If_[]
      */
     private function collectLeftBooleanOrToIfs(BooleanOr $BooleanOr, Return_ $return, array $ifs): array
     {

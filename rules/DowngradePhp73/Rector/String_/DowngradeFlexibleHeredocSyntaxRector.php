@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeFlexibleHeredocSyntaxRector extends AbstractRector
 {
     /**
-     * @var int[]
+     * @var mixed[]
      */
     private const HERENOW_DOC_KINDS = [String_::KIND_HEREDOC, String_::KIND_NOWDOC];
 

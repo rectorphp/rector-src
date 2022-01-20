@@ -120,7 +120,7 @@ CODE_SAMPLE
 
     /**
      * @param If_[] $ifNegations
-     * @return If_[]
+     * @return mixed[]|If_[]
      */
     private function collectLeftBooleanAndToIfs(BooleanAnd $booleanAnd, Return_ $return, array $ifNegations): array
     {

@@ -20,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradePhp81ResourceReturnToObjectRector extends AbstractRector
 {
     /**
-     * @var string[]|class-string<finfo>[]
+     * @var mixed[]
      */
     private const COLLECTION_OBJECT_TO_RESOURCE = [
         // finfo

@@ -37,7 +37,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NullToStrictStringFuncCallArgRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array<string, string[]>
+     * @var mixed[]
      */
     private const ARG_POSITION_NAME_NULL_TO_STRICT_STRING = [
         'preg_split' => ['subject'],
@@ -237,7 +237,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return int[]|string[]
+     * @return mixed[]|int[]
      */
     private function resolveOriginalPositions(FuncCall $funcCall): array
     {

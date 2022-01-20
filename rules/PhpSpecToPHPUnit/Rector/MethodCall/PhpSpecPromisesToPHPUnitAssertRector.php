@@ -33,7 +33,7 @@ final class PhpSpecPromisesToPHPUnitAssertRector extends AbstractPhpSpecToPHPUni
      * @changelog https://github.com/phpspec/phpspec/blob/master/src/PhpSpec/Wrapper/Subject.php
      * ↓
      * @changelog https://phpunit.readthedocs.io/en/8.0/assertions.html
-     * @var array<string, string[]>
+     * @var mixed[]
      */
     private const NEW_METHOD_TO_OLD_METHODS = [
         'assertInstanceOf' => ['shouldBeAnInstanceOf', 'shouldHaveType', 'shouldReturnAnInstanceOf'],

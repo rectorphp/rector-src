@@ -24,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class StrContainsRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const OLD_STR_NAMES = ['strpos', 'strstr'];
 

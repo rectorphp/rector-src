@@ -81,7 +81,7 @@ final class ShortNameResolver
 
     /**
      * Collects all "class <SomeClass>", "trait <SomeTrait>" and "interface <SomeInterface>"
-     * @return string[]
+     * @return mixed[]|string[]
      */
     public function resolveShortClassLikeNamesForNode(Node $node): array
     {

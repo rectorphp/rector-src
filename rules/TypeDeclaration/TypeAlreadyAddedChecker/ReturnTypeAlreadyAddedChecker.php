@@ -27,12 +27,11 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Traversable;
 
 final class ReturnTypeAlreadyAddedChecker
 {
     /**
-     * @var string[]|class-string<Traversable>[]
+     * @var mixed[]
      */
     private const FOREACHABLE_TYPES = ['iterable', 'Iterator', 'Traversable', 'array'];
 

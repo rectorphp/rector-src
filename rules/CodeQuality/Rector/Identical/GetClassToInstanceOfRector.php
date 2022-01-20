@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class GetClassToInstanceOfRector extends AbstractRector
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const NO_NAMESPACED_CLASSNAMES = ['self', 'static'];
 

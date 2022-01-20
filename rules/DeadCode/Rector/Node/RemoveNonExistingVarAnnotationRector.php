@@ -35,7 +35,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveNonExistingVarAnnotationRector extends AbstractRector
 {
     /**
-     * @var array<class-string<Node>>
+     * @var mixed[]
      */
     private const NODES_TO_MATCH = [
         Assign::class,

@@ -29,7 +29,7 @@ final class SetCookieRector extends AbstractRector implements MinPhpVersionInter
 {
     /**
      * Conversion table from argument index to options name
-     * @var array<int, string>
+     * @var mixed[]
      */
     private const KNOWN_OPTIONS = [
         2 => 'expires',

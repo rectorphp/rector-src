@@ -40,7 +40,7 @@ final class PromotedPropertyCandidateResolver
     }
 
     /**
-     * @return PropertyPromotionCandidate[]
+     * @return mixed[]|PropertyPromotionCandidate[]
      */
     public function resolveFromClass(Class_ $class): array
     {

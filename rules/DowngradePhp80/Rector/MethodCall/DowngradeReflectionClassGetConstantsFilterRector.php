@@ -34,7 +34,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeReflectionClassGetConstantsFilterRector extends AbstractRector
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const MAP_CONSTANT_TO_METHOD = [
         'IS_PUBLIC' => 'isPublic',
@@ -191,7 +191,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return string[]
+     * @return mixed[]|string[]
      */
     private function resolveClassConstFetchNames(BitwiseOr $bitwiseOr): array
     {

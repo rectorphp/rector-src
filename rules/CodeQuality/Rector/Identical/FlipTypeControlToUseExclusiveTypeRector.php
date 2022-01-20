@@ -134,7 +134,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Type[]
+     * @return mixed[]|Type[]
      */
     private function getTypes(UnionType $unionType): array
     {

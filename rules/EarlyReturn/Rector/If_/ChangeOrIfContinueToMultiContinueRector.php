@@ -131,7 +131,7 @@ CODE_SAMPLE
 
     /**
      * @param If_[] $ifs
-     * @return If_[]
+     * @return mixed[]|If_[]
      */
     private function collectLeftbooleanOrToIfs(BooleanOr $booleanOr, Continue_ $continue, array $ifs): array
     {

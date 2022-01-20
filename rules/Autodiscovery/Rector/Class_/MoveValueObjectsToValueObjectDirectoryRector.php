@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Autodiscovery\Rector\Class_;
 
-use Controller;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
@@ -42,7 +41,7 @@ final class MoveValueObjectsToValueObjectDirectoryRector extends AbstractRector 
     final public const ENABLE_VALUE_OBJECT_GUESSING = 'enable_value_object_guessing';
 
     /**
-     * @var string[]|class-string<Controller>[]
+     * @var mixed[]
      */
     private const COMMON_SERVICE_SUFFIXES = [
         'Repository', 'Command', 'Mapper', 'Controller', 'Presenter', 'Factory', 'Test', 'TestCase', 'Service',

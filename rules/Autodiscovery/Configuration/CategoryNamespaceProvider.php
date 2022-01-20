@@ -12,7 +12,7 @@ namespace Rector\Autodiscovery\Configuration;
 final class CategoryNamespaceProvider
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const CATEGORY_NAMESPACES = [
         'Command',

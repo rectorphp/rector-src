@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeFreadFwriteFalsyToNegationRector extends AbstractRector
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const FUNC_FREAD_FWRITE = ['fread', 'fwrite'];
 

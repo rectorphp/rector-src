@@ -15,7 +15,7 @@ final class PureFunctionDetector
 {
     /**
      * @see https://github.com/vimeo/psalm/blob/d470903722cfcbc1cd04744c5491d3e6d13ec3d9/src/Psalm/Internal/Codebase/Functions.php#L288
-     * @var string[]
+     * @var mixed[]
      */
     private const IMPURE_FUNCTIONS = [
         'chdir', 'chgrp', 'chmod', 'chown', 'chroot', 'closedir', 'copy', 'file_put_contents',

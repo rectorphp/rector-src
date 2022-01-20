@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReplaceHttpServerVarsByServerRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const VARIABLE_RENAME_MAP = [
         'HTTP_SERVER_VARS' => '_SERVER',

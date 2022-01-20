@@ -13,7 +13,7 @@ use PhpParser\Node\Stmt\Return_;
 final class MatchersManipulator
 {
     /**
-     * @return string[]
+     * @return mixed[]|string[]
      */
     public function resolveMatcherNamesFromClass(Class_ $class): array
     {

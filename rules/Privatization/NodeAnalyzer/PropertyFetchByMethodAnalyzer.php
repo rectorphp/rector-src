@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
@@ -26,7 +25,7 @@ use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 final class PropertyFetchByMethodAnalyzer
 {
     /**
-     * @var array<class-string<Stmt>>
+     * @var mixed[]
      */
     private const SCOPE_CHANGING_NODE_TYPES = [Do_::class, While_::class, If_::class, Else_::class];
 

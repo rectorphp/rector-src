@@ -23,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FinalizeClassesWithoutChildrenRector extends AbstractRector
 {
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const DOCTRINE_ORM_MAPPING_ANNOTATION = [
         'Doctrine\ORM\Mapping\Entity',
@@ -31,7 +31,7 @@ final class FinalizeClassesWithoutChildrenRector extends AbstractRector
     ];
 
     /**
-     * @var string[]
+     * @var mixed[]
      */
     private const DOCTRINE_ODM_MAPPING_ANNOTATION = [
         'Doctrine\ODM\MongoDB\Mapping\Annotations\Document',

@@ -10,7 +10,7 @@ use Rector\Core\ValueObject\PhpVersion;
 final class FunctionSupportResolver
 {
     /**
-     * @var array<int, string[]>
+     * @var mixed[]
      */
     private const FUNCTIONS_BY_VERSION = [
         PhpVersion::PHP_56 => ['session_abort', 'hash_equals', 'ldap_escape'],

@@ -26,7 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class MysqlAssignToMysqliRector extends AbstractRector
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const FIELD_TO_FIELD_DIRECT = [
         'mysql_field_len' => 'length',

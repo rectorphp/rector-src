@@ -24,7 +24,7 @@ final class SetCookieOptionsArrayToArgumentsRector extends AbstractRector
 {
     /**
      * Conversion table from argument index to options name
-     * @var array<string, int>
+     * @var mixed[]
      */
     private const ARGUMENT_ORDER = [
         'expires' => 2,
@@ -36,7 +36,7 @@ final class SetCookieOptionsArrayToArgumentsRector extends AbstractRector
 
     /**
      * Conversion table from argument index to options name
-     * @var array<int, int|string|bool>
+     * @var mixed[]
      */
     private const ARGUMENT_DEFAULT_VALUES = [
         2 => 0,
@@ -112,7 +112,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Arg[]
+     * @return mixed[]|Arg[]
      */
     private function composeNewArgs(FuncCall $funcCall): array
     {

@@ -14,7 +14,7 @@ use Rector\Core\Util\StringUtils;
 final class InflectorSingularResolver
 {
     /**
-     * @var array<string, string>
+     * @var mixed[]
      */
     private const SINGULARIZE_MAP = [
         'news' => 'new',

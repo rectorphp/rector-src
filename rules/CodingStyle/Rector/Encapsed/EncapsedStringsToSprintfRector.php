@@ -17,7 +17,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,7 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class EncapsedStringsToSprintfRector extends AbstractRector
 {
     /**
-     * @var array<string, array<class-string<Type>>>
+     * @var mixed[]
      */
     private const FORMAT_SPECIFIERS = [
         '%s' => ['PHPStan\Type\StringType'],

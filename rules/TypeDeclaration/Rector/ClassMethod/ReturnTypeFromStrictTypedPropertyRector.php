@@ -107,7 +107,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Type[]
+     * @return mixed[]|Type[]
      */
     private function resolveReturnPropertyType(ClassMethod $classMethod): array
     {

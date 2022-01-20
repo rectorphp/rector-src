@@ -150,7 +150,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Expression[]|Stmt[]
+     * @return mixed[]|Stmt[]
      */
     private function parseStringToBody(Expr $expr): array
     {

@@ -121,7 +121,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Assign[]
+     * @return mixed[]|Assign[]
      */
     private function collectReadOnlyVariableAssigns(Class_ $class): array
     {

@@ -23,7 +23,6 @@ use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -38,7 +37,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RecastingRemovalRector extends AbstractRector
 {
     /**
-     * @var array<class-string<Node>, class-string<Type>>
+     * @var mixed[]
      */
     private const CAST_CLASS_TO_NODE_TYPE = [
         String_::class => StringType::class,
