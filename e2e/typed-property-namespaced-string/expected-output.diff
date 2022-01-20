@@ -1,12 +1,12 @@
-2 files with changes
+3 files with changes
 ====================
 
-1) src/SomeClassWithArrayPropertyValue2.php:5
+1) src/SomeClassWithStringPropertyValue.php:5
 
     ---------- begin diff ----------
 @@ @@
 
- final class SomeClassWithArrayPropertyValue2
+ final class SomeClassWithStringPropertyValue
  {
 -    private $config = 'E2e\TypedPropertyNamespacedString\View\single';
 +    private string $config = 'E2e\TypedPropertyNamespacedString\View\single';
@@ -17,7 +17,25 @@ Applied rules:
  * TypedPropertyRector (https://wiki.php.net/rfc/typed_properties_v2#proposal)
 
 
-2) src/SomeClassWithArrayPropertyValue.php:5
+2) src/SomeClassWithArrayPropertyValue2.php:5
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class SomeClassWithArrayPropertyValue2
+ {
+-    private $config2 = array (
++    private array $config2 = array (
+         'templates' => array (
+             'foo' => array (
+                 'single' => 'E2e\TypedPropertyNamespacedString\View\single',
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyRector (https://wiki.php.net/rfc/typed_properties_v2#proposal)
+
+
+3) src/SomeClassWithArrayPropertyValue.php:5
 
     ---------- begin diff ----------
 @@ @@
@@ -29,10 +47,19 @@ Applied rules:
          'templates' => [
              'foo' => [
                  'single' => 'E2e\TypedPropertyNamespacedString\View\single',
+@@ @@
+         ],
+     ];
+
+-    private $config2 = array (
++    private array $config2 = array (
+         'templates' => array (
+             'foo' => array (
+                 'single' => 'E2e\TypedPropertyNamespacedString\View\single',
     ----------- end diff -----------
 
 Applied rules:
  * TypedPropertyRector (https://wiki.php.net/rfc/typed_properties_v2#proposal)
 
 
- [OK] 2 files would have changed (dry-run) by Rector
+ [OK] 3 files would have changed (dry-run) by Rector

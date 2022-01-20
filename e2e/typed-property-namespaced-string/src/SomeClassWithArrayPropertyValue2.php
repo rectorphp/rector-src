@@ -6,5 +6,11 @@ namespace E2e\TypedPropertyNamespacedString;
 
 final class SomeClassWithArrayPropertyValue2
 {
-    private $config = 'E2e\TypedPropertyNamespacedString\View\single';
+    private $config2 = array (
+        'templates' => array (
+            'foo' => array (
+                'single' => 'E2e\TypedPropertyNamespacedString\View\single',
+            ),
+        ),
+    );
 }

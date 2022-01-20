@@ -13,4 +13,12 @@ final class SomeClassWithArrayPropertyValue
             ],
         ],
     ];
+
+    private $config2 = array (
+        'templates' => array (
+            'foo' => array (
+                'single' => 'E2e\TypedPropertyNamespacedString\View\single',
+            ),
+        ),
+    );
 }
