@@ -15,6 +15,7 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -29,7 +30,8 @@ final class PhpDocTypeChanger
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly CommentsMerger $commentsMerger
     ) {
     }
 
@@ -143,6 +145,7 @@ final class PhpDocTypeChanger
 
         $varTag = $phpDocInfo->getVarTagValueNode();
         if (! $varTag instanceof VarTagValueNode) {
+            $this->commentsMerger->keepComments($param, [$property]);
             return;
         }
 
