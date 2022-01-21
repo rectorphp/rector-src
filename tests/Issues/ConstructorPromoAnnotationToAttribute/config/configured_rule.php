@@ -12,7 +12,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
     $services->set(AnnotationToAttributeRector::class)
-        ->configure([
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\Table'),
-        ]);
+        ->configure([new AnnotationToAttribute('Doctrine\ORM\Mapping\Table')]);
 };
