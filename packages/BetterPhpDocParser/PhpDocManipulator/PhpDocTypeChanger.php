@@ -147,16 +147,7 @@ final class PhpDocTypeChanger
 
         $varTag = $phpDocInfo->getVarTagValueNode();
         if (! $varTag instanceof VarTagValueNode) {
-            $this->commentsMerger->keepComments($param, [$property]);
-
-            $paramPhpDocInfo = $this->phpDocInfoFactory->createFromNode($param);
-            if ($paramPhpDocInfo instanceof PhpDocInfo) {
-                $paramVarTag = $paramPhpDocInfo->getVarTagValueNode();
-                if ($paramVarTag instanceof VarTagValueNode && $paramVarTag->description === '') {
-                    $paramPhpDocInfo->removeByType(VarTagValueNode::class);
-                }
-            }
-
+            $this->processKeepComments($property, $param);
             return;
         }
 
@@ -193,5 +184,30 @@ final class PhpDocTypeChanger
         // add completely new one
         $varTagValueNode = new VarTagValueNode($typeNode, '', '');
         $phpDocInfo->addTagValueNode($varTagValueNode);
+    }
+
+    private function processKeepComments(Property $property, Param $param): void
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
+        $varTag = $phpDocInfo->getVarTagValueNode();
+
+        $toBeRemoved = ! $varTag instanceof VarTagValueNode;
+        $this->commentsMerger->keepComments($param, [$property]);
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
+        $varTag = $phpDocInfo->getVarTagValueNode();
+        if (! $toBeRemoved) {
+            return;
+        }
+
+        if (! $varTag instanceof VarTagValueNode) {
+            return;
+        }
+
+        if ($varTag->description !== '') {
+            return;
+        }
+
+        $phpDocInfo->removeByType(VarTagValueNode::class);
     }
 }
