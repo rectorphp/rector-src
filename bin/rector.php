@@ -30,7 +30,7 @@ $autoloadIncluder = new AutoloadIncluder();
 $autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 
 
-if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) {
+if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor') && ! is_dir('vendor/nikic/php-parser')) {
     require_once __DIR__ . '/../preload.php';
 }
 
