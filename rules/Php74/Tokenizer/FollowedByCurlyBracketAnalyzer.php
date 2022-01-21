@@ -12,13 +12,13 @@ final class FollowedByCurlyBracketAnalyzer
     public function isFollowed(File $file, Node $node): bool
     {
         $oldTokens = $file->getOldTokens();
-        $endTokenPost = $node->getEndTokenPos();
         $startTokenPost = $node->getStartTokenPos();
 
         if (isset($oldTokens[$startTokenPost][1]) && $oldTokens[$startTokenPost][1] === '${') {
             return false;
         }
 
+        $endTokenPost = $node->getEndTokenPos();
         return isset($oldTokens[$endTokenPost]) && $oldTokens[$endTokenPost] === '}';
     }
 }
