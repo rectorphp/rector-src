@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\IfElseAssignReturnUsed\Fixture;
 
-final class UseOnReturnAfterTernary
+final class UseOnReturnAfterIfElseAssign
 {
     public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
     {
@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\IfElseAssignReturnUsed\Fixture;
 
-final class UseOnReturnAfterTernary
+final class UseOnReturnAfterIfElseAssign
 {
     public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
     {
