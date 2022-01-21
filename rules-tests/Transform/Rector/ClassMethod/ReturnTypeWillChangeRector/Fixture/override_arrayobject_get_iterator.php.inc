@@ -1,13 +1,13 @@
 <?php
 
-namespace Rector\Tests\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclarationRector\Fixture;
+namespace Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Fixture;
 
 /**
  * @see https://github.com/laminas/laminas-stdlib/pull/54
  */
-class ArrayStack extends \ArrayObject
+class OverrideArrayObjectGetIterator extends \ArrayObject
 {
-    public function getIterator(): \Iterator
+    public function getIterator()
     {
         $array = $this->getArrayCopy();
         return new ArrayIterator(array_reverse($array));
@@ -18,16 +18,13 @@ class ArrayStack extends \ArrayObject
 -----
 <?php
 
-namespace Rector\Tests\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclarationRector\Fixture;
+namespace Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Fixture;
 
 /**
  * @see https://github.com/laminas/laminas-stdlib/pull/54
  */
-class ArrayStack extends \ArrayObject
+class OverrideArrayObjectGetIterator extends \ArrayObject
 {
-    /**
-     * @return \Iterator
-     */
     #[\ReturnTypeWillChange]
     public function getIterator()
     {
