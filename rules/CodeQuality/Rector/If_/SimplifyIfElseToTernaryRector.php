@@ -131,6 +131,10 @@ CODE_SAMPLE
 
     private function isNextReturnRemoved(If_ $if, Expr $expr): bool
     {
+        if (! $this->nodesToRemoveCollector->isActive()) {
+            return false;
+        }
+
         $next = $if->getAttribute(AttributeKey::NEXT_NODE);
 
         if ($next instanceof Return_ && $next->expr instanceof Expr && $this->nodeComparator->areNodesEqual(
