@@ -2,17 +2,17 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector\Fixture;
 
-class UseOnReturnAfterIfElseAssign
+final class UseOnReturnAfterIfElseAssign
 {
-    public function run()
+    public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
     {
-        if (empty($value)) {
-            $this->arrayBuilt[][$key] = true;
+        if (method_exists($data, 'toRawArray')) {
+            $properties = $data->toRawArray();
         } else {
-            $this->arrayBuilt[][$key] = $value;
+            $properties = (array) $data;
         }
 
-        return $this->arrayBuilt[][$key];
+        return $properties;
     }
 }
 
@@ -22,13 +22,13 @@ class UseOnReturnAfterIfElseAssign
 
 namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector\Fixture;
 
-class UseOnReturnAfterIfElseAssign
+final class UseOnReturnAfterIfElseAssign
 {
-    public function run()
+    public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
     {
-        $this->arrayBuilt[][$key] = empty($value) ? true : $value;
+        $properties = method_exists($data, 'toRawArray') ? $data->toRawArray() : (array) $data;
 
-        return $this->arrayBuilt[][$key];
+        return $properties;
     }
 }
 
