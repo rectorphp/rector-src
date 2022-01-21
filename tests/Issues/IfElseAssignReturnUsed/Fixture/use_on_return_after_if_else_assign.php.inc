@@ -6,7 +6,7 @@ namespace Rector\Core\Tests\Issues\IfElseAssignReturnUsed\Fixture;
 
 final class UseOnReturnAfterIfElseAssign
 {
-    public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
+    public static function classToArray($data): array
     {
         if (method_exists($data, 'toRawArray')) {
             $properties = $data->toRawArray();
@@ -28,7 +28,7 @@ namespace Rector\Core\Tests\Issues\IfElseAssignReturnUsed\Fixture;
 
 final class UseOnReturnAfterIfElseAssign
 {
-    public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
+    public static function classToArray($data): array
     {
         if (method_exists($data, 'toRawArray')) {
             return $data->toRawArray();

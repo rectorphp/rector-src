@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector\Fixt
 
 final class UseOnReturnAfterIfElseAssign
 {
-    public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
+    public static function classToArray($data): array
     {
         if (method_exists($data, 'toRawArray')) {
             $properties = $data->toRawArray();
@@ -24,7 +24,7 @@ namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector\Fixt
 
 final class UseOnReturnAfterIfElseAssign
 {
-    public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
+    public static function classToArray($data): array
     {
         $properties = method_exists($data, 'toRawArray') ? $data->toRawArray() : (array) $data;
 
