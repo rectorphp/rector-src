@@ -2,6 +2,9 @@
 
 namespace Rector\Tests\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclarationRector\Fixture;
 
+/**
+ * @see https://github.com/laminas/laminas-stdlib/pull/54
+ */
 class ArrayStack extends \ArrayObject
 {
     public function getIterator(): \Iterator
@@ -17,6 +20,9 @@ class ArrayStack extends \ArrayObject
 
 namespace Rector\Tests\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclarationRector\Fixture;
 
+/**
+ * @see https://github.com/laminas/laminas-stdlib/pull/54
+ */
 class ArrayStack extends \ArrayObject
 {
     /**
