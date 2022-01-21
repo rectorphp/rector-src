@@ -13,6 +13,11 @@ final class FollowedByCurlyBracketAnalyzer
     {
         $oldTokens = $file->getOldTokens();
         $endTokenPost = $node->getEndTokenPos();
+        $startTokenPost = $node->getStartTokenPos();
+
+        if (isset($oldTokens[$startTokenPost][1]) && $oldTokens[$startTokenPost][1] === '${') {
+            return false;
+        }
 
         return isset($oldTokens[$endTokenPost]) && $oldTokens[$endTokenPost] === '}';
     }
