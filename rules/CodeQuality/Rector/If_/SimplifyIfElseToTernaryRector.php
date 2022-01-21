@@ -126,6 +126,7 @@ CODE_SAMPLE
 
         $expression = new Expression($assign);
         $this->mirrorComments($expression, $node);
+
         return $expression;
     }
 
