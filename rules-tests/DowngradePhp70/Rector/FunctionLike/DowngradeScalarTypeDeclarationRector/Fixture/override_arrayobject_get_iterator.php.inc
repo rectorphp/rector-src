@@ -2,15 +2,10 @@
 
 namespace Rector\Tests\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclarationRector\Fixture;
 
-/**
- * @see https://github.com/laminas/laminas-stdlib/pull/54
- */
 class OverrideArrayObjectGetIterator extends \ArrayObject
 {
     public function getIterator(): \Iterator
     {
-        $array = $this->getArrayCopy();
-        return new ArrayIterator(array_reverse($array));
     }
 }
 
@@ -20,9 +15,6 @@ class OverrideArrayObjectGetIterator extends \ArrayObject
 
 namespace Rector\Tests\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclarationRector\Fixture;
 
-/**
- * @see https://github.com/laminas/laminas-stdlib/pull/54
- */
 class OverrideArrayObjectGetIterator extends \ArrayObject
 {
     /**
@@ -31,8 +23,6 @@ class OverrideArrayObjectGetIterator extends \ArrayObject
     #[\ReturnTypeWillChange]
     public function getIterator()
     {
-        $array = $this->getArrayCopy();
-        return new ArrayIterator(array_reverse($array));
     }
 }
 
