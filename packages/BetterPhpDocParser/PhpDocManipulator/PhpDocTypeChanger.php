@@ -17,6 +17,7 @@ use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -31,7 +32,8 @@ final class PhpDocTypeChanger
         private readonly TypeComparator $typeComparator,
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly CommentsMerger $commentsMerger
+        private readonly CommentsMerger $commentsMerger,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -138,7 +140,7 @@ final class PhpDocTypeChanger
 
     public function copyPropertyDocToParam(Property $property, Param $param): void
     {
-        $phpDocInfo = $property->getAttribute(AttributeKey::PHP_DOC_INFO);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return;
         }
@@ -146,6 +148,15 @@ final class PhpDocTypeChanger
         $varTag = $phpDocInfo->getVarTagValueNode();
         if (! $varTag instanceof VarTagValueNode) {
             $this->commentsMerger->keepComments($param, [$property]);
+
+            $paramPhpDocInfo = $this->phpDocInfoFactory->createFromNode($param);
+            if ($paramPhpDocInfo instanceof PhpDocInfo) {
+                $paramVarTag = $paramPhpDocInfo->getVarTagValueNode();
+                if ($paramVarTag instanceof VarTagValueNode && $paramVarTag->description === '') {
+                    $paramPhpDocInfo->removeByType(VarTagValueNode::class);
+                }
+            }
+
             return;
         }
 
