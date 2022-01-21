@@ -30,7 +30,11 @@ final class UseOnReturnAfterTernary
 {
     public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
     {
-        return \method_exists($data, 'toRawArray') ? $data->toRawArray() : (array) $data;
+        if (method_exists($data, 'toRawArray')) {
+            return $data->toRawArray();
+        }
+
+        return (array) $data;
     }
 }
 
