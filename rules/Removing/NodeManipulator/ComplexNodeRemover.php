@@ -72,6 +72,7 @@ final class ComplexNodeRemover
     /**
      * @param Param[] $params
      * @param int[] $paramKeysToBeRemoved
+     * @return mixed[]
      */
     public function processRemoveParamWithKeys(array $params, array $paramKeysToBeRemoved): array
     {
