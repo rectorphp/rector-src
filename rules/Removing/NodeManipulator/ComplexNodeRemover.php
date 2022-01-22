@@ -220,9 +220,11 @@ final class ComplexNodeRemover
      * @param Param[] $params
      * @param int[] $paramKeysToBeRemoved
      */
-    private function processRemoveParamWithKeys(array $params, array $paramKeysToBeRemoved): void
+    public function processRemoveParamWithKeys(array $params, array $paramKeysToBeRemoved): array
     {
         $totalKeys = count($params) - 1;
+        $removedParamKeys = [];
+
         foreach ($paramKeysToBeRemoved as $paramKeyToBeRemoved) {
             $startNextKey = $paramKeyToBeRemoved + 1;
             for ($nextKey = $startNextKey; $nextKey <= $totalKeys; ++$nextKey) {
@@ -236,11 +238,14 @@ final class ComplexNodeRemover
                     continue;
                 }
 
-                return;
+                return [];
             }
 
             $this->nodeRemover->removeNode($params[$paramKeyToBeRemoved]);
+            $removedParamKeys[] = $paramKeyToBeRemoved;
         }
+
+        return $removedParamKeys;
     }
 
     private function isExpressionVariableNotAssign(Node $node): bool
