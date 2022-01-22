@@ -107,7 +107,7 @@ CODE_SAMPLE
         }
 
         $removedParamKeys = $this->complexNodeRemover
-                                ->processRemoveParamWithKeys($classMethod->params, $paramKeysToBeRemoved);
+            ->processRemoveParamWithKeys($classMethod->params, $paramKeysToBeRemoved);
 
         if ($removedParamKeys === []) {
             return null;
