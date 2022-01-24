@@ -212,7 +212,7 @@ final class Option
     final public const PARALLEL_SYSTEM_ERROR_COUNT_LIMIT = 'parallel-system-error-count-limit';
 
     /**
-     * @var bool
+     * @var string
      */
     final public const FOLLOW_SYMLINKS = 'follow-symlinks';
 }
