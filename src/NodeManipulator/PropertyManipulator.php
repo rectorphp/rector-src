@@ -47,6 +47,19 @@ final class PropertyManipulator
         'Doctrine\ORM\Mapping\Table',
     ];
 
+    /**
+     * @var class-string[]
+     */
+    private const ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE = [
+        'Doctrine\ORM\Mapping\Id',
+        'Doctrine\ORM\Mapping\Column',
+        'Doctrine\ORM\Mapping\OneToMany',
+        'Doctrine\ORM\Mapping\ManyToMany',
+        'Doctrine\ORM\Mapping\ManyToOne',
+        'Doctrine\ORM\Mapping\OneToOne',
+        'JMS\Serializer\Annotation\Type',
+    ];
+
     public function __construct(
         private readonly AssignManipulator $assignManipulator,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -65,16 +78,11 @@ final class PropertyManipulator
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
 
-        // @todo attributes too
-        if ($phpDocInfo->hasByAnnotationClasses([
-            'Doctrine\ORM\Mapping\Id',
-            'Doctrine\ORM\Mapping\Column',
-            'Doctrine\ORM\Mapping\OneToMany',
-            'Doctrine\ORM\Mapping\ManyToMany',
-            'Doctrine\ORM\Mapping\ManyToOne',
-            'Doctrine\ORM\Mapping\OneToOne',
-            'JMS\Serializer\Annotation\Type',
-        ])) {
+        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE)) {
+            return true;
+        }
+
+        if ($this->phpAttributeAnalyzer->hasPhpAttributes($propertyOrPromotedParam, self::ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE)) {
             return true;
         }
 
