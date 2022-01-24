@@ -6,7 +6,7 @@ namespace Rector\Core\Tests\Issues\RenameParamDefaultInit\Fixture;
 
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 
-class Fixture
+class DoNotAddDefaultValueInitRenamedVariableFromParam
 {
     public function hasTruePseudoType(BracketsAwareUnionTypeNode $type): bool
     {
@@ -26,7 +26,7 @@ namespace Rector\Core\Tests\Issues\RenameParamDefaultInit\Fixture;
 
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 
-class Fixture
+class DoNotAddDefaultValueInitRenamedVariableFromParam
 {
     public function hasTruePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
     {
