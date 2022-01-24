@@ -15,6 +15,7 @@ use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 
 final class DeadReturnTagValueNodeAnalyzer
 {
@@ -56,8 +57,26 @@ final class DeadReturnTagValueNodeAnalyzer
             return $returnTagValueNode->description === '';
         }
 
-        if (! $this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type)) {
+        if (! $this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type) && ! $this->hasTruePseudoType($returnTagValueNode->type)) {
             return $returnTagValueNode->description === '';
+        }
+
+        return false;
+    }
+
+    private function hasTruePseudoType(BracketsAwareUnionTypeNode $type): bool
+    {
+        $unionTypes = $type->types;
+
+        foreach ($unionTypes as $type) {
+            if (! $type instanceof IdentifierTypeNode) {
+                continue;
+            }
+
+            $name = strtolower((string) $type);
+            if ($name === 'true') {
+                return true;
+            }
         }
 
         return false;
