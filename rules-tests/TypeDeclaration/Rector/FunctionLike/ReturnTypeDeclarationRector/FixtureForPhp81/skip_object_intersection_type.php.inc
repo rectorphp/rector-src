@@ -1,6 +1,8 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\FixtureForPhp81;
+
+use Exception;
 
 final class SkipObjectIntersectionType
 {
