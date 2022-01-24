@@ -28,9 +28,9 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 
 class Fixture
 {
-    public function hasTruePseudoType(BracketsAwareUnionTypeNode $type): bool
+    public function hasTruePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
     {
-        $unionTypes = $type->types;
+        $unionTypes = $bracketsAwareUnionTypeNode->types;
 
         foreach ($unionTypes as $unionType) {}
     }
