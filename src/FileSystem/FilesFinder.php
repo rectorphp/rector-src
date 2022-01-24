@@ -168,6 +168,7 @@ final class FilesFinder
         if (! $this->parameterProvider->hasParameter(Option::FOLLOW_SYMLINKS)) {
             return true;
         }
+
         return $this->parameterProvider->provideBoolParameter(Option::FOLLOW_SYMLINKS);
     }
 }
