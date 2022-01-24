@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
 
-final class DemoFile
+final class PreventObjectIntersectionType
 {
     /**
      * @template T
