@@ -9,13 +9,13 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 
 final class DeadReturnTagValueNodeAnalyzer
 {
@@ -57,7 +57,9 @@ final class DeadReturnTagValueNodeAnalyzer
             return $returnTagValueNode->description === '';
         }
 
-        if (! $this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type) && ! $this->hasTruePseudoType($returnTagValueNode->type)) {
+        if (! $this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type) && ! $this->hasTruePseudoType(
+            $returnTagValueNode->type
+        )) {
             return $returnTagValueNode->description === '';
         }
 
