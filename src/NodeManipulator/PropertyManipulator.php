@@ -50,7 +50,7 @@ final class PropertyManipulator
     /**
      * @var string[]
      */
-    private const ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE = [
+    private const ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES = [
         'Doctrine\ORM\Mapping\Id',
         'Doctrine\ORM\Mapping\Column',
         'Doctrine\ORM\Mapping\OneToMany',
@@ -78,13 +78,13 @@ final class PropertyManipulator
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
 
-        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE)) {
+        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
             return true;
         }
 
         if ($this->phpAttributeAnalyzer->hasPhpAttributes(
             $propertyOrPromotedParam,
-            self::ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE
+            self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
         )) {
             return true;
         }
