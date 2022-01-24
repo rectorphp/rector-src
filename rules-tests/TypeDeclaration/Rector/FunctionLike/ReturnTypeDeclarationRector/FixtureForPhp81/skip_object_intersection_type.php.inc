@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
 
-final class PreventObjectIntersectionType
+final class SkipObjectIntersectionType
 {
     /**
      * @template T
@@ -10,7 +10,7 @@ final class PreventObjectIntersectionType
      */
     protected function getObject(string $className): object {
     	$object = new $className();
-        
+
         if (!$object instanceof $className) {
             throw new Exception();
         }
