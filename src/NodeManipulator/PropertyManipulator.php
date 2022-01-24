@@ -82,7 +82,10 @@ final class PropertyManipulator
             return true;
         }
 
-        if ($this->phpAttributeAnalyzer->hasPhpAttributes($propertyOrPromotedParam, self::ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE)) {
+        if ($this->phpAttributeAnalyzer->hasPhpAttributes(
+            $propertyOrPromotedParam,
+            self::ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE
+        )) {
             return true;
         }
 
