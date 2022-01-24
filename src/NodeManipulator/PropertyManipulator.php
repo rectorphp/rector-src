@@ -48,7 +48,7 @@ final class PropertyManipulator
     ];
 
     /**
-     * @var class-string[]
+     * @var string[]
      */
     private const ALLOWED_READONLY_DOCTRINE_OR_JMS_SERIALIZABLE = [
         'Doctrine\ORM\Mapping\Id',
