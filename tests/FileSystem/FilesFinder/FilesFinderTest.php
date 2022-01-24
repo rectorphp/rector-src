@@ -35,7 +35,6 @@ final class FilesFinderTest extends AbstractTestCase
         $this->assertCount(2, $foundFiles);
     }
 
-
     /**
      * @dataProvider provideData()
      */
