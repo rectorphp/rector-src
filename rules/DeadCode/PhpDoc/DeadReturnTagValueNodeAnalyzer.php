@@ -56,18 +56,20 @@ final class DeadReturnTagValueNodeAnalyzer
         if (! $returnTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
             return $returnTagValueNode->description === '';
         }
+
         if ($this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type)) {
             return false;
         }
+
         if ($this->hasTruePseudoType($returnTagValueNode->type)) {
             return false;
         }
+
         return $returnTagValueNode->description === '';
     }
 
     private function hasTruePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
     {
-        $bracketsAwareUnionTypeNode = null;
         $unionTypes = $bracketsAwareUnionTypeNode->types;
 
         foreach ($unionTypes as $unionType) {
