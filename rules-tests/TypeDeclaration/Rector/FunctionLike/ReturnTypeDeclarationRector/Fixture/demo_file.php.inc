@@ -1,0 +1,21 @@
+<?php
+
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
+
+final class DemoFile
+{
+    /**
+     * @template T
+     * @psalm-param class-string<T> $className
+     */
+    protected function getObject(string $className): object {
+    	$object = new $className();
+        
+        if (!$object instanceof $className) {
+            throw new Exception();
+        }
+
+        return $object;
+    }
+}
+?>
