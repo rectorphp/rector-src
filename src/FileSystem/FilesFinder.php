@@ -165,8 +165,9 @@ final class FilesFinder
 
     private function hasFollowLinks(): bool
     {
-        return ! $this->parameterProvider->hasParameter(
-            Option::FOLLOW_SYMLINKS
-        ) || $this->parameterProvider->provideBoolParameter(Option::FOLLOW_SYMLINKS);
+        if (! $this->parameterProvider->hasParameter(Option::FOLLOW_SYMLINKS)) {
+            return true;
+        }
+        return $this->parameterProvider->provideBoolParameter(Option::FOLLOW_SYMLINKS);
     }
 }
