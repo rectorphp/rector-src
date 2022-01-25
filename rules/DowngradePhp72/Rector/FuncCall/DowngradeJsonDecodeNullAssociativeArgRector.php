@@ -49,7 +49,7 @@ declare(strict_types=1);
 
 function exactlyNull(string $json)
 {
-    $value = json_decode($json, false);
+    $value = json_decode($json, true);
 }
 
 function possiblyNull(string $json, ?bool $associative)
@@ -105,7 +105,7 @@ CODE_SAMPLE
         }
 
         if ($associativeValue instanceof ConstFetch && $this->valueResolver->isNull($associativeValue)) {
-            $node->args[1]->value = $this->nodeFactory->createFalse();
+            $node->args[1]->value = $this->nodeFactory->createTrue();
             return $node;
         }
 
