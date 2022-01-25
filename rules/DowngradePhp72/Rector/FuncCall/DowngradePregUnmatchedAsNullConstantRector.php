@@ -23,6 +23,7 @@ use PhpParser\Node\Stmt\If_;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DowngradePhp72\NodeAnalyzer\RegexFuncAnalyzer;
 use Rector\DowngradePhp72\NodeManipulator\BitwiseFlagCleaner;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -42,7 +43,7 @@ final class DowngradePregUnmatchedAsNullConstantRector extends AbstractRector
     public function __construct(
         private readonly IfManipulator $ifManipulator,
         private readonly BitwiseFlagCleaner $bitwiseFlagCleaner,
-        private \Rector\DowngradePhp72\NodeAnalyzer\RegexFuncAnalyzer $regexFuncAnalyzer,
+        private readonly RegexFuncAnalyzer $regexFuncAnalyzer,
     ) {
     }
 
