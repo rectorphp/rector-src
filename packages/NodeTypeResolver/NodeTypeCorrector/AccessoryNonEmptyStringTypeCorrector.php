@@ -34,11 +34,11 @@ final class AccessoryNonEmptyStringTypeCorrector
             $clearIntersectionedTypes[] = $intersectionedType;
         }
 
-        $countIntersectionTypes = count($mainType->getTypes());
         if (count($clearIntersectionedTypes) === 1) {
             return $clearIntersectionedTypes[0];
         }
 
+        $countIntersectionTypes = count($mainType->getTypes());
         $countClearIntersectionedTypes = count($clearIntersectionedTypes);
         if ($countIntersectionTypes === $countClearIntersectionedTypes) {
             return $mainType;
