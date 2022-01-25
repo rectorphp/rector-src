@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration;
 
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType;
@@ -19,8 +20,8 @@ final class PhpParserTypeAnalyzer
     }
 
     public function isCovariantSubtypeOf(
-        Name | NullableType | UnionType | Identifier $possibleSubtype,
-        Name | NullableType | UnionType | Identifier | ComplexType $possibleParentType
+        Name | NullableType | UnionType | Identifier | IntersectionType $possibleSubtype,
+        Name | NullableType | UnionType | Identifier | ComplexType | IntersectionType $possibleParentType
     ): bool {
         // skip until PHP 8 is out
         if ($this->isUnionType($possibleSubtype, $possibleParentType)) {
@@ -45,8 +46,8 @@ final class PhpParserTypeAnalyzer
     }
 
     private function isUnionType(
-        Identifier|Name|NullableType|UnionType $possibleSubtype,
-        ComplexType|Identifier|Name $possibleParentType
+        Identifier|Name|NullableType|UnionType|IntersectionType $possibleSubtype,
+        ComplexType|Identifier|Name|IntersectionType $possibleParentType
     ): bool {
         if ($possibleSubtype instanceof UnionType) {
             return true;
