@@ -24,7 +24,7 @@ class Fixture
 {
     public function run()
     {
-        $value = json_decode('{}', null);
+        $value = json_decode('{}', false);
     }
 }
 
