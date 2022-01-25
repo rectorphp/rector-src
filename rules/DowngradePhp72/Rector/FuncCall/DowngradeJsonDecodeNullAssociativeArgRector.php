@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Type\BooleanType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -101,6 +102,11 @@ CODE_SAMPLE
         if ($associativeValue instanceof ConstFetch && $this->valueResolver->isNull($associativeValue)) {
             $node->args[1]->value = $this->nodeFactory->createFalse();
             return $node;
+        }
+
+        $originalNode = $associativeValue->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if ($originalNode !== $associativeValue) {
+            return null;
         }
 
         $node->args[1]->value = new Bool_($associativeValue);
