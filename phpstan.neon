@@ -417,7 +417,6 @@ parameters:
             message: '#Offset (.*?) on array(.*?) on left side of \?\? always exists and is not nullable#'
             paths:
                 - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
-                - src/Bootstrap/ExtensionConfigResolver.php
 
         -
             message: '#Method Rector\\VersionBonding\\PhpVersionedFilter\:\:filter\(\) should return array<T of Rector\\Core\\Contract\\Rector\\RectorInterface\> but returns array<int, \(Rector\\VersionBonding\\Contract\\MinPhpVersionInterface&T of Rector\\Core\\Contract\\Rector\\RectorInterface\)\|T of Rector\\Core\\Contract\\Rector\\RectorInterface\>#'
@@ -608,3 +607,5 @@ parameters:
         -
             message: '#Only booleans are allowed in an if condition, array\|null given#'
             path: rules/Naming/Naming/PropertyNaming.php
+
+        - '#Parameter \#1 \$objectOrClass of class ReflectionClass constructor expects class\-string<Rector\\RectorInstaller\\GeneratedConfig\>\|Rector\\RectorInstaller\\GeneratedConfig, string given#'
