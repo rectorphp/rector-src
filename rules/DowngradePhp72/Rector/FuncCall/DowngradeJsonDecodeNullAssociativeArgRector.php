@@ -20,24 +20,16 @@ final class DowngradeJsonDecodeNullAssociativeArgRector extends AbstractRector
         return new RuleDefinition('Downgrade json_decode() with null associative argument function', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        $value = json_decode($json, null);
-    }
-}
+declare(strict_types=1);
+
+$value = json_decode($json, null);
 CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        $value = json_decode($json, false);
-    }
-}
+declare(strict_types=1);
+
+$value = json_decode($json, false);
 CODE_SAMPLE
             ),
         ]);
