@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp72\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Type\BooleanType;
@@ -18,8 +19,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeJsonDecodeNullAssociativeArgRector extends AbstractRector
 {
-    public function __construct(private readonly ArgsAnalyzer $argsAnalyzer)
-    {
+    public function __construct(
+        private readonly ArgsAnalyzer $argsAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -86,7 +88,7 @@ CODE_SAMPLE
 
         $associativeValue = $args[1]->value;
 
-        if ($associativeValue instanceof Node\Expr\Cast\Bool_) {
+        if ($associativeValue instanceof Bool_) {
             return null;
         }
 
@@ -101,7 +103,7 @@ CODE_SAMPLE
             return $node;
         }
 
-        $node->args[1]->value = new Node\Expr\Cast\Bool_($associativeValue);
+        $node->args[1]->value = new Bool_($associativeValue);
         return $node;
     }
 }
