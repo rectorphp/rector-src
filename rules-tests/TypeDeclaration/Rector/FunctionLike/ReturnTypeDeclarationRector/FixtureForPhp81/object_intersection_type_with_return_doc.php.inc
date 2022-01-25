@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclaration
 
 use Exception;
 
-final class SkipObjectIntersectionType2
+final class ObjectIntersectionTypeWithReturnDoc
 {
     /**
      * @template T
@@ -30,7 +30,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclaration
 
 use Exception;
 
-final class SkipObjectIntersectionType2
+final class ObjectIntersectionTypeWithReturnDoc
 {
     /**
      * @template T
