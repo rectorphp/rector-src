@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
@@ -35,11 +34,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradePregUnmatchedAsNullConstantRector extends AbstractRector
 {
     /**
-     * @var string[]
-     */
-    private const REGEX_FUNCTION_NAMES = ['preg_match', 'preg_match_all'];
-
-    /**
      * @see https://www.php.net/manual/en/function.preg-match.php
      * @var string
      */
@@ -48,6 +42,7 @@ final class DowngradePregUnmatchedAsNullConstantRector extends AbstractRector
     public function __construct(
         private readonly IfManipulator $ifManipulator,
         private readonly BitwiseFlagCleaner $bitwiseFlagCleaner,
+        private \Rector\DowngradePhp72\NodeAnalyzer\RegexFuncAnalyzer $regexFuncAnalyzer,
     ) {
     }
 
@@ -68,7 +63,7 @@ final class DowngradePregUnmatchedAsNullConstantRector extends AbstractRector
             return $this->refactorClassConst($node);
         }
 
-        if (! $this->isRegexFunctionNames($node)) {
+        if (! $this->regexFuncAnalyzer->isRegexFunctionNames($node)) {
             return null;
         }
 
@@ -156,52 +151,6 @@ CODE_SAMPLE
         }
 
         return $classConst;
-    }
-
-    private function isRegexFunctionNames(FuncCall $funcCall): bool
-    {
-        if ($this->isNames($funcCall, self::REGEX_FUNCTION_NAMES)) {
-            return true;
-        }
-
-        $variable = $funcCall->name;
-        if (! $variable instanceof Variable) {
-            return false;
-        }
-
-        /** @var Assign|null $assignExprVariable */
-        $assignExprVariable = $this->betterNodeFinder->findFirstPreviousOfNode($funcCall, function (Node $node) use (
-            $variable
-        ): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->var, $variable);
-        });
-
-        if (! $assignExprVariable instanceof Assign) {
-            return false;
-        }
-
-        $expr = $assignExprVariable->expr;
-        if (! $expr instanceof Ternary) {
-            return false;
-        }
-
-        if (! $expr->if instanceof String_) {
-            return false;
-        }
-
-        if (! $expr->else instanceof String_) {
-            return false;
-        }
-
-        return in_array($expr->if->value, self::REGEX_FUNCTION_NAMES, true) && in_array(
-            $expr->else->value,
-            self::REGEX_FUNCTION_NAMES,
-            true
-        );
     }
 
     private function handleEmptyStringToNullMatch(FuncCall $funcCall, Variable $variable): FuncCall

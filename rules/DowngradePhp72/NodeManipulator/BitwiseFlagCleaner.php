@@ -14,7 +14,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 final class BitwiseFlagCleaner
 {
     public function __construct(
-        private NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
