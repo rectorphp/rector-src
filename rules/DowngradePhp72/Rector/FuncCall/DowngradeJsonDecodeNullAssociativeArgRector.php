@@ -78,6 +78,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+        if (in_array(self::class, $createdByRule, true)) {
+            return null;
+        }
+
         $args = $node->getArgs();
         if ($this->argsAnalyzer->hasNamedArg($args)) {
             return null;
@@ -102,11 +107,6 @@ CODE_SAMPLE
         if ($associativeValue instanceof ConstFetch && $this->valueResolver->isNull($associativeValue)) {
             $node->args[1]->value = $this->nodeFactory->createFalse();
             return $node;
-        }
-
-        $originalNode = $associativeValue->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if ($originalNode !== $associativeValue) {
-            return null;
         }
 
         $node->args[1]->value = new Bool_($associativeValue);
