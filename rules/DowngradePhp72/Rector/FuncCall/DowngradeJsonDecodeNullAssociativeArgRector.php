@@ -7,6 +7,7 @@ namespace Rector\DowngradePhp72\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PHPStan\Type\BooleanType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -28,14 +29,30 @@ final class DowngradeJsonDecodeNullAssociativeArgRector extends AbstractRector
                 <<<'CODE_SAMPLE'
 declare(strict_types=1);
 
-$value = json_decode($json, null);
+function exactlyNull(string $json)
+{
+    $value = json_decode($json, null);
+}
+
+function possiblyNull(string $json, ?bool $associative)
+{
+    $value = json_decode($json, $associative);
+}
 CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
 declare(strict_types=1);
 
-$value = json_decode($json, false);
+function exactlyNull(string $json)
+{
+    $value = json_decode($json, false);
+}
+
+function possiblyNull(string $json, ?bool $associative)
+{
+    $value = json_decode($json, (bool) $associative);
+}
 CODE_SAMPLE
             ),
         ]);
@@ -69,11 +86,22 @@ CODE_SAMPLE
 
         $associativeValue = $args[1]->value;
 
+        if ($associativeValue instanceof Node\Expr\Cast\Bool_) {
+            return null;
+        }
+
+        $type = $this->nodeTypeResolver->getType($associativeValue);
+
+        if ($type instanceof BooleanType) {
+            return null;
+        }
+
         if ($associativeValue instanceof ConstFetch && $this->valueResolver->isNull($associativeValue)) {
             $node->args[1]->value = $this->nodeFactory->createFalse();
             return $node;
         }
 
+        $node->args[1]->value = new Node\Expr\Cast\Bool_($associativeValue);
         return $node;
     }
 }
