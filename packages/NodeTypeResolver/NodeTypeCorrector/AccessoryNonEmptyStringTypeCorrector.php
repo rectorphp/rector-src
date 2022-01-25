@@ -35,7 +35,6 @@ final class AccessoryNonEmptyStringTypeCorrector
         }
 
         $countIntersectionTypes = count($mainType->getTypes());
-
         if (count($clearIntersectionedTypes) === 1) {
             return $clearIntersectionedTypes[0];
         }
