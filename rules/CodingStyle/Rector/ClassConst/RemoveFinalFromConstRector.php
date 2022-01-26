@@ -68,9 +68,10 @@ CODE_SAMPLE
 
         if ($parentClass->isFinal() && $node->isFinal()) {
             $this->visibilityManipulator->removeFinal($node);
+            return $node;
         }
 
-        return $node;
+        return null;
     }
 
     public function provideMinPhpVersion(): int
