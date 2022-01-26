@@ -6,7 +6,6 @@ namespace Rector\NodeTypeResolver\NodeTypeCorrector;
 
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
 use PHPStan\Type\IntersectionType;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 
 final class AccessoryNonEmptyStringTypeCorrector
@@ -28,10 +27,6 @@ final class AccessoryNonEmptyStringTypeCorrector
             }
 
             $clearIntersectionedTypes[] = $intersectionedType;
-        }
-
-        if ($clearIntersectionedTypes === []) {
-            return new MixedType();
         }
 
         if (count($clearIntersectionedTypes) === 1) {
