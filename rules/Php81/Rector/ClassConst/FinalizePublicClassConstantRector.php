@@ -60,7 +60,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $parentClass = $this->betterNodeFinder->findParentByTypes($node, Node\Stmt\Class_::class);
+        /** @var Node\Stmt\Class_ $parentClass */
+        $parentClass = $this->betterNodeFinder->findParentByTypes($node, [Node\Stmt\Class_::class]);
 
         if ($parentClass->isFinal()) {
             return null;
