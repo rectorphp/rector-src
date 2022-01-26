@@ -60,6 +60,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $parentClass = $this->betterNodeFinder->findParentByTypes($node, Node\Stmt\Class_::class);
+
+        if ($parentClass->isFinal()) {
+            return null;
+        }
+
         if ($node->isPrivate()) {
             return null;
         }
