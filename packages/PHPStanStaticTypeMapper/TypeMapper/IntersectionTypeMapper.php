@@ -17,6 +17,7 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
+use PHPStan\Type\TypeWithClassName;
 
 /**
  * @implements TypeMapperInterface<IntersectionType>
@@ -87,6 +88,10 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             $resolvedTypeName = (string) $resolvedType;
             if ($resolvedTypeName === 'string') {
                 return $resolvedType;
+            }
+
+            if (! $resolvedType instanceof TypeWithClassName) {
+                return null;
             }
 
             $intersectionedTypeNodes[] = $resolvedType;
