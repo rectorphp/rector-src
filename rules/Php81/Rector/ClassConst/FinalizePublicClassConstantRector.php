@@ -63,7 +63,7 @@ CODE_SAMPLE
         /** @var Node\Stmt\Class_ $parentClass */
         $parentClass = $this->betterNodeFinder->findParentByTypes($node, [Node\Stmt\Class_::class]);
 
-        if ($parentClass->isFinal()) {
+        if (!$parentClass instanceof Node\Stmt\Class_ || $parentClass->isFinal()) {
             return null;
         }
 
