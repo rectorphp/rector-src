@@ -15,7 +15,7 @@ namespace Rector\Tests\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector\
 
 final class SomeClass
 {
-    public final const NAME = 'value';
+    public const NAME = 'value';
 }
 
 ?>
