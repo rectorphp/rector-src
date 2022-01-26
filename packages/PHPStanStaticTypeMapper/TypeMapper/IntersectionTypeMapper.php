@@ -17,7 +17,6 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
-use PHPStan\Type\TypeWithClassName;
 
 /**
  * @implements TypeMapperInterface<IntersectionType>

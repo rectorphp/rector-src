@@ -6,8 +6,8 @@ namespace Rector\NodeTypeResolver\NodeTypeCorrector;
 
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
 use PHPStan\Type\IntersectionType;
-use PHPStan\Type\Type;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 
 final class AccessoryNonEmptyStringTypeCorrector
 {
