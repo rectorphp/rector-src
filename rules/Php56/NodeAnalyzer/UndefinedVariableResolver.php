@@ -158,6 +158,11 @@ final class UndefinedVariableResolver
             return true;
         }
 
+        $originalNode = $variable->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $this->nodeComparator->areNodesEqual($variable, $originalNode)) {
+            return true;
+        }
+
         $nodeScope = $variable->getAttribute(AttributeKey::SCOPE);
         if (! $nodeScope instanceof Scope) {
             return true;
