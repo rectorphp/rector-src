@@ -96,9 +96,11 @@ CODE_SAMPLE
                 if (! $toPropertyAssign->expr instanceof Coalesce) {
                     continue;
                 }
+
                 if (! $toPropertyAssign->expr->right instanceof New_) {
                     continue;
                 }
+
                 if (! $toPropertyAssign->expr->right->class instanceof FullyQualified) {
                     continue;
                 }
