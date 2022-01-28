@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -32,6 +33,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NewInInitializerRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly ExprAnalyzer $exprAnalyzer
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Replace property declaration of new state with direct new', [
@@ -124,7 +130,7 @@ CODE_SAMPLE
         return PhpVersionFeature::NEW_INITIALIZERS;
     }
 
-    private function isNewWithFullyQualifiedClass(Expr $expr): bool
+    private function shouldSkipNew(Expr $expr): bool
     {
         if (! $expr instanceof New_) {
             return false;
@@ -135,29 +141,21 @@ CODE_SAMPLE
 
     private function shouldSkip(Expr $expr): bool
     {
-        if (! $this->isNewWithFullyQualifiedClass($expr)) {
+        if (! $this->shouldSkipNew($expr)) {
             return true;
         }
 
         /** @var New_ $expr */
         $args = $expr->getArgs();
 
-        if ($args === []) {
-            return false;
-        }
-
         foreach ($args as $arg) {
             $value = $arg->value;
 
-            if ($value instanceof New_) {
-                if (! $this->shouldSkip($value)) {
-                    continue;
-                }
-
-                return true;
+            if ($this->isAllowedNew($value)) {
+                continue;
             }
 
-            if ($value instanceof Array_) {
+            if ($value instanceof Array_ && ! $this->exprAnalyzer->isDynamicArray($value)) {
                 continue;
             }
 
@@ -166,6 +164,15 @@ CODE_SAMPLE
             }
 
             return true;
+        }
+
+        return false;
+    }
+
+    private function isAllowedNew(Expr $expr): bool
+    {
+        if ($expr instanceof New_) {
+            return ! $this->shouldSkip($expr);
         }
 
         return false;
