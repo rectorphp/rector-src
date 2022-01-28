@@ -124,12 +124,22 @@ CODE_SAMPLE
         return PhpVersionFeature::NEW_INITIALIZERS;
     }
 
+    private function isNewWithFullyQualifiedClass(Expr $expr): bool
+    {
+        if (! $expr instanceof New_) {
+            return false;
+        }
+
+        return $expr->class instanceof FullyQualified;
+    }
+
     private function shouldSkip(Expr $expr): bool
     {
-        if (! $expr instanceof New_ || ! $expr->class instanceof FullyQualified) {
+        if (! $this->isNewWithFullyQualifiedClass($expr)) {
             return true;
         }
 
+        /** @var New_ $expr */
         $args = $expr->getArgs();
 
         if ($args === []) {
@@ -147,9 +157,15 @@ CODE_SAMPLE
                 return true;
             }
 
-            if (! $value instanceof Array_ && ! $value instanceof Scalar) {
-                return true;
+            if ($value instanceof Array_) {
+                continue;
             }
+
+            if ($value instanceof Scalar) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
