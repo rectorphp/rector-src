@@ -5,24 +5,19 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
-use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php81\NodeAnalyzer\ComplexNewAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -35,7 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NewInInitializerRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ComplexNewAnalyzer $complexNewAnalyzer
     ) {
     }
 
@@ -97,16 +92,17 @@ CODE_SAMPLE
             $paramName = $this->getName($param->var);
 
             $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty($node, $paramName);
-            $toPropertyAssigns = array_filter(
-                $toPropertyAssigns,
-                fn ($v, $k): bool => $v->expr instanceof Coalesce,
-                ARRAY_FILTER_USE_BOTH
-            );
+            $toPropertyAssigns = array_filter($toPropertyAssigns, fn ($v): bool => $v->expr instanceof Coalesce);
 
             foreach ($toPropertyAssigns as $toPropertyAssign) {
                 /** @var Coalesce $coalesce */
                 $coalesce = $toPropertyAssign->expr;
-                if ($this->shouldSkip($coalesce->right)) {
+
+                if (! $coalesce->right instanceof New_) {
+                    continue;
+                }
+
+                if ($this->complexNewAnalyzer->isDynamic($coalesce->right)) {
                     continue;
                 }
 
@@ -126,78 +122,6 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NEW_INITIALIZERS;
-    }
-
-    private function isFullyQualifiedClassOfNew(Expr $expr): bool
-    {
-        if (! $expr instanceof New_) {
-            return false;
-        }
-
-        return $expr->class instanceof FullyQualified;
-    }
-
-    private function shouldSkip(Expr $expr): bool
-    {
-        if (! $this->isFullyQualifiedClassOfNew($expr)) {
-            return true;
-        }
-
-        /** @var New_ $expr */
-        $args = $expr->getArgs();
-
-        foreach ($args as $arg) {
-            $value = $arg->value;
-
-            if ($this->isAllowedNew($value)) {
-                continue;
-            }
-
-            if ($value instanceof Array_ && $this->isAllowedArray($value)) {
-                continue;
-            }
-
-            if ($value instanceof Scalar) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private function isAllowedArray(Array_ $array): bool
-    {
-        if (! $this->exprAnalyzer->isDynamicArray($array)) {
-            return true;
-        }
-
-        $arrayItems = $array->items;
-        foreach ($arrayItems as $arrayItem) {
-            if (! $arrayItem instanceof ArrayItem) {
-                continue;
-            }
-
-            if (! $arrayItem->value instanceof New_) {
-                return false;
-            }
-
-            if ($this->shouldSkip($arrayItem->value)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private function isAllowedNew(Expr $expr): bool
-    {
-        if ($expr instanceof New_) {
-            return ! $this->shouldSkip($expr);
-        }
-
-        return false;
     }
 
     private function processPropertyPromotion(ClassMethod $classMethod, Param $param, string $paramName): void
@@ -247,10 +171,6 @@ CODE_SAMPLE
             return [];
         }
 
-        return array_filter(
-            $classMethod->params,
-            fn ($v, $k): bool => $v->type instanceof NullableType,
-            ARRAY_FILTER_USE_BOTH
-        );
+        return array_filter($classMethod->params, fn ($v): bool => $v->type instanceof NullableType);
     }
 }
