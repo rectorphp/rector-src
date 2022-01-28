@@ -97,21 +97,22 @@ CODE_SAMPLE
             $paramName = $this->getName($param->var);
 
             $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty($node, $paramName);
+            $toPropertyAssigns = array_filter(
+                $toPropertyAssigns,
+                fn ($v, $k): bool => $v->expr instanceof Coalesce,
+                ARRAY_FILTER_USE_BOTH
+            );
 
             foreach ($toPropertyAssigns as $toPropertyAssign) {
-                if (! $toPropertyAssign->expr instanceof Coalesce) {
-                    continue;
-                }
-
-                if ($this->shouldSkip($toPropertyAssign->expr->right)) {
+                /** @var Coalesce $coalesce */
+                $coalesce = $toPropertyAssign->expr;
+                if ($this->shouldSkip($coalesce->right)) {
                     continue;
                 }
 
                 /** @var NullableType $currentParamType */
                 $currentParamType = $param->type;
                 $param->type = $currentParamType->type;
-
-                $coalesce = $toPropertyAssign->expr;
                 $param->default = $coalesce->right;
 
                 $this->removeNode($toPropertyAssign);
@@ -172,10 +173,13 @@ CODE_SAMPLE
             return true;
         }
 
-        /** @var ArrayItem[] $arrayItems */
         $arrayItems = $array->items;
         foreach ($arrayItems as $arrayItem) {
-            if (!$arrayItem->value instanceof New_) {
+            if (! $arrayItem instanceof ArrayItem) {
+                continue;
+            }
+
+            if (! $arrayItem->value instanceof New_) {
                 return false;
             }
 
@@ -243,6 +247,10 @@ CODE_SAMPLE
             return [];
         }
 
-        return array_filter($classMethod->params, fn ($v, $k): bool => $v->type instanceof NullableType, ARRAY_FILTER_USE_BOTH);
+        return array_filter(
+            $classMethod->params,
+            fn ($v, $k): bool => $v->type instanceof NullableType,
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 }
