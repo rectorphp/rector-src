@@ -2,8 +2,6 @@
 
 namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
 
-use stdClass;
-
 class SomeClass
 {
     private Logger $logger;
@@ -20,8 +18,6 @@ class SomeClass
 <?php
 
 namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
-
-use stdClass;
 
 class SomeClass
 {
