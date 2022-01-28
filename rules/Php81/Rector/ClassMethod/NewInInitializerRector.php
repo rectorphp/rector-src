@@ -7,6 +7,7 @@ namespace Rector\Php81\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
@@ -87,15 +88,11 @@ CODE_SAMPLE
         }
 
         $params = $this->matchConstructorParams($node);
-        if ($params === null) {
+        if ($params === []) {
             return null;
         }
 
         foreach ($params as $param) {
-            if (! $param->type instanceof NullableType) {
-                continue;
-            }
-
             /** @var string $paramName */
             $paramName = $this->getName($param->var);
 
@@ -155,7 +152,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($value instanceof Array_ && ! $this->exprAnalyzer->isDynamicArray($value)) {
+            if ($value instanceof Array_ && $this->isAllowedArray($value)) {
                 continue;
             }
 
@@ -167,6 +164,27 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function isAllowedArray(Array_ $array): bool
+    {
+        if (! $this->exprAnalyzer->isDynamicArray($array)) {
+            return true;
+        }
+
+        /** @var ArrayItem[] $arrayItems */
+        $arrayItems = $array->items;
+        foreach ($arrayItems as $arrayItem) {
+            if (!$arrayItem->value instanceof New_) {
+                return false;
+            }
+
+            if ($this->shouldSkip($arrayItem->value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function isAllowedNew(Expr $expr): bool
@@ -209,22 +227,22 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Param[]|null
+     * @return Param[]
      */
-    private function matchConstructorParams(ClassMethod $classMethod): array|null
+    private function matchConstructorParams(ClassMethod $classMethod): array
     {
         if (! $this->isName($classMethod, MethodName::CONSTRUCT)) {
-            return null;
+            return [];
         }
 
         if ($classMethod->params === []) {
-            return null;
+            return [];
         }
 
         if ($classMethod->stmts === []) {
-            return null;
+            return [];
         }
 
-        return $classMethod->params;
+        return array_filter($classMethod->params, fn ($v, $k): bool => $v->type instanceof NullableType, ARRAY_FILTER_USE_BOTH);
     }
 }
