@@ -6,11 +6,13 @@ namespace Rector\Php81\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -98,7 +100,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($this->isNotNewOrWithDynamicClass($toPropertyAssign->expr->right)) {
+                if ($this->shouldSkip($toPropertyAssign->expr->right)) {
                     continue;
                 }
 
@@ -122,9 +124,35 @@ CODE_SAMPLE
         return PhpVersionFeature::NEW_INITIALIZERS;
     }
 
-    private function isNotNewOrWithDynamicClass(Expr $expr): bool
+    private function shouldSkip(Expr $expr): bool
     {
-        return ! $expr instanceof New_ || ! $expr->class instanceof FullyQualified;
+        if (! $expr instanceof New_ || ! $expr->class instanceof FullyQualified) {
+            return true;
+        }
+
+        $args = $expr->getArgs();
+
+        if ($args === []) {
+            return false;
+        }
+
+        foreach ($args as $arg) {
+            $value = $arg->value;
+
+            if ($value instanceof New_) {
+                if (! $this->shouldSkip($value)) {
+                    continue;
+                }
+
+                return true;
+            }
+
+            if (! $value instanceof Array_ && ! $value instanceof Scalar) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function processPropertyPromotion(ClassMethod $classMethod, Param $param, string $paramName): void
