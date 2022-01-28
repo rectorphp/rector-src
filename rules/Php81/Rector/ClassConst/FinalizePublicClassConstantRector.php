@@ -34,7 +34,7 @@ final class FinalizePublicClassConstantRector extends AbstractRector implements 
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add final to constants that does not has children', [
+        return new RuleDefinition('Add final to constants that does not have children', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
