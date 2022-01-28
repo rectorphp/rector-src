@@ -7,8 +7,6 @@ abstract class ParentClass
     public const TEST_CONSTANT = 'value1';
 }
 
-namespace Rector\Tests\Php81\Rector\ClassConst\FinalizePublicClassConstantRector\Fixture;
-
 class ChildClass extends ParentClass
 {
     public const TEST_CONSTANT = 'value2';
@@ -23,8 +21,6 @@ abstract class ParentClass
 {
     public const TEST_CONSTANT = 'value1';
 }
-
-namespace Rector\Tests\Php81\Rector\ClassConst\FinalizePublicClassConstantRector\Fixture;
 
 class ChildClass extends ParentClass
 {
