@@ -128,7 +128,7 @@ CODE_SAMPLE
         return PhpVersionFeature::NEW_INITIALIZERS;
     }
 
-    private function shouldSkipNew(Expr $expr): bool
+    private function isFullyQualifiedClassOfNew(Expr $expr): bool
     {
         if (! $expr instanceof New_) {
             return false;
@@ -139,7 +139,7 @@ CODE_SAMPLE
 
     private function shouldSkip(Expr $expr): bool
     {
-        if (! $this->shouldSkipNew($expr)) {
+        if (! $this->isFullyQualifiedClassOfNew($expr)) {
             return true;
         }
 
