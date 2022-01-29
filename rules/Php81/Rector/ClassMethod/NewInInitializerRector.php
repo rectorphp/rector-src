@@ -187,7 +187,7 @@ CODE_SAMPLE
             return [];
         }
 
-        if ($classMethod->stmts === []) {
+        if ((array) $classMethod->stmts === []) {
             return [];
         }
 
