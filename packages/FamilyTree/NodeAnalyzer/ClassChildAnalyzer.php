@@ -52,7 +52,6 @@ final class ClassChildAnalyzer
             return false;
         }
 
-        /** @var PhpMethodReflection[] $e */
         foreach ($parentClassMethods as $parentClassMethod) {
             if ($parentClassMethod->isAbstract()) {
                 return true;
