@@ -6,8 +6,8 @@ namespace Rector\FamilyTree\NodeAnalyzer;
 
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 final class ClassChildAnalyzer
 {
@@ -40,6 +40,28 @@ final class ClassChildAnalyzer
         return false;
     }
 
+    public function hasParentClassMethod(ClassReflection $classReflection, string $methodName): bool
+    {
+        return $this->resolveParentClassMethods($classReflection, $methodName) !== [];
+    }
+
+    public function hasAbstractParentClassMethod(ClassReflection $classReflection, string $methodName): bool
+    {
+        $parentClassMethods = $this->resolveParentClassMethods($classReflection, $methodName);
+        if ($parentClassMethods === []) {
+            return false;
+        }
+
+        /** @var PhpMethodReflection[] $e */
+        foreach ($parentClassMethods as $parentClassMethod) {
+            if ($parentClassMethod->isAbstract()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @return PhpMethodReflection[]
      */
@@ -63,27 +85,5 @@ final class ClassChildAnalyzer
         }
 
         return $parentClassMethods;
-    }
-
-    public function hasParentClassMethod(ClassReflection $classReflection, string $methodName): bool
-    {
-        return $this->resolveParentClassMethods($classReflection, $methodName) !== [];
-    }
-
-    public function hasAbstractParentClassMethod(ClassReflection $classReflection, string $methodName): bool
-    {
-        $parentClassMethods = $this->resolveParentClassMethods($classReflection, $methodName);
-        if ($parentClassMethods === []) {
-            return false;
-        }
-
-        /** @var PhpMethodReflection[] $e */
-        foreach ($parentClassMethods as $parentClassMethod) {
-            if ($parentClassMethod->isAbstract()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
