@@ -96,14 +96,8 @@ CODE_SAMPLE
 
         foreach ($node->getParams() as $param) {
             // only private local scope; removing public property might be dangerous
-            if ($param->flags !== Class_::MODIFIER_PRIVATE) {
-                if (! $this->visibilityManipulator->isReadonly($param)) {
-                    continue;
-                }
-
-                if (! $this->visibilityManipulator->hasVisibility($param, Visibility::PRIVATE)) {
-                    continue;
-                }
+            if (! $this->visibilityManipulator->hasVisibility($param, Visibility::PRIVATE)) {
+                continue;
             }
 
             if ($this->propertyManipulator->isPropertyUsedInReadContext($param)) {
