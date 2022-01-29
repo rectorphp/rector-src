@@ -6,14 +6,12 @@ namespace Rector\FamilyTree\NodeAnalyzer;
 
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 final class ClassChildAnalyzer
 {
     public function __construct(
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
 
