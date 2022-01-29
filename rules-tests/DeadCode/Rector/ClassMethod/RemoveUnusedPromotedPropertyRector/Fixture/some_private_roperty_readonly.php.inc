@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyR
 
 use stdClass;
 
-class SomePropertyReadonly
+class SomePrivatePropertyReadonly
 {
     public function __construct(private readonly stdClass $someUnusedDependency)
     {
@@ -19,7 +19,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyR
 
 use stdClass;
 
-class SomePropertyReadonly
+class SomePrivatePropertyReadonly
 {
     public function __construct()
     {

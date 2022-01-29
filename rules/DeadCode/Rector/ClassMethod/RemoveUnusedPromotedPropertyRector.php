@@ -24,7 +24,7 @@ final class RemoveUnusedPromotedPropertyRector extends AbstractRector implements
 {
     public function __construct(
         private readonly PropertyFetchFinder $propertyFetchFinder,
-        private readonly PropertyManipulator $propertyManipulator,
+        private readonly PropertyManipulator $propertyManipulator
     ) {
     }
 
