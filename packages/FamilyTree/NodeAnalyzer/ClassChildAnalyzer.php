@@ -7,11 +7,13 @@ namespace Rector\FamilyTree\NodeAnalyzer;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use PHPStan\Reflection\ReflectionProvider;
 
 final class ClassChildAnalyzer
 {
     public function __construct(
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
+        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -38,20 +40,46 @@ final class ClassChildAnalyzer
         return false;
     }
 
-    public function hasParentClassMethod(ClassReflection $classReflection, string $methodName): bool
+    /**
+     * @return PhpMethodReflection[]
+     */
+    private function resolveParentClassMethods(ClassReflection $classReflection, string $methodName): array
     {
+        $parentClassMethods = [];
         foreach ($classReflection->getParents() as $parentClassReflections) {
             if (! $parentClassReflections->hasMethod($methodName)) {
                 continue;
             }
 
-            $constructMethodReflection = $parentClassReflections->getNativeMethod($methodName);
-            if (! $constructMethodReflection instanceof PhpMethodReflection) {
+            $methodReflection = $parentClassReflections->getNativeMethod($methodName);
+            if (! $methodReflection instanceof PhpMethodReflection) {
                 continue;
             }
 
-            $methodDeclaringMethodClass = $constructMethodReflection->getDeclaringClass();
+            $methodDeclaringMethodClass = $methodReflection->getDeclaringClass();
             if ($methodDeclaringMethodClass->getName() === $parentClassReflections->getName()) {
+                $parentClassMethods[] = $methodReflection;
+            }
+        }
+
+        return $parentClassMethods;
+    }
+
+    public function hasParentClassMethod(ClassReflection $classReflection, string $methodName): bool
+    {
+        return $this->resolveParentClassMethods($classReflection, $methodName) !== [];
+    }
+
+    public function hasAbstractParentClassMethod(ClassReflection $classReflection, string $methodName): bool
+    {
+        $parentClassMethods = $this->resolveParentClassMethods($classReflection, $methodName);
+        if ($parentClassMethods === []) {
+            return false;
+        }
+
+        /** @var PhpMethodReflection[] $e */
+        foreach ($parentClassMethods as $parentClassMethod) {
+            if ($parentClassMethod->isAbstract()) {
                 return true;
             }
         }
