@@ -44,3 +44,9 @@ class SomeClass
 -    private $c;
 +    private bool $c;
 ```
+
+### Note:
+
+This Option is currently applied in the following rules:
+
+- `TypedPropertyRector`
