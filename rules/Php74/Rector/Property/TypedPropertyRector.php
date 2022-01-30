@@ -18,6 +18,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
@@ -43,8 +44,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\DoctrineTypedPropertyRectorTest
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\ImportedTest
  */
-final class TypedPropertyRector extends AbstractRector implements MinPhpVersionInterface
+final class TypedPropertyRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
+    private bool $isSafeTyped = true;
+
     public function __construct(
         private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private readonly VendorLockResolver $vendorLockResolver,
@@ -56,6 +59,11 @@ final class TypedPropertyRector extends AbstractRector implements MinPhpVersionI
         private readonly AstResolver $astResolver,
         private readonly ObjectTypeAnalyzer $objectTypeAnalyzer
     ) {
+    }
+
+    public function configure(array $configuration): void
+    {
+        $this->isSafeTyped = current($configuration);
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -247,6 +255,10 @@ CODE_SAMPLE
 
         if ($this->isModifiedByTrait($class, $propertyName)) {
             return true;
+        }
+
+        if (! $this->isSafeTyped) {
+            return $this->propertyAnalyzer->hasForbiddenType($property);
         }
 
         if ($property->isPrivate()) {
