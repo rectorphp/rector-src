@@ -23,14 +23,9 @@ jobs:
             matrix:
                 php_version: ['8.1']
                 directory:
-                    - 'e2e/template-extends'
-                    - 'e2e/plain-views'
-                    - 'e2e/parallel-custom-config'
-                    - 'e2e/parallel-reflection-resolver'
-                    - 'e2e/no-parallel-reflection-resolver'
-                    - 'e2e/typed-property-disallow-bc-break'
+                    - 'e2e/typed-property-allow-bc-break'
 
-        name: End to end test - ${{ matrix.directory }}
+        name: End to end test Allow BC Break - ${{ matrix.directory }}
 
         steps:
             -   uses: actions/checkout@v2
@@ -49,14 +44,5 @@ jobs:
                 working-directory: ${{ matrix.directory }}
 
             # run e2e test
-            -   run: php ../e2eTestRunner.php -c custom/config/rector.php
+            -   run: php ../e2eTestRunner.php --allow-bc-break
                 working-directory: ${{ matrix.directory }}
-                if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
-
-            -   run: php ../e2eTestRunner.php --config custom/config/rector.php
-                working-directory: ${{ matrix.directory }}
-                if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
-
-            -   run: php ../e2eTestRunner.php
-                working-directory: ${{ matrix.directory }}
-                if: ${{ matrix.directory != 'e2e/parallel-custom-config' }}

@@ -18,6 +18,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use Rector\Core\Configuration\Option;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
@@ -247,6 +248,10 @@ CODE_SAMPLE
 
         if ($this->isModifiedByTrait($class, $propertyName)) {
             return true;
+        }
+
+        if ($this->parameterProvider->provideBoolParameter(Option::ALLOW_BC_BREAK)) {
+            return $this->propertyAnalyzer->hasForbiddenType($property);
         }
 
         if ($property->isPrivate()) {

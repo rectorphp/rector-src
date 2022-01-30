@@ -1,0 +1,25 @@
+1 file with changes
+===================
+
+1) src/SomeTypedProperty.php:3
+
+    ---------- begin diff ----------
+@@ @@
+
+ class SomeTypedProperty
+ {
+-    /**
+-     * @var string
+-     */
+-    private $foo;
++    private string $foo;
+
+     /**
+      * @var string
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyRector (https://wiki.php.net/rfc/typed_properties_v2#proposal)
+
+
+ [OK] 1 file would have changed (dry-run) by Rector

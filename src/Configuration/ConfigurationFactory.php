@@ -53,6 +53,10 @@ final class ConfigurationFactory
         $memoryLimit = $input->getOption(Option::MEMORY_LIMIT);
         $allowBcBreak = (bool) $input->getOption(Option::ALLOW_BC_BREAK);
 
+        if ($allowBcBreak) {
+            $this->parameterProvider->changeParameter(Option::ALLOW_BC_BREAK, true);
+        }
+
         return new Configuration(
             $isDryRun,
             $showProgressBar,
