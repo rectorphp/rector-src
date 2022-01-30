@@ -27,6 +27,10 @@ if (isset($argv[1]) && $argv[1] === '--config') {
     $e2eCommand .= ' --config ' . $argv[2];
 }
 
+if (isset($argv[1]) && $argv[1] === '--allow-bc-break') {
+    $e2eCommand .= ' --allow-bc-break';
+}
+
 exec($e2eCommand, $output, $exitCode);
 $output = trim(implode("\n", $output));
 

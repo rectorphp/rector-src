@@ -72,5 +72,7 @@ abstract class AbstractProcessCommand extends Command
 
         $this->addOption(Option::PARALLEL_PORT, null, InputOption::VALUE_REQUIRED);
         $this->addOption(Option::PARALLEL_IDENTIFIER, null, InputOption::VALUE_REQUIRED);
+
+        $this->addOption(Option::ALLOW_BC_BREAK, null, InputOption::VALUE_NONE, 'Verify whether rector rules should apply BC break changes',);
     }
 }
