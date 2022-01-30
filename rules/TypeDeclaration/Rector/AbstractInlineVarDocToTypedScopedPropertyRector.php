@@ -38,7 +38,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
  */
-abstract class AbstractInlineVarDocToTypedPropertyRector extends AbstractRector implements MinPhpVersionInterface
+abstract class AbstractInlineVarDocToTypedScopedPropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
@@ -160,7 +160,6 @@ CODE_SAMPLE
 
     protected function shouldSkipProperty(Property $property, Scope $scope): bool
     {
-        $class = null;
         if ($this->shouldSkip($property, $scope)) {
             return true;
         }
@@ -168,6 +167,9 @@ CODE_SAMPLE
         if ($property->isPrivate()) {
             return $this->propertyAnalyzer->hasForbiddenType($property);
         }
+
+        /** @var Class_ $class */
+        $class = $this->betterNodeFinder->findParentType($property, Class_::class);
 
         // is we're in final class, the type can be changed
         return ! ($this->isSafeProtectedProperty($property, $class));

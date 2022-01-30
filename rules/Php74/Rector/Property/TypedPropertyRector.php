@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\Property;
 
-use Rector\TypeDeclaration\Rector\AbstractInlineVarDocToTypedPropertyRector;
+use Rector\TypeDeclaration\Rector\AbstractInlineVarDocToTypedScopedPropertyRector;
 
 /**
  * @deprecated use \Rector\TypeDeclaration\Rector\Property\InlineVarDocToTypedScopedPropertyRector instead
  */
-final class TypedPropertyRector extends AbstractInlineVarDocToTypedPropertyRector
+final class TypedPropertyRector extends AbstractInlineVarDocToTypedScopedPropertyRector
 {
 }

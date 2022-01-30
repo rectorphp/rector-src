@@ -6,11 +6,11 @@ namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
-use Rector\TypeDeclaration\Rector\AbstractInlineVarDocToTypedPropertyRector;
+use Rector\TypeDeclaration\Rector\AbstractInlineVarDocToTypedScopedPropertyRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class InlineVarDocToTypedPropertyRector extends AbstractInlineVarDocToTypedPropertyRector
+final class InlineVarDocToTypedPropertyRector extends AbstractInlineVarDocToTypedScopedPropertyRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
