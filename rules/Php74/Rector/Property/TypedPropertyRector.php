@@ -89,9 +89,7 @@ final class SomeClass
 }
 CODE_SAMPLE
                 ,
-                [
-                    true
-                ]
+                    [true]
                 ),
             ]
         );
