@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node\Stmt\Property;
-use Rector\TypeDeclaration\Rector\AbstractInlineVarDocToTypedPropertyRector;
 use PHPStan\Analyser\Scope;
+use Rector\TypeDeclaration\Rector\AbstractInlineVarDocToTypedPropertyRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

@@ -158,6 +158,51 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
+    protected function shouldSkipProperty(Property $property, Scope $scope): bool
+    {
+        if ($this->shouldSkip($property, $scope)) {
+            return true;
+        }
+
+        if ($property->isPrivate()) {
+            return $this->propertyAnalyzer->hasForbiddenType($property);
+        }
+
+        // is we're in final class, the type can be changed
+        return ! ($this->isSafeProtectedProperty($property, $class));
+    }
+
+    protected function shouldSkip(Property $property, Scope $scope): bool
+    {
+        // type is already set → skip
+        if ($property->type !== null) {
+            return true;
+        }
+
+        // skip multiple properties
+        if (count($property->props) > 1) {
+            return true;
+        }
+
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return true;
+        }
+
+        /**
+         * - skip trait properties, as they are unpredictable based on class context they appear in
+         * - skip interface properties as well, as interface not allowed to have property
+         */
+        $class = $this->betterNodeFinder->findParentType($property, Class_::class);
+        if (! $class instanceof Class_) {
+            return true;
+        }
+
+        $propertyName = $this->getName($property);
+
+        return $this->isModifiedByTrait($class, $propertyName);
+    }
+
     private function isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn(
         Name | ComplexType | null $node,
         Property $property,
@@ -210,51 +255,6 @@ CODE_SAMPLE
         }
 
         $onlyProperty->default = $this->nodeFactory->createNull();
-    }
-
-    protected function shouldSkipProperty(Property $property, Scope $scope): bool
-    {
-        if ($this->shouldSkip($property, $scope)) {
-            return true;
-        }
-
-        if ($property->isPrivate()) {
-            return $this->propertyAnalyzer->hasForbiddenType($property);
-        }
-
-        // is we're in final class, the type can be changed
-        return ! ($this->isSafeProtectedProperty($property, $class));
-    }
-
-    protected function shouldSkip(Property $property, Scope $scope): bool
-    {
-        // type is already set → skip
-        if ($property->type !== null) {
-            return true;
-        }
-
-        // skip multiple properties
-        if (count($property->props) > 1) {
-            return true;
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
-        /**
-         * - skip trait properties, as they are unpredictable based on class context they appear in
-         * - skip interface properties as well, as interface not allowed to have property
-         */
-        $class = $this->betterNodeFinder->findParentType($property, Class_::class);
-        if (! $class instanceof Class_) {
-            return true;
-        }
-
-        $propertyName = $this->getName($property);
-
-        return $this->isModifiedByTrait($class, $propertyName);
     }
 
     private function isModifiedByTrait(Class_ $class, string $propertyName): bool
