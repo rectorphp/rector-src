@@ -40,6 +40,7 @@ By [buying a book](https://leanpub.com/rector-the-power-of-automated-refactoring
 - [Static Reflection and Autoload](/docs/static_reflection_and_autoload.md)
 - [How to Configure Rule](/docs/how_to_configure_rules.md)
 - [Beyond PHP - Entering the realm of FileProcessors](/docs/beyond_php_file_processors.md)
+- [How to apply Major Change with BC-Break allowed](/docs/how_to_apply_major_change_with_bc_break_allowed.md)
 
 ### For Rule Developers and Contributors
 
