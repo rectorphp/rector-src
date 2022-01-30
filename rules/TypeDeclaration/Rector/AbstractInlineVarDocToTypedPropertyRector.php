@@ -160,6 +160,7 @@ CODE_SAMPLE
 
     protected function shouldSkipProperty(Property $property, Scope $scope): bool
     {
+        $class = null;
         if ($this->shouldSkip($property, $scope)) {
             return true;
         }
