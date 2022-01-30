@@ -68,8 +68,7 @@ final class ConfigurationFactory
             $parallelPort,
             $parallelIdentifier,
             $isParallel,
-            $memoryLimit,
-            $allowBcBreak
+            $memoryLimit
         );
     }
 
