@@ -7,7 +7,7 @@ namespace Rector\Php74\Rector\Property;
 use Rector\TypeDeclaration\Rector\AbstractInlineVarDocToTypedPropertyRector;
 
 /**
- * @deprecated use \Rector\TypeDeclaration\Rector\Property\InlineVarDocToTypedInPrivatePropertyRector instead
+ * @deprecated use \Rector\TypeDeclaration\Rector\Property\InlineVarDocToTypedScopedPropertyRector instead
  */
 final class TypedPropertyRector extends AbstractInlineVarDocToTypedPropertyRector
 {
