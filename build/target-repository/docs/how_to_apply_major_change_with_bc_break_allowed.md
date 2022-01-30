@@ -1,6 +1,11 @@
 # How to Apply Major Change with BC-Break Allowed
 
-Rector always try to make change to your code with preserve BC break as possible, for example, with `TypedPropertyRector`, you can always only change `private` property modifier:
+Rector always try to make change to your code with preserve BC break as possible, for example, with `TypedPropertyRector`, you can always only change:
+
+1. private property
+2. protected property on final class without extends
+
+For example:
 
 ```diff
 class SomeClass
