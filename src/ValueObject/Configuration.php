@@ -25,7 +25,8 @@ final class Configuration
         private readonly string | null $parallelPort = null,
         private readonly string | null $parallelIdentifier = null,
         private readonly bool $isParallel = false,
-        private readonly string|null $memoryLimit = null
+        private readonly string|null $memoryLimit = null,
+        private readonly bool $allowBcBreak = false
     ) {
     }
 
@@ -88,5 +89,10 @@ final class Configuration
     public function getMemoryLimit(): ?string
     {
         return $this->memoryLimit;
+    }
+
+    public function isAllowBcBreak(): bool
+    {
+        return $this->allowBcBreak;
     }
 }

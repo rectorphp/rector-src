@@ -220,4 +220,9 @@ final class Option
      * @var string
      */
     public const MEMORY_LIMIT = 'memory-limit';
+
+    /**
+     * @var string
+     */
+    public const ALLOW_BC_BREAK = 'allow-bc-break';
 }

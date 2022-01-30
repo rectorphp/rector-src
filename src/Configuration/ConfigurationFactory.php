@@ -51,6 +51,7 @@ final class ConfigurationFactory
 
         /** @var string|null $memoryLimit */
         $memoryLimit = $input->getOption(Option::MEMORY_LIMIT);
+        $allowBcBreak = (bool) $input->getOption(Option::ALLOW_BC_BREAK);
 
         return new Configuration(
             $isDryRun,
@@ -63,7 +64,8 @@ final class ConfigurationFactory
             $parallelPort,
             $parallelIdentifier,
             $isParallel,
-            $memoryLimit
+            $memoryLimit,
+            $allowBcBreak
         );
     }
 
