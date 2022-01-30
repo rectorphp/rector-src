@@ -46,6 +46,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class TypedPropertyRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
+    /**
+     * Default to true, which only apply changes:
+     *
+     *  – private modifier property
+     *  - protected modifier property on final class without extends
+     *
+     * Set to false will allow change other modifiers as well as far as not forbidden, eg: modified by trait.
+     */
     private bool $isSafeTyped = true;
 
     public function __construct(
