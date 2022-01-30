@@ -33,7 +33,7 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\TypeInferer\VarDocPropertyTypeInferer;
 use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -63,7 +63,7 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
 
     public function configure(array $configuration): void
     {
-        $this->isSafeTyped = current($configuration);
+        $this->isSafeTyped = (bool) current($configuration);
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -71,7 +71,7 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
         return new RuleDefinition(
             'Changes property `@var` annotations from annotation to type.',
             [
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 final class SomeClass
 {
@@ -88,6 +88,10 @@ final class SomeClass
     private int $count;
 }
 CODE_SAMPLE
+                ,
+                [
+                    true
+                ]
                 ),
             ]
         );
