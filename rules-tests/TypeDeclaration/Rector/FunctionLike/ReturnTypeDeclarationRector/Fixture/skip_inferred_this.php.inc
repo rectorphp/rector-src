@@ -1,0 +1,24 @@
+<?php
+
+namespace T1 {
+    class A {
+        /**
+         * @return $this
+         */
+        public function itself()
+        {
+        }
+    }
+}
+
+namespace T2 {
+    use T1\A;
+    
+    class B {
+        public function test(): A 
+        {
+            return (new A)->itself();
+        }
+    }
+}
+?>
