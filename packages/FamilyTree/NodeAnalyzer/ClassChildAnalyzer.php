@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\FamilyTree\NodeAnalyzer;
 
-use PHPStan\Type\Type;
-use PHPStan\Type\MixedType;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\Php\PhpMethodReflection;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
-use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\Php\PhpMethodReflection;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 final class ClassChildAnalyzer
 {
