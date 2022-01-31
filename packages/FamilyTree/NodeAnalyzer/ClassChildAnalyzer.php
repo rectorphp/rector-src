@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\FamilyTree\NodeAnalyzer;
 
+use PhpParser\Node;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
@@ -57,6 +58,21 @@ final class ClassChildAnalyzer
         }
 
         return false;
+    }
+
+    public function resolveParentClassMethodReturnType(ClassReflection $classReflection, string $methodName): ?Node
+    {
+        $parentClassMethods = $this->resolveParentClassMethods($classReflection, $methodName);
+        if ($parentClassMethods === []) {
+            return null;
+        }
+
+        foreach ($parentClassMethods as $parentClassMethod) {
+            $returnType = $parentClassMethod->getPrototype()->getTentativeReturnType();
+            dump($returnType->toString());
+        }
+
+        return null;
     }
 
     /**
