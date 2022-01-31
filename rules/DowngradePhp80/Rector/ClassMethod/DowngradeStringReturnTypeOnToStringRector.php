@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -13,6 +14,7 @@ use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Type\MixedType;
 
 /**
  * @see \Rector\Tests\DowngradePhp80\Rector\ClassMethod\DowngradeStringReturnTypeOnToStringRector\DowngradeStringReturnTypeOnToStringRectorTest
@@ -86,11 +88,18 @@ CODE_SAMPLE
         if ($this->shouldSkip($node)) {
             return null;
         }
+
+        $node->returnType = new Name('string');
+        return $node;
     }
 
     private function shouldSkip(ClassMethod $classMethod): bool
     {
         if (! $this->nodeNameResolver->isName($classMethod, '__toString')) {
+            return true;
+        }
+
+        if ($classMethod->returnType instanceof Node) {
             return true;
         }
 
@@ -105,6 +114,6 @@ CODE_SAMPLE
         }
 
         $type = $this->classChildAnalyzer->resolveParentClassMethodReturnType($classReflection, '__toString');
-        return $this->nodeNameResolver->isName($type, '__toString');
+        return $type instanceof MixedType;
     }
 }

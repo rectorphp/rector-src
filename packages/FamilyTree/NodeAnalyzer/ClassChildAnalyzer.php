@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\FamilyTree\NodeAnalyzer;
 
-use PhpParser\Node;
+use PHPStan\Type\Type;
+use PHPStan\Type\MixedType;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use PHPStan\Reflection\FunctionVariantWithPhpDocs;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 
 final class ClassChildAnalyzer
 {
@@ -60,19 +63,23 @@ final class ClassChildAnalyzer
         return false;
     }
 
-    public function resolveParentClassMethodReturnType(ClassReflection $classReflection, string $methodName): ?Node
+    public function resolveParentClassMethodReturnType(ClassReflection $classReflection, string $methodName): Type
     {
         $parentClassMethods = $this->resolveParentClassMethods($classReflection, $methodName);
         if ($parentClassMethods === []) {
-            return null;
+            return new MixedType();
         }
 
         foreach ($parentClassMethods as $parentClassMethod) {
-            $returnType = $parentClassMethod->getPrototype()->getTentativeReturnType();
-            dump($returnType->toString());
+            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethod->getVariants());
+            $nativeReturnType = $parametersAcceptor->getNativeReturnType();
+
+            if (! $nativeReturnType instanceof MixedType) {
+                return $nativeReturnType;
+            }
         }
 
-        return null;
+        return new MixedType();
     }
 
     /**
