@@ -236,18 +236,5 @@ return [
 
             return Strings::replace($content, '#services\->load\(\'#', "services->load('" . $prefix . '\\');
         },
-
-        function (string $filePath, string $prefix, string $content) use ($filePathsToRemoveNamespace): string {
-            // @see https://regex101.com/r/0jaVB1/1
-            $prefixedNamespacePattern = '#^namespace (.*?);$#m';
-
-            foreach ($filePathsToRemoveNamespace as $filePathToRemoveNamespace) {
-                if (\str_ends_with($filePath, $filePathToRemoveNamespace)) {
-                    return Strings::replace($content, $prefixedNamespacePattern, '');
-                }
-            }
-
-            return $content;
-        },
     ],
 ];
