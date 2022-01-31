@@ -48,6 +48,7 @@ cp ../preload.php .
 if test -z ${PHP71_BIN_PATH+y}; then
     bin/rector list --ansi;
 else
+    echo "verify downgraded rector with specify PHP71_BIN_PATH env";
     $PHP71_BIN_PATH bin/rector list --ansi;
 fi
 
@@ -67,6 +68,7 @@ if test -z ${PHP71_BIN_PATH+y}; then
     bin/rector list --ansi;
     bin/rector process vendor/symfony/string/Slugger/ --dry-run;
 else
+    echo "verify scoped rector with specify PHP71_BIN_PATH env";
     $PHP71_BIN_PATH bin/rector list --ansi;
     $PHP71_BIN_PATH bin/rector process vendor/symfony/string/Slugger/ --dry-run;
 fi

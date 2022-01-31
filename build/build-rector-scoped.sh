@@ -41,6 +41,7 @@ wget https://github.com/humbug/php-scoper/releases/download/0.14.0/php-scoper.ph
 if test -z ${PHP80_BIN_PATH+y}; then
     php -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
 else
+    echo "scoping with specify PHP80_BIN_PATH env";
     $PHP80_BIN_PATH -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
 fi
 
