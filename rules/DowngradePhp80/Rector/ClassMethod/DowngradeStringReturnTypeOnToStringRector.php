@@ -45,15 +45,15 @@ abstract class ParentClass
 {
     public function __toString(): string
     {
-        return new static();
+        return 'value';
     }
 }
 
-class ChildClass
+class ChildClass extends ParentClass
 {
     public function __toString()
     {
-        return new static();
+        return 'value';
     }
 }
 CODE_SAMPLE
@@ -63,15 +63,15 @@ abstract class ParentClass
 {
     public function __toString(): string
     {
-        return new static();
+        return 'value';
     }
 }
 
-class ChildClass
+class ChildClass extends ParentClass
 {
-    public function __toString(): string
+    public function __toString()
     {
-        return new static();
+        return 'value';
     }
 }
 CODE_SAMPLE
