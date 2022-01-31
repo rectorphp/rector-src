@@ -69,7 +69,7 @@ abstract class ParentClass
 
 class ChildClass extends ParentClass
 {
-    public function __toString()
+    public function __toString(): string
     {
         return 'value';
     }
