@@ -46,7 +46,6 @@ const UNPREFIX_CLASSES_BY_FILE = [
         'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson',
     ],
     'packages/Testing/PHPUnit/AbstractTestCase.php' => ['PHPUnit\Framework\TestCase'],
-    'vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php' => ['Attribute'],
 ];
 // see https://github.com/humbug/php-scoper
 return [
@@ -236,6 +235,19 @@ return [
             }
 
             return Strings::replace($content, '#services\->load\(\'#', "services->load('" . $prefix . '\\');
+        },
+
+        function (string $filePath, string $prefix, string $content) use ($filePathsToRemoveNamespace): string {
+            // @see https://regex101.com/r/0jaVB1/1
+            $prefixedNamespacePattern = '#^namespace (.*?);$#m';
+
+            foreach ($filePathsToRemoveNamespace as $filePathToRemoveNamespace) {
+                if (\str_ends_with($filePath, $filePathToRemoveNamespace)) {
+                    return Strings::replace($content, $prefixedNamespacePattern, '');
+                }
+            }
+
+            return $content;
         },
     ],
 ];
