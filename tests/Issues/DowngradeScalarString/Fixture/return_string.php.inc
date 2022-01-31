@@ -2,7 +2,7 @@
 
 namespace Rector\Core\Tests\Issues\DowngradeScalarString\Fixture;
 
-class AbstractReturnString
+abstract class AbstractReturnString
 {
     public function __toString(): string
     {
@@ -24,7 +24,7 @@ class ReturnString extends AbstractReturnString
 
 namespace Rector\Core\Tests\Issues\DowngradeScalarString\Fixture;
 
-class AbstractReturnString
+abstract class AbstractReturnString
 {
     /**
      * @return string
