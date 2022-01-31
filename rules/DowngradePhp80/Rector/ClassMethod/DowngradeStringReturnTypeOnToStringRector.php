@@ -37,7 +37,7 @@ final class DowngradeStringReturnTypeOnToStringRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Add "string" return on child when parent has string return on __toString() method',
+            'Add "string" return on current __toString() method when parent method has string return on __toString() method',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
