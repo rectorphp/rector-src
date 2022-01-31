@@ -11,5 +11,3 @@ class SkipParentMixedReturn extends ParentClassWithToStringMixedReturn
         return 'value';
     }
 }
-
-?>
