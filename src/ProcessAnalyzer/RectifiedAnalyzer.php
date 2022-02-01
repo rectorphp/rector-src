@@ -52,9 +52,7 @@ final class RectifiedAnalyzer
         $nodeName = $this->nodeNameResolver->getName($node);
         $originalNodeName = $this->nodeNameResolver->getName($node);
 
-        if (is_string($nodeName) && is_string(
-            $originalNodeName
-        ) && $nodeName === $originalNodeName && $createdByRule !== [] && ! in_array(
+        if (is_string($nodeName) && $nodeName === $originalNodeName && $createdByRule !== [] && ! in_array(
             $rector::class,
             $createdByRule,
             true
