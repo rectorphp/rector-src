@@ -7,6 +7,7 @@ namespace T1 {
          */
         public function itself()
         {
+            return $this;
         }
     }
 }
