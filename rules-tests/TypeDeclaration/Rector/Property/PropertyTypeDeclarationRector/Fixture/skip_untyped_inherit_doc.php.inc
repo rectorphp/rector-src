@@ -6,7 +6,7 @@ class A {
     public $property;
 }
 
-final class B {
+final class B extends A {
     /** @inheritDoc */
     public $property = 'test';
 }
