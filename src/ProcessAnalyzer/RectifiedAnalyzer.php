@@ -23,8 +23,9 @@ final class RectifiedAnalyzer
      */
     private array $previousFileWithNodes = [];
 
-    public function __construct(private readonly NodeNameResolver $nodeNameResolver)
-    {
+    public function __construct(
+        private readonly NodeNameResolver $nodeNameResolver
+    ) {
     }
 
     public function verify(RectorInterface $rector, Node $node, Node $originalNode, File $currentFile): ?RectifiedNode
@@ -51,7 +52,13 @@ final class RectifiedAnalyzer
         $nodeName = $this->nodeNameResolver->getName($node);
         $originalNodeName = $this->nodeNameResolver->getName($node);
 
-        if (is_string($nodeName) && is_string($originalNodeName) && $nodeName === $originalNodeName && $createdByRule !== [] && ! in_array($rector::class, $createdByRule, true)) {
+        if (is_string($nodeName) && is_string(
+            $originalNodeName
+        ) && $nodeName === $originalNodeName && $createdByRule !== [] && ! in_array(
+            $rector::class,
+            $createdByRule,
+            true
+        )) {
             return null;
         }
 

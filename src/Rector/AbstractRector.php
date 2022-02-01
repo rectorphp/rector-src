@@ -286,19 +286,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         return $node;
     }
 
-    private function createdByRule(array | Node $node, Node $originalNode): void
-    {
-        if ($node instanceof Node) {
-            $node = [$node];
-        }
-
-        foreach ($node as $subNode) {
-            $this->createdByRuleDecorator->decorate($subNode, static::class);
-        }
-
-        $this->createdByRuleDecorator->decorate($originalNode, static::class);
-    }
-
     /**
      * Replacing nodes in leaveNode() method avoids infinite recursion
      * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
@@ -439,6 +426,19 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function removeNodes(array $nodes): void
     {
         $this->nodeRemover->removeNodes($nodes);
+    }
+
+    private function createdByRule(array | Node $node, Node $originalNode): void
+    {
+        if ($node instanceof Node) {
+            $node = [$node];
+        }
+
+        foreach ($node as $subNode) {
+            $this->createdByRuleDecorator->decorate($subNode, static::class);
+        }
+
+        $this->createdByRuleDecorator->decorate($originalNode, static::class);
     }
 
     /**
