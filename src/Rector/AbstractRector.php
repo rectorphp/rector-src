@@ -428,6 +428,9 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->nodeRemover->removeNodes($nodes);
     }
 
+    /**
+     * @param array<Node>|Node $node
+     */
     private function createdByRule(array | Node $node, Node $originalNode): void
     {
         if ($node instanceof Node) {
