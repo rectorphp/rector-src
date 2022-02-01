@@ -28,7 +28,7 @@ final class RectifiedAnalyzer
     ) {
     }
 
-    public function verify(RectorInterface $rector, Node $node, Node $originalNode, File $currentFile): ?RectifiedNode
+    public function verify(RectorInterface $rector, Node $node, ?Node $originalNode, File $currentFile): ?RectifiedNode
     {
         $smartFileInfo = $currentFile->getSmartFileInfo();
         $realPath = $smartFileInfo->getRealPath();
@@ -50,7 +50,9 @@ final class RectifiedAnalyzer
 
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
         $nodeName = $this->nodeNameResolver->getName($node);
-        $originalNodeName = $this->nodeNameResolver->getName($node);
+        $originalNodeName = $originalNode instanceof Node
+            ? $this->nodeNameResolver->getName($originalNode)
+            : null;
 
         if (is_string($nodeName) && $nodeName === $originalNodeName && $createdByRule !== [] && ! in_array(
             $rector::class,
