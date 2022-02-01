@@ -437,8 +437,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             $node = [$node];
         }
 
-        foreach ($node as $subNode) {
-            $this->createdByRuleDecorator->decorate($subNode, static::class);
+        foreach ($node as $singleNode) {
+            $this->createdByRuleDecorator->decorate($singleNode, static::class);
         }
 
         $this->createdByRuleDecorator->decorate($originalNode, static::class);
