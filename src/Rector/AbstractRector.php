@@ -230,7 +230,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->printDebugApplying();
 
         $originalAttributes = $node->getAttributes();
-        $originalNode = $originalNode ?? clone $node;
+        $originalNode ??= clone $node;
 
         $node = $this->refactor($node);
 
