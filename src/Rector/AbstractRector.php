@@ -272,7 +272,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         // is different node type? do not traverse children to avoid looping
         $this->infiniteLoopValidator->process($node, $originalNode, static::class);
-        $this->createdByRule($node, $originalNode);
+        $this->createdByRuleDecorator->decorate($node, static::class);
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
