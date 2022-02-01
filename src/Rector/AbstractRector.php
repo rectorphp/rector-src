@@ -217,7 +217,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
-        if ($this->shouldSkipCurrentNode($node)) {
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
+        if ($this->shouldSkipCurrentNode($node, $originalNode)) {
             return null;
         }
 
@@ -229,8 +230,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->printDebugApplying();
 
         $originalAttributes = $node->getAttributes();
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
-
         $node = $this->refactor($node);
 
         // nothing to change → continue
@@ -239,7 +238,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         if (is_array($node)) {
-            $this->createdByRuleDecorator->decorate($originalNode, static::class);
+            $this->createdByRule($node, $originalNode);
 
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $node;
@@ -258,8 +257,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return $node;
         }
 
-        $this->createdByRuleDecorator->decorate($node, static::class);
-
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
@@ -269,11 +266,13 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         // is equals node type? return node early
         if ($originalNode::class === $node::class) {
+            $this->createdByRule($node, $originalNode);
             return $node;
         }
 
         // is different node type? do not traverse children to avoid looping
         $this->infiniteLoopValidator->process($node, $originalNode, static::class);
+        $this->createdByRule($node, $originalNode);
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
@@ -285,6 +284,19 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->nodesToReturn[$originalNodeHash] = $node;
 
         return $node;
+    }
+
+    private function createdByRule(array | Node $node, Node $originalNode): void
+    {
+        if ($node instanceof Node) {
+            $node = [$node];
+        }
+
+        foreach ($node as $subNode) {
+            $this->createdByRuleDecorator->decorate($subNode, static::class);
+        }
+
+        $this->createdByRuleDecorator->decorate($originalNode, static::class);
     }
 
     /**
@@ -443,7 +455,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         return false;
     }
 
-    private function shouldSkipCurrentNode(Node $node): bool
+    private function shouldSkipCurrentNode(Node $node, Node $originalNode): bool
     {
         if ($this->nodesToRemoveCollector->isNodeRemoved($node)) {
             return true;
@@ -458,7 +470,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return true;
         }
 
-        $rectifiedNode = $this->rectifiedAnalyzer->verify($this, $node, $this->file);
+        $rectifiedNode = $this->rectifiedAnalyzer->verify($this, $node, $originalNode, $this->file);
         return $rectifiedNode instanceof RectifiedNode;
     }
 
