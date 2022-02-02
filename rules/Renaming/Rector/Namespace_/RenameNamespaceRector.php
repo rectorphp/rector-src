@@ -134,7 +134,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
     private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
     {
-        if (str_starts_with($name->toString(), $renamedNamespace->getNewNamespace())) {
+        if (str_starts_with($name->toString(), $renamedNamespace->getNewNamespace() . '\\')) {
             return null;
         }
 
@@ -194,10 +194,6 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
     private function resolvePartialNewName(Name $name, RenamedNamespace $renamedNamespace): string
     {
-        if (str_starts_with($name->toString(), $renamedNamespace->getNewNamespace() . '\\')) {
-            return $renamedNamespace->getNewNamespace();
-        }
-
         $nameInNewNamespace = $renamedNamespace->getNameInNewNamespace();
         $cutOffFromTheLeft = Strings::length($nameInNewNamespace) - Strings::length($name->toString());
 

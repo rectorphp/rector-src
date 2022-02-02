@@ -16,7 +16,7 @@ final class RenamedNamespace
     public function getNameInNewNamespace(): string
     {
         if ($this->newNamespace === $this->currentName) {
-            return $this->newNamespace;
+            return $this->currentName;
         }
 
         return str_replace($this->oldNamespace, $this->newNamespace, $this->currentName);
