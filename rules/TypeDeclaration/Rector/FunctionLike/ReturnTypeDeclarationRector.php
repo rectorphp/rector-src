@@ -107,6 +107,14 @@ CODE_SAMPLE
             [ReturnTypeDeclarationReturnTypeInfererTypeInferer::class]
         );
 
+        if ($inferedReturnType instanceof \PHPStan\Type\ThisType) {
+            $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+
+            if ($class instanceof Class_ && ! $this->nodeNameResolver->isName($class, $inferedReturnType->getStaticObjectType()->getClassName())) {
+                return null;
+            }
+        }
+
         if ($inferedReturnType instanceof MixedType) {
             return null;
         }
