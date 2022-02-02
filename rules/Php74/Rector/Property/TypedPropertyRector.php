@@ -57,7 +57,7 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
      *  – private modifier property
      *  - protected modifier property on final class without extends
      *
-     * Set to true will allow change other modifiers as well as far as not forbidden, eg: modified by trait.
+     * Set to true will allow change other modifiers as well as far as not forbidden, eg: callable type, null type, etc.
      */
     private bool $inlinePublic = false;
 
