@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
@@ -106,14 +107,7 @@ CODE_SAMPLE
             $node,
             [ReturnTypeDeclarationReturnTypeInfererTypeInferer::class]
         );
-
-        if ($inferedReturnType instanceof \PHPStan\Type\ThisType) {
-            $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-
-            if ($class instanceof Class_ && ! $this->nodeNameResolver->isName($class, $inferedReturnType->getStaticObjectType()->getClassName())) {
-                return null;
-            }
-        }
+        $inferedReturnType = $this->verifyInferedThisType($node, $inferedReturnType);
 
         if ($inferedReturnType instanceof MixedType) {
             return null;
@@ -140,6 +134,27 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SCALAR_TYPES;
+    }
+
+    private function verifyInferedThisType(ClassMethod|Function_ $node, Type $inferedReturnType): Type
+    {
+        if (! $inferedReturnType instanceof ThisType) {
+            return $inferedReturnType;
+        }
+
+        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+        $objectType = $inferedReturnType->getStaticObjectType();
+        $objectTypeClassName = $objectType->getClassName();
+
+        if (! $class instanceof Class_) {
+            return $inferedReturnType;
+        }
+
+        if ($this->nodeNameResolver->isName($class, $objectTypeClassName)) {
+            return $inferedReturnType;
+        }
+
+        return new MixedType();
     }
 
     private function processType(ClassMethod | Function_ $node, Type $inferedType): ?Node
