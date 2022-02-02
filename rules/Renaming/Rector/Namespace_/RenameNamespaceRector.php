@@ -194,7 +194,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
     private function resolvePartialNewName(Name $name, RenamedNamespace $renamedNamespace): string
     {
-        if (str_starts_with($name->toString(), $renamedNamespace->getNewNamespace())) {
+        if (str_starts_with($name->toString(), $renamedNamespace->getNewNamespace() . '\\')) {
             return $renamedNamespace->getNewNamespace();
         }
 
