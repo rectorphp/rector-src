@@ -134,6 +134,12 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
     private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
     {
+        $createdByRule = $name->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+
+        if (in_array(self::class, $createdByRule, true)) {
+            return null;
+        }
+
         $newName = $this->isPartialNamespace($name) ? $this->resolvePartialNewName(
             $name,
             $renamedNamespace
