@@ -137,15 +137,15 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
             return null;
         }
 
-        $newName = $renamedNamespace->getNameInNewNamespace();
+        $nameInNewNamespace = $renamedNamespace->getNameInNewNamespace();
 
         $values = array_values($this->oldToNewNamespaces);
-        if (! isset($this->isChangedInNamespaces[$newName])) {
-            return new FullyQualified($newName);
+        if (! isset($this->isChangedInNamespaces[$nameInNewNamespace])) {
+            return new FullyQualified($nameInNewNamespace);
         }
 
-        if (! in_array($newName, $values, true)) {
-            return new FullyQualified($newName);
+        if (! in_array($nameInNewNamespace, $values, true)) {
+            return new FullyQualified($nameInNewNamespace);
         }
 
         return null;
