@@ -47,6 +47,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class TypedPropertyRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
+     * @var string
+     */
+    public const INLINE_PUBLIC = 'inline_public';
+
+    /**
      * Default to false, which only apply changes:
      *
      *  – private modifier property
@@ -55,11 +60,6 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
      * Set to true will allow change other modifiers as well as far as not forbidden, eg: modified by trait.
      */
     private bool $inlinePublic = false;
-
-    /**
-     * @var string
-     */
-    public const INLINE_PUBLIC = 'inline_public';
 
     public function __construct(
         private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
@@ -102,7 +102,9 @@ final class SomeClass
 }
 CODE_SAMPLE
                 ,
-                    [TypedPropertyRector::INLINE_PUBLIC => true]
+                    [
+                        self::INLINE_PUBLIC => true,
+                    ]
                 ),
             ]
         );

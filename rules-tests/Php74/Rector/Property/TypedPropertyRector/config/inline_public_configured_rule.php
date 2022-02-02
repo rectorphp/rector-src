@@ -10,7 +10,9 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(TypedPropertyRector::class)
-        ->configure([TypedPropertyRector::INLINE_PUBLIC => true]);
+        ->configure([
+            TypedPropertyRector::INLINE_PUBLIC => true,
+        ]);
 
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersionFeature::UNION_TYPES - 1);
