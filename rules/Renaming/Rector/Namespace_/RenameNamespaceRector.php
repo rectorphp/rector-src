@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\Rector\Namespace_;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
@@ -138,10 +137,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
             return null;
         }
 
-        $newName = $this->isPartialNamespace($name) ? $this->resolvePartialNewName(
-            $name,
-            $renamedNamespace
-        ) : $renamedNamespace->getNameInNewNamespace();
+        $newName = $renamedNamespace->getNameInNewNamespace();
 
         $values = array_values($this->oldToNewNamespaces);
         if (! isset($this->isChangedInNamespaces[$newName])) {
@@ -176,27 +172,5 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         $newClassName = $fullyQualifiedNode->toString();
 
         return array_key_exists($newClassName, $this->oldToNewNamespaces);
-    }
-
-    private function isPartialNamespace(Name $name): bool
-    {
-        $resolvedName = $name->getAttribute(AttributeKey::RESOLVED_NAME);
-        if (! $resolvedName instanceof Name) {
-            return false;
-        }
-
-        if ($resolvedName instanceof FullyQualified) {
-            return ! $this->isName($name, $resolvedName->toString());
-        }
-
-        return false;
-    }
-
-    private function resolvePartialNewName(Name $name, RenamedNamespace $renamedNamespace): string
-    {
-        $nameInNewNamespace = $renamedNamespace->getNameInNewNamespace();
-        $cutOffFromTheLeft = Strings::length($nameInNewNamespace) - Strings::length($name->toString());
-
-        return Strings::substring($nameInNewNamespace, $cutOffFromTheLeft);
     }
 }
