@@ -8,7 +8,7 @@ use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class UnsafeTypedTest extends AbstractRectorTestCase
+final class InlinePublicTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
@@ -23,11 +23,11 @@ final class UnsafeTypedTest extends AbstractRectorTestCase
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureUnsafeTyped');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureInlinePublic');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/unsafe_typed_configured_rule.php';
+        return __DIR__ . '/config/inline_public_configured_rule.php';
     }
 }

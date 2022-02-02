@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnsafeTyped;
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureInlinePublic;
 
 final class SimpleArray
 {
@@ -24,7 +24,7 @@ final class SimpleArray
 -----
 <?php
 
-namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnsafeTyped;
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureInlinePublic;
 
 final class SimpleArray
 {

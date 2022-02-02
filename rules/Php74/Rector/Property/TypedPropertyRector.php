@@ -47,14 +47,19 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class TypedPropertyRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
-     * Default to true, which only apply changes:
+     * Default to false, which only apply changes:
      *
      *  – private modifier property
      *  - protected modifier property on final class without extends
      *
-     * Set to false will allow change other modifiers as well as far as not forbidden, eg: modified by trait.
+     * Set to true will allow change other modifiers as well as far as not forbidden, eg: modified by trait.
      */
-    private bool $isSafeTyped = true;
+    private bool $inlinePublic = false;
+
+    /**
+     * @var string
+     */
+    public const INLINE_PUBLIC = 'inline_public';
 
     public function __construct(
         private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
@@ -71,7 +76,7 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
 
     public function configure(array $configuration): void
     {
-        $this->isSafeTyped = (bool) current($configuration);
+        $this->inlinePublic = $configuration[self::INLINE_PUBLIC] ?? (bool) current($configuration);
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -97,7 +102,7 @@ final class SomeClass
 }
 CODE_SAMPLE
                 ,
-                    [true]
+                    [TypedPropertyRector::INLINE_PUBLIC => true]
                 ),
             ]
         );
@@ -267,7 +272,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->isSafeTyped) {
+        if ($this->inlinePublic) {
             return $this->propertyAnalyzer->hasForbiddenType($property);
         }
 
