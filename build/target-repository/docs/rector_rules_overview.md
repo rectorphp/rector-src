@@ -8080,7 +8080,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(TypedPropertyRector::class)
         ->configure([
-            TypedPropertyRector::INLINE_PUBLIC => true,
+            TypedPropertyRector::INLINE_PUBLIC => false,
         ]);
 };
 ```

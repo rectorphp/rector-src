@@ -103,7 +103,7 @@ final class SomeClass
 CODE_SAMPLE
                 ,
                     [
-                        self::INLINE_PUBLIC => true,
+                        self::INLINE_PUBLIC => false,
                     ]
                 ),
             ]
