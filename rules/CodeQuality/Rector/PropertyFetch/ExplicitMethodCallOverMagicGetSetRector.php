@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\ResolvedMethodReflection;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -184,9 +185,12 @@ CODE_SAMPLE
         $scope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
         if ($scope instanceof Scope) {
             $methodReflection = $propertyCallerType->getMethod($setterMethodName, $scope);
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
-            if (count($parametersAcceptor->getParameters()) > 1) {
-                return null;
+
+            if ($methodReflection instanceof ResolvedMethodReflection) {
+                $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+                if (count($parametersAcceptor->getParameters()) > 1) {
+                    return null;
+                }
             }
         }
 
