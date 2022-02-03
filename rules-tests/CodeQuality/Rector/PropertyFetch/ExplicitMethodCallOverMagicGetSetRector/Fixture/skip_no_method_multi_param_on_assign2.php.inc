@@ -4,10 +4,11 @@ namespace Rector\Tests\CodeQuality\Rector\PropertyFetch\ExplicitMethodCallOverMa
 
 use Rector\Tests\CodeQuality\Rector\PropertyFetch\ExplicitMethodCallOverMagicGetSetRector\Source\ObjectWithMagicCallsMultiParam;
 
-final class SkipNoMethodOnMultiParamOnAssign
+final class SkipNoMethodOnMultiParamOnAssign2
 {
-    public function run(ObjectWithMagicCallsMultiParam $obj)
+    public function run()
     {
+        $obj = new ObjectWithMagicCallsMultiParam();
         $obj->name = 20;
     }
 }
