@@ -456,9 +456,11 @@ final class BetterStandardPrinter extends Standard
 
     private function normalizeAttributeKey(string $content): string
     {
-        return Strings::replace($content, self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX, function (array $match): string {
-            return '[' . substr($match['class_const_fetch'], 1, -1) . $match['values'];
-        });
+        return Strings::replace(
+            $content,
+            self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX,
+            fn (array $match): string => '[' . Strings::substring($match['class_const_fetch'], 1, -1) . $match['values']
+        );
     }
 
     private function resolveContentOnExpr(Expr $expr, string $content): string
