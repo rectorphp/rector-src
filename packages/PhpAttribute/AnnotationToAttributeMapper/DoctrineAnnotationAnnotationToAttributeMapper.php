@@ -12,9 +12,9 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
+use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Exception\InvalidNestedAttributeException;
-use Rector\PhpAttribute\NodeFactory\NamedArgsFactory;
 use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -27,9 +27,8 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly NamedArgsFactory $namedArgsFactory,
         private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer,
-        private readonly \Rector\PhpAttribute\AttributeArrayNameInliner $attributeArrayNameInliner,
+        private readonly AttributeArrayNameInliner $attributeArrayNameInliner,
     ) {
     }
 
@@ -72,8 +71,6 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
             if ($argValues instanceof Array_) {
                 // create named args
                 $args = $this->attributeArrayNameInliner->inlineArrayToArgs($argValues);
-            } elseif (is_array($argValues)) {
-                $args = $this->namedArgsFactory->createFromValues($argValues);
             } else {
                 throw new ShouldNotHappenException();
             }

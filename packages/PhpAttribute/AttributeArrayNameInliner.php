@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
+use Webmozart\Assert\Assert;
 
 final class AttributeArrayNameInliner
 {
@@ -54,7 +55,7 @@ final class AttributeArrayNameInliner
      */
     private function inlineArray(array $args): array
     {
-        \Webmozart\Assert\Assert::allIsAOf($args, Arg::class);
+        Assert::allIsAOf($args, Arg::class);
 
         $newArgs = [];
 

@@ -605,3 +605,15 @@ parameters:
         # fix later
         - '#Parameter \#1 \$value of class PhpParser\\Node\\Expr\\ArrayItem constructor expects PhpParser\\Node\\Expr, array<PhpParser\\Node\\Expr\>\|PhpParser\\Node\\Expr\|string given#'
         - '#Parameter \#2 \$key of class PhpParser\\Node\\Expr\\ArrayItem constructor expects PhpParser\\Node\\Expr\|null, array<PhpParser\\Node\\Expr\>\|PhpParser\\Node\\Expr\|string\|null given#'
+
+        # broken on CI
+        - '#Anonymous variables in a method call can lead to false dead methods\. Make sure the variable type is known#'
+        - '#Anonymous variables in a property fetch can lead to false dead property\. Make sure the variable type is known#'
+
+        -
+            message: '#This property type might be inlined to PHP\. Do you have confidence it is correct\? Put it here#'
+            path: packages/PhpAttribute/Printer/PhpAttributeGroupFactory.php
+
+        -
+            message: '#Array with keys is not allowed\. Use value object to pass data instead#'
+            path: packages/PhpAttribute/Printer/PhpAttributeGroupFactory.php

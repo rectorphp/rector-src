@@ -9,17 +9,17 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\Core\Php\PhpVersionProvider;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\NodeAnalyzer\ExprParameterReflectionTypeCorrector;
 use Rector\PhpAttribute\NodeFactory\AttributeNameFactory;
 use Rector\PhpAttribute\NodeFactory\NamedArgsFactory;
-use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\PhpAttribute\Printer\PhpAttributeGroupFactoryTest
@@ -29,8 +29,9 @@ final class PhpAttributeGroupFactory
     /**
      * @var array<string, string[]>>
      */
-    private const UNWRAPPED_ANNOTATIONS = [
+    private $unwrappedAnnotations = [
         'Doctrine\ORM\Mapping\Table' => ['uniqueConstraints'],
+        'Doctrine\ORM\Mapping\Entity' => ['uniqueConstraints'],
     ];
 
     public function __construct(
@@ -39,7 +40,12 @@ final class PhpAttributeGroupFactory
         private readonly NamedArgsFactory $namedArgsFactory,
         private readonly ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
         private readonly AttributeArrayNameInliner $attributeArrayNameInliner,
+        PhpVersionProvider $phpVersionProvider
     ) {
+        // nested indexes supported only since PHP 8.1
+        if (! $phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS)) {
+            $this->unwrappedAnnotations['Doctrine\ORM\Mapping\Table'][] = 'indexes';
+        }
     }
 
     public function createFromSimpleTag(AnnotationToAttribute $annotationToAttribute): AttributeGroup
@@ -101,47 +107,6 @@ final class PhpAttributeGroupFactory
         return $this->namedArgsFactory->createFromValues($items);
     }
 
-//    /**
-//     * @param Arg[] $attributeClass
-//     * @param string[] $attributeClass
-//     * @return Arg[]
-//     */
-//    private function completeNamedArguments(array $args, array $argumentNames): array
-//    {
-//        Assert::allIsAOf($args, Arg::class);
-//
-//        // matching implicit key
-//        if (count($argumentNames) === 1 && count($args) === 1) {
-//            $args[0]->name = new Identifier($argumentNames[0]);
-//        }
-//
-//        $newArgs = [];
-//
-//        foreach ($args as $arg) {
-//
-//            // matching top root array key
-//            if ($arg->value instanceof ArrayItem) {
-//                $arrayItem = $arg->value;
-//                if ($arrayItem->key instanceof String_) {
-//                    $arrayItemString = $arrayItem->key;
-//                    $newArgs[] = new Arg(
-//                        $arrayItem->value,
-//                        false,
-//                        false,
-//                        [],
-//                        new Identifier($arrayItemString->value)
-//                    );
-//                }
-//            }
-//        }
-//
-//        if ($newArgs !== []) {
-//            return $newArgs;
-//        }
-//
-//        return $args;
-//    }
-
     /**
      * @param mixed[] $items
      * @return mixed[]
@@ -149,7 +114,7 @@ final class PhpAttributeGroupFactory
     private function removeUnwrappedItems(string $attributeClass, array $items): array
     {
         // unshift annotations that can be extracted
-        $unwrappeColumns = self::UNWRAPPED_ANNOTATIONS[$attributeClass] ?? [];
+        $unwrappeColumns = $this->unwrappedAnnotations[$attributeClass] ?? [];
         if ($unwrappeColumns === []) {
             return $items;
         }

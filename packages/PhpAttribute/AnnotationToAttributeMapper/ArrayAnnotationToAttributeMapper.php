@@ -11,6 +11,7 @@ use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 use Symfony\Contracts\Service\Attribute\Required;
+use Webmozart\Assert\Assert;
 
 /**
  * @implements AnnotationToAttributeMapperInterface<mixed[]>
@@ -36,7 +37,7 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
     /**
      * @param mixed[] $value
      */
-    public function map($value): array|Expr
+    public function map($value): Expr
     {
         $arrayItems = [];
 
@@ -48,6 +49,8 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
                 continue;
             }
 
+            Assert::isInstanceOf($valueExpr, Expr::class);
+
             // remove value
             if ($this->isRemoveArrayPlaceholder($singleValue)) {
                 continue;
@@ -56,6 +59,7 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
             $keyExpr = null;
             if (! is_int($key)) {
                 $keyExpr = $this->annotationToAttributeMapper->map($key);
+                Assert::isInstanceOf($keyExpr, Expr::class);
             }
 
             $arrayItems[] = new ArrayItem($valueExpr, $keyExpr);
