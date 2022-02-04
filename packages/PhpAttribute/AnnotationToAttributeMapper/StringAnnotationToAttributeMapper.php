@@ -27,15 +27,15 @@ final class StringAnnotationToAttributeMapper implements AnnotationToAttributeMa
      */
     public function map($value): Expr
     {
-        if ($value === 'true') {
+        if (strtolower($value) === 'true') {
             return new ConstFetch(new Name('true'));
         }
 
-        if ($value === 'false') {
+        if (strtolower($value) === 'false') {
             return new ConstFetch(new Name('false'));
         }
 
-        if ($value === 'null') {
+        if (strtolower($value) === 'null') {
             return new ConstFetch(new Name('null'));
         }
 

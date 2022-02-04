@@ -21,10 +21,7 @@ final class AnnotationToAttributeMapper
     ) {
     }
 
-    /**
-     * @return Expr|Expr[]|string
-     */
-    public function map(mixed $value): array|Expr|string
+    public function map(mixed $value): Expr|string
     {
         foreach ($this->annotationToAttributeMappers as $annotationToAttributeMapper) {
             if ($annotationToAttributeMapper->isCandidate($value)) {

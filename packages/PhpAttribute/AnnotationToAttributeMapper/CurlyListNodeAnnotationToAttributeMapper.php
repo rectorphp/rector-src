@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
@@ -37,7 +36,7 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
     /**
      * @param CurlyListNode $value
      */
-    public function map($value): array|Expr|Array_
+    public function map($value): Array_
     {
         $arrayItems = [];
         foreach ($value->getValuesWithExplicitSilentAndWithoutQuotes() as $key => $singleValue) {
@@ -57,10 +56,5 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
         }
 
         return new Array_($arrayItems);
-//
-//        return array_map(
-//            fn ($node): mixed => $this->annotationToAttributeMapper->map($node),
-//            $value->getValuesWithExplicitSilentAndWithoutQuotes()
-//        );
     }
 }

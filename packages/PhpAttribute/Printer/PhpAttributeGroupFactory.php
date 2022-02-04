@@ -15,8 +15,8 @@ use PhpParser\Node\Scalar\String_;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
+use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\NodeAnalyzer\ExprParameterReflectionTypeCorrector;
-use Rector\PhpAttribute\NodeAnalyzer\NamedArgumentsResolver;
 use Rector\PhpAttribute\NodeFactory\AttributeNameFactory;
 use Rector\PhpAttribute\NodeFactory\NamedArgsFactory;
 use Webmozart\Assert\Assert;
@@ -34,11 +34,11 @@ final class PhpAttributeGroupFactory
     ];
 
     public function __construct(
-        private readonly NamedArgumentsResolver $namedArgumentsResolver,
         private readonly AnnotationToAttributeMapper $annotationToAttributeMapper,
         private readonly AttributeNameFactory $attributeNameFactory,
         private readonly NamedArgsFactory $namedArgsFactory,
-        private readonly ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector
+        private readonly ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
+        private readonly AttributeArrayNameInliner $attributeArrayNameInliner,
     ) {
     }
 
@@ -75,9 +75,9 @@ final class PhpAttributeGroupFactory
         $args = $this->createArgsFromItems($values, $annotationToAttribute->getAttributeClass());
 
         // @todo this can be a different class then the unwrapped crated one
-        $argumentNames = $this->namedArgumentsResolver->resolveFromClass($annotationToAttribute->getAttributeClass());
+        //$argumentNames = $this->namedArgumentsResolver->resolveFromClass($annotationToAttribute->getAttributeClass());
 
-        $args = $this->completeNamedArguments($args, $argumentNames);
+        $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 
         $attributeName = $this->attributeNameFactory->create($annotationToAttribute, $doctrineAnnotationTagValueNode);
 
@@ -101,46 +101,46 @@ final class PhpAttributeGroupFactory
         return $this->namedArgsFactory->createFromValues($items);
     }
 
-    /**
-     * @param Arg[] $args
-     * @param string[] $argumentNames
-     * @return Arg[]
-     */
-    private function completeNamedArguments(array $args, array $argumentNames): array
-    {
-        Assert::allIsAOf($args, Arg::class);
-
-        // matching implicit key
-        if (count($argumentNames) === 1 && count($args) === 1) {
-            $args[0]->name = new Identifier($argumentNames[0]);
-        }
-
-        $newArgs = [];
-
-        foreach ($args as $arg) {
-
-            // matching top root array key
-            if ($arg->value instanceof ArrayItem) {
-                $arrayItem = $arg->value;
-                if ($arrayItem->key instanceof String_) {
-                    $arrayItemString = $arrayItem->key;
-                    $newArgs[] = new Arg(
-                        $arrayItem->value,
-                        false,
-                        false,
-                        [],
-                        new Identifier($arrayItemString->value)
-                    );
-                }
-            }
-        }
-
-        if ($newArgs !== []) {
-            return $newArgs;
-        }
-
-        return $args;
-    }
+//    /**
+//     * @param Arg[] $attributeClass
+//     * @param string[] $attributeClass
+//     * @return Arg[]
+//     */
+//    private function completeNamedArguments(array $args, array $argumentNames): array
+//    {
+//        Assert::allIsAOf($args, Arg::class);
+//
+//        // matching implicit key
+//        if (count($argumentNames) === 1 && count($args) === 1) {
+//            $args[0]->name = new Identifier($argumentNames[0]);
+//        }
+//
+//        $newArgs = [];
+//
+//        foreach ($args as $arg) {
+//
+//            // matching top root array key
+//            if ($arg->value instanceof ArrayItem) {
+//                $arrayItem = $arg->value;
+//                if ($arrayItem->key instanceof String_) {
+//                    $arrayItemString = $arrayItem->key;
+//                    $newArgs[] = new Arg(
+//                        $arrayItem->value,
+//                        false,
+//                        false,
+//                        [],
+//                        new Identifier($arrayItemString->value)
+//                    );
+//                }
+//            }
+//        }
+//
+//        if ($newArgs !== []) {
+//            return $newArgs;
+//        }
+//
+//        return $args;
+//    }
 
     /**
      * @param mixed[] $items
