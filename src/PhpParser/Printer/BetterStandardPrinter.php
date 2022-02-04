@@ -170,13 +170,6 @@ final class BetterStandardPrinter extends Standard
             : $content;
     }
 
-    private function normalizeAttributeKey(string $content): string
-    {
-        return Strings::replace($content, self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX, function (array $match): string {
-            return '[' . substr($match['class_const_fetch'], 1, -1) . $match['values'];
-        });
-    }
-
     /**
      * This allows to use both spaces and tabs vs. original space-only
      */
@@ -459,6 +452,13 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $result;
+    }
+
+    private function normalizeAttributeKey(string $content): string
+    {
+        return Strings::replace($content, self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX, function (array $match): string {
+            return '[' . substr($match['class_const_fetch'], 1, -1) . $match['values'];
+        });
     }
 
     private function resolveContentOnExpr(Expr $expr, string $content): string
