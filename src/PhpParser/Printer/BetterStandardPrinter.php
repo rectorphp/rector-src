@@ -6,6 +6,7 @@ namespace Rector\Core\PhpParser\Printer;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -66,6 +67,13 @@ final class BetterStandardPrinter extends Standard
      * @var string
      */
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
+
+
+    /**
+     * @see https://regex101.com/r/oUY7A7/1
+     * @var string
+     */
+    private const CLASS_CONST_FETCH_ARRAY_KEY_REGEX = "#\[(?<class_const_fetch>\'[A-za-z]*::[A-za-z]*\')(?<values> =\> .*\])#";
 
     /**
      * Use space by default
@@ -154,9 +162,20 @@ final class BetterStandardPrinter extends Standard
             $content = $this->resolveContentOnExpr($node, $content);
         }
 
+        if ($node instanceof Attribute) {
+            $content = $this->normalizeAttributeKey($content);
+        }
+
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
             ? ('(' . $content . ')')
             : $content;
+    }
+
+    private function normalizeAttributeKey(string $content): string
+    {
+        return Strings::replace($content, self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX, function (array $match): string {
+            return '[' . substr($match['class_const_fetch'], 1, -1) . $match['values'];
+        });
     }
 
     /**
