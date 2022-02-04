@@ -466,7 +466,7 @@ final class BetterStandardPrinter extends Standard
             ) . $match['values']
         );
 
-        while (StringUtils::isMatch($content, self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX)) {
+        if (StringUtils::isMatch($content, self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX)) {
             $content = $this->normalizeAttributeKey($content);
         }
 
