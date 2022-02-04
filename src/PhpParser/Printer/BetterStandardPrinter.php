@@ -69,10 +69,10 @@ final class BetterStandardPrinter extends Standard
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
     /**
-     * @see https://regex101.com/r/oUY7A7/2
+     * @see https://regex101.com/r/oUY7A7/4
      * @var string
      */
-    private const CLASS_CONST_FETCH_ARRAY_KEY_REGEX = "#\[(?<class_const_fetch>\'[A-za-z]*::[A-za-z]*\')(?<values> =\> .*\])#";
+    private const CLASS_CONST_FETCH_ARRAY_KEY_REGEX = "#(?<prefix>(\[|(, )?))(?<class_const_fetch>\'\w+::\w+\')(?<values> =\> .*\])#";
 
     /**
      * Use space by default
@@ -456,11 +456,21 @@ final class BetterStandardPrinter extends Standard
 
     private function normalizeAttributeKey(string $content): string
     {
-        return Strings::replace(
+        $content = Strings::replace(
             $content,
             self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX,
-            fn (array $match): string => '[' . Strings::substring($match['class_const_fetch'], 1, -1) . $match['values']
+            fn (array $match): string => $match['prefix'] . Strings::substring(
+                $match['class_const_fetch'],
+                1,
+                -1
+            ) . $match['values']
         );
+
+        while (StringUtils::isMatch($content, self::CLASS_CONST_FETCH_ARRAY_KEY_REGEX)) {
+            $content = $this->normalizeAttributeKey($content);
+        }
+
+        return $content;
     }
 
     private function resolveContentOnExpr(Expr $expr, string $content): string
