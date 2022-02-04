@@ -7,7 +7,9 @@ namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 
 /**
@@ -37,6 +39,21 @@ final class StringAnnotationToAttributeMapper implements AnnotationToAttributeMa
             return new ConstFetch(new Name('null'));
         }
 
-        return new String_($value);
+        // number as string to number
+        if (is_numeric($value)) {
+            if (strlen((string) (int) $value) === strlen($value)) {
+                return LNumber::fromString($value);
+            }
+        }
+
+        if (str_contains($value, "'") && ! str_contains($value, "\n")) {
+            $kind = String_::KIND_DOUBLE_QUOTED;
+        } else {
+            $kind = String_::KIND_SINGLE_QUOTED;
+        }
+
+        return new String_($value, [
+            AttributeKey::KIND => $kind,
+        ]);
     }
 }

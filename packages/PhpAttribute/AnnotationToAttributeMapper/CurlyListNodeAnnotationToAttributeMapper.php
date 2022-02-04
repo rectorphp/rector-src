@@ -43,14 +43,14 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
         foreach ($value->getValuesWithExplicitSilentAndWithoutQuotes() as $key => $singleValue) {
             $valueExpr = $this->annotationToAttributeMapper->map($singleValue);
 
-            $keyExpr = null;
-            if (! is_int($key)) {
-                $keyExpr = $this->annotationToAttributeMapper->map($key);
-            }
-
             // remove node
             if ($valueExpr === DocTagNodeState::REMOVE_ARRAY) {
                 continue;
+            }
+
+            $keyExpr = null;
+            if (! is_int($key)) {
+                $keyExpr = $this->annotationToAttributeMapper->map($key);
             }
 
             $arrayItems[] = new ArrayItem($valueExpr, $keyExpr);

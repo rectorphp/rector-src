@@ -26,6 +26,13 @@ use Webmozart\Assert\Assert;
  */
 final class PhpAttributeGroupFactory
 {
+    /**
+     * @var array<string, string[]>>
+     */
+    private const UNWRAPPED_ANNOTATIONS = [
+        'Doctrine\ORM\Mapping\Table' => ['uniqueConstraints'],
+    ];
+
     public function __construct(
         private readonly NamedArgumentsResolver $namedArgumentsResolver,
         private readonly AnnotationToAttributeMapper $annotationToAttributeMapper,
@@ -66,9 +73,11 @@ final class PhpAttributeGroupFactory
         $values = $doctrineAnnotationTagValueNode->getValuesWithExplicitSilentAndWithoutQuotes();
 
         $args = $this->createArgsFromItems($values, $annotationToAttribute->getAttributeClass());
+
+        // @todo this can be a different class then the unwrapped crated one
         $argumentNames = $this->namedArgumentsResolver->resolveFromClass($annotationToAttribute->getAttributeClass());
 
-        $this->completeNamedArguments($args, $argumentNames);
+        $args = $this->completeNamedArguments($args, $argumentNames);
 
         $attributeName = $this->attributeNameFactory->create($annotationToAttribute, $doctrineAnnotationTagValueNode);
 
@@ -87,14 +96,17 @@ final class PhpAttributeGroupFactory
 
         $items = $this->exprParameterReflectionTypeCorrector->correctItemsByAttributeClass($items, $attributeClass);
 
+        $items = $this->removeUnwrappedItems($attributeClass, $items);
+
         return $this->namedArgsFactory->createFromValues($items);
     }
 
     /**
      * @param Arg[] $args
      * @param string[] $argumentNames
+     * @return Arg[]
      */
-    private function completeNamedArguments(array $args, array $argumentNames): void
+    private function completeNamedArguments(array $args, array $argumentNames): array
     {
         Assert::allIsAOf($args, Arg::class);
 
@@ -103,32 +115,60 @@ final class PhpAttributeGroupFactory
             $args[0]->name = new Identifier($argumentNames[0]);
         }
 
-        foreach ($args as $key => $arg) {
-//            $argumentName = $argumentNames[$key] ?? null;
-//            if ($argumentName === null) {
-//                continue;
-//            }
+        $newArgs = [];
+
+        foreach ($args as $arg) {
 
             // matching top root array key
             if ($arg->value instanceof ArrayItem) {
                 $arrayItem = $arg->value;
                 if ($arrayItem->key instanceof String_) {
                     $arrayItemString = $arrayItem->key;
-                    // match the key :)
-                    if (! in_array($arrayItemString->value, $argumentNames, true)) {
-                        continue;
-                    }
-
-                    $arg->name = new Identifier($arrayItemString->value);
-                    $arg->value = $arrayItem->value;
+                    $newArgs[] = new Arg(
+                        $arrayItem->value,
+                        false,
+                        false,
+                        [],
+                        new Identifier($arrayItemString->value)
+                    );
                 }
             }
-
-//            if ($arg->name !== null) {
-//                continue;
-//            }
-
-//            $arg->name = new Identifier($argumentName);
         }
+
+        if (count($newArgs)) {
+            return $newArgs;
+        }
+
+        return $args;
+    }
+
+    /**
+     * @param mixed[] $items
+     * @return mixed[]
+     */
+    private function removeUnwrappedItems(string $attributeClass, array $items): array
+    {
+        // unshift annotations that can be extracted
+        $unwrappeColumns = self::UNWRAPPED_ANNOTATIONS[$attributeClass] ?? [];
+        if ($unwrappeColumns === []) {
+            return $items;
+        }
+
+        foreach ($items as $key => $item) {
+            if (! $item instanceof ArrayItem) {
+                continue;
+            }
+            $arrayItemKey = $item->key;
+            if (! $arrayItemKey instanceof String_) {
+                continue;
+            }
+            if (! in_array($arrayItemKey->value, $unwrappeColumns, true)) {
+                continue;
+            }
+
+            unset($items[$key]);
+        }
+
+        return $items;
     }
 }

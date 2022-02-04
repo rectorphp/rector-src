@@ -43,6 +43,11 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
         foreach ($value as $key => $singleValue) {
             $valueExpr = $this->annotationToAttributeMapper->map($singleValue);
 
+            // remove node
+            if ($valueExpr === DocTagNodeState::REMOVE_ARRAY) {
+                continue;
+            }
+
             // remove value
             if ($this->isRemoveArrayPlaceholder($singleValue)) {
                 continue;
@@ -53,27 +58,15 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
                 $keyExpr = $this->annotationToAttributeMapper->map($key);
             }
 
-            if (! $valueExpr instanceof Expr) {
-                dump($valueExpr);
-                die;
-            }
-
             $arrayItems[] = new ArrayItem($valueExpr, $keyExpr);
         }
 
         return new Array_($arrayItems);
-//
-//
-//        foreach ($values as $key => $value) {
-//            // remove the key and value? useful in case of unwrapping nested attributes
-//            if (! $this->isRemoveArrayPlaceholder($value)) {
-//                continue;
-//            }
-//
-//            unset($values[$key]);
-//        }
     }
 
+    /**
+     * @param mixed $value
+     */
     private function isRemoveArrayPlaceholder($value): bool
     {
         if (! is_array($value)) {
