@@ -68,7 +68,6 @@ final class BetterStandardPrinter extends Standard
      */
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
-
     /**
      * @see https://regex101.com/r/oUY7A7/2
      * @var string
