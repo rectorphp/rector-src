@@ -573,10 +573,6 @@ parameters:
             message: '#Cognitive complexity for "Rector\\Php80\\Rector\\Class_\\AnnotationToAttributeRector\:\:processDoctrineAnnotationClasses\(\)" is \d+, keep it under 10#'
             path: rules/Php80/Rector/Class_/AnnotationToAttributeRector.php
 
-        - '#Anonymous function should return array\|PhpParser\\Node\\Expr but returns array<PhpParser\\Node\\Expr\>\|PhpParser\\Node\\Expr\|string#'
-
-        - '#Method Rector\\PhpAttribute\\AnnotationToAttributeMapper\\ArrayAnnotationToAttributeMapper\:\:isRemoveArrayPlaceholder\(\) has parameter \$value with no value type specified in iterable type array#'
-
         -
             message: '#Use value object over return of values#'
             path: src/Application/ApplicationFileProcessor.php
@@ -603,15 +599,8 @@ parameters:
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
 
-        # due to new https://github.com/symplify/symplify/pull/3912 NoMixedPropertyFetcherRule
-        - '#Anonymous variables in a property fetch can lead to false dead property\. Make sure the variable type is known#'
-        # due to new https://github.com/symplify/symplify/pull/3913 NoMixedMethodCallerRule
-        - '#Anonymous variables in a method call can lead to false dead methods\. Make sure the variable type is known#'
-
         # false positive
         - '#Method Rector\\VersionBonding\\PhpVersionedFilter\:\:filter\(\) should return array<T of Rector\\Core\\Contract\\Rector\\RectorInterface\> but returns array<int, \(Rector\\VersionBonding\\Contract\\MinPhpVersionInterface&T of Rector\\Core\\Contract\\Rector\\RectorInterface\)\|T of Rector\\Core\\Contract\\Rector\\RectorInterface\>#'
-        # not relevant
-        - '#Only booleans are allowed in an if condition, int<0, max\> given#'
 
         # fix later
         - '#Parameter \#1 \$value of class PhpParser\\Node\\Expr\\ArrayItem constructor expects PhpParser\\Node\\Expr, array<PhpParser\\Node\\Expr\>\|PhpParser\\Node\\Expr\|string given#'

@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\String_;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
@@ -33,6 +29,7 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly NamedArgsFactory $namedArgsFactory,
         private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer,
+        private readonly \Rector\PhpAttribute\AttributeArrayNameInliner $attributeArrayNameInliner,
     ) {
     }
 
@@ -74,7 +71,7 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
 
             if ($argValues instanceof Array_) {
                 // create named args
-                $args = $this->createNamedArgFromArrayItems($argValues);
+                $args = $this->attributeArrayNameInliner->inlineArrayToArgs($argValues);
             } elseif (is_array($argValues)) {
                 $args = $this->namedArgsFactory->createFromValues($argValues);
             } else {
@@ -91,28 +88,5 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
     {
         $annotationShortName = $doctrineAnnotationTagValueNode->identifierTypeNode->name;
         return ltrim($annotationShortName, '@');
-    }
-
-    /**
-     * @return Arg[]
-     */
-    private function createNamedArgFromArrayItems(Array_ $array): array
-    {
-        $args = [];
-
-        foreach ($array->items as $arrayItem) {
-            if (! $arrayItem instanceof ArrayItem) {
-                continue;
-            }
-
-            $key = $arrayItem->key;
-            if ($key instanceof String_) {
-                $args[] = new Arg($arrayItem->value, false, false, [], new Identifier($key->value));
-            } else {
-                $args[] = new Arg($arrayItem->value);
-            }
-        }
-
-        return $args;
     }
 }

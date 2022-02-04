@@ -40,10 +40,8 @@ final class StringAnnotationToAttributeMapper implements AnnotationToAttributeMa
         }
 
         // number as string to number
-        if (is_numeric($value)) {
-            if (strlen((string) (int) $value) === strlen($value)) {
-                return LNumber::fromString($value);
-            }
+        if (is_numeric($value) && strlen((string) (int) $value) === strlen($value)) {
+            return LNumber::fromString($value);
         }
 
         if (str_contains($value, "'") && ! str_contains($value, "\n")) {

@@ -135,7 +135,7 @@ final class PhpAttributeGroupFactory
             }
         }
 
-        if (count($newArgs)) {
+        if ($newArgs !== []) {
             return $newArgs;
         }
 
@@ -158,10 +158,12 @@ final class PhpAttributeGroupFactory
             if (! $item instanceof ArrayItem) {
                 continue;
             }
+
             $arrayItemKey = $item->key;
             if (! $arrayItemKey instanceof String_) {
                 continue;
             }
+
             if (! in_array($arrayItemKey->value, $unwrappeColumns, true)) {
                 continue;
             }
