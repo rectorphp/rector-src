@@ -13,12 +13,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @changelog https://www.php.net/manual/en/function.json-encode.php#refsect1-function.json-encode-changelog
+ *
  * @see \Rector\Tests\DowngradePhp72\Rector\ConstFetch\DowngradePhp72JsonConstRector\DowngradePhp72JsonConstRectorTest
  */
 final class DowngradePhp72JsonConstRector extends AbstractRector
 {
     /**
-     * @var array
+     * @var array<string>
      */
     private const CONSTANTS = [
         'JSON_INVALID_UTF8_IGNORE',
