@@ -21,23 +21,22 @@ final class DowngradePhp72JsonConstRector extends AbstractRector
     /**
      * @var array<string>
      */
-    private const CONSTANTS = [
-        'JSON_INVALID_UTF8_IGNORE',
-        'JSON_INVALID_UTF8_SUBSTITUTE',
-    ];
+    private const CONSTANTS = ['JSON_INVALID_UTF8_IGNORE', 'JSON_INVALID_UTF8_SUBSTITUTE'];
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change Json constant that available only in php 7.2 to 0', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Change Json constant that available only in php 7.2 to 0',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 $inDecoder = new Decoder($connection, true, 512, \JSON_INVALID_UTF8_IGNORE);
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 $inDecoder = new Decoder($connection, true, 512, 0);
 CODE_SAMPLE
-        )
+                ),
             ]
         );
     }
