@@ -69,10 +69,10 @@ final class BetterStandardPrinter extends Standard
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
     /**
-     * @see https://regex101.com/r/oUY7A7/4
+     * @see https://regex101.com/r/oUY7A7/5
      * @var string
      */
-    private const CLASS_CONST_FETCH_ARRAY_KEY_REGEX = "#(?<prefix>(\[|(, )?))(?<class_const_fetch>\'\w+::\w+\')(?<values> =\> .*\])#";
+    private const CLASS_CONST_FETCH_ARRAY_KEY_REGEX = "#(?<prefix>(\[|, ))(?<class_const_fetch>\'\w+::\w+\')(?<values> =\> .*\])#";
 
     /**
      * Use space by default
