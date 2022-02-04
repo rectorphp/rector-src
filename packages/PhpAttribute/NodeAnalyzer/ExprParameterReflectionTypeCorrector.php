@@ -29,8 +29,12 @@ final class ExprParameterReflectionTypeCorrector
      * @param array<string|int, Expr|mixed> $items
      * @return array<string|int, Expr|mixed>
      */
-    public function correctItemsByAttributeClass(array $items, string $attributeClass): array
+    public function correctItemsByAttributeClass(array|Expr\Array_ $items, string $attributeClass): array
     {
+        if ($items instanceof Expr\Array_) {
+            $items = $items->items;
+        }
+
         if (! $this->reflectionProvider->hasClass($attributeClass)) {
             return $items;
         }

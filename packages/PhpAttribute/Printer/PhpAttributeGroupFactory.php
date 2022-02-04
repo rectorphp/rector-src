@@ -8,8 +8,10 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\String_;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
@@ -80,7 +82,7 @@ final class PhpAttributeGroupFactory
      */
     public function createArgsFromItems(array $items, string $attributeClass): array
     {
-        /** @var Expr[] $items */
+        /** @var Expr[]|Expr\Array_ $items */
         $items = $this->annotationToAttributeMapper->map($items);
 
         $items = $this->exprParameterReflectionTypeCorrector->correctItemsByAttributeClass($items, $attributeClass);
@@ -96,17 +98,37 @@ final class PhpAttributeGroupFactory
     {
         Assert::allIsAOf($args, Arg::class);
 
+        // matching implicit key
+        if (count($argumentNames) === 1 && count($args) === 1) {
+            $args[0]->name = new Identifier($argumentNames[0]);
+        }
+
         foreach ($args as $key => $arg) {
-            $argumentName = $argumentNames[$key] ?? null;
-            if ($argumentName === null) {
-                continue;
+//            $argumentName = $argumentNames[$key] ?? null;
+//            if ($argumentName === null) {
+//                continue;
+//            }
+
+            // matching top root array key
+            if ($arg->value instanceof ArrayItem) {
+                $arrayItem = $arg->value;
+                if ($arrayItem->key instanceof String_) {
+                    $arrayItemString = $arrayItem->key;
+                    // match the key :)
+                    if (! in_array($arrayItemString->value, $argumentNames, true)) {
+                        continue;
+                    }
+
+                    $arg->name = new Identifier($arrayItemString->value);
+                    $arg->value = $arrayItem->value;
+                }
             }
 
-            if ($arg->name !== null) {
-                continue;
-            }
+//            if ($arg->name !== null) {
+//                continue;
+//            }
 
-            $arg->name = new Identifier($argumentName);
+//            $arg->name = new Identifier($argumentName);
         }
     }
 }

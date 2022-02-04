@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
+use Rector\PhpAttribute\Enum\DocTagNodeState;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -34,11 +37,30 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
     /**
      * @param CurlyListNode $value
      */
-    public function map($value): array|Expr
+    public function map($value): array|Expr|Array_
     {
-        return array_map(
-            fn ($node): mixed => $this->annotationToAttributeMapper->map($node),
-            $value->getValuesWithExplicitSilentAndWithoutQuotes()
-        );
+        $arrayItems = [];
+        foreach ($value->getValuesWithExplicitSilentAndWithoutQuotes() as $key => $singleValue) {
+            $valueExpr = $this->annotationToAttributeMapper->map($singleValue);
+
+            $keyExpr = null;
+            if (! is_int($key)) {
+                $keyExpr = $this->annotationToAttributeMapper->map($key);
+            }
+
+            // remove node
+            if ($valueExpr === DocTagNodeState::REMOVE_ARRAY) {
+                continue;
+            }
+
+            $arrayItems[] = new ArrayItem($valueExpr, $keyExpr);
+        }
+
+        return new Array_($arrayItems);
+//
+//        return array_map(
+//            fn ($node): mixed => $this->annotationToAttributeMapper->map($node),
+//            $value->getValuesWithExplicitSilentAndWithoutQuotes()
+//        );
     }
 }
