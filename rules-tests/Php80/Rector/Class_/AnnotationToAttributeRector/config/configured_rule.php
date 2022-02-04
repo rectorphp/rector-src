@@ -42,5 +42,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             new AnnotationToAttribute(
                 'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestOther'
             ),
+            new AnnotationToAttribute(
+                'ApiPlatform\Core\Annotation\ApiResource'
+            ),
         ]);
 };
