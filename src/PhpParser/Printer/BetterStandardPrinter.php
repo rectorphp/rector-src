@@ -70,7 +70,7 @@ final class BetterStandardPrinter extends Standard
 
 
     /**
-     * @see https://regex101.com/r/oUY7A7/1
+     * @see https://regex101.com/r/oUY7A7/2
      * @var string
      */
     private const CLASS_CONST_FETCH_ARRAY_KEY_REGEX = "#\[(?<class_const_fetch>\'[A-za-z]*::[A-za-z]*\')(?<values> =\> .*\])#";
