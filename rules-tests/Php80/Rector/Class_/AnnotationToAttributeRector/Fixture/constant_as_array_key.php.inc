@@ -2,16 +2,14 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\ConstantReference;
 
 /**
- * @ApiResource(
+ * @GenericAnnotation(
  *     itemOperations={
  *         "get" = {
- *             "normalization_context" =  {
- *                 AbstractObjectNormalizer::SKIP_NULL_VALUES = true
- *             }
+               ConstantReference::FIRST_NAME = true
  *         }
  *     }
  * )
@@ -24,10 +22,10 @@ final class DemoClass {
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\ConstantReference;
 
-#[ApiResource(itemOperations: ['get' => ['normalization_context' => [AbstractObjectNormalizer::SKIP_NULL_VALUES => true]]])]
+#[GenericAnnotation(itemOperations: ['get' => [ConstantReference::FIRST_NAME => true]])]
 final class DemoClass
 {
 }
