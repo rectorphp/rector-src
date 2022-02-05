@@ -246,7 +246,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         /** @var Node $originalNode */
         if (is_array($node)) {
-            $this->createdByRuleDecorator->decorate($node, $originalNode);
+            $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $node;
@@ -270,7 +270,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->mirrorAttributes($originalAttributes, $node);
         $this->connectParentNodes($node);
 
-        $this->createdByRuleDecorator->decorate($node, $originalNode);
+        $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
         // is equals node type? return node early
         if ($originalNode::class === $node::class) {

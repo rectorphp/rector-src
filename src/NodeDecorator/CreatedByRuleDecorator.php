@@ -20,16 +20,16 @@ final class CreatedByRuleDecorator
     /**
      * @param array<Node>|Node $node
      */
-    public function decorate(array | Node $node, Node $originalNode): void
+    public function decorate(array | Node $node, Node $originalNode, string $rectorClass): void
     {
         if ($node instanceof Node) {
             $node = [$node];
         }
 
         foreach ($node as $singleNode) {
-            $this->createByRule($singleNode, static::class);
+            $this->createByRule($singleNode, $rectorClass);
         }
 
-        $this->createByRule($originalNode, static::class);
+        $this->createByRule($originalNode, $rectorClass);
     }
 }
