@@ -188,7 +188,8 @@ CODE_SAMPLE
 
             if ($methodReflection instanceof ResolvedMethodReflection) {
                 $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
-                if (count($parametersAcceptor->getParameters()) !== 1) {
+                $parameters = $parametersAcceptor->getParameters();
+                if (count($parameters) !== 1 || $parameters[0]->isVariadic()) {
                     return null;
                 }
             }
