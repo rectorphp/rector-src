@@ -188,7 +188,7 @@ CODE_SAMPLE
 
             if ($methodReflection instanceof ResolvedMethodReflection) {
                 $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
-                if (count($parametersAcceptor->getParameters()) > 1) {
+                if (count($parametersAcceptor->getParameters()) !== 1) {
                     return null;
                 }
             }
