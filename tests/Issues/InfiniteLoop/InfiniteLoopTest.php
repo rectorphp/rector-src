@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\InfiniteLoop;
 
-use Rector\Core\Exception\NodeTraverser\InfiniteLoopTraversingException;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
