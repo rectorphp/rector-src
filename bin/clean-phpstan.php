@@ -48,7 +48,7 @@ final class CleanPhpstanCommand extends Command
         $result = $process->getOutput();
         $isFailure = str_contains($result, 'Ignored error pattern');
 
-        file_put_contents('phpstan.neon', $originalContent);
+        file_put_contents(self::FILE, $originalContent);
 
         $output->writeln($result);
 
