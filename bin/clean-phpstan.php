@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Nette\Utils\Strings;
 use Symfony\Component\Console\Application;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,6 +18,18 @@ final class CleanPhpstanCommand extends Command
      * @var string
      */
     private const FILE = 'phpstan.neon';
+
+    /**
+     * @var string
+     * @see https://regex101.com/r/TAAOpH/2
+     */
+    private const MULTI_SPACE_REGEX = '#\s{2,}|\\e\[30;43m |\\e\[39;49m\\n#';
+
+    /**
+     * @var string
+     * @see https://regex101.com/r/crQyI3/3
+     */
+    private const ONELINE_IGNORED_PATTERN_REGEX = '#(?<=Ignored error pattern) (?<content>\#.*\#)(?= was not matched in reported errors\.)#';
 
     protected function configure(): void
     {
@@ -48,11 +60,46 @@ final class CleanPhpstanCommand extends Command
         $result = $process->getOutput();
         $isFailure = str_contains($result, 'Ignored error pattern');
 
-        file_put_contents(self::FILE, $originalContent);
-
         $output->writeln($result);
 
-        return $isFailure ? self::FAILURE : self::SUCCESS;
+        if (! $isFailure) {
+            return self::SUCCESS;
+        }
+
+        $output->writeln('Removing ignored pattern ...');
+
+        $result = Strings::replace($result, self::MULTI_SPACE_REGEX, ' ');
+        $result = str_replace('   ', '', $result);
+
+        $matchAll = Strings::matchAll($result, self::ONELINE_IGNORED_PATTERN_REGEX);
+
+        foreach ($matchAll as $match) {
+            $newContent = str_replace('        - \'' . $match['content'] . '\'', '', $newContent);
+        }
+
+        $newContent = str_replace(
+            'reportUnmatchedIgnoredErrors: true',
+            'reportUnmatchedIgnoredErrors: false',
+            $newContent
+        );
+        file_put_contents(self::FILE, $newContent);
+
+        $process2 = new Process(['composer', 'phpstan']);
+        $process2->run();
+
+        $result = $process2->getOutput();
+        $isFailure = str_contains($result, 'Ignored error pattern');
+
+        if ($isFailure) {
+            $output->writeln('There are still errors that need to be fixed manually');
+            $output->writeln($result);
+
+            return self::FAILURE;
+        }
+
+        $output->writeln('Ignored errors removed');
+
+        return self::SUCCESS;
     }
 }
 
