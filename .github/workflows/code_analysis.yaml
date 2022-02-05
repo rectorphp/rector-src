@@ -45,6 +45,10 @@ jobs:
                         name: 'Compatible PHPStan versions'
                         run: php bin/validate-phpstan-version.php
 
+                    -
+                        name: 'PHPStan verify ignored pattern'
+                        run: php bin/clean-phpstan.php
+
                     # see https://github.com/rectorphp/rector-generator
                     -
                         name: 'Rector Generate From Recipe'
