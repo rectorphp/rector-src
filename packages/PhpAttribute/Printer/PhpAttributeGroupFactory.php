@@ -29,7 +29,7 @@ final class PhpAttributeGroupFactory
     /**
      * @var array<string, string[]>>
      */
-    private $unwrappedAnnotations = [
+    private array $unwrappedAnnotations = [
         'Doctrine\ORM\Mapping\Table' => ['uniqueConstraints'],
         'Doctrine\ORM\Mapping\Entity' => ['uniqueConstraints'],
     ];
