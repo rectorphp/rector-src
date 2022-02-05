@@ -72,7 +72,7 @@ CODE_SAMPLE
         $node->args[1] = new Arg($resultVariable);
 
         $expression = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if ($expression === null) {
+        if (! $expression instanceof Node\Stmt) {
             return null;
         }
 
