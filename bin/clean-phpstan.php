@@ -63,6 +63,7 @@ final class CleanPhpstanCommand extends Command
         $output->writeln($result);
 
         if (! $isFailure) {
+            file_put_contents(self::FILE, $originalContent);
             return self::SUCCESS;
         }
 
