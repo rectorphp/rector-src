@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Httpful\Request;
-use Nette\Utils\Strings;
 use Symfony\Component\Console\Application;
 
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +22,11 @@ final class CleanPhpstanCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $originalContent = file_get_contents('phpstan.neon');
-        $newContent = str_replace('reportUnmatchedIgnoredErrors: false', 'reportUnmatchedIgnoredErrors: true', $originalContent);
+        $newContent = str_replace(
+            'reportUnmatchedIgnoredErrors: false',
+            'reportUnmatchedIgnoredErrors: true',
+            $originalContent
+        );
 
         file_put_contents('phpstan.neon', $newContent);
 
