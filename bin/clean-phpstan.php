@@ -14,6 +14,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 final class CleanPhpstanCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private const FILE = 'phpstan.neon';
+
     protected function configure(): void
     {
         $this->setName(CommandNaming::classToName(self::class));
@@ -21,34 +26,33 @@ final class CleanPhpstanCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $originalContent = file_get_contents('phpstan.neon');
+        if (! file_exists(self::FILE)) {
+            $message = sprintf('File %s does not exists', self::FILE);
+            $output->writeln($message);
+
+            return self::FAILURE;
+        }
+
+        $originalContent = (string) file_get_contents(self::FILE);
         $newContent = str_replace(
             'reportUnmatchedIgnoredErrors: false',
             'reportUnmatchedIgnoredErrors: true',
             $originalContent
         );
 
-        file_put_contents('phpstan.neon', $newContent);
+        file_put_contents(self::FILE, $newContent);
 
         $process = new Process(['composer', 'phpstan']);
         $process->run();
 
         $result = $process->getOutput();
-
-        $isFailure = false;
-        if (str_contains($result, 'Ignored error pattern')) {
-            $isFailure = true;
-        }
+        $isFailure = str_contains($result, 'Ignored error pattern');
 
         file_put_contents('phpstan.neon', $originalContent);
 
         $output->writeln($result);
 
-        if ($isFailure) {
-            return self::FAILURE;
-        }
-
-        return self::SUCCESS;
+        return $isFailure ? self::FAILURE : self::SUCCESS;
     }
 }
 

@@ -37,7 +37,7 @@ parameters:
     scanDirectories:
         - stubs
 
-    reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: true
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
@@ -74,7 +74,6 @@ parameters:
 
         # tests
         - tests/DependencyInjection/config
-        - bin/clean-phpstan.php
 
     ignoreErrors:
         # PHP 7.4 1_000 support
