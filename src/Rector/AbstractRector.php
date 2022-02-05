@@ -240,7 +240,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
-        if (! $this->infiniteLoopValidator->isValid($node, $originalNode)) {
+        if (! $this->infiniteLoopValidator->isValid($node, $originalNode, static::class)) {
             return null;
         }
 

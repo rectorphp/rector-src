@@ -18,7 +18,7 @@ final class InfiniteLoopValidator
     /**
      * @param Node|array<Node> $node
      */
-    public function isValid(Node|array $node, Node $originalNode): bool
+    public function isValid(Node|array $node, Node $originalNode, string $rectorClass): bool
     {
         if ($this->nodeComparator->areNodesEqual($node, $originalNode)) {
             return true;
@@ -33,6 +33,10 @@ final class InfiniteLoopValidator
         }
 
         $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-        return $createdByRule === [];
+        if ($createdByRule === []) {
+            return true;
+        }
+
+        return ! in_array($rectorClass, $createdByRule, true);
     }
 }
