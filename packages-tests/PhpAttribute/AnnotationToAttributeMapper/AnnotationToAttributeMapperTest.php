@@ -6,6 +6,7 @@ namespace Rector\Tests\PhpAttribute\AnnotationToAttributeMapper;
 
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
@@ -23,6 +24,12 @@ final class AnnotationToAttributeMapperTest extends AbstractTestCase
 
     public function test(): void
     {
+        $mappedExpr = $this->annotationToAttributeMapper->map(false);
+        $this->assertInstanceOf(ConstFetch::class, $mappedExpr);
+
+        $mappedExpr = $this->annotationToAttributeMapper->map('false');
+        $this->assertInstanceOf(ConstFetch::class, $mappedExpr);
+
         $mappedExpr = $this->annotationToAttributeMapper->map('100');
         $this->assertInstanceOf(LNumber::class, $mappedExpr);
 

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute;
 
+use PhpParser\BuilderHelpers;
 use PhpParser\Node\Expr;
+use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 
@@ -33,6 +35,12 @@ final class AnnotationToAttributeMapper
             return $value;
         }
 
-        return DocTagNodeState::REMOVE_ARRAY;
+        // remove node, as handled elsewhere
+        if ($value instanceof DoctrineAnnotationTagValueNode) {
+            return DocTagNodeState::REMOVE_ARRAY;
+        }
+
+        // fallback
+        return BuilderHelpers::normalizeValue($value);
     }
 }
