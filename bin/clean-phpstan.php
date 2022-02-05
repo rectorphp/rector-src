@@ -92,7 +92,7 @@ final class CleanPhpstanCommand extends Command
         $isFailure = str_contains($result, 'Ignored error pattern');
 
         if ($isFailure) {
-            $output->writeln('There are still errors that need to be fixed manually');
+            $output->writeln('There are still ignored errors that need to be cleaned up manually');
             $output->writeln($result);
 
             return self::FAILURE;
