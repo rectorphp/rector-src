@@ -95,7 +95,7 @@ CODE_SAMPLE
         $anonymousFunction->stmts[1] = new Return_($ternary);
 
         $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStatement instanceof \PhpParser\Node) {
+        if (! $currentStatement instanceof Node) {
             throw new ShouldNotHappenException();
         }
 

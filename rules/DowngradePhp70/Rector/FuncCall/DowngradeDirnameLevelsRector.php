@@ -129,7 +129,7 @@ CODE_SAMPLE
     private function refactorForVariableLevels(FuncCall $funcCall): FuncCall
     {
         $currentStmt = $funcCall->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStmt instanceof \PhpParser\Node) {
+        if (! $currentStmt instanceof Node) {
             throw new ShouldNotHappenException();
         }
 

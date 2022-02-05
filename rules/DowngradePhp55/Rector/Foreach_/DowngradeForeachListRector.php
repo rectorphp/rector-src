@@ -80,7 +80,7 @@ CODE_SAMPLE
     private function createVariable(Foreach_ $foreach): Variable
     {
         $currentStmt = $foreach->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStmt instanceof \PhpParser\Node) {
+        if (! $currentStmt instanceof Node) {
             throw new ShouldNotHappenException();
         }
 

@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\VariableNaming;
@@ -91,7 +92,7 @@ CODE_SAMPLE
     private function createVariable(Instanceof_ $instanceof): Variable
     {
         $currentStmt = $instanceof->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStmt instanceof Node\Stmt) {
+        if (! $currentStmt instanceof Stmt) {
             throw new ShouldNotHappenException();
         }
 

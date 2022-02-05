@@ -192,7 +192,7 @@ CODE_SAMPLE
     private function refactorUsedVariable(Assign $assign): ?Assign
     {
         $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof \PhpParser\Node) {
+        if (! $parentNode instanceof Node) {
             return null;
         }
 

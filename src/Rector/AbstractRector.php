@@ -240,8 +240,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
-        /** @var \PhpParser\Node $originalNode */
-
+        /** @var Node $originalNode */
         if (is_array($node)) {
             $this->createdByRule($node, $originalNode);
 

@@ -94,7 +94,7 @@ CODE_SAMPLE
             $variable = $assign->var;
         } else {
             $currentStmt = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-            if (! $currentStmt instanceof \PhpParser\Node) {
+            if (! $currentStmt instanceof Node) {
                 throw new ShouldNotHappenException();
             }
 
