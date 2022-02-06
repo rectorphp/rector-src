@@ -238,6 +238,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         if ($node === null) {
             return null;
         }
+
         if ($node === []) {
             return null;
         }
