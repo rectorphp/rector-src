@@ -23,7 +23,7 @@ final class InfiniteLoopValidator
     public function isValid(Node|array $node, Node $originalNode, string $rectorClass): bool
     {
         if ($this->nodeComparator->areNodesEqual($node, $originalNode)) {
-            return true;
+            return ! $this->hasInCreatedByRule($originalNode, $rectorClass);
         }
 
         $isFound = (bool) $this->betterNodeFinder->findFirst(
@@ -35,11 +35,12 @@ final class InfiniteLoopValidator
             return true;
         }
 
-        $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-        if ($createdByRule === []) {
-            return true;
-        }
+        return ! $this->hasInCreatedByRule($originalNode, $rectorClass);
+    }
 
-        return ! in_array($rectorClass, $createdByRule, true);
+    private function hasInCreatedByRule(Node $originalNode, string $rectorClass): bool
+    {
+        $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+        return in_array($rectorClass, $createdByRule, true);
     }
 }
