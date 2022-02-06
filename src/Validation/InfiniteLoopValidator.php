@@ -11,8 +11,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class InfiniteLoopValidator
 {
-    public function __construct(private readonly NodeComparator $nodeComparator, private readonly BetterNodeFinder $betterNodeFinder)
-    {
+    public function __construct(
+        private readonly NodeComparator $nodeComparator,
+        private readonly BetterNodeFinder $betterNodeFinder
+    ) {
     }
 
     /**
@@ -24,7 +26,8 @@ final class InfiniteLoopValidator
             return true;
         }
 
-        $isFound = (bool) $this->betterNodeFinder->findFirst($node,
+        $isFound = (bool) $this->betterNodeFinder->findFirst(
+            $node,
             fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($node, $subNode)
         );
 

@@ -9,14 +9,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class CreatedByRuleDecorator
 {
-    private function createByRule(Node $node, string $rectorClass): void
-    {
-        $mergeCreatedByRule = array_merge($node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [], [$rectorClass]);
-        $mergeCreatedByRule = array_unique($mergeCreatedByRule);
-
-        $node->setAttribute(AttributeKey::CREATED_BY_RULE, $mergeCreatedByRule);
-    }
-
     /**
      * @param array<Node>|Node $node
      */
@@ -31,5 +23,13 @@ final class CreatedByRuleDecorator
         }
 
         $this->createByRule($originalNode, $rectorClass);
+    }
+
+    private function createByRule(Node $node, string $rectorClass): void
+    {
+        $mergeCreatedByRule = array_merge($node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [], [$rectorClass]);
+        $mergeCreatedByRule = array_unique($mergeCreatedByRule);
+
+        $node->setAttribute(AttributeKey::CREATED_BY_RULE, $mergeCreatedByRule);
     }
 }
