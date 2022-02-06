@@ -246,6 +246,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         /** @var Node $originalNode */
         if (is_array($node)) {
+            /** @var array<Node> $node */
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
             $originalNodeHash = spl_object_hash($originalNode);
@@ -259,6 +260,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         // not changed, return node early
+        /** @var Node $node */
         if (! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
             return $node;
         }
