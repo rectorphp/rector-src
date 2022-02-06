@@ -233,16 +233,18 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         $originalNode ??= clone $node;
 
+        if (! $this->infiniteLoopValidator->isValid($node, $originalNode, static::class)) {
+            return null;
+        }
+
         $node = $this->refactor($node);
+
         // nothing to change → continue
-        if ($node === null) {
+        if ($this->isNothingToChange($node)) {
             return null;
         }
 
-        if ($node === []) {
-            return null;
-        }
-
+        /** @var Node|array<Node> $node */
         if (! $this->infiniteLoopValidator->isValid($node, $originalNode, static::class)) {
             return null;
         }
@@ -432,6 +434,18 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function removeNodes(array $nodes): void
     {
         $this->nodeRemover->removeNodes($nodes);
+    }
+
+    /**
+     * @param Node|array<Node>|null $node
+     */
+    private function isNothingToChange(array|Node|null $node): bool
+    {
+        if ($node === null) {
+            return true;
+        }
+
+        return $node === [];
     }
 
     /**
