@@ -234,9 +234,11 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $originalNode ??= clone $node;
 
         $node = $this->refactor($node);
-
         // nothing to change → continue
-        if ($node === null || $node === []) {
+        if ($node === null) {
+            return null;
+        }
+        if ($node === []) {
             return null;
         }
 
