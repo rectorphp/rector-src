@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
+use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -165,7 +166,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if (! $varTag->type instanceof GenericTypeNode) {
+        if (! $varTag->type instanceof GenericTypeNode && ! $varTag->type instanceof SpacingAwareArrayTypeNode) {
             return;
         }
 
