@@ -76,7 +76,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->extends === null) {
+        $parentExtends = $node->extends;
+        if ($parentExtends === null) {
             return null;
         }
 
@@ -85,7 +86,7 @@ CODE_SAMPLE
         }
 
         foreach ($this->parentClassToTraits as $parentClassToTrait) {
-            if (! $this->isObjectType($node, $parentClassToTrait->getParentObjectType())) {
+            if (! $this->isName($parentExtends, $parentClassToTrait->getParentType())) {
                 continue;
             }
 
