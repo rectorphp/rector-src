@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Transform\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
@@ -77,7 +78,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $parentExtends = $node->extends;
-        if ($parentExtends === null) {
+        if (! $parentExtends instanceof Name) {
             return null;
         }
 
