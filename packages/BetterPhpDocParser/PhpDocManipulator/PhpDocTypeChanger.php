@@ -189,6 +189,7 @@ final class PhpDocTypeChanger
         $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTag, $property);
 
         $this->changeParamType($phpDocInfo, $paramType, $param, $paramVarName);
+        $this->processKeepComments($property, $param);
     }
 
     public function changeVarTypeNode(PhpDocInfo $phpDocInfo, TypeNode $typeNode): void

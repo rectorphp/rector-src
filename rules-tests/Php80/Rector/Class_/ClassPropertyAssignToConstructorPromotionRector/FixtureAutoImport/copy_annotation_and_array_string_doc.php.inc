@@ -41,7 +41,8 @@ class CopyAnnotationAndArrayStringDoc
          * @SerializedName("owsy/derived-facts")
          */
         private array $derivedFacts = []
-    ) {
+    )
+    {
     }
 }
 
