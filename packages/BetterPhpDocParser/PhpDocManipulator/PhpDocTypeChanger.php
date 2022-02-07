@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
+use PHPStan\PhpDocParser\Ast\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -19,6 +20,7 @@ use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
+use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -28,6 +30,15 @@ use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
 
 final class PhpDocTypeChanger
 {
+    /**
+     * @var array<class-string<Node>>
+     */
+    public const ALLOWED_TYPES = [
+        GenericTypeNode::class,
+        SpacingAwareArrayTypeNode::class,
+        SpacingAwareCallableTypeNode::class,
+    ];
+
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
@@ -166,7 +177,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if (! $varTag->type instanceof GenericTypeNode && ! $varTag->type instanceof SpacingAwareArrayTypeNode) {
+        if (! in_array($varTag->type::class, self::ALLOWED_TYPES, true)) {
             return;
         }
 
