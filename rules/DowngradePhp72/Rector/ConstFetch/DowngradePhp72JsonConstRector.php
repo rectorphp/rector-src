@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp72\Rector\ConstFetch;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -46,18 +49,54 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ConstFetch::class];
+        return [ConstFetch::class, BitwiseOr::class];
     }
 
     /**
-     * @param ConstFetch $node
+     * @param ConstFetch|BitwiseOr $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->nodeNameResolver->isNames($node, self::CONSTANTS)) {
+        $zeroConstFetch = new ConstFetch(new Name('0'));
+
+        if ($node instanceof ConstFetch) {
+            if (! $this->nodeNameResolver->isNames($node, self::CONSTANTS)) {
+                return null;
+            }
+
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parent instanceof BitwiseOr) {
+                return $zeroConstFetch;
+            }
+
             return null;
         }
 
-        return new ConstFetch(new Name('0'));
+        return $this->processBitwiseOr($node, $zeroConstFetch);
+    }
+
+    private function processBitwiseOr(BitwiseOr $bitwiseOr, ConstFetch $zeroConstFetch): ?Expr
+    {
+        if ($bitwiseOr->left instanceof ConstFetch && $this->nodeNameResolver->isNames($bitwiseOr->left, self::CONSTANTS)) {
+            $bitwiseOr->left = $zeroConstFetch;
+        }
+
+        if ($bitwiseOr->right instanceof ConstFetch && $this->nodeNameResolver->isNames($bitwiseOr->right, self::CONSTANTS)) {
+            $bitwiseOr->right = $zeroConstFetch;
+        }
+
+        if ($this->nodeComparator->areNodesEqual($bitwiseOr->left, $zeroConstFetch) && $this->nodeComparator->areNodesEqual($bitwiseOr->right, $zeroConstFetch)) {
+            return $zeroConstFetch;
+        }
+
+        if ($this->nodeComparator->areNodesEqual($bitwiseOr->left, $zeroConstFetch)) {
+            return $bitwiseOr->right;
+        }
+
+        if ($this->nodeComparator->areNodesEqual($bitwiseOr->right, $zeroConstFetch)) {
+            return $bitwiseOr->left;
+        }
+
+        return null;
     }
 }
