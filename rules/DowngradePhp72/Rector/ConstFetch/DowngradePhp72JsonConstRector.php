@@ -34,9 +34,11 @@ final class DowngradePhp72JsonConstRector extends AbstractRector
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 $inDecoder = new Decoder($connection, true, 512, \JSON_INVALID_UTF8_IGNORE);
+$inDecoder = new Decoder($connection, true, 512, \JSON_INVALID_UTF8_SUBSTITUTE);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
+$inDecoder = new Decoder($connection, true, 512, 0);
 $inDecoder = new Decoder($connection, true, 512, 0);
 CODE_SAMPLE
                 ),
