@@ -14,13 +14,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @changelog https://www.php.net/manual/en/function.json-encode.php#refsect1-function.json-encode-changelog
- *
- * @see \Rector\Tests\DowngradePhp73\Rector\ConstFetch\DowngradePhp73JsonConstRector\DowngradePhp73JsonConstRectorTest
  */
 final class DowngradePhp73JsonConstRector extends AbstractRector
 {
     /**
-     * @var array<string>
+     * @var string[]
      */
     private const CONSTANTS = ['JSON_THROW_ON_ERROR'];
 
