@@ -8,15 +8,13 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class JsonConstCleaner
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -54,35 +52,35 @@ final class JsonConstCleaner
      */
     private function cleanByBitwiseOr(BitwiseOr $bitwiseOr, array $constants): ?Expr
     {
-        $zeroConstFetch = new ConstFetch(new Name('0'));
-        $transformed = false;
+        $isLeftTransformed = false;
+        $isRightTransformed = false;
 
         if ($bitwiseOr->left instanceof ConstFetch && $this->nodeNameResolver->isNames(
             $bitwiseOr->left,
             $constants
         )) {
-            $transformed = true;
-            $bitwiseOr->left = $zeroConstFetch;
+            $isLeftTransformed = true;
         }
 
         if ($bitwiseOr->right instanceof ConstFetch && $this->nodeNameResolver->isNames(
             $bitwiseOr->right,
             $constants
         )) {
-            $transformed = true;
-            $bitwiseOr->right = $zeroConstFetch;
+            $isRightTransformed = true;
         }
 
-        if (! $transformed) {
+        if (! $isLeftTransformed && ! $isRightTransformed) {
             return null;
         }
 
-        if ($this->nodeComparator->areNodesEqual($bitwiseOr->left, $bitwiseOr->right)) {
-            return $zeroConstFetch;
+        if (! $isLeftTransformed) {
+            return $bitwiseOr->left;
         }
 
-        return $this->nodeComparator->areNodesEqual($bitwiseOr->left, $zeroConstFetch)
-            ? $bitwiseOr->right
-            : $bitwiseOr->left;
+        if (! $isRightTransformed) {
+            return $bitwiseOr->right;
+        }
+
+        return new ConstFetch(new Name('0'));
     }
 }
