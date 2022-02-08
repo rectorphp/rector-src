@@ -30,11 +30,6 @@ use Rector\PHPUnit\NodeFactory\SetUpClassMethodFactory;
  */
 final class PhpSpecClassToPHPUnitClassRector extends AbstractPhpSpecToPHPUnitRector
 {
-    /**
-     * @var string
-     */
-    private const ALREADY_RENAMED_TO_TEST = 'already_renamed_to_test';
-
     public function __construct(
         private readonly ClassInsertManipulator $classInsertManipulator,
         private readonly LetManipulator $letManipulator,
