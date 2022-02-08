@@ -60,17 +60,11 @@ final class PhpSpecClassToPHPUnitClassRector extends AbstractPhpSpecToPHPUnitRec
             return null;
         }
 
-        $isAlreadyRenamedToTest = (bool) $node->getAttribute(self::ALREADY_RENAMED_TO_TEST, false);
-        if ($isAlreadyRenamedToTest) {
-            return null;
-        }
-
         // 1. change namespace name to PHPUnit-like
         $this->phpSpecRenaming->renameNamespace($node);
 
         $propertyName = $this->phpSpecRenaming->resolveObjectPropertyName($node);
 
-        $node->setAttribute(self::ALREADY_RENAMED_TO_TEST, true);
         $this->phpSpecRenaming->renameClass($node);
         $this->phpSpecRenaming->renameExtends($node);
 
