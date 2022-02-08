@@ -105,10 +105,8 @@ CODE_SAMPLE
             return $zeroConstFetch;
         }
 
-        if ($this->nodeComparator->areNodesEqual($bitwiseOr->left, $zeroConstFetch)) {
-            return $bitwiseOr->right;
-        }
-
-        return $bitwiseOr->left;
+        return $this->nodeComparator->areNodesEqual($bitwiseOr->left, $zeroConstFetch)
+            ? $bitwiseOr->right
+            : $bitwiseOr->left;
     }
 }
