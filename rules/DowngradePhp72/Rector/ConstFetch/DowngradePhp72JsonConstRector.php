@@ -79,10 +79,13 @@ CODE_SAMPLE
 
     private function processBitwiseOr(BitwiseOr $bitwiseOr, ConstFetch $zeroConstFetch): ?Expr
     {
+        $transformed = false;
+
         if ($bitwiseOr->left instanceof ConstFetch && $this->nodeNameResolver->isNames(
             $bitwiseOr->left,
             self::CONSTANTS
         )) {
+            $transformed = true;
             $bitwiseOr->left = $zeroConstFetch;
         }
 
@@ -90,13 +93,15 @@ CODE_SAMPLE
             $bitwiseOr->right,
             self::CONSTANTS
         )) {
+            $transformed = true;
             $bitwiseOr->right = $zeroConstFetch;
         }
 
-        if ($this->nodeComparator->areNodesEqual(
-            $bitwiseOr->left,
-            $zeroConstFetch
-        ) && $this->nodeComparator->areNodesEqual($bitwiseOr->right, $zeroConstFetch)) {
+        if (! $transformed) {
+            return null;
+        }
+
+        if ($this->nodeComparator->areNodesEqual($bitwiseOr->left, $bitwiseOr->right)) {
             return $zeroConstFetch;
         }
 
@@ -104,10 +109,6 @@ CODE_SAMPLE
             return $bitwiseOr->right;
         }
 
-        if ($this->nodeComparator->areNodesEqual($bitwiseOr->right, $zeroConstFetch)) {
-            return $bitwiseOr->left;
-        }
-
-        return null;
+        return $bitwiseOr->left;
     }
 }
