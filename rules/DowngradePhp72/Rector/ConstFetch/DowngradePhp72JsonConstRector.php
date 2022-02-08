@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp72\Rector\ConstFetch;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Name;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\DowngradePhp72\NodeManipulator\JsonConstCleaner;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,6 +23,11 @@ final class DowngradePhp72JsonConstRector extends AbstractRector
      * @var array<string>
      */
     private const CONSTANTS = ['JSON_INVALID_UTF8_IGNORE', 'JSON_INVALID_UTF8_SUBSTITUTE'];
+
+    public function __construct(
+        private readonly JsonConstCleaner $jsonConstCleaner
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -59,54 +62,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $zeroConstFetch = new ConstFetch(new Name('0'));
-
-        if ($node instanceof ConstFetch) {
-            if (! $this->nodeNameResolver->isNames($node, self::CONSTANTS)) {
-                return null;
-            }
-
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parent instanceof BitwiseOr) {
-                return $zeroConstFetch;
-            }
-
-            return null;
-        }
-
-        return $this->processBitwiseOr($node, $zeroConstFetch);
-    }
-
-    private function processBitwiseOr(BitwiseOr $bitwiseOr, ConstFetch $zeroConstFetch): ?Expr
-    {
-        $transformed = false;
-
-        if ($bitwiseOr->left instanceof ConstFetch && $this->nodeNameResolver->isNames(
-            $bitwiseOr->left,
-            self::CONSTANTS
-        )) {
-            $transformed = true;
-            $bitwiseOr->left = $zeroConstFetch;
-        }
-
-        if ($bitwiseOr->right instanceof ConstFetch && $this->nodeNameResolver->isNames(
-            $bitwiseOr->right,
-            self::CONSTANTS
-        )) {
-            $transformed = true;
-            $bitwiseOr->right = $zeroConstFetch;
-        }
-
-        if (! $transformed) {
-            return null;
-        }
-
-        if ($this->nodeComparator->areNodesEqual($bitwiseOr->left, $bitwiseOr->right)) {
-            return $zeroConstFetch;
-        }
-
-        return $this->nodeComparator->areNodesEqual($bitwiseOr->left, $zeroConstFetch)
-            ? $bitwiseOr->right
-            : $bitwiseOr->left;
+        return $this->jsonConstCleaner->clean($node, self::CONSTANTS);
     }
 }
