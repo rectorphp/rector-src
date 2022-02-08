@@ -21,7 +21,7 @@ final class RectifiedAnalyzer
      */
     private array $previousFileWithNodes = [];
 
-    public function verify(RectorInterface $rector, Node $node, ?Node $originalNode, File $currentFile): ?RectifiedNode
+    public function verify(RectorInterface $rector, Node $node, File $currentFile): ?RectifiedNode
     {
         $smartFileInfo = $currentFile->getSmartFileInfo();
         $realPath = $smartFileInfo->getRealPath();
