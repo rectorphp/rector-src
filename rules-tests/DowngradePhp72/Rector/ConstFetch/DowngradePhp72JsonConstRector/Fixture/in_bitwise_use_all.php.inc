@@ -6,7 +6,7 @@ namespace Rector\Tests\DowngradePhp72\Rector\FuncCall\DowngradePhp72JsonConstRec
 
 class InBitwiseUseAll
 {
-    public function run()
+    public function run($argument)
     {
         $argument = json_encode($argument, JSON_INVALID_UTF8_IGNORE | JSON_INVALID_UTF8_SUBSTITUTE);
     }
@@ -22,7 +22,7 @@ namespace Rector\Tests\DowngradePhp72\Rector\FuncCall\DowngradePhp72JsonConstRec
 
 class InBitwiseUseAll
 {
-    public function run()
+    public function run($argument)
     {
         $argument = json_encode($argument, 0);
     }
