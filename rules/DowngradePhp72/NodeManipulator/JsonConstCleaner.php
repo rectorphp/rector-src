@@ -52,22 +52,8 @@ final class JsonConstCleaner
      */
     private function cleanByBitwiseOr(BitwiseOr $bitwiseOr, array $constants): ?Expr
     {
-        $isLeftTransformed = false;
-        $isRightTransformed = false;
-
-        if ($bitwiseOr->left instanceof ConstFetch && $this->nodeNameResolver->isNames(
-            $bitwiseOr->left,
-            $constants
-        )) {
-            $isLeftTransformed = true;
-        }
-
-        if ($bitwiseOr->right instanceof ConstFetch && $this->nodeNameResolver->isNames(
-            $bitwiseOr->right,
-            $constants
-        )) {
-            $isRightTransformed = true;
-        }
+        $isLeftTransformed = $this->isTransformed($bitwiseOr->left, $constants);
+        $isRightTransformed = $this->isTransformed($bitwiseOr->right, $constants);
 
         if (! $isLeftTransformed && ! $isRightTransformed) {
             return null;
@@ -82,5 +68,13 @@ final class JsonConstCleaner
         }
 
         return new ConstFetch(new Name('0'));
+    }
+
+    /**
+     * @param string[] $constants
+     */
+    private function isTransformed(Expr $expr, array $constants): bool
+    {
+        return $expr instanceof ConstFetch && $this->nodeNameResolver->isNames($expr, $constants);
     }
 }
