@@ -10,7 +10,6 @@ use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Core\Configuration\Option;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector;
 use Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
@@ -74,10 +73,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         MyCLabsClassToEnumRector::class,
         SpatieEnumClassToEnumRector::class,
 
-        // on purpose with private property parent - @todo fix later
-        ClassPropertyAssignToConstructorPromotionRector::class => [
-            __DIR__ . '/src/PhpParser/Parser/RectorPathRoutingParser.php',
-        ],
+        // code for phpstan with named arguments
+        __DIR__ . '/src/PhpParser/Parser/RectorPathRoutingParser.php',
 
         // test paths
         '*/tests/**/Fixture/*',

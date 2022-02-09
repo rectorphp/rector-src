@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Parser;
 
+use ParseError;
 use PhpParser\Node\Stmt;
 use PHPStan\Parser\CachedParser;
 use PHPStan\Parser\Parser;
@@ -31,12 +32,13 @@ final class RectorPathRoutingParser implements Parser
      */
     public function parseFile(string $file): array
     {
-        // for tests, always parse nodes with directly rich parser to be aware of types
-        if (defined('PHPUNIT_COMPOSER_INSTALL')) {
+        try {
+            // try informative parser to let PHPStan know the types
             return $this->currentPhpVersionRichParser->parseFile($file);
+        } catch (ParseError) {
+            // fallback to routing parser
+            return $this->phpstanPathRoutingParser->parseFile($file);
         }
-
-        return $this->phpstanPathRoutingParser->parseFile($file);
     }
 
     /**
