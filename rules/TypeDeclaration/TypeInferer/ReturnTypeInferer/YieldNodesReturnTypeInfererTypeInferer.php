@@ -89,7 +89,8 @@ final class YieldNodesReturnTypeInfererTypeInferer implements ReturnTypeInfererI
                 return self::CLASS_NAME;
             }
 
-            if (ltrim($returnTagValueNode->type->type->name, '\\') === 'Generator') {
+            $typeName = ltrim($returnTagValueNode->type->type->name, '\\');
+            if ($typeName === 'Generator') {
                 return 'Generator';
             }
         }
