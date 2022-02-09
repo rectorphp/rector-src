@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser\Parser;
 
 use PhpParser\Node\Stmt;
+use PHPStan\Parser\CachedParser;
 use PHPStan\Parser\Parser;
+use PHPStan\Parser\PathRoutingParser;
 
 /**
  * Mirror to @see \PHPStan\Parser\PathRoutingParser
@@ -19,8 +21,8 @@ use PHPStan\Parser\Parser;
 final class RectorPathRoutingParser implements Parser
 {
     public function __construct(
-        private readonly Parser $phpstanPathRoutingParser,
-        private readonly Parser $currentPhpVersionRichParser,
+        private readonly PathRoutingParser $phpstanPathRoutingParser,
+        private readonly CachedParser $currentPhpVersionRichParser,
     ) {
     }
 
