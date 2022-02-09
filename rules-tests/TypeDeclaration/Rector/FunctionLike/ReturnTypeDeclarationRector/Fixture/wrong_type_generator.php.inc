@@ -23,7 +23,7 @@ final class WrongTypeGenerator
     /**
      * @return \wrong
      **/
-    public function generator(): \Iterator
+    public function generator(): \Generator
     {
         yield 5;
     }
