@@ -19,7 +19,8 @@ services:
         autowired: no
 
     pathRoutingParser:
-        class: PHPStan\Parser\PathRoutingParser
+        class: Rector\Core\PhpParser\Parser\RectorPathRoutingParser
+#        class: PHPStan\Parser\PathRoutingParser
         arguments:
             currentPhpVersionRichParser: @cachedRectorParser
             currentPhpVersionSimpleParser: @rectorSimpleParser
