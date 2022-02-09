@@ -73,9 +73,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         MyCLabsClassToEnumRector::class,
         SpatieEnumClassToEnumRector::class,
 
-        // code for phpstan with named arguments
-        __DIR__ . '/src/PhpParser/Parser/RectorPathRoutingParser.php',
-
         // test paths
         '*/tests/**/Fixture/*',
         '*/rules-tests/**/Fixture/*',
