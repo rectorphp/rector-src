@@ -10,8 +10,11 @@ use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
 use PhpParser\NodeTraverser;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
@@ -21,10 +24,16 @@ use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class YieldNodesReturnTypeInfererTypeInferer implements ReturnTypeInfererInterface
 {
+    /**
+     * @var string
+     */
+    private const CLASS_NAME = 'Iterator';
+
     public function __construct(
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly TypeFactory $typeFactory,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -51,17 +60,41 @@ final class YieldNodesReturnTypeInfererTypeInferer implements ReturnTypeInfererI
             $types[] = $resolvedType;
         }
 
+        $className = $this->resolveClassNameReturnType($functionLike);
+
         if ($types === []) {
-            return new FullyQualifiedObjectType('Iterator');
+            return new FullyQualifiedObjectType($className);
         }
 
         $types = $this->typeFactory->createMixedPassedOrUnionType($types);
-        return new FullyQualifiedGenericObjectType('Iterator', [$types]);
+        return new FullyQualifiedGenericObjectType($className, [$types]);
     }
 
     public function getPriority(): int
     {
         return 1200;
+    }
+
+    private function resolveClassNameReturnType(FunctionLike $functionLike): string
+    {
+        if (! $functionLike->getReturnType() instanceof Node) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
+            $returnTagValueNode = $phpDocInfo->getReturnTagValue();
+
+            if (! $returnTagValueNode instanceof ReturnTagValueNode) {
+                return self::CLASS_NAME;
+            }
+
+            if (! $returnTagValueNode->type instanceof GenericTypeNode) {
+                return self::CLASS_NAME;
+            }
+
+            if (ltrim($returnTagValueNode->type->type->name, '\\') === 'Generator') {
+                return 'Generator';
+            }
+        }
+
+        return self::CLASS_NAME;
     }
 
     /**
