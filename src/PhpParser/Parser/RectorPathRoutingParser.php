@@ -5,27 +5,23 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser\Parser;
 
 use PhpParser\Node\Stmt;
-use PHPStan\File\FileHelper;
 use PHPStan\Parser\Parser;
-use PHPStan\Parser\PathRoutingParser;
 
 /**
+ * Mirror to @see \PHPStan\Parser\PathRoutingParser
+ *
  * @api Used in PHPStan internals for parsing nodes:
- * 1) with types for tests:
+ * 1) with types for tests
  * 2) removing unsupported PHP-version code on real run
+ *
+ * Fixes https://github.com/rectorphp/rector/issues/6970
  */
-final class RectorPathRoutingParser extends PathRoutingParser
+final class RectorPathRoutingParser implements Parser
 {
-    private readonly Parser $currentPhpVersionRichParser;
-
     public function __construct(
-        FileHelper $fileHelper,
-        Parser $currentPhpVersionRichParser,
-        Parser $currentPhpVersionSimpleParser,
-        Parser $php8Parser
+        private readonly Parser $phpstanPathRoutingParser,
+        private readonly Parser $currentPhpVersionRichParser,
     ) {
-        $this->currentPhpVersionRichParser = $currentPhpVersionRichParser;
-        parent::__construct($fileHelper, $currentPhpVersionRichParser, $currentPhpVersionSimpleParser, $php8Parser);
     }
 
     /**
@@ -38,6 +34,14 @@ final class RectorPathRoutingParser extends PathRoutingParser
             return $this->currentPhpVersionRichParser->parseFile($file);
         }
 
-        return parent::parseFile($file);
+        return $this->phpstanPathRoutingParser->parseFile($file);
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    public function parseString(string $sourceCode): array
+    {
+        return $this->phpstanPathRoutingParser->parseString($sourceCode);
     }
 }

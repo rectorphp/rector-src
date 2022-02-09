@@ -2,7 +2,7 @@
 # this file overrides definitions from the config above
 services:
     defaultAnalysisParser:
-        factory: @pathRoutingParser
+        factory: @rectorPathRoutingParser
         arguments!: []
 
     cachedRectorParser:
@@ -12,24 +12,17 @@ services:
             cachedNodesByStringCountMax: %cache.nodesByStringCountMax%
         autowired: no
 
-    cachedRectorSimpleParser:
-        class: PHPStan\Parser\CachedParser
-        arguments:
-            originalParser: @rectorSimpleParser
-            cachedNodesByStringCountMax: %cache.nodesByStringCountMax%
-
     rectorSimpleParser:
         class: PHPStan\Parser\CleaningParser
         arguments:
             wrappedParser: @currentPhpVersionSimpleDirectParser
         autowired: no
 
-    pathRoutingParser:
+    rectorPathRoutingParser:
         class: Rector\Core\PhpParser\Parser\RectorPathRoutingParser
         arguments:
+            phpstanPathRoutingParser: @pathRoutingParser
             currentPhpVersionRichParser: @cachedRectorParser
-            currentPhpVersionSimpleParser: @cachedRectorSimpleParser
-            php8Parser: @php8Parser
         autowired: no
 
     rectorParser:
