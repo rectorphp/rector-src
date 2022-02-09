@@ -9,13 +9,12 @@ use PHPStan\Php\PhpVersion;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MissedRectorDueVersionChecker
 {
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly SymfonyStyle $symfonyStyle,
+        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
     ) {
     }
 
@@ -39,7 +38,7 @@ final class MissedRectorDueVersionChecker
             'Do you want to run them? Make "require" > "php" in `composer.json` higher,%sor add "Option::PHP_VERSION_FEATURES" parameter to your `rector.php`.',
             PHP_EOL
         );
-        $this->symfonyStyle->note($solutionMessage);
+        $this->rectorOutputStyle->note($solutionMessage);
     }
 
     /**
@@ -70,7 +69,7 @@ final class MissedRectorDueVersionChecker
      */
     private function reportMissedRectors(array $minPhpVersions): void
     {
-        if (! $this->symfonyStyle->isVerbose()) {
+        if (! $this->rectorOutputStyle->isVerbose()) {
             return;
         }
 
@@ -79,7 +78,7 @@ final class MissedRectorDueVersionChecker
             $shortRectorClass = Strings::after($minPhpVersion::class, '\\', -1);
 
             $rectorMessage = sprintf(' * [%s] %s', $phpVersion->getVersionString(), $shortRectorClass);
-            $this->symfonyStyle->writeln($rectorMessage);
+            $this->rectorOutputStyle->writeln($rectorMessage);
         }
     }
 
@@ -98,6 +97,6 @@ final class MissedRectorDueVersionChecker
             PHP_EOL
         );
 
-        $this->symfonyStyle->warning($warningMessage);
+        $this->rectorOutputStyle->warning($warningMessage);
     }
 }

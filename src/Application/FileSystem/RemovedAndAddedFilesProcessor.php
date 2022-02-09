@@ -6,7 +6,6 @@ namespace Rector\Core\Application\FileSystem;
 
 use Rector\Core\PhpParser\Printer\NodesWithFileDestinationPrinter;
 use Rector\Core\ValueObject\Configuration;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
@@ -18,7 +17,7 @@ final class RemovedAndAddedFilesProcessor
         private readonly SmartFileSystem $smartFileSystem,
         private readonly NodesWithFileDestinationPrinter $nodesWithFileDestinationPrinter,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-        private readonly SymfonyStyle $symfonyStyle
+        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle
     ) {
     }
 
@@ -38,10 +37,10 @@ final class RemovedAndAddedFilesProcessor
 
             if ($configuration->isDryRun()) {
                 $message = sprintf('File "%s" will be removed', $relativePath);
-                $this->symfonyStyle->warning($message);
+                $this->rectorOutputStyle->warning($message);
             } else {
                 $message = sprintf('File "%s" was removed', $relativePath);
-                $this->symfonyStyle->warning($message);
+                $this->rectorOutputStyle->warning($message);
                 $this->smartFileSystem->remove($removedFile->getPathname());
             }
         }
@@ -52,14 +51,14 @@ final class RemovedAndAddedFilesProcessor
         foreach ($this->removedAndAddedFilesCollector->getAddedFilesWithContent() as $addedFileWithContent) {
             if ($configuration->isDryRun()) {
                 $message = sprintf('File "%s" will be added', $addedFileWithContent->getFilePath());
-                $this->symfonyStyle->note($message);
+                $this->rectorOutputStyle->note($message);
             } else {
                 $this->smartFileSystem->dumpFile(
                     $addedFileWithContent->getFilePath(),
                     $addedFileWithContent->getFileContent()
                 );
                 $message = sprintf('File "%s" was added', $addedFileWithContent->getFilePath());
-                $this->symfonyStyle->note($message);
+                $this->rectorOutputStyle->note($message);
             }
         }
     }
@@ -73,11 +72,11 @@ final class RemovedAndAddedFilesProcessor
 
             if ($configuration->isDryRun()) {
                 $message = sprintf('File "%s" will be added', $addedFileWithNode->getFilePath());
-                $this->symfonyStyle->note($message);
+                $this->rectorOutputStyle->note($message);
             } else {
                 $this->smartFileSystem->dumpFile($addedFileWithNode->getFilePath(), $fileContent);
                 $message = sprintf('File "%s" was added', $addedFileWithNode->getFilePath());
-                $this->symfonyStyle->note($message);
+                $this->rectorOutputStyle->note($message);
             }
         }
     }
@@ -93,7 +92,7 @@ final class RemovedAndAddedFilesProcessor
                     $movedFile->getFilePath(),
                     $movedFile->getNewFilePath()
                 );
-                $this->symfonyStyle->note($message);
+                $this->rectorOutputStyle->note($message);
             } else {
                 $this->smartFileSystem->dumpFile($movedFile->getNewFilePath(), $fileContent);
                 $this->smartFileSystem->remove($movedFile->getFilePath());
@@ -103,7 +102,7 @@ final class RemovedAndAddedFilesProcessor
                     $movedFile->getFilePath(),
                     $movedFile->getNewFilePath()
                 );
-                $this->symfonyStyle->note($message);
+                $this->rectorOutputStyle->note($message);
             }
         }
     }

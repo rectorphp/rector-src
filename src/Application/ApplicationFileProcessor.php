@@ -18,7 +18,6 @@ use Rector\FileFormatter\FileFormatter;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\ValueObject\Bridge;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
 use Symplify\EasyParallel\FileSystem\FilePathNormalizer;
@@ -49,7 +48,7 @@ final class ApplicationFileProcessor
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
         private readonly FileFormatter $fileFormatter,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
-        private readonly SymfonyStyle $symfonyStyle,
+        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
         private readonly FileFactory $fileFactory,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ParametersMerger $parametersMerger,
@@ -115,7 +114,7 @@ final class ApplicationFileProcessor
     {
         if ($configuration->shouldShowProgressBar()) {
             $fileCount = count($files);
-            $this->symfonyStyle->progressStart($fileCount);
+            $this->rectorOutputStyle->progressStart($fileCount);
         }
 
         $systemErrorsAndFileDiffs = [
@@ -135,7 +134,7 @@ final class ApplicationFileProcessor
 
             // progress bar +1
             if ($configuration->shouldShowProgressBar()) {
-                $this->symfonyStyle->progressAdvance();
+                $this->rectorOutputStyle->progressAdvance();
             }
         }
 
@@ -229,11 +228,11 @@ final class ApplicationFileProcessor
 
             if (! $isProgressBarStarted) {
                 $fileCount = count($filePaths);
-                $this->symfonyStyle->progressStart($fileCount);
+                $this->rectorOutputStyle->progressStart($fileCount);
                 $isProgressBarStarted = true;
             }
 
-            $this->symfonyStyle->progressAdvance($stepCount);
+            $this->rectorOutputStyle->progressAdvance($stepCount);
             // running in parallel here → nothing else to do
         };
 

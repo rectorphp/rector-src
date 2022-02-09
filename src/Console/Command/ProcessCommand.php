@@ -25,7 +25,6 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\PackageBuilder\Console\Command\CommandNaming;
 
 final class ProcessCommand extends AbstractProcessCommand
@@ -44,7 +43,7 @@ final class ProcessCommand extends AbstractProcessCommand
         private readonly MissedRectorDueVersionChecker $missedRectorDueVersionChecker,
         private readonly EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,
         private readonly OutputFormatterCollector $outputFormatterCollector,
-        private readonly SymfonyStyle $symfonyStyle,
+        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly array $rectors
     ) {
@@ -71,7 +70,7 @@ final class ProcessCommand extends AbstractProcessCommand
 
         // disable console output in case of json output formatter
         if ($configuration->getOutputFormat() === JsonOutputFormatter::NAME) {
-            $this->symfonyStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            $this->rectorOutputStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
         // register autoloaded and included files
