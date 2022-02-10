@@ -38,7 +38,6 @@ use Webmozart\Assert\Assert;
 final class DoctrineAnnotationClassToAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
-     * @deprecated
      * @var string
      */
     public const REMOVE_ANNOTATIONS = 'remove_annotations';
@@ -169,7 +168,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $shouldRemoveAnnotations = $configuration[self::REMOVE_ANNOTATIONS] ?? true;
+        $shouldRemoveAnnotations = $configuration[self::REMOVE_ANNOTATIONS] ?? (bool) current($configuration);
         Assert::boolean($shouldRemoveAnnotations);
         $this->shouldRemoveAnnotations = $shouldRemoveAnnotations;
     }
