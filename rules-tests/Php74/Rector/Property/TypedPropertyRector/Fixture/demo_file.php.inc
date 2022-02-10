@@ -19,7 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class DemoFile
 {
-  /** @var \Foo|\PHPUnit\Framework\MockObject\MockObject */
-  private mixed $x;
+  /** @var Foo|mixed|MockObject */
+  private $x;
 }
 ?>
