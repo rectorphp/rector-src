@@ -4,7 +4,7 @@ namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
 use PHPUnit\Framework\MockObject\MockObject;
 
-class DemoFile
+class BadMixedCodeComment
 {
   /** @var Foo|mixed|MockObject */
   private $x;
@@ -17,7 +17,7 @@ namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
 use PHPUnit\Framework\MockObject\MockObject;
 
-class DemoFile
+class BadMixedCodeComment
 {
   /** @var Foo|mixed|MockObject */
   private $x;
