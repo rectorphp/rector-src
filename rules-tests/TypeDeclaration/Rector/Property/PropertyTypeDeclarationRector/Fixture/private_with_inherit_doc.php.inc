@@ -3,7 +3,9 @@
 namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
 
 final class A {
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     private $property = 'test';
 }
 ?>
@@ -13,7 +15,9 @@ final class A {
 namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
 
 final class A {
-    /** @inheritDoc */
-    private string $property = 'test';
+    /**
+     * @var string
+     */
+    private $property = 'test';
 }
 ?>

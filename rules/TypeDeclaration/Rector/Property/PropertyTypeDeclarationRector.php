@@ -88,8 +88,8 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        
-        if ($phpDocInfo->hasInheritDoc() && !$node->isPrivate()) {
+
+        if ($phpDocInfo->hasInheritDoc() && ! $node->isPrivate()) {
             return null;
         }
 

@@ -323,6 +323,24 @@ final class PhpDocInfo
     }
 
     /**
+     * @param string[] $names
+     */
+    public function removeByNames(array $names): void
+    {
+        $names = array_map(fn (string $name) => $this->annotationNaming->normalizeName($name), $names);
+
+        $phpDocNodeTraverser = new PhpDocNodeTraverser();
+        $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', function (Node $node) use ($names): ?int {
+            if (! $node instanceof PhpDocTagNode || ! in_array($node->name, $names, true)) {
+                return null;
+            }
+
+            $this->markAsChanged();
+            return PhpDocNodeTraverser::NODE_REMOVE;
+        });
+    }
+
+    /**
      * @return array<string, Type>
      */
     public function getParamTypesByName(): array
@@ -435,6 +453,11 @@ final class PhpDocInfo
     public function hasInheritDoc(): bool
     {
         return $this->hasByNames(['inheritdoc', 'inheritDoc']);
+    }
+
+    public function removeInheritDoc(): void
+    {
+        $this->removeByNames(['inheritdoc', 'inheritDoc']);
     }
 
     /**

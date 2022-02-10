@@ -63,7 +63,7 @@ final class PhpDocInfoTest extends AbstractTestCase
         $this->assertStringEqualsFile(__DIR__ . '/Source/expected-replaced-tag.txt', $printedPhpDocInfo);
     }
 
-    public function testDoNotAddSpaseWhenAddEmptyString(): void
+    public function testDoNotAddSpaceWhenAddEmptyString(): void
     {
         $this->phpDocInfo->addPhpDocTagNode(new PhpDocTextNode(''));
         $this->phpDocInfo->addPhpDocTagNode(new PhpDocTextNode('Some text'));
@@ -71,6 +71,17 @@ final class PhpDocInfoTest extends AbstractTestCase
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($this->phpDocInfo);
         $this->assertStringEqualsFile(
             __DIR__ . '/Source/expected-without-space-when-add-empty-string.txt',
+            $printedPhpDocInfo
+        );
+    }
+
+    public function testRemovesTagsByNames(): void
+    {
+        $this->phpDocInfo->removeByNames(['param', '@return']);
+
+        $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($this->phpDocInfo);
+        $this->assertStringEqualsFile(
+            __DIR__ . '/Source/expected-with-removed-param-and-return.txt',
             $printedPhpDocInfo
         );
     }
