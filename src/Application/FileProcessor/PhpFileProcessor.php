@@ -9,6 +9,7 @@ use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Enum\ApplicationPhase;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -29,7 +30,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
         private readonly FileProcessor $fileProcessor,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
+        private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PostFileProcessor $postFileProcessor,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Validation;
 
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 
@@ -11,7 +12,7 @@ final class EmptyConfigurableRectorChecker
 {
     public function __construct(
         private readonly EmptyConfigurableRectorCollector $emptyConfigurableRectorCollector,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle
+        private readonly OutputStyleInterface $rectorOutputStyle
     ) {
     }
 

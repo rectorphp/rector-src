@@ -22,6 +22,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Configuration\CurrentNodeProvider;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
@@ -102,7 +103,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
-    private \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle;
+    private OutputStyleInterface $rectorOutputStyle;
 
     private ExclusionManager $exclusionManager;
 
@@ -141,7 +142,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         NodeFactory $nodeFactory,
         PhpDocInfoFactory $phpDocInfoFactory,
-        \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
+        OutputStyleInterface $rectorOutputStyle,
         PhpVersionProvider $phpVersionProvider,
         ExclusionManager $exclusionManager,
         StaticTypeMapper $staticTypeMapper,

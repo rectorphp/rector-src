@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileSystem;
 
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\PhpParser\Printer\NodesWithFileDestinationPrinter;
 use Rector\Core\ValueObject\Configuration;
 use Symplify\SmartFileSystem\SmartFileSystem;
@@ -17,7 +18,7 @@ final class RemovedAndAddedFilesProcessor
         private readonly SmartFileSystem $smartFileSystem,
         private readonly NodesWithFileDestinationPrinter $nodesWithFileDestinationPrinter,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle
+        private readonly OutputStyleInterface $rectorOutputStyle
     ) {
     }
 

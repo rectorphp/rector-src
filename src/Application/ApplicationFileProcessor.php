@@ -8,6 +8,7 @@ use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
@@ -48,7 +49,7 @@ final class ApplicationFileProcessor
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
         private readonly FileFormatter $fileFormatter,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
+        private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileFactory $fileFactory,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ParametersMerger $parametersMerger,

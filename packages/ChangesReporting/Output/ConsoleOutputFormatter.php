@@ -7,6 +7,7 @@ namespace Rector\ChangesReporting\Output;
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\ProcessResult;
@@ -26,7 +27,7 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
     private const ON_LINE_REGEX = '# on line #';
 
     public function __construct(
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
+        private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly RectorsChangelogResolver $rectorsChangelogResolver
     ) {
     }

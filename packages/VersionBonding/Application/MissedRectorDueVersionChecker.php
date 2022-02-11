@@ -6,6 +6,7 @@ namespace Rector\VersionBonding\Application;
 
 use Nette\Utils\Strings;
 use PHPStan\Php\PhpVersion;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -14,7 +15,7 @@ final class MissedRectorDueVersionChecker
 {
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
+        private readonly OutputStyleInterface $rectorOutputStyle,
     ) {
     }
 

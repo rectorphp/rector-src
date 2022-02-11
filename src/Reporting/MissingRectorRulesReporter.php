@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Reporting;
 
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
@@ -16,7 +17,7 @@ final class MissingRectorRulesReporter
      */
     public function __construct(
         private readonly array $rectors,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle
+        private readonly OutputStyleInterface $rectorOutputStyle
     ) {
     }
 

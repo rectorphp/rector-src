@@ -11,6 +11,7 @@ use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Output\OutputFormatterCollector;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Reporting\MissingRectorRulesReporter;
@@ -43,7 +44,7 @@ final class ProcessCommand extends AbstractProcessCommand
         private readonly MissedRectorDueVersionChecker $missedRectorDueVersionChecker,
         private readonly EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,
         private readonly OutputFormatterCollector $outputFormatterCollector,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
+        private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly array $rectors
     ) {

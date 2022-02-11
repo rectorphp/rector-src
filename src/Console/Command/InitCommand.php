@@ -6,6 +6,7 @@ namespace Rector\Core\Console\Command;
 
 use Nette\Utils\Strings;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Template\TemplateResolverInterface;
 use Rector\Core\Exception\Template\TemplateTypeNotFoundException;
 use Rector\Core\Php\PhpVersionProvider;
@@ -26,7 +27,7 @@ final class InitCommand extends Command
     public function __construct(
         private readonly FileSystemGuard $fileSystemGuard,
         private readonly SmartFileSystem $smartFileSystem,
-        private readonly \Rector\Core\Contract\Console\OutputStyleInterface $rectorOutputStyle,
+        private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly array $templateResolvers,
         private readonly PhpVersionProvider $phpVersionProvider
     ) {
