@@ -263,7 +263,7 @@ final class UnionTypeMapper implements TypeMapperInterface
              *
              * @var Identifier|Name|null $phpParserNode
              */
-            $phpParserNode = $unionedType instanceof \PHPStan\Type\NullType
+            $phpParserNode = $unionedType instanceof \PHPStan\Type\NullType && $typeKind === TypeKind::PROPERTY()
                 ? new Name('null')
                 : $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
 
