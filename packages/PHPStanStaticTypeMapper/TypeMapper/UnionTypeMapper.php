@@ -260,6 +260,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
             /**
              * NullType inside UnionType is allowed
+             * make it on TypeKind property as changing other type, eg: return type may conflict with parent child implementation
              *
              * @var Identifier|Name|null $phpParserNode
              */
