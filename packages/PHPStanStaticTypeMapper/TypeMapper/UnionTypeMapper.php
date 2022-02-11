@@ -258,8 +258,15 @@ final class UnionTypeMapper implements TypeMapperInterface
                 return null;
             }
 
-            /** @var Identifier|Name|null $phpParserNode */
-            $phpParserNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
+            /**
+             * NullType inside UnionType is allowed
+             *
+             * @var Identifier|Name|null $phpParserNode
+             */
+            $phpParserNode = $unionedType instanceof \PHPStan\Type\NullType
+                ? new Name('null')
+                : $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
+
             if ($phpParserNode === null) {
                 return null;
             }
@@ -268,6 +275,11 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         $phpParserUnionedTypes = array_unique($phpParserUnionedTypes);
+
+        if (count($phpParserUnionedTypes) < 2) {
+            return null;
+        }
+
         return new PhpParserUnionType($phpParserUnionedTypes);
     }
 
