@@ -16,7 +16,6 @@ use PHPStan\Type\Type;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
@@ -28,7 +27,6 @@ final class YieldNodesReturnTypeInfererTypeInferer implements ReturnTypeInfererI
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly TypeFactory $typeFactory,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly StaticTypeMapper $staticTypeMapper,
         private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
