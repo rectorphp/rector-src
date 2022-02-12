@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionIntersectionTypes;
 
-final class SkipNoVarMixedTag
+final class SkipNoVarMixedTagNoDefault
 {
     private $property;
 }
