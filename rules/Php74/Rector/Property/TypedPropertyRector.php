@@ -6,6 +6,7 @@ namespace Rector\Php74\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
@@ -35,6 +36,7 @@ use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 
 /**
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
@@ -133,24 +135,6 @@ CODE_SAMPLE
         }
 
         $varType = $this->varDocPropertyTypeInferer->inferProperty($node);
-        if ($varType instanceof MixedType) {
-            return null;
-        }
-
-        if ($varType instanceof UnionType) {
-            $types = $varType->getTypes();
-
-            if (count($types) === 2 && $types[1] instanceof TemplateType) {
-                $templateType = $types[1];
-
-                $node->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                    $templateType->getBound(),
-                    TypeKind::PROPERTY()
-                );
-
-                return $node;
-            }
-        }
 
         if ($this->objectTypeAnalyzer->isSpecial($varType)) {
             return null;
@@ -158,7 +142,7 @@ CODE_SAMPLE
 
         $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($varType, TypeKind::PROPERTY());
 
-        if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node)) {
+        if ($this->isNullOrVendorLockedIn($propertyTypeNode, $node)) {
             return null;
         }
 
@@ -188,7 +172,7 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn(
+    private function isNullOrVendorLockedIn(
         Name | ComplexType | null $node,
         Property $property,
     ): bool {
@@ -197,15 +181,7 @@ CODE_SAMPLE
         }
 
         // false positive
-        if (! $node instanceof Name) {
-            return $this->vendorLockResolver->isPropertyTypeChangeVendorLockedIn($property);
-        }
-
-        if (! $this->isName($node, 'mixed')) {
-            return $this->vendorLockResolver->isPropertyTypeChangeVendorLockedIn($property);
-        }
-
-        return true;
+        return $this->vendorLockResolver->isPropertyTypeChangeVendorLockedIn($property);
     }
 
     private function removeDefaultValueForDoctrineCollection(Property $property, Type $propertyType): void
@@ -271,6 +247,13 @@ CODE_SAMPLE
         $propertyName = $this->getName($property);
 
         if ($this->isModifiedByTrait($class, $propertyName)) {
+            return true;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+        $varTag = $phpDocInfo->getVarTagValueNode();
+
+        if (! $varTag instanceof VarTagValueNode && ! $property->props[0]->default instanceof Expr) {
             return true;
         }
 
