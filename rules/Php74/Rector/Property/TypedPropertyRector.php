@@ -84,7 +84,7 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Changes property `@var` annotations from annotation to type.',
+            'Changes property `@var` annotations from annotation to type and by default value',
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
@@ -94,6 +94,8 @@ final class SomeClass
      * @var int
      */
     private $count;
+
+    private $someBool = true;
 }
 CODE_SAMPLE
                     ,
@@ -101,6 +103,8 @@ CODE_SAMPLE
 final class SomeClass
 {
     private int $count;
+
+    private bool $someBool = true;
 }
 CODE_SAMPLE
                 ,
