@@ -17,9 +17,4 @@ abstract class SomeParent
     protected $typedName;
 
     protected bool $anAlreadyReplacedPropertyInParentClass = false;
-
-    /**
-     * @var mixed
-     */
-    protected $property;
 }
