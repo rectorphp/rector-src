@@ -174,7 +174,8 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function isNullOrVendorLockedIn(Name | ComplexType | null $node, Property $property,): bool {
+    private function isNullOrVendorLockedIn(Name | ComplexType | null $node, Property $property,): bool
+    {
         if (! $node instanceof Node) {
             return true;
         }
