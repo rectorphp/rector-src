@@ -9,9 +9,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Name;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -26,7 +28,8 @@ final class YieldNodesReturnTypeInfererTypeInferer implements ReturnTypeInfererI
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly TypeFactory $typeFactory,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -54,16 +57,18 @@ final class YieldNodesReturnTypeInfererTypeInferer implements ReturnTypeInfererI
         }
 
         $returnType = $functionLike->getReturnType();
-        if ($returnType instanceof Node) {
-            return $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+        $className = 'Generator';
+
+        if ($returnType instanceof Name && ! $this->nodeNameResolver->isName($returnType, 'Generator')) {
+            $className = $this->nodeNameResolver->getName($returnType);
         }
 
         if ($types === []) {
-            return new FullyQualifiedObjectType('Generator');
+            return new FullyQualifiedObjectType($className);
         }
 
         $types = $this->typeFactory->createMixedPassedOrUnionType($types);
-        return new FullyQualifiedGenericObjectType('Generator', [$types]);
+        return new FullyQualifiedGenericObjectType($className, [$types]);
     }
 
     public function getPriority(): int
