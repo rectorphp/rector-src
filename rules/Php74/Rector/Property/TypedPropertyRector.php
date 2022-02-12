@@ -102,7 +102,7 @@ final class SomeClass
 {
     private int $count;
 
-    private bool $isDone;
+    private bool $isDone = false;
 }
 CODE_SAMPLE
                 ,
