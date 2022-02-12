@@ -251,9 +251,9 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-        $varTag = $phpDocInfo->getVarTagValueNode();
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
 
-        if (! $varTag instanceof VarTagValueNode && ! $property->props[0]->default instanceof Expr) {
+        if (! $varTagValueNode instanceof VarTagValueNode && ! $property->props[0]->default instanceof Expr) {
             return true;
         }
 
