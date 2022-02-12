@@ -11,7 +11,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(TypedPropertyRector::class)
         ->configure([
-            TypedPropertyRector::INLINE_PUBLIC => false,
+            TypedPropertyRector::INLINE_PUBLIC => true,
         ]);
 
     $parameters = $containerConfigurator->parameters();
