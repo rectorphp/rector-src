@@ -89,15 +89,10 @@ final class VarTagRemover
                     return true;
                 }
 
-                if (! $type instanceof SpacingAwareArrayTypeNode) {
-                    continue;
+                // keep string[], mixed[], etc
+                if ($type instanceof SpacingAwareArrayTypeNode) {
+                    return true;
                 }
-
-                if ($type->type instanceof IdentifierTypeNode && $type->type->name === 'mixed') {
-                    continue;
-                }
-
-                return true;
             }
         }
 

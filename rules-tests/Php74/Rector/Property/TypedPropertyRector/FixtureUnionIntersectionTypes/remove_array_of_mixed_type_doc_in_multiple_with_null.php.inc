@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionIntersectionTypes;
 
-final class RemoveArrayOfMixedTypeDocInMultipleWithNull
+final class DoNotRemoveArrayOfMixedTypeDocInMultipleWithNull
 {
     /**
      * @var string|mixed[]|null
@@ -16,8 +16,11 @@ final class RemoveArrayOfMixedTypeDocInMultipleWithNull
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionIntersectionTypes;
 
-final class RemoveArrayOfMixedTypeDocInMultipleWithNull
+final class DoNotRemoveArrayOfMixedTypeDocInMultipleWithNull
 {
+    /**
+     * @var string|mixed[]|null
+     */
     private array|string|null $property = null;
 }
 
