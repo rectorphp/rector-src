@@ -157,7 +157,7 @@ final class PhpDocTypeChanger
     {
         if ($typeNode instanceof BracketsAwareUnionTypeNode) {
             foreach ($typeNode->types as $type) {
-                if (in_array($type::class, self::ALLOWED_TYPES, true)) {
+                if ($this->isAllowed($type)) {
                     return true;
                 }
             }
