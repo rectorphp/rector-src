@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\TemplateObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -19,7 +19,6 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
-use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 
 final class VarTagRemover
 {
@@ -106,10 +105,6 @@ final class VarTagRemover
 
     private function isArrayTypeNode(TypeNode $typeNode): bool
     {
-        return in_array(
-            $typeNode::class,
-            [SpacingAwareArrayTypeNode::class, ArrayShapeNode::class],
-            true
-        );
+        return in_array($typeNode::class, [SpacingAwareArrayTypeNode::class, ArrayShapeNode::class], true);
     }
 }
