@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -19,6 +20,7 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -37,6 +39,7 @@ final class PhpDocTypeChanger
         GenericTypeNode::class,
         SpacingAwareArrayTypeNode::class,
         SpacingAwareCallableTypeNode::class,
+        ArrayShapeNode::class,
     ];
 
     public function __construct(
@@ -150,6 +153,23 @@ final class PhpDocTypeChanger
         }
     }
 
+    public function isAllowed(TypeNode $typeNode)
+    {
+        if ($typeNode instanceof BracketsAwareUnionTypeNode) {
+            foreach ($typeNode->types as $type) {
+                if (in_array($type::class, self::ALLOWED_TYPES, true)) {
+                    return true;
+                }
+            }
+        }
+
+        if (! in_array($typeNode::class, self::ALLOWED_TYPES, true)) {
+            return false;
+        }
+
+        return (string) $typeNode !== 'array';
+    }
+
     public function copyPropertyDocToParam(Property $property, Param $param): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
@@ -177,7 +197,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if (! in_array($varTag->type::class, self::ALLOWED_TYPES, true)) {
+        if (! $this->isAllowed($varTag->type)) {
             return;
         }
 
