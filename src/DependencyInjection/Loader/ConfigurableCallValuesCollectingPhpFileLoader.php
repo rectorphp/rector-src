@@ -23,10 +23,7 @@ final class ConfigurableCallValuesCollectingPhpFileLoader extends PhpFileLoader
         parent::__construct($containerBuilder, $fileLocator);
     }
 
-    /**
-     * @param mixed $resource
-     */
-    public function load($resource, string $type = null): mixed
+    public function load(mixed $resource, string $type = null): mixed
     {
         // this call collects root values
         $this->collectConfigureCallsFromJustImportedConfigurableRectorDefinitions();
@@ -39,9 +36,9 @@ final class ConfigurableCallValuesCollectingPhpFileLoader extends PhpFileLoader
     }
 
     public function import(
-        $resource,
+        mixed $resource,
         string $type = null,
-        $ignoreErrors = false,
+        bool|string $ignoreErrors = false,
         string $sourceResource = null,
         $exclude = null
     ): mixed {
