@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Generic\TemplateObjectWithoutClassType;
 use PHPStan\Type\ObjectType;
@@ -27,7 +28,6 @@ final class VarTagRemover
 {
     public function __construct(
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
-        private readonly StaticTypeMapper $staticTypeMapper,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DeadVarTagValueNodeAnalyzer $deadVarTagValueNodeAnalyzer
     ) {
@@ -77,25 +77,31 @@ final class VarTagRemover
         }
 
         // keep string[] etc.
-        if ($this->isNonBasicArrayType($node, $varTagValueNode)) {
+        if ($this->isNonBasicArrayType($varTagValueNode)) {
             return;
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
     }
 
-    private function isNonBasicArrayType(Expression | Param | Property $node, VarTagValueNode $varTagValueNode): bool
+    private function isNonBasicArrayType(VarTagValueNode $varTagValueNode): bool
     {
         if ($varTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
             foreach ($varTagValueNode->type->types as $type) {
-                if ($type instanceof SpacingAwareArrayTypeNode && $this->isArrayOfClass($node, $type)) {
-                    return true;
-                }
-
                 // keep generic types
                 if ($type instanceof GenericTypeNode) {
                     return true;
                 }
+
+                if (! $type instanceof SpacingAwareArrayTypeNode) {
+                    continue;
+                }
+
+                if ($type->type instanceof IdentifierTypeNode && $type->type->name === 'mixed') {
+                    continue;
+                }
+
+                return true;
             }
         }
 
@@ -113,24 +119,5 @@ final class VarTagRemover
             [SpacingAwareArrayTypeNode::class, ArrayShapeNode::class],
             true
         );
-    }
-
-    private function isArrayOfClass(Node $node, SpacingAwareArrayTypeNode $spacingAwareArrayTypeNode): bool
-    {
-        if ($spacingAwareArrayTypeNode->type instanceof SpacingAwareArrayTypeNode) {
-            return $this->isArrayOfClass($node, $spacingAwareArrayTypeNode->type);
-        }
-
-        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
-            $spacingAwareArrayTypeNode,
-            $node
-        );
-
-        if (! $staticType instanceof ArrayType) {
-            return false;
-        }
-
-        $itemType = $staticType->getItemType();
-        return $itemType instanceof ObjectType;
     }
 }
