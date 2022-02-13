@@ -153,7 +153,7 @@ final class PhpDocTypeChanger
         }
     }
 
-    public function isAllowed(TypeNode $typeNode)
+    public function isAllowed(TypeNode $typeNode): bool
     {
         if ($typeNode instanceof BracketsAwareUnionTypeNode) {
             foreach ($typeNode->types as $type) {
