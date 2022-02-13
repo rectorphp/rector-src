@@ -163,11 +163,7 @@ final class PhpDocTypeChanger
             }
         }
 
-        if (! in_array($typeNode::class, self::ALLOWED_TYPES, true)) {
-            return false;
-        }
-
-        return (string) $typeNode !== 'array';
+        return in_array($typeNode::class, self::ALLOWED_TYPES, true);
     }
 
     public function copyPropertyDocToParam(Property $property, Param $param): void
@@ -187,9 +183,6 @@ final class PhpDocTypeChanger
             return;
         }
 
-        $phpDocInfo->removeByType(VarTagValueNode::class);
-        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
-
         $functionLike = $param->getAttribute(AttributeKey::PARENT_NODE);
         $paramVarName = $this->nodeNameResolver->getName($param->var);
 
@@ -204,6 +197,11 @@ final class PhpDocTypeChanger
         if (! is_string($paramVarName)) {
             return;
         }
+
+        $phpDocInfo->removeByType(VarTagValueNode::class);
+        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
+
+        $functionLike = $param->getAttribute(AttributeKey::PARENT_NODE);
 
         $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
         $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTag, $property);
