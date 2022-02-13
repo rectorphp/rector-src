@@ -84,7 +84,6 @@ final class VarTagRemover
     {
         if ($varTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
             foreach ($varTagValueNode->type->types as $type) {
-                // keep string[], mixed[], etc
                 if ($this->isArrayTypeNode($type)) {
                     return true;
                 }
