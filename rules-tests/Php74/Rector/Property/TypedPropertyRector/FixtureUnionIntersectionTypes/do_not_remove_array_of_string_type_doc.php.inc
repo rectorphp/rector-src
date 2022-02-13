@@ -21,7 +21,7 @@ final class DoNotRemoveArrayOfStringTypeDoc
     /**
      * @var string|string[]|null
      */
-    private array|stirng|null $property = null;
+    private array|string|null $property = null;
 }
 
 ?>
