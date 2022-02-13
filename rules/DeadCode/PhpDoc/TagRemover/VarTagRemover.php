@@ -19,6 +19,7 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 
 final class VarTagRemover
 {
@@ -90,23 +91,23 @@ final class VarTagRemover
                 }
 
                 // keep string[], mixed[], etc
-                if ($type instanceof SpacingAwareArrayTypeNode) {
+                if ($this->isArrayTypeNode($type)) {
                     return true;
                 }
             }
         }
 
-        if (! $this->isArrayTypeNode($varTagValueNode)) {
+        if (! $this->isArrayTypeNode($varTagValueNode->type)) {
             return false;
         }
 
         return (string) $varTagValueNode->type !== 'array';
     }
 
-    private function isArrayTypeNode(VarTagValueNode $varTagValueNode): bool
+    private function isArrayTypeNode(TypeNode $typeNode): bool
     {
         return in_array(
-            $varTagValueNode->type::class,
+            $typeNode::class,
             [SpacingAwareArrayTypeNode::class, ArrayShapeNode::class],
             true
         );
