@@ -4,10 +4,10 @@ namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionInt
 
 final class DoNotRemoveArrayOfStringTypeDoc
 {
-	/**
-  	 * @var string|string[]|null
-	 */
-	private $property;
+    /**
+     * @var string|string[]|null
+     */
+    private $property;
 }
 
 ?>
@@ -18,10 +18,10 @@ namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionInt
 
 final class DoNotRemoveArrayOfStringTypeDoc
 {
-	/**
-  	 * @var string|string[]|null
-	 */
-	private array|string|null $property = null;
+    /**
+     * @var string|string[]|null
+     */
+    private array|stirng|null $property = null;
 }
 
 ?>
