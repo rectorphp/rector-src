@@ -201,8 +201,6 @@ final class PhpDocTypeChanger
         $phpDocInfo->removeByType(VarTagValueNode::class);
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
 
-        $functionLike = $param->getAttribute(AttributeKey::PARENT_NODE);
-
         $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
         $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTag, $property);
 
