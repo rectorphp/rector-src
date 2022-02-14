@@ -229,36 +229,40 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->printDebugApplying();
 
         $originalAttributes = $node->getAttributes();
+
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
+
+        if (! $this->infiniteLoopValidator->isValid($originalNode, static::class)) {
+            return null;
+        }
 
         $node = $this->refactor($node);
 
         // nothing to change → continue
-        if ($node === null) {
+        if ($this->isNothingToChange($node)) {
             return null;
         }
 
+        /** @var Node $originalNode */
         if (is_array($node)) {
-            $this->createdByRuleDecorator->decorate($originalNode, static::class);
+            /** @var array<Node> $node */
+            $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $node;
 
-            if ($node !== []) {
-                $firstNodeKey = array_key_first($node);
-                $this->mirrorComments($node[$firstNodeKey], $originalNode);
-            }
+            $firstNodeKey = array_key_first($node);
+            $this->mirrorComments($node[$firstNodeKey], $originalNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
 
         // not changed, return node early
+        /** @var Node $node */
         if (! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
             return $node;
         }
-
-        $this->createdByRuleDecorator->decorate($node, static::class);
 
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
@@ -267,13 +271,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->mirrorAttributes($originalAttributes, $node);
         $this->connectParentNodes($node);
 
+        $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
+
         // is equals node type? return node early
         if ($originalNode::class === $node::class) {
             return $node;
         }
-
-        // is different node type? do not traverse children to avoid looping
-        $this->infiniteLoopValidator->process($node, $originalNode, static::class);
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
@@ -427,6 +430,18 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function removeNodes(array $nodes): void
     {
         $this->nodeRemover->removeNodes($nodes);
+    }
+
+    /**
+     * @param Node|array<Node>|null $node
+     */
+    private function isNothingToChange(array|Node|null $node): bool
+    {
+        if ($node === null) {
+            return true;
+        }
+
+        return $node === [];
     }
 
     /**

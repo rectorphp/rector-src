@@ -14,7 +14,6 @@ use Webmozart\Assert\Assert;
 abstract class AbstractFalsyScalarRuleFixerRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @deprecated
      * @var string
      */
     final public const TREAT_AS_NON_EMPTY = 'treat_as_non_empty';
@@ -26,7 +25,7 @@ abstract class AbstractFalsyScalarRuleFixerRector extends AbstractRector impleme
      */
     public function configure(array $configuration): void
     {
-        $treatAsNonEmpty = $configuration[self::TREAT_AS_NON_EMPTY] ?? false;
+        $treatAsNonEmpty = $configuration[self::TREAT_AS_NON_EMPTY] ?? (bool) current($configuration);
         Assert::boolean($treatAsNonEmpty);
 
         $this->treatAsNonEmpty = $treatAsNonEmpty;

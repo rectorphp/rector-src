@@ -417,11 +417,6 @@ parameters:
             paths:
                 - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
 
-        -
-            message: '#Method Rector\\VersionBonding\\PhpVersionedFilter\:\:filter\(\) should return array<T of Rector\\Core\\Contract\\Rector\\RectorInterface\> but returns array<int, \(Rector\\VersionBonding\\Contract\\MinPhpVersionInterface&T of Rector\\Core\\Contract\\Rector\\RectorInterface\)\|T of Rector\\Core\\Contract\\Rector\\RectorInterface\>#'
-            paths:
-                - packages/VersionBonding/PhpVersionedFilter.php
-
         # use lighter service for performance reasons
         -
             path: packages/Caching/ValueObject/Storage/FileCacheStorage.php
@@ -511,10 +506,6 @@ parameters:
         - '#Rector\\BetterPhpDocParser\\ValueObject\\Parser\\BetterTokenIterator\:\:__construct\(\) does not call parent constructor from PHPStan\\PhpDocParser\\Parser\\TokenIterator#'
         - '#Rector\\Comments\\NodeTraverser\\CommentRemovingNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
 
-        # always Expr or mixed nested array
-        - '#Method Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface\:\:map\(\) return type has no value type specified in iterable type array#'
-        - '#Method Rector\\PhpAttribute\\AnnotationToAttributeMapper\\(.*?)AnnotationToAttributeMapper\:\:map\(\) return type has no value type specified in iterable type array#'
-
         # confused generics
         - '#Return type \(array<class\-string<PhpParser\\Node\>\>\) of method Rector\\NodeTypeResolver\\NodeTypeResolver\\(.*?)TypeResolver\:\:getNodeClasses\(\) should be covariant with return type \(array<class\-string<PhpParser\\Node\\(.*?)\>\>\) of method Rector\\NodeTypeResolver\\Contract\\NodeTypeResolverInterface<PhpParser\\Node\\(.*?)\>\:\:getNodeClasses\(\)#'
 
@@ -578,10 +569,6 @@ parameters:
             message: '#Cognitive complexity for "Rector\\Php80\\Rector\\Class_\\AnnotationToAttributeRector\:\:processDoctrineAnnotationClasses\(\)" is \d+, keep it under 10#'
             path: rules/Php80/Rector/Class_/AnnotationToAttributeRector.php
 
-        - '#Anonymous function should return array\|PhpParser\\Node\\Expr but returns array<PhpParser\\Node\\Expr\>\|PhpParser\\Node\\Expr\|string#'
-
-        - '#Method Rector\\PhpAttribute\\AnnotationToAttributeMapper\\ArrayAnnotationToAttributeMapper\:\:isRemoveArrayPlaceholder\(\) has parameter \$value with no value type specified in iterable type array#'
-
         -
             message: '#Use value object over return of values#'
             path: src/Application/ApplicationFileProcessor.php
@@ -597,17 +584,9 @@ parameters:
         # impossible to validate json string is a class-string
         - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface\>\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
 
-        # will be solved once https://github.com/phpstan/phpstan-src/pull/914 gets released
-        -
-            message: '#sprintf\(\) call mask types does not match provided arguments types#'
-            paths:
-                - src/Exception/ShouldNotHappenException.php
-
         -
             message: '#Only booleans are allowed in an if condition, array\|null given#'
             path: rules/Naming/Naming/PropertyNaming.php
-
-        - '#Parameter \#1 \$objectOrClass of class ReflectionClass constructor expects class\-string<Rector\\RectorInstaller\\GeneratedConfig\>\|Rector\\RectorInstaller\\GeneratedConfig, string given#'
 
         -
             path: src/Bootstrap/ExtensionConfigResolver.php
@@ -616,7 +595,11 @@ parameters:
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
 
-        # due to new https://github.com/symplify/symplify/pull/3912 NoMixedPropertyFetcherRule
-        - '#Anonymous variables in a property fetch can lead to false dead property\. Make sure the variable type is known#'
-        # due to new https://github.com/symplify/symplify/pull/3913 NoMixedMethodCallerRule
-        - '#Anonymous variables in a method call can lead to false dead methods\. Make sure the variable type is known#'
+        # broken on CI
+        -
+            message: '#Anonymous variables in a method call can lead to false dead methods\. Make sure the variable type is known#'
+            path: packages/NodeNestingScope/FlowOfControlLocator.php
+
+        -
+            message: '#Array with keys is not allowed\. Use value object to pass data instead#'
+            path: packages/PhpAttribute/Printer/PhpAttributeGroupFactory.php

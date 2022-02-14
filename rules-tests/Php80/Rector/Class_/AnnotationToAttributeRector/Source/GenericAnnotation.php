@@ -10,7 +10,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source;
  */
 final class GenericAnnotation
 {
-    public function __construct($some)
+    public function __construct($some = null, $itemOperations = null, $collectionOperations = null, $graphql = null, $summary = null, $title = null, $route = null, $choices = [])
     {
     }
 }
