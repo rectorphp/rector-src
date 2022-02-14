@@ -65,9 +65,6 @@ final class PhpDocTypeChanger
             // only change type
             $currentVarTagValueNode->type = $newPHPStanPhpDocType;
         } else {
-            // remove @inheritDoc to not end up with both @inheritDoc and @var - it doesn't make sense
-            $phpDocInfo->removeInheritDoc();
-
             // add completely new one
             $varTagValueNode = new VarTagValueNode($newPHPStanPhpDocType, '', '');
 

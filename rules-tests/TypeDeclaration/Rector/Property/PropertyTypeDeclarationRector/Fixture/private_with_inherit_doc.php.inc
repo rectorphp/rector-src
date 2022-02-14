@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
 
-final class A {
+final class PrivateWithInheritDoc {
     /**
      * @inheritDoc
      */
@@ -14,8 +14,9 @@ final class A {
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
 
-final class A {
+final class PrivateWithInheritDoc {
     /**
+     * @inheritDoc
      * @var string
      */
     private $property = 'test';

@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\Fixture;
 
-class A {
+class SkipTypedInheritDocParent {
     /** @var string */
     public $property;
 }
 
-final class B extends A {
+final class SkipTypedInheritDoc extends SkipTypedInheritDocParent {
     /** @inheritDoc */
     public $property = 'test';
 }
