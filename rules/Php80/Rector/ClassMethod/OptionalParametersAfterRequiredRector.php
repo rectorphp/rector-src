@@ -16,7 +16,6 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeResolver\ArgumentSorter;
 use Rector\Php80\NodeResolver\RequireOptionalParamResolver;
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php80\Rector\ClassMethod\OptionalParametersAfterRequiredRector\OptionalParametersAfterRequiredRectorTest
  */
-final class OptionalParametersAfterRequiredRector extends AbstractRector implements MinPhpVersionInterface
+final class OptionalParametersAfterRequiredRector extends AbstractRector
 {
     /**
      * @var string
@@ -38,11 +37,6 @@ final class OptionalParametersAfterRequiredRector extends AbstractRector impleme
         private readonly ReflectionResolver $reflectionResolver,
         private readonly VendorLocationDetector $vendorLocationDetector
     ) {
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::DEPRECATE_REQUIRED_PARAMETER_AFTER_OPTIONAL;
     }
 
     public function getRuleDefinition(): RuleDefinition
