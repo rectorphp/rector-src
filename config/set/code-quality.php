@@ -13,6 +13,7 @@ use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfaceRector;
 use Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector;
+use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
 use Rector\CodeQuality\Rector\Do_\DoWhileBreakFalseToIfElseRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
@@ -183,4 +184,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(FlipTypeControlToUseExclusiveTypeRector::class);
     $services->set(ExplicitMethodCallOverMagicGetSetRector::class);
     $services->set(DoWhileBreakFalseToIfElseRector::class);
+    $services->set(OptionalParametersAfterRequiredRector::class);
 };

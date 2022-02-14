@@ -12,7 +12,6 @@ use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
 use Rector\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector;
 use Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector;
-use Rector\Php80\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
 use Rector\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector;
@@ -85,7 +84,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'pg_result' => 'pg_fetch_result',
             'pg_setclientencoding' => 'pg_set_client_encoding',
         ]);
-    $services->set(OptionalParametersAfterRequiredRector::class);
 
     $services->set(FunctionArgumentDefaultValueReplacerRector::class)
         ->configure([
