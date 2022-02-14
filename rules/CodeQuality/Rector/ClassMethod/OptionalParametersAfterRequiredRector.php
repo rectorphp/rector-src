@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php80\Rector\ClassMethod;
+namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
