@@ -43,6 +43,8 @@ final class DowngradePathsCommand extends Command
             // must be separated to cover container get() trait + psr container contract get()
             'config',
             'vendor/phpstan/phpdoc-parser/src',
+            'vendor/symfony/contracts/Cache/ItemInterface.php',
+            'vendor/symfony/dependency-injection/ExpressionLanguageProvider.php',
             'vendor/symfony/dependency-injection',
             'vendor/symfony/console',
             'vendor/symfony vendor/psr',
