@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php74\Rector\Function_\ReservedFnFunctionRector\Fixture;
+namespace Rector\Tests\Php74\Rector\Function_\ReservedFnFunctionRector\FixtureRenameNameNode;
 
 class SkipVariableFunction
 {
