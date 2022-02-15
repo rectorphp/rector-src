@@ -43,7 +43,10 @@ final class PropertyFetchFinder
     public function findPrivatePropertyFetches(Property | Param $propertyOrPromotedParam): array
     {
         $classLike = $this->betterNodeFinder->findParentType($propertyOrPromotedParam, ClassLike::class);
-        if (! $classLike instanceof ClassLike || $classLike instanceof Interface_) {
+        if (! $classLike instanceof ClassLike) {
+            return [];
+        }
+        if ($classLike instanceof Interface_) {
             return [];
         }
 

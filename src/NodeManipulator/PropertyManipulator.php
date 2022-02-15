@@ -122,7 +122,10 @@ final class PropertyManipulator
     {
         $classLike = $this->betterNodeFinder->findParentType($propertyOrParam, ClassLike::class);
         // Property or Param in interface? return true early as no property in interface
-        if (! $classLike instanceof ClassLike || $classLike instanceof Interface_) {
+        if (! $classLike instanceof ClassLike) {
+            return true;
+        }
+        if ($classLike instanceof Interface_) {
             return true;
         }
 
