@@ -46,6 +46,7 @@ final class PropertyFetchFinder
         if (! $classLike instanceof ClassLike) {
             return [];
         }
+
         if ($classLike instanceof Interface_) {
             return [];
         }
