@@ -152,7 +152,11 @@ final class PropertyFetchFinder
         return $parent !== $class && ! $hasTrait;
     }
 
-    private function isNamePropertyNameEquals(PropertyFetch $propertyFetch, string $propertyName, Class_|Trait_ $class): bool
+    private function isNamePropertyNameEquals(
+        PropertyFetch $propertyFetch,
+        string $propertyName,
+        Class_|Trait_ $class
+    ): bool
     {
         // early check if property fetch name is not equals with property name
         // so next check is check var name and var type only
