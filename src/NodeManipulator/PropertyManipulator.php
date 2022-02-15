@@ -121,10 +121,13 @@ final class PropertyManipulator
     public function isPropertyChangeableExceptConstructor(Property | Param $propertyOrParam): bool
     {
         $classLike = $this->betterNodeFinder->findParentType($propertyOrParam, ClassLike::class);
-        // Property or Param in interface? return true early as no property in interface
+
+        // does not has parent type ClassLike? Possibly parent is changed by other rule
         if (! $classLike instanceof ClassLike) {
             return true;
         }
+
+        // Property or Param in interface? return true early as no property in interface
         if ($classLike instanceof Interface_) {
             return true;
         }
