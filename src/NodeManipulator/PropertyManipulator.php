@@ -121,18 +121,21 @@ final class PropertyManipulator
     public function isPropertyChangeableExceptConstructor(Property | Param $propertyOrParam): bool
     {
         $class = $this->betterNodeFinder->findParentType($propertyOrParam, Class_::class);
-        if ($class instanceof Class_) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
-            if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
-                return true;
-            }
+        // Property or Param in Trait_? Mark as changeable as no context
+        if (! $class instanceof Class_) {
+            return true;
+        }
 
-            if ($this->phpAttributeAnalyzer->hasPhpAttributes(
-                $class,
-                self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
-            )) {
-                return true;
-            }
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
+        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
+            return true;
+        }
+
+        if ($this->phpAttributeAnalyzer->hasPhpAttributes(
+            $class,
+            self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
+        )) {
+            return true;
         }
 
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($propertyOrParam);
