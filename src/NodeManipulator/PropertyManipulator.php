@@ -21,6 +21,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -120,19 +121,19 @@ final class PropertyManipulator
 
     public function isPropertyChangeableExceptConstructor(Property | Param $propertyOrParam): bool
     {
-        $class = $this->betterNodeFinder->findParentType($propertyOrParam, Class_::class);
-        // Property or Param in Trait_? Mark as changeable as no context
-        if (! $class instanceof Class_) {
+        $classLike = $this->betterNodeFinder->findParentType($propertyOrParam, ClassLike::class);
+        // Property or Param in interface? return true early as no property in interface
+        if (! $classLike instanceof ClassLike || $classLike instanceof Interface_) {
             return true;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classLike);
         if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
             return true;
         }
 
         if ($this->phpAttributeAnalyzer->hasPhpAttributes(
-            $class,
+            $classLike,
             self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
         )) {
             return true;
