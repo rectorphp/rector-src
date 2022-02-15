@@ -156,8 +156,7 @@ final class PropertyFetchFinder
         PropertyFetch $propertyFetch,
         string $propertyName,
         Class_|Trait_ $class
-    ): bool
-    {
+    ): bool {
         // early check if property fetch name is not equals with property name
         // so next check is check var name and var type only
         if (! $this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
