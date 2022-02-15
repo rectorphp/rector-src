@@ -84,12 +84,6 @@ final class Option
     public const PARALLEL = 'parallel';
 
     /**
-     * @deprecated Cache is enabled by default
-     * @var string
-     */
-    public const ENABLE_CACHE = 'enable_cache';
-
-    /**
      * @var string
      */
     public const PATHS = 'paths';
