@@ -87,7 +87,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->name instanceof Name) {
+        if ($node instanceof FuncCall && ! $node->name instanceof Name) {
             return null;
         }
 

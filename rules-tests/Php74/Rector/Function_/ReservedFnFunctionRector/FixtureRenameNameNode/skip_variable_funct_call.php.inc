@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Function_\ReservedFnFunctionRector\FixtureRenameNameNode;
 
-class SkipVariableFunction
+class SkipVariableFunctCall
 {
     /** @var list<Closure():void> */
     private array $callbacks = [];
