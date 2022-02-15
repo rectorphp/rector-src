@@ -15,6 +15,7 @@ use PhpParser\NodeAbstract;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\IterableType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -128,15 +129,16 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        if ($nullabledTypeNode instanceof NullableType) {
+        if (in_array($nullabledTypeNode::class, [NullableType::class, ComplexType::class], true)) {
             return $nullabledTypeNode;
         }
 
-        if ($nullabledTypeNode instanceof ComplexType) {
-            return $nullabledTypeNode;
+        /** @var Name $nullabledTypeNode */
+        if (! $this->nodeNameResolver->isName($nullabledTypeNode, 'false')) {
+            return new NullableType($nullabledTypeNode);
         }
 
-        return new NullableType($nullabledTypeNode);
+        return null;
     }
 
     private function shouldSkipIterable(UnionType $unionType): bool
@@ -253,13 +255,21 @@ final class UnionTypeMapper implements TypeMapperInterface
         $phpParserUnionedTypes = [];
 
         foreach ($unionType->getTypes() as $unionedType) {
-            // void type is not allowed in union
-            if ($unionedType instanceof VoidType) {
+            // void type and mixed type are not allowed in union
+            if (in_array($unionedType::class, [MixedType::class, VoidType::class], true)) {
                 return null;
             }
 
-            /** @var Identifier|Name|null $phpParserNode */
-            $phpParserNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
+            /**
+             * NullType inside UnionType is allowed
+             * make it on TypeKind property as changing other type, eg: return type may conflict with parent child implementation
+             *
+             * @var Identifier|Name|null $phpParserNode
+             */
+            $phpParserNode = $unionedType instanceof NullType && $typeKind->equals(TypeKind::PROPERTY())
+                ? new Name('null')
+                : $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
+
             if ($phpParserNode === null) {
                 return null;
             }
@@ -268,6 +278,11 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         $phpParserUnionedTypes = array_unique($phpParserUnionedTypes);
+
+        if (count($phpParserUnionedTypes) < 2) {
+            return null;
+        }
+
         return new PhpParserUnionType($phpParserUnionedTypes);
     }
 
