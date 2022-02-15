@@ -59,6 +59,7 @@ final class PropertyFetchFinder
         $hasTrait = $nodesTrait !== [];
         $nodes = array_merge($nodes, $nodesTrait);
 
+        /** @var Class_|Trait_ $classLike */
         return $this->findPropertyFetchesInClassLike($classLike, $nodes, $propertyName, $hasTrait);
     }
 
