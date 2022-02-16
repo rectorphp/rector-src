@@ -2,17 +2,13 @@
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final class SkipUsedAsArrayDimFetchInCallLikeArg2
+final class SkipUsedAsArrayDimFetchInSideEffectCallArg
 {
-    private array $items;
-
     /**
      * @param array<string, array<string>> $items
      */
-    public function __construct(array $items)
-    {
-        $this->items = $items;
-    }
+    public function __construct(private array $items)
+    {}
 
     public function popFooItem(): void
     {
