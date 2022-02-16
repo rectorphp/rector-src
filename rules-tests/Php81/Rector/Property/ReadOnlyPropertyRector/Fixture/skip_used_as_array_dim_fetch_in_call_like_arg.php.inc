@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final class SkipUsedInCallLikeArg
+final class SkipUsedAsArrayDimFetchInCallLikeArg
 {
     /**
      * @param array<string, array<string>> $items
