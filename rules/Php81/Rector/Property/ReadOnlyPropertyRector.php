@@ -85,29 +85,34 @@ CODE_SAMPLE
             return $this->refactorParam($node);
         }
 
+        return $this->refactorProperty($node);
+    }
+
+    private function refactorProperty(Property $property): ?Property
+    {
         // 1. is property read-only?
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($node)) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($property)) {
             return null;
         }
 
-        if ($node->isReadonly()) {
+        if ($property->isReadonly()) {
             return null;
         }
 
-        if ($node->props[0]->default instanceof Expr) {
+        if ($property->props[0]->default instanceof Expr) {
             return null;
         }
 
-        if ($node->type === null) {
+        if ($property->type === null) {
             return null;
         }
 
-        if (! $this->visibilityManipulator->hasVisibility($node, Visibility::PRIVATE)) {
+        if (! $this->visibilityManipulator->hasVisibility($property, Visibility::PRIVATE)) {
             return null;
         }
 
-        $this->visibilityManipulator->makeReadonly($node);
-        return $node;
+        $this->visibilityManipulator->makeReadonly($property);
+        return $property;
     }
 
     public function provideMinPhpVersion(): int
