@@ -88,6 +88,11 @@ CODE_SAMPLE
         return $this->refactorProperty($node);
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::READONLY_PROPERTY;
+    }
+
     private function refactorProperty(Property $property): ?Property
     {
         // 1. is property read-only?
@@ -113,11 +118,6 @@ CODE_SAMPLE
 
         $this->visibilityManipulator->makeReadonly($property);
         return $property;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::READONLY_PROPERTY;
     }
 
     private function refactorParam(Param $param): Param | null
