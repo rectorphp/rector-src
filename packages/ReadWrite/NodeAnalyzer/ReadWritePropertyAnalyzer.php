@@ -53,12 +53,15 @@ final class ReadWritePropertyAnalyzer
         if ($parent instanceof ArrayDimFetch && $parent->dim === $node && $this->isNotInsideIssetUnset($parent)) {
             return $this->isArrayDimFetchRead($parent);
         }
+
         if (! $parent instanceof ArrayDimFetch) {
             return ! $this->assignManipulator->isLeftPartOfAssign($node);
         }
+
         if (! $this->isArrayDimFetchInImpureFunction($parent, $node)) {
             return ! $this->assignManipulator->isLeftPartOfAssign($node);
         }
+
         return false;
     }
 
@@ -71,10 +74,8 @@ final class ReadWritePropertyAnalyzer
                 if (! $parentArg instanceof FuncCall) {
                     return false;
                 }
-                if ($this->pureFunctionDetector->detect($parentArg)) {
-                    return false;
-                }
-                return true;
+
+                return ! $this->pureFunctionDetector->detect($parentArg);
             }
         }
 
