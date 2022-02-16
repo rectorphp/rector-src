@@ -102,7 +102,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->flags !== Visibility::PRIVATE) {
+        if (! $this->visibilityManipulator->hasVisibility($node, Visibility::PRIVATE)) {
             return null;
         }
 
@@ -117,7 +117,7 @@ CODE_SAMPLE
 
     private function refactorParam(Param $param): Param | null
     {
-        if ($param->flags !== Visibility::PRIVATE) {
+        if (! $this->visibilityManipulator->hasVisibility($param, Visibility::PRIVATE)) {
             return null;
         }
 
