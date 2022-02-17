@@ -29,5 +29,4 @@ final class PsalmReturn
         return 'blah-string';
     }
 }
-
 ?>
