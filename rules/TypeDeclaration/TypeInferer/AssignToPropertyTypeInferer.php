@@ -53,7 +53,6 @@ final class AssignToPropertyTypeInferer
                 return null;
             }
 
-            print_node($node->expr);
             if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
                 return null;
             }
