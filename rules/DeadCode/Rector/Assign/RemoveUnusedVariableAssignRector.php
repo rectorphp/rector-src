@@ -105,7 +105,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasCallAssignExpr($node->expr)) {
+        if ($this->hasCallLikeInAssignExpr($node->expr)) {
             // keep the expr, can have side effect
             return $node->expr;
         }
@@ -114,7 +114,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasCallAssignExpr(Expr $expr): bool
+    private function hasCallLikeInAssignExpr(Expr $expr): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($expr,
             fn (Node $subNode): bool => $this->sideEffectNodeDetector->detectCallExpr($subNode)
