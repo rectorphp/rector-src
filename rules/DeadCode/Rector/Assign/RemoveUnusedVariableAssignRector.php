@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\Assign;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -104,13 +105,20 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->sideEffectNodeDetector->detectCallExpr($node->expr)) {
+        if ($this->hasCallAssignExpr($node->expr)) {
             // keep the expr, can have side effect
             return $node->expr;
         }
 
         $this->removeNode($node);
         return $node;
+    }
+
+    private function hasCallAssignExpr(Expr $expr): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst($expr,
+            fn (Node $subNode): bool => $this->sideEffectNodeDetector->detectCallExpr($subNode)
+        );
     }
 
     private function shouldSkip(Assign $assign): bool

@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-final class DemoFile
-{ 
+final class AssignExprHasCallLike
+{
     public function validate() {
        throw new Exception();
     }
-    
+
     public function test($params)
     {
         $tmp = isset($params['test']) ? $this->validate($params['test']) : null;
@@ -19,12 +19,12 @@ final class DemoFile
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-final class DemoFile
-{ 
+final class AssignExprHasCallLike
+{
     public function validate() {
        throw new Exception();
     }
-    
+
     public function test($params)
     {
         isset($params['test']) ? $this->validate($params['test']) : null;
