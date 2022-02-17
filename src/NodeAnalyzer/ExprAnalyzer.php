@@ -48,6 +48,11 @@ final class ExprAnalyzer
             }
 
             $paramName = $this->nodeNameResolver->getName($param->var);
+
+            if ($paramName === null) {
+                continue;
+            }
+
             $paramTag = $phpDocInfo->getParamTagValueByName($paramName);
 
             return $paramTag instanceof ParamTagValueNode && $param->type === null;
