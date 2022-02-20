@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\StaticVar;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Webmozart\Assert\Assert;
 
 final class VariableAnalyzer
 {
@@ -20,26 +19,6 @@ final class VariableAnalyzer
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator
     ) {
-    }
-
-    private function isParentStaticOrGlobal(Variable $variable): bool
-    {
-        $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
-
-        if (! $parentNode instanceof Node) {
-            return false;
-        }
-
-        if ($parentNode instanceof Global_) {
-            return true;
-        }
-
-        if (! $parentNode instanceof StaticVar) {
-            return false;
-        }
-
-        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-        return $parentParentNode instanceof Static_;
     }
 
     public function isStaticOrGlobal(Variable $variable): bool
@@ -72,5 +51,25 @@ final class VariableAnalyzer
 
             return false;
         });
+    }
+
+    private function isParentStaticOrGlobal(Variable $variable): bool
+    {
+        $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
+
+        if (! $parentNode instanceof Node) {
+            return false;
+        }
+
+        if ($parentNode instanceof Global_) {
+            return true;
+        }
+
+        if (! $parentNode instanceof StaticVar) {
+            return false;
+        }
+
+        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        return $parentParentNode instanceof Static_;
     }
 }
