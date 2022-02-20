@@ -190,8 +190,7 @@ final class PropertyManipulator
     private function isInlineStmtWithFunctionLike(
         PropertyFetch|StaticPropertyFetch $propertyFetch,
         ClassMethod $classMethod
-    ): bool
-    {
+    ): bool {
         $currentStmt = $propertyFetch->getAttribute(AttributeKey::CURRENT_STATEMENT);
         if (! $currentStmt instanceof Stmt) {
             return false;
