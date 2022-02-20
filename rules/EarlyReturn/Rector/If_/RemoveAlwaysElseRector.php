@@ -82,7 +82,6 @@ CODE_SAMPLE
             $if = new If_($node->cond);
             $if->stmts = $node->stmts;
 
-            $nodesToReturnBeforeNode = [$if];
             $this->mirrorComments($if, $node);
 
             /** @var ElseIf_ $firstElseIf */
@@ -100,7 +99,7 @@ CODE_SAMPLE
             }
 
             return [
-                ...$nodesToReturnBeforeNode,
+                $if,
                 $node,
                 ...$nodesToReturnAfterNode
             ];
