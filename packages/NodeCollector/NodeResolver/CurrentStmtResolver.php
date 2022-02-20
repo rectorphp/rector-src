@@ -9,7 +9,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class CurrentStmtResolver
 {
-    public function resolve(Stmt $stmt)
+    public function resolve(Stmt $stmt): Stmt
     {
         $currentStatement = $stmt->getAttribute(AttributeKey::CURRENT_STATEMENT);
         return $currentStatement instanceof Stmt
