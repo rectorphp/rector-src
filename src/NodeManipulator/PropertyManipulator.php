@@ -19,6 +19,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
@@ -157,7 +158,7 @@ final class PropertyManipulator
             if ($classMethod instanceof ClassMethod && $this->nodeNameResolver->isName(
                 $classMethod->name,
                 MethodName::CONSTRUCT
-            )) {
+            ) && $this->isInlineStmtWithFunctionLike($propertyFetch, $classMethod)) {
                 continue;
             }
 
@@ -167,6 +168,17 @@ final class PropertyManipulator
         }
 
         return false;
+    }
+
+    private function isInlineStmtWithFunctionLike(PropertyFetch|StaticPropertyFetch $propertyFetch, ClassMethod $classMethod): bool
+    {
+        $currentStmt = $propertyFetch->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStmt instanceof Stmt) {
+            return false;
+        }
+
+        $parent = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+        return $parent === $classMethod;
     }
 
     public function isPropertyChangeable(Property $property): bool
