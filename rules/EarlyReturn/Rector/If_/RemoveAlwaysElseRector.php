@@ -71,7 +71,7 @@ CODE_SAMPLE
     /**
      * @param If_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ?array
     {
         if ($this->doesLastStatementBreakFlow($node)) {
             return null;
@@ -82,7 +82,7 @@ CODE_SAMPLE
             $if = new If_($node->cond);
             $if->stmts = $node->stmts;
 
-            $this->nodesToAddCollector->addNodeBeforeNode($if, $node);
+            $nodesToReturnBeforeNode = [$if];
             $this->mirrorComments($if, $node);
 
             /** @var ElseIf_ $firstElseIf */
@@ -92,23 +92,25 @@ CODE_SAMPLE
             $this->mirrorComments($node, $firstElseIf);
 
             $statements = $this->getStatementsElseIfs($node);
-            if ($statements !== []) {
-                $this->nodesToAddCollector->addNodesAfterNode($statements, $node);
-            }
+            $nodesToReturnAfterNode = $statements;
 
             if ($originalNode->else instanceof Else_) {
                 $node->else = null;
-                $this->nodesToAddCollector->addNodeAfterNode($originalNode->else, $node);
+                $nodesToReturnAfterNode = array_merge($nodesToReturnAfterNode, [$originalNode->else]);
             }
 
-            return $node;
+            return [
+                ...$nodesToReturnBeforeNode,
+                $node,
+                ...$nodesToReturnAfterNode
+            ];
         }
 
         if ($node->else !== null) {
-            $this->nodesToAddCollector->addNodesAfterNode($node->else->stmts, $node);
+            $stmts = $node->else->stmts;
             $node->else = null;
 
-            return $node;
+            return [$node, ...$stmts];
         }
 
         return null;
