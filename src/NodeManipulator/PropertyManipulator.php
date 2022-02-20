@@ -155,10 +155,10 @@ final class PropertyManipulator
 
             // skip for constructor? it is allowed to set value in constructor method
             $classMethod = $this->betterNodeFinder->findParentType($propertyFetch, ClassMethod::class);
-            if ($classMethod instanceof ClassMethod && $this->nodeNameResolver->isName(
-                $classMethod->name,
-                MethodName::CONSTRUCT
-            ) && $this->isInlineStmtWithFunctionLike($propertyFetch, $classMethod)) {
+            if ($classMethod instanceof ClassMethod && $this->isInlineStmtWithConstructMethod(
+                $propertyFetch,
+                $classMethod
+            )) {
                 continue;
             }
 
@@ -187,10 +187,14 @@ final class PropertyManipulator
         return false;
     }
 
-    private function isInlineStmtWithFunctionLike(
+    private function isInlineStmtWithConstructMethod(
         PropertyFetch|StaticPropertyFetch $propertyFetch,
         ClassMethod $classMethod
     ): bool {
+        if (! $this->nodeNameResolver->isName($classMethod->name, MethodName::CONSTRUCT)) {
+            return false;
+        }
+
         $currentStmt = $propertyFetch->getAttribute(AttributeKey::CURRENT_STATEMENT);
         if (! $currentStmt instanceof Stmt) {
             return false;
