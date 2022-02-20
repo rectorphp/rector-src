@@ -170,17 +170,6 @@ final class PropertyManipulator
         return false;
     }
 
-    private function isInlineStmtWithFunctionLike(PropertyFetch|StaticPropertyFetch $propertyFetch, ClassMethod $classMethod): bool
-    {
-        $currentStmt = $propertyFetch->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStmt instanceof Stmt) {
-            return false;
-        }
-
-        $parent = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-        return $parent === $classMethod;
-    }
-
     public function isPropertyChangeable(Property $property): bool
     {
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
@@ -196,6 +185,20 @@ final class PropertyManipulator
         }
 
         return false;
+    }
+
+    private function isInlineStmtWithFunctionLike(
+        PropertyFetch|StaticPropertyFetch $propertyFetch,
+        ClassMethod $classMethod
+    ): bool
+    {
+        $currentStmt = $propertyFetch->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if (! $currentStmt instanceof Stmt) {
+            return false;
+        }
+
+        $parent = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+        return $parent === $classMethod;
     }
 
     private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
