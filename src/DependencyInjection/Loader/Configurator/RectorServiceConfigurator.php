@@ -7,7 +7,6 @@ namespace Rector\Core\DependencyInjection\Loader\Configurator;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServiceConfigurator;
-use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 
 /**
  * @api
@@ -25,7 +24,7 @@ final class RectorServiceConfigurator extends ServiceConfigurator
         // decorate with value object inliner so Symfony understands, see https://getrector.org/blog/2020/09/07/how-to-inline-value-object-in-symfony-php-config
         array_walk_recursive($configuration, function (&$value) {
             if (is_object($value)) {
-                $value = ValueObjectInliner::inline($value);
+                $value = \Rector\Core\Configuration\ValueObjectInliner::inline($value);
             }
 
             return $value;
