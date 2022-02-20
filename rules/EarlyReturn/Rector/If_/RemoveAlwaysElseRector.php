@@ -70,6 +70,7 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
+     * @return Node[]|null
      */
     public function refactor(Node $node): ?array
     {
