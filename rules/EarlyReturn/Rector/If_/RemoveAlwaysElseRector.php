@@ -98,11 +98,7 @@ CODE_SAMPLE
                 $nodesToReturnAfterNode = array_merge($nodesToReturnAfterNode, [$originalNode->else]);
             }
 
-            return [
-                $if,
-                $node,
-                ...$nodesToReturnAfterNode
-            ];
+            return [$if, $node, ...$nodesToReturnAfterNode];
         }
 
         if ($node->else !== null) {
