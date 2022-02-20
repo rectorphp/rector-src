@@ -22,19 +22,26 @@ final class VariableAnalyzer
     ) {
     }
 
-    public function isStaticOrGlobal(Variable $variable): bool
+    private function isParentStaticOrGlobal(Variable $variable): bool
     {
         $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
 
-        if ($parentNode instanceof Node) {
-            if ($parentNode instanceof Global_) {
-                return true;
-            }
+        if ($parentNode instanceof Node && $parentNode instanceof Global_) {
+            return true;
+        }
 
-            $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentParentNode instanceof Static_) {
-                return true;
-            }
+        if (! $parentNode instanceof StaticVar) {
+            return false;
+        }
+
+        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        return $parentParentNode instanceof Static_;
+    }
+
+    public function isStaticOrGlobal(Variable $variable): bool
+    {
+        if ($this->isParentStaticOrGlobal($variable)) {
+            return true;
         }
 
         return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $n) use (
