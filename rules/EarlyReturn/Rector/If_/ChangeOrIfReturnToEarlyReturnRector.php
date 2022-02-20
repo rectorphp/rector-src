@@ -6,6 +6,7 @@ namespace Rector\EarlyReturn\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
@@ -178,8 +179,16 @@ CODE_SAMPLE
         );
     }
 
-    private function isInstanceofCondOnly(BooleanOr $booleanOr): bool
+    private function isInstanceofCondOnly(BooleanOr|BinaryOp $booleanOr): bool
     {
-        return $booleanOr->left instanceof Instanceof_ || $booleanOr->right instanceof Instanceof_;
+        if ($booleanOr->left instanceof BinaryOp) {
+            return $this->isInstanceofCondOnly($booleanOr->left);
+        }
+
+        if ($booleanOr->right instanceof BinaryOp) {
+            return $this->isInstanceofCondOnly($booleanOr->right);
+        }
+
+        return $booleanOr->right instanceof Instanceof_;
     }
 }
