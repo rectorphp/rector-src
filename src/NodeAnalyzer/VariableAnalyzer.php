@@ -26,7 +26,11 @@ final class VariableAnalyzer
     {
         $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
 
-        if ($parentNode instanceof Node && $parentNode instanceof Global_) {
+        if (! $parentNode instanceof Node) {
+            return false;
+        }
+
+        if ($parentNode instanceof Global_) {
             return true;
         }
 
