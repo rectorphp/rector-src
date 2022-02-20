@@ -90,9 +90,7 @@ CODE_SAMPLE
             $node->stmts = $firstElseIf->stmts;
             $this->mirrorComments($node, $firstElseIf);
 
-            $statements = $this->getStatementsElseIfs($node);
-            $nodesToReturnAfterNode = $statements;
-
+            $nodesToReturnAfterNode = $this->getStatementsElseIfs($node);
             if ($originalNode->else instanceof Else_) {
                 $node->else = null;
                 $nodesToReturnAfterNode = array_merge($nodesToReturnAfterNode, [$originalNode->else]);
