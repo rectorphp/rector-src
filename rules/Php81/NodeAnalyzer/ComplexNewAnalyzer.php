@@ -53,8 +53,10 @@ final class ComplexNewAnalyzer
             if (! $value instanceof ClassConstFetch) {
                 return true;
             }
-
-            if (! $value->class instanceof Name || ! $value->name instanceof Identifier) {
+            if (! $value->class instanceof Name) {
+                return true;
+            }
+            if (! $value->name instanceof Identifier) {
                 return true;
             }
         }
