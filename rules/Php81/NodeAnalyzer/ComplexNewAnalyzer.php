@@ -7,7 +7,11 @@ namespace Rector\Php81\NodeAnalyzer;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
@@ -39,6 +43,14 @@ final class ComplexNewAnalyzer
             }
 
             if ($value instanceof Scalar) {
+                continue;
+            }
+
+            if ($value instanceof ConstFetch) {
+                continue;
+            }
+
+            if ($value instanceof ClassConstFetch && $value->class instanceof Name) {
                 continue;
             }
 
