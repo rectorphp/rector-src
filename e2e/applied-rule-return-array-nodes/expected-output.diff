@@ -1,5 +1,5 @@
-1 file with changes
-===================
+2 files with changes
+====================
 
 1) src/RemoveAlwaysElse.php:5
 
@@ -20,4 +20,28 @@ Applied rules:
  * RemoveAlwaysElseRector
 
 
- [OK] 1 file would have changed (dry-run) by Rector
+2) src/MultiRules.php:5
+
+    ---------- begin diff ----------
+@@ @@
+     {
+         if (true === false) {
+             return -1;
+-        } else {
+-            echo 'a statement';
+         }
+-    }
+-
+-    private function notUsed()
+-    {
++        echo 'a statement';
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnusedPrivateMethodRector
+ * RemoveAlwaysElseRector
+
+
+ [OK] 2 files would have changed (dry-run) by Rector
