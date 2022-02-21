@@ -46,24 +46,27 @@ final class ComplexNewAnalyzer
                 continue;
             }
 
-            if ($value instanceof ConstFetch) {
+            if ($this->isAllowedConstFetchOrClassConstFeth($value)) {
                 continue;
             }
 
-            if (! $value instanceof ClassConstFetch) {
-                return true;
-            }
-
-            if (! $value->class instanceof Name) {
-                return true;
-            }
-
-            if (! $value->name instanceof Identifier) {
-                return true;
-            }
+            return true;
         }
 
         return false;
+    }
+
+    private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
+    {
+        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
+            return false;
+        }
+
+        if ($expr instanceof ClassConstFetch) {
+            return $expr->class instanceof Name && $expr->name instanceof Identifier;
+        }
+
+        return true;
     }
 
     private function isAllowedNew(Expr $expr): bool
