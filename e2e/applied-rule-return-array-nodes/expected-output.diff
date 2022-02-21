@@ -1,0 +1,20 @@
+1 file with changes
+===================
+
+1) src/RemoveAlwaysElse.php:5
+
+    ---------- begin diff ----------
+@@ @@
+     {
+         if ($value) {
+             throw new \InvalidStateException;
+-        } else {
+-            return 10;
+         }
++        return 10;
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveAlwaysElseRector
