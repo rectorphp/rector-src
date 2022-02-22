@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\TryCatch;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
@@ -64,26 +65,34 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): null|TryCatch|array
     {
-        if (count($node->catches) !== 1) {
-            return null;
+        foreach ($node->catches as $catch) {
+            if ($catch->stmts === []) {
+                continue;
+            }
+
+            if (! isset($catch->stmts[0])) {
+                return null;
+            }
+
+            if (count($catch->stmts) !== 1) {
+                return null;
+            }
+
+            if ($catch->stmts[0] instanceof Nop) {
+                continue;
+            }
+
+            if (! $catch->stmts[0] instanceof Throw_) {
+                return null;
+            }
         }
 
-        /** @var Catch_ $onlyCatch */
-        $onlyCatch = $node->catches[0];
-        if (count($onlyCatch->stmts) !== 1) {
-            return null;
+        if ($node->finally instanceof Finally_ && count($node->finally->stmts) === 1 && isset($node->finally->stmts[0]) && $node->finally->stmts[0] instanceof Nop) {
+            $this->removeNode($node);
+            return $node;
         }
 
-        if ($node->finally !== null && $node->finally->stmts !== []) {
-            return null;
-        }
-
-        $onlyCatchStmt = $onlyCatch->stmts[0];
-        if (! $onlyCatchStmt instanceof Throw_) {
-            return null;
-        }
-
-        if (! $this->nodeComparator->areNodesEqual($onlyCatch->var, $onlyCatchStmt->expr)) {
+        if ($node->finally instanceof Finally_ && $node->finally->stmts !== []) {
             return null;
         }
 
