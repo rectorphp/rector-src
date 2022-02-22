@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
-use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
@@ -196,12 +195,8 @@ final class PHPStanNodeScopeResolver
     ): void {
         $dependentFiles = [];
         foreach ($stmts as $stmt) {
-            try {
-                $nodeDependentFiles = $this->dependencyResolver->resolveDependencies($stmt, $mutatingScope);
-                $dependentFiles = array_merge($dependentFiles, $nodeDependentFiles);
-            } catch (AnalysedCodeException) {
-                // @ignoreException
-            }
+            $nodeDependentFiles = $this->dependencyResolver->resolveDependencies($stmt, $mutatingScope);
+            $dependentFiles = array_merge($dependentFiles, $nodeDependentFiles);
         }
 
         $this->changedFilesDetector->addFileWithDependencies($smartFileInfo, $dependentFiles);

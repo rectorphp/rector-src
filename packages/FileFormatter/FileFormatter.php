@@ -8,8 +8,6 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\Application\File;
 use Rector\FileFormatter\Contract\Formatter\FileFormatterInterface;
 use Rector\FileFormatter\EditorConfig\EditorConfigParser;
-use Rector\FileFormatter\Exception\InvalidNewLineStringException;
-use Rector\FileFormatter\Exception\ParseIndentException;
 use Rector\FileFormatter\ValueObject\EditorConfigConfiguration;
 use Rector\FileFormatter\ValueObject\Indent;
 use Rector\FileFormatter\ValueObject\NewLine;
@@ -55,19 +53,13 @@ final class FileFormatter
     private function sniffOriginalFileContent(
         File $file,
         EditorConfigConfigurationBuilder $editorConfigConfigurationBuilder
-    ): void {
+    ): void
+    {
         // Try to sniff into the original content to get the indentation and new line
-        try {
-            $indent = Indent::fromContent($file->getOriginalFileContent());
-            $editorConfigConfigurationBuilder->withIndent($indent);
-        } catch (ParseIndentException) {
-        }
-
-        try {
-            $newLine = NewLine::fromContent($file->getOriginalFileContent());
-            $editorConfigConfigurationBuilder->withNewLine($newLine);
-        } catch (InvalidNewLineStringException) {
-        }
+        $indent = Indent::fromContent($file->getOriginalFileContent());
+        $editorConfigConfigurationBuilder->withIndent($indent);
+        $newLine = NewLine::fromContent($file->getOriginalFileContent());
+        $editorConfigConfigurationBuilder->withNewLine($newLine);
     }
 
     private function createEditorConfiguration(
