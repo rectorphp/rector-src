@@ -60,9 +60,9 @@ CODE_SAMPLE
 
     /**
      * @param TryCatch $node
-     * @return TryCatch|Stmt[]|null
+     * @return null|TryCatch|Stmt[]
      */
-    public function refactor(Node $node): null|TryCatch|Stmt
+    public function refactor(Node $node): null|TryCatch|array
     {
         if (count($node->catches) !== 1) {
             return null;
