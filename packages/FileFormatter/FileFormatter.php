@@ -53,8 +53,7 @@ final class FileFormatter
     private function sniffOriginalFileContent(
         File $file,
         EditorConfigConfigurationBuilder $editorConfigConfigurationBuilder
-    ): void
-    {
+    ): void {
         // Try to sniff into the original content to get the indentation and new line
         $indent = Indent::fromContent($file->getOriginalFileContent());
         $editorConfigConfigurationBuilder->withIndent($indent);
