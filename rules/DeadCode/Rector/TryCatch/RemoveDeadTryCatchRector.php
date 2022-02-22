@@ -59,6 +59,7 @@ CODE_SAMPLE
 
     /**
      * @param TryCatch $node
+     * @return Node|Node[]|null
      */
     public function refactor(Node $node): null|array|Node
     {
