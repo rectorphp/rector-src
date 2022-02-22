@@ -127,8 +127,8 @@ CODE_SAMPLE
             }
         }
 
-       // if ($tryCatch->stmts !== [] && ! $this->hasOnlyNopStmt($tryCatch->stmts)) {
-      //      return true;
+        // if ($tryCatch->stmts !== [] && ! $this->hasOnlyNopStmt($tryCatch->stmts)) {
+        //      return true;
         //}
 
         return false;
