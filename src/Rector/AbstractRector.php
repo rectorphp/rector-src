@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
@@ -249,12 +250,10 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
             /** @var array<Node> $node */
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
+            $node = $this->verifyNop($node, $originalNode);
 
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $node;
-
-            $firstNodeKey = array_key_first($node);
-            $this->mirrorComments($node[$firstNodeKey], $originalNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
@@ -289,6 +288,23 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         $this->nodesToReturn[$originalNodeHash] = $node;
 
+        return $node;
+    }
+
+    /**
+     * @param Node[] $node
+     * @return Node[]
+     */
+    private function verifyNop(array $node, Node $originalNode): array
+    {
+        $firstNodeKey = array_key_first($node);
+        if ($node[$firstNodeKey] instanceof Nop) {
+            unset($node[$firstNodeKey]);
+
+            return $node;
+        }
+
+        $this->mirrorComments($node[$firstNodeKey], $originalNode);
         return $node;
     }
 

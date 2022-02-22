@@ -42,7 +42,6 @@ class SomeClass
 {
     public function run()
     {
-        // some code
     }
 }
 CODE_SAMPLE
