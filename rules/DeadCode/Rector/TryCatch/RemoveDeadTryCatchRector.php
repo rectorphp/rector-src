@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\TryCatch;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Throw_;
@@ -59,9 +60,9 @@ CODE_SAMPLE
 
     /**
      * @param TryCatch $node
-     * @return Node|Node[]|null
+     * @return TryCatch|Stmt[]|null
      */
-    public function refactor(Node $node): null|array|Node
+    public function refactor(Node $node): null|TryCatch|Stmt
     {
         if (count($node->catches) !== 1) {
             return null;
