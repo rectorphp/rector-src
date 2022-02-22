@@ -292,23 +292,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     }
 
     /**
-     * @param Node[] $node
-     * @return Node[]
-     */
-    private function verifyNop(array $node, Node $originalNode): array
-    {
-        $firstNodeKey = array_key_first($node);
-        if ($node[$firstNodeKey] instanceof Nop) {
-            unset($node[$firstNodeKey]);
-
-            return $node;
-        }
-
-        $this->mirrorComments($node[$firstNodeKey], $originalNode);
-        return $node;
-    }
-
-    /**
      * Replacing nodes in leaveNode() method avoids infinite recursion
      * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
      */
@@ -449,6 +432,23 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function removeNodes(array $nodes): void
     {
         $this->nodeRemover->removeNodes($nodes);
+    }
+
+    /**
+     * @param Node[] $node
+     * @return Node[]
+     */
+    private function verifyNop(array $node, Node $originalNode): array
+    {
+        $firstNodeKey = array_key_first($node);
+        if ($node[$firstNodeKey] instanceof Nop) {
+            unset($node[$firstNodeKey]);
+
+            return $node;
+        }
+
+        $this->mirrorComments($node[$firstNodeKey], $originalNode);
+        return $node;
     }
 
     /**
