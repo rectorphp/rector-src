@@ -6,7 +6,6 @@ namespace Rector\DeadCode\Rector\TryCatch;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Throw_;
@@ -60,22 +59,6 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Stmt[] $stmts
-     */
-    private function isEmpty(array $stmts): bool
-    {
-        if ($stmts === []) {
-            return true;
-        }
-
-        if (count($stmts) > 1) {
-            return false;
-        }
-
-        return $stmts[0] instanceof Nop;
-    }
-
-    /**
      * @param TryCatch $node
      * @return Stmt[]|null|TryCatch
      */
@@ -112,5 +95,21 @@ CODE_SAMPLE
         }
 
         return $node->stmts;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function isEmpty(array $stmts): bool
+    {
+        if ($stmts === []) {
+            return true;
+        }
+
+        if (count($stmts) > 1) {
+            return false;
+        }
+
+        return $stmts[0] instanceof Nop;
     }
 }
