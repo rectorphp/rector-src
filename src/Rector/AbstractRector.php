@@ -242,10 +242,10 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
+        $this->applyRectorWithLineChange($originalNode);
+
         /** @var Node $originalNode */
         if (is_array($node)) {
-            $this->applyRectorWithLineChange($originalNode);
-
             /** @var array<Node> $node */
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
@@ -258,8 +258,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
-
-        $this->applyRectorWithLineChange($originalNode);
 
         // not changed, return node early
         if ($node instanceof Node && ! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
