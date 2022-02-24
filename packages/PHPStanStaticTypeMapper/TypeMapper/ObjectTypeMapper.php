@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -91,8 +92,9 @@ final class ObjectTypeMapper implements TypeMapperInterface
 
             if (str_starts_with($className, '\\')) {
                 // skip leading \
-                return new FullyQualified(substr($className, 1));
+                return new FullyQualified(Strings::substring($className, 1));
             }
+
             return new FullyQualified($className);
         }
 
