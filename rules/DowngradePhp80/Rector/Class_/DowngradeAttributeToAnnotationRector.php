@@ -87,9 +87,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $isDowngraded = null;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        $isDowngaded = false;
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $key => $attribute) {
                 $attributeToAnnotation = $this->matchAttributeToAnnotation($attribute, $this->attributesToAnnotations);
