@@ -237,6 +237,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         $node = $this->refactor($node);
 
+        // not changed, return node early
+        if ($node instanceof Node && ! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
+            $this->applyRectorWithLineChange($originalNode);
+            return $node;
+        }
+
         // nothing to change → continue
         if ($this->isNothingToChange($node)) {
             return null;
@@ -259,15 +265,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return $originalNode;
         }
 
-        // not changed, return node early
-        /** @var Node $node */
-        if (! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
-            return $node;
-        }
-
         $this->applyRectorWithLineChange($originalNode);
 
-        // update parents relations - must run before connectParentNodes()
+        /**
+         * update parents relations - must run before connectParentNodes()
+         * @var Node $node
+         */
         $this->mirrorAttributes($originalAttributes, $node);
         $this->connectParentNodes($node);
 
