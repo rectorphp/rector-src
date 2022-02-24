@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
+use PHP_CodeSniffer\Reports\Full;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -87,7 +88,13 @@ final class ObjectTypeMapper implements TypeMapperInterface
         }
 
         if ($type instanceof FullyQualifiedObjectType) {
-            return new FullyQualified($type->getClassName());
+            $className = $type->getClassName();
+
+            if(str_starts_with($className, '\\')) {
+                // skip leading \
+                return new FullyQualified(substr($className, 1));
+            }
+            return new FullyQualified($className);
         }
 
         if (! $type instanceof GenericObjectType) {
