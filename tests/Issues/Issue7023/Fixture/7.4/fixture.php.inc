@@ -13,7 +13,7 @@ class Fixture
 
     /**
      * @ORM\ManyToOne(targetEntity="\Acme\Entity\User", inversedBy="images")
-     * @ORM\JoinColumn(name="data_id", nullable=false)
+     * @ORM\JoinColumn(name="data_id", nullable=true)
      * @var User
      */
     private $user;
@@ -35,7 +35,7 @@ class Fixture
 
     /**
      * @ORM\ManyToOne(targetEntity="\Acme\Entity\User", inversedBy="images")
-     * @ORM\JoinColumn(name="data_id", nullable=false)
+     * @ORM\JoinColumn(name="data_id", nullable=true)
      * @var User
      */
     private ?\Acme\Entity\User $user = null;

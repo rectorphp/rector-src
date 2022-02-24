@@ -11,7 +11,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 /**
  * @see https://github.com/rectorphp/rector/issues/7023
  */
-final class DoNotPrependAnotherBackslashIfAlreadyPresentTest extends AbstractRectorTestCase
+final class DoNotPrependAnotherBackslashIfAlreadyPresent73Test extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
@@ -26,11 +26,11 @@ final class DoNotPrependAnotherBackslashIfAlreadyPresentTest extends AbstractRec
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/7.4');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/7.3');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/configured_rule.php';
+        return __DIR__ . '/config/configured_rule_73.php';
     }
 }
