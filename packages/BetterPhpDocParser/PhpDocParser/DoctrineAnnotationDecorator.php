@@ -68,7 +68,7 @@ final class DoctrineAnnotationDecorator
     /**
      * Join token iterator with all the following nodes if nested
      */
-    private function mergeNestedDoctrineAnnotations(PhpDocNode $phpDocNode): void
+    private function mergeNestedDoctrineAnnotations(PhpDocNode $phpDocNode): bool
     {
         $removedKeys = [];
 
@@ -155,6 +155,8 @@ final class DoctrineAnnotationDecorator
 
             unset($phpDocNode->children[$key]);
         }
+
+        return (bool) $removedKeys;
     }
 
     private function transformGenericTagValueNodesToDoctrineAnnotationTagValueNodes(
@@ -202,7 +204,10 @@ final class DoctrineAnnotationDecorator
                 $fullyQualifiedAnnotationClass
             );
 
-            $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+            if (count($phpDocNode->children) === 1) {
+                $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+            }
+
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
         }
     }
