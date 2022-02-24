@@ -114,7 +114,7 @@ CODE_SAMPLE
             }
         }
 
-        if (! $isDowngraded) {
+        if ($isDowngraded === null) {
             return null;
         }
 

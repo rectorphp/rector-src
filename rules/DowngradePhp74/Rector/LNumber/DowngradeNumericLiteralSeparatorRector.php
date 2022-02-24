@@ -97,6 +97,7 @@ CODE_SAMPLE
             if ($node->getAttribute(AttributeKey::KIND) !== LNumber::KIND_DEC) {
                 return false;
             }
+
             return $node->value >= 1000;
         }
 
