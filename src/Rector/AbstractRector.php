@@ -237,9 +237,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         $node = $this->refactor($node);
 
-        $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
-        $this->file->addRectorClassWithLine($rectorWithLineChange);
-
         // nothing to change → continue
         if ($this->isNothingToChange($node)) {
             return null;
@@ -247,6 +244,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         /** @var Node $originalNode */
         if (is_array($node)) {
+            $this->applyRectorWithLineChange($originalNode);
+
             /** @var array<Node> $node */
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
@@ -265,6 +264,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         if (! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
             return $node;
         }
+
+        $this->applyRectorWithLineChange($originalNode);
 
         // update parents relations - must run before connectParentNodes()
         $this->mirrorAttributes($originalAttributes, $node);
@@ -287,6 +288,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->nodesToReturn[$originalNodeHash] = $node;
 
         return $node;
+    }
+
+    private function applyRectorWithLineChange(Node $originalNode): void
+    {
+        $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
+        $this->file->addRectorClassWithLine($rectorWithLineChange);
     }
 
     /**
