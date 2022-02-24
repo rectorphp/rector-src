@@ -94,7 +94,7 @@ CODE_SAMPLE
     {
         // "_" notation can be applied to decimal numbers only
         if ($node instanceof LNumber) {
-            return $node->getAttribute(AttributeKey::KIND) === LNumber::KIND_DEC;
+            return $node->getAttribute(AttributeKey::KIND) === LNumber::KIND_DEC && $node->value >= 1000;
         }
 
         return true;

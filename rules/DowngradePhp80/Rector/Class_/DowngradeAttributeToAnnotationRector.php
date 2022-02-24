@@ -89,6 +89,7 @@ CODE_SAMPLE
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
+        $isDowngaded = false;
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $key => $attribute) {
                 $attributeToAnnotation = $this->matchAttributeToAnnotation($attribute, $this->attributesToAnnotations);
@@ -109,7 +110,13 @@ CODE_SAMPLE
                     );
                     $phpDocInfo->addTagValueNode($doctrineAnnotation);
                 }
+
+                $isDowngraded = true;
             }
+        }
+
+        if (! $isDowngraded) {
+            return null;
         }
 
         // cleanup empty attr groups
