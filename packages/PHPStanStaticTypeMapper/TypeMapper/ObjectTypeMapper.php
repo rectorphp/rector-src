@@ -62,6 +62,10 @@ final class ObjectTypeMapper implements TypeMapperInterface
             return new IdentifierTypeNode($type->getClassName());
         }
 
+        if ($type instanceof FullyQualifiedObjectType && str_starts_with($type->getClassName(), '\\')) {
+            return new IdentifierTypeNode($type->getClassName());
+        }
+
         return new IdentifierTypeNode('\\' . $type->getClassName());
     }
 
