@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @param DateTime $someOldClass
+ * @param DateTimeInterface $someOldClass
  */
 function someFunction($someOldClass)
 {

@@ -16,4 +16,3 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(RenameClassRector::class)
         ->configure(['DateTime' => 'DateTimeInterface']);
 };
-
