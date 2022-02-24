@@ -87,6 +87,10 @@ CODE_SAMPLE
             $node->value .= '.0';
         }
 
+        if (! str_contains($node->value, '_')) {
+            return null;
+        }
+
         return $node;
     }
 
@@ -94,11 +98,7 @@ CODE_SAMPLE
     {
         // "_" notation can be applied to decimal numbers only
         if ($node instanceof LNumber) {
-            if ($node->getAttribute(AttributeKey::KIND) !== LNumber::KIND_DEC) {
-                return false;
-            }
-
-            return $node->value >= 1000;
+            return $node->getAttribute(AttributeKey::KIND) === LNumber::KIND_DEC;
         }
 
         return true;
