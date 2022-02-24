@@ -68,7 +68,7 @@ final class DoctrineAnnotationDecorator
     /**
      * Join token iterator with all the following nodes if nested
      */
-    private function mergeNestedDoctrineAnnotations(PhpDocNode $phpDocNode): bool
+    private function mergeNestedDoctrineAnnotations(PhpDocNode $phpDocNode): void
     {
         $removedKeys = [];
 
@@ -155,8 +155,6 @@ final class DoctrineAnnotationDecorator
 
             unset($phpDocNode->children[$key]);
         }
-
-        return (bool) $removedKeys;
     }
 
     private function transformGenericTagValueNodesToDoctrineAnnotationTagValueNodes(
