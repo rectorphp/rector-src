@@ -260,14 +260,12 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         // not changed, return node early
-        if ($node instanceof Node && ! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
+        /** @var Node $node */
+        if (! $this->changedNodeAnalyzer->hasNodeChanged($originalNode, $node)) {
             return $node;
         }
 
-        /**
-         * update parents relations - must run before connectParentNodes()
-         * @var Node $node
-         */
+        // update parents relations - must run before connectParentNodes()
         $this->mirrorAttributes($originalAttributes, $node);
         $this->connectParentNodes($node);
 
