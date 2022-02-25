@@ -106,7 +106,7 @@ CODE_SAMPLE
             }
 
             $isChanged = $this->refactorThrow($node, $caughtThrowableVariable);
-            return (bool) $isChanged;
+            return $isChanged;
         });
 
         if (! (bool) $isChanged) {
