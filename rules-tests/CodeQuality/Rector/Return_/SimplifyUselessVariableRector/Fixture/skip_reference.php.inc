@@ -5,7 +5,7 @@ namespace Rector\Tests\CodeQuality\Rector\Return_\SimplifyUselessVariableRector\
 function SomeReference()
 {
     $isChanged = false;
-    (function ($x) use ($isChanged) {
+    (function ($x) use (&$isChanged) {
         $isChanged = true;
         return $isChanged;
     })('x');
