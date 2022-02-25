@@ -105,7 +105,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $isChanged = $this->refactorThrow($node, $caughtThrowableVariable);
+            $isChanged = (bool) $this->refactorThrow($node, $caughtThrowableVariable);
             return $isChanged;
         });
 
