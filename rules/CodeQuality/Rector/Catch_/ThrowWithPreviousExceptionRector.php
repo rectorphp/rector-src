@@ -96,13 +96,19 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use ($caughtThrowableVariable): ?int {
+        $isChanged = false;
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use ($caughtThrowableVariable, &$isChanged): ?int {
             if (! $node instanceof Throw_) {
                 return null;
             }
 
-            return $this->refactorThrow($node, $caughtThrowableVariable);
+            $isChanged = $this->refactorThrow($node, $caughtThrowableVariable);
+            return $isChanged;
         });
+
+        if (! $isChanged) {
+            return null;
+        }
 
         return $node;
     }
