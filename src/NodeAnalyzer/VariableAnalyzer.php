@@ -54,6 +54,28 @@ final class VariableAnalyzer
         });
     }
 
+    public function isUsedByReference(Variable $variable): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $subNode) use (
+            $variable
+        ): bool {
+            if (! $subNode instanceof Variable) {
+                return false;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($subNode, $variable)) {
+                return false;
+            }
+
+            $parent = $subNode->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parent instanceof ClosureUse) {
+                return false;
+            }
+
+            return $parent->byRef;
+        });
+    }
+
     private function isParentStaticOrGlobal(Variable $variable): bool
     {
         $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
@@ -72,25 +94,5 @@ final class VariableAnalyzer
 
         $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         return $parentParentNode instanceof Static_;
-    }
-
-    public function isUsedByReference(Variable $variable): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode($variable, function (Node $subNode) use ($variable): bool {
-            if (! $subNode instanceof Variable) {
-                return false;
-            }
-
-            if (! $this->nodeComparator->areNodesEqual($subNode, $variable)) {
-                return false;
-            }
-
-            $parent = $subNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parent instanceof ClosureUse) {
-                return false;
-            }
-
-            return $parent->byRef;
-        });
     }
 }
