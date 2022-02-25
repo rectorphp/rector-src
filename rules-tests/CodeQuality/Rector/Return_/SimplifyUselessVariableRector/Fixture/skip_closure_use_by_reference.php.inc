@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Return_\SimplifyUselessVariableRector\Fixture;
 
-function SomeReference()
+function SkipClosureUseByReference()
 {
     $isChanged = false;
     (function ($x) use (&$isChanged) {
