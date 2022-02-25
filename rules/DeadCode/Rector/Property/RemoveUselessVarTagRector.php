@@ -64,7 +64,6 @@ CODE_SAMPLE
         $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
 
         if ($phpDocInfo->hasChanged()) {
-            $node->setAttribute(AttributeKey::HAS_PHP_DOC_INFO_JUST_CHANGED, true);
             return $node;
         }
 

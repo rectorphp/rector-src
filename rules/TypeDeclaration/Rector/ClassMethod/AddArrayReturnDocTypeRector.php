@@ -143,7 +143,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->setAttribute(AttributeKey::HAS_PHP_DOC_INFO_JUST_CHANGED, true);
         $hasChanged = $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
         if ($hasChanged) {
             return $node;

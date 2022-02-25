@@ -97,7 +97,6 @@ CODE_SAMPLE
         }
 
         if ($this->hasChanged) {
-            $node->setAttribute(AttributeKey::HAS_PHP_DOC_INFO_JUST_CHANGED, true);
             return $node;
         }
 
