@@ -109,7 +109,7 @@ CODE_SAMPLE
             return (bool) $isChanged;
         });
 
-        if (! $isChanged) {
+        if (! (bool) $isChanged) {
             return null;
         }
 
