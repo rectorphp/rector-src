@@ -97,7 +97,10 @@ CODE_SAMPLE
         }
 
         $isChanged = false;
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use ($caughtThrowableVariable, &$isChanged): ?int {
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (
+            $caughtThrowableVariable,
+            &$isChanged
+        ): ?int {
             if (! $node instanceof Throw_) {
                 return null;
             }
