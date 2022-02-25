@@ -257,6 +257,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         // update parents relations - must run before connectParentNodes()
+        /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
         $this->connectParentNodes($node);
 
