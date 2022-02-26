@@ -18,7 +18,7 @@ namespace Rector\Tests\DowngradePhp72\Rector\FuncCall\DowngradePregUnmatchedAsNu
 
 function inAssign($pattern, $subject, $matches, $flags, $offset)
 {
-    preg_match($pattern, $subject, $matches, $flags | PREG_UNMATCHED_AS_NULL, $offset);
+    preg_match($pattern, $subject, $matches, $flags, $offset);
     array_walk_recursive($matches, function (&$value) {
         if ($value === '') {
             $value = null;

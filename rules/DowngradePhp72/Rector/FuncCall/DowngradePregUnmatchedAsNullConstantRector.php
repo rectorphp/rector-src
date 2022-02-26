@@ -219,11 +219,21 @@ CODE_SAMPLE
     {
         $matchesVariable = $funcCall->args[2]->value;
 
-        return new Ternary(
+        $ternary = new Ternary(
             new Identical($matchesVariable, new Array_([])),
             $this->nodeFactory->createFalse(),
             new LNumber(1)
         );
+
+        $currentStatement = $assign->getAttribute(AttributeKey::CURRENT_STATEMENT);
+
+        $expressions = [
+            new Expression($funcCall),
+            new Expression($replaceEmptyStringToNull)
+        ];
+        $this->nodesToAddCollector->addNodesBeforeNode($expressions, $currentStatement);
+
+        return $ternary;
     }
 
     private function processInIf(If_ $if, FuncCall $funcCall, FuncCall $replaceEmptyStringToNull): FuncCall
