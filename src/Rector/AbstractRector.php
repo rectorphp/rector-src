@@ -206,8 +206,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
-        if ($this->shouldSkipCurrentNode($node, $originalNode)) {
+        if ($this->shouldSkipCurrentNode($node)) {
             return null;
         }
 
@@ -219,6 +218,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->printDebugApplying();
 
         $originalAttributes = $node->getAttributes();
+
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
 
         $node = $this->refactor($node);
 
@@ -437,7 +438,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         return false;
     }
 
-    private function shouldSkipCurrentNode(Node $node, Node $originalNode): bool
+    private function shouldSkipCurrentNode(Node $node): bool
     {
         if ($this->nodesToRemoveCollector->isNodeRemoved($node)) {
             return true;
@@ -457,7 +458,10 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return true;
         }
 
+        /** @var Node $originalNode */
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
         $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+
         return in_array(static::class, $createdByRule, true);
     }
 
