@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp72\Rector\FuncCall;
 
 use Nette\NotImplementedException;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -13,6 +14,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
@@ -154,7 +156,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function handleEmptyStringToNullMatch(FuncCall $funcCall, Variable $variable): FuncCall
+    private function handleEmptyStringToNullMatch(FuncCall $funcCall, Variable $variable): FuncCall|Ternary
     {
         $closure = new Closure();
         $variablePass = new Variable('value');
@@ -177,7 +179,7 @@ CODE_SAMPLE
         return $this->processReplace($funcCall, $replaceEmptyStringToNull);
     }
 
-    private function processReplace(FuncCall $funcCall, FuncCall $replaceEmptystringToNull): FuncCall
+    private function processReplace(FuncCall $funcCall, FuncCall $replaceEmptystringToNull): FuncCall|Ternary
     {
         $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Expression) {
@@ -199,7 +201,7 @@ CODE_SAMPLE
         }
 
         if ($parent instanceof Assign && $parent->expr === $funcCall) {
-            $parent = $funcCall;
+            return $this->processInAssign($parent, $funcCall, $replaceEmptystringToNull);
         }
 
         if (! $parent instanceof Identical) {
@@ -211,6 +213,17 @@ CODE_SAMPLE
         }
 
         return $this->processInIf($if, $funcCall, $replaceEmptystringToNull);
+    }
+
+    private function processInAssign(Assign $assign, FuncCall $funcCall, FuncCall $replaceEmptyStringToNull): Ternary
+    {
+        $matchesVariable = $funcCall->args[2]->value;
+
+        return new Ternary(
+            new Identical($matchesVariable, new Array_([])),
+            $this->nodeFactory->createFalse(),
+            new LNumber(1)
+        );
     }
 
     private function processInIf(If_ $if, FuncCall $funcCall, FuncCall $replaceEmptyStringToNull): FuncCall
