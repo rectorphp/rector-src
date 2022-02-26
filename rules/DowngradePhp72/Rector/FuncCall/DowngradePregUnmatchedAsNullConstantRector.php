@@ -223,11 +223,9 @@ CODE_SAMPLE
     {
         $matchesVariable = $funcCall->args[2]->value;
 
-        $ternary = new Ternary(
-            new Identical($matchesVariable, new Array_([])),
-            $this->nodeFactory->createFalse(),
-            new LNumber(1)
-        );
+        $identical = new Identical($matchesVariable, new Array_([]));
+        $lNumber = new LNumber(1);
+        $ternary = new Ternary($identical, $this->nodeFactory->createFalse(), $lNumber);
 
         $currentStatement = $assign->getAttribute(AttributeKey::CURRENT_STATEMENT);
 
@@ -266,8 +264,10 @@ CODE_SAMPLE
         if ($if->stmts !== []) {
             $firstStmt = $if->stmts[0];
             $this->nodesToAddCollector->addNodeBeforeNode($funcCall, $firstStmt);
-        } else {
-            $if->stmts[0] = new Expression($funcCall);
+
+            return;
         }
+
+        $if->stmts[0] = new Expression($funcCall);
     }
 }
