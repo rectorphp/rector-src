@@ -198,6 +198,10 @@ CODE_SAMPLE
             return $this->processInIf($if, $funcCall, $replaceEmptystringToNull);
         }
 
+        if ($parent instanceof Assign && $parent->expr === $funcCall) {
+            $parent = $funcCall;
+        }
+
         if (! $parent instanceof Identical) {
             throw new NotImplementedYetException();
         }
