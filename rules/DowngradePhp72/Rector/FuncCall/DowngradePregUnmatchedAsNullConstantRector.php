@@ -156,7 +156,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function handleEmptyStringToNullMatch(FuncCall $funcCall, Variable $variable): FuncCall|Ternary
+    private function handleEmptyStringToNullMatch(FuncCall $funcCall, Variable $variable): FuncCall
     {
         $closure = new Closure();
         $variablePass = new Variable('value');
