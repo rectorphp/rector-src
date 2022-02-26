@@ -98,8 +98,12 @@ final class DowngradePregUnmatchedAsNullConstantRector extends AbstractRector
         }
 
         $node = $this->handleEmptyStringToNullMatch($node, $variable);
-        unset($node->args[3]);
 
+        if ($node instanceof Ternary) {
+            return $node;
+        }
+
+        unset($node->args[3]);
         return $node;
     }
 
@@ -227,10 +231,7 @@ CODE_SAMPLE
 
         $currentStatement = $assign->getAttribute(AttributeKey::CURRENT_STATEMENT);
 
-        $expressions = [
-            new Expression($funcCall),
-            new Expression($replaceEmptyStringToNull)
-        ];
+        $expressions = [new Expression($funcCall), new Expression($replaceEmptyStringToNull)];
         $this->nodesToAddCollector->addNodesBeforeNode($expressions, $currentStatement);
 
         return $ternary;
