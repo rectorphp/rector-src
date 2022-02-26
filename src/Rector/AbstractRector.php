@@ -251,7 +251,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return $originalNode;
         }
 
-        $originalAttributes = $node->getAttributes();
+        $originalAttributes = $originalNode->getAttributes();
 
         // update parents relations - must run before connectParentNodes()
         /** @var Node $node */
