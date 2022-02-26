@@ -225,8 +225,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         // show current Rector class on --debug
         $this->printDebugApplying();
 
-        $originalAttributes = $node->getAttributes();
-
         $node = $this->refactor($node);
 
         // nothing to change → continue
@@ -252,6 +250,8 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
+
+        $originalAttributes = $node->getAttributes();
 
         // update parents relations - must run before connectParentNodes()
         /** @var Node $node */
