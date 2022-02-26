@@ -210,6 +210,14 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
             return null;
         }
 
+        /** @var Node $originalNode */
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
+        $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+
+        if (in_array(static::class, $createdByRule, true)) {
+            return null;
+        }
+
         $this->currentRectorProvider->changeCurrentRector($this);
         // for PHP doc info factory and change notifier
         $this->currentNodeProvider->setNode($node);
@@ -218,8 +226,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $this->printDebugApplying();
 
         $originalAttributes = $node->getAttributes();
-
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
 
         $node = $this->refactor($node);
 
@@ -454,15 +460,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         $rectifiedNode = $this->rectifiedAnalyzer->verify($this, $node, $this->file);
-        if ($rectifiedNode instanceof RectifiedNode) {
-            return true;
-        }
-
-        /** @var Node $originalNode */
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
-        $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-
-        return in_array(static::class, $createdByRule, true);
+        return $rectifiedNode instanceof RectifiedNode;
     }
 
     private function printDebugApplying(): void
