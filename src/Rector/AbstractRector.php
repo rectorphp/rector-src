@@ -235,7 +235,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         if ($node === []) {
-            $message = <<<TEXT
+            $message = <<<CODE_SAMPLE
 
 
 Array of nodes must not be empty, ensure %s->refactor() returns non-empty array for Nodes.
@@ -248,13 +248,8 @@ or remove the Node if not needed via
 
     \$this->removeNode(\$node);
     return \$node;
-TEXT;
-            throw new ShouldNotHappenException(
-                sprintf(
-                    $message,
-                    static::class
-                )
-            );
+CODE_SAMPLE;
+            throw new ShouldNotHappenException(sprintf($message, static::class));
         }
 
         /** @var Node[]|Node $node */
