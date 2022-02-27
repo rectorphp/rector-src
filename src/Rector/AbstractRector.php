@@ -66,6 +66,24 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         AttributeKey::PREVIOUS_STATEMENT,
     ];
 
+    /**
+     * @var string
+     */
+    private const MESSAGE = <<<CODE_SAMPLE
+
+
+Array of nodes must not be empty, ensure %s->refactor() returns non-empty array for Nodes.
+
+You can also either return null for no change:
+
+    return null;
+
+or remove the Node if not needed via
+
+    \$this->removeNode(\$node);
+    return \$node;
+CODE_SAMPLE;
+
     protected NodeNameResolver $nodeNameResolver;
 
     protected NodeTypeResolver $nodeTypeResolver;
@@ -235,21 +253,7 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         if ($node === []) {
-            $message = <<<CODE_SAMPLE
-
-
-Array of nodes must not be empty, ensure %s->refactor() returns non-empty array for Nodes.
-
-You can also either return null for no change:
-
-    return null;
-
-or remove the Node if not needed via
-
-    \$this->removeNode(\$node);
-    return \$node;
-CODE_SAMPLE;
-            throw new ShouldNotHappenException(sprintf($message, static::class));
+            throw new ShouldNotHappenException(sprintf(self::MESSAGE, static::class));
         }
 
         /** @var Node[]|Node $node */
