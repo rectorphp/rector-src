@@ -236,9 +236,11 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
 
         if ($node === []) {
             $message = <<<TEXT
+
+
 Array of nodes must not be empty, ensure %s->refactor() returns non-empty array for Nodes.
 
-You can either return null for no change:
+You can also either return null for no change:
 
     return null;
 
