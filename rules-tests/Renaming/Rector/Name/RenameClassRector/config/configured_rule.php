@@ -46,5 +46,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             SomeNonFinalClass::class => SomeFinalClass::class,
             'Foo\Bar' => 'Foo\Bar\BarInterface',
             'Doctrine\DBAL\DBALException' => 'Doctrine\DBAL\Exception',
+            'DateTime' => 'DateTimeInterface',
         ]);
 };
