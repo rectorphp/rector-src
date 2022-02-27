@@ -16,7 +16,8 @@ final class ReturnEmptyNodesTest extends AbstractRectorTestCase
      */
     public function test(SmartFileInfo $fileInfo): void
     {
-        $this->expectExceptionMessage(<<<TEXT
+        $this->expectExceptionMessage(
+            <<<CODE_SAMPLE
 Array of nodes must not be empty, ensure Rector\Core\Tests\Issues\ReturnEmptyNodes\Source\ReturnEmptyStmtsRector->refactor() returns non-empty array for Nodes.
 
 You can also either return null for no change:
@@ -27,7 +28,7 @@ or remove the Node if not needed via
 
     \$this->removeNode(\$node);
     return \$node;
-TEXT
+CODE_SAMPLE
         );
         $this->expectException(ShouldNotHappenException::class);
         $this->doTestFileInfo($fileInfo);
