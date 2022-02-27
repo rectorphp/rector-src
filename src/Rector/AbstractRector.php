@@ -235,9 +235,21 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         }
 
         if ($node === []) {
+            $message = <<<TEXT
+Array of nodes must not be empty, ensure %s->refactor() returns non-empty array for Nodes.
+
+You can either return null for no change:
+
+    return null;
+
+or remove the Node if not needed via
+
+    \$this->removeNode(\$node);
+    return \$node;
+TEXT;
             throw new ShouldNotHappenException(
                 sprintf(
-                    'Array of nodes must not be empty, ensure %s->refactor() returns non-empty array for Nodes or just return null when no change',
+                    $message,
                     static::class
                 )
             );
