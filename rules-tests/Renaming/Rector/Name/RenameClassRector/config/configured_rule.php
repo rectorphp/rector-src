@@ -25,7 +25,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'FqnizeNamespaced' => 'Abc\FqnizeNamespaced',
             OldClass::class => NewClass::class,
             OldClassWithTypo::class => NewClassWithoutTypo::class,
-            'DateTime' => 'DateTimeInterface',
             'Countable' => 'stdClass',
             Manual_Twig_Filter::class => TwigFilter::class,
             'Twig_AbstractManualExtension' => AbstractManualExtension::class,
