@@ -25,6 +25,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'FqnizeNamespaced' => 'Abc\FqnizeNamespaced',
             OldClass::class => NewClass::class,
             OldClassWithTypo::class => NewClassWithoutTypo::class,
+            'DateTime' => 'DateTimeInterface',
             'Countable' => 'stdClass',
             Manual_Twig_Filter::class => TwigFilter::class,
             'Twig_AbstractManualExtension' => AbstractManualExtension::class,
@@ -45,6 +46,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             SomeNonFinalClass::class => SomeFinalClass::class,
             'Foo\Bar' => 'Foo\Bar\BarInterface',
             'Doctrine\DBAL\DBALException' => 'Doctrine\DBAL\Exception',
-            'DateTime' => 'DateTimeInterface',
         ]);
 };
