@@ -230,8 +230,17 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         $node = $this->refactor($node);
 
         // nothing to change → continue
-        if ($this->isNothingToChange($node)) {
+        if ($node === null) {
             return null;
+        }
+
+        if ($node === []) {
+            throw new ShouldNotHappenException(
+                sprintf(
+                    'Array of nodes must not be empty, ensure %s->refactor() returns non-empty array for Nodes or just return null when no change',
+                    static::class
+                )
+            );
         }
 
         /** @var Node[]|Node $node */
@@ -416,18 +425,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     protected function removeNodes(array $nodes): void
     {
         $this->nodeRemover->removeNodes($nodes);
-    }
-
-    /**
-     * @param Node|array<Node>|null $node
-     */
-    private function isNothingToChange(array|Node|null $node): bool
-    {
-        if ($node === null) {
-            return true;
-        }
-
-        return $node === [];
     }
 
     /**
