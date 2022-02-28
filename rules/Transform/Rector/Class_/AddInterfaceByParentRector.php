@@ -77,6 +77,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
         foreach ($this->interfaceByParent as $parentName => $interfaceName) {
             if ($parentName !== $parentClassReflection->getName()) {
                 continue;
@@ -89,6 +90,11 @@ CODE_SAMPLE
             }
 
             $node->implements[] = new FullyQualified($interfaceName);
+            $hasChanged = true;
+        }
+
+        if (! $hasChanged) {
+            return null;
         }
 
         return $node;
