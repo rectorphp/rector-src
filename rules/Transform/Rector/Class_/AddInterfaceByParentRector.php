@@ -93,6 +93,17 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        Assert::allString(array_keys($configuration));
+        Assert::allString($configuration);
+
+        $this->interfaceByParent = $configuration;
+    }
+
     private function resolveParentClassReflection(Class_ $class): ?ClassReflection
     {
         /** @var Scope $scope */
@@ -104,16 +115,5 @@ CODE_SAMPLE
         }
 
         return $classReflection->getParentClass();
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allString(array_keys($configuration));
-        Assert::allString($configuration);
-
-        $this->interfaceByParent = $configuration;
     }
 }
