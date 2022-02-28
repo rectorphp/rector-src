@@ -64,15 +64,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        /** @var Scope $scope */
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        $parentClassReflection = $this->resolveParentClassReflection($node);
 
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        $parentClassReflection = $classReflection->getParentClass();
         if (! $parentClassReflection instanceof ClassReflection) {
             return null;
         }
@@ -98,6 +91,19 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function resolveParentClassReflection(Class_ $class): ?ClassReflection
+    {
+        /** @var Scope $scope */
+        $scope = $class->getAttribute(AttributeKey::SCOPE);
+
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        return $classReflection->getParentClass();
     }
 
     /**
