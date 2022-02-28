@@ -20,7 +20,3 @@ Please read [contributing guideline](/CONTRIBUTING.md) for how to contribute to 
 ## Code of Conduct
 
 This project adheres to a [Contributor Code of Conduct](/CODE_OF_CONDUCT.md) By participating in this project and its community, you are expected to uphold this code.
-
-## Projects using Rector
-
-- [`codito/rector-money`](https://packagist.org/packages/codito/rector-money): set of rules related to `moneyphp/money` library. It can help you with upgrading to v4.0 or make your codebase compatible for future upgrade.
