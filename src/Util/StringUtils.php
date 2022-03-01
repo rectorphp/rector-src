@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 
 final class StringUtils
 {
+    private $test;
     public static function isMatch(string $value, string $regex): bool
     {
         $match = Strings::match($value, $regex);
