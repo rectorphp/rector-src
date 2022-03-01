@@ -9,9 +9,9 @@ final class AccessedBeforeInitialization
      */
     private $name;
 
-    private function generateName()
+    private function generateName(): void
     {
-        return bin2hex(random_bytes(10));
+        $this->name = bin2hex(random_bytes(10));
     }
 
     public function getName()
@@ -34,9 +34,9 @@ final class AccessedBeforeInitialization
 {
     private ?string $name = null;
 
-    private function generateName()
+    private function generateName(): void
     {
-        return bin2hex(random_bytes(10));
+        $this->name = bin2hex(random_bytes(10));
     }
 
     public function getName()
