@@ -66,8 +66,7 @@ final class VarDocPropertyTypeInferer
         Property $property,
         Type $resolvedType,
         PhpDocInfo $phpDocInfo
-    ): Type
-    {
+    ): Type {
         $types = $resolvedType instanceof UnionType
             ? $resolvedType->getTypes()
             : [$resolvedType];
