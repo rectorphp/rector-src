@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-final class DemoFile
+final class SkipDynamicVariable
 {
     public function run($something)
     {
@@ -12,5 +12,3 @@ final class DemoFile
          }
     }
 }
-
-?>
