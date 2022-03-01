@@ -96,6 +96,7 @@ final class VarDocPropertyTypeInferer
             return $resolvedType;
         }
 
+        // has various Doctrine or JMS annotation, return early
         if ($this->propertyManipulator->isAllowedReadOnly($property, $phpDocInfo)) {
             return $resolvedType;
         }
