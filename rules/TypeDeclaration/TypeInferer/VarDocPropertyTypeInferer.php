@@ -23,7 +23,6 @@ use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\DefaultValuePropertyTypeInferer;
-use ReflectionClass;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 final class VarDocPropertyTypeInferer
@@ -34,7 +33,6 @@ final class VarDocPropertyTypeInferer
         private readonly TypeFactory $typeFactory,
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly PrivatesAccessor $privatesAccessor,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyFetchFinder $propertyFetchFinder,
@@ -93,8 +91,7 @@ final class VarDocPropertyTypeInferer
             return $resolvedType;
         }
 
-        $unionType = new UnionType([...$types, new NullType()]);
-        return $unionType;
+        return new UnionType([...$types, new NullType()]);
     }
 
     private function shouldUnionWithDefaultValue(Type $defaultValueType, Type $type): bool
