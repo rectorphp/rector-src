@@ -14,7 +14,9 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -23,7 +25,6 @@ use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\DefaultValuePropertyTypeInferer;
-use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 final class VarDocPropertyTypeInferer
 {
@@ -36,7 +37,8 @@ final class VarDocPropertyTypeInferer
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyFetchFinder $propertyFetchFinder,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly PropertyManipulator $propertyManipulator
     ) {
     }
 
@@ -54,13 +56,17 @@ final class VarDocPropertyTypeInferer
         if ($propertyDefaultValue instanceof Expr) {
             $resolvedType = $this->unionTypeWithDefaultExpr($property, $resolvedType);
         } else {
-            $resolvedType = $this->makeNullableForAccessedBeforeInitialization($property, $resolvedType);
+            $resolvedType = $this->makeNullableForAccessedBeforeInitialization($property, $resolvedType, $phpDocInfo);
         }
 
         return $this->genericClassStringTypeNormalizer->normalize($resolvedType);
     }
 
-    private function makeNullableForAccessedBeforeInitialization(Property $property, Type $resolvedType): Type
+    private function makeNullableForAccessedBeforeInitialization(
+        Property $property,
+        Type $resolvedType,
+        PhpDocInfo $phpDocInfo
+    ): Type
     {
         $types = $resolvedType instanceof UnionType
             ? $resolvedType->getTypes()
@@ -88,6 +94,10 @@ final class VarDocPropertyTypeInferer
 
         // is filled by __construct() or setUp(), return early
         if ($this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName)) {
+            return $resolvedType;
+        }
+
+        if ($this->propertyManipulator->isAllowedReadOnly($property, $phpDocInfo)) {
             return $resolvedType;
         }
 
