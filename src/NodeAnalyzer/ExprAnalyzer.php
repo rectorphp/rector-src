@@ -7,8 +7,11 @@ namespace Rector\Core\NodeAnalyzer;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
@@ -95,18 +98,35 @@ final class ExprAnalyzer
     private function isAllowedArrayValue(Expr $expr): bool
     {
         if ($expr instanceof Array_) {
-            return true;
+            return ! $this->isDynamicArray($expr);
         }
 
         return $this->isAllowedArrayOrScalar($expr);
     }
 
-    private function isAllowedArrayOrScalar(Expr $expr): bool
+    public function isAllowedArrayOrScalar(Expr $expr): bool
     {
         if (! $expr instanceof Array_) {
-            return $expr instanceof Scalar;
+            if (! $expr instanceof Scalar) {
+                return $this->isAllowedConstFetchOrClassConstFeth($expr);
+            }
+
+            return true;
         }
 
         return ! $this->isDynamicArray($expr);
+    }
+
+    private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
+    {
+        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
+            return false;
+        }
+
+        if ($expr instanceof ClassConstFetch) {
+            return $expr->class instanceof Name && $expr->name instanceof Identifier;
+        }
+
+        return true;
     }
 }

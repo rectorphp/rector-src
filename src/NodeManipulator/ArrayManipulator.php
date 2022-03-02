@@ -17,31 +17,6 @@ final class ArrayManipulator
     ) {
     }
 
-    public function isArrayOnlyScalarValues(Array_ $array): bool
-    {
-        foreach ($array->items as $arrayItem) {
-            if (! $arrayItem instanceof ArrayItem) {
-                continue;
-            }
-
-            if ($arrayItem->value instanceof Array_) {
-                if (! $this->isArrayOnlyScalarValues($arrayItem->value)) {
-                    return false;
-                }
-
-                continue;
-            }
-
-            if ($arrayItem->value instanceof Scalar) {
-                continue;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
     public function addItemToArrayUnderKey(Array_ $array, ArrayItem $newArrayItem, string $key): void
     {
         foreach ($array->items as $item) {
