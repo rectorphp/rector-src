@@ -192,11 +192,7 @@ CODE_SAMPLE
             return $this->isUsedInPreviousAssign($assign, $expr);
         }
 
-        foreach ($expr->args as $arg) {
-            if (! $arg instanceof Arg) {
-                continue;
-            }
-
+        foreach ($expr->getArgs() as $arg) {
             $variable = $arg->value;
 
             if ($this->isUsedInPreviousAssign($assign, $variable)) {
@@ -240,6 +236,7 @@ CODE_SAMPLE
         // check if next node is if
         if (! $if instanceof If_) {
             if (
+                $assign->var instanceof Variable &&
                 ! $this->isUsedInPreviousNode($assign->var) &&
                 ! $this->exprUsedInNextNodeAnalyzer->isUsed($assign->var) && $this->isUsedInAssignExpr(
                 $assign->expr,
