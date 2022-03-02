@@ -10,6 +10,7 @@ use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
 use Symplify\CodingStandard\Fixer\LineLength\DocBlockLineLengthFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
+use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
 return static function (ECSConfig $ecsConfig): void {
@@ -72,4 +73,9 @@ return static function (ECSConfig $ecsConfig): void {
 
         AssignmentInConditionSniff::class . '.FoundInWhileCondition',
     ]);
+
+    $parameters = $ecsConfig->parameters();
+
+    // Reusable ECS cache for Docker runtime
+    $parameters->set(Option::CACHE_DIRECTORY, 'tmp/ecs');
 };
