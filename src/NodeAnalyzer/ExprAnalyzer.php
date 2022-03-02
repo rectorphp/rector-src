@@ -86,6 +86,19 @@ final class ExprAnalyzer
         return false;
     }
 
+    public function isAllowedArrayOrScalar(Expr $expr): bool
+    {
+        if (! $expr instanceof Array_) {
+            if (! $expr instanceof Scalar) {
+                return $this->isAllowedConstFetchOrClassConstFeth($expr);
+            }
+
+            return true;
+        }
+
+        return ! $this->isDynamicArray($expr);
+    }
+
     private function isAllowedArrayKey(?Expr $expr): bool
     {
         if (! $expr instanceof Expr) {
@@ -102,19 +115,6 @@ final class ExprAnalyzer
         }
 
         return $this->isAllowedArrayOrScalar($expr);
-    }
-
-    public function isAllowedArrayOrScalar(Expr $expr): bool
-    {
-        if (! $expr instanceof Array_) {
-            if (! $expr instanceof Scalar) {
-                return $this->isAllowedConstFetchOrClassConstFeth($expr);
-            }
-
-            return true;
-        }
-
-        return ! $this->isDynamicArray($expr);
     }
 
     private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
