@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Assign;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
@@ -187,7 +186,8 @@ CODE_SAMPLE
         );
     }
 
-    private function isUsedInAssignExpr(CallLike | Expr $expr, Assign $assign): bool {
+    private function isUsedInAssignExpr(CallLike | Expr $expr, Assign $assign): bool
+    {
         if (! $expr instanceof CallLike) {
             return $this->isUsedInPreviousAssign($assign, $expr);
         }
@@ -239,9 +239,9 @@ CODE_SAMPLE
                 $assign->var instanceof Variable &&
                 ! $this->isUsedInPreviousNode($assign->var) &&
                 ! $this->exprUsedInNextNodeAnalyzer->isUsed($assign->var) && $this->isUsedInAssignExpr(
-                $assign->expr,
-                $assign
-            )) {
+                    $assign->expr,
+                    $assign
+                )) {
                 return $this->cleanCastedExpr($assign->expr);
             }
 
