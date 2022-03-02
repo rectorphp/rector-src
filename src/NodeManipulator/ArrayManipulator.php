@@ -48,11 +48,11 @@ final class ArrayManipulator
     public function isDynamicValue(Expr $expr): bool
     {
         if (! $expr instanceof Array_) {
-            if (! $expr instanceof Scalar) {
-                return ! $this->isAllowedConstFetchOrClassConstFeth($expr);
+            if ($expr instanceof Scalar) {
+                return false;
             }
 
-            return false;
+            return ! $this->isAllowedConstFetchOrClassConstFeth($expr);
         }
 
         return $this->isDynamicArray($expr);
