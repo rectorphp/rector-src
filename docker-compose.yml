@@ -4,6 +4,9 @@ services:
   php:
     build: .
     environment:
-        - COMPOSER_ROOT_VERSION=dev-main
+        COMPOSER_ROOT_VERSION: dev-main
+        PHP_IDE_CONFIG: "serverName=${PHP_IDE_CONFIG:-PHP_Docker}"
+        XDEBUG_MODE: ${XDEBUG_MODE:-off}
+        XDEBUG_CONFIG: 'idekey=${XDEBUG_IDEKEY:-PHPSTORM} client_host=${XDEBUG_CLIENT_HOST:-host.docker.internal}'
     volumes:
       - .:/etc/rector
