@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
@@ -111,6 +110,19 @@ final class ArrayManipulator
         return $arrayItem->key->value === $name;
     }
 
+    public function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
+    {
+        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
+            return false;
+        }
+
+        if ($expr instanceof ClassConstFetch) {
+            return $expr->class instanceof Name && $expr->name instanceof Identifier;
+        }
+
+        return true;
+    }
+
     private function isAllowedArrayKey(?Expr $expr): bool
     {
         if (! $expr instanceof Expr) {
@@ -127,18 +139,5 @@ final class ArrayManipulator
         }
 
         return ! $this->exprAnalyzer->isDynamicValue($expr);
-    }
-
-    public function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
-    {
-        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
-            return false;
-        }
-
-        if ($expr instanceof ClassConstFetch) {
-            return $expr->class instanceof Name && $expr->name instanceof Identifier;
-        }
-
-        return true;
     }
 }
