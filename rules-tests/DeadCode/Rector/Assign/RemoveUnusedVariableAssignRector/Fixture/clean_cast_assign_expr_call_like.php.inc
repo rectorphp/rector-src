@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-final class CastProblem
+final class CleanCastAssignExprCallLike
 {
     public function run()
     {
         $response = (object) $this->api_post("whatever", []);
-        
+
         return 5;
     }
 }
@@ -18,12 +18,12 @@ final class CastProblem
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-final class CastProblem
+final class CleanCastAssignExprCallLike
 {
     public function run()
     {
         $this->api_post("whatever", []);
-        
+
         return 5;
     }
 }
