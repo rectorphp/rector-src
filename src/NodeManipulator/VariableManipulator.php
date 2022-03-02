@@ -52,7 +52,7 @@ final class VariableManipulator
                     return null;
                 }
 
-                if (! $this->exprAnalyzer->isAllowedArrayOrScalar($node->expr)) {
+                if (! $this->exprAnalyzer->isAllowedArrayOrScalarOrConstFetch($node->expr)) {
                     return null;
                 }
 

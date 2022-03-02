@@ -87,7 +87,7 @@ final class ExprAnalyzer
         return false;
     }
 
-    public function isAllowedArrayOrScalar(Expr $expr): bool
+    public function isAllowedArrayOrScalarOrConstFetch(Expr $expr): bool
     {
         if (! $expr instanceof Array_) {
             if (! $expr instanceof Scalar) {
@@ -115,7 +115,7 @@ final class ExprAnalyzer
             return ! $this->isDynamicArray($expr);
         }
 
-        return $this->isAllowedArrayOrScalar($expr);
+        return $this->isAllowedArrayOrScalarOrConstFetch($expr);
     }
 
     private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
