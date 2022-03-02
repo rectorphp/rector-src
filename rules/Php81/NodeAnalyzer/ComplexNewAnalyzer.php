@@ -15,11 +15,12 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
+use Rector\Core\NodeManipulator\ArrayManipulator;
 
 final class ComplexNewAnalyzer
 {
     public function __construct(
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ArrayManipulator $arrayManipulator
     ) {
     }
 
@@ -80,7 +81,7 @@ final class ComplexNewAnalyzer
 
     private function isAllowedArray(Array_ $array): bool
     {
-        if (! $this->exprAnalyzer->isDynamicArray($array)) {
+        if (! $this->arrayManipulator->isDynamicArray($array)) {
             return true;
         }
 

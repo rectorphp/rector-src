@@ -13,7 +13,6 @@ use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -30,7 +29,7 @@ final class VariableManipulator
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly VariableToConstantGuard $variableToConstantGuard,
         private readonly NodeComparator $nodeComparator,
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ArrayManipulator $arrayManipulator
     ) {
     }
 
@@ -52,7 +51,7 @@ final class VariableManipulator
                     return null;
                 }
 
-                if (! $this->exprAnalyzer->isAllowedArrayOrScalarOrConstFetch($node->expr)) {
+                if ($this->arrayManipulator->isDynamicValue($node->expr)) {
                     return null;
                 }
 

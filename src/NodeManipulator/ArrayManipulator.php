@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 
@@ -14,6 +21,72 @@ final class ArrayManipulator
     public function __construct(
         private readonly RectorChangeCollector $rectorChangeCollector
     ) {
+    }
+
+    public function isDynamicArray(Array_ $array): bool
+    {
+        foreach ($array->items as $item) {
+            if (! $item instanceof ArrayItem) {
+                continue;
+            }
+
+            $key = $item->key;
+
+            if (! $this->isAllowedArrayKey($key)) {
+                return true;
+            }
+
+            $value = $item->value;
+            if (! $this->isAllowedArrayValue($value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isDynamicValue(Expr $expr): bool
+    {
+        if (! $expr instanceof Array_) {
+            if (! $expr instanceof Scalar) {
+                return ! $this->isAllowedConstFetchOrClassConstFeth($expr);
+            }
+
+            return false;
+        }
+
+        return $this->isDynamicArray($expr);
+    }
+
+    private function isAllowedArrayKey(?Expr $expr): bool
+    {
+        if (! $expr instanceof Expr) {
+            return true;
+        }
+
+        return in_array($expr::class, [String_::class, LNumber::class], true);
+    }
+
+    private function isAllowedArrayValue(Expr $expr): bool
+    {
+        if ($expr instanceof Array_) {
+            return ! $this->isDynamicArray($expr);
+        }
+
+        return ! $this->isDynamicValue($expr);
+    }
+
+    private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
+    {
+        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
+            return false;
+        }
+
+        if ($expr instanceof ClassConstFetch) {
+            return $expr->class instanceof Name && $expr->name instanceof Identifier;
+        }
+
+        return true;
     }
 
     public function addItemToArrayUnderKey(Array_ $array, ArrayItem $newArrayItem, string $key): void
