@@ -6,8 +6,12 @@ namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -67,9 +71,22 @@ final class ExprAnalyzer
                 return false;
             }
 
-            return ! $this->arrayManipulator->isAllowedConstFetchOrClassConstFeth($expr);
+            return ! $this->isAllowedConstFetchOrClassConstFeth($expr);
         }
 
         return $this->arrayManipulator->isDynamicArray($expr);
+    }
+
+    private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
+    {
+        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
+            return false;
+        }
+
+        if ($expr instanceof ClassConstFetch) {
+            return $expr->class instanceof Name && $expr->name instanceof Identifier;
+        }
+
+        return true;
     }
 }
