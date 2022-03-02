@@ -39,6 +39,8 @@ parameters:
     scanDirectories:
         - stubs
 
+    tmpDir: tmp/phpstan
+
     reportUnmatchedIgnoredErrors: false
     checkGenericClassInNonGenericObjectType: false
 
