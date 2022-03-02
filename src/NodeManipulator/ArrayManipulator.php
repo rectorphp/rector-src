@@ -27,7 +27,7 @@ final class ArrayManipulator
     }
 
     #[Required]
-    public function autowire(ExprAnalyzer $exprAnalyzer)
+    public function autowire(ExprAnalyzer $exprAnalyzer): void
     {
         $this->exprAnalyzer = $exprAnalyzer;
     }
