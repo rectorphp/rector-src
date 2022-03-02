@@ -15,12 +15,22 @@ use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
+use Symfony\Contracts\Service\Attribute\Required;
 
 final class ArrayManipulator
 {
+    private readonly ExprAnalyzer $exprAnalyzer;
+
     public function __construct(
         private readonly RectorChangeCollector $rectorChangeCollector
     ) {
+    }
+
+    #[Required]
+    public function autowire(ExprAnalyzer $exprAnalyzer)
+    {
+        $this->exprAnalyzer = $exprAnalyzer;
     }
 
     public function isDynamicArray(Array_ $array): bool
@@ -43,19 +53,6 @@ final class ArrayManipulator
         }
 
         return false;
-    }
-
-    public function isDynamicValue(Expr $expr): bool
-    {
-        if (! $expr instanceof Array_) {
-            if ($expr instanceof Scalar) {
-                return false;
-            }
-
-            return ! $this->isAllowedConstFetchOrClassConstFeth($expr);
-        }
-
-        return $this->isDynamicArray($expr);
     }
 
     public function addItemToArrayUnderKey(Array_ $array, ArrayItem $newArrayItem, string $key): void
@@ -129,10 +126,10 @@ final class ArrayManipulator
             return ! $this->isDynamicArray($expr);
         }
 
-        return ! $this->isDynamicValue($expr);
+        return ! $this->exprAnalyzer->isDynamicValue($expr);
     }
 
-    private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
+    public function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
     {
         if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
             return false;
