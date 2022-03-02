@@ -58,37 +58,6 @@ final class ArrayManipulator
         return $this->isDynamicArray($expr);
     }
 
-    private function isAllowedArrayKey(?Expr $expr): bool
-    {
-        if (! $expr instanceof Expr) {
-            return true;
-        }
-
-        return in_array($expr::class, [String_::class, LNumber::class], true);
-    }
-
-    private function isAllowedArrayValue(Expr $expr): bool
-    {
-        if ($expr instanceof Array_) {
-            return ! $this->isDynamicArray($expr);
-        }
-
-        return ! $this->isDynamicValue($expr);
-    }
-
-    private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
-    {
-        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
-            return false;
-        }
-
-        if ($expr instanceof ClassConstFetch) {
-            return $expr->class instanceof Name && $expr->name instanceof Identifier;
-        }
-
-        return true;
-    }
-
     public function addItemToArrayUnderKey(Array_ $array, ArrayItem $newArrayItem, string $key): void
     {
         foreach ($array->items as $item) {
@@ -143,5 +112,36 @@ final class ArrayManipulator
         }
 
         return $arrayItem->key->value === $name;
+    }
+
+    private function isAllowedArrayKey(?Expr $expr): bool
+    {
+        if (! $expr instanceof Expr) {
+            return true;
+        }
+
+        return in_array($expr::class, [String_::class, LNumber::class], true);
+    }
+
+    private function isAllowedArrayValue(Expr $expr): bool
+    {
+        if ($expr instanceof Array_) {
+            return ! $this->isDynamicArray($expr);
+        }
+
+        return ! $this->isDynamicValue($expr);
+    }
+
+    private function isAllowedConstFetchOrClassConstFeth(Expr $expr): bool
+    {
+        if (! in_array($expr::class, [ConstFetch::class, ClassConstFetch::class], true)) {
+            return false;
+        }
+
+        if ($expr instanceof ClassConstFetch) {
+            return $expr->class instanceof Name && $expr->name instanceof Identifier;
+        }
+
+        return true;
     }
 }

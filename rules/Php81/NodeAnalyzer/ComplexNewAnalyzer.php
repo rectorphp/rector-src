@@ -14,7 +14,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar;
-use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\NodeManipulator\ArrayManipulator;
 
 final class ComplexNewAnalyzer
