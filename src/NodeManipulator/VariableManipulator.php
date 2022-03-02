@@ -24,7 +24,6 @@ use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 final class VariableManipulator
 {
     public function __construct(
-        private readonly ArrayManipulator $arrayManipulator,
         private readonly AssignManipulator $assignManipulator,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
