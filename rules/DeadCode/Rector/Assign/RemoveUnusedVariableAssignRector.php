@@ -160,10 +160,7 @@ CODE_SAMPLE
 
     private function isUsed(Assign $assign, Variable $variable): bool
     {
-        $isUsedPrev = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
-            $variable,
-            fn (Node $node): bool => $this->usedVariableNameAnalyzer->isVariableNamed($node, $variable)
-        );
+        $isUsedPrev = $this->isUsedInPreviousNode($variable);
 
         if ($isUsedPrev) {
             return true;
@@ -180,6 +177,14 @@ CODE_SAMPLE
         }
 
         return $this->isUsedInAssignExpr($expr, $assign);
+    }
+
+    private function isUsedInPreviousNode(Variable $variable): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
+            $variable,
+            fn (Node $node): bool => $this->usedVariableNameAnalyzer->isVariableNamed($node, $variable)
+        );
     }
 
     private function isUsedInAssignExpr(CallLike | Expr $expr, Assign $assign): bool {
@@ -234,7 +239,9 @@ CODE_SAMPLE
 
         // check if next node is if
         if (! $if instanceof If_) {
-            if (! $this->exprUsedInNextNodeAnalyzer->isUsed($assign->var) && $this->isUsedInAssignExpr(
+            if (
+                ! $this->isUsedInPreviousNode($assign->var) &&
+                ! $this->exprUsedInNextNodeAnalyzer->isUsed($assign->var) && $this->isUsedInAssignExpr(
                 $assign->expr,
                 $assign
             )) {
