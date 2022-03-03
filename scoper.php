@@ -138,10 +138,12 @@ return [
 
         // fixes https://github.com/rectorphp/rector/issues/7017
         function (string $filePath, string $prefix, string $content): string {
-            if (str_ends_with($filePath, 'vendor/symfony/string/ByteString.php') || str_ends_with($filePath, 'vendor/symfony/string/AbstractUnicodeString.php')) {
+            if (str_ends_with($filePath, 'vendor/symfony/string/ByteString.php')) {
                 return Strings::replace($content, '#' . $prefix . '\\\\\\\\1_\\\\\\\\2#', '\\\\1_\\\\2');
             }
-
+            if (str_ends_with($filePath, 'vendor/symfony/string/AbstractUnicodeString.php')) {
+                return Strings::replace($content, '#' . $prefix . '\\\\\\\\1_\\\\\\\\2#', '\\\\1_\\\\2');
+            }
             return $content;
         },
 
