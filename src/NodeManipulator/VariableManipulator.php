@@ -79,7 +79,11 @@ final class VariableManipulator
                     return null;
                 }
 
-                if ($node->expr instanceof ClassConstFetch && $this->isOutsideClass($node->expr, $currentClass, $currentClassName)) {
+                if ($node->expr instanceof ClassConstFetch && $this->isOutsideClass(
+                    $node->expr,
+                    $currentClass,
+                    $currentClassName
+                )) {
                     return null;
                 }
 
@@ -102,7 +106,11 @@ final class VariableManipulator
         );
     }
 
-    private function isOutsideClass(ClassConstFetch $classConstFetch, Class_ $currentClass, string $currentClassName): bool
+    private function isOutsideClass(
+        ClassConstFetch $classConstFetch,
+        Class_ $currentClass,
+        string $currentClassName
+    ): bool
     {
         /**
          * Dynamic class already checked on $this->exprAnalyzer->isDynamicValue() early
