@@ -108,8 +108,10 @@ final class VariableManipulator
          * @var Name $class
          */
         $class = $classConstFetch->class;
-
-        return ! $class->isSpecialClassName() && ! $this->nodeNameResolver->isName($class, $currentClassName);
+        if ($class->isSpecialClassName()) {
+            return false;
+        }
+        return ! $this->nodeNameResolver->isName($class, $currentClassName);
     }
 
     private function hasEncapsedStringPart(Expr $expr): bool
