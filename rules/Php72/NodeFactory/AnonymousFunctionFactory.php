@@ -252,17 +252,27 @@ final class AnonymousFunctionFactory
     }
 
     /**
-     * @param Node[] $nodes
      * @param Param[] $paramNodes
-     * @return Variable[]
+     * @return string[]
      */
-    private function createUseVariablesFromParams(array $nodes, array $paramNodes): array
+    private function collectParamNames(array $paramNodes): array
     {
         $paramNames = [];
         foreach ($paramNodes as $paramNode) {
             $paramNames[] = $this->nodeNameResolver->getName($paramNode);
         }
 
+        return $paramNames;
+    }
+
+    /**
+     * @param Node[] $nodes
+     * @param Param[] $paramNodes
+     * @return Variable[]
+     */
+    private function createUseVariablesFromParams(array $nodes, array $paramNodes): array
+    {
+        $paramNames = $this->collectParamNames($paramNodes);
         $variableNodes = $this->betterNodeFinder->findInstanceOf($nodes, Variable::class);
 
         /** @var Variable[] $filteredVariables */
@@ -284,15 +294,17 @@ final class AnonymousFunctionFactory
             }
 
             $parentNode = $variableNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (in_array($parentNode::class, [Assign::class, Foreach_::class, Param::class], true)) {
+            if ($parentNode instanceof Node && in_array(
+                $parentNode::class,
+                [Assign::class, Foreach_::class, Param::class],
+                true
+            )) {
                 $alreadyAssignedVariables[] = $variableName;
             }
 
-            if ($this->nodeNameResolver->isNames($variableNode, $alreadyAssignedVariables)) {
-                continue;
+            if (! $this->nodeNameResolver->isNames($variableNode, $alreadyAssignedVariables)) {
+                $filteredVariables[$variableName] = $variableNode;
             }
-
-            $filteredVariables[$variableName] = $variableNode;
         }
 
         return $filteredVariables;
