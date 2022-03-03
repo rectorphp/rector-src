@@ -141,9 +141,11 @@ return [
             if (str_ends_with($filePath, 'vendor/symfony/string/ByteString.php')) {
                 return Strings::replace($content, '#' . $prefix . '\\\\\\\\1_\\\\\\\\2#', '\\\\1_\\\\2');
             }
+
             if (str_ends_with($filePath, 'vendor/symfony/string/AbstractUnicodeString.php')) {
                 return Strings::replace($content, '#' . $prefix . '\\\\\\\\1_\\\\\\\\2#', '\\\\1_\\\\2');
             }
+
             return $content;
         },
 
