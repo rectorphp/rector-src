@@ -108,7 +108,7 @@ final class VariableManipulator
          * @var Name $class
          */
         $class = $classConstFetch->class;
-        if ($class->isSpecialClassName()) {
+        if ($this->nodeNameResolver->isName($class, 'self')) {
             return false;
         }
 
