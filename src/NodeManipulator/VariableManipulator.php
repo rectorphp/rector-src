@@ -104,7 +104,7 @@ final class VariableManipulator
     private function isOutsideClass(ClassConstFetch $classConstFetch, string $currentClassName): bool
     {
         /**
-         * Non dynamic class already checked on $this->exprAnalyzer->isDynamicValue() early
+         * Dynamic class already checked on $this->exprAnalyzer->isDynamicValue() early
          * @var Name $class
          */
         $class = $classConstFetch->class;
