@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\Class_;
@@ -77,10 +78,7 @@ final class VariableManipulator
                     return null;
                 }
 
-                if ($node->expr instanceof ClassConstFetch && (! $node->expr->class->isSpecialClassName() && ! $this->nodeNameResolver->isName(
-                    $node->expr->class,
-                    $currentClassName
-                ))) {
+                if ($node->expr instanceof ClassConstFetch && $this->isOutsideClass($node->expr, $currentClassName)) {
                     return null;
                 }
 
@@ -89,6 +87,20 @@ final class VariableManipulator
         );
 
         return $assignsOfArrayToVariable;
+    }
+
+    private function isOutsideClass(ClassConstFetch $classConstFetch, string $currentClassName): bool
+    {
+        /**
+         * Non dynamic class already checked on $this->exprAnalyzer->isDynamicValue() early
+         * @var Name $class
+         */
+        $class = $classConstFetch->class;
+
+        return ! $class->isSpecialClassName() && ! $this->nodeNameResolver->isName(
+            $class,
+            $currentClassName
+        );
     }
 
     /**
