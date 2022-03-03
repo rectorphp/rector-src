@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
@@ -43,11 +44,17 @@ final class VariableManipulator
      */
     public function collectScalarOrArrayAssignsOfVariable(ClassMethod $classMethod): array
     {
+        $currentClass = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
+        if (! $currentClass instanceof Class_) {
+            return [];
+        }
+
+        $currentClassName = (string) $this->nodeNameResolver->getName($currentClass);
         $assignsOfArrayToVariable = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $classMethod->getStmts(),
-            function (Node $node) use (&$assignsOfArrayToVariable) {
+            function (Node $node) use (&$assignsOfArrayToVariable, $currentClassName) {
                 if (! $node instanceof Assign) {
                     return null;
                 }
@@ -68,9 +75,17 @@ final class VariableManipulator
                     return null;
                 }
 
-                if ($node->expr instanceof ConstFetch || $node->expr instanceof ClassConstFetch) {
+                if ($node->expr instanceof ConstFetch) {
+                    return null;
+                }
+
+                if ($node->expr instanceof ClassConstFetch) {
                     $value = $this->valueResolver->getValue($node->expr);
                     if (! is_array($value)) {
+                        return null;
+                    }
+
+                    if (! $node->expr->class->isSpecialClassName() && ! $this->nodeNameResolver->isName($node->expr->class, $currentClassName)) {
                         return null;
                     }
                 }
