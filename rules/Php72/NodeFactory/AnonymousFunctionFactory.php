@@ -333,8 +333,7 @@ final class AnonymousFunctionFactory
         ParameterReflection $parameterReflection,
         int $key,
         ClassMethod $classMethod
-    ): void
-    {
+    ): void {
         if (! $parameterReflection->getDefaultValue() instanceof Type) {
             return;
         }
