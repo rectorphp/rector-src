@@ -110,8 +110,7 @@ final class VariableManipulator
         ClassConstFetch $classConstFetch,
         Class_ $currentClass,
         string $currentClassName
-    ): bool
-    {
+    ): bool {
         /**
          * Dynamic class already checked on $this->exprAnalyzer->isDynamicValue() early
          * @var Name $class
