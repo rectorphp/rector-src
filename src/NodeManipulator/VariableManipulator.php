@@ -19,7 +19,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
@@ -78,7 +77,10 @@ final class VariableManipulator
                     return null;
                 }
 
-                if ($node->expr instanceof ClassConstFetch && (! $node->expr->class->isSpecialClassName() && ! $this->nodeNameResolver->isName($node->expr->class, $currentClassName))) {
+                if ($node->expr instanceof ClassConstFetch && (! $node->expr->class->isSpecialClassName() && ! $this->nodeNameResolver->isName(
+                    $node->expr->class,
+                    $currentClassName
+                ))) {
                     return null;
                 }
 
