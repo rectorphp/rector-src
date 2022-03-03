@@ -128,9 +128,9 @@ final class AnonymousFunctionFactory
         }
 
         // does method return something?
-        $anonymousFunction->stmts[] = ! $functionVariantWithPhpDoc->getReturnType() instanceof VoidType
-            ? new Return_($innerMethodCall)
-            : new Expression($innerMethodCall);
+        $anonymousFunction->stmts[] = $functionVariantWithPhpDoc->getReturnType() instanceof VoidType
+            ? new Expression($innerMethodCall)
+            : new Return_($innerMethodCall);
 
         if ($expr instanceof Variable && ! $this->nodeNameResolver->isName($expr, 'this')) {
             $anonymousFunction->uses[] = new ClosureUse($expr);
@@ -304,8 +304,8 @@ final class AnonymousFunctionFactory
      */
     private function createParams(PhpMethodReflection $phpMethodReflection, array $parameterReflections): array
     {
-        $declaringClass = $phpMethodReflection->getDeclaringClass();
-        $className = $declaringClass->getName();
+        $classReflection = $phpMethodReflection->getDeclaringClass();
+        $className = $classReflection->getName();
         $methodName = $phpMethodReflection->getName();
         /** @var ClassMethod $classMethod */
         $classMethod = $this->astResolver->resolveClassMethod($className, $methodName);
