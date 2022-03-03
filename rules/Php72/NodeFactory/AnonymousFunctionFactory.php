@@ -305,7 +305,7 @@ final class AnonymousFunctionFactory
     private function createParams(PhpMethodReflection $phpMethodReflection, array $parameterReflections): array
     {
         $declaringClass = $phpMethodReflection->getDeclaringClass();
-        $className =  $declaringClass->getName();
+        $className = $declaringClass->getName();
         $methodName = $phpMethodReflection->getName();
         /** @var ClassMethod $classMethod */
         $classMethod = $this->astResolver->resolveClassMethod($className, $methodName);
@@ -328,7 +328,12 @@ final class AnonymousFunctionFactory
         return $params;
     }
 
-    private function applyDefaultValue(Param $param, ParameterReflection $parameterReflection, int $key, ClassMethod $classMethod): void
+    private function applyDefaultValue(
+        Param $param,
+        ParameterReflection $parameterReflection,
+        int $key,
+        ClassMethod $classMethod
+    ): void
     {
         if (! $parameterReflection->getDefaultValue() instanceof Type) {
             return;
