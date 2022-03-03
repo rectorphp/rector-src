@@ -4,7 +4,7 @@ namespace Rector\Tests\Privatization\Rector\Class_\ChangeReadOnlyVariableWithDef
 
 use Rector\NodeNestingScope\ContextAnalyzer;
 
-class SkipClassConstantInsideArrayOutsideClass
+class SkipClassConstantFromArrayClass
 {
     public function run()
     {
