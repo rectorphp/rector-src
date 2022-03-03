@@ -111,6 +111,7 @@ final class VariableManipulator
         if ($class->isSpecialClassName()) {
             return false;
         }
+
         return ! $this->nodeNameResolver->isName($class, $currentClassName);
     }
 
