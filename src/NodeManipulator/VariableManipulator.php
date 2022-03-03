@@ -34,8 +34,7 @@ final class VariableManipulator
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly VariableToConstantGuard $variableToConstantGuard,
         private readonly NodeComparator $nodeComparator,
-        private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly ValueResolver $valueResolver
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -79,15 +78,8 @@ final class VariableManipulator
                     return null;
                 }
 
-                if ($node->expr instanceof ClassConstFetch) {
-                    $value = $this->valueResolver->getValue($node->expr);
-                    if (! is_array($value)) {
-                        return null;
-                    }
-
-                    if (! $node->expr->class->isSpecialClassName() && ! $this->nodeNameResolver->isName($node->expr->class, $currentClassName)) {
-                        return null;
-                    }
+                if ($node->expr instanceof ClassConstFetch && (! $node->expr->class->isSpecialClassName() && ! $this->nodeNameResolver->isName($node->expr->class, $currentClassName))) {
+                    return null;
                 }
 
                 $assignsOfArrayToVariable[] = $node;
