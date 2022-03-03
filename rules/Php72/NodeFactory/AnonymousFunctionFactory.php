@@ -325,22 +325,28 @@ final class AnonymousFunctionFactory
         $params = [];
         foreach ($parameterReflections as $key => $parameterReflection) {
             $param = new Param(new Variable($parameterReflection->getName()));
+            $this->applyParamType($param, $parameterReflection);
+            $this->applyParamDefaultValue($param, $parameterReflection, $key, $classMethod);
 
-            if (! $parameterReflection->getType() instanceof MixedType) {
-                $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                    $parameterReflection->getType(),
-                    TypeKind::PARAM()
-                );
-            }
-
-            $this->applyDefaultValue($param, $parameterReflection, $key, $classMethod);
             $params[] = $param;
         }
 
         return $params;
     }
 
-    private function applyDefaultValue(
+    private function applyParamType(Param $param, ParameterReflection $parameterReflection): void
+    {
+        if ($parameterReflection->getType() instanceof MixedType) {
+            return;
+        }
+
+        $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+            $parameterReflection->getType(),
+            TypeKind::PARAM()
+        );
+    }
+
+    private function applyParamDefaultValue(
         Param $param,
         ParameterReflection $parameterReflection,
         int $key,
