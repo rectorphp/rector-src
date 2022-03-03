@@ -89,20 +89,6 @@ final class VariableManipulator
         return $assignsOfArrayToVariable;
     }
 
-    private function isOutsideClass(ClassConstFetch $classConstFetch, string $currentClassName): bool
-    {
-        /**
-         * Non dynamic class already checked on $this->exprAnalyzer->isDynamicValue() early
-         * @var Name $class
-         */
-        $class = $classConstFetch->class;
-
-        return ! $class->isSpecialClassName() && ! $this->nodeNameResolver->isName(
-            $class,
-            $currentClassName
-        );
-    }
-
     /**
      * @param Assign[] $assignsOfArrayToVariable
      * @return Assign[]
@@ -113,6 +99,17 @@ final class VariableManipulator
             $assignsOfArrayToVariable,
             fn (Assign $assign): bool => $this->isReadOnlyVariable($classMethod, $assign)
         );
+    }
+
+    private function isOutsideClass(ClassConstFetch $classConstFetch, string $currentClassName): bool
+    {
+        /**
+         * Non dynamic class already checked on $this->exprAnalyzer->isDynamicValue() early
+         * @var Name $class
+         */
+        $class = $classConstFetch->class;
+
+        return ! $class->isSpecialClassName() && ! $this->nodeNameResolver->isName($class, $currentClassName);
     }
 
     private function hasEncapsedStringPart(Expr $expr): bool
