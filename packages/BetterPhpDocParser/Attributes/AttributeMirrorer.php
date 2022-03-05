@@ -6,6 +6,7 @@ namespace Rector\BetterPhpDocParser\Attributes;
 
 use PHPStan\PhpDocParser\Ast\Node;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 
@@ -22,7 +23,7 @@ final class AttributeMirrorer
 
     public function mirror(Node $oldNode, Node $newNode): void
     {
-        if ($newNode->value instanceof DoctrineAnnotationTagValueNode) {
+        if ($newNode instanceof SpacelessPhpDocTagNode && $newNode->value instanceof DoctrineAnnotationTagValueNode) {
             $startAndAnd = $oldNode->getAttribute(PhpDocAttributeKey::START_AND_END);
             if ($startAndAnd instanceof StartAndEnd) {
                 $end = $startAndAnd->getEnd();
