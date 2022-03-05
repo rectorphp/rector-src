@@ -202,10 +202,7 @@ final class DoctrineAnnotationDecorator
                 $fullyQualifiedAnnotationClass
             );
 
-            if (! isset($phpDocNode->children[$key + 1])) {
-                $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
-            }
-
+            $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
         }
     }
