@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
@@ -25,4 +26,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
     $services->set(AddMethodCallBasedStrictParamTypeRector::class);
+
+    $services->set(ArrayShapeFromConstantArrayReturnRector::class);
 };

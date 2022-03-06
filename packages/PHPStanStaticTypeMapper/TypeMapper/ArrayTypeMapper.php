@@ -6,6 +6,8 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -14,6 +16,7 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantIntegerType;
+use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
@@ -53,6 +56,8 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private DetailedTypeAnalyzer $detailedTypeAnalyzer;
 
+    private ArrayShapeTypeMapper $arrayShapeTypeMapper;
+
     // To avoid circular dependency
 
     #[Required]
@@ -61,13 +66,15 @@ final class ArrayTypeMapper implements TypeMapperInterface
         UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
         ReflectionProvider $reflectionProvider,
         GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
-        DetailedTypeAnalyzer $detailedTypeAnalyzer
+        DetailedTypeAnalyzer $detailedTypeAnalyzer,
+        ArrayShapeTypeMapper $arrayShapeTypeMapper
     ): void {
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
         $this->unionTypeCommonTypeNarrower = $unionTypeCommonTypeNarrower;
         $this->reflectionProvider = $reflectionProvider;
         $this->genericClassStringTypeNormalizer = $genericClassStringTypeNormalizer;
         $this->detailedTypeAnalyzer = $detailedTypeAnalyzer;
+        $this->arrayShapeTypeMapper = $arrayShapeTypeMapper;
     }
 
     /**
@@ -87,6 +94,13 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
         if ($itemType instanceof UnionType && ! $type instanceof ConstantArrayType) {
             return $this->createArrayTypeNodeFromUnionType($itemType, $typeKind);
+        }
+
+        if ($type instanceof ConstantArrayType) {
+            $arrayShapeNode = $this->arrayShapeTypeMapper->mapConstantArrayType($type);
+            if ($arrayShapeNode instanceof ArrayShapeNode) {
+                return $arrayShapeNode;
+            }
         }
 
         if ($itemType instanceof ArrayType && $this->isGenericArrayCandidate($itemType)) {
@@ -287,4 +301,33 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
         return false;
     }
+
+//    private function mapConstantArrayType(ConstantArrayType $constantArrayType): ArrayShapeNode
+//    {
+//        $arrayShapeItemNodes = [];
+//
+//        foreach ($constantArrayType->getAllArrays() as $key => $itemConstantArrayType) {
+//            $constantArrayKeyType = $itemConstantArrayType->getKeyType();
+//            if ($constantArrayKeyType instanceof ConstantScalarType) {
+//                $keyDocTypeNode = new IdentifierTypeNode($constantArrayKeyType->getValue());
+//            } else {
+//                continue;
+//            }
+//
+//            $valueType = $itemConstantArrayType->getValueTypes()[$key];
+//
+//            $valueDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
+//                $valueType,
+//                TypeKind::RETURN()
+//            );
+//
+//            $arrayShapeItemNodes[] = new ArrayShapeItemNode(
+//                $keyDocTypeNode,
+//                $itemConstantArrayType->isOptionalKey($key),
+//                $valueDocTypeNode
+//            );
+//        }
+//
+//        return new ArrayShapeNode($arrayShapeItemNodes);
+//    }
 }

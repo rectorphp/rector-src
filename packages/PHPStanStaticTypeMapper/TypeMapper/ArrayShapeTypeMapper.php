@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
+
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantStringType;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
+
+final class ArrayShapeTypeMapper
+{
+    public function __construct(
+        private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper
+    ) {
+    }
+
+    public function mapConstantArrayType(ConstantArrayType $constantArrayType): ArrayShapeNode|null
+    {
+        $arrayShapeItemNodes = [];
+
+        foreach ($constantArrayType->getKeyTypes() as $index => $keyType) {
+            // not real array shape
+            if (! $keyType instanceof ConstantStringType) {
+                return null;
+            }
+
+            $keyDocTypeNode = new IdentifierTypeNode($keyType->getValue());
+            $valueType = $constantArrayType->getValueTypes()[$index];
+
+            $valueDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
+                $valueType,
+                TypeKind::RETURN()
+            );
+
+            $arrayShapeItemNodes[] = new ArrayShapeItemNode(
+                $keyDocTypeNode,
+                $constantArrayType->isOptionalKey($index),
+                $valueDocTypeNode
+            );
+        }
+
+        return new ArrayShapeNode($arrayShapeItemNodes);
+    }
+}

@@ -69,7 +69,7 @@ final class ParentAttributeSourceLocator implements SourceLocator
     }
 
     /**
-     * @return array<int, Reflection>
+     * @return array<Reflection>
      */
     public function locateIdentifiersByType(Reflector $reflector, IdentifierType $identifierType): array
     {
