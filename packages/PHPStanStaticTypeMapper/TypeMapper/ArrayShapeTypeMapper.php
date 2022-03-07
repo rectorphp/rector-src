@@ -7,8 +7,11 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\NeverType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 
@@ -19,8 +22,13 @@ final class ArrayShapeTypeMapper
     ) {
     }
 
-    public function mapConstantArrayType(ConstantArrayType $constantArrayType): ArrayShapeNode|null
+    public function mapConstantArrayType(ConstantArrayType $constantArrayType): ArrayShapeNode|ArrayType|null
     {
+        // empty array
+        if ($constantArrayType->getKeyType() instanceof NeverType) {
+            return new ArrayType(new MixedType(), new MixedType());
+        }
+
         $arrayShapeItemNodes = [];
 
         foreach ($constantArrayType->getKeyTypes() as $index => $keyType) {

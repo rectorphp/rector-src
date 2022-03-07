@@ -70,7 +70,7 @@ final class TypeNormalizer
             return $type;
         }
 
-        if ($type instanceof ConstantArrayType) {
+        if ($type instanceof ConstantArrayType && $arrayNesting === 1) {
             return $type;
         }
 

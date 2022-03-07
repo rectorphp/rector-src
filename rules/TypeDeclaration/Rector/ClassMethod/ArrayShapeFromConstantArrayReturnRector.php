@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\NeverType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -25,8 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ArrayShapeFromConstantArrayReturnRector extends AbstractRector
 {
     public function __construct(
-        private ClassMethodReturnTypeResolver $classMethodReturnTypeResolver,
-        private PhpDocTypeChanger $phpDocTypeChanger
+        private readonly ClassMethodReturnTypeResolver $classMethodReturnTypeResolver,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -100,13 +101,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $returnExprTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $returnExprType,
             TypeKind::RETURN()
         );
+
         if ($returnExprTypeNode instanceof GenericTypeNode) {
+            return null;
+        }
+
+        if ($returnExprTypeNode instanceof SpacingAwareArrayTypeNode) {
             return null;
         }
 

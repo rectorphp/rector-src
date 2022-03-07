@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Nette\Utils\FileSystem;
-
 use Nette\Utils\Strings;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -47,7 +46,7 @@ final class CleanPhpstanCommand extends Command
             return self::FAILURE;
         }
 
-        $originalContent = (string) FileSystem::read(self::FILE);
+        $originalContent = FileSystem::read(self::FILE);
         $newContent = str_replace(
             'reportUnmatchedIgnoredErrors: false',
             'reportUnmatchedIgnoredErrors: true',

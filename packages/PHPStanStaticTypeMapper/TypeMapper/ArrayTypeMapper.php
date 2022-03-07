@@ -6,8 +6,6 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
-use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -16,7 +14,6 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantIntegerType;
-use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
@@ -96,9 +93,9 @@ final class ArrayTypeMapper implements TypeMapperInterface
             return $this->createArrayTypeNodeFromUnionType($itemType, $typeKind);
         }
 
-        if ($type instanceof ConstantArrayType) {
+        if ($type instanceof ConstantArrayType && $typeKind->equals(TypeKind::RETURN())) {
             $arrayShapeNode = $this->arrayShapeTypeMapper->mapConstantArrayType($type);
-            if ($arrayShapeNode instanceof ArrayShapeNode) {
+            if ($arrayShapeNode instanceof TypeNode) {
                 return $arrayShapeNode;
             }
         }
@@ -301,33 +298,4 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
         return false;
     }
-
-//    private function mapConstantArrayType(ConstantArrayType $constantArrayType): ArrayShapeNode
-//    {
-//        $arrayShapeItemNodes = [];
-//
-//        foreach ($constantArrayType->getAllArrays() as $key => $itemConstantArrayType) {
-//            $constantArrayKeyType = $itemConstantArrayType->getKeyType();
-//            if ($constantArrayKeyType instanceof ConstantScalarType) {
-//                $keyDocTypeNode = new IdentifierTypeNode($constantArrayKeyType->getValue());
-//            } else {
-//                continue;
-//            }
-//
-//            $valueType = $itemConstantArrayType->getValueTypes()[$key];
-//
-//            $valueDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-//                $valueType,
-//                TypeKind::RETURN()
-//            );
-//
-//            $arrayShapeItemNodes[] = new ArrayShapeItemNode(
-//                $keyDocTypeNode,
-//                $itemConstantArrayType->isOptionalKey($key),
-//                $valueDocTypeNode
-//            );
-//        }
-//
-//        return new ArrayShapeNode($arrayShapeItemNodes);
-//    }
 }
