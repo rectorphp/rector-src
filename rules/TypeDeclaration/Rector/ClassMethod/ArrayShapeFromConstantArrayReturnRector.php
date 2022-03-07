@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\NeverType;
+use PHPStan\Type\VerbosityLevel;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\Core\Rector\AbstractRector;
@@ -76,6 +77,7 @@ CODE_SAMPLE
     {
         /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstanceOf($node, Return_::class);
+
         // exact one shape only
         if (count($returns) !== 1) {
             return null;
@@ -87,12 +89,7 @@ CODE_SAMPLE
         }
 
         $returnExprType = $this->getType($return->expr);
-        if (! $returnExprType instanceof ConstantArrayType) {
-            return null;
-        }
-
-        // empty array
-        if ($returnExprType->getKeyType() instanceof NeverType) {
+        if ($this->shouldSkipReturnExprType($returnExprType)) {
             return null;
         }
 
@@ -122,5 +119,14 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function shouldSkipReturnExprType(\PHPStan\Type\Type $type): bool
+    {
+        if (! $type instanceof ConstantArrayType) {
+            return true;
+        }
+
+        return $type->getKeyType() instanceof NeverType;
     }
 }
