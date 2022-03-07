@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\NeverType;
-use PHPStan\Type\VerbosityLevel;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\Core\Rector\AbstractRector;
