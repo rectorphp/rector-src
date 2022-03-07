@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\NeverType;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\Core\Rector\AbstractRector;
@@ -120,7 +121,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkipReturnExprType(\PHPStan\Type\Type $type): bool
+    private function shouldSkipReturnExprType(Type $type): bool
     {
         if (! $type instanceof ConstantArrayType) {
             return true;
