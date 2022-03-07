@@ -40,6 +40,11 @@ final class ArrayShapeTypeMapper
             }
 
             $keyValue = $keyType->getValue();
+
+            if ($this->reflectionProvider->hasClass($keyValue)) {
+                return null;
+            }
+
             $keyDocTypeNode = new IdentifierTypeNode($keyValue);
             $valueType = $constantArrayType->getValueTypes()[$index];
 
@@ -47,10 +52,6 @@ final class ArrayShapeTypeMapper
                 $valueType,
                 TypeKind::RETURN()
             );
-
-            if ($this->reflectionProvider->hasClass($keyValue)) {
-                return null;
-            }
 
             $arrayShapeItemNodes[] = new ArrayShapeItemNode(
                 $keyDocTypeNode,
