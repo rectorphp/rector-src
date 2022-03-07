@@ -91,18 +91,18 @@ final class ClassChildAnalyzer
     {
         $parentClassMethods = [];
         $parents = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
-        foreach ($parents as $parentClassReflections) {
-            if (! $parentClassReflections->hasMethod($methodName)) {
+        foreach ($parents as $parent) {
+            if (! $parent->hasMethod($methodName)) {
                 continue;
             }
 
-            $methodReflection = $parentClassReflections->getNativeMethod($methodName);
+            $methodReflection = $parent->getNativeMethod($methodName);
             if (! $methodReflection instanceof PhpMethodReflection) {
                 continue;
             }
 
             $methodDeclaringMethodClass = $methodReflection->getDeclaringClass();
-            if ($methodDeclaringMethodClass->getName() === $parentClassReflections->getName()) {
+            if ($methodDeclaringMethodClass->getName() === $parent->getName()) {
                 $parentClassMethods[] = $methodReflection;
             }
         }
