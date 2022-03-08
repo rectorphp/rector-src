@@ -8,7 +8,6 @@ final class PropertyExistsViaPropertyPromotion
 {
     public function __construct(private \Rector\Tests\Transform\Rector\New_\NewToMethodCallRector\Source\MyClassFactory $mySomeFactory)
     {
-        $this->mySomeFactory = $mySomeFactory;
     }
     public function default()
     {
@@ -28,7 +27,6 @@ final class PropertyExistsViaPropertyPromotion
 {
     public function __construct(private \Rector\Tests\Transform\Rector\New_\NewToMethodCallRector\Source\MyClassFactory $mySomeFactory)
     {
-        $this->mySomeFactory = $mySomeFactory;
     }
     public function default()
     {
