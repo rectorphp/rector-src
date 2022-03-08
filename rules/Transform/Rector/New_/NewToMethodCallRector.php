@@ -103,7 +103,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyName = $this->propertyManipulator->resolveExistingClassPropertyWithType(
+            $propertyName = $this->propertyManipulator->resolveExistingClassPropertyNameByType(
                 $class,
                 $newToMethodCall->getServiceObjectType()
             );

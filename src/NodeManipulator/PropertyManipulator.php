@@ -199,7 +199,7 @@ final class PropertyManipulator
         return false;
     }
 
-    public function resolveExistingClassPropertyWithType(Class_ $class, Type $type): ?string
+    public function resolveExistingClassPropertyNameByType(Class_ $class, Type $type): ?string
     {
         foreach ($class->getProperties() as $property) {
             $propertyType = $this->nodeTypeResolver->getType($property);
