@@ -16,18 +16,12 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use Rector\BetterPhpDocParser\ValueObject\PhpDoc\VariadicAwareParamTagValueNode;
-use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\NamespaceMatcher;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNamespaceRenamer;
 use Rector\Renaming\ValueObject\RenamedNamespace;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -51,15 +45,6 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
     ];
 
     /**
-     * @var array<class-string<PhpDocTagValueNode>>
-     */
-    private const TO_BE_CHANGED = [
-        ReturnTagValueNode::class,
-        VariadicAwareParamTagValueNode::class,
-        VarTagValueNode::class,
-    ];
-
-    /**
      * @var array<string, string>
      */
     private array $oldToNewNamespaces = [];
@@ -70,7 +55,8 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
     private array $isChangedInNamespaces = [];
 
     public function __construct(
-        private readonly NamespaceMatcher $namespaceMatcher
+        private readonly NamespaceMatcher $namespaceMatcher,
+        private readonly DocBlockNamespaceRenamer $docBlockNamespaceRenamer
     ) {
     }
 
@@ -101,7 +87,8 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
     public function refactor(Node $node): ?Node
     {
         if (in_array($node::class, self::ONLY_CHANGE_DOCBLOCK_NODE, true)) {
-            return $this->processChangeDocblock($node);
+            /** @var Property|ClassMethod|Function_|Expression|ClassLike|FileWithoutNamespace $node */
+            return $this->docBlockNamespaceRenamer->renameFullyQualifiedNamespace($node, $this->oldToNewNamespaces);
         }
 
         /** @var Namespace_|Use_|Name $node */
@@ -161,75 +148,6 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
         /** @var array<string, string> $configuration */
         $this->oldToNewNamespaces = $configuration;
-    }
-
-    private function processChangeDocblock(Node $node): ?Node
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $phpDocNode = $phpDocInfo->getPhpDocNode();
-        $children = $phpDocNode->children;
-
-        foreach ($children as $child) {
-            if (! $child instanceof PhpDocTagNode) {
-                continue;
-            }
-
-            $value = $child->value;
-            if (! in_array($value::class, self::TO_BE_CHANGED, true)) {
-                continue;
-            }
-
-            /** @var ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value */
-            $this->refactorDocblock($value);
-        }
-
-        if (! $phpDocInfo->hasChanged()) {
-            return null;
-        }
-
-        return $node;
-    }
-
-    private function refactorDocblock(
-        ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value
-    ): void {
-        /** @var ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value */
-        $types = $value->type instanceof BracketsAwareUnionTypeNode
-            ? $value->type->types
-            : [$value->type];
-
-        foreach ($types as $key => $type) {
-            if (! $type instanceof IdentifierTypeNode) {
-                continue;
-            }
-
-            $name = $type->name;
-            $trimmedName = ltrim($type->name, '\\');
-
-            if ($name === $trimmedName) {
-                continue;
-            }
-
-            $renamedNamespaceValueObject = $this->namespaceMatcher->matchRenamedNamespace(
-                $trimmedName,
-                $this->oldToNewNamespaces
-            );
-            if (! $renamedNamespaceValueObject instanceof RenamedNamespace) {
-                continue;
-            }
-
-            $newType = new IdentifierTypeNode('\\' . $renamedNamespaceValueObject->getNameInNewNamespace());
-
-            if ($value->type instanceof BracketsAwareUnionTypeNode) {
-                $types[$key] = $newType;
-            } else {
-                $value->type = $newType;
-            }
-        }
-
-        if ($value->type instanceof BracketsAwareUnionTypeNode) {
-            $value->type->types = $types;
-        }
     }
 
     private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
