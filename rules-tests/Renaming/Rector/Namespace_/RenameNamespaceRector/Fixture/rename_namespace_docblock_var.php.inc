@@ -29,7 +29,7 @@ class RenameNamespaceDocblockVar
     public function run(\NewNamespace\SubNamespace\RenameNamespaceDocblockVar $argument)
     {
         /**
-         * @var \OldNamespace\SubNamespace\RenameNamespaceDocblockVar $argument
+         * @var \NewNamespace\SubNamespace\RenameNamespaceDocblockVar $argument
          */
         $var = $argument;
         return $var;

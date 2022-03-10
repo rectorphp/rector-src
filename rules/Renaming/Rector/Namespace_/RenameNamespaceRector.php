@@ -16,9 +16,12 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use Rector\BetterPhpDocParser\ValueObject\PhpDoc\VariadicAwareParamTagValueNode;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
@@ -44,6 +47,15 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         Expression::class,
         ClassLike::class,
         FileWithoutNamespace::class,
+    ];
+
+    /**
+     * @var array<class-string<PhpDocTagValueNode>>
+     */
+    private const TO_BE_CHANGED = [
+        ReturnTagValueNode::class,
+        VariadicAwareParamTagValueNode::class,
+        VarTagValueNode::class,
     ];
 
     /**
@@ -153,35 +165,42 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
     private function processChangeDocblock(Node $node): ?Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $returnTagValueNode = $phpDocInfo->getReturnTagValue();
-        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
+        $children = $phpDocNode->children;
 
-        $toBeChanged = [
-            ReturnTagValueNode::class => $returnTagValueNode,
-            VarTagValueNode::class => $varTagValueNode,
-        ];
-
-        foreach (array_keys($toBeChanged) as $type) {
-            if ($returnTagValueNode instanceof $type && $returnTagValueNode->type instanceof IdentifierTypeNode) {
-                $name = $returnTagValueNode->type->name;
-                $trimmedName = ltrim($returnTagValueNode->type->name, '\\');
-
-                if ($name === $trimmedName) {
-                    continue;
-                }
-
-                $renamedNamespaceValueObject = $this->namespaceMatcher->matchRenamedNamespace(
-                    $trimmedName,
-                    $this->oldToNewNamespaces
-                );
-                if (! $renamedNamespaceValueObject instanceof RenamedNamespace) {
-                    continue;
-                }
-
-                $returnTagValueNode->type = new IdentifierTypeNode(
-                    '\\' . $renamedNamespaceValueObject->getNameInNewNamespace()
-                );
+        foreach ($children as $child) {
+            if (! $child instanceof PhpDocTagNode) {
+                continue;
             }
+
+            $value = $child->value;
+            if (! in_array($value::class, self::TO_BE_CHANGED, true)) {
+                continue;
+            }
+
+            /**
+             * @var ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value
+             */
+            if (! $value->type instanceof IdentifierTypeNode) {
+                continue;
+            }
+
+            $name = $value->type->name;
+            $trimmedName = ltrim($value->type->name, '\\');
+
+            if ($name === $trimmedName) {
+                continue;
+            }
+
+            $renamedNamespaceValueObject = $this->namespaceMatcher->matchRenamedNamespace(
+                $trimmedName,
+                $this->oldToNewNamespaces
+            );
+            if (! $renamedNamespaceValueObject instanceof RenamedNamespace) {
+                continue;
+            }
+
+            $value->type = new IdentifierTypeNode('\\' . $renamedNamespaceValueObject->getNameInNewNamespace());
         }
 
         if (! $phpDocInfo->hasChanged()) {
