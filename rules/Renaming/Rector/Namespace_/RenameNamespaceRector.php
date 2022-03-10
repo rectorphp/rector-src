@@ -22,6 +22,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\VariadicAwareParamTagValueNode;
+use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
@@ -178,15 +179,32 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
                 continue;
             }
 
-            /**
-             * @var ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value
-             */
-            if (! $value->type instanceof IdentifierTypeNode) {
+            /** @var ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value */
+            $this->refactorDocblock($value);
+        }
+
+        if (! $phpDocInfo->hasChanged()) {
+            return null;
+        }
+
+        return $node;
+    }
+
+    private function refactorDocblock(
+        ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value
+    ): void {
+        /** @var ReturnTagValueNode|VariadicAwareParamTagValueNode|VarTagValueNode $value */
+        $types = $value->type instanceof BracketsAwareUnionTypeNode
+            ? $value->type->types
+            : [$value->type];
+
+        foreach ($types as $key => $type) {
+            if (! $type instanceof IdentifierTypeNode) {
                 continue;
             }
 
-            $name = $value->type->name;
-            $trimmedName = ltrim($value->type->name, '\\');
+            $name = $type->name;
+            $trimmedName = ltrim($type->name, '\\');
 
             if ($name === $trimmedName) {
                 continue;
@@ -200,14 +218,18 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
                 continue;
             }
 
-            $value->type = new IdentifierTypeNode('\\' . $renamedNamespaceValueObject->getNameInNewNamespace());
+            $newType = new IdentifierTypeNode('\\' . $renamedNamespaceValueObject->getNameInNewNamespace());
+
+            if ($value->type instanceof BracketsAwareUnionTypeNode) {
+                $types[$key] = $newType;
+            } else {
+                $value->type = $newType;
+            }
         }
 
-        if (! $phpDocInfo->hasChanged()) {
-            return null;
+        if ($value->type instanceof BracketsAwareUnionTypeNode) {
+            $value->type->types = $types;
         }
-
-        return $node;
     }
 
     private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
