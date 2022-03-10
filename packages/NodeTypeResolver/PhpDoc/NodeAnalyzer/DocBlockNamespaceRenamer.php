@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -38,29 +39,27 @@ final class DocBlockNamespaceRenamer
         $phpDocNodeTraverser->traverseWithCallable(
             $phpDocInfo->getPhpDocNode(),
             '',
-            function (\PHPStan\PhpDocParser\Ast\Node &$subNode) use (
-                $oldToNewNamespaces
-            ): ?\PHPStan\PhpDocParser\Ast\Node {
-                if ($subNode instanceof IdentifierTypeNode) {
-                    $name = $subNode->name;
-                    $trimmedName = ltrim($subNode->name, '\\');
-
-                    if ($name === $trimmedName) {
-                        return null;
-                    }
-
-                    $renamedNamespaceValueObject = $this->namespaceMatcher->matchRenamedNamespace(
-                        $trimmedName,
-                        $oldToNewNamespaces
-                    );
-                    if (! $renamedNamespaceValueObject instanceof RenamedNamespace) {
-                        return null;
-                    }
-
-                    return new IdentifierTypeNode('\\' . $renamedNamespaceValueObject->getNameInNewNamespace());
+            function (DocNode &$subNode) use ($oldToNewNamespaces): ?DocNode {
+                if (! $subNode instanceof IdentifierTypeNode) {
+                    return null;
                 }
 
-                return null;
+                $name = $subNode->name;
+                $trimmedName = ltrim($subNode->name, '\\');
+
+                if ($name === $trimmedName) {
+                    return null;
+                }
+
+                $renamedNamespaceValueObject = $this->namespaceMatcher->matchRenamedNamespace(
+                    $trimmedName,
+                    $oldToNewNamespaces
+                );
+                if (! $renamedNamespaceValueObject instanceof RenamedNamespace) {
+                    return null;
+                }
+
+                return new IdentifierTypeNode('\\' . $renamedNamespaceValueObject->getNameInNewNamespace());
             }
         );
 
