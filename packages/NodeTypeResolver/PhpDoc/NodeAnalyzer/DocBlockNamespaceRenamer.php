@@ -39,7 +39,7 @@ final class DocBlockNamespaceRenamer
         $phpDocNodeTraverser->traverseWithCallable(
             $phpDocInfo->getPhpDocNode(),
             '',
-            function (DocNode &$subNode) use ($oldToNewNamespaces): ?DocNode {
+            function (DocNode $subNode) use ($oldToNewNamespaces): ?DocNode {
                 if (! $subNode instanceof IdentifierTypeNode) {
                     return null;
                 }
