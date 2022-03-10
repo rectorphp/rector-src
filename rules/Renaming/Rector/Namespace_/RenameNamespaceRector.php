@@ -8,10 +8,19 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\NamespaceMatcher;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -25,6 +34,18 @@ use Webmozart\Assert\Assert;
  */
 final class RenameNamespaceRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @var array<class-string<Node>>
+     */
+    private const ONLY_CHANGE_DOCBLOCK_NODE = [
+        Property::class,
+        ClassMethod::class,
+        Function_::class,
+        Expression::class,
+        ClassLike::class,
+        FileWithoutNamespace::class,
+    ];
+
     /**
      * @var array<string, string>
      */
@@ -58,14 +79,19 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
      */
     public function getNodeTypes(): array
     {
-        return [Namespace_::class, Use_::class, Name::class];
+        return [Namespace_::class, Use_::class, Name::class, ...self::ONLY_CHANGE_DOCBLOCK_NODE];
     }
 
     /**
-     * @param Namespace_|Use_|Name $node
+     * @param Namespace_|Use_|Name|Property|ClassMethod|Function_|Expression|ClassLike|FileWithoutNamespace $node
      */
     public function refactor(Node $node): ?Node
     {
+        if (in_array($node::class, self::ONLY_CHANGE_DOCBLOCK_NODE, true)) {
+            return $this->processChangeDocblock($node);
+        }
+
+        /** @var Namespace_|Use_|Name $node */
         $name = $this->getName($node);
         if ($name === null) {
             return null;
@@ -122,6 +148,47 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
         /** @var array<string, string> $configuration */
         $this->oldToNewNamespaces = $configuration;
+    }
+
+    private function processChangeDocblock(Node $node): ?Node
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $returnTagValueNode = $phpDocInfo->getReturnTagValue();
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+
+        $toBeChanged = [
+            ReturnTagValueNode::class => $returnTagValueNode,
+            VarTagValueNode::class => $varTagValueNode,
+        ];
+
+        foreach (array_keys($toBeChanged) as $type) {
+            if ($returnTagValueNode instanceof $type && $returnTagValueNode->type instanceof IdentifierTypeNode) {
+                $name = $returnTagValueNode->type->name;
+                $trimmedName = ltrim($returnTagValueNode->type->name, '\\');
+
+                if ($name === $trimmedName) {
+                    continue;
+                }
+
+                $renamedNamespaceValueObject = $this->namespaceMatcher->matchRenamedNamespace(
+                    $trimmedName,
+                    $this->oldToNewNamespaces
+                );
+                if (! $renamedNamespaceValueObject instanceof RenamedNamespace) {
+                    continue;
+                }
+
+                $returnTagValueNode->type = new IdentifierTypeNode(
+                    '\\' . $renamedNamespaceValueObject->getNameInNewNamespace()
+                );
+            }
+        }
+
+        if (! $phpDocInfo->hasChanged()) {
+            return null;
+        }
+
+        return $node;
     }
 
     private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
