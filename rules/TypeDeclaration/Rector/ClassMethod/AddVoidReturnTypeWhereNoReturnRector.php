@@ -17,9 +17,12 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
+use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -40,7 +43,10 @@ final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implemen
     public function __construct(
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly ClassChildAnalyzer $classChildAnalyzer,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly VendorLockResolver $vendorLockResolver
     ) {
     }
 
@@ -109,10 +115,6 @@ CODE_SAMPLE
             return $node;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnVendorLockResolver->isVendorLocked($node)) {
-            return null;
-        }
-
         $node->returnType = new Identifier('void');
         return $node;
     }
@@ -150,6 +152,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if ($this->classMethodReturnVendorLockResolver->isVendorLocked($functionLike)) {
+            return true;
+        }
+
         if ($functionLike->isMagic()) {
             return true;
         }
@@ -158,16 +164,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($functionLike->isProtected()) {
-            return ! $this->isInsideFinalClass($functionLike);
-        }
-
-        return false;
-    }
-
-    private function isInsideFinalClass(ClassMethod $classMethod): bool
-    {
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+        $scope = $functionLike->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return false;
         }
@@ -177,6 +174,19 @@ CODE_SAMPLE
             return false;
         }
 
-        return $classReflection->isFinal();
+        if ($classReflection->isFinal()) {
+            return false;
+        }
+
+        if ($functionLike->isPrivate()) {
+            return false;
+        }
+
+        $methodName = $this->nodeNameResolver->getName($functionLike);
+        if ($this->classChildAnalyzer->hasChildClassMethod($classReflection, $methodName)) {
+            return $this->vendorLockResolver->isReturnChangeVendorLockedIn($functionLike);
+        }
+
+        return ! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed($functionLike);
     }
 }
