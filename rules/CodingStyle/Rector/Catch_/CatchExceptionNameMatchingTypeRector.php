@@ -9,10 +9,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,7 +32,8 @@ final class CatchExceptionNameMatchingTypeRector extends AbstractRector
     private const STARTS_WITH_ABBREVIATION_REGEX = '#^([A-Za-z]+?)([A-Z]{1}[a-z]{1})([A-Za-z]*)#';
 
     public function __construct(
-        private readonly PropertyNaming $propertyNaming
+        private readonly PropertyNaming $propertyNaming,
+        private readonly AliasNameResolver $aliasNameResolver
     ) {
     }
 
@@ -100,6 +103,11 @@ CODE_SAMPLE
 
         $type = $node->types[0];
         $typeShortName = $this->nodeNameResolver->getShortName($type);
+
+        $aliasName = $this->aliasNameResolver->resolveByName($type);
+        if (is_string($aliasName)) {
+            $typeShortName = $aliasName;
+        }
 
         $newVariableName = Strings::replace(
             lcfirst($typeShortName),
