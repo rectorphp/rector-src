@@ -164,12 +164,12 @@ CODE_SAMPLE
 
         $scope = $functionLike->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
-            return false;
+            return true;
         }
 
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
-            return false;
+            return true;
         }
 
         if ($functionLike->isPrivate()) {
