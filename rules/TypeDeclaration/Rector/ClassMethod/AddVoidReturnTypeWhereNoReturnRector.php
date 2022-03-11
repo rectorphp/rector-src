@@ -21,7 +21,6 @@ use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
-use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -45,7 +44,6 @@ final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implemen
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ClassChildAnalyzer $classChildAnalyzer,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
         private readonly VendorLockResolver $vendorLockResolver
     ) {
     }
@@ -174,10 +172,6 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($classReflection->isFinal()) {
-            return false;
-        }
-
         if ($functionLike->isPrivate()) {
             return false;
         }
@@ -187,6 +181,6 @@ CODE_SAMPLE
             return $this->vendorLockResolver->isReturnChangeVendorLockedIn($functionLike);
         }
 
-        return ! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed($functionLike);
+        return false;
     }
 }
