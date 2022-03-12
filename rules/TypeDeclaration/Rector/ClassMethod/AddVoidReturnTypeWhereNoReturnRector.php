@@ -21,6 +21,7 @@ use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -44,7 +45,8 @@ final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implemen
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ClassChildAnalyzer $classChildAnalyzer,
-        private readonly VendorLockResolver $vendorLockResolver
+        private readonly VendorLockResolver $vendorLockResolver,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -176,11 +178,16 @@ CODE_SAMPLE
             return false;
         }
 
-        $methodName = $this->nodeNameResolver->getName($functionLike);
-        if ($this->classChildAnalyzer->hasChildClassMethod($classReflection, $methodName)) {
-            return $this->vendorLockResolver->isReturnChangeVendorLockedIn($functionLike);
+        if ($classReflection->isFinal()) {
+            $parents = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+            if ($parents === []) {
+                return false;
+            }
+
+            return $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed($functionLike);
         }
 
-        return false;
+        $methodName = $this->nodeNameResolver->getName($functionLike);
+        return $this->classChildAnalyzer->hasChildClassMethod($classReflection, $methodName);
     }
 }
