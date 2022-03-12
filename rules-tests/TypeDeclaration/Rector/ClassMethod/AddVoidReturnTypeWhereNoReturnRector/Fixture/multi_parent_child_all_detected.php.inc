@@ -31,14 +31,14 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhere
 
 class SomeParent
 {
-    protected function getValues()
+    protected function getValues(): void
     {
     }
 }
 
 class SomeParent2 extends SomeParent
 {
-    protected function getValues()
+    protected function getValues(): void
     {
     }
 }
