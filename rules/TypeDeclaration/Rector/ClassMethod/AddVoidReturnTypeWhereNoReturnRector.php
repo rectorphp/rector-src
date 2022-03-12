@@ -22,7 +22,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
-use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -45,7 +44,6 @@ final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implemen
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ClassChildAnalyzer $classChildAnalyzer,
-        private readonly VendorLockResolver $vendorLockResolver,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
