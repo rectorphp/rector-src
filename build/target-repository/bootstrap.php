@@ -71,6 +71,7 @@ namespace
     }
 }
 
+// @see https://github.com/rectorphp/rector/issues/6531
 namespace PHPUnit\Framework
 {
     if (! class_exists('PHPUnit\Framework\TestCase')) {
