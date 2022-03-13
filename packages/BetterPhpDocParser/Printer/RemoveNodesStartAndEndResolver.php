@@ -30,7 +30,7 @@ final class RemoveNodesStartAndEndResolver
             $removedPhpDocNodeInfo = $removedChildNode->getAttribute(PhpDocAttributeKey::START_AND_END);
 
             // it's not there when comment block has empty row "\s\*\n"
-            if (is_null($removedPhpDocNodeInfo)) {
+            if (! $removedPhpDocNodeInfo instanceof StartAndEnd) {
                 continue;
             }
 
