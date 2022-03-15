@@ -68,6 +68,9 @@ final class ClassConstManipulator
         $staticConstantName = 'static::' . $this->nodeNameResolver->getName($classConst);
         $classNameConstantName = $className . '::' . $this->nodeNameResolver->getName($classConst);
 
-        return $this->nodeNameResolver->isNames($classConstFetch, [$selfConstantName, $staticConstantName, $classNameConstantName]);
+        return $this->nodeNameResolver->isNames(
+            $classConstFetch,
+            [$selfConstantName, $staticConstantName, $classNameConstantName]
+        );
     }
 }
