@@ -30,6 +30,7 @@ final class ClassConstManipulator
             return false;
         }
 
+        $className = $this->nodeNameResolver->getName($class);
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
             $ancestorClass = $this->astResolver->resolveClassFromClassReflection(
                 $ancestorClassReflection,
@@ -42,14 +43,15 @@ final class ClassConstManipulator
 
             // has in class?
             $isClassConstFetchFound = (bool) $this->betterNodeFinder->find($ancestorClass, function (Node $node) use (
-                $classConst
+                $classConst,
+                $className
             ): bool {
                 // property + static fetch
                 if (! $node instanceof ClassConstFetch) {
                     return false;
                 }
 
-                return $this->isNameMatch($node, $classConst);
+                return $this->isNameMatch($node, $classConst, $className);
             });
 
             if ($isClassConstFetchFound) {
@@ -60,11 +62,12 @@ final class ClassConstManipulator
         return false;
     }
 
-    private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst): bool
+    private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst, string $className): bool
     {
         $selfConstantName = 'self::' . $this->nodeNameResolver->getName($classConst);
         $staticConstantName = 'static::' . $this->nodeNameResolver->getName($classConst);
+        $classNameConstantName = $className . '::' . $this->nodeNameResolver->getName($classConst);
 
-        return $this->nodeNameResolver->isNames($classConstFetch, [$selfConstantName, $staticConstantName]);
+        return $this->nodeNameResolver->isNames($classConstFetch, [$selfConstantName, $staticConstantName, $classNameConstantName]);
     }
 }
