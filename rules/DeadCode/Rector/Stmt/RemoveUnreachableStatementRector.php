@@ -36,8 +36,9 @@ final class RemoveUnreachableStatementRector extends AbstractRector
      */
     private const STMTS_WITH_IS_UNREACHABLE = [If_::class, While_::class, Do_::class];
 
-    public function __construct(private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer)
-    {
+    public function __construct(
+        private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
