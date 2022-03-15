@@ -64,9 +64,10 @@ final class ClassConstManipulator
 
     private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst, string $className): bool
     {
-        $selfConstantName = 'self::' . $this->nodeNameResolver->getName($classConst);
-        $staticConstantName = 'static::' . $this->nodeNameResolver->getName($classConst);
-        $classNameConstantName = $className . '::' . $this->nodeNameResolver->getName($classConst);
+        $classConstName = $this->nodeNameResolver->getName($classConst);
+        $selfConstantName = 'self::' . $classConstName;
+        $staticConstantName = 'static::' . $classConstName;
+        $classNameConstantName = $className . '::' . $classConstName;
 
         return $this->nodeNameResolver->isNames(
             $classConstFetch,
