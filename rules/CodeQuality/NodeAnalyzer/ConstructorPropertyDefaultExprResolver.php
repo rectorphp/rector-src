@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeAnalyzer;
 
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\CodeQuality\ValueObject\DefaultPropertyExprAssign;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ConstructorPropertyDefaultExprResolver
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -62,7 +59,7 @@ final class ConstructorPropertyDefaultExprResolver
             }
 
             $expr = $assign->expr;
-            if (! $this->isAllowedPropertyDefaultExpr($expr)) {
+            if ($this->exprAnalyzer->isDynamicExpr($expr)) {
                 continue;
             }
 
@@ -70,37 +67,5 @@ final class ConstructorPropertyDefaultExprResolver
         }
 
         return $defaultPropertyExprAssigns;
-    }
-
-    private function isAllowedPropertyDefaultExpr(Expr $expr): bool
-    {
-        if ($expr instanceof Scalar) {
-            return true;
-        }
-
-        if ($expr instanceof Array_) {
-            return $this->isScalarArray($expr);
-        }
-
-        return $expr instanceof ConstFetch;
-    }
-
-    private function isScalarArray(Array_ $array): bool
-    {
-        foreach ($array->items as $item) {
-            if (! $item instanceof ArrayItem) {
-                continue;
-            }
-
-            if ($item->key instanceof Expr && ! $this->isAllowedPropertyDefaultExpr($item->key)) {
-                return false;
-            }
-
-            if (! $this->isAllowedPropertyDefaultExpr($item->value)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
