@@ -2,13 +2,13 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassConst\RemoveUnusedPrivateClassConstantRector\Fixture;
 
-final class DemoFile
+final class SkipCalledByClassName
 {
     private const SOME_CONST = 1;
-    
+
     public function run()
     {
-        return DemoFile::SOME_CONST;
+        return SkipCalledByClassName::SOME_CONST;
     }
 }
 
