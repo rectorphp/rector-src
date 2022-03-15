@@ -30,7 +30,7 @@ final class ClassConstManipulator
             return false;
         }
 
-        $className = $this->nodeNameResolver->getName($class);
+        $className = (string) $this->nodeNameResolver->getName($class);
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
             $ancestorClass = $this->astResolver->resolveClassFromClassReflection(
                 $ancestorClassReflection,
@@ -64,7 +64,7 @@ final class ClassConstManipulator
 
     private function isNameMatch(ClassConstFetch $classConstFetch, ClassConst $classConst, string $className): bool
     {
-        $classConstName = $this->nodeNameResolver->getName($classConst);
+        $classConstName = (string) $this->nodeNameResolver->getName($classConst);
         $selfConstantName = 'self::' . $classConstName;
         $staticConstantName = 'static::' . $classConstName;
         $classNameConstantName = $className . '::' . $classConstName;
