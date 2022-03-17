@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\SplitMultiAssignRemovePrivate\Fixture;
 
-final class MultiAssignExtract
+final class ExtractedAssign
 {
     private $content_type;
 
@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\SplitMultiAssignRemovePrivate\Fixture;
 
-final class MultiAssignExtract
+final class ExtractedAssign
 {
     public function run()
     {
