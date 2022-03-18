@@ -26,7 +26,7 @@ class ByPass2ndArgValue
     public function run()
     {
         $containerBuilder = new SomeMultiArg();
-        $containerBuilder->run(1);
+        $containerBuilder->run(1, 2, 4);
     }
 }
 
