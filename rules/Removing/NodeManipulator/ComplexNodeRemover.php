@@ -39,10 +39,7 @@ final class ComplexNodeRemover
     ) {
     }
 
-    public function removePropertyAndUsages(
-        Property $property,
-        bool $removeAssignSideEffect = true
-    ): void {
+    public function removePropertyAndUsages(Property $property, bool $removeAssignSideEffect = true): void {
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
         $assigns = [];
 
