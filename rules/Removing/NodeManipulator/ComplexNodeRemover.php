@@ -110,22 +110,6 @@ final class ComplexNodeRemover
         }
     }
 
-    /**
-     * @param string[] $classMethodNamesToSkip
-     */
-    private function shouldSkipPropertyForClassMethod(
-        StaticPropertyFetch | PropertyFetch $expr,
-        array $classMethodNamesToSkip
-    ): bool {
-        $classMethodNode = $this->betterNodeFinder->findParentType($expr, ClassMethod::class);
-        if (! $classMethodNode instanceof ClassMethod) {
-            return false;
-        }
-
-        $classMethodName = $this->nodeNameResolver->getName($classMethodNode);
-        return in_array($classMethodName, $classMethodNamesToSkip, true);
-    }
-
     private function resolveAssign(PropertyFetch | StaticPropertyFetch $expr): ?Assign
     {
         $assign = $expr->getAttribute(AttributeKey::PARENT_NODE);
