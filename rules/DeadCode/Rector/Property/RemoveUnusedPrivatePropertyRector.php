@@ -84,7 +84,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->complexNodeRemover->removePropertyAndUsages($node, [], $this->removeAssignSideEffect);
+        $this->complexNodeRemover->removePropertyAndUsages($node, $this->removeAssignSideEffect);
 
         return $node;
     }

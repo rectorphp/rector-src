@@ -39,24 +39,14 @@ final class ComplexNodeRemover
     ) {
     }
 
-    /**
-     * @param string[] $classMethodNamesToSkip
-     */
     public function removePropertyAndUsages(
         Property $property,
-        array $classMethodNamesToSkip = [],
         bool $removeAssignSideEffect = true
     ): void {
-        $shouldKeepProperty = false;
-
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
         $assigns = [];
-        foreach ($propertyFetches as $propertyFetch) {
-            if ($this->shouldSkipPropertyForClassMethod($propertyFetch, $classMethodNamesToSkip)) {
-                $shouldKeepProperty = true;
-                continue;
-            }
 
+        foreach ($propertyFetches as $propertyFetch) {
             $assign = $this->resolveAssign($propertyFetch);
             if (! $assign instanceof Assign) {
                 return;
@@ -74,11 +64,6 @@ final class ComplexNodeRemover
         }
 
         $this->processRemovePropertyAssigns($assigns);
-
-        if ($shouldKeepProperty) {
-            return;
-        }
-
         $this->nodeRemover->removeNode($property);
     }
 
