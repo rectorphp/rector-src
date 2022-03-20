@@ -42,7 +42,11 @@ final class ComplexNodeRemover
     /**
      * @param string[] $classMethodNamesToSkip
      */
-    public function removePropertyAndUsages(Property $property, array $classMethodNamesToSkip = [], bool $removeAssignSideEffect = true): void
+    public function removePropertyAndUsages(
+        Property $property,
+        array $classMethodNamesToSkip = [],
+        bool $removeAssignSideEffect = true
+    ): void
     {
         $shouldKeepProperty = false;
 

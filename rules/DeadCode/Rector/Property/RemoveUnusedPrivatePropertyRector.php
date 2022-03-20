@@ -38,7 +38,9 @@ final class RemoveUnusedPrivatePropertyRector extends AbstractRector implements 
 
     public function configure(array $configuration): void
     {
-        $this->removeAssignSideEffect = $configuration[self::REMOVE_ASSIGN_SIDE_EFFECT] ?? (bool) current($configuration);
+        $this->removeAssignSideEffect = $configuration[self::REMOVE_ASSIGN_SIDE_EFFECT] ?? (bool) current(
+            $configuration
+        );
     }
 
     public function getRuleDefinition(): RuleDefinition
