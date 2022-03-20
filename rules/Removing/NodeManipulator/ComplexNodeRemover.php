@@ -18,6 +18,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\ValueObject\MethodName;
+use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\AssignRemover;
 use Rector\NodeRemoval\NodeRemover;
@@ -33,14 +34,15 @@ final class ComplexNodeRemover
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeRemover $nodeRemover,
         private readonly NodeComparator $nodeComparator,
-        private readonly ForbiddenPropertyRemovalAnalyzer $forbiddenPropertyRemovalAnalyzer
+        private readonly ForbiddenPropertyRemovalAnalyzer $forbiddenPropertyRemovalAnalyzer,
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector
     ) {
     }
 
     /**
      * @param string[] $classMethodNamesToSkip
      */
-    public function removePropertyAndUsages(Property $property, array $classMethodNamesToSkip = []): void
+    public function removePropertyAndUsages(Property $property, array $classMethodNamesToSkip = [], bool $removeAssignSideEffect = true): void
     {
         $shouldKeepProperty = false;
 
@@ -58,6 +60,10 @@ final class ComplexNodeRemover
             }
 
             if ($assign->expr instanceof Assign) {
+                return;
+            }
+
+            if (! $removeAssignSideEffect && $this->sideEffectNodeDetector->detect($assign->expr)) {
                 return;
             }
 
