@@ -46,8 +46,7 @@ final class ComplexNodeRemover
         Property $property,
         array $classMethodNamesToSkip = [],
         bool $removeAssignSideEffect = true
-    ): void
-    {
+    ): void {
         $shouldKeepProperty = false;
 
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
