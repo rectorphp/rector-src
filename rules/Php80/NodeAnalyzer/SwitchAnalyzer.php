@@ -12,13 +12,11 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Node\NodeFactory;
 
 final class SwitchAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeFactory $nodeFactory
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
