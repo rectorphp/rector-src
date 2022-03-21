@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class SwitchAnalyzer
 {
@@ -68,10 +69,7 @@ final class SwitchAnalyzer
 
     public function resolveDefaultFromReturnValueNext(Switch_ $switch): ?Expr
     {
-        $nextNode = $this->betterNodeFinder->findFirstNext(
-            $switch,
-            fn (Node $subNode): bool => $subNode instanceof Stmt
-        );
+        $nextNode = $switch->getAttribute(AttributeKey::NEXT_NODE);
 
         if (! $nextNode instanceof Stmt) {
             return null;
