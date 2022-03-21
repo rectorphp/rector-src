@@ -5,13 +5,21 @@ declare(strict_types=1);
 namespace Rector\Php80\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Node\NodeFactory;
 
 final class SwitchAnalyzer
 {
+    public function __construct(private readonly BetterNodeFinder $betterNodeFinder, private readonly NodeFactory $nodeFactory)
+    {
+    }
+
     public function hasEachCaseBreak(Switch_ $switch): bool
     {
         $totalCases = count($switch->cases);
@@ -86,5 +94,26 @@ final class SwitchAnalyzer
         }
 
         return false;
+    }
+
+    public function resolveDefaultFromReturnValueNext(Switch_ $switch): ?Expr
+    {
+        $nextNode = $this->betterNodeFinder->findFirstNext($switch,
+            fn (Node $subNode): bool => $subNode instanceof Stmt
+        );
+
+        if ($nextNode instanceof Stmt && ! $nextNode instanceof Return_) {
+            return null;
+        }
+
+        if (! $nextNode instanceof Stmt) {
+            return $this->nodeFactory->createNull();
+        }
+
+        if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr) {
+            return $this->nodeFactory->createNull();
+        }
+
+        return $nextNode->expr;
     }
 }

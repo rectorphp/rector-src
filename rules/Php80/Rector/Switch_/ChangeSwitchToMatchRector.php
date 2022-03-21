@@ -19,6 +19,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
+use Rector\Php80\NodeAnalyzer\SwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
@@ -38,6 +39,7 @@ final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVe
         private readonly SwitchExprsResolver $switchExprsResolver,
         private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer,
         private readonly MatchFactory $matchFactory,
+        private readonly SwitchAnalyzer $switchAnalyzer
     ) {
     }
 
@@ -117,7 +119,7 @@ CODE_SAMPLE
         $match = $this->processImplicitThrowsAfterSwitch($node, $match, $condAndExprs);
 
         if ($isReturn) {
-            return $this->processReturn($match, $node->cond);
+            return $this->processReturn($match, $node);
         }
 
         $assignExpr = $this->resolveAssignExpr($condAndExprs);
@@ -133,10 +135,15 @@ CODE_SAMPLE
         return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
-    private function processReturn(Match_ $match, Expr $expr): Return_
+    private function processReturn(Match_ $match, Switch_ $switch): ?Return_
     {
         if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
-            $match->arms[] = new MatchArm(null, $expr);
+            $body = $this->switchAnalyzer->resolveDefaultFromReturnValueNext($switch);
+            if (! $body instanceof Expr) {
+                return null;
+            }
+
+            $match->arms[] = new MatchArm(null, $body);
         }
 
         return new Return_($match);
