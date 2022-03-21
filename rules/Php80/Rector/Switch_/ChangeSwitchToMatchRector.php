@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\MatchArm;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -116,7 +117,7 @@ CODE_SAMPLE
         $match = $this->processImplicitThrowsAfterSwitch($node, $match, $condAndExprs);
 
         if ($isReturn) {
-            return new Return_($match);
+            return $this->processReturn($match, $node->cond);
         }
 
         $assignExpr = $this->resolveAssignExpr($condAndExprs);
@@ -125,6 +126,15 @@ CODE_SAMPLE
         }
 
         return $match;
+    }
+
+    private function processReturn(Match_ $match, Expr $cond): Return_
+    {
+        if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
+            $match->arms[] = new MatchArm(null, $cond);
+        }
+
+        return new Return_($match);
     }
 
     public function provideMinPhpVersion(): int
