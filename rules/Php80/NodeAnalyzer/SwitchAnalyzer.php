@@ -11,16 +11,10 @@ use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class SwitchAnalyzer
 {
-    public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder
-    ) {
-    }
-
     public function hasEachCaseBreak(Switch_ $switch): bool
     {
         $totalCases = count($switch->cases);
