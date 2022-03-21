@@ -133,10 +133,10 @@ CODE_SAMPLE
         return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
-    private function processReturn(Match_ $match, Expr $cond): Return_
+    private function processReturn(Match_ $match, Expr $expr): Return_
     {
         if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
-            $match->arms[] = new MatchArm(null, $cond);
+            $match->arms[] = new MatchArm(null, $expr);
         }
 
         return new Return_($match);
