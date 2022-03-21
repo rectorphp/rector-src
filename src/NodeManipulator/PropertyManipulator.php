@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Unset_;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -175,6 +176,11 @@ final class PropertyManipulator
             }
 
             if ($this->assignManipulator->isLeftPartOfAssign($propertyFetch)) {
+                return true;
+            }
+
+            $isInUnset = (bool) $this->betterNodeFinder->findParentType($propertyFetch, Unset_::class);
+            if ($isInUnset) {
                 return true;
             }
         }
