@@ -82,12 +82,15 @@ final class SwitchAnalyzer
         if (! $nextNode instanceof Stmt) {
             return $this->nodeFactory->createNull();
         }
+
         if (! $nextNode instanceof Return_) {
             return $nextNode->expr;
         }
+
         if ($nextNode->expr instanceof Expr) {
             return $nextNode->expr;
         }
+
         return $this->nodeFactory->createNull();
     }
 
