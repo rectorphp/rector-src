@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Rector\Php80\NodeAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class SwitchAnalyzer
 {
@@ -59,25 +56,6 @@ final class SwitchAnalyzer
         }
 
         return false;
-    }
-
-    public function resolveDefaultFromReturnValueNext(Switch_ $switch): ?Expr
-    {
-        $nextNode = $switch->getAttribute(AttributeKey::NEXT_NODE);
-
-        if (! $nextNode instanceof Stmt) {
-            return null;
-        }
-
-        if (! $nextNode instanceof Return_) {
-            return null;
-        }
-
-        if ($nextNode->expr instanceof Expr) {
-            return $nextNode->expr;
-        }
-
-        return null;
     }
 
     private function hasBreakOrReturnOrEmpty(Case_ $case): bool

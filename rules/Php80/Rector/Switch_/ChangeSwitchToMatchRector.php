@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Throw_;
-use PhpParser\Node\MatchArm;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -19,7 +18,6 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
-use Rector\Php80\NodeAnalyzer\SwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
@@ -38,8 +36,7 @@ final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVe
     public function __construct(
         private readonly SwitchExprsResolver $switchExprsResolver,
         private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer,
-        private readonly MatchFactory $matchFactory,
-        private readonly SwitchAnalyzer $switchAnalyzer
+        private readonly MatchFactory $matchFactory
     ) {
     }
 
@@ -119,7 +116,7 @@ CODE_SAMPLE
         $match = $this->processImplicitThrowsAfterSwitch($node, $match, $condAndExprs);
 
         if ($isReturn) {
-            return $this->processReturn($match, $node);
+            return $this->processReturn($match);
         }
 
         $assignExpr = $this->resolveAssignExpr($condAndExprs);
@@ -135,15 +132,10 @@ CODE_SAMPLE
         return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
-    private function processReturn(Match_ $match, Switch_ $switch): ?Return_
+    private function processReturn(Match_ $match): ?Return_
     {
         if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
-            $body = $this->switchAnalyzer->resolveDefaultFromReturnValueNext($switch);
-            if (! $body instanceof Expr) {
-                return null;
-            }
-
-            $match->arms[] = new MatchArm(null, $body);
+            return null;
         }
 
         return new Return_($match);
