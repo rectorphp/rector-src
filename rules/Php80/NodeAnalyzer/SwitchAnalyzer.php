@@ -76,7 +76,7 @@ final class SwitchAnalyzer
         );
 
         if (! $nextNode instanceof Stmt) {
-            return $this->nodeFactory->createNull();
+            return null;
         }
 
         if (! $nextNode instanceof Return_) {
@@ -87,7 +87,7 @@ final class SwitchAnalyzer
             return $nextNode->expr;
         }
 
-        return $this->nodeFactory->createNull();
+        return null;
     }
 
     private function hasBreakOrReturnOrEmpty(Case_ $case): bool
