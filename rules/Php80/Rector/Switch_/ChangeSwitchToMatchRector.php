@@ -128,6 +128,11 @@ CODE_SAMPLE
         return $match;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::MATCH_EXPRESSION;
+    }
+
     private function processReturn(Match_ $match, Expr $cond): Return_
     {
         if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
@@ -135,11 +140,6 @@ CODE_SAMPLE
         }
 
         return new Return_($match);
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
     private function changeToAssign(Switch_ $switch, Match_ $match, Expr $assignExpr): Assign
