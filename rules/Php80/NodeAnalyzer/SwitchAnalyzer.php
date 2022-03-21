@@ -75,16 +75,12 @@ final class SwitchAnalyzer
             fn (Node $subNode): bool => $subNode instanceof Stmt
         );
 
-        if ($nextNode instanceof Stmt && ! $nextNode instanceof Return_) {
-            return null;
-        }
-
         if (! $nextNode instanceof Stmt) {
             return $this->nodeFactory->createNull();
         }
 
         if (! $nextNode instanceof Return_) {
-            return $nextNode->expr;
+            return null;
         }
 
         if ($nextNode->expr instanceof Expr) {
