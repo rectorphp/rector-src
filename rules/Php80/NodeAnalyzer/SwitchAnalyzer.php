@@ -16,8 +16,10 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 
 final class SwitchAnalyzer
 {
-    public function __construct(private readonly BetterNodeFinder $betterNodeFinder, private readonly NodeFactory $nodeFactory)
-    {
+    public function __construct(
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeFactory $nodeFactory
+    ) {
     }
 
     public function hasEachCaseBreak(Switch_ $switch): bool
@@ -66,6 +68,28 @@ final class SwitchAnalyzer
         return false;
     }
 
+    public function resolveDefaultFromReturnValueNext(Switch_ $switch): ?Expr
+    {
+        $nextNode = $this->betterNodeFinder->findFirstNext(
+            $switch,
+            fn (Node $subNode): bool => $subNode instanceof Stmt
+        );
+
+        if ($nextNode instanceof Stmt && ! $nextNode instanceof Return_) {
+            return null;
+        }
+
+        if (! $nextNode instanceof Stmt) {
+            return $this->nodeFactory->createNull();
+        }
+
+        if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr) {
+            return $this->nodeFactory->createNull();
+        }
+
+        return $nextNode->expr;
+    }
+
     private function hasBreakOrReturnOrEmpty(Case_ $case): bool
     {
         if ($case->stmts === []) {
@@ -94,26 +118,5 @@ final class SwitchAnalyzer
         }
 
         return false;
-    }
-
-    public function resolveDefaultFromReturnValueNext(Switch_ $switch): ?Expr
-    {
-        $nextNode = $this->betterNodeFinder->findFirstNext($switch,
-            fn (Node $subNode): bool => $subNode instanceof Stmt
-        );
-
-        if ($nextNode instanceof Stmt && ! $nextNode instanceof Return_) {
-            return null;
-        }
-
-        if (! $nextNode instanceof Stmt) {
-            return $this->nodeFactory->createNull();
-        }
-
-        if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr) {
-            return $this->nodeFactory->createNull();
-        }
-
-        return $nextNode->expr;
     }
 }
