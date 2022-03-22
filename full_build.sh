@@ -38,7 +38,7 @@ cp ../preload.php .
 #
 # usage:
 #
-#   export PHP72_BIN_PATH=/opt/homebrew/Cellar/php@7.2/7.2.33_4/bin/php PHP80_BIN_PATH=/opt/homebrew/Cellar/php@8.0/8.0.14/bin/php && sh ./full_build.sh
+#   export PHP72_BIN_PATH=/opt/homebrew/Cellar/php@7.2/7.2.34_4/bin/php PHP80_BIN_PATH=/opt/homebrew/Cellar/php@8.0/8.0.17/bin/php && sh ./full_build.sh
 #
 if test -z ${PHP72_BIN_PATH+y}; then
     bin/rector list --ansi;
