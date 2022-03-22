@@ -136,6 +136,7 @@ PHP;
     private function createPreloadFileContent(array $fileInfos): string
     {
         $preloadFileContent = self::PRELOAD_FILE_TEMPLATE;
+
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
             if ($realPath === false) {
