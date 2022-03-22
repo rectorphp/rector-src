@@ -26,7 +26,7 @@ sh build/downgrade-rector.sh rector-build
 
 cd rector-build
 
-# avoid syntax error in php 7.1 and 7.2
+# avoid syntax error in php 7.2
 rm rector.php
 
 cp ../build/target-repository/bootstrap.php .

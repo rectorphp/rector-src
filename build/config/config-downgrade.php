@@ -25,7 +25,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::SKIP, DowngradeRectorConfig::DEPENDENCY_EXCLUDE_PATHS);
     $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, __DIR__ . '/phpstan-for-downgrade.neon');
 
-    $containerConfigurator->import(DowngradeLevelSetList::DOWN_TO_PHP_71);
+    $containerConfigurator->import(DowngradeLevelSetList::DOWN_TO_PHP_72);
 
     $services = $containerConfigurator->services();
 
