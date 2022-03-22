@@ -35,6 +35,7 @@ final class PreloadBuilder
 
 declare(strict_types=1);
 
+namespace {
 
 PHP;
 
@@ -124,7 +125,6 @@ PHP;
             ->notPath('#\/tests\/#')
             ->notPath('#\/config\/#')
             ->notPath('#\/set\/#')
-            ->in($vendorDir . '/symplify/symfony-php-config')
             ->sortByName();
 
         return iterator_to_array($finder->getIterator());
@@ -136,7 +136,6 @@ PHP;
     private function createPreloadFileContent(array $fileInfos): string
     {
         $preloadFileContent = self::PRELOAD_FILE_TEMPLATE;
-
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
             if ($realPath === false) {
@@ -146,13 +145,27 @@ PHP;
             $preloadFileContent .= $this->createRequireOnceFilePathLine($realPath);
         }
 
+        $preloadFileContent .= <<<PHPUNIT_STUB
+}
+
+// @see https://github.com/rectorphp/rector/issues/6531
+namespace PHPUnit\Framework
+{
+    if (! class_exists('PHPUnit\Framework\TestCase')) {
+        abstract class TestCase
+        {
+        }
+    }
+}
+PHPUNIT_STUB;
+
         return $preloadFileContent;
     }
 
     private function createRequireOnceFilePathLine(string $realPath): string
     {
         $filePath = '/vendor/' . Strings::after($realPath, 'vendor/');
-        return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
+        return "    require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
     }
 
     private function matchFilePriorityPosition(SplFileInfo $splFileInfo): int
