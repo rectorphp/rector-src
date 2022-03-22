@@ -35,7 +35,6 @@ final class PreloadBuilder
 
 declare(strict_types=1);
 
-namespace {
 
 PHP;
 
@@ -146,28 +145,13 @@ PHP;
             $preloadFileContent .= $this->createRequireOnceFilePathLine($realPath);
         }
 
-        $preloadFileContent .= <<<PHPUNIT_STUB
-}
-
-// @see https://github.com/rectorphp/rector/issues/6531
-namespace PHPUnit\Framework
-{
-    if (! class_exists('PHPUnit\Framework\TestCase')) {
-        abstract class TestCase
-        {
-        }
-    }
-}
-
-PHPUNIT_STUB;
-
         return $preloadFileContent;
     }
 
     private function createRequireOnceFilePathLine(string $realPath): string
     {
         $filePath = '/vendor/' . Strings::after($realPath, 'vendor/');
-        return "    require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
+        return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
     }
 
     private function matchFilePriorityPosition(SplFileInfo $splFileInfo): int
