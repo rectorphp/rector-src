@@ -157,6 +157,7 @@ namespace PHPUnit\Framework
         }
     }
 }
+
 PHPUNIT_STUB;
 
         return $preloadFileContent;
