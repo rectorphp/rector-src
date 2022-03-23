@@ -116,7 +116,7 @@ final class FilesFinder
         }
 
         $finder->filter(function (SplFileInfo $splFileInfo) use ($excludePaths): bool {
-            $realPath = (string) $splFileInfo->getRealPath();
+            $realPath = $splFileInfo->getRealPath();
             if ($realPath === '') {
                 // dead symlink
                 return false;
