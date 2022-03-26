@@ -6,6 +6,6 @@ final class SkipKeyWithColon
 {
     public function run(string $name)
     {
-        return ['prefix:key' => $name];
+        return ['prefix:key' => $name, 'another:key' => $name];
     }
 }

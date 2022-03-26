@@ -13,6 +13,7 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\Core\Rector\AbstractRector;
@@ -138,9 +139,17 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($keyType instanceof ConstantStringType) {
+        $types = $keyType instanceof UnionType
+            ? $keyType->getTypes()
+            : [$keyType];
+
+        foreach ($types as $type) {
+            if (! $type instanceof ConstantStringType) {
+                continue;
+            }
+
             foreach (self::SKIPPED_CHARS as $skippedChar) {
-                if (str_contains($keyType->getValue(), $skippedChar)) {
+                if (str_contains($type->getValue(), $skippedChar)) {
                     return true;
                 }
             }
