@@ -2,11 +2,9 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector\Fixture;
 
-use PhpCsFixer\Tokenizer\Token;
-
 class SkipNotIdenticalReturnFalseThenReturnInArray
 {
-    private const POSSIBLE_DELIMITERS = ['a'];
+    private const POSSIBLE_DELIMITERS = ['#', '~', '/'];
 
     public function run($firstChar, $lastChar)
     {
