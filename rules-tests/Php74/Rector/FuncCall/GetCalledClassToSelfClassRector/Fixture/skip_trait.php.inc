@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\FuncCall\GetCalledClassToSelfClassRector\Fixture;
 
-class SkipOnNonFinalClass
+trait SkipTrait
 {
     public function callOnMe()
     {

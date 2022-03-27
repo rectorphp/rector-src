@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\FuncCall\GetCalledClassToStaticClassRector\Fixture;
 
-trait UseStaticForTrait
+trait SomeTrait
 {
     public function callOnMe()
     {
@@ -16,7 +16,7 @@ trait UseStaticForTrait
 
 namespace Rector\Tests\Php74\Rector\FuncCall\GetCalledClassToStaticClassRector\Fixture;
 
-trait UseStaticForTrait
+trait SomeTrait
 {
     public function callOnMe()
     {
