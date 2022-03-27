@@ -150,6 +150,12 @@ CODE_SAMPLE
                 continue;
             }
 
+            $value = $type->getValue();
+
+            if (trim($value) === '') {
+                return true;
+            }
+
             if (StringUtils::isMatch($type->getValue(), self::SKIPPED_CHAR_REGEX)) {
                 return true;
             }
