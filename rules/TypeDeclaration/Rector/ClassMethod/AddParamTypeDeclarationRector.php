@@ -132,6 +132,7 @@ CODE_SAMPLE
             if ($classLike->implements !== []) {
                 return false;
             }
+
             return $classLike->extends === null;
         }
 
