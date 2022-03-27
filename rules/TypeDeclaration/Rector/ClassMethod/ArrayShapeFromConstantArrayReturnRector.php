@@ -30,10 +30,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ArrayShapeFromConstantArrayReturnRector extends AbstractRector
 {
     /**
-     * @see https://regex101.com/r/L9xTuO/1
+     * @see https://regex101.com/r/WvUD0m/1
      * @var string
      */
-    private const SKIPPED_CHARS_REGEX = '#[@:{}\[\]]#';
+    private const SKIPPED_CHARS_REGEX = '#\W#';
 
     public function __construct(
         private readonly ClassMethodReturnTypeResolver $classMethodReturnTypeResolver,
