@@ -75,12 +75,15 @@ CODE_SAMPLE
         if (! $class instanceof Class_) {
             return null;
         }
+
         if ($class->isFinal()) {
             return $this->nodeFactory->createClassConstFetch(ObjectReference::SELF(), 'class');
         }
+
         if ($this->classAnalyzer->isAnonymousClass($class)) {
             return $this->nodeFactory->createClassConstFetch(ObjectReference::SELF(), 'class');
         }
+
         return null;
     }
 
