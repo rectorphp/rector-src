@@ -78,9 +78,9 @@ CODE_SAMPLE
         if ($this->valueResolver->isTrue($innerIfInnerNode)) {
             $newReturnNode = $this->processReturnTrue($node, $nextNode);
         } elseif ($this->valueResolver->isFalse($innerIfInnerNode)) {
-            if ($node->cond instanceof NotIdentical && $nextNode->expr instanceof Expr && $this->valueResolver->isTrue(
-                $nextNode->expr
-            )) {
+            /** @var Expr $expr */
+            $expr = $nextNode->expr;
+            if ($node->cond instanceof NotIdentical && $this->valueResolver->isTrue($expr)) {
                 $node->cond = new Identical($node->cond->left, $node->cond->right);
                 $newReturnNode = $this->processReturnTrue($node, $nextNode);
             } else {
@@ -129,7 +129,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($nextNode->expr === null) {
+        if (! $nextNode->expr instanceof Expr) {
             return true;
         }
 
