@@ -76,12 +76,7 @@ CODE_SAMPLE
         if (! $this->isNames($funcCall, ['array_merge', 'array_merge_recursive'])) {
             return false;
         }
-
         // If param is provided, do nothing
-        if ($funcCall->args !== []) {
-            return false;
-        }
-
-        return true;
+        return $funcCall->args === [];
     }
 }
