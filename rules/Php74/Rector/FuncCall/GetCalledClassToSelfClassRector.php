@@ -66,7 +66,12 @@ CODE_SAMPLE
         }
 
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if ($class instanceof Class_ && ! $class->isFinal()) {
+
+        if (! $class instanceof Class_) {
+            return $this->nodeFactory->createClassConstFetch(ObjectReference::STATIC(), 'class');
+        }
+
+        if (! $class->isFinal()) {
             return null;
         }
 
