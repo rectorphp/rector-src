@@ -66,11 +66,13 @@ CODE_SAMPLE
         }
 
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if ($class instanceof Class_ && $class->isFinal()) {
-            return null;
+        if (! $class instanceof Class_) {
+            return $this->nodeFactory->createClassConstFetch(ObjectReference::STATIC(), 'class');
         }
-
-        return $this->nodeFactory->createClassConstFetch(ObjectReference::STATIC(), 'class');
+        if (! $class->isFinal()) {
+            return $this->nodeFactory->createClassConstFetch(ObjectReference::STATIC(), 'class');
+        }
+        return null;
     }
 
     public function provideMinPhpVersion(): int
