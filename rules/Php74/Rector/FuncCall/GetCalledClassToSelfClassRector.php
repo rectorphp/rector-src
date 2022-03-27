@@ -16,17 +16,17 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @changelog https://wiki.php.net/rfc/deprecations_php_7_4 (not confirmed yet)
- * @see https://3v4l.org/dJgXd
- * @see \Rector\Tests\Php74\Rector\FuncCall\GetCalledClassToStaticClassRector\GetCalledClassToStaticClassRectorTest
+ * @see https://3v4l.org/GU9dP
+ * @see \Rector\Tests\Php74\Rector\FuncCall\GetCalledClassToSelfClassRector\GetCalledClassToSelfClassRectorTest
  */
-final class GetCalledClassToStaticClassRector extends AbstractRector implements MinPhpVersionInterface
+final class GetCalledClassToSelfClassRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change get_called_class() to static::class on non-final class', [
+        return new RuleDefinition('Change get_called_class() to self::class on final class', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
    public function callOnMe()
    {
@@ -36,11 +36,11 @@ class SomeClass
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
    public function callOnMe()
    {
-       var_dump(static::class);
+       var_dump(self::class);
    }
 }
 CODE_SAMPLE
@@ -66,11 +66,11 @@ CODE_SAMPLE
         }
 
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if ($class instanceof Class_ && $class->isFinal()) {
+        if ($class instanceof Class_ && ! $class->isFinal()) {
             return null;
         }
 
-        return $this->nodeFactory->createClassConstFetch(ObjectReference::STATIC(), 'class');
+        return $this->nodeFactory->createClassConstFetch(ObjectReference::SELF(), 'class');
     }
 
     public function provideMinPhpVersion(): int
