@@ -33,7 +33,7 @@ final class ArrayShapeFromConstantArrayReturnRector extends AbstractRector
      * @see https://regex101.com/r/WvUD0m/2
      * @var string
      */
-    private const SKIPPED_CHARS_REGEX = '#\W#u';
+    private const SKIPPED_CHAR_REGEX = '#\W#u';
 
     public function __construct(
         private readonly ClassMethodReturnTypeResolver $classMethodReturnTypeResolver,
@@ -150,7 +150,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (StringUtils::isMatch($type->getValue(), self::SKIPPED_CHARS_REGEX)) {
+            if (StringUtils::isMatch($type->getValue(), self::SKIPPED_CHAR_REGEX)) {
                 return true;
             }
         }
