@@ -156,7 +156,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            if (StringUtils::isMatch($type->getValue(), self::SKIPPED_CHAR_REGEX)) {
+            if (StringUtils::isMatch($value, self::SKIPPED_CHAR_REGEX)) {
                 return true;
             }
         }
