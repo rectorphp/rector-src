@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Enum\ObjectReference;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -21,6 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class GetCalledClassToSelfClassRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(private readonly ClassAnalyzer $classAnalyzer)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change get_called_class() to self::class on final class', [
@@ -71,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $class->isFinal()) {
+        if (! $class->isFinal() && ! $this->classAnalyzer->isAnonymousClass($class)) {
             return null;
         }
 
