@@ -50,6 +50,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 final class AnonymousFunctionFactory
 {
@@ -68,7 +69,8 @@ final class AnonymousFunctionFactory
         private readonly SimplePhpParser $simplePhpParser,
         private readonly NodeComparator $nodeComparator,
         private readonly AstResolver $astResolver,
-        private readonly BetterStandardPrinter $betterStandardPrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter,
+        private readonly PrivatesAccessor $privatesAccessor
     ) {
     }
 
@@ -347,6 +349,11 @@ final class AnonymousFunctionFactory
             $parameterReflection->getType(),
             TypeKind::PARAM()
         );
+
+        $reflection = $this->privatesAccessor->getPrivateProperty($parameterReflection, 'reflection');
+        if ($reflection->isPassedByReference()) {
+            $param->byRef = true;
+        }
     }
 
     private function applyParamDefaultValue(
