@@ -49,6 +49,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use ReflectionParameter;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
@@ -354,7 +355,7 @@ final class AnonymousFunctionFactory
 
     private function applyByReference(Param $param, ParameterReflection $parameterReflection): void
     {
-        /** @var \ReflectionParameter $reflection */
+        /** @var ReflectionParameter $reflection */
         $reflection = $this->privatesAccessor->getPrivateProperty($parameterReflection, 'reflection');
         $param->byRef = $reflection->isPassedByReference();
     }
