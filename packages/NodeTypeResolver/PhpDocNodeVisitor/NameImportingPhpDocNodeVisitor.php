@@ -99,7 +99,10 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         File $file
     ): ?IdentifierTypeNode {
         if (str_starts_with($fullyQualifiedObjectType->getClassName(), '@')) {
-            $fullyQualifiedObjectType = new FullyQualifiedObjectType(ltrim($fullyQualifiedObjectType->getClassName(), '@'));
+            $fullyQualifiedObjectType = new FullyQualifiedObjectType(ltrim(
+                $fullyQualifiedObjectType->getClassName(),
+                '@'
+            ));
         }
 
         if ($this->classNameImportSkipper->shouldSkipNameForFullyQualifiedObjectType(
