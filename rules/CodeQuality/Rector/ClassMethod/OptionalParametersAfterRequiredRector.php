@@ -143,7 +143,7 @@ CODE_SAMPLE
         }
 
         $newArgs = $this->argumentSorter->sortArgsByExpectedParamOrder(
-            $methodCall->args,
+            $methodCall->getArgs(),
             $expectedArgOrParamOrder
         );
 
