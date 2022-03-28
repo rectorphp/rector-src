@@ -18,5 +18,3 @@ use Doctrine\ORM\Mapping\Table;
 class NoNamespace
 {
 }
-
-?>
