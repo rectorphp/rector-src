@@ -352,14 +352,11 @@ final class AnonymousFunctionFactory
         );
     }
 
-    private function applyByReference(Param $param, ParameterReflection $parameterReflection)
+    private function applyByReference(Param $param, ParameterReflection $parameterReflection): void
     {
+        /** @var \ReflectionParameter $reflection */
         $reflection = $this->privatesAccessor->getPrivateProperty($parameterReflection, 'reflection');
-        if (! $reflection->isPassedByReference()) {
-            return;
-        }
-
-        $param->byRef = true;
+        $param->byRef = $reflection->isPassedByReference();
     }
 
     private function applyParamDefaultValue(
