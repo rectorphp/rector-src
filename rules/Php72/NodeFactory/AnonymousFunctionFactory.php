@@ -333,7 +333,7 @@ final class AnonymousFunctionFactory
             $param = new Param(new Variable($parameterReflection->getName()));
             $this->applyParamType($param, $parameterReflection);
             $this->applyParamDefaultValue($param, $parameterReflection, $key, $classMethod);
-            $this->applyByReference($param, $parameterReflection);
+            $this->applyParamByReference($param, $parameterReflection);
 
             $params[] = $param;
         }
@@ -353,7 +353,7 @@ final class AnonymousFunctionFactory
         );
     }
 
-    private function applyByReference(Param $param, ParameterReflection $parameterReflection): void
+    private function applyParamByReference(Param $param, ParameterReflection $parameterReflection): void
     {
         /** @var ReflectionParameter $reflection */
         $reflection = $this->privatesAccessor->getPrivateProperty($parameterReflection, 'reflection');
