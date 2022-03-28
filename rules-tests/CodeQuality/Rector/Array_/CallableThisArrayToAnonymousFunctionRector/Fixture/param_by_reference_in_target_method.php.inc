@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Fixture;
 
-class CallByReferenceInTargetMethod
+class ParamByReferenceInTargetMethod
 {
     public function run()
     {
@@ -22,7 +22,7 @@ class CallByReferenceInTargetMethod
 
 namespace Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\Fixture;
 
-class CallByReferenceInTargetMethod
+class ParamByReferenceInTargetMethod
 {
     public function run()
     {
