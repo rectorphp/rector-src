@@ -52,7 +52,7 @@ final class ClosureArrowFunctionAnalyzer
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst([$expr], function (Node $node) use (
+        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($closure, function (Node $node) use (
             $referencedValues
         ): bool {
             foreach ($referencedValues as $referencedValue) {
