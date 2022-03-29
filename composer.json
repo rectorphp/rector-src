@@ -61,6 +61,7 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
+        "brianium/paratest": "^6.3",
         "friendsofphp/php-cs-fixer": "^3.6",
         "nategood/httpful": "^0.3.2",
         "phpstan/extension-installer": "^1.1",
