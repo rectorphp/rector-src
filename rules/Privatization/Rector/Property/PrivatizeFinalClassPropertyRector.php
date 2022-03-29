@@ -133,7 +133,11 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isFoundInParentClassMethods(ClassReflection $parentClassReflection, string $propertyName, string $className): bool
+    private function isFoundInParentClassMethods(
+        ClassReflection $parentClassReflection,
+        string $propertyName,
+        string $className
+    ): bool
     {
         $classLike = $this->astResolver->resolveClassFromName($parentClassReflection->getName());
         if (! $classLike instanceof ClassLike) {
