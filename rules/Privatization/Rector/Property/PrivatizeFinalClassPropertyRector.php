@@ -118,7 +118,7 @@ CODE_SAMPLE
         $classReflection = $scope->getClassReflection();
 
         $propertyName = $this->getName($property);
-        $className = $this->nodeNameResolver->getName($class);
+        $className = (string) $this->nodeNameResolver->getName($class);
 
         foreach ($classReflection->getParents() as $parentClassReflection) {
             if ($parentClassReflection->hasProperty($propertyName)) {
