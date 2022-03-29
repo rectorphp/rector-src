@@ -18,6 +18,6 @@ abstract class AbstractClassWithProtectedProperty
 
     public function run2()
     {
-        self::$valueStatic = 1000;
+        self::$valueStatic2 = 1000;
     }
 }

@@ -7,4 +7,5 @@ use Rector\Tests\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector
 final class KeepParentStaticProtectedUsedByParent extends AbstractClassWithProtectedProperty
 {
     protected static $valueStatic = 100;
+    protected static $valueStatic2 = 100;
 }
