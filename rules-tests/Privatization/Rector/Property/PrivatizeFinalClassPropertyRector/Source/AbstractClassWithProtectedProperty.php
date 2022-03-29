@@ -10,4 +10,9 @@ abstract class AbstractClassWithProtectedProperty
      * @var int
      */
     protected $value = 1000;
+
+    public function run()
+    {
+        static::$valueStatic = 1000;
+    }
 }
