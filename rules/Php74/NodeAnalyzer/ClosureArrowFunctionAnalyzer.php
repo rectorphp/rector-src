@@ -38,14 +38,14 @@ final class ClosureArrowFunctionAnalyzer
             return null;
         }
 
-        if ($this->shouldSkipForUsedReferencedValue($closure, $return->expr)) {
+        if ($this->shouldSkipForUsedReferencedValue($closure)) {
             return null;
         }
 
         return $return->expr;
     }
 
-    private function shouldSkipForUsedReferencedValue(Closure $closure, Expr $expr): bool
+    private function shouldSkipForUsedReferencedValue(Closure $closure): bool
     {
         $referencedValues = $this->resolveReferencedUseVariablesFromClosure($closure);
         if ($referencedValues === []) {
