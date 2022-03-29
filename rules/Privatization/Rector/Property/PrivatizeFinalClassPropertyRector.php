@@ -137,8 +137,7 @@ CODE_SAMPLE
         ClassReflection $parentClassReflection,
         string $propertyName,
         string $className
-    ): bool
-    {
+    ): bool {
         $classLike = $this->astResolver->resolveClassFromName($parentClassReflection->getName());
         if (! $classLike instanceof ClassLike) {
             return false;
