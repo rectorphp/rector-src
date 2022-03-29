@@ -8,4 +8,5 @@ final class KeepParentStaticProtectedUsedByParent extends AbstractClassWithProte
 {
     protected static $valueStatic = 100;
     protected static $valueStatic2 = 100;
+    protected static $valueStatic3 = 100;
 }

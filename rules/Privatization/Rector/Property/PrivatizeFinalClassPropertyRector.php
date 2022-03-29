@@ -118,13 +118,14 @@ CODE_SAMPLE
         $classReflection = $scope->getClassReflection();
 
         $propertyName = $this->getName($property);
+        $className = $this->nodeNameResolver->getName($class);
 
         foreach ($classReflection->getParents() as $parentClassReflection) {
             if ($parentClassReflection->hasProperty($propertyName)) {
                 return true;
             }
 
-            if ($this->isFoundInParentClassMethods($parentClassReflection, $propertyName)) {
+            if ($this->isFoundInParentClassMethods($parentClassReflection, $propertyName, $className)) {
                 return true;
             }
         }
@@ -132,7 +133,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isFoundInParentClassMethods(ClassReflection $parentClassReflection, string $propertyName): bool
+    private function isFoundInParentClassMethods(ClassReflection $parentClassReflection, string $propertyName, string $className): bool
     {
         $classLike = $this->astResolver->resolveClassFromName($parentClassReflection->getName());
         if (! $classLike instanceof ClassLike) {
@@ -141,7 +142,7 @@ CODE_SAMPLE
 
         $methods = $classLike->getMethods();
         foreach ($methods as $method) {
-            $isFound = $this->isFoundInMethodStmts((array) $method->stmts, $propertyName);
+            $isFound = $this->isFoundInMethodStmts((array) $method->stmts, $propertyName, $className);
             if ($isFound) {
                 return true;
             }
@@ -153,10 +154,11 @@ CODE_SAMPLE
     /**
      * @param Stmt[] $stmts
      */
-    private function isFoundInMethodStmts(array $stmts, string $propertyName): bool
+    private function isFoundInMethodStmts(array $stmts, string $propertyName, string $className): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($stmts, function (Node $subNode) use (
-            $propertyName
+            $propertyName,
+            $className
         ): bool {
             if (! $this->propertyFetchAnalyzer->isPropertyFetch($subNode)) {
                 return false;
@@ -177,7 +179,7 @@ CODE_SAMPLE
 
             if (! $this->nodeNameResolver->isNames(
                 $subNode->class,
-                [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue()]
+                [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue(), $className]
             )) {
                 return false;
             }

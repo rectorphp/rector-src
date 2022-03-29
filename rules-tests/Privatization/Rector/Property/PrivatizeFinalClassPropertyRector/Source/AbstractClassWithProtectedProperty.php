@@ -20,4 +20,9 @@ abstract class AbstractClassWithProtectedProperty
     {
         self::$valueStatic2 = 1000;
     }
+
+    public function run3()
+    {
+        \Rector\Tests\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector\Fixture\KeepParentStaticProtectedUsedByParent::$valueStatic3 = 1000;
+    }
 }
