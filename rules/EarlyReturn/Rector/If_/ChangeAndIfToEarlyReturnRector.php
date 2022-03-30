@@ -142,7 +142,7 @@ CODE_SAMPLE
     /**
      * @param Expr[] $conditions
      * @param Node[] $afters
-     * @return Node[]|null
+     * @return Node[]
      */
     private function processReplaceIfs(
         If_ $if,
