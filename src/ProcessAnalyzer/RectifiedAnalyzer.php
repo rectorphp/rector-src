@@ -35,34 +35,33 @@ final class RectifiedAnalyzer
 
         /** @var RectifiedNode $rectifiedNode */
         $rectifiedNode = $this->previousFileWithNodes[$realPath];
-
-        if ($rectifiedNode->getRectorClass() === $rector::class && $rectifiedNode->getNode() === $node) {
-            // re-set to refill next
-            $this->previousFileWithNodes[$realPath] = null;
-            return $rectifiedNode;
-        }
-
-        if ($node instanceof Stmt) {
-            return null;
-        }
-
-        $stmt = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if ($stmt instanceof Stmt) {
-            return null;
-        }
-
-        $startTokenPos = $node->getStartTokenPos();
-        $endTokenPos = $node->getEndTokenPos();
-        if ($startTokenPos < 0) {
-            return null;
-        }
-
-        if ($endTokenPos < 0) {
+        if ($this->shouldContinue($rectifiedNode, $rector, $node)) {
             return null;
         }
 
         // re-set to refill next
         $this->previousFileWithNodes[$realPath] = null;
         return $rectifiedNode;
+    }
+
+    private function shouldContinue(RectifiedNode $rectifiedNode, RectorInterface $rector, Node $node): bool
+    {
+        if ($rectifiedNode->getRectorClass() === $rector::class && $rectifiedNode->getNode() === $node) {
+            return false;
+        }
+
+        if ($node instanceof Stmt) {
+            return true;
+        }
+
+        $stmt = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if ($stmt instanceof Stmt) {
+            return true;
+        }
+
+        $startTokenPos = $node->getStartTokenPos();
+        $endTokenPos = $node->getEndTokenPos();
+
+        return $startTokenPos < 0 || $endTokenPos < 0;
     }
 }
