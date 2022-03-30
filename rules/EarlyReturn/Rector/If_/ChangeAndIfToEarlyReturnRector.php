@@ -127,20 +127,6 @@ CODE_SAMPLE
         return $this->processReplaceIfs($node, $booleanAndConditions, $ifNextReturnClone, $afters);
     }
 
-    /**
-     * @param Node[] $nodes
-     */
-    private function hasJsonEncodeOrJsonDecode(array $nodes): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst($nodes, function (Node $subNode): bool {
-            if (! $subNode instanceof FuncCall) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isNames($subNode, ['json_encode', 'json_decode']);
-        });
-    }
-
     private function isInLoopWithoutContinueOrBreak(If_ $if): bool
     {
         if (! $this->contextAnalyzer->isInLoop($if)) {
@@ -165,11 +151,6 @@ CODE_SAMPLE
         Return_ $ifNextReturnClone,
         array $afters
     ): ?array {
-        // handle for used along with JsonThrowOnErrorRector
-        if ($this->hasJsonEncodeOrJsonDecode($afters)) {
-            return null;
-        }
-
         $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone);
         $this->mirrorComments($ifs[0], $if);
 

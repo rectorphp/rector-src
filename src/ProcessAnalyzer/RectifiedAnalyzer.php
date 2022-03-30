@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * This service verify if the Node already rectified with same Rector rule before current Rector rule with condition
@@ -33,11 +35,29 @@ final class RectifiedAnalyzer
 
         /** @var RectifiedNode $rectifiedNode */
         $rectifiedNode = $this->previousFileWithNodes[$realPath];
-        if ($rectifiedNode->getRectorClass() !== $rector::class) {
+
+        if ($rectifiedNode->getRectorClass() === $rector::class && $rectifiedNode->getNode() === $node) {
+            // re-set to refill next
+            $this->previousFileWithNodes[$realPath] = null;
+            return $rectifiedNode;
+        }
+
+        if ($node instanceof Stmt) {
             return null;
         }
 
-        if ($rectifiedNode->getNode() !== $node) {
+        $stmt = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        if ($stmt instanceof Stmt) {
+            return null;
+        }
+
+        $startTokenPos = $node->getStartTokenPos();
+        $endTokenPos = $node->getEndTokenPos();
+        if ($startTokenPos < 0) {
+            return null;
+        }
+
+        if ($endTokenPos < 0) {
             return null;
         }
 
