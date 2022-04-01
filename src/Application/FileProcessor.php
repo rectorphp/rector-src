@@ -14,6 +14,7 @@ use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 final class FileProcessor
 {
     private $unused;
+
     public function __construct(
         private readonly AffectedFilesCollector $affectedFilesCollector,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
