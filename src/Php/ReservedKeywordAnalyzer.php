@@ -81,6 +81,7 @@ final class ReservedKeywordAnalyzer
         'while',
         'xor',
         'yield',
+        'yield from',
     ];
 
     /**
