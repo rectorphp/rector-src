@@ -103,10 +103,7 @@ CODE_SAMPLE
 
         $function = $this->createClosure();
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        $variable = new Variable($this->variableNaming->createCountedValueName(
-            'streamIsatty',
-            $scope
-        ));
+        $variable = new Variable($this->variableNaming->createCountedValueName('streamIsatty', $scope));
         $assign = new Assign($variable, $function);
 
         $this->nodesToAddCollector->addNodeBeforeNode($assign, $node);
