@@ -1,4 +1,4 @@
-# 507 Rules Overview
+# 508 Rules Overview
 
 <br>
 
@@ -38,7 +38,7 @@
 
 - [DowngradePhp80](#downgradephp80) (28)
 
-- [DowngradePhp81](#downgradephp81) (8)
+- [DowngradePhp81](#downgradephp81) (9)
 
 - [EarlyReturn](#earlyreturn) (11)
 
@@ -5852,6 +5852,35 @@ Removes union type property type definition, adding `@var` annotations instead.
 <br>
 
 ## DowngradePhp81
+
+### DowngradeArrayIsListRector
+
+Replace `array_is_list()` function
+
+- class: [`Rector\DowngradePhp81\Rector\FuncCall\DowngradeArrayIsListRector`](../rules/DowngradePhp81/Rector/FuncCall/DowngradeArrayIsListRector.php)
+
+```diff
+-array_is_list([1 => 'apple', 'orange']);
++$arrayIsList = function (array $array) : bool {
++    if (function_exists('array_is_list')) {
++        return array_is_list($array);
++    }
++    if ($array === []) {
++        return true;
++    }
++    $current_key = 0;
++    foreach ($array as $key => $noop) {
++        if ($key !== $current_key) {
++            return false;
++        }
++        ++$current_key;
++    }
++    return true;
++};
++$arrayIsList([1 => 'apple', 'orange']);
+```
+
+<br>
 
 ### DowngradeArraySpreadStringKeyRector
 
