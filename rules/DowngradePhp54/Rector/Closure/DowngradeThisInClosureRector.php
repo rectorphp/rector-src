@@ -95,31 +95,7 @@ CODE_SAMPLE
         );
 
         /** @var PropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->find($node->stmts, function (Node $subNode) use (
-            $closureParentFunctionLike
-        ): bool {
-            // multiple deep Closure may access $this, unless its parent is not Closure
-            $parent = $this->betterNodeFinder->findParentByTypes($subNode, [ClassMethod::class, Function_::class]);
-
-            if ($parent instanceof FunctionLike && $parent !== $closureParentFunctionLike) {
-                return false;
-            }
-
-            if (! $subNode instanceof PropertyFetch) {
-                return false;
-            }
-
-            if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
-                return false;
-            }
-
-            $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($subNode);
-            if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
-                return false;
-            }
-
-            return $phpPropertyReflection->isPublic();
-        });
+        $propertyFetches = $this->resolvePropertyFetches($node, $closureParentFunctionLike);
 
         if ($propertyFetches === []) {
             return null;
@@ -146,5 +122,44 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    /**
+     * @return PropertyFetch[]
+     */
+    private function resolvePropertyFetches(Closure $node, ?FunctionLike $closureParentFunctionLike): array
+    {
+        /** @var PropertyFetch[] $propertyFetches */
+        $propertyFetches = $this->betterNodeFinder->find($node->stmts, function (Node $subNode) use (
+            $closureParentFunctionLike
+        ): bool {
+            // multiple deep Closure may access $this, unless its parent is not Closure
+            $parent = $this->betterNodeFinder->findParentByTypes($subNode, [ClassMethod::class, Function_::class]);
+
+            if ($parent instanceof FunctionLike && $parent !== $closureParentFunctionLike) {
+                return false;
+            }
+
+            if (! $subNode instanceof PropertyFetch) {
+                return false;
+            }
+
+            if (! $subNode->var instanceof Variable) {
+                return false;
+            }
+
+            if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
+                return false;
+            }
+
+            $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($subNode);
+            if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
+                return false;
+            }
+
+            return $phpPropertyReflection->isPublic();
+        });
+
+        return $propertyFetches;
     }
 }
