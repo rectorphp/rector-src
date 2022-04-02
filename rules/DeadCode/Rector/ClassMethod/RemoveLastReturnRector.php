@@ -78,10 +78,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $lastNode instanceof Node) {
-            return null;
-        }
-
         if ($lastNode !== $lastReturn) {
             return null;
         }
