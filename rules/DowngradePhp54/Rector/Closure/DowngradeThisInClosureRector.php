@@ -37,7 +37,7 @@ final class DowngradeThisInClosureRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Downgrade $this-> inside to use assigned $self = $this before Closure', [
+        return new RuleDefinition('Downgrade $this-> inside Closure to use assigned $self = $this before Closure', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

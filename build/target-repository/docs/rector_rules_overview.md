@@ -3918,7 +3918,7 @@ Remove static from closure
 
 ### DowngradeThisInClosureRector
 
-Downgrade `$this->` inside to use assigned `$self` = `$this` before Closure
+Downgrade `$this->` inside Closure to use assigned `$self` = `$this` before Closure
 
 - class: [`Rector\DowngradePhp54\Rector\Closure\DowngradeThisInClosureRector`](../rules/DowngradePhp54/Rector/Closure/DowngradeThisInClosureRector.php)
 
