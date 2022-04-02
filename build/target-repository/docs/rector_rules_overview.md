@@ -1,4 +1,4 @@
-# 506 Rules Overview
+# 507 Rules Overview
 
 <br>
 
@@ -20,7 +20,7 @@
 
 - [DowngradePhp53](#downgradephp53) (1)
 
-- [DowngradePhp54](#downgradephp54) (6)
+- [DowngradePhp54](#downgradephp54) (7)
 
 - [DowngradePhp55](#downgradephp55) (4)
 
@@ -3910,6 +3910,33 @@ Remove static from closure
 +        return function () {
              return true;
          };
+     }
+ }
+```
+
+<br>
+
+### DowngradeThisInClosureRector
+
+Downgrade `$this->` inside to use assigned `$self` = `$this` before Closure
+
+- class: [`Rector\DowngradePhp54\Rector\Closure\DowngradeThisInClosureRector`](../rules/DowngradePhp54/Rector/Closure/DowngradeThisInClosureRector.php)
+
+```diff
+ class SomeClass
+ {
+     public $property = 'test';
+
+     public function run()
+     {
+-        $function = function () {
+-            echo $this->property;
++        $self = $this;
++        $function = function () use ($self) {
++            echo $self->property;
+         };
+
+         $function();
      }
  }
 ```
