@@ -23,6 +23,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @changelog https://wiki.php.net/rfc/closures/object-extension
+ *
  * @see \Rector\Tests\DowngradePhp54\Rector\Closure\DowngradeThisInClosureRector\DowngradeThisInClosureRectorTest
  */
 final class DowngradeThisInClosureRector extends AbstractRector
