@@ -23,6 +23,7 @@ final class ConfigurableCallValuesCollectingPhpFileLoader extends PhpFileLoader
         parent::__construct($containerBuilder, $fileLocator);
     }
 
+
     public function load(mixed $resource, string $type = null): mixed
     {
         // this call collects root values
@@ -34,6 +35,7 @@ final class ConfigurableCallValuesCollectingPhpFileLoader extends PhpFileLoader
 
         return null;
     }
+
 
     public function import(
         mixed $resource,
