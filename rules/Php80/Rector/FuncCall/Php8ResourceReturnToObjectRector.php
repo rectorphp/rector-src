@@ -7,6 +7,7 @@ namespace Rector\Php80\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeManipulator\ResourceReturnToObject;
@@ -137,6 +138,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall|BooleanOr $node
+     * @return BooleanOr|FuncCall|Instanceof_|null
      */
     public function refactor(Node $node): ?Node
     {

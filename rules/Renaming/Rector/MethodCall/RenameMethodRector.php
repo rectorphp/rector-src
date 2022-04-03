@@ -68,6 +68,7 @@ CODE_SAMPLE
 
     /**
      * @param MethodCall|StaticCall|ClassMethod $node
+     * @return ArrayDimFetch|MethodCall|StaticCall|ClassMethod|null
      */
     public function refactor(Node $node): ?Node
     {

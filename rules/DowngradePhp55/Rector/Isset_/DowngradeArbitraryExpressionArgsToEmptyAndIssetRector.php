@@ -59,6 +59,7 @@ CODE_SAMPLE
 
     /**
      * @param Isset_|Empty_ $node
+     * @return Expr|BooleanNot|null
      */
     public function refactor(Node $node): ?Node
     {

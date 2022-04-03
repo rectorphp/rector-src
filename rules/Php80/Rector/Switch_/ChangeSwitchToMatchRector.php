@@ -78,6 +78,7 @@ CODE_SAMPLE
 
     /**
      * @param Switch_ $node
+     * @return Assign|Match_|Return_|null
      */
     public function refactor(Node $node): ?Node
     {

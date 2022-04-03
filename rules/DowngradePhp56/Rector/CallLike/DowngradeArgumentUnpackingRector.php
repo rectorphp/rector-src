@@ -74,6 +74,7 @@ CODE_SAMPLE
 
     /**
      * @param CallLike $node
+     * @return Expr|FuncCall|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -169,6 +170,7 @@ CODE_SAMPLE
 
     /**
      * @param Arg[] $args
+     * @return MethodCall|New_|null
      */
     private function createReflectionInstantiation(New_ $new, array $args): ?Expr
     {

@@ -84,6 +84,7 @@ CODE_SAMPLE
 
     /**
      * @param FunctionLike $node
+     * @return Closure|ClassMethod|Function_|null
      */
     public function refactor(Node $node): ?FunctionLike
     {

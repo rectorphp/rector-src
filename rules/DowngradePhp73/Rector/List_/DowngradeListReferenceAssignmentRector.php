@@ -90,6 +90,7 @@ CODE_SAMPLE
 
     /**
      * @param List_|Array_ $node
+     * @return Array_|List_|null
      */
     public function refactor(Node $node): ?Node
     {

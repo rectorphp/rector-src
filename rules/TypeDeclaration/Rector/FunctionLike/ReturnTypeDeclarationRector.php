@@ -136,6 +136,9 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
+    /**
+     * @return ClassMethod|Function_|null
+     */
     private function processType(ClassMethod | Function_ $node, Type $inferedType): ?Node
     {
         $inferredReturnNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(

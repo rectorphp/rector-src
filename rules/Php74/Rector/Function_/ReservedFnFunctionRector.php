@@ -84,6 +84,7 @@ CODE_SAMPLE
 
     /**
      * @param Function_|FuncCall $node
+     * @return FuncCall|Function_|null
      */
     public function refactor(Node $node): ?Node
     {

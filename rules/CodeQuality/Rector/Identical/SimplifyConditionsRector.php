@@ -69,6 +69,9 @@ final class SimplifyConditionsRector extends AbstractRector
         return $this->createInversedBooleanOp($booleanNot->expr);
     }
 
+    /**
+     * @return BinaryOp|Identical|NotIdentical|null
+     */
     private function processIdenticalAndNotIdentical(Identical $identical): ?Node
     {
         $twoNodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(

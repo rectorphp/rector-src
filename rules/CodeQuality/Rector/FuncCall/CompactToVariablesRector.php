@@ -78,6 +78,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall $node
+     * @return Expr|Array_|null
      */
     public function refactor(Node $node): ?Node
     {

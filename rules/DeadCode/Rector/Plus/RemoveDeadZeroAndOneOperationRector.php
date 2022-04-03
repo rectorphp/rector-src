@@ -137,6 +137,9 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @return Expr|UnaryMinus|null
+     */
     private function processBinaryPlusAndMinus(
         \PhpParser\Node\Expr\BinaryOp\Plus | \PhpParser\Node\Expr\BinaryOp\Minus $binaryOp
     ): ?Expr {

@@ -34,6 +34,7 @@ final class DowngradeObjectTypeDeclarationRector extends AbstractRector
 
     /**
      * @param Function_|ClassMethod $node
+     * @return ClassMethod|Function_|null
      */
     public function refactor(Node $node): ?Node
     {

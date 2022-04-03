@@ -129,6 +129,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall|StaticCall $node
+     * @return FuncCall|StaticCall|null
      */
     public function refactor(Node $node): ?Node
     {

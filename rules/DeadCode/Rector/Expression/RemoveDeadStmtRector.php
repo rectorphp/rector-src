@@ -56,7 +56,7 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
-     * @return Node[]|Node|null
+     * @return Expression[]|Node|null
      */
     public function refactor(Node $node)
     {

@@ -106,6 +106,9 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @return Break_|Continue_|null
+     */
     private function processVariableNum(Break_ | Continue_ $stmt, Variable $numVariable): ?Node
     {
         $staticType = $this->getType($numVariable);

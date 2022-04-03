@@ -79,6 +79,7 @@ CODE_SAMPLE
 
     /**
      * @param MethodCall $node
+     * @return ConstFetch|MethodCall|null
      */
     public function refactor(Node $node): ?Node
     {

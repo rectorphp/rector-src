@@ -133,6 +133,9 @@ CODE_SAMPLE
         return $this->isName($classMethod->returnType, $type);
     }
 
+    /**
+     * @return Expr|StaticCall|null
+     */
     private function matchStaticCall(Expr|Stmt $node): ?StaticCall
     {
         // must be static call
@@ -160,6 +163,7 @@ CODE_SAMPLE
 
         return $this->phpAttributeAnalyzer->hasPhpAttributes($classMethod, self::ALLOWED_ATTRIBUTES);
     }
+
 
     private function matchClassMethodOnlyStmt(ClassMethod $classMethod): null | Stmt | Expr
     {

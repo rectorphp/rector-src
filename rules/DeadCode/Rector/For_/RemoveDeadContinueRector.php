@@ -54,6 +54,7 @@ CODE_SAMPLE
 
     /**
      * @param Do_|For_|Foreach_|While_ $node
+     * @return Do_|For_|Foreach_|While_|null
      */
     public function refactor(Node $node): ?Node
     {

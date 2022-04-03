@@ -69,6 +69,7 @@ CODE_SAMPLE
 
     /**
      * @param Assign $node
+     * @return Assign|FuncCall|null
      */
     public function refactor(Node $node): ?Node
     {

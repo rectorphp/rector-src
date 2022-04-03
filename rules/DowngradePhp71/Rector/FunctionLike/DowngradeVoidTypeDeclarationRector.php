@@ -67,6 +67,7 @@ CODE_SAMPLE
 
     /**
      * @param ClassMethod|Function_|Closure $node
+     * @return Closure|ClassMethod|Function_|null
      */
     public function refactor(Node $node): ?Node
     {

@@ -94,6 +94,9 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @return Expr|BooleanNot|null
+     */
     private function refactorIdentical(Expr $leftExpr, Expr $rightExpr): ?Expr
     {
         if ($this->valueResolver->isTrue($rightExpr)) {
@@ -112,6 +115,9 @@ CODE_SAMPLE
         return null;
     }
 
+    /**
+     * @return Expr|BooleanNot|null
+     */
     private function refactorNotIdentical(Expr $leftExpr, Expr $rightExpr): ?Expr
     {
         if ($this->valueResolver->isFalse($rightExpr)) {

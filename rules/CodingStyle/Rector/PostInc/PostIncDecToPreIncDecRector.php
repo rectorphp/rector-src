@@ -65,6 +65,7 @@ CODE_SAMPLE
 
     /**
      * @param PostInc|PostDec $node
+     * @return Expr|PreDec|PreInc|null
      */
     public function refactor(Node $node): ?Node
     {

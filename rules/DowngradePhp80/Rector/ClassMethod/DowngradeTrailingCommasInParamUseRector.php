@@ -144,6 +144,7 @@ CODE_SAMPLE
 
     /**
      * @param ClosureUse[]|Param[]|Arg[] $array
+     * @return Closure|FuncCall|MethodCall|New_|StaticCall|ClassMethod|Function_|null
      */
     private function cleanTrailingComma(
         FuncCall|MethodCall|New_|StaticCall|Closure|ClassMethod|Function_ $node,

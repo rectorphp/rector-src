@@ -71,6 +71,7 @@ CODE_SAMPLE
 
     /**
      * @param ClassMethod|Closure|Function_|ArrowFunction $node
+     * @return ArrowFunction|Closure|ClassMethod|Function_|null
      */
     public function refactor(Node $node): ?Node
     {

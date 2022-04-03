@@ -81,6 +81,7 @@ CODE_SAMPLE
 
     /**
      * @param Function_|ClassMethod|Closure $node
+     * @return Closure|ClassMethod|Function_|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -141,6 +142,9 @@ CODE_SAMPLE
         return new Expression($assign);
     }
 
+    /**
+     * @return Bool_|double|Int_|String_|null
+     */
     private function recastVariabletIfScalarType(Variable $variable, Type $type): ?Cast
     {
         if ($type instanceof StringType) {

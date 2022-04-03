@@ -86,6 +86,7 @@ CODE_SAMPLE
 
     /**
      * @param Class_|ClassMethod|Property|Interface_|Param|Function_  $node
+     * @return Param|Class_|ClassMethod|Function_|Interface_|Property|null
      */
     public function refactor(Node $node): ?Node
     {

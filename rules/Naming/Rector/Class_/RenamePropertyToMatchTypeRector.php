@@ -83,6 +83,7 @@ CODE_SAMPLE
 
     /**
      * @param Class_|Interface_ $node
+     * @return Class_|Interface_|null
      */
     public function refactor(Node $node): ?Node
     {

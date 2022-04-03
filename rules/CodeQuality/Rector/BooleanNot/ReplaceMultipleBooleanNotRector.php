@@ -44,6 +44,7 @@ CODE_SAMPLE
 
     /**
      * @param BooleanNot $node
+     * @return BooleanNot|Bool_|null
      */
     public function refactor(Node $node): ?Node
     {

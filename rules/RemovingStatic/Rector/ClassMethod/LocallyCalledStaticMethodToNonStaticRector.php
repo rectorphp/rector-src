@@ -80,6 +80,7 @@ CODE_SAMPLE
 
     /**
      * @param ClassMethod|StaticCall $node
+     * @return MethodCall|ClassMethod|null
      */
     public function refactor(Node $node): ?Node
     {

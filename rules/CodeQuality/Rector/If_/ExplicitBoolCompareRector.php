@@ -92,6 +92,7 @@ CODE_SAMPLE
 
     /**
      * @param If_|ElseIf_|Ternary $node
+     * @return Ternary|ElseIf_|If_|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -138,6 +139,9 @@ CODE_SAMPLE
         return $conditionStaticType instanceof StringType && $binaryOp instanceof BooleanOr && ! $nextNode instanceof Node;
     }
 
+    /**
+     * @return BooleanAnd|BooleanOr|Greater|Identical|NotIdentical|null
+     */
     private function resolveNewConditionNode(Expr $expr, bool $isNegated): ?BinaryOp
     {
         if ($expr instanceof FuncCall && $this->nodeNameResolver->isName($expr, 'count')) {
@@ -168,6 +172,7 @@ CODE_SAMPLE
         return null;
     }
 
+
     private function resolveCount(bool $isNegated, FuncCall $funcCall): Identical | Greater | null
     {
         $countedType = $this->getType($funcCall->args[0]->value);
@@ -186,7 +191,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Identical|NotIdentical
+     * @return Identical|NotIdentical|null
      */
     private function resolveArray(bool $isNegated, Expr $expr): ?BinaryOp
     {

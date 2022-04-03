@@ -22,6 +22,9 @@ final class MethodCallToMethodCall
         RectorAssert::className($newType);
     }
 
+    /**
+     * @return class-string
+     */
     public function getOldType(): string
     {
         return $this->oldType;
@@ -32,6 +35,9 @@ final class MethodCallToMethodCall
         return $this->oldMethod;
     }
 
+    /**
+     * @return class-string
+     */
     public function getNewType(): string
     {
         return $this->newType;

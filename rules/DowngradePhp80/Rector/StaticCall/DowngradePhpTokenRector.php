@@ -65,6 +65,7 @@ CODE_SAMPLE
 
     /**
      * @param StaticCall|MethodCall|PropertyFetch $node
+     * @return FuncCall|Ternary|null
      */
     public function refactor(Node $node): ?Node
     {

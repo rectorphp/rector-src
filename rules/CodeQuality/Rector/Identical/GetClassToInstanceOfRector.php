@@ -60,6 +60,7 @@ final class GetClassToInstanceOfRector extends AbstractRector
 
     /**
      * @param Identical|NotIdentical $node
+     * @return BooleanNot|Instanceof_|null
      */
     public function refactor(Node $node): ?Node
     {

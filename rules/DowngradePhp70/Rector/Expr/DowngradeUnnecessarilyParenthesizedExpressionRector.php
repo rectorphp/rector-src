@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Name;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DowngradePhp70\Tokenizer\WrappedInParenthesesAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -83,6 +84,7 @@ CODE_SAMPLE
 
     /**
      * @param ArrayDimFetch|PropertyFetch|MethodCall|StaticPropertyFetch|StaticCall|FuncCall $node
+     * @return ArrayDimFetch|FuncCall|MethodCall|PropertyFetch|StaticCall|StaticPropertyFetch|null
      */
     public function refactor(Node $node): ?Expr
     {
@@ -107,6 +109,9 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * @return Expr|Name|null
+     */
     private function getLeftSubNode(Node $node): ?Node
     {
         return match (true) {

@@ -6,6 +6,7 @@ namespace Rector\DowngradePhp55\Rector\ClassConstFetch;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
@@ -66,6 +67,7 @@ CODE_SAMPLE
 
     /**
      * @param ClassConstFetch $node
+     * @return FuncCall|String_|null
      */
     public function refactor(Node $node): ?Node
     {

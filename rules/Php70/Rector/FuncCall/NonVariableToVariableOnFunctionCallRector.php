@@ -77,6 +77,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
 
     /**
      * @param FuncCall|MethodCall|StaticCall $node
+     * @return FuncCall|MethodCall|StaticCall|null
      */
     public function refactor(Node $node): ?Node
     {

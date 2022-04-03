@@ -58,6 +58,7 @@ CODE_SAMPLE
 
     /**
      * @param Class_|Trait_ $node
+     * @return Class_|Trait_|null
      */
     public function refactor(Node $node): ?Node
     {

@@ -29,6 +29,9 @@ final class ConditionResolver
     ) {
     }
 
+    /**
+     * @return BinaryToVersionCompareCondition|VersionCompareCondition|null
+     */
     public function resolveFromExpr(Expr $expr): ?ConditionInterface
     {
         if ($this->isVersionCompareFuncCall($expr)) {

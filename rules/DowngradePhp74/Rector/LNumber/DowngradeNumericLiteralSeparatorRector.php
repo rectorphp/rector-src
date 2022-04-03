@@ -61,6 +61,7 @@ CODE_SAMPLE
 
     /**
      * @param LNumber|DNumber $node
+     * @return DNumber|LNumber|null
      */
     public function refactor(Node $node): ?Node
     {

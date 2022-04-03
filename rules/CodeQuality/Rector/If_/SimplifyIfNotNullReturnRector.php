@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\NodeManipulator\IfManipulator;
@@ -57,6 +58,7 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
+     * @return Stmt|Return_|null
      */
     public function refactor(Node $node): ?Node
     {

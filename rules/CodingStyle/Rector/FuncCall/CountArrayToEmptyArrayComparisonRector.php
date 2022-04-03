@@ -60,6 +60,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall|BooleanNot $node
+     * @return Expr|Identical|NotIdentical|null
      */
     public function refactor(Node $node): ?Node
     {

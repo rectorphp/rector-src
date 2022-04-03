@@ -187,6 +187,9 @@ final class ConstructorPropertyTypeInferer
         return false;
     }
 
+    /**
+     * @return AliasedObjectType|FullyQualifiedObjectType|null
+     */
     private function resolveFullyQualifiedOrAliasedObjectType(Param $param): ?Type
     {
         if ($param->type === null) {

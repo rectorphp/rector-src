@@ -65,6 +65,7 @@ CODE_SAMPLE
 
     /**
      * @param StaticCall $node
+     * @return String_|New_|null
      */
     public function refactor(Node $node): ?Node
     {

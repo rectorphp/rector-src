@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Rector\String_;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
@@ -58,6 +59,7 @@ CODE_SAMPLE
 
     /**
      * @param String_ $node
+     * @return Concat|String_|null
      */
     public function refactor(Node $node): ?Node
     {

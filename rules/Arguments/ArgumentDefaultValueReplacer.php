@@ -26,6 +26,9 @@ final class ArgumentDefaultValueReplacer
     ) {
     }
 
+    /**
+     * @return Expr|ClassMethod|null
+     */
     public function processReplaces(
         MethodCall | StaticCall | ClassMethod | FuncCall $node,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
@@ -84,6 +87,9 @@ final class ArgumentDefaultValueReplacer
         return $classMethod;
     }
 
+    /**
+     * @return FuncCall|MethodCall|StaticCall|null
+     */
     private function processArgs(
         MethodCall | StaticCall | FuncCall $expr,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue

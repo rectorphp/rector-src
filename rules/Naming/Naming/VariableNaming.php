@@ -161,6 +161,9 @@ final class VariableNaming
         return $methodName;
     }
 
+    /**
+     * @return Node|Expr|null
+     */
     private function unwrapNode(Node $node): ?Node
     {
         if ($node instanceof Arg) {

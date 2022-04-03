@@ -96,6 +96,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall $node
+     * @return Greater|GreaterOrEqual|Identical|NotIdentical|Smaller|SmallerOrEqual|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -142,6 +143,7 @@ CODE_SAMPLE
 
         return $expr->name->toString() === 'PHP_VERSION';
     }
+
 
     private function getNewNodeForArg(Expr $expr): ConstFetch | LNumber | null
     {

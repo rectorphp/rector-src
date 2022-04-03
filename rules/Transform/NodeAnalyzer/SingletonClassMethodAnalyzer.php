@@ -96,6 +96,9 @@ final class SingletonClassMethodAnalyzer
         return $staticPropertyFetch;
     }
 
+    /**
+     * @return Expr|StaticPropertyFetch|null
+     */
     private function matchStaticPropertyFetchInIfCond(Expr $expr): ?StaticPropertyFetch
     {
         // matching: "self::$static === null"

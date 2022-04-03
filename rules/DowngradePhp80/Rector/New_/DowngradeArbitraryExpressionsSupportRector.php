@@ -68,6 +68,7 @@ CODE_SAMPLE
 
     /**
      * @param Instanceof_|New_ $node
+     * @return Instanceof_|New_|null
      */
     public function refactor(Node $node): ?Node
     {

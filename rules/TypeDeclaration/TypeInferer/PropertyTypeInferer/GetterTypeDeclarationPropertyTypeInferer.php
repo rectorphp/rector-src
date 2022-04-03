@@ -25,6 +25,9 @@ final class GetterTypeDeclarationPropertyTypeInferer
     ) {
     }
 
+    /**
+     * @return MixedType|Type|null
+     */
     public function inferProperty(Property $property): ?Type
     {
         $classLike = $this->betterNodeFinder->findParentType($property, ClassLike::class);

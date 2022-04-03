@@ -58,6 +58,7 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
 
     /**
      * @param FuncCall|MethodCall|StaticCall $node
+     * @return FuncCall|MethodCall|StaticCall|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -123,6 +124,6 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
             $parameterCounts[] = count($parametersAcceptor->getParameters());
         }
 
-        return (int) max($parameterCounts);
+        return max($parameterCounts);
     }
 }

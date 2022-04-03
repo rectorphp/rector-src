@@ -91,6 +91,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall $node
+     * @return Assign|Array_|Bool_|double|Int_|Object_|String_|FuncCall|null
      */
     public function refactor(Node $node): ?Node
     {

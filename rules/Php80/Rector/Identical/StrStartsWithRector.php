@@ -7,6 +7,8 @@ namespace Rector\Php80\Rector\Identical;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\FuncCall;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
@@ -82,6 +84,7 @@ CODE_SAMPLE
 
     /**
      * @param Identical|NotIdentical $node
+     * @return BooleanNot|FuncCall|null
      */
     public function refactor(Node $node): ?Node
     {

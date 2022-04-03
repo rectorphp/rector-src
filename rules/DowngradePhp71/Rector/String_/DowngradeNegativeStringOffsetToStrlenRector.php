@@ -57,6 +57,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall|String_|Variable|PropertyFetch|StaticPropertyFetch $node
+     * @return Expr|FuncCall|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -67,6 +68,9 @@ CODE_SAMPLE
         return $this->processForStringOrVariableOrProperty($node);
     }
 
+    /**
+     * @return PropertyFetch|StaticPropertyFetch|Variable|String_|null
+     */
     private function processForStringOrVariableOrProperty(
         String_ | Variable | PropertyFetch | StaticPropertyFetch $expr
     ): ?Expr {

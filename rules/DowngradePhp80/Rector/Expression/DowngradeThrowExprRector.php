@@ -69,7 +69,7 @@ CODE_SAMPLE
 
     /**
      * @param Expression|Return_ $node
-     * @return Node|Node[]|null
+     * @return Node[]|Stmt[]|Expression|If_|null
      */
     public function refactor(Node $node)
     {
@@ -121,7 +121,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return If_|Stmt[]|null
+     * @return Expression[]|If_[]|If_|null
      */
     private function refactorTernary(Ternary $ternary, ?Assign $assign): If_|null|array
     {
@@ -142,7 +142,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return If_|Stmt[]|null
+     * @return Expression[]|If_[]|If_|null
      */
     private function refactorCoalesce(Coalesce $coalesce, ?Assign $assign): If_|null|array
     {

@@ -59,6 +59,7 @@ CODE_SAMPLE
 
     /**
      * @param ArrayDimFetch|MethodCall|PropertyFetch $node
+     * @return ArrayDimFetch|MethodCall|PropertyFetch|null
      */
     public function refactor(Node $node): ?Node
     {

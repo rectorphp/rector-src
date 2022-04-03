@@ -45,6 +45,7 @@ final class DowngradeStrEndsWithRector extends AbstractRector
 
     /**
      * @param FuncCall|BooleanNot $node
+     * @return Identical|NotIdentical|null
      */
     public function refactor(Node $node): ?Node
     {

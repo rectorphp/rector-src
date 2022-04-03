@@ -124,6 +124,7 @@ CODE_SAMPLE
 
     /**
      * @param MethodCall $node
+     * @return MethodCall|PropertyFetch|null
      */
     public function refactor(Node $node): ?Node
     {

@@ -82,6 +82,7 @@ CODE_SAMPLE
 
     /**
      * @param Namespace_|FileWithoutNamespace $node
+     * @return Namespace_|FileWithoutNamespace|null
      */
     public function refactor(Node $node): ?Node
     {

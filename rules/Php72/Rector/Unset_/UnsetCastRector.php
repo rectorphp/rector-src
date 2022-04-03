@@ -7,6 +7,8 @@ namespace Rector\Php72\Rector\Unset_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Cast\Unset_;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -54,6 +56,7 @@ CODE_SAMPLE
 
     /**
      * @param Unset_|Assign $node
+     * @return ConstFetch|FuncCall|null
      */
     public function refactor(Node $node): ?Node
     {

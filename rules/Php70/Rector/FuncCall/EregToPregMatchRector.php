@@ -72,6 +72,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
 
     /**
      * @param FuncCall $node
+     * @return FuncCall|Ternary|null
      */
     public function refactor(Node $node): ?Node
     {

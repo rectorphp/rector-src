@@ -80,6 +80,7 @@ CODE_SAMPLE
 
     /**
      * @param Break_ $node
+     * @return Break_|Return_|null
      */
     public function refactor(Node $node): ?Node
     {

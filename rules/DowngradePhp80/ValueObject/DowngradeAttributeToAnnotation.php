@@ -16,6 +16,9 @@ final class DowngradeAttributeToAnnotation
     ) {
     }
 
+    /**
+     * @return class-string
+     */
     public function getAttributeClass(): string
     {
         return $this->attributeClass;

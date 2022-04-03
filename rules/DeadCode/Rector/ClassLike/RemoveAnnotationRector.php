@@ -66,6 +66,7 @@ CODE_SAMPLE
 
     /**
      * @param ClassLike|FunctionLike|Property|ClassConst $node
+     * @return FunctionLike|ClassConst|ClassLike|Property|null
      */
     public function refactor(Node $node): ?Node
     {

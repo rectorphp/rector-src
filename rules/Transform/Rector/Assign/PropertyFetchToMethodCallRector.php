@@ -6,6 +6,7 @@ namespace Rector\Transform\Rector\Assign;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -107,6 +108,9 @@ CODE_SAMPLE
         return $this->nodeFactory->createMethodCall($variable, $propertyToMethodCall->getNewSetMethod(), $args);
     }
 
+    /**
+     * @return MethodCall|PropertyFetch|null
+     */
     private function processGetter(PropertyFetch $propertyFetch): ?Node
     {
         $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetch);

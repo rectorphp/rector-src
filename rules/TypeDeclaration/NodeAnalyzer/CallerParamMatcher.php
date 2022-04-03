@@ -29,6 +29,9 @@ final class CallerParamMatcher
     ) {
     }
 
+    /**
+     * @return ComplexType|Identifier|Name|null
+     */
     public function matchCallParamType(
         StaticCall | MethodCall | FuncCall $call,
         Param $param,
@@ -73,6 +76,9 @@ final class CallerParamMatcher
         return $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
     }
 
+    /**
+     * @return int|string|null
+     */
     private function matchCallArgPosition(StaticCall | MethodCall | FuncCall $call, Param $param): int | null
     {
         $paramName = $this->nodeNameResolver->getName($param);

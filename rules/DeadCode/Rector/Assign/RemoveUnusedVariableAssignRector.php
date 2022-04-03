@@ -81,6 +81,7 @@ CODE_SAMPLE
 
     /**
      * @param Assign $node
+     * @return Expr|Assign|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -224,6 +225,9 @@ CODE_SAMPLE
         return false;
     }
 
+    /**
+     * @return Expr|Assign|null
+     */
     private function refactorUsedVariable(Assign $assign): null|Expr
     {
         $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);

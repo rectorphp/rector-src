@@ -80,6 +80,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall $node
+     * @return FuncCall|Ternary|null
      */
     public function refactor(Node $node): ?Node
     {

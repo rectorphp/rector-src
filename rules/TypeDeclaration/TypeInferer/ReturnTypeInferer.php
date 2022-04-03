@@ -121,6 +121,9 @@ final class ReturnTypeInferer
         return new MixedType();
     }
 
+    /**
+     * @return ThisType|Type|\PHPStan\Type\UnionType|null
+     */
     public function verifyStaticType(Type $type, bool $isSupportedStaticReturnType): ?Type
     {
         if ($this->isStaticType($type)) {

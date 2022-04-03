@@ -95,6 +95,7 @@ CODE_SAMPLE
 
     /**
      * @param FuncCall $node
+     * @return MethodCall|PropertyFetch|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -145,7 +146,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return PropertyFetch|MethodCall
+     * @return MethodCall|PropertyFetch|null
      */
     private function refactorFuncCallToMethodCall(
         ArgumentFuncCallToMethodCall $argumentFuncCallToMethodCall,

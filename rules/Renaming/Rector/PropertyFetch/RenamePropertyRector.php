@@ -51,6 +51,7 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
 
     /**
      * @param PropertyFetch|ClassLike $node
+     * @return PropertyFetch|ClassLike|null
      */
     public function refactor(Node $node): ?Node
     {

@@ -210,6 +210,7 @@ final class ClassRenamer
 
     /**
      * @param array<string, string> $oldToNewClasses
+     * @return ClassLike|Namespace_|null
      */
     private function refactorNamespace(Namespace_ $namespace, array $oldToNewClasses): ?Node
     {
@@ -245,6 +246,7 @@ final class ClassRenamer
 
     /**
      * @param array<string, string> $oldToNewClasses
+     * @return ClassLike|Namespace_|null
      */
     private function refactorClassLike(ClassLike $classLike, array $oldToNewClasses): ?Node
     {

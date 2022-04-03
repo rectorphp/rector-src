@@ -95,6 +95,7 @@ CODE_SAMPLE
 
     /**
      * @param StaticCall $node
+     * @return MethodCall|StaticCall|null
      */
     public function refactor(Node $node): ?Node
     {

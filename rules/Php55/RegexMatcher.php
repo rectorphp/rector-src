@@ -29,6 +29,9 @@ final class RegexMatcher
     ) {
     }
 
+    /**
+     * @return Expr|String_|null
+     */
     public function resolvePatternExpressionWithoutEIfFound(Expr $expr): ?Expr
     {
         if ($expr instanceof String_) {

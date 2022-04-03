@@ -87,6 +87,7 @@ CODE_SAMPLE
 
     /**
      * @param Encapsed $node
+     * @return Concat|FuncCall|null
      */
     public function refactor(Node $node): ?Node
     {

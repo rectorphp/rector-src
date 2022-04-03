@@ -79,6 +79,7 @@ CODE_SAMPLE
 
     /**
      * @param MethodCall|StaticCall|New_|FuncCall $node
+     * @return FuncCall|MethodCall|New_|StaticCall|null
      */
     public function refactor(Node $node): ?Node
     {
@@ -93,6 +94,7 @@ CODE_SAMPLE
 
     /**
      * @param Arg[] $args
+     * @return FuncCall|MethodCall|New_|StaticCall|null
      */
     private function removeNamedArguments(MethodCall | StaticCall | New_ | FuncCall $node, array $args): ?Node
     {
