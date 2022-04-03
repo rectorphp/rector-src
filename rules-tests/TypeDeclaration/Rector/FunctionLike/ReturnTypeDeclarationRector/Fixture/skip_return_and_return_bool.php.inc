@@ -13,3 +13,22 @@ final class SkipReturnAndReturnBool
         return true;
     }
 }
+-----
+<?php
+
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
+
+final class SkipReturnAndReturnBool
+{
+    /**
+     * @return bool|void
+     */
+    public function someMethod($value)
+    {
+        if ($value) {
+            return;
+        }
+
+        return true;
+    }
+}
