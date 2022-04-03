@@ -164,6 +164,7 @@ CODE_SAMPLE
         return $this->phpAttributeAnalyzer->hasPhpAttributes($classMethod, self::ALLOWED_ATTRIBUTES);
     }
 
+
     private function matchClassMethodOnlyStmt(ClassMethod $classMethod): null | Stmt | Expr
     {
         $classMethodStmts = $classMethod->stmts;
