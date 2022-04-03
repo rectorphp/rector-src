@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -69,7 +68,7 @@ CODE_SAMPLE
 
     /**
      * @param Expression|Return_ $node
-     * @return Node[]|Stmt[]|Expression[]|If_[]|Expression|If_|null
+     * @return Node[]|Expression[]|If_[]|Expression|If_|null
      */
     public function refactor(Node $node)
     {

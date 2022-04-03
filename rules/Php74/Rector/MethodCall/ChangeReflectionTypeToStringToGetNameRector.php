@@ -145,6 +145,9 @@ CODE_SAMPLE
         return false;
     }
 
+    /**
+     * @return Node|Ternary|null
+     */
     private function refactorMethodCall(MethodCall $methodCall): ?Node
     {
         $this->collectCallByVariable($methodCall);
