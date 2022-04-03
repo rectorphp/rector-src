@@ -21,7 +21,6 @@ final class ConditionEvaluator
     ) {
     }
 
-
     public function evaluate(ConditionInterface $condition): bool|int|null
     {
         if ($condition instanceof VersionCompareCondition) {
@@ -34,7 +33,6 @@ final class ConditionEvaluator
 
         return null;
     }
-
 
     private function evaluateVersionCompareCondition(
         VersionCompareCondition $versionCompareCondition
