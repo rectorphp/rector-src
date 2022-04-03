@@ -40,6 +40,9 @@ final class RectorConfigsResolver
         return $rectorRecipeFilePath;
     }
 
+    /**
+     * @return bool|string|null
+     */
     private function resolveFromInput(ArgvInput $argvInput): ?string
     {
         $configFile = $this->getOptionValue($argvInput, ['--config', '-c']);

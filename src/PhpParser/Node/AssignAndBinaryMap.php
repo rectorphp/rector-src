@@ -91,7 +91,7 @@ final class AssignAndBinaryMap
     }
 
     /**
-     * @return class-string<BinaryOp>|null
+     * @return class-string<Expr>|null
      */
     public function getAlternative(Node $node): ?string
     {
@@ -109,7 +109,7 @@ final class AssignAndBinaryMap
     }
 
     /**
-     * @return class-string<BinaryOp>|null
+     * @return class-string<Expr>|null
      */
     public function getInversed(BinaryOp $binaryOp): ?string
     {

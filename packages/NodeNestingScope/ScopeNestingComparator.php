@@ -7,9 +7,16 @@ namespace Rector\NodeNestingScope;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\ElseIf_;
+use PhpParser\Node\Stmt\For_;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\While_;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
@@ -104,6 +111,9 @@ final class ScopeNestingComparator
         return false;
     }
 
+    /**
+     * @return FunctionLike|Case_|Catch_|Do_|Else_|ElseIf_|For_|Foreach_|If_|While_|null
+     */
     private function findParentControlStructure(Node $node): ?Node
     {
         return $this->betterNodeFinder->findParentByTypes($node, ControlStructure::BREAKING_SCOPE_NODE_TYPES);

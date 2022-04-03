@@ -248,6 +248,9 @@ final class ArrayTypeMapper implements TypeMapperInterface
         return ! $arrayType->getItemType() instanceof ArrayType;
     }
 
+    /**
+     * @return GenericTypeNode|IdentifierTypeNode|SpacingAwareArrayTypeNode|null
+     */
     private function narrowConstantArrayTypeOfUnionType(
         ArrayType $arrayType,
         Type $itemType,

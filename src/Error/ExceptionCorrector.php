@@ -10,6 +10,9 @@ use Throwable;
 
 final class ExceptionCorrector
 {
+    /**
+     * @return class-string<RectorInterface>|null
+     */
     public function matchRectorClass(Throwable $throwable): ?string
     {
         if (! isset($throwable->getTrace()[0])) {

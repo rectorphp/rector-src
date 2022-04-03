@@ -505,6 +505,7 @@ final class NodeFactory
 
     /**
      * @param array<NotIdentical|BooleanAnd> $newNodes
+     * @return BooleanAnd|NotIdentical|null
      */
     public function createReturnBooleanAnd(array $newNodes): ?Expr
     {

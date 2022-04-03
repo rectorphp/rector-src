@@ -9,6 +9,9 @@ use PHPStan\Reflection\ClassReflection;
 
 final class ParentClassScopeResolver
 {
+    /**
+     * @return class-string|null
+     */
     public function resolveParentClassName(Scope $scope): ?string
     {
         $parentClassReflection = $this->resolveParentClassReflection($scope);

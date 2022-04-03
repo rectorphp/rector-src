@@ -28,6 +28,7 @@ final class DocBlockNamespaceRenamer
 
     /**
      * @param array<string, string> $oldToNewNamespaces
+     * @return ClassLike|ClassMethod|Expression|Function_|Property|FileWithoutNamespace|null
      */
     public function renameFullyQualifiedNamespace(
         Property|ClassMethod|Function_|Expression|ClassLike|FileWithoutNamespace $node,
