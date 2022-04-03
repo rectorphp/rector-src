@@ -152,7 +152,6 @@ CODE_SAMPLE
         return $this->buildReturnNode($haystack, $comparedNeedleExpr, $isPositive);
     }
 
-
     private function refactorSubstrCompare(BinaryOp $binaryOp): FuncCall | BooleanNot | null
     {
         $funcCallAndExpr = $this->binaryOpAnalyzer->matchFuncCallAndOtherExpr($binaryOp, 'substr_compare');

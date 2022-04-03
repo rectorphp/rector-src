@@ -172,7 +172,6 @@ CODE_SAMPLE
         return null;
     }
 
-
     private function resolveCount(bool $isNegated, FuncCall $funcCall): Identical | Greater | null
     {
         $countedType = $this->getType($funcCall->args[0]->value);

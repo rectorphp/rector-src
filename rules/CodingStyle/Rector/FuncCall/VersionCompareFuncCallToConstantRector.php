@@ -144,7 +144,6 @@ CODE_SAMPLE
         return $expr->name->toString() === 'PHP_VERSION';
     }
 
-
     private function getNewNodeForArg(Expr $expr): ConstFetch | LNumber | null
     {
         if ($this->isPhpVersionConstant($expr)) {

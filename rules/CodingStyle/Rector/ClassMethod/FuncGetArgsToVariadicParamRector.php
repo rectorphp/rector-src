@@ -94,7 +94,6 @@ CODE_SAMPLE
         return PhpVersionFeature::VARIADIC_PARAM;
     }
 
-
     private function applyVariadicParams(
         ClassMethod | Function_ | Closure $node,
         string $variableName
@@ -108,7 +107,6 @@ CODE_SAMPLE
         $node->params[] = $param;
         return $node;
     }
-
 
     private function removeOrChangeAssignToVariable(
         ClassMethod | Function_ | Closure $node,
