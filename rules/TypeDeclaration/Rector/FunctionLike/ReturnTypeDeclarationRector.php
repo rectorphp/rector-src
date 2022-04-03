@@ -16,6 +16,7 @@ use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -47,6 +48,7 @@ final class ReturnTypeDeclarationRector extends AbstractRector implements MinPhp
         private readonly VendorLockResolver $vendorLockResolver,
         private readonly PhpParserTypeAnalyzer $phpParserTypeAnalyzer,
         private readonly ObjectTypeComparator $objectTypeComparator,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -61,7 +63,7 @@ final class ReturnTypeDeclarationRector extends AbstractRector implements MinPhp
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change @return types and type from static analysis to type declarations if not a BC-break',
+            'Change @return types and type from static analysis to type declarations if not a BC-break, or @return doc type',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -143,7 +145,12 @@ CODE_SAMPLE
 
         // nothing to change in PHP code
         if (! $inferredReturnNode instanceof Node) {
-            return null;
+            // fallback to doc type
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $inferedType);
+
+            return $node;
+//            return null;
         }
 
         if ($this->shouldSkipInferredReturnNode($node)) {
@@ -173,7 +180,6 @@ CODE_SAMPLE
 
     private function shouldSkipInferredReturnNode(ClassMethod | Function_ $functionLike): bool
     {
-        // already overridden by previous populateChild() method run
         if ($functionLike->returnType === null) {
             return false;
         }
