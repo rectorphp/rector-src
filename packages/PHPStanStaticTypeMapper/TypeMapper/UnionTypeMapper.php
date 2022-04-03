@@ -155,6 +155,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         return $unionTypeAnalysis->hasArray();
     }
 
+
     private function matchArrayTypes(UnionType $unionType): Name | NullableType | null
     {
         $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForNullableAndIterable($unionType);
@@ -198,6 +199,9 @@ final class UnionTypeMapper implements TypeMapperInterface
         return $diff === [];
     }
 
+    /**
+     * @return Name|FullyQualified|NullableType|PhpParserUnionType|null
+     */
     private function matchTypeForUnionedObjectTypes(UnionType $unionType, TypeKind $typeKind): ?Node
     {
         $phpParserUnionType = $this->matchPhpParserUnionType($unionType, $typeKind);
