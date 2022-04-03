@@ -74,7 +74,7 @@ CODE_SAMPLE
 
     /**
      * @param CallLike $node
-     * @return Expr|FuncCall|null
+     * @return FuncCall|MethodCall|New_|null
      */
     public function refactor(Node $node): ?Node
     {

@@ -78,6 +78,7 @@ CODE_SAMPLE
 
     /**
      * @param Break_|Continue_ $node
+     * @return Break_|Continue_|null
      */
     public function refactor(Node $node): ?Node
     {

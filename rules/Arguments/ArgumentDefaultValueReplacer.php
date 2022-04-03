@@ -27,7 +27,7 @@ final class ArgumentDefaultValueReplacer
     }
 
     /**
-     * @return Expr|ClassMethod|null
+     * @return FuncCall|MethodCall|StaticCall|ClassMethod|null
      */
     public function processReplaces(
         MethodCall | StaticCall | ClassMethod | FuncCall $node,

@@ -114,6 +114,9 @@ CODE_SAMPLE
         return $this->processParams($node);
     }
 
+    /**
+     * @return Closure|FuncCall|MethodCall|New_|StaticCall|ClassMethod|Function_|null
+     */
     private function processArgs(FuncCall | MethodCall | StaticCall | New_ $node): ?Node
     {
         $args = $node->args;
@@ -133,6 +136,9 @@ CODE_SAMPLE
         $this->cleanTrailingComma($node, $node->uses);
     }
 
+    /**
+     * @return Closure|FuncCall|MethodCall|New_|StaticCall|ClassMethod|Function_|null
+     */
     private function processParams(ClassMethod|Function_|Closure $node): ?Node
     {
         if ($node->params === []) {

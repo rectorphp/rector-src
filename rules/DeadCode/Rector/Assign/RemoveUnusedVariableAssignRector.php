@@ -225,9 +225,6 @@ CODE_SAMPLE
         return false;
     }
 
-    /**
-     * @return Expr|Assign|null
-     */
     private function refactorUsedVariable(Assign $assign): null|Expr
     {
         $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);

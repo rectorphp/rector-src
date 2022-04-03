@@ -83,6 +83,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
     /**
      * @param Namespace_|Use_|Name|Property|ClassMethod|Function_|Expression|ClassLike|FileWithoutNamespace $node
+     * @return FullyQualified|ClassLike|ClassMethod|Expression|Function_|Namespace_|Property|Use_|FileWithoutNamespace|null
      */
     public function refactor(Node $node): ?Node
     {

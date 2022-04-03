@@ -76,6 +76,7 @@ CODE_SAMPLE
 
     /**
      * @param Isset_ $node
+     * @return BooleanAnd|NotIdentical|null
      */
     public function refactor(Node $node): ?Node
     {

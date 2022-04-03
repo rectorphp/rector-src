@@ -69,7 +69,7 @@ CODE_SAMPLE
 
     /**
      * @param Expression|Return_ $node
-     * @return Node[]|Stmt[]|Expression|If_|null
+     * @return Node[]|Stmt[]|Expression[]|If_[]|Expression|If_|null
      */
     public function refactor(Node $node)
     {
@@ -97,7 +97,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return If_|Expression|Stmt[]|null
+     * @return Expression[]|If_[]|Expression|If_|null
      */
     private function refactorAssign(Expression $expression, Assign $assign): If_ | Expression | null | array
     {
