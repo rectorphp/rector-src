@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Core\Stubs;
 
+use FilesystemIterator;
+use Phar;
+use RecursiveIteratorIterator;
+
 final class PHPStanStubLoader
 {
-    /**
-     * @var string[]
-     */
-    private const STUBS = ['ReflectionUnionType.php', 'Attribute.php'];
-
     /**
      * @var string[]
      */
@@ -43,13 +42,13 @@ final class PHPStanStubLoader
                 continue;
             }
 
-            foreach (self::STUBS as $stub) {
-                $path = $this->getStubPath($vendorPath, $stub);
-                if ($path === null) {
-                    continue 2;
-                }
+            $stubs = $this->getStubPaths($vendorPath);
+            if ($stubs === []) {
+                continue;
+            }
 
-                require_once $path;
+            foreach ($stubs as $stub) {
+                require_once $stub;
             }
 
             $this->areStubsLoaded = true;
@@ -59,15 +58,24 @@ final class PHPStanStubLoader
         }
     }
 
-    private function getStubPath(string $vendorPath, string $stub): ?string
+    /**
+     * @return array<string>
+     */
+    private function getStubPaths(string $vendorPath): array
     {
-        $path = sprintf('phar://%s/phpstan/phpstan/phpstan.phar/stubs/runtime/%s', $vendorPath, $stub);
-        $isExists = file_exists($path);
+        $pharPath = sprintf('phar://%s/phpstan/phpstan/phpstan.phar/stubs/runtime', $vendorPath);
 
-        if ($isExists) {
-            return $path;
+        if (! is_dir($pharPath)) {
+            return [];
         }
 
-        return null;
+        $phar = new Phar($pharPath, FilesystemIterator::CURRENT_AS_FILEINFO);
+
+        $files = [];
+        foreach (new RecursiveIteratorIterator($phar) as $file) {
+            $files[] = (string) $file;
+        }
+
+        return $files;
     }
 }

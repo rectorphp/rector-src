@@ -3,12 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Core\Configuration\Option;
-use Rector\Core\Stubs\PHPStanStubLoader;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-$phpStanStubLoader = new PHPStanStubLoader();
-$phpStanStubLoader->loadStubs();
 
 require_once  __DIR__ . '/../target-repository/stubs-rector/PHPUnit/Framework/TestCase.php';
 require_once  __DIR__ . '/../../stubs/Composer/EventDispatcher/EventSubscriberInterface.php';
