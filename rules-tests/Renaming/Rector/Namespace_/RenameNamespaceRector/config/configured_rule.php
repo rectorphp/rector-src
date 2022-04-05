@@ -15,5 +15,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'PHPUnit_Framework_' => 'PHPUnit\Framework\\',
             'Foo\Bar' => 'Foo\Tmp',
             'App\Repositories' => 'App\Repositories\Example',
+            'ToBeRemoved\Namespace' => '',
         ]);
 };
