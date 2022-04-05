@@ -94,9 +94,9 @@ CODE_SAMPLE
      */
     private function processRemoveNamespace(Namespace_ $namespace): array|Namespace_
     {
-        // multi namespace should just clean namespace name to avoid error
+        // has next namespace should just clean namespace name to avoid error
         // `Namespace declaration statement has to be the very first statement`, ref https://3v4l.org/qUMfb
-        if ($this->isMultipleNamespace($namespace)) {
+        if ($this->hasNextNamespace($namespace)) {
             return new Namespace_(null, $namespace->stmts);
         }
 
@@ -109,12 +109,11 @@ CODE_SAMPLE
         return $stmts;
     }
 
-    private function isMultipleNamespace(Namespace_ $namespace): bool
+    private function hasNextNamespace(Namespace_ $namespace): bool
     {
-        $previous = $namespace->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
         $next = $namespace->getAttribute(AttributeKey::NEXT_NODE);
 
-        return $previous instanceof Namespace_ || $next instanceof Namespace_;
+        return $next instanceof Namespace_;
     }
 
     /**

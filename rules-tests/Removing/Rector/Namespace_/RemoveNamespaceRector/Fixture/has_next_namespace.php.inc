@@ -2,7 +2,7 @@
 
 namespace App
 {
-    class MultipleNamespace
+    class HasNextNamespace
     {
     }
 }
@@ -17,7 +17,7 @@ namespace
 <?php
 
 namespace {
-    class MultipleNamespace
+    class HasNextNamespace
     {
     }
 }
