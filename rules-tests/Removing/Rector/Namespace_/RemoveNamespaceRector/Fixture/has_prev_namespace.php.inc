@@ -21,8 +21,10 @@ namespace
     echo 'test';
 }
 
-class HasPrevNamespace
-{
+namespace {
+    class HasPrevNamespace
+    {
+    }
 }
 
 ?>

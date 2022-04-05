@@ -96,9 +96,10 @@ CODE_SAMPLE
     {
         $stmts = $this->cleanNonCompoundUseName($namespace->stmts);
 
-        // has next namespace should just clean namespace name to avoid error
-        // `Namespace declaration statement has to be the very first statement`, ref https://3v4l.org/qUMfb
-        if ($this->hasNextNamespace($namespace)) {
+        // has prev or next namespace should just clean namespace name to avoid error
+        // `Namespace declaration statement has to be the very first statement` ref https://3v4l.org/qUMfb
+        // or `No code may exist outside of namespace {}` ref https://3v4l.org/ct7SR
+        if ($this->hasMultipleNamespace($namespace)) {
             return new Namespace_(null, $stmts);
         }
 
@@ -110,11 +111,12 @@ CODE_SAMPLE
         return $stmts;
     }
 
-    private function hasNextNamespace(Namespace_ $namespace): bool
+    private function hasMultipleNamespace(Namespace_ $namespace): bool
     {
+        $prev = $namespace->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
         $next = $namespace->getAttribute(AttributeKey::NEXT_NODE);
 
-        return $next instanceof Namespace_;
+        return $prev instanceof Namespace_ || $next instanceof Namespace_;
     }
 
     /**
