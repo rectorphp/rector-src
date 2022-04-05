@@ -5,8 +5,3 @@ namespace ToBeRemoved\Namespace;
 ?>
 -----
 <?php
-
-namespace {
-}
-
-?>

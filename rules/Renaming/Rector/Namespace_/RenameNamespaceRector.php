@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -157,7 +158,8 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
         if ($newName === '') {
             if ($node->stmts === []) {
-                return new Namespace_(null, $node->stmts);
+                $this->removeNode($node);
+                return $node;
             }
 
             return $node->stmts;
