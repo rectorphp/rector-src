@@ -99,7 +99,7 @@ CODE_SAMPLE
         // has prev or next namespace should just clean namespace name to avoid error
         // `Namespace declaration statement has to be the very first statement` ref https://3v4l.org/qUMfb
         // or `No code may exist outside of namespace {}` ref https://3v4l.org/ct7SR
-        if ($this->hasMultipleNamespace($namespace)) {
+        if ($this->hasMultipleNamespaces($namespace)) {
             return new Namespace_(null, $stmts);
         }
 
@@ -111,7 +111,7 @@ CODE_SAMPLE
         return $stmts;
     }
 
-    private function hasMultipleNamespace(Namespace_ $namespace): bool
+    private function hasMultipleNamespaces(Namespace_ $namespace): bool
     {
         $prev = $namespace->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
         $next = $namespace->getAttribute(AttributeKey::NEXT_NODE);
