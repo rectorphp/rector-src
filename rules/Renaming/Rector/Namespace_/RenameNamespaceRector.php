@@ -136,6 +136,18 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
     }
 
     /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        Assert::allString(array_keys($configuration));
+        Assert::allString($configuration);
+
+        /** @var array<string, string> $configuration */
+        $this->oldToNewNamespaces = $configuration;
+    }
+
+    /**
      * @return Stmt[]|Namespace_
      */
     private function processNamespace(Namespace_ $node, RenamedNamespace $renamedNamespaceValueObject): array|Namespace_
@@ -153,21 +165,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
             $node->name = new Name($newName);
         }
 
-
-
         return $node;
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allString(array_keys($configuration));
-        Assert::allString($configuration);
-
-        /** @var array<string, string> $configuration */
-        $this->oldToNewNamespaces = $configuration;
     }
 
     private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
