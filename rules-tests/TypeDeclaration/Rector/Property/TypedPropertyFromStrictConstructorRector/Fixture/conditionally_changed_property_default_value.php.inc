@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\Fixture;
 
-final class SkipConditionallyChangedPropertyDefaultValue
+final class ConditionallyChangedPropertyDefaultValue
 {
     /**
      * @var string
@@ -23,7 +23,7 @@ final class SkipConditionallyChangedPropertyDefaultValue
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\Fixture;
 
-final class SkipConditionallyChangedPropertyDefaultValue
+final class ConditionallyChangedPropertyDefaultValue
 {
     private string $rootView = 'admin.index';
 
