@@ -157,16 +157,44 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         $this->isChangedInNamespaces[$newName] = true;
 
         if ($newName === '') {
-            if ($namespace->stmts === []) {
+            $stmts = $this->cleanNonCompoundUseName($namespace->stmts);
+            if ($stmts === []) {
                 $this->removeNode($namespace);
                 return $namespace;
             }
 
-            return $namespace->stmts;
+            return $stmts;
         }
 
         $namespace->name = new Name($newName);
         return $namespace;
+    }
+
+
+    /**
+     * @return Stmt[]
+     */
+    private function cleanNonCompoundUseName(array $stmts): array
+    {
+        foreach ($stmts as $key => $stmt) {
+            if (! $stmt instanceof Use_) {
+                continue;
+            }
+
+            $uses = $stmt->uses;
+            foreach ($uses as $keyUse => $use) {
+                $useName = ltrim($use->name->toString(), '\\');
+                if (! str_contains($useName, '\\')) {
+                    unset($uses[$keyUse]);
+                }
+            }
+
+            if ($uses === []) {
+                unset($stmts[$key]);
+            }
+        }
+
+        return $stmts;
     }
 
     private function processFullyQualified(Name $name, RenamedNamespace $renamedNamespace): ?FullyQualified
