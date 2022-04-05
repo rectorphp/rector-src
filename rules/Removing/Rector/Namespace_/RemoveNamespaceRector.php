@@ -94,13 +94,14 @@ CODE_SAMPLE
      */
     private function processRemoveNamespace(Namespace_ $namespace): array|Namespace_
     {
+        $stmts = $this->cleanNonCompoundUseName($namespace->stmts);
+
         // has next namespace should just clean namespace name to avoid error
         // `Namespace declaration statement has to be the very first statement`, ref https://3v4l.org/qUMfb
         if ($this->hasNextNamespace($namespace)) {
-            return new Namespace_(null, $namespace->stmts);
+            return new Namespace_(null, $stmts);
         }
 
-        $stmts = $this->cleanNonCompoundUseName($namespace->stmts);
         if ($stmts === []) {
             $this->removeNode($namespace);
             return $namespace;
