@@ -170,8 +170,8 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         return $namespace;
     }
 
-
     /**
+     * @param Stmt[] $stmts
      * @return Stmt[]
      */
     private function cleanNonCompoundUseName(array $stmts): array
