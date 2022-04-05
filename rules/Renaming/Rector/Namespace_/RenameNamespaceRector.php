@@ -83,8 +83,9 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
     /**
      * @param Namespace_|Use_|Name|Property|ClassMethod|Function_|Expression|ClassLike|FileWithoutNamespace $node
+     * @return Stmt[]|Node|null
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): array|Node|null
     {
         if (in_array($node::class, self::ONLY_CHANGE_DOCBLOCK_NODE, true)) {
             /** @var Property|ClassMethod|Function_|Expression|ClassLike|FileWithoutNamespace $node */
@@ -134,17 +135,25 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         return null;
     }
 
-    private function processNamespace(Namespace_ $node, RenamedNamespace $renamedNamespaceValueObject): Namespace_
+    /**
+     * @return Stmt[]|Namespace_
+     */
+    private function processNamespace(Namespace_ $node, RenamedNamespace $renamedNamespaceValueObject): array|Namespace_
     {
         $newName = $renamedNamespaceValueObject->getNameInNewNamespace();
+        $this->isChangedInNamespaces[$newName] = true;
 
         if ($newName === '') {
-            $node = new Namespace_(null, $node->stmts);
+            if ($node->stmts === []) {
+                $node = new Namespace_(null, $node->stmts);
+            } else {
+                return $node->stmts;
+            }
         } else {
             $node->name = new Name($newName);
         }
 
-        $this->isChangedInNamespaces[$newName] = true;
+
 
         return $node;
     }

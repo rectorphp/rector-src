@@ -10,10 +10,8 @@ class RemoveNamespace
 -----
 <?php
 
-namespace {
-    class RemoveNamespace
-    {
-    }
+class RemoveNamespace
+{
 }
 
 ?>
