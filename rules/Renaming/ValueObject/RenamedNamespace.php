@@ -19,11 +19,12 @@ final class RenamedNamespace
             return $this->currentName;
         }
 
-        return str_replace($this->oldNamespace, $this->newNamespace, $this->currentName);
+        $name = str_replace($this->oldNamespace, $this->newNamespace, $this->currentName);
+        return trim($name);
     }
 
     public function getNewNamespace(): string
     {
-        return $this->newNamespace;
+        return trim($this->newNamespace);
     }
 }

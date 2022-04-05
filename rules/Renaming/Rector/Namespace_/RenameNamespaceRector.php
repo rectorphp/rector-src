@@ -107,11 +107,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         }
 
         if ($node instanceof Namespace_) {
-            $newName = $renamedNamespaceValueObject->getNameInNewNamespace();
-            $node->name = new Name($newName);
-            $this->isChangedInNamespaces[$newName] = true;
-
-            return $node;
+            return $this->processNamespace($node, $renamedNamespaceValueObject);
         }
 
         if ($node instanceof Use_) {
@@ -136,6 +132,21 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
         }
 
         return null;
+    }
+
+    private function processNamespace(Namespace_ $node, RenamedNamespace $renamedNamespaceValueObject): Namespace_
+    {
+        $newName = $renamedNamespaceValueObject->getNameInNewNamespace();
+
+        if ($newName === '') {
+            $node = new Namespace_(null, $node->stmts);
+        } else {
+            $node->name = new Name($newName);
+        }
+
+        $this->isChangedInNamespaces[$newName] = true;
+
+        return $node;
     }
 
     /**
