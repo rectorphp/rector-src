@@ -118,7 +118,7 @@ CODE_SAMPLE
         return $stmts;
     }
 
-        /**
+    /**
      * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
