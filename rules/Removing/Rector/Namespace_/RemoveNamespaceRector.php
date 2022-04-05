@@ -73,7 +73,16 @@ CODE_SAMPLE
         return null;
     }
 
-        /**
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        Assert::allIsAOf($configuration, RemoveNamespace::class);
+        $this->removeNamespaces = $configuration;
+    }
+
+    /**
      * @return Stmt[]|Namespace_
      */
     private function processRemoveNamespace(Namespace_ $namespace): array|Namespace_
@@ -116,14 +125,5 @@ CODE_SAMPLE
         }
 
         return $stmts;
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allIsAOf($configuration, RemoveNamespace::class);
-        $this->removeNamespaces = $configuration;
     }
 }
