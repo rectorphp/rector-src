@@ -31,9 +31,15 @@ class RemoveNamespaceRector extends AbstractRector implements ConfigurableRector
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 namespace App;
+class SomeClass
+{
+}
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
+class SomeClass
+{
+}
 CODE_SAMPLE
                 ,
                 [new RemoveNamespace('App')]

@@ -1,4 +1,4 @@
-# 508 Rules Overview
+# 509 Rules Overview
 
 <br>
 
@@ -76,7 +76,7 @@
 
 - [Privatization](#privatization) (10)
 
-- [Removing](#removing) (6)
+- [Removing](#removing) (7)
 
 - [RemovingStatic](#removingstatic) (1)
 
@@ -9154,6 +9154,38 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 ```diff
 -class SomeClass implements SomeInterface
 +class SomeClass
+ {
+ }
+```
+
+<br>
+
+### RemoveNamespaceRector
+
+Remove namespace by configured namespace name
+
+:wrench: **configure it!**
+
+- class: [`Rector\Removing\Rector\Namespace_\RemoveNamespaceRector`](../rules/Removing/Rector/Namespace_/RemoveNamespaceRector.php)
+
+```php
+use Rector\Removing\Rector\Namespace_\RemoveNamespaceRector;
+use Rector\Removing\ValueObject\RemoveNamespace;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
+return static function (ContainerConfigurator $containerConfigurator): void {
+    $services = $containerConfigurator->services();
+
+    $services->set(RemoveNamespaceRector::class)
+        ->configure([new RemoveNamespace('App')]);
+};
+```
+
+↓
+
+```diff
+-namespace App;
+ class SomeClass
  {
  }
 ```
