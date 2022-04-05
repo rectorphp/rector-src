@@ -191,7 +191,11 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
             if ($uses === []) {
                 unset($stmts[$key]);
+                continue;
             }
+
+            sort($uses);
+            $stmt->uses = $uses;
         }
 
         return $stmts;
