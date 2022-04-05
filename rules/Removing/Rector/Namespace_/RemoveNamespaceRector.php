@@ -18,7 +18,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\Removing\Rector\Namespace_\RemoveNamespaceRector\RemoveNamespaceRectorTest
  */
-class RemoveNamespaceRector extends AbstractRector implements ConfigurableRectorInterface
+final class RemoveNamespaceRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
      * @var RemoveNamespace[]

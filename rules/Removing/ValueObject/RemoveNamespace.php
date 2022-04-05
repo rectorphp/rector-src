@@ -11,7 +11,7 @@ final class RemoveNamespace
     ) {
     }
 
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
