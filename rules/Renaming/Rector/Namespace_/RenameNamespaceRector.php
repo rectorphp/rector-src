@@ -157,14 +157,13 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
 
         if ($newName === '') {
             if ($node->stmts === []) {
-                $node = new Namespace_(null, $node->stmts);
-            } else {
-                return $node->stmts;
+                return new Namespace_(null, $node->stmts);
             }
-        } else {
-            $node->name = new Name($newName);
+
+            return $node->stmts;
         }
 
+        $node->name = new Name($newName);
         return $node;
     }
 
