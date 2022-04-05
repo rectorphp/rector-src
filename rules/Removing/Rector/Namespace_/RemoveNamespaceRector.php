@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Removing\ValueObject\RemoveNamespace;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -93,6 +94,12 @@ CODE_SAMPLE
      */
     private function processRemoveNamespace(Namespace_ $namespace): array|Namespace_
     {
+        // multi namespace should just clean namespace name to avoid error
+        // `Namespace declaration statement has to be the very first statement`, ref https://3v4l.org/qUMfb
+        if ($this->isMultipleNamespace($namespace)) {
+            return new Namespace_(null, $namespace->stmts);
+        }
+
         $stmts = $this->cleanNonCompoundUseName($namespace->stmts);
         if ($stmts === []) {
             $this->removeNode($namespace);
@@ -100,6 +107,14 @@ CODE_SAMPLE
         }
 
         return $stmts;
+    }
+
+    private function isMultipleNamespace(Namespace_ $namespace): bool
+    {
+        $previous = $namespace->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
+        $next = $namespace->getAttribute(AttributeKey::NEXT_NODE);
+
+        return $previous instanceof Namespace_ || $next instanceof Namespace_;
     }
 
     /**
