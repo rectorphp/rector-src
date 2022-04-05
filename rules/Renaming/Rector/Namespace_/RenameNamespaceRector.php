@@ -194,7 +194,7 @@ final class RenameNamespaceRector extends AbstractRector implements Configurable
                 continue;
             }
 
-            sort($uses);
+            $uses = array_values($uses);
             $stmt->uses = $uses;
         }
 
