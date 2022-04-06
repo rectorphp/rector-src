@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Removing\ValueObject\RemoveNamespace;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -23,13 +22,13 @@ use Webmozart\Assert\Assert;
 final class RemoveNamespaceRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var RemoveNamespace[]
+     * @var string[]
      */
     private array $removeNamespaces = [];
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove namespace by configured namespace name', [
+        return new RuleDefinition('Remove namespace by configured namespace names', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 namespace App;
@@ -44,7 +43,7 @@ class SomeClass
 }
 CODE_SAMPLE
                 ,
-                [new RemoveNamespace('App')]
+                ['App']
             ),
         ]);
     }
@@ -70,8 +69,7 @@ CODE_SAMPLE
         }
 
         foreach ($this->removeNamespaces as $removeNamespace) {
-            $removeNamespaceName = $removeNamespace->getNamespace();
-            if ($removeNamespaceName !== $namespaceName) {
+            if ($removeNamespace !== $namespaceName) {
                 continue;
             }
 
@@ -86,7 +84,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, RemoveNamespace::class);
+        Assert::allString($configuration);
         $this->removeNamespaces = $configuration;
     }
 
