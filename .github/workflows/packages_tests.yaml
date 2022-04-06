@@ -52,6 +52,8 @@ jobs:
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
                 if: ${{ github.event_name == 'pull_request' }}
 
-            -   run: composer install --ansi
+            -   run: |
+                    composer install --ansi
+                    composer require --dev phpstan/phpstan:1.6.x-dev
 
             -   run: vendor/bin/phpunit
