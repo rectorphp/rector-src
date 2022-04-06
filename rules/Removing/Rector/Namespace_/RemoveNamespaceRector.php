@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Removing\Rector\Namespace_;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
@@ -132,6 +133,10 @@ CODE_SAMPLE
 
             $uses = $stmt->uses;
             foreach ($uses as $keyUse => $use) {
+                if ($use->alias instanceof Identifier) {
+                    continue;
+                }
+
                 $useName = ltrim($use->name->toString(), '\\');
                 if (! str_contains($useName, '\\')) {
                     unset($uses[$keyUse]);
