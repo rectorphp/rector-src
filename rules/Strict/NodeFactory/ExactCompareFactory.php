@@ -120,6 +120,10 @@ final class ExactCompareFactory
                 return null;
             }
 
+            if (! $truthyExpr instanceof Expr) {
+                return null;
+            }
+
             /** @var Expr $compareExpr */
             $truthyExpr = new BooleanOr($truthyExpr, $compareExpr);
         }
