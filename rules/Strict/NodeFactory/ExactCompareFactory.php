@@ -113,7 +113,7 @@ final class ExactCompareFactory
             $compareExprs[] = $this->createNotIdenticalFalsyCompare($unionedType, $expr, $treatAsNotEmpty);
         }
 
-        /** @var Expr $truthyExpr */
+        /** @var ?Expr $truthyExpr */
         $truthyExpr = array_shift($compareExprs);
         foreach ($compareExprs as $compareExpr) {
             if (! $compareExpr instanceof Expr) {
