@@ -115,8 +115,7 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(StringFormatConverter::class);
 
     $services->set(JsonFileSystem::class);
-    $services->set(NodeConnectingVisitor::class)
-        ->tag('phpstan.parser.richParserNodeVisitor');
+    $services->set(NodeConnectingVisitor::class);
 
     $services->set(InflectorFactory::class);
     $services->set(Inflector::class)
