@@ -85,7 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (str_contains($includeValue, 'config')) {
+        if (str_contains($includeValue, 'config/')) {
             return null;
         }
 
