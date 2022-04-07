@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * FUTURE NOTE: Dont add namespace to this Fixture:
+ *
+ * Skip Result Object or int only reproducible when on non-namespaced class
+ * and collection of class is on single file
+ */
 class ForwardCompatibilityResult {
 
 }
