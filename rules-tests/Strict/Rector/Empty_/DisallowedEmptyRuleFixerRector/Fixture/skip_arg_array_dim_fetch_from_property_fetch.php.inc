@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
 
-class SomeClass {
+class SkipArgArrayDimFetchFromPropertyFetch {
     /**
      * @var array<string>
      */
