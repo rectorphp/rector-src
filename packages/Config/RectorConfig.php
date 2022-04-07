@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Config;
 
+use Rector\Core\Configuration\Option;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 /**
@@ -13,4 +14,12 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  */
 final class RectorConfig extends ContainerConfigurator
 {
+    /**
+     * @param string[] $paths
+     */
+    public function paths(array $paths): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::PATHS, $paths);
+    }
 }

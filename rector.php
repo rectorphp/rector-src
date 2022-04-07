@@ -46,7 +46,7 @@ return static function (\Rector\Config\RectorConfig $rectorConfig): void {
 
     $parameters = $rectorConfig->parameters();
 
-    $parameters->set(Option::PATHS, [
+    $rectorConfig->paths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
         __DIR__ . '/rules',
