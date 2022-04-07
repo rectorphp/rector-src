@@ -17,9 +17,11 @@ use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
@@ -151,7 +153,25 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        return $this->hasPreviousCheckedWithEmpty($variable);
+        if ($this->hasPreviousCheckedWithEmpty($variable)) {
+            return true;
+        }
+
+        return $this->inSwitchCaseWithParentCase($variable);
+    }
+
+    private function inSwitchCaseWithParentCase(Variable $variable): bool
+    {
+        $previousSwitch = $this->betterNodeFinder->findFirstPreviousOfNode(
+            $variable,
+            fn (Node $subNode): bool => $subNode instanceof Switch_
+        );
+
+        if (! $previousSwitch instanceof Switch_) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findParentType($previousSwitch, Case_::class);
     }
 
     private function isDifferentWithOriginalNodeOrNoScope(Variable $variable): bool
