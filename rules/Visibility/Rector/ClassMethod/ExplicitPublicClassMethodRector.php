@@ -59,7 +59,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassConst $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
