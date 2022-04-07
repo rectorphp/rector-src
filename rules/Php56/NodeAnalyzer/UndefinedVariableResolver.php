@@ -67,7 +67,12 @@ final class UndefinedVariableResolver
                 return null;
             }
 
-            if ($this->shouldSkipVariable($node)) {
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof Node) {
+                return null;
+            }
+
+            if ($this->shouldSkipVariable($node, $parentNode)) {
                 return null;
             }
 
@@ -106,13 +111,8 @@ final class UndefinedVariableResolver
         return in_array($parentNode::class, [Assign::class, AssignRef::class], true);
     }
 
-    private function shouldSkipVariable(Variable $variable): bool
+    private function shouldSkipVariable(Variable $variable, Node $parentNode): bool
     {
-        $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Node) {
-            return true;
-        }
-
         if ($this->variableAnalyzer->isStaticOrGlobal($variable)) {
             return true;
         }
@@ -171,7 +171,8 @@ final class UndefinedVariableResolver
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findParentType($previousSwitch, Case_::class);
+        $parentSwitch = $previousSwitch->getAttribute(AttributeKey::PARENT_NODE);
+        return $parentSwitch instanceof Case_;
     }
 
     private function isDifferentWithOriginalNodeOrNoScope(Variable $variable): bool
