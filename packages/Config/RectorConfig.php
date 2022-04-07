@@ -6,6 +6,7 @@ namespace Rector\Config;
 
 use Rector\Core\Configuration\Option;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Webmozart\Assert\Assert;
 
 /**
  * @api
@@ -15,10 +16,12 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 final class RectorConfig extends ContainerConfigurator
 {
     /**
-     * @param string[] $paths
+     * @param mixed[] $paths
      */
     public function paths(array $paths): void
     {
+        Assert::allString($paths);
+
         $parameters = $this->parameters();
         $parameters->set(Option::PATHS, $paths);
     }
