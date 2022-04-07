@@ -157,10 +157,10 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        return $this->isInSwitchCaseWithParentCase($variable);
+        return $this->isAfterSwitchCaseWithParentCase($variable);
     }
 
-    private function isInSwitchCaseWithParentCase(Variable $variable): bool
+    private function isAfterSwitchCaseWithParentCase(Variable $variable): bool
     {
         $previousSwitch = $this->betterNodeFinder->findFirstPreviousOfNode(
             $variable,
