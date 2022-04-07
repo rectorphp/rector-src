@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\DependencyInjection\Loader\Configurator;
+namespace Rector\Core\Config;
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 

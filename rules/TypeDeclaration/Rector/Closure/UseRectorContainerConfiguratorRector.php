@@ -79,7 +79,7 @@ CODE_SAMPLE
 
         $node->params[0] = $this->nodeFactory->createParamFromNameAndType(
             $firstParamName,
-            new ObjectType('Rector\Core\DependencyInjection\Loader\Configurator\RectorContainerConfigurator')
+            new ObjectType('Rector\Core\Config\RectorContainerConfigurator')
         );
 
         return $node;

@@ -11,7 +11,7 @@ return static function (\Symfony\Component\DependencyInjection\Loader\Configurat
 
 namespace Rector\Tests\TypeDeclaration\Rector\Closure\UseRectorContainerConfiguratorRector\Fixture;
 
-return static function (\Rector\Core\DependencyInjection\Loader\Configurator\RectorContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Core\Config\RectorContainerConfigurator $containerConfigurator): void {
 };
 
 ?>
