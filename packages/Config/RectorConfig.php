@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Config;
+namespace Rector\Config;
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -11,7 +11,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  * Same as Symfony container configurator, with patched return type for "set()" method for easier DX.
  * It is an alias for internal class that is prefixed during build, so it's basically for keeping stable public API.
  */
-final class RectorConfigurator extends ContainerConfigurator
+final class RectorConfig extends ContainerConfigurator
 {
-    // @todo remove set() from service configurator of symfony
 }
