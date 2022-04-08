@@ -15,6 +15,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\PropertyTypeDecorator;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
@@ -30,7 +31,7 @@ final class TypedPropertyFromAssignsRector extends AbstractRector
         private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
         private readonly PropertyTypeDecorator $propertyTypeDecorator,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly VarTagRemover $varTagRemover,
+        private readonly VarTagRemover $varTagRemover
     ) {
     }
 
@@ -83,6 +84,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (count($node->props) > 1) {
+            return null;
+        }
+
         $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty($node);
         if (! $inferredType instanceof Type) {
             return null;
@@ -111,6 +116,14 @@ CODE_SAMPLE
         if ($node->isPublic()) {
             $this->phpDocTypeChanger->changeVarType($phpDocInfo, $inferredType);
             return $node;
+        }
+
+        $default = $node->props[0]->default;
+        if ($default instanceof Expr) {
+            $defaultType = $this->nodeTypeResolver->getNativeType($default);
+            if ($inferredType->isSuperTypeOf($defaultType)->no()) {
+                return null;
+            }
         }
 
         if ($inferredType instanceof UnionType) {

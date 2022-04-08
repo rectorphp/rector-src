@@ -4,10 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsR
 
 final class SkipDefaultTypeDifferent
 {
-    /**
-     * @var bool|int
-     */
-    protected $property = true;
+    private $property = true;
 
     public function run()
     {
