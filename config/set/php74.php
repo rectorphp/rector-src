@@ -17,10 +17,14 @@ use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Php74\Rector\StaticCall\ExportToReflectionFunctionRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
+
+    $services->set(TypedPropertyFromAssignsRector::class);
+
     $services->set(TypedPropertyRector::class);
 
     $services->set(RenameFunctionRector::class)
