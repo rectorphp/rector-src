@@ -2,54 +2,19 @@
 
 namespace Rector\Core\Tests\Issues\Issue7099\Fixture;
 
-class Document {
+use Rector\Core\Tests\Issues\Issue7099\Source\Document;
 
-}
-
-class View {
-    private $data;
-
-    public function __construct($data) {
-        $this->data = $data;
-    }
-
-    /** @return mixed */
-    public function getData() {
-        return $this->data;
-    }
-}
-
-class DocumentRepository
+class Controller
 {
-    public function findById(int $id): ?Document {
-        return $id === 1 ? new Document() : null;
-    }
-}
-
-class SomeController
-{
-    private DocumentRepository $documentRepository;
-
-    public function __construct(
-        DocumentRepository $documentRepository,
-    ) {
-        $this->documentRepository = $documentRepository;
-    }
-
-    public function getDocumentAction(int $id): View
+    public function getDocumentAction(int $id): ?Document
     {
-        $document = $this->documentRepository->findById($id);
+        $document = $id === 1 ? new Document() : null;
 
         if (empty($document)) {
-            return $this->view([]);
+            return null;
         }
 
-        return $this->view($document);
-    }
-
-    protected function view($data = null): View
-    {
-        return new View($data);
+        return $document;
     }
 }
 
@@ -59,54 +24,19 @@ class SomeController
 
 namespace Rector\Core\Tests\Issues\Issue7099\Fixture;
 
-class Document {
+use Rector\Core\Tests\Issues\Issue7099\Source\Document;
 
-}
-
-class View {
-    private $data;
-
-    public function __construct($data) {
-        $this->data = $data;
-    }
-
-    /** @return mixed */
-    public function getData() {
-        return $this->data;
-    }
-}
-
-class DocumentRepository
+class Controller
 {
-    public function findById(int $id): ?Document {
-        return $id === 1 ? new Document() : null;
-    }
-}
-
-class SomeController
-{
-    private DocumentRepository $documentRepository;
-
-    public function __construct(
-        DocumentRepository $documentRepository,
-    ) {
-        $this->documentRepository = $documentRepository;
-    }
-
-    public function getDocumentAction(int $id): View
+    public function getDocumentAction(int $id): ?Document
     {
-        $document = $this->documentRepository->findById($id);
+        $document = $id === 1 ? new Document() : null;
 
-        if (!$document instanceof \Rector\Core\Tests\Issues\Issue7099\Fixture\Document) {
-            return $this->view([]);
+        if (!$document instanceof \Rector\Core\Tests\Issues\Issue7099\Source\Document) {
+            return null;
         }
 
-        return $this->view($document);
-    }
-
-    protected function view($data = null): View
-    {
-        return new View($data);
+        return $document;
     }
 }
 
