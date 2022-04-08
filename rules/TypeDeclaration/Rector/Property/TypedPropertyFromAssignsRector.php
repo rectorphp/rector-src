@@ -83,10 +83,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($node->props) > 1) {
-            return null;
-        }
-
         $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty($node);
         if (! $inferredType instanceof Type) {
             return null;
