@@ -11,5 +11,3 @@ final class SkipDefaultTypeDifferent
         $this->property = 100;
     }
 }
-
-?>
