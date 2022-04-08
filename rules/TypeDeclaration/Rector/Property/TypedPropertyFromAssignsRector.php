@@ -137,7 +137,8 @@ CODE_SAMPLE
     {
         if ($default instanceof Expr) {
             $defaultType = $this->nodeTypeResolver->getNativeType($default);
-            return $inferredType->isSuperTypeOf($defaultType)->no();
+            return $inferredType->isSuperTypeOf($defaultType)
+                ->no();
         }
 
         return false;
