@@ -133,10 +133,10 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkipWithDifferentDefaultValueType(?Expr $default, Type $inferredType): bool
+    private function shouldSkipWithDifferentDefaultValueType(?Expr $expr, Type $inferredType): bool
     {
-        if ($default instanceof Expr) {
-            $defaultType = $this->nodeTypeResolver->getNativeType($default);
+        if ($expr instanceof Expr) {
+            $defaultType = $this->nodeTypeResolver->getNativeType($expr);
             return $inferredType->isSuperTypeOf($defaultType)
                 ->no();
         }
