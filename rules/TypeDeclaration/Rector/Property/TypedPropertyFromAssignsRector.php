@@ -117,11 +117,6 @@ CODE_SAMPLE
             return $node;
         }
 
-        $default = $node->props[0]->default;
-        if ($this->shouldSkipWithDifferentDefaultValueType($default, $inferredType)) {
-            return null;
-        }
-
         if ($inferredType instanceof UnionType) {
             $this->propertyTypeDecorator->decoratePropertyUnionType($inferredType, $typeNode, $node, $phpDocInfo);
         } else {
@@ -131,17 +126,6 @@ CODE_SAMPLE
         $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
 
         return $node;
-    }
-
-    private function shouldSkipWithDifferentDefaultValueType(?Expr $expr, Type $inferredType): bool
-    {
-        if ($expr instanceof Expr) {
-            $defaultType = $this->nodeTypeResolver->getNativeType($expr);
-            return $inferredType->isSuperTypeOf($defaultType)
-                ->no();
-        }
-
-        return false;
     }
 
     private function decorateTypeWithNullableIfDefaultPropertyNull(Property $property, Type $inferredType): Type
