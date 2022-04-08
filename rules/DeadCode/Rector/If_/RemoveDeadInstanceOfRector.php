@@ -101,6 +101,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $originalCondNode = $node->cond->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalCondNode instanceof Node) {
+            return null;
+        }
+
         if ($node->cond instanceof BooleanNot && $node->cond->expr instanceof Instanceof_) {
             return $this->processMayDeadInstanceOf($node, $node->cond->expr);
         }
