@@ -107,13 +107,10 @@ final class VarDocPropertyTypeInferer
     private function isAssignInferredUnionTypesMoreThanResolvedType(
         Type $resolvedType,
         Type $assignInferredPropertyType
-    ): bool
-    {
+    ): bool {
         return $resolvedType instanceof UnionType && $assignInferredPropertyType instanceof UnionType && count(
             $assignInferredPropertyType->getTypes()
-        ) > count(
-            $resolvedType->getTypes()
-        );
+        ) > count($resolvedType->getTypes());
     }
 
     private function isBothTypeWithClassName(Type $resolvedType, Type $assignInferredPropertyType): bool
