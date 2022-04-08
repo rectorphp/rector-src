@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class DefaultValueNullParamAssignConstruct
+final class DefaultValueNullParamAssignConstructNotInlined
 {
     /**
      * @var array
@@ -11,7 +11,9 @@ final class DefaultValueNullParamAssignConstruct
 
     public function __construct(array $data = null)
     {
-        $this->data = $data;
+        if (rand(0, 1)) {
+            $this->data = $data;
+        }
     }
 }
 
@@ -21,16 +23,18 @@ final class DefaultValueNullParamAssignConstruct
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class DefaultValueNullParamAssignConstruct
+final class DefaultValueNullParamAssignConstructNotInlined
 {
     /**
      * @var array
      */
-    private ?array $data;
+    private ?array $data = null;
 
     public function __construct(array $data = null)
     {
-        $this->data = $data;
+        if (rand(0, 1)) {
+            $this->data = $data;
+        }
     }
 }
 
