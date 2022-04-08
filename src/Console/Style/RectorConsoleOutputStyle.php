@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class RectorConsoleOutputStyle extends SymfonyStyle
 {
     /**
-     * @var mixed|ProgressBar
+     * @var ProgressBar|null
      */
     public $progressBar;
 
