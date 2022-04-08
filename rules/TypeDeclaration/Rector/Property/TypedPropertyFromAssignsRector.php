@@ -15,7 +15,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\PropertyTypeDecorator;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
@@ -119,11 +118,8 @@ CODE_SAMPLE
         }
 
         $default = $node->props[0]->default;
-        if ($default instanceof Expr) {
-            $defaultType = $this->nodeTypeResolver->getNativeType($default);
-            if ($inferredType->isSuperTypeOf($defaultType)->no()) {
-                return null;
-            }
+        if ($this->shouldSkipWithDifferentDefaultValueType($default, $inferredType)) {
+            return null;
         }
 
         if ($inferredType instanceof UnionType) {
@@ -135,6 +131,16 @@ CODE_SAMPLE
         $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
 
         return $node;
+    }
+
+    private function shouldSkipWithDifferentDefaultValueType(?Expr $default, Type $inferredType): bool
+    {
+        if ($default instanceof Expr) {
+            $defaultType = $this->nodeTypeResolver->getNativeType($default);
+            return $inferredType->isSuperTypeOf($defaultType)->no();
+        }
+
+        return false;
     }
 
     private function decorateTypeWithNullableIfDefaultPropertyNull(Property $property, Type $inferredType): Type
