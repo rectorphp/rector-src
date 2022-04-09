@@ -25,4 +25,19 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::PATHS, $paths);
     }
+
+    public function parallel(): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::PARALLEL, true);
+    }
+
+    /**
+     * @param array<int|string, mixed> $criteria
+     */
+    public function skip(array $criteria): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::SKIP, $criteria);
+    }
 }

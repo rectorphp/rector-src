@@ -61,9 +61,10 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
-    $parameters->set(Option::PARALLEL, true);
 
-    $parameters->set(Option::SKIP, [
+    $rectorConfig->parallel();
+
+    $rectorConfig->skip([
         StringClassNameToClassConstantRector::class,
 
         FinalizeClassesWithoutChildrenRector::class => [
