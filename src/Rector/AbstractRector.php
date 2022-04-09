@@ -8,10 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
@@ -354,13 +351,6 @@ CODE_SAMPLE;
     protected function removeNode(Node $node): void
     {
         $this->nodeRemover->removeNode($node);
-    }
-
-    protected function removeNodeFromStatements(
-        Class_ | ClassMethod | Function_ $nodeWithStatements,
-        Node $toBeRemovedNode
-    ): void {
-        $this->nodeRemover->removeNodeFromStatements($nodeWithStatements, $toBeRemovedNode);
     }
 
     /**
