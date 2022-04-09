@@ -68,20 +68,18 @@ final class ClosureArrowFunctionAnalyzer
             return true;
         }
 
-        return $this->isFoundFromUse($closure);
+        return $this->isFoundInInnerUses($closure, $referencedValues);
     }
 
-    private function isFoundFromUse(Closure $node): bool
+    /**
+     * @param Variable[] $referencedValues
+     */
+    private function isFoundInInnerUses(Closure $node, array $referencedValues): bool
     {
-        foreach ($node->uses as $use) {
-            if (! $use->byRef) {
-                continue;
-            }
-
-            $variable = $use->var;
-            $isFoundInUses = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+        foreach ($referencedValues as $referencedValue) {
+            $isFoundInInnerUses = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $node,
-                function (Node $subNode) use ($variable): bool {
+                function (Node $subNode) use ($referencedValue): bool {
                     if (! $subNode instanceof Closure) {
                         return false;
                     }
@@ -90,13 +88,13 @@ final class ClosureArrowFunctionAnalyzer
                         $subNode->uses,
                         fn (ClosureUse $closureUse): bool => $closureUse->byRef && $this->nodeComparator->areNodesEqual(
                             $closureUse->var,
-                            $variable
+                            $referencedValue
                         )
                     );
                 }
             );
 
-            if ($isFoundInUses) {
+            if ($isFoundInInnerUses) {
                 return true;
             }
         }
