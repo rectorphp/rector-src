@@ -8,6 +8,7 @@ class ReferenceToInnerClosureUnused
     {
         $y = function() use (&$a) {
             return function() {
+                return 1;
             };
         };
 
@@ -25,8 +26,7 @@ class ReferenceToInnerClosureUnused
 {
     public function run($a)
     {
-        $y = fn() => function() {
-        };
+        $y = fn() => fn() => 1;
 
         return $y;
     }
