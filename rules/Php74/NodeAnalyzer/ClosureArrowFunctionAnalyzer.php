@@ -79,25 +79,25 @@ final class ClosureArrowFunctionAnalyzer
         return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
             $node,
             function (Node $subNode) use ($referencedValues): bool {
-                    if (! $subNode instanceof Closure) {
-                        return false;
-                    }
+                if (! $subNode instanceof Closure) {
+                    return false;
+                }
 
-                    foreach ($referencedValues as $referencedValue) {
-                        $isFoundInInnerUses = (bool) array_filter(
-                            $subNode->uses,
-                            fn (ClosureUse $closureUse): bool => $closureUse->byRef && $this->nodeComparator->areNodesEqual(
+                foreach ($referencedValues as $referencedValue) {
+                    $isFoundInInnerUses = (bool) array_filter(
+                        $subNode->uses,
+                        fn (ClosureUse $closureUse): bool => $closureUse->byRef && $this->nodeComparator->areNodesEqual(
                                 $closureUse->var,
                                 $referencedValue
                             )
-                        );
-                        if ($isFoundInInnerUses) {
-                            return true;
-                        }
+                    );
+                    if ($isFoundInInnerUses) {
+                        return true;
                     }
-
-                    return false;
                 }
+
+                return false;
+            }
         );
     }
 
