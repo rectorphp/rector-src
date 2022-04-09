@@ -87,9 +87,9 @@ final class ClosureArrowFunctionAnalyzer
                     $isFoundInInnerUses = (bool) array_filter(
                         $subNode->uses,
                         fn (ClosureUse $closureUse): bool => $closureUse->byRef && $this->nodeComparator->areNodesEqual(
-                                $closureUse->var,
-                                $referencedValue
-                            )
+                            $closureUse->var,
+                            $referencedValue
+                        )
                     );
                     if ($isFoundInInnerUses) {
                         return true;
