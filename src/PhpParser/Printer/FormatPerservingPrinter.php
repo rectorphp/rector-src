@@ -7,7 +7,6 @@ namespace Rector\Core\PhpParser\Printer;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\ValueObject\Application\File;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -43,7 +42,11 @@ final class FormatPerservingPrinter
     {
         $newStmts = $this->resolveNewStmts($file);
 
-        return $this->betterStandardPrinter->printFormatPreserving($newStmts, $file->getOldStmts(), $file->getOldTokens());
+        return $this->betterStandardPrinter->printFormatPreserving(
+            $newStmts,
+            $file->getOldStmts(),
+            $file->getOldTokens()
+        );
     }
 
     public function printParsedStmstAndTokens(File $file): string
