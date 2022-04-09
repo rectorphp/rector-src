@@ -354,14 +354,6 @@ CODE_SAMPLE;
     }
 
     /**
-     * @param Node[] $nodes
-     */
-    protected function removeNodes(array $nodes): void
-    {
-        $this->nodeRemover->removeNodes($nodes);
-    }
-
-    /**
      * @param class-string<Node> $nodeClass
      */
     private function isMatchingNodeType(string $nodeClass): bool
