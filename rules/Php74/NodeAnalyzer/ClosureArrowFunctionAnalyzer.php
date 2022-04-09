@@ -79,7 +79,7 @@ final class ClosureArrowFunctionAnalyzer
             }
 
             $variable = $use->var;
-            $isFoundInClosure = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $isFoundInUses = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $node,
                 function (Node $subNode) use ($variable): bool {
                     if (! $subNode instanceof Closure) {
@@ -96,7 +96,7 @@ final class ClosureArrowFunctionAnalyzer
                 }
             );
 
-            if ($isFoundInClosure) {
+            if ($isFoundInUses) {
                 return true;
             }
         }
