@@ -75,6 +75,35 @@ CODE_SAMPLE
             return null;
         }
 
+        foreach ($node->uses as $use) {
+            if (! $use->byRef) {
+                continue;
+            }
+
+            $variable = $use->var;
+            $isFoundInClosure = $this->betterNodeFinder->findFirstInFunctionLikeScoped($node, function (Node $subNode) use ($variable): bool {
+                if (! $subNode instanceof Closure) {
+                    return false;
+                }
+
+                foreach ($subNode->uses as $subNodeUse) {
+                    if (! $subNodeUse->byRef) {
+                        continue;
+                    }
+
+                    if ($this->nodeComparator->areNodesEqual($subNodeUse->var, $variable)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+            if ($isFoundInClosure) {
+                return null;
+            }
+        }
+
         $arrowFunction = new ArrowFunction(
             [
                 'params' => $node->params,
