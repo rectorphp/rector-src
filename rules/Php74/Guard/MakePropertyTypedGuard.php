@@ -6,16 +6,16 @@ namespace Rector\Php74\Guard;
 
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Analyser\Scope;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class MakePropertyTypedGuard
 {
@@ -25,11 +25,10 @@ final class MakePropertyTypedGuard
         private readonly AstResolver $astResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly PropertyAnalyzer $propertyAnalyzer
-    )
-    {
+    ) {
     }
 
-    public function isLegal(Property $property, bool $inlinePublic = true)
+    public function isLegal(Property $property, bool $inlinePublic = true): bool
     {
         if ($property->type !== null) {
             return false;
