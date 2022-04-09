@@ -19,7 +19,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -86,8 +85,6 @@ CODE_SAMPLE;
 
     protected NodeTypeResolver $nodeTypeResolver;
 
-    protected RemovedAndAddedFilesCollector $removedAndAddedFilesCollector;
-
     protected ParameterProvider $parameterProvider;
 
     protected PhpVersionProvider $phpVersionProvider;
@@ -138,7 +135,6 @@ CODE_SAMPLE;
         NodesToRemoveCollector $nodesToRemoveCollector,
         NodesToAddCollector $nodesToAddCollector,
         NodeRemover $nodeRemover,
-        RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
         SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
@@ -161,7 +157,6 @@ CODE_SAMPLE;
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
         $this->nodeRemover = $nodeRemover;
-        $this->removedAndAddedFilesCollector = $removedAndAddedFilesCollector;
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
         $this->simpleCallableNodeTraverser = $simpleCallableNodeTraverser;
