@@ -26,7 +26,9 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PATHS, $paths);
     }
 
-
+    /**
+     * @param string[] $sets
+     */
     public function sets(array $sets): void
     {
         Assert::allString($sets);
