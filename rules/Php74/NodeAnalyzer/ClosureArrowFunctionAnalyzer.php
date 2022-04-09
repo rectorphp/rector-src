@@ -52,7 +52,7 @@ final class ClosureArrowFunctionAnalyzer
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($closure, function (Node $node) use (
+        $isFoundInStmt = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($closure, function (Node $node) use (
             $referencedValues
         ): bool {
             foreach ($referencedValues as $referencedValue) {
@@ -63,6 +63,45 @@ final class ClosureArrowFunctionAnalyzer
 
             return false;
         });
+
+        if ($isFoundInStmt) {
+            return true;
+        }
+
+        return $this->isFoundFromUse($closure);
+    }
+
+    private function isFoundFromUse(Closure $node): bool
+    {
+        foreach ($node->uses as $use) {
+            if (! $use->byRef) {
+                continue;
+            }
+
+            $variable = $use->var;
+            $isFoundInClosure = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                $node,
+                function (Node $subNode) use ($variable): bool {
+                    if (! $subNode instanceof Closure) {
+                        return false;
+                    }
+
+                    return (bool) array_filter(
+                        $subNode->uses,
+                        fn (ClosureUse $closureUse): bool => $closureUse->byRef && $this->nodeComparator->areNodesEqual(
+                            $closureUse->var,
+                            $variable
+                        )
+                    );
+                }
+            );
+
+            if ($isFoundInClosure) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
