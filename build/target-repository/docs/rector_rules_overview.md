@@ -1,4 +1,4 @@
-# 507 Rules Overview
+# 510 Rules Overview
 
 <br>
 
@@ -88,7 +88,7 @@
 
 - [Transform](#transform) (35)
 
-- [TypeDeclaration](#typedeclaration) (23)
+- [TypeDeclaration](#typedeclaration) (26)
 
 - [Visibility](#visibility) (3)
 
@@ -11563,6 +11563,30 @@ Change null in argument, that is now not nullable anymore
 
 <br>
 
+### ParamAnnotationIncorrectNullableRector
+
+Add or remove null type from `@param` phpdoc typehint based on php parameter type declaration
+
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector`](../rules/TypeDeclaration/Rector/ClassMethod/ParamAnnotationIncorrectNullableRector.php)
+
+```diff
+ final class SomeClass
+ {
+     /**
+-     * @param \DateTime[] $dateTimes
++     * @param \DateTime[]|null $dateTimes
+      */
+     public function setDateTimes(?array $dateTimes): self
+     {
+         $this->dateTimes = $dateTimes;
+
+         return $this;
+     }
+ }
+```
+
+<br>
+
 ### ParamTypeByMethodCallTypeRector
 
 Change param type based on passed method call type
@@ -11696,6 +11720,28 @@ Add `@var` to properties that are missing it
      public function run()
      {
          $this->value = 123;
+     }
+ }
+```
+
+<br>
+
+### ReturnAnnotationIncorrectNullableRector
+
+Add or remove null type from `@return` phpdoc typehint based on php return type declaration
+
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnAnnotationIncorrectNullableRector.php)
+
+```diff
+ final class SomeClass
+ {
+     /**
+-     * @return \DateTime[]
++     * @return \DateTime[]|null
+      */
+     public function getDateTimes(): ?array
+     {
+         return $this->dateTimes;
      }
  }
 ```
@@ -11866,6 +11912,25 @@ Complete property type based on getter strict types
      {
          return $this->name;
      }
+ }
+```
+
+<br>
+
+### VarAnnotationIncorrectNullableRector
+
+Add or remove null type from `@var` phpdoc typehint based on php property type declaration
+
+- class: [`Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector`](../rules/TypeDeclaration/Rector/Property/VarAnnotationIncorrectNullableRector.php)
+
+```diff
+ final class SomeClass
+ {
+     /**
+-     * @var DateTime[]
++     * @var DateTime[]|null
+      */
+     private ?array $dateTimes;
  }
 ```
 
