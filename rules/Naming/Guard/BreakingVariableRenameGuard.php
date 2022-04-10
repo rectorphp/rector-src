@@ -106,7 +106,7 @@ final class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->overridenExistingNamesResolver->hasNameInClassMethodForParam($expectedName, $classMethod)) {
+        if ($this->overridenExistingNamesResolver->hasNameInFunctionLikeForParam($expectedName, $classMethod)) {
             return true;
         }
 
