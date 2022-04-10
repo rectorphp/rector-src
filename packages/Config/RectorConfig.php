@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Config;
 
 use Rector\Core\Configuration\Option;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\RectorInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Webmozart\Assert\Assert;
 
@@ -70,5 +72,20 @@ final class RectorConfig extends ContainerConfigurator
 
         $parameters = $this->parameters();
         $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, $filePath);
+    }
+
+    /**
+     * @param class-string<ConfigurableRectorInterface&RectorInterface> $rectorClass
+     * @param mixed[] $configuration
+     */
+    public function ruleWithConfiguration(string $rectorClass, array $configuration): void
+    {
+        Assert::isAOf($rectorClass, RectorInterface::class);
+        Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
+
+        $services = $this->services();
+
+        $services->set($rectorClass)
+            ->configure($configuration);
     }
 }

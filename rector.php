@@ -31,16 +31,16 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODING_STYLE,
     ]);
 
-    $services = $rectorConfig->services();
-
-    // phpunit
-    $services->set(PreferThisOrSelfMethodCallRector::class)
-        ->configure([
+    $rectorConfig->ruleWithConfiguration(
+        PreferThisOrSelfMethodCallRector::class,
+        [
             'PHPUnit\Framework\TestCase' => PreferenceSelfThis::PREFER_THIS(),
-        ]);
+        ]
+    );
 
-    $services->set(ReturnArrayClassMethodToYieldRector::class)
-        ->configure([new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*')]);
+    $rectorConfig->ruleWithConfiguration(ReturnArrayClassMethodToYieldRector::class, [
+        new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
+    ]);
 
     $rectorConfig->paths([
         __DIR__ . '/bin',
@@ -56,7 +56,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->autoImportNames();
-
     $rectorConfig->parallel();
 
     $rectorConfig->skip([
