@@ -38,8 +38,7 @@ final class OverridenExistingNamesResolver
     public function hasNameInFunctionLikeForParam(
         string $expectedName,
         ClassMethod|Function_|Closure $classMethod
-    ): bool
-    {
+    ): bool {
         /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstanceOf((array) $classMethod->stmts, Assign::class);
 
