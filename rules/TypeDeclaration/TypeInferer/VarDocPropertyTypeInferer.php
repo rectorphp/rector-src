@@ -96,12 +96,12 @@ final class VarDocPropertyTypeInferer
             return false;
         }
 
-        if ($resolvedType::class === $assignInferredPropertyType::class) {
-            return false;
-        }
-
         if ($this->isAssignInferredUnionTypesMoreThanResolvedType($resolvedType, $assignInferredPropertyType)) {
             return true;
+        }
+
+        if ($resolvedType::class === $assignInferredPropertyType::class) {
+            return false;
         }
 
         if ($resolvedType instanceof ObjectWithoutClassType && $assignInferredPropertyType instanceof TypeWithClassName) {
