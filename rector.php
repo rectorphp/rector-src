@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
 use Rector\CodingStyle\Enum\PreferenceSelfThis;
 use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
 use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
@@ -37,7 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
     // phpunit
     $services->set(PreferThisOrSelfMethodCallRector::class)
         ->configure([
-            TestCase::class => PreferenceSelfThis::PREFER_THIS(),
+            'PHPUnit\Framework\TestCase' => PreferenceSelfThis::PREFER_THIS(),
         ]);
 
     $services->set(ReturnArrayClassMethodToYieldRector::class)
