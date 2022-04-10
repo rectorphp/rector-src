@@ -4,22 +4,6 @@ namespace Rector\Tests\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKey
 
 final class AnotherInArray
 {
-    public function hasKey(): bool
-    {
-        return !in_array('key', array_keys([
-          'key' => ',',
-          1 => ';',
-        ]));
-    }
-
-    public function hasMoreThanOneArgument(): bool
-    {
-        return in_array('key', array_keys([
-          'key' => ',',
-          1 => ';',
-      ], 'key'));
-    }
-
     public function resultIntoAVariable(): void
     {
         $array = ['foo', 'bar'];
@@ -37,22 +21,6 @@ namespace Rector\Tests\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKey
 
 final class AnotherInArray
 {
-    public function hasKey(): bool
-    {
-        return !array_key_exists('key', [
-          'key' => ',',
-          1 => ';',
-        ]);
-    }
-
-    public function hasMoreThanOneArgument(): bool
-    {
-        return in_array('key', array_keys([
-          'key' => ',',
-          1 => ';',
-      ], 'key'));
-    }
-
     public function resultIntoAVariable(): void
     {
         $array = ['foo', 'bar'];
