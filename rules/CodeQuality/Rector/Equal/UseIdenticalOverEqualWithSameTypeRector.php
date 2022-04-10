@@ -10,10 +10,8 @@ use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
-use PHPStan\Type\ConstantType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -90,7 +88,7 @@ CODE_SAMPLE
         }
 
         // different types
-        if ($this->areDifferentTypeNotConstantType($leftStaticType, $rightStaticType)) {
+        if (! $leftStaticType->equals($rightStaticType)) {
             return null;
         }
 
@@ -103,13 +101,6 @@ CODE_SAMPLE
         }
 
         return new NotIdentical($node->left, $node->right);
-    }
-
-    private function areDifferentTypeNotConstantType(Type $leftStaticType, Type $rightStaticType): bool
-    {
-        return ! $leftStaticType instanceof ConstantType && ! $rightStaticType instanceof ConstantType && ! $leftStaticType->equals(
-            $rightStaticType
-        );
     }
 
     private function areNonTypedFromParam(Expr $left, Expr $right): bool
