@@ -572,4 +572,4 @@ parameters:
             path: packages/Config/RectorConfig.php
 
         # foreaching all stmts
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Return_\\SimplifyUselessVariableRector\:\:refactor\(\)" is 1\d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:refactor\(\)" is 1\d+, keep it under 10#'
