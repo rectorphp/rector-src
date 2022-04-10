@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\InArrayAndArrayKeysToArrayKeyExistsRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKeyExistsRector\Fixture;
 
-final class Fixture
+final class AnotherInArray
 {
     public function hasKey(): bool
     {
@@ -33,9 +33,9 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FuncCall\InArrayAndArrayKeysToArrayKeyExistsRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKeyExistsRector\Fixture;
 
-final class Fixture
+final class AnotherInArray
 {
     public function hasKey(): bool
     {

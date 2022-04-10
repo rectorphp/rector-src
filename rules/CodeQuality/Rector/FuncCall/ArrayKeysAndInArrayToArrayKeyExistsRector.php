@@ -26,23 +26,17 @@ final class ArrayKeysAndInArrayToArrayKeyExistsRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class SomeClass
+function run($packageName, $values)
 {
-    public function run($packageName, $values)
-    {
-        $keys = array_keys($values);
-        return in_array($packageName, $keys, true);
-    }
+    $keys = array_keys($values);
+    return in_array($packageName, $keys, true);
 }
 CODE_SAMPLE
 ,
                     <<<'CODE_SAMPLE'
-class SomeClass
+function run($packageName, $values)
 {
-    public function run($packageName, $values)
-    {
-        return array_key_exists($packageName, $values);
-    }
+    return array_key_exists($packageName, $values);
 }
 CODE_SAMPLE
                 ),
