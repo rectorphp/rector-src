@@ -11,6 +11,7 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
@@ -76,32 +77,49 @@ final class VarDocPropertyTypeInferer
             $class
         );
 
-        if (! $assignInferredPropertyType instanceof Type) {
-            return $resolvedType;
-        }
-
-        if ($this->isAssignInferredUnionTypesMoreThanResolvedType($resolvedType, $assignInferredPropertyType)) {
+        if ($this->shouldBeMixed($resolvedType, $assignInferredPropertyType)) {
             return new MixedType();
         }
 
+        return $resolvedType;
+    }
+
+    private function shouldBeMixed(Type $resolvedType, ?Type $assignInferredPropertyType): bool
+    {
+        if (! $assignInferredPropertyType instanceof Type) {
+            return false;
+        }
+
+        if (! $resolvedType instanceof UnionType && ! $assignInferredPropertyType instanceof UnionType && $assignInferredPropertyType->isSuperTypeOf(
+            $resolvedType
+        )->yes()) {
+            return false;
+        }
+
         if ($resolvedType::class === $assignInferredPropertyType::class) {
-            return $resolvedType;
+            return false;
         }
 
-        if ($this->isBothTypeWithClassName($resolvedType, $assignInferredPropertyType)) {
-            /** @var TypeWithClassName $resolvedType */
-            $classNameResolvedType = $this->nodeTypeResolver->getFullyQualifiedClassName($resolvedType);
-            /** @var TypeWithClassName $assignInferredPropertyType */
-            $classNameInferredPropertyType = $this->nodeTypeResolver->getFullyQualifiedClassName(
-                $assignInferredPropertyType
-            );
-
-            if ($classNameResolvedType === $classNameInferredPropertyType) {
-                return $resolvedType;
-            }
+        if ($this->isAssignInferredUnionTypesMoreThanResolvedType($resolvedType, $assignInferredPropertyType)) {
+            return true;
         }
 
-        return new MixedType();
+        if ($resolvedType instanceof ObjectWithoutClassType && $assignInferredPropertyType instanceof TypeWithClassName) {
+            return false;
+        }
+
+        if (! $resolvedType instanceof TypeWithClassName) {
+            return true;
+        }
+
+        /** @var TypeWithClassName $resolvedType */
+        $classNameResolvedType = $this->nodeTypeResolver->getFullyQualifiedClassName($resolvedType);
+        /** @var TypeWithClassName $assignInferredPropertyType */
+        $classNameInferredPropertyType = $this->nodeTypeResolver->getFullyQualifiedClassName(
+            $assignInferredPropertyType
+        );
+
+        return $classNameResolvedType !== $classNameInferredPropertyType;
     }
 
     private function isAssignInferredUnionTypesMoreThanResolvedType(
@@ -111,11 +129,6 @@ final class VarDocPropertyTypeInferer
         return $resolvedType instanceof UnionType && $assignInferredPropertyType instanceof UnionType && count(
             $assignInferredPropertyType->getTypes()
         ) > count($resolvedType->getTypes());
-    }
-
-    private function isBothTypeWithClassName(Type $resolvedType, Type $assignInferredPropertyType): bool
-    {
-        return $resolvedType instanceof TypeWithClassName && $assignInferredPropertyType instanceof TypeWithClassName;
     }
 
     private function makeNullableForAccessedBeforeInitialization(
