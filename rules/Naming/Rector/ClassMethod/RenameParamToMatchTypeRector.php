@@ -113,8 +113,7 @@ CODE_SAMPLE
         Param $param,
         string $expectedName,
         ClassMethod|Function_|Closure $classMethod
-    ): bool
-    {
+    ): bool {
         /** @var string $paramName */
         $paramName = $this->getName($param);
 
