@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -20,6 +21,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class UseIdenticalOverEqualWithSameTypeRector extends AbstractRector
 {
+    public function __construct(private readonly ExprAnalyzer $exprAnalyzer)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -83,6 +88,10 @@ CODE_SAMPLE
 
         // different types
         if (! $leftStaticType->equals($rightStaticType)) {
+            return null;
+        }
+
+        if ($this->exprAnalyzer->isNonTypedFromParam($node->left) || $this->exprAnalyzer->isNonTypedFromParam($node->right)) {
             return null;
         }
 
