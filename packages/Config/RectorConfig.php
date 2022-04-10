@@ -53,4 +53,22 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::SKIP, $criteria);
     }
+
+    public function autoImportNames(): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::AUTO_IMPORT_NAMES, true);
+    }
+
+    /**
+     * Set PHPStan custom config to load extensions and custom configuration to Rector.
+     * By default, the "phpstan.neon" path is used.
+     */
+    public function phpstanConfig(string $filePath): void
+    {
+        Assert::fileExists($filePath);
+
+        $parameters = $this->parameters();
+        $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, $filePath);
+    }
 }
