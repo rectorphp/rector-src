@@ -134,7 +134,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(Type $returnExprType): bool
+    private function shouldSkip(ConstantArrayType $returnExprType): bool
     {
         $keyType = $returnExprType->getKeyType();
 
@@ -164,7 +164,7 @@ CODE_SAMPLE
         }
 
         $itemType = $returnExprType->getItemType();
-        if ($itemType instanceof ArrayType) {
+        if ($itemType instanceof ConstantArrayType) {
             return $this->shouldSkip($itemType);
         }
 
