@@ -9,11 +9,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
@@ -163,8 +163,9 @@ CODE_SAMPLE
             }
         }
 
-        if ($returnExprType->getItemType() instanceof ArrayType) {
-            return $this->shouldSkipKeyType($returnExprType->getItemType());
+        $itemType = $returnExprType->getItemType();
+        if ($itemType instanceof ArrayType) {
+            return $this->shouldSkipKeyType($itemType);
         }
 
         return false;
