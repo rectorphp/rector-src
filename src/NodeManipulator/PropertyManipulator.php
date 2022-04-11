@@ -21,6 +21,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Unset_;
@@ -31,6 +32,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -166,8 +168,10 @@ final class PropertyManipulator
             }
 
             // skip for constructor? it is allowed to set value in constructor method
-            $propertyName = $this->nodeNameResolver->getName($propertyFetch);
-            if ($this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName)) {
+            $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
+            $classMethod = $this->betterNodeFinder->findParentType($propertyFetch, ClassMethod::class);
+
+            if ($this->isPropertyAssignedOnlyInConstructor($classLike, $propertyName, $classMethod)) {
                 continue;
             }
 
@@ -223,6 +227,23 @@ final class PropertyManipulator
         }
 
         return null;
+    }
+
+    private function isPropertyAssignedOnlyInConstructor(
+        ClassLike $classLike,
+        string $propertyName,
+        ?ClassMethod $classMethod
+    ): bool {
+        if (! $classMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        // there is property unset in Test class, so only check on __construct
+        if (! $this->nodeNameResolver->isName($classMethod->name, MethodName::CONSTRUCT)) {
+            return false;
+        }
+
+        return $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
     }
 
     private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
