@@ -74,14 +74,14 @@ final class VarDocPropertyTypeInferer
             $class
         );
 
-        if ($this->shouldBeMixed($resolvedType, $assignInferredPropertyType)) {
-            return new MixedType();
+        if ($this->shouldAddNull($resolvedType, $assignInferredPropertyType)) {
+            $resolvedType = TypeCombinator::addNull($resolvedType);
         }
 
         return $resolvedType;
     }
 
-    private function shouldBeMixed(Type $resolvedType, ?Type $assignInferredPropertyType): bool
+    private function shouldAddNull(Type $resolvedType, ?Type $assignInferredPropertyType): bool
     {
         if (! $assignInferredPropertyType instanceof Type) {
             return false;

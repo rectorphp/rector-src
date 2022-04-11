@@ -14,3 +14,21 @@ final class SkipArrayTypeFilledDefaultNull
         $this->property = $property;
     }
 }
+
+?>
+-----
+<?php
+
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
+
+final class SkipArrayTypeFilledDefaultNull
+{
+    private ?array $property;
+
+    public function __construct(array $property = null)
+    {
+        $this->property = $property;
+    }
+}
+
+?>
