@@ -139,7 +139,7 @@ CODE_SAMPLE
 
     private function shouldSkip(ConstantArrayType $constantArrayType, int $level = 1): bool
     {
-        if ($level === 3) {
+        if ($level === self::MAX_LEVEL) {
             return true;
         }
 
