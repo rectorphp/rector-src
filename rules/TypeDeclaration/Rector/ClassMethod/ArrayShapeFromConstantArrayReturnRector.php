@@ -34,6 +34,11 @@ final class ArrayShapeFromConstantArrayReturnRector extends AbstractRector
      */
     private const SKIPPED_CHAR_REGEX = '#\W#u';
 
+    /**
+     * @var int
+     */
+    private const MAX_LEVEL = 3;
+
     public function __construct(
         private readonly ClassMethodReturnTypeResolver $classMethodReturnTypeResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger
@@ -132,8 +137,12 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(ConstantArrayType $constantArrayType): bool
+    private function shouldSkip(ConstantArrayType $constantArrayType, int $level = 1): bool
     {
+        if ($level === 3) {
+            return true;
+        }
+
         $keyType = $constantArrayType->getKeyType();
 
         // empty array
@@ -161,9 +170,11 @@ CODE_SAMPLE
             }
         }
 
+        ++$level;
+
         $itemType = $constantArrayType->getItemType();
         if ($itemType instanceof ConstantArrayType) {
-            return $this->shouldSkip($itemType);
+            return $this->shouldSkip($itemType, $level);
         }
 
         return false;
