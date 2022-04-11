@@ -18,6 +18,7 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\ConstructorPropertyTypeInferer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -32,7 +33,8 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector
         private readonly VarTagRemover $varTagRemover,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PropertyFetchFinder $propertyFetchFinder,
-        private readonly PropertyManipulator $propertyManipulator
+        private readonly PropertyManipulator $propertyManipulator,
+        private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -147,7 +149,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->propertyManipulator->isInlineStmtWithConstructMethod($propertyFetch, $classMethod)) {
+            if (! $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName)) {
                 return false;
             }
         }
