@@ -84,10 +84,11 @@ final class SomeClass
         $this->name = 'string';
     }
 }
-CODE_SAMPLE,
-            [
-                self::INLINE_PUBLIC => false,
-            ]
+CODE_SAMPLE
+,
+                [
+                    self::INLINE_PUBLIC => false,
+                ]
             ),
         ]);
     }
