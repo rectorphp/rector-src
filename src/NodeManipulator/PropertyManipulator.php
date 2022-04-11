@@ -226,27 +226,6 @@ final class PropertyManipulator
         return null;
     }
 
-    public function isInlineStmtWithConstructMethod(
-        PropertyFetch|StaticPropertyFetch $propertyFetch,
-        ?ClassMethod $classMethod
-    ): bool {
-        if (! $classMethod instanceof ClassMethod) {
-            return false;
-        }
-
-        if (! $this->nodeNameResolver->isName($classMethod->name, MethodName::CONSTRUCT)) {
-            return false;
-        }
-
-        $currentStmt = $propertyFetch->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $currentStmt instanceof Stmt) {
-            return false;
-        }
-
-        $parent = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-        return $parent === $classMethod;
-    }
-
     private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
     {
         $parent = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
