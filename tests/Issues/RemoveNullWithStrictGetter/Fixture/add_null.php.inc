@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Core\Tests\Issues\RemoveNullWithStrictGetter\Fixture;
 
 final class AddNull
@@ -20,6 +22,8 @@ final class AddNull
 ?>
 -----
 <?php
+
+declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\RemoveNullWithStrictGetter\Fixture;
 
