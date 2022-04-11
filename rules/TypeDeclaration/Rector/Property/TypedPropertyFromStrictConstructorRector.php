@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -33,7 +32,6 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector
         private readonly VarTagRemover $varTagRemover,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PropertyFetchFinder $propertyFetchFinder,
-        private readonly PropertyManipulator $propertyManipulator,
         private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
