@@ -77,7 +77,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $property = null;
         if ($node->type !== null) {
             return null;
         }
@@ -114,7 +113,7 @@ CODE_SAMPLE
         }
 
         $node->type = $propertyTypeNode;
-        $propertyName = $this->nodeNameResolver->getName($property);
+        $propertyName = $this->nodeNameResolver->getName($node);
 
         if ($this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName)) {
             $node->props[0]->default = null;
