@@ -159,7 +159,6 @@ final class PropertyManipulator
         }
 
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($propertyOrParam);
-        $propertyName = $this->nodeNameResolver->getName($propertyOrParam);
 
         foreach ($propertyFetches as $propertyFetch) {
             if ($this->isChangeableContext($propertyFetch)) {
@@ -167,6 +166,7 @@ final class PropertyManipulator
             }
 
             // skip for constructor? it is allowed to set value in constructor method
+            $propertyName = $this->nodeNameResolver->getName($propertyFetch);
             if ($this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName)) {
                 continue;
             }
