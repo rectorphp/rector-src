@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Guard;
 
 use Nette\Utils\Strings;
+use PhpParser\Comment\Doc;
+use PhpParser\Node\Stmt\Property;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -14,30 +16,28 @@ final class PhpDocNestedAnnotationGuard
      * Regex is used to count annotations including nested annotations
      *
      * @see https://regex101.com/r/G7wODT/1
+     * @var string
      */
     private const SIMPLE_ANNOTATION_REGEX = '/@[A-z]+\(?/i';
 
-    private PhpDocInfoFactory $phpDocInfoFactory;
-
-    public function __construct(PhpDocInfoFactory $phpDocInfoFactory)
+    public function __construct(private readonly PhpDocInfoFactory $phpDocInfoFactory)
     {
-        $this->phpDocInfoFactory = $phpDocInfoFactory;
     }
 
     /**
      * Check if rector accidentally skipped annotation during parsing which it should not have (this bug is likely related to parsing of annotations
      * in phpstan / rector)
      */
-    public function isPhpDocCommentCorrectlyParsed(\PhpParser\Node $node): bool
+    public function isPhpDocCommentCorrectlyParsed(Property $property): bool
     {
-        $comments = $node->getAttribute(AttributeKey::COMMENTS, []);
-        if (count($comments) !== 1) {
+        $comments = $property->getAttribute(AttributeKey::COMMENTS, []);
+        if ((is_countable($comments) ? count($comments) : 0) !== 1) {
             return true;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
-        /** @var \PhpParser\Comment\Doc $phpDoc */
+        /** @var Doc $phpDoc */
         $phpDoc = $comments[0];
         $originalPhpDocText = $phpDoc->getText();
 

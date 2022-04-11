@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Property;
 
-use function count;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
@@ -22,20 +23,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class VarAnnotationIncorrectNullableRector extends AbstractRector
 {
-    private PhpDocTypeChanger $phpDocTypeChanger;
-
-    private PhpDocNullableTypeHelper $phpDocNullableTypeHelper;
-
-    private PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard;
-
     public function __construct(
-        PhpDocTypeChanger $phpDocTypeChanger,
-        PhpDocNullableTypeHelper $phpDocNullableTypeHelper,
-        PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly PhpDocNullableTypeHelper $phpDocNullableTypeHelper,
+        private readonly PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard
     ) {
-        $this->phpDocTypeChanger = $phpDocTypeChanger;
-        $this->phpDocNullableTypeHelper = $phpDocNullableTypeHelper;
-        $this->phpDocNestedAnnotationGuard = $phpDocNestedAnnotationGuard;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -80,7 +72,7 @@ CODE_SAMPLE
     /**
      * @param Property $node
      */
-    public function refactor(\PhpParser\Node $node): ?\PhpParser\Node
+    public function refactor(Node $node): ?Node
     {
         if (count($node->props) !== 1) {
             return null;
@@ -106,7 +98,11 @@ CODE_SAMPLE
         $phpParserType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node->type);
 
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-        if ($varTagValueNode === null || $varTagValueNode->type === null) {
+        if (! $varTagValueNode instanceof VarTagValueNode) {
+            return null;
+        }
+
+        if ($varTagValueNode->type === null) {
             return null;
         }
 
@@ -117,11 +113,15 @@ CODE_SAMPLE
             $phpParserType
         );
 
-        if ($updatedPhpDocType === null) {
+        if (! $updatedPhpDocType instanceof Type) {
             return null;
         }
 
         $this->phpDocTypeChanger->changeVarType($phpDocInfo, $updatedPhpDocType);
+
+        if (! $phpDocInfo->hasChanged()) {
+            return null;
+        }
 
         return $node;
     }
