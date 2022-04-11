@@ -102,7 +102,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipKeyType($returnExprType)) {
+        if ($this->shouldSkip($returnExprType)) {
             return null;
         }
 
@@ -134,7 +134,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkipKeyType(Type $returnExprType): bool
+    private function shouldSkip(Type $returnExprType): bool
     {
         $keyType = $returnExprType->getKeyType();
 
@@ -165,7 +165,7 @@ CODE_SAMPLE
 
         $itemType = $returnExprType->getItemType();
         if ($itemType instanceof ArrayType) {
-            return $this->shouldSkipKeyType($itemType);
+            return $this->shouldSkip($itemType);
         }
 
         return false;
