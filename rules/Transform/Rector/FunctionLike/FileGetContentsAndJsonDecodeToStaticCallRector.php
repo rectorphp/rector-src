@@ -142,12 +142,15 @@ CODE_SAMPLE
         if ($currentStmt instanceof Return_) {
             return $this->refactorReturnAndAssign($currentStmt, $fileGetContentsFuncCall);
         }
+
         if (! $currentStmt instanceof Expression) {
             return false;
         }
+
         if (! $currentStmt->expr instanceof Assign) {
             return false;
         }
+
         return $this->refactorReturnAndAssign($currentStmt->expr, $fileGetContentsFuncCall);
     }
 
