@@ -12,7 +12,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(TypedPropertyFromAssignsRector::class)
         ->configure([
-            TypedPropertyFromAssignsRector::INLINE_PUBLIC => true
+            TypedPropertyFromAssignsRector::INLINE_PUBLIC => true,
         ]);
 
     $parameters = $containerConfigurator->parameters();
