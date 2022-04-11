@@ -19,10 +19,8 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Unset_;
@@ -33,7 +31,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -41,6 +38,7 @@ use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
 use Rector\ReadWrite\NodeAnalyzer\ReadWritePropertyAnalyzer;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\PackageBuilder\Php\TypeChecker;
 
 /**
@@ -82,7 +80,8 @@ final class PropertyManipulator
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PromotedPropertyResolver $promotedPropertyResolver
+        private readonly PromotedPropertyResolver $promotedPropertyResolver,
+        private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -160,6 +159,7 @@ final class PropertyManipulator
         }
 
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($propertyOrParam);
+        $propertyName = $this->nodeNameResolver->getName($propertyOrParam);
 
         foreach ($propertyFetches as $propertyFetch) {
             if ($this->isChangeableContext($propertyFetch)) {
@@ -167,8 +167,7 @@ final class PropertyManipulator
             }
 
             // skip for constructor? it is allowed to set value in constructor method
-            $classMethod = $this->betterNodeFinder->findParentType($propertyFetch, ClassMethod::class);
-            if ($this->isInlineStmtWithConstructMethod($propertyFetch, $classMethod)) {
+            if ($this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName)) {
                 continue;
             }
 
