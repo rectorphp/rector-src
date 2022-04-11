@@ -11,9 +11,8 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\NullType;
-use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeWithClassName;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -22,7 +21,6 @@ use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
@@ -42,8 +40,7 @@ final class VarDocPropertyTypeInferer
         private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyManipulator $propertyManipulator,
-        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer
     ) {
     }
 
@@ -90,45 +87,15 @@ final class VarDocPropertyTypeInferer
             return false;
         }
 
-        if (! $resolvedType instanceof UnionType && ! $assignInferredPropertyType instanceof UnionType && $assignInferredPropertyType->isSuperTypeOf(
-            $resolvedType
-        )->yes()) {
+        if (! $assignInferredPropertyType instanceof UnionType) {
             return false;
         }
 
-        if ($this->isAssignInferredUnionTypesMoreThanResolvedType($resolvedType, $assignInferredPropertyType)) {
-            return true;
-        }
-
-        if ($resolvedType::class === $assignInferredPropertyType::class) {
+        if (! TypeCombinator::containsNull($assignInferredPropertyType)) {
             return false;
         }
 
-        if ($resolvedType instanceof ObjectWithoutClassType && $assignInferredPropertyType instanceof TypeWithClassName) {
-            return false;
-        }
-
-        if (! $resolvedType instanceof TypeWithClassName) {
-            return true;
-        }
-
-        /** @var TypeWithClassName $resolvedType */
-        $classNameResolvedType = $this->nodeTypeResolver->getFullyQualifiedClassName($resolvedType);
-        /** @var TypeWithClassName $assignInferredPropertyType */
-        $classNameInferredPropertyType = $this->nodeTypeResolver->getFullyQualifiedClassName(
-            $assignInferredPropertyType
-        );
-
-        return $classNameResolvedType !== $classNameInferredPropertyType;
-    }
-
-    private function isAssignInferredUnionTypesMoreThanResolvedType(
-        Type $resolvedType,
-        Type $assignInferredPropertyType
-    ): bool {
-        return $resolvedType instanceof UnionType && $assignInferredPropertyType instanceof UnionType && count(
-            $assignInferredPropertyType->getTypes()
-        ) > count($resolvedType->getTypes());
+        return ! TypeCombinator::containsNull($resolvedType);
     }
 
     private function makeNullableForAccessedBeforeInitialization(
