@@ -17,9 +17,8 @@ use Rector\DowngradePhp74\Rector\Interface_\DowngradePreviouslyImplementedInterf
 use Rector\DowngradePhp74\Rector\LNumber\DowngradeNumericLiteralSeparatorRector;
 use Rector\DowngradePhp74\Rector\MethodCall\DowngradeReflectionGetTypeRector;
 use Rector\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_73);
 

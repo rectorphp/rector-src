@@ -7,9 +7,8 @@ use Rector\Php55\Rector\FuncCall\GetCalledClassToSelfClassRector;
 use Rector\Php55\Rector\FuncCall\GetCalledClassToStaticClassRector;
 use Rector\Php55\Rector\FuncCall\PregReplaceEModifierRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(StringClassNameToClassConstantRector::class);
     $services->set(ClassConstantToSelfClassRector::class);

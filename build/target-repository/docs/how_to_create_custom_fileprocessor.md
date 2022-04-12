@@ -67,7 +67,7 @@ Now register your FileProcessor in your configuration (actually in the container
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use MyVendor\MyPackage\FileProcessor\BoldStatementFileProcessor;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     // [...]
     $services = $containerConfigurator->services();
     $services->set(BoldStatementFileProcessor::class);
@@ -192,7 +192,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use MyVendor\MyPackage\FileProcessor\BoldStatementFileProcessor;
 use MyVendor\MyPackage\FileProcessor\Rector\BoldStatementMakeAmericaGreatAgainRector;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     // [...]
     $services = $containerConfigurator->services();
     $services->set(BoldStatementFileProcessor::class);

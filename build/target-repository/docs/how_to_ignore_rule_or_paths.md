@@ -13,7 +13,7 @@ use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
 use Rector\Core\Configuration\Option;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
 
     // is there a file you need to skip?

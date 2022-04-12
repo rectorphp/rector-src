@@ -15,9 +15,8 @@ use Rector\DowngradePhp71\Rector\List_\DowngradeKeysInListRector;
 use Rector\DowngradePhp71\Rector\StaticCall\DowngradeClosureFromCallableRector;
 use Rector\DowngradePhp71\Rector\String_\DowngradeNegativeStringOffsetToStrlenRector;
 use Rector\DowngradePhp71\Rector\TryCatch\DowngradePipeToMultiCatchExceptionRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_70);
 

@@ -9,9 +9,8 @@ use Rector\DowngradePhp56\Rector\FuncCall\DowngradeArrayFilterUseConstantRector;
 use Rector\DowngradePhp56\Rector\Pow\DowngradeExponentialAssignmentOperatorRector;
 use Rector\DowngradePhp56\Rector\Pow\DowngradeExponentialOperatorRector;
 use Rector\DowngradePhp56\Rector\Use_\DowngradeUseFunctionRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_55);
 

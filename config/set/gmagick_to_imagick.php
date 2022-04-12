@@ -5,10 +5,9 @@ declare(strict_types=1);
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 # https://www.php.net/manual/en/book.gmagick.php → https://www.php.net/manual/en/book.imagick.php
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(RenameClassRector::class)
         ->configure([

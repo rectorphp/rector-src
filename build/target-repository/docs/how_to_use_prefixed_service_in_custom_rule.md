@@ -28,7 +28,7 @@ After that, you need to register the `symplify/package-builder`'s src to service
 
 use Symplify\PackageBuilder\Strings\StringFormatConverter;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     // ...
 
 	$services = $containerConfigurator->services();

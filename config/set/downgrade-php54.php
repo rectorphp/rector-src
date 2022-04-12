@@ -11,9 +11,8 @@ use Rector\DowngradePhp54\Rector\FuncCall\DowngradeIndirectCallByArrayRector;
 use Rector\DowngradePhp54\Rector\FunctionLike\DowngradeCallableTypeDeclarationRector;
 use Rector\DowngradePhp54\Rector\LNumber\DowngradeBinaryNotationRector;
 use Rector\DowngradePhp54\Rector\MethodCall\DowngradeInstanceMethodCallRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_53);
 

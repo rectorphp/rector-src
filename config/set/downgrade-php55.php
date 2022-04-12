@@ -8,9 +8,8 @@ use Rector\DowngradePhp55\Rector\ClassConstFetch\DowngradeClassConstantToStringR
 use Rector\DowngradePhp55\Rector\Foreach_\DowngradeForeachListRector;
 use Rector\DowngradePhp55\Rector\FuncCall\DowngradeBoolvalRector;
 use Rector\DowngradePhp55\Rector\Isset_\DowngradeArbitraryExpressionArgsToEmptyAndIssetRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_54);
 

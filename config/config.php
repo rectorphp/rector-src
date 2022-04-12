@@ -3,9 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Core\Bootstrap\ExtensionConfigResolver;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(__DIR__ . '/services.php');
     $containerConfigurator->import(__DIR__ . '/services-rules.php');
     $containerConfigurator->import(__DIR__ . '/services-packages.php');

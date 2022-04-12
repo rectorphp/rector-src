@@ -9,9 +9,8 @@ use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\AbstractTy
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Foo;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SomeSubscriber;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(RenameMethodRector::class)
         ->configure([

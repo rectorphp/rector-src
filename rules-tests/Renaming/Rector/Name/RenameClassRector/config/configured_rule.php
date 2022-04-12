@@ -16,9 +16,8 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClassWithTypo;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeFinalClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeNonFinalClass;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(RenameClassRector::class)
         ->configure([

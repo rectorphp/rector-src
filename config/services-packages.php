@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     // make use of https://github.com/symplify/easy-parallel
     $containerConfigurator->import(EasyParallelConfig::FILE_PATH);
 

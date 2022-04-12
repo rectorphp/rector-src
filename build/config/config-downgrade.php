@@ -15,7 +15,7 @@ require_once  __DIR__ . '/../../stubs/Composer/EventDispatcher/EventSubscriberIn
 require_once  __DIR__ . '/../../stubs/Composer/Plugin/PluginInterface.php';
 require_once  __DIR__ . '/../../stubs/Nette/DI/CompilerExtension.php';
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
 
     $parameters->set(Option::PARALLEL, false);

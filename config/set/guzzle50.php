@@ -8,9 +8,8 @@ use Rector\Transform\Rector\FuncCall\FuncCallToMethodCallRector;
 use Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector;
 use Rector\Transform\ValueObject\FuncCallToMethodCall;
 use Rector\Transform\ValueObject\StaticCallToFuncCall;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $configuration = [

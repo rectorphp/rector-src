@@ -23,9 +23,8 @@ use Rector\DowngradePhp70\Rector\New_\DowngradeAnonymousClassRector;
 use Rector\DowngradePhp70\Rector\Spaceship\DowngradeSpaceshipRector;
 use Rector\DowngradePhp70\Rector\String_\DowngradeGeneratedScalarTypesRector;
 use Rector\DowngradePhp70\Rector\TryCatch\DowngradeCatchThrowableRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_56);
 

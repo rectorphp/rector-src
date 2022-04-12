@@ -15,7 +15,7 @@ use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     // here we can define, what sets of rules will be applied
     $containerConfigurator->import(SetList::CODE_QUALITY);
 
@@ -40,7 +40,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\Core\Configuration\Option;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(Typo3SetList::TYPO3_76);
     $containerConfigurator->import(Typo3SetList::TYPO3_87);
     $containerConfigurator->import(Typo3SetList::TYPO3_95);

@@ -15,7 +15,7 @@ Do you want to know more about it? Continue here:
 use Rector\Core\Configuration\Option;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
 
     // Rector is using static reflection to load code without running it - see https://phpstan.org/blog/zero-config-analysis-with-static-reflection
@@ -37,7 +37,7 @@ Do you need to include constants, class aliases or custom autoloader? Use `BOOTS
 use Rector\Core\Configuration\Option;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
 
     $parameters->set(Option::BOOTSTRAP_FILES, [

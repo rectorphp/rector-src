@@ -28,7 +28,7 @@ use Rector\Core\Configuration\Option;
 use App\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(SetList::MY_FRAMEWORK_20);
 
     $parameters = $containerConfigurator->parameters();
@@ -47,7 +47,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Set\ValueObject\DowngradeSetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(DowngradeSetList::PHP_70)
 
     $parameters = $containerConfigurator->parameters();

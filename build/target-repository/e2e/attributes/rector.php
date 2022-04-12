@@ -7,7 +7,7 @@ use Rector\Core\ValueObject\PhpVersion;
 use Rector\Symfony\Set\SymfonySetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(SymfonySetList::SYMFONY_52);
 
     $parameters = $containerConfigurator->parameters();
