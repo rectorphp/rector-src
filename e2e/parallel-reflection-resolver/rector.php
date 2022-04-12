@@ -7,14 +7,12 @@ use Rector\Core\Configuration\Option;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
+    $rectorConfig->parallel();
 
-    $parameters->set(Option::PARALLEL, true);
-    $parameters->set(Option::PATHS, [
+    $rectorConfig->paths([
         __DIR__ . '/src/',
     ]);
 
-    $services = $rectorConfig->services();
-    $services->set(RemoveUnusedPrivatePropertyRector::class);
+    $rectorConfig->rule(RemoveUnusedPrivatePropertyRector::class);
 };
 

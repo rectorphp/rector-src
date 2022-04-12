@@ -10,8 +10,7 @@ use Rector\DowngradePhp80\ValueObject\DowngradeAttributeToAnnotation;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
-    $parameters->set(Option::PATHS, [
+    $rectorConfig->paths([
         __DIR__ . '/src',
     ]);
 

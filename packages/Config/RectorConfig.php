@@ -42,6 +42,12 @@ final class RectorConfig extends ContainerConfigurator
         }
     }
 
+    public function disableParallel(): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::PARALLEL, false);
+    }
+
     public function parallel(): void
     {
         $parameters = $this->parameters();
