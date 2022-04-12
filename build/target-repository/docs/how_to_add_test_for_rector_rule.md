@@ -12,6 +12,8 @@ When using Rector to update your own code, you will typically be using release r
 - Add your test as described below.  Note that the rector binary is located at `bin/rector` instead of the typical `vendor/bin/rector`
 - Push the branch and create a new pull request to https://github.com/rectorphp/rector-src
 
+<br>
+
 Alternatively, the above may be performed on the CLI
 
 ```bash
