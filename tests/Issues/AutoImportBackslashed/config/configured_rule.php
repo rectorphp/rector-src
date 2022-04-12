@@ -11,6 +11,5 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(ExplicitBoolCompareRector::class);
     $services->set(ReturnTypeDeclarationRector::class);
 
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 };

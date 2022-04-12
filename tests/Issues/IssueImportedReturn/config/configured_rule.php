@@ -11,6 +11,5 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(RepeatedLiteralToClassConstantRector::class);
     $services->set(ReturnTypeDeclarationRector::class);
 
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 };

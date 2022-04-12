@@ -6,7 +6,6 @@ use Rector\Config\RectorConfig;
 use Rector\Symfony\Rector\ClassMethod\ReplaceSensioRouteAnnotationWithSymfonyRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 
     $services = $rectorConfig->services();

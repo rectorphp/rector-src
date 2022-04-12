@@ -7,7 +7,6 @@ use Rector\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector;
 use Rector\DowngradePhp80\Rector\FunctionLike\DowngradeMixedTypeDeclarationRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 
     $services = $rectorConfig->services();

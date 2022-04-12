@@ -7,7 +7,6 @@ use Rector\PHPUnit\Rector\Class_\AddProphecyTraitRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 
     $services = $rectorConfig->services();

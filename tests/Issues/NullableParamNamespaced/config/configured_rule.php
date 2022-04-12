@@ -13,6 +13,5 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(RemoveUnusedPrivateMethodParameterRector::class);
     $services->set(RemoveUnreachableStatementRector::class);
 
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 };

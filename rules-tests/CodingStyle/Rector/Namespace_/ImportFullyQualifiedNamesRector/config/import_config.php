@@ -6,7 +6,6 @@ use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 
     $services = $rectorConfig->services();

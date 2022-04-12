@@ -9,10 +9,10 @@ use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\Option;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
-
     // paths and extensions
-    $parameters->set(Option::PATHS, []);
+    $rectorConfig->paths([]);
+
+    $parameters = $rectorConfig->parameters();
     $parameters->set(Option::FILE_EXTENSIONS, ['php']);
     $parameters->set(Option::AUTOLOAD_PATHS, []);
 
