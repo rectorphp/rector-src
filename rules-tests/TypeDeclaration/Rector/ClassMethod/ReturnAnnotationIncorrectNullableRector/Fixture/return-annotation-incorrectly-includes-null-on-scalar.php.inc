@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector\Fixture;
 
-final class ParamAnnotationIncorrectlyIncludesNullOnScalar
+final class ReturnAnnotationIncorrectlyIncludesNullOnScalar
 {
     /**
      * @return string|null
@@ -18,7 +18,7 @@ final class ParamAnnotationIncorrectlyIncludesNullOnScalar
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector\Fixture;
 
-final class ParamAnnotationIncorrectlyIncludesNullOnScalar
+final class ReturnAnnotationIncorrectlyIncludesNullOnScalar
 {
     /**
      * @return string
