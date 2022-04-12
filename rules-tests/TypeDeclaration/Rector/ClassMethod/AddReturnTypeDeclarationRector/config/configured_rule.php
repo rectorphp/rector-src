@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use PHPStan\Type\MixedType;
-
 use PHPStan\Type\VoidType;
 use Rector\Config\RectorConfig;
 use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;

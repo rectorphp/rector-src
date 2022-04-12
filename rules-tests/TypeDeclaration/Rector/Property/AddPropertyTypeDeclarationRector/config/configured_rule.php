@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use PHPStan\Type\IntegerType;
-
 use PHPStan\Type\StringType;
 use Rector\Config\RectorConfig;
 use Rector\Tests\TypeDeclaration\Rector\Property\AddPropertyTypeDeclarationRector\Source\ParentClassWithProperty;

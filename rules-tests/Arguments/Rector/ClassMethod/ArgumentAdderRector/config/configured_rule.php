@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use PHPStan\Type\ArrayType;
-
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;

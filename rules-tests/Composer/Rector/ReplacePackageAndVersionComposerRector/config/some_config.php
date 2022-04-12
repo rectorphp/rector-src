@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Composer\Rector\ReplacePackageAndVersionComposerRector;
-
 use Rector\Composer\ValueObject\ReplacePackageAndVersion;
 use Rector\Config\RectorConfig;
 

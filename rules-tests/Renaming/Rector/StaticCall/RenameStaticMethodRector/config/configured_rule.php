@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Nette\Utils\Html;
-
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\StaticCall\RenameStaticMethodRector;
 use Rector\Renaming\ValueObject\RenameStaticMethod;

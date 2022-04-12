@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Composer\Rector\AddPackageToRequireComposerRector;
-
 use Rector\Composer\ValueObject\PackageAndVersion;
 use Rector\Config\RectorConfig;
 

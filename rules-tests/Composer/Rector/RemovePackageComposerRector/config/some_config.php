@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Composer\Rector\RemovePackageComposerRector;
-
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {

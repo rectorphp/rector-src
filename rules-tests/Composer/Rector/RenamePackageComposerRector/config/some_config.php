@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Composer\Rector\RenamePackageComposerRector;
-
 use Rector\Composer\ValueObject\RenamePackage;
 use Rector\Config\RectorConfig;
 

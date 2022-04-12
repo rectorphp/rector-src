@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use PHPStan\Type\MixedType;
-
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use Rector\Config\RectorConfig;

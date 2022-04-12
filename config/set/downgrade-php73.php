@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Core\Configuration\Option;
-
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\DowngradePhp73\Rector\ConstFetch\DowngradePhp73JsonConstRector;
 use Rector\DowngradePhp73\Rector\FuncCall\DowngradeArrayKeyFirstLastRector;

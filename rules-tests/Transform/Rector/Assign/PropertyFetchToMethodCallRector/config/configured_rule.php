@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-
 use Rector\Tests\Transform\Rector\Assign\PropertyFetchToMethodCallRector\Source\Generator;
 use Rector\Tests\Transform\Rector\Assign\PropertyFetchToMethodCallRector\Source\Translator;
 use Rector\Transform\Rector\Assign\PropertyFetchToMethodCallRector;

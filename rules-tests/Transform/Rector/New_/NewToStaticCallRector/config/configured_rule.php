@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-
 use Rector\Tests\Transform\Rector\New_\NewToStaticCallRector\Source\FromNewClass;
 use Rector\Tests\Transform\Rector\New_\NewToStaticCallRector\Source\IntoStaticClass;
 use Rector\Transform\Rector\New_\NewToStaticCallRector;

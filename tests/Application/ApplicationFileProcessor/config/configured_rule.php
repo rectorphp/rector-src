@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-
 use Rector\Core\Tests\Application\ApplicationFileProcessor\Source\Rector\ChangeTextRector;
 use Rector\Core\Tests\Application\ApplicationFileProcessor\Source\TextFileProcessor;
 

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
-
 use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
 use Rector\Config\RectorConfig;
 
