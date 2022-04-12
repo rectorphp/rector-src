@@ -7,8 +7,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $services = $rectorConfig->services();
-    $services->set(TypedPropertyFromStrictConstructorRector::class);
+    $rectorConfig->rule(TypedPropertyFromStrictConstructorRector::class);
 
-    $rectorConfig->phpVersion(value: PhpVersionFeature::INTERSECTION_TYPES);
+    $rectorConfig->phpVersion(PhpVersionFeature::INTERSECTION_TYPES);
 };

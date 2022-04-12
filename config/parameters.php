@@ -28,7 +28,6 @@ return static function (RectorConfig $rectorConfig): void {
     // FQN class importing
     $parameters->set(Option::AUTO_IMPORT_NAMES, false);
     $parameters->set(Option::IMPORT_SHORT_CLASSES, true);
-    $parameters->set(Option::IMPORT_DOC_BLOCKS, true);
 
     $parameters->set(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, 60);
     $parameters->set(Option::SKIP, []);
