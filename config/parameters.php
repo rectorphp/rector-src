@@ -22,13 +22,12 @@ return static function (RectorConfig $rectorConfig): void {
 
     // parallel
     $rectorConfig->disableParallel();
-
     $parameters->set(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, 16);
     $parameters->set(Option::PARALLEL_JOB_SIZE, 20);
     $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, 120);
 
     // FQN class importing
-    $parameters->set(Option::AUTO_IMPORT_NAMES, false);
+    $rectorConfig->disableImportNames();
     $parameters->set(Option::IMPORT_SHORT_CLASSES, true);
 
     $parameters->set(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, 60);

@@ -114,7 +114,6 @@ vendor/bin/rector process src
 
 ```php
 // rector.php
-use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Config\RectorConfig;
 
