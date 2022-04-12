@@ -63,7 +63,7 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::SKIP, $criteria);
     }
 
-    public function autoImportNames(): void
+    public function importNames(): void
     {
         $parameters = $this->parameters();
         $parameters->set(Option::AUTO_IMPORT_NAMES, true);
