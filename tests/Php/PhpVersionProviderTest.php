@@ -29,7 +29,6 @@ final class PhpVersionProviderTest extends AbstractTestCase
     public function provideValidConfigData(): Iterator
     {
         yield [__DIR__ . '/config/valid_explicit_value.php'];
-        yield [__DIR__ . '/config/valid_minus_value.php'];
     }
 
     /**

@@ -113,6 +113,6 @@ final class RectorConfig extends ContainerConfigurator
     public function phpVersion(int $phpVersion): void
     {
         $parameters = $this->parameters();
-        $parameters->phpVersion($phpVersion);
+        $parameters->set(Option::PHP_VERSION_FEATURES, $phpVersion);
     }
 }

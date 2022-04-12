@@ -11,12 +11,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(SetList::PHP_55);
     $rectorConfig->import(LevelSetList::UP_TO_PHP_54);
 
-<<<<<<< HEAD
-    // parameter must be defined after import, to override imported param version
-    $parameters = $rectorConfig->parameters();
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_55);
-=======
     // parameter must be defined after import, to override impored param version
     $rectorConfig->phpVersion(PhpVersion::PHP_55);
->>>>>>> 86e20f5821... [DX] Add phpVersion() method to RectorConfig
 };
