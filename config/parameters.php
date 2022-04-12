@@ -22,6 +22,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     // parallel
     $rectorConfig->disableParallel();
+
     $parameters->set(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, 16);
     $parameters->set(Option::PARALLEL_JOB_SIZE, 20);
     $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, 120);
