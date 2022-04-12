@@ -2,15 +2,20 @@
 
 declare(strict_types=1);
 
-use Rector\Config\RectorConfig;
+use Rector\Core\Configuration\Option;
 use Rector\DowngradePhp72\Rector\FuncCall\DowngradeJsonDecodeNullAssociativeArgRector;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->parallel();
+// note: ContainerConfigurator on purpose to test older config behavior
+// in the future this class will be isolated and completely removed from Rector config
+return static function (ContainerConfigurator $containerConfigurator): void {
+    $parameters = $containerConfigurator->parameters();
+    $parameters->set(Option::PARALLEL, true);
 
-    $rectorConfig->paths([
+    $parameters->set(Option::PATHS, [
         __DIR__ . '/tests',
     ]);
 
-    $rectorConfig->rule(DowngradeJsonDecodeNullAssociativeArgRector::class);
+    $services = $containerConfigurator->services();
+    $services->set(DowngradeJsonDecodeNullAssociativeArgRector::class);
 };
