@@ -55,7 +55,7 @@ To remove imports, use [ECS](https://github.com/symplify/easy-coding-standard) w
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
+return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
     $services->set(NoUnusedImportsFixer::class);
 };
