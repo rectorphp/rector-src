@@ -10,7 +10,6 @@ use Rector\Symfony\Set\SymfonySetList;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(SymfonySetList::SYMFONY_52);
 
-    $parameters = $rectorConfig->parameters();
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_80);
+        $rectorConfig->phpVersion(PhpVersion::PHP_80);
     $parameters->set(Option::SOURCE, [__DIR__ . '/src']);
 };

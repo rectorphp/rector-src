@@ -13,7 +13,7 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribut
 return static function (RectorConfig $rectorConfig): void {
     $parameters = $rectorConfig->parameters();
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersionFeature::NEW_INITIALIZERS - 1);
+    $rectorConfig->phpVersion(PhpVersionFeature::NEW_INITIALIZERS - 1);
 
     $services = $rectorConfig->services();
     $services->set(AnnotationToAttributeRector::class)

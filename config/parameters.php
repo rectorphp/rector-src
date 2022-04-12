@@ -30,7 +30,6 @@ return static function (RectorConfig $rectorConfig): void {
     $parameters->set(Option::IMPORT_SHORT_CLASSES, true);
     $parameters->set(Option::IMPORT_DOC_BLOCKS, true);
 
-    $parameters->set(Option::PHP_VERSION_FEATURES, null);
     $parameters->set(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, 60);
     $parameters->set(Option::SKIP, []);
 

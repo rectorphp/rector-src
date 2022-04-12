@@ -11,7 +11,6 @@ return static function (RectorConfig $rectorConfig): void {
     $services = $rectorConfig->services();
     $services->set(TypedPropertyRector::class);
 
-    $parameters = $rectorConfig->parameters();
-    $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersionFeature::UNION_TYPES);
+    $rectorConfig->phpVersion(PhpVersionFeature::UNION_TYPES);
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
 };

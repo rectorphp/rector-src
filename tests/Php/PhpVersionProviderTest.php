@@ -50,8 +50,6 @@ final class PhpVersionProviderTest extends AbstractTestCase
      */
     public function provideInvalidConfigData(): Iterator
     {
-        yield [__DIR__ . '/config/invalid_input.php'];
-        yield [__DIR__ . '/config/invalid_string_input.php'];
         yield [__DIR__ . '/config/invalid_number_input.php'];
         yield [__DIR__ . '/config/invalid_php_4_number.php'];
     }

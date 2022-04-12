@@ -7,6 +7,7 @@ namespace Rector\Config;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\ValueObject\PhpVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Webmozart\Assert\Assert;
 
@@ -98,5 +99,14 @@ final class RectorConfig extends ContainerConfigurator
 
         $services = $this->services();
         $services->set($rectorClass);
+    }
+
+    /**
+     * @param PhpVersion::* $phpVersion
+     */
+    public function phpVersion(int $phpVersion): void
+    {
+        $parameters = $this->parameters();
+        $parameters->phpVersion($phpVersion);
     }
 }
