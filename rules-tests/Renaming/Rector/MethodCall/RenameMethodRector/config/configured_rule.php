@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
+
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
@@ -10,8 +12,8 @@ use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Foo;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SomeSubscriber;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(RenameMethodRector::class)
         ->configure([
             new MethodCallRename(AbstractType::class, 'setDefaultOptions', 'configureOptions'),

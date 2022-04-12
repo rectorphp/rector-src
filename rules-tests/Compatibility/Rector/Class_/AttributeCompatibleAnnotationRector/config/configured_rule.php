@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use Rector\Compatibility\Rector\Class_\AttributeCompatibleAnnotationRector;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+use Rector\Config\RectorConfig;
+
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(AttributeCompatibleAnnotationRector::class);
 };

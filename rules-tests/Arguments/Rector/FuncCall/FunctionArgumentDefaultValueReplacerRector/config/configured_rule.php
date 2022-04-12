@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
-use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
+use Rector\Config\RectorConfig;
+
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(FunctionArgumentDefaultValueReplacerRector::class)
         ->configure([
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'lte', 'le'),

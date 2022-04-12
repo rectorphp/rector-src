@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 use Rector\Arguments\Rector\MethodCall\RemoveMethodCallParamRector;
+
 use Rector\Arguments\ValueObject\RemoveMethodCallParam;
+use Rector\Config\RectorConfig;
 use Rector\Tests\Arguments\Rector\MethodCall\RemoveMethodCallParamRector\Source\MethodCaller;
 use Rector\Tests\Arguments\Rector\MethodCall\RemoveMethodCallParamRector\Source\StaticCaller;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(RemoveMethodCallParamRector::class)
         ->configure([
             new RemoveMethodCallParam(MethodCaller::class, 'process', 1),

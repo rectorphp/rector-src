@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
+
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(ParamTypeByParentCallTypeRector::class);
 
-    $parameters = $containerConfigurator->parameters();
+    $parameters = $rectorConfig->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersionFeature::UNION_TYPES);
 };

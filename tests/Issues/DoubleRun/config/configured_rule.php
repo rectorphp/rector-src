@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
+
 use Rector\Set\ValueObject\SetList;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $containerConfigurator->import(SetList::DEAD_CODE);
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(SetList::DEAD_CODE);
 };

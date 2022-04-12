@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
+
+use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
     $services->set(NewlineAfterStatementRector::class);
 };

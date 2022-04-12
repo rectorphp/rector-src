@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
-use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
+use Rector\Config\RectorConfig;
+
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
     $services->set(ReplaceArgumentDefaultValueRector::class)
         ->configure([
 

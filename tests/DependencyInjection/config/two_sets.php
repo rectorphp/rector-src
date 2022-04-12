@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
+
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Symfony\Set\TwigSetList;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $containerConfigurator->import(PHPUnitSetList::PHPUNIT_60);
-    $containerConfigurator->import(TwigSetList::TWIG_20);
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(PHPUnitSetList::PHPUNIT_60);
+    $rectorConfig->import(TwigSetList::TWIG_20);
 };

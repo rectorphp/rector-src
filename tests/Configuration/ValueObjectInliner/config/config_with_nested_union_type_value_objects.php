@@ -7,12 +7,13 @@ namespace Rector\Core\Tests\Configuration\ValueObjectInliner\config;
 use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
+use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\ValueObjectInliner;
 use Rector\Core\Tests\Configuration\ValueObjectInliner\Source\ServiceWithValueObject;
 use Rector\Core\Tests\Configuration\ValueObjectInliner\Source\WithType;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
 
     $services->defaults()
         ->public()
