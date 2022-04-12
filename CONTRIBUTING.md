@@ -24,9 +24,13 @@ composer update
 
 Then you can start working with the code :+1:
 
+<br>
+
+Do you want to **contribute a failing test**? [This tutorial will sow you how](https://github.com/rectorphp/rector/blob/main/docs/how_to_add_test_for_rector_rule.md)
+
 ## Preparing Pull Request
 
-There 3 rules will highly increase chance to get your PR merged:
+There 3 steps will make your pull-request easy to merge:
 
 - **1 feature per pull-request**
 - **new features need tests**
