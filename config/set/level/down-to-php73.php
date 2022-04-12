@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
+
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Rector\Set\ValueObject\DowngradeSetList;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $containerConfigurator->import(DowngradeLevelSetList::DOWN_TO_PHP_74);
-    $containerConfigurator->import(DowngradeSetList::PHP_74);
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->import(DowngradeLevelSetList::DOWN_TO_PHP_74);
+    $rectorConfig->import(DowngradeSetList::PHP_74);
 };

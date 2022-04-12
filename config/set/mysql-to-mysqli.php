@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use Rector\Arguments\Rector\FuncCall\SwapFuncCallArgumentsRector;
+
 use Rector\Arguments\ValueObject\SwapFuncCallArguments;
+use Rector\Config\RectorConfig;
 use Rector\MysqlToMysqli\Rector\Assign\MysqlAssignToMysqliRector;
 use Rector\MysqlToMysqli\Rector\FuncCall\MysqlFuncCallToMysqliRector;
 use Rector\MysqlToMysqli\Rector\FuncCall\MysqlPConnectToMysqliConnectRector;
@@ -13,8 +15,8 @@ use Rector\Removing\ValueObject\RemoveFuncCallArg;
 use Rector\Renaming\Rector\ConstFetch\RenameConstantRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (RectorConfig $rectorConfig): void {
+    $services = $rectorConfig->services();
 
     # https://stackoverflow.com/a/1390625/1348344
     # https://github.com/philip/MySQLConverterTool/blob/master/Converter.php

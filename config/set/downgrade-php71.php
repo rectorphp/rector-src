@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
+
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\DowngradePhp71\Rector\Array_\SymmetricArrayDestructuringToListRector;
@@ -16,11 +18,11 @@ use Rector\DowngradePhp71\Rector\StaticCall\DowngradeClosureFromCallableRector;
 use Rector\DowngradePhp71\Rector\String_\DowngradeNegativeStringOffsetToStrlenRector;
 use Rector\DowngradePhp71\Rector\TryCatch\DowngradePipeToMultiCatchExceptionRector;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $parameters = $containerConfigurator->parameters();
+return static function (RectorConfig $rectorConfig): void {
+    $parameters = $rectorConfig->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_70);
 
-    $services = $containerConfigurator->services();
+    $services = $rectorConfig->services();
     $services->set(DowngradeNullableTypeDeclarationRector::class);
     $services->set(DowngradeVoidTypeDeclarationRector::class);
     $services->set(DowngradeClassConstantVisibilityRector::class);

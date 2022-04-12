@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\Config\RectorConfig;
+
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\DowngradePhp74\Rector\Array_\DowngradeArraySpreadRector;
@@ -17,11 +19,11 @@ use Rector\DowngradePhp74\Rector\LNumber\DowngradeNumericLiteralSeparatorRector;
 use Rector\DowngradePhp74\Rector\MethodCall\DowngradeReflectionGetTypeRector;
 use Rector\DowngradePhp74\Rector\Property\DowngradeTypedPropertyRector;
 
-return static function (\Rector\Config\RectorConfig $containerConfigurator): void {
-    $parameters = $containerConfigurator->parameters();
+return static function (RectorConfig $rectorConfig): void {
+    $parameters = $rectorConfig->parameters();
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_73);
 
-    $services = $containerConfigurator->services();
+    $services = $rectorConfig->services();
     $services->set(DowngradeTypedPropertyRector::class);
     $services->set(ArrowFunctionToAnonymousFunctionRector::class);
     $services->set(DowngradeCovariantReturnTypeRector::class);
