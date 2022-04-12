@@ -1,12 +1,11 @@
 <?php
 
 declare(strict_types=1);
-use Rector\Config\RectorConfig;
 
+use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Stubs\PHPStanStubLoader;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 $phpStanStubLoader = new PHPStanStubLoader();
 $phpStanStubLoader->loadStubs();

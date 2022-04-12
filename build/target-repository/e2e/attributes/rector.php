@@ -6,7 +6,6 @@ use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Symfony\Set\SymfonySetList;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(SymfonySetList::SYMFONY_52);

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-
 use Rector\Privatization\Rector\Class_\ChangeGlobalVariablesToPropertiesRector;
 use Rector\Privatization\Rector\Class_\ChangeLocalPropertyToVariableRector;
 use Rector\Privatization\Rector\Class_\ChangeReadOnlyVariableWithDefaultValueToConstantRector;
