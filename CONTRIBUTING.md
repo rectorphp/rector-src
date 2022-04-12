@@ -1,24 +1,28 @@
 # How to Contribute
 
-Contributions here are more than welcomed! You can contribute to [rector-src](https://github.com/rectorphp/rector-src) repository.
+Contributions here are more than welcomed! You can contribute to [rector-src](https://github.com/rectorphp/rector-src) repository or one of [extension packages](https://github.com/rectorphp/).
 
 ## Preparing Local Environment
 
-If you have PHP 8 and Composer installed locally you can use it straight away. You can validate your environment with:
+1. Fork the [rector/rector-src](https://github.com/rectorphp/rector-src) repository and clone it
+
+```bash
+git clone git@github.com:rectorphp/rector-src.git
+cd rector-src
+```
+
+2. We use PHP 8.1 and composer
+
+Verify your local environment and update dependencies:
 
 ```bash
 composer check-platform-reqs
+composer update
 ```
 
-Alternatively you can use Docker runtime. All you need to do is wrap every command with `docker-compose run php`, so commands will be executed inside Docker container.
+*Note: using Docker for contributing is strongly discouraged, as it requires [extra knowledge of composer internals](https://github.com/composer/composer/issues/9368#issuecomment-718112361).*
 
-For example, to download PHP dependencies:
-
-```bash
-docker-compose run php composer install
-```
-
-Now you can start using all scripts and work with the code.
+Then you can start working with the code :+1:
 
 ## Preparing Pull Request
 
