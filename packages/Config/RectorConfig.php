@@ -115,4 +115,26 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::PHP_VERSION_FEATURES, $phpVersion);
     }
+
+    /**
+     * @param string[] $autoloadPaths
+     */
+    public function autoloadPaths(array $autoloadPaths): void
+    {
+        Assert::allString($autoloadPaths);
+
+        $parameters = $this->parameters();
+        $parameters->set(Option::AUTOLOAD_PATHS, $autoloadPaths);
+    }
+
+    /**
+     * @param string[] $bootstrapFiles
+     */
+    public function bootstrapFiles(array $bootstrapFiles): void
+    {
+        Assert::allString($bootstrapFiles);
+
+        $parameters = $this->parameters();
+        $parameters->set(Option::BOOTSTRAP_FILES, $bootstrapFiles);
+    }
 }

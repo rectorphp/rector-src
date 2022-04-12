@@ -14,13 +14,15 @@ return static function (RectorConfig $rectorConfig): void {
 
     $parameters = $rectorConfig->parameters();
     $parameters->set(Option::FILE_EXTENSIONS, ['php']);
-    $parameters->set(Option::AUTOLOAD_PATHS, []);
+
+    $rectorConfig->autoloadPaths([]);
 
     // these files will be executed, useful e.g. for constant definitions
-    $parameters->set(Option::BOOTSTRAP_FILES, []);
+    $rectorConfig->bootstrapFiles([]);
 
     // parallel
-    $parameters->set(Option::PARALLEL, false);
+    $rectorConfig->disableParallel();
+
     $parameters->set(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, 16);
     $parameters->set(Option::PARALLEL_JOB_SIZE, 20);
     $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, 120);
@@ -30,7 +32,8 @@ return static function (RectorConfig $rectorConfig): void {
     $parameters->set(Option::IMPORT_SHORT_CLASSES, true);
 
     $parameters->set(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, 60);
-    $parameters->set(Option::SKIP, []);
+
+    $rectorConfig->skip([]);
 
     $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, null);
 

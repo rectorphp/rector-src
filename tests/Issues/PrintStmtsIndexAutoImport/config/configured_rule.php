@@ -6,13 +6,10 @@ use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $parameters = $rectorConfig->parameters();
     $rectorConfig->importNames();
 
-    $services = $rectorConfig->services();
-    $services->set(RenameClassRector::class)
-        ->configure([
-            'Route' => 'Illuminate\Support\Facades\Route',
-            'Request' => 'Illuminate\Http\Request',
-        ]);
+    $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
+        'Route' => 'Illuminate\Support\Facades\Route',
+        'Request' => 'Illuminate\Http\Request',
+    ]);
 };
