@@ -130,19 +130,30 @@ final class TypeComparator
 
     public function areTypesPossiblyIncluded(?Type $assumptionType, ?Type $exactType): bool
     {
-        if (! $assumptionType instanceof Type || ! $exactType instanceof Type) {
+        if (! $assumptionType instanceof Type) {
             return true;
         }
-
+        if (! $exactType instanceof Type) {
+            return true;
+        }
         if ($this->areTypesEqual($assumptionType, $exactType)) {
             return true;
         }
-
-        if (! $assumptionType instanceof UnionType && ! $exactType instanceof UnionType) {
-            return true;
+        if ($assumptionType instanceof UnionType) {
+            return (is_countable($assumptionType->getTypes()) ? count($assumptionType->getTypes()) : 0) > (is_countable(
+                $exactType->getTypes()
+            ) ? count(
+                $exactType->getTypes()
+            ) : 0);
         }
-
-        return count($assumptionType->getTypes()) > count($exactType->getTypes());
+        if ($exactType instanceof UnionType) {
+            return (is_countable($assumptionType->getTypes()) ? count($assumptionType->getTypes()) : 0) > (is_countable(
+                $exactType->getTypes()
+            ) ? count(
+                $exactType->getTypes()
+            ) : 0);
+        }
+        return true;
     }
 
     private function areAliasedObjectMatchingFqnObject(Type $firstType, Type $secondType): bool
