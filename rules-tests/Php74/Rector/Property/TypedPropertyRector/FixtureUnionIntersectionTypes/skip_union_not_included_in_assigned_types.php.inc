@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\TypedPropertyByVarAndAssign\Fixture;
+namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionIntersectionTypes;
 
 class SkipUnionNotIncludedInAssignedTypes
 {
