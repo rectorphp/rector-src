@@ -83,10 +83,6 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->nodeTypeResolver->isNullableType($property)) {
-            return true;
-        }
-
         if (count($property->props) > 1) {
             return true;
         }
@@ -108,6 +104,10 @@ CODE_SAMPLE
         // so it needs to has null default
         if (! $classLike instanceof Class_) {
             return false;
+        }
+
+        if (! $this->nodeTypeResolver->isNullableType($property)) {
+            return true;
         }
 
         return $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
