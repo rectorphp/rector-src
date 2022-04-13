@@ -134,7 +134,7 @@ CODE_SAMPLE
             return $node;
         }
 
-        // public property can be anything with not inline public configured
+        // non-private property can be anything with not inline public configured
         if (! $node->isPrivate() && ! $this->inlinePublic) {
             $this->phpDocTypeChanger->changeVarType($phpDocInfo, $inferredType);
             return $node;
