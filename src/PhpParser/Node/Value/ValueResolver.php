@@ -62,7 +62,7 @@ final class ValueResolver
     }
 
     /**
-     * @phpstan-return mixed|null
+     * @return mixed|null
      */
     public function getValue(Expr $expr, bool $resolvedClassReference = false)
     {
@@ -215,7 +215,7 @@ final class ValueResolver
     }
 
     /**
-     * @phpstan-return mixed[]|null
+     * @return mixed[]|null
      */
     private function extractConstantArrayTypeValue(ConstantArrayType $constantArrayType): ?array
     {
