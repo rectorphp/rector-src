@@ -133,27 +133,27 @@ final class TypeComparator
         if (! $assumptionType instanceof Type) {
             return true;
         }
+
         if (! $exactType instanceof Type) {
             return true;
         }
+
         if ($this->areTypesEqual($assumptionType, $exactType)) {
             return true;
         }
-        if ($assumptionType instanceof UnionType) {
-            return (is_countable($assumptionType->getTypes()) ? count($assumptionType->getTypes()) : 0) > (is_countable(
-                $exactType->getTypes()
-            ) ? count(
-                $exactType->getTypes()
-            ) : 0);
+
+        if (! $assumptionType instanceof UnionType) {
+            return true;
         }
-        if ($exactType instanceof UnionType) {
-            return (is_countable($assumptionType->getTypes()) ? count($assumptionType->getTypes()) : 0) > (is_countable(
-                $exactType->getTypes()
-            ) ? count(
-                $exactType->getTypes()
-            ) : 0);
+
+        if (! $exactType instanceof UnionType) {
+            return true;
         }
-        return true;
+
+        $assumpionTypeTypes = $assumptionType->getTypes();
+        $exactTypeTypes = $exactType->getTypes();
+
+        return count($assumpionTypeTypes) > count($exactTypeTypes);
     }
 
     private function areAliasedObjectMatchingFqnObject(Type $firstType, Type $secondType): bool
