@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Rector\Php74\Rector\Property;
 
 use PhpParser\Node;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
