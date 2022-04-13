@@ -108,13 +108,8 @@ CODE_SAMPLE
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $phpDocNode = $phpDocInfo->getPhpDocNode();
-        $wasAnyParamTagUpdated = $this->wasUpdateOfParamTagsRequired($phpDocNode, $node, $phpDocInfo);
 
-        if (! $wasAnyParamTagUpdated) {
-            return null;
-        }
-
-        return $node;
+        return $this->updateParamTagsIfRequired($phpDocNode, $node, $phpDocInfo);
     }
 
     private function matchParamByName(string $desiredParamName, ClassMethod|Function_ $node): ?Param
@@ -158,11 +153,14 @@ CODE_SAMPLE
         }
     }
 
-    private function wasUpdateOfParamTagsRequired(
+    /**
+     * @return ClassMethod|Function_|null
+     */
+    private function updateParamTagsIfRequired(
         PhpDocNode $phpDocNode,
         ClassMethod|Function_ $node,
         PhpDocInfo $phpDocInfo
-    ): bool {
+    ): ?Node {
         $paramTagValueNodes = $phpDocNode->getParamTagValues();
         $paramTagWasUpdated = false;
         foreach ($paramTagValueNodes as $paramTagValueNode) {
@@ -192,6 +190,6 @@ CODE_SAMPLE
             $paramTagWasUpdated = true;
         }
 
-        return $paramTagWasUpdated;
+        return $paramTagWasUpdated ? $node : null;
     }
 }
