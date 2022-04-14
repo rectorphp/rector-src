@@ -79,7 +79,7 @@ CODE_SAMPLE
         Assert::allString($configuration);
 
         $this->annotationsToConsiderForInlining = array_map(
-            fn (string $annotation): string => '@' . $annotation,
+            fn (string $annotation): string => '@' . ltrim($annotation, '@'),
             $configuration
         );
     }
