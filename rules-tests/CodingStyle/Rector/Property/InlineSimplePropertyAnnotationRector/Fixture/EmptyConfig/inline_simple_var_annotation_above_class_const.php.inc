@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector\Fixture\DefaultConfig;
+namespace Rector\Tests\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector\Fixture\EmptyConfig;
 
 final class InlineSimpleVarAnnotationAboveClassConstant
 {
@@ -23,7 +23,7 @@ final class InlineSimpleVarAnnotationAboveClassConstant
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector\Fixture\DefaultConfig;
+namespace Rector\Tests\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector\Fixture\EmptyConfig;
 
 final class InlineSimpleVarAnnotationAboveClassConstant
 {

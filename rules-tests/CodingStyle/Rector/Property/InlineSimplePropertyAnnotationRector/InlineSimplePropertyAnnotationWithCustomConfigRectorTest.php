@@ -28,6 +28,6 @@ final class InlineSimplePropertyAnnotationWithCustomConfigRectorTest extends Abs
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/custom_config.php';
+        return __DIR__ . '/config/configure_rule_custom_config.php';
     }
 }

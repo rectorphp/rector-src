@@ -23,11 +23,11 @@ final class InlineSimplePropertyAnnotationRectorTest extends AbstractRectorTestC
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/DefaultConfig');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/EmptyConfig');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/config.php';
+        return __DIR__ . '/config/configure_rule_empty_config.php';
     }
 }
