@@ -103,11 +103,6 @@ CODE_SAMPLE
             return $this->refactorUsedVariable($node);
         }
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Expression) {
-            return null;
-        }
-
         if ($this->hasCallLikeInAssignExpr($node->expr)) {
             // keep the expr, can have side effect
             return $this->cleanCastedExpr($node->expr);
