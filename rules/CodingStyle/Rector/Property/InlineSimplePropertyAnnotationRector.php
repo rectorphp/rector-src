@@ -17,6 +17,8 @@ use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector\InlineSimplePropertyAnnotationRectorTest
+ *
+ * Future note: do not register to coding-style config set as it will always conflict with ecs use of \PhpCsFixer\Fixer\Phpdoc\PhpdocLineSpanFixer
  */
 final class InlineSimplePropertyAnnotationRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
