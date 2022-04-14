@@ -18,7 +18,6 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\Guard\PhpDocNestedAnnotationGuard;
 use Rector\TypeDeclaration\Helper\PhpDocNullableTypeHelper;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
-use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -31,7 +30,6 @@ final class ParamAnnotationIncorrectNullableRector extends AbstractRector
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocNullableTypeHelper $phpDocNullableTypeHelper,
         private readonly PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory
     ) {
     }
@@ -91,10 +89,6 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->getParams() === []) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
             return null;
         }
 
