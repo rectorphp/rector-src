@@ -211,6 +211,11 @@ CODE_SAMPLE
 
     private function isNodeTooLong(Assign $assign): bool
     {
+        $originalAssign = $assign->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalAssign instanceof Assign) {
+            return true;
+        }
+
         $assignContent = $this->nodePrinter->print($assign);
         return Strings::length($assignContent) > self::LINE_LENGTH_LIMIT;
     }
