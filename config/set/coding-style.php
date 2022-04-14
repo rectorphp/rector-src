@@ -24,6 +24,7 @@ use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Property\AddFalseDefaultToBoolPropertyRector;
+use Rector\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
@@ -69,4 +70,5 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(UnSpreadOperatorRector::class);
     $services->set(NewlineAfterStatementRector::class);
     $services->set(RemoveFinalFromConstRector::class);
+    $services->set(InlineSimplePropertyAnnotationRector::class);
 };
