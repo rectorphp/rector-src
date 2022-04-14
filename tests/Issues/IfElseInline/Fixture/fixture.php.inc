@@ -38,11 +38,7 @@ final class Fixture
 
     public function run(string $className): string
     {
-        if (str_contains($className, '\\')) {
-            $shortClassName = (string) Strings::after($className, '\\', -1);
-        } else {
-            $shortClassName = $className;
-        }
+        $shortClassName = str_contains($className, '\\') ? (string) Strings::after($className, '\\', -1) : $className;
 
         return $shortClassName;
     }
