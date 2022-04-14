@@ -131,8 +131,7 @@ CODE_SAMPLE
         Type $newType,
         Param $param,
         string $paramName
-    ): bool
-    {
+    ): bool {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@param')) {
             return false;
