@@ -126,11 +126,16 @@ CODE_SAMPLE
         return null;
     }
 
-    private function changeParamType(PhpDocInfo $phpDocInfo, Type $newType, Param $param, string $paramName): void
+    private function wasUpdateOfParamTypeRequired(
+        PhpDocInfo $phpDocInfo,
+        Type $newType,
+        Param $param,
+        string $paramName
+    ): bool
     {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@param')) {
-            return;
+            return false;
         }
 
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType, TypeKind::PARAM());
@@ -143,7 +148,7 @@ CODE_SAMPLE
                 $param
             );
             if ($this->typeComparator->areTypesEqual($currentType, $newType)) {
-                return;
+                return false;
             }
 
             $paramTagValueNode->type = $typeNode;
@@ -151,6 +156,8 @@ CODE_SAMPLE
             $paramTagValueNode = $this->paramPhpDocNodeFactory->create($typeNode, $param);
             $phpDocInfo->addTagValueNode($paramTagValueNode);
         }
+
+        return true;
     }
 
     /**
@@ -186,8 +193,14 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->changeParamType($phpDocInfo, $updatedPhpDocType, $param, $paramTagValueNode->parameterName);
-            $paramTagWasUpdated = true;
+            if ($this->wasUpdateOfParamTypeRequired(
+                $phpDocInfo,
+                $updatedPhpDocType,
+                $param,
+                $paramTagValueNode->parameterName
+            )) {
+                $paramTagWasUpdated = true;
+            }
         }
 
         return $paramTagWasUpdated ? $node : null;
