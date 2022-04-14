@@ -5,7 +5,7 @@ namespace Rector\Tests\CodingStyle\Rector\Property\InlineSimplePropertyAnnotatio
 final class SkipCommentAfterVar
 {
     /**
-     * @var string[]
+     * @phpstan-var string[]
      *
      * some comment
      */
