@@ -8,7 +8,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Property;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -18,7 +18,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector\InlineSimplePropertyAnnotationRectorTest
  */
-final class InlineSimplePropertyAnnotationRector extends AbstractRector implements ConfigurableRectorInterface
+final class InlineSimplePropertyAnnotationRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
     /**
      * @var string[]
