@@ -147,6 +147,16 @@ CODE_SAMPLE
             return true;
         }
 
+        $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Expression) {
+            return true;
+        }
+
+        $originalNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalNode instanceof Node) {
+            return true;
+        }
+
         if (! $variable->name instanceof Variable) {
             return $this->followedByCurlyBracketAnalyzer->isFollowed($this->file, $variable);
         }
