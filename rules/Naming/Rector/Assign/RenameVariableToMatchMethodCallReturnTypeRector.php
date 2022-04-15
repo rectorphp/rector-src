@@ -6,6 +6,7 @@ namespace Rector\Naming\Rector\Assign;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -141,7 +142,7 @@ CODE_SAMPLE
                 $passedNodeOriginalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
                 $usedNodeOriginalNode = $callNode->getAttribute(AttributeKey::ORIGINAL_NODE);
 
-                if (! $passedNodeOriginalNode instanceof Node || ! $usedNodeOriginalNode instanceof Node) {
+                if (! $passedNodeOriginalNode instanceof CallLike || ! $usedNodeOriginalNode instanceof CallLike) {
                     return false;
                 }
 
