@@ -6,6 +6,10 @@ class SkipWithCoalesceAssign
 {
     public function run()
     {
+        if (rand(0, 1)) {
+            $a = 'a';
+        }
+
         $a ??= 'test';
     }
 }
