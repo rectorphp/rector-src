@@ -234,6 +234,24 @@ final class PropertyManipulator
         return null;
     }
 
+    public function isUsedByTrait(Class_ $class, string $propertyName): bool
+    {
+        foreach ($class->getTraitUses() as $traitUse) {
+            foreach ($traitUse->traits as $traitName) {
+                $trait = $this->astResolver->resolveClassFromName($traitName->toString());
+                if (! $trait instanceof Trait_) {
+                    continue;
+                }
+
+                if ($this->propertyFetchAnalyzer->containsLocalPropertyFetchName($trait, $propertyName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private function isPropertyAssignedOnlyInConstructor(
         ClassLike $classLike,
         string $propertyName,
@@ -296,24 +314,6 @@ final class PropertyManipulator
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             if ($parameterReflection->passedByReference()->yes()) {
                 return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function isUsedByTrait(Class_ $class, string $propertyName): bool
-    {
-        foreach ($class->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $traitName) {
-                $trait = $this->astResolver->resolveClassFromName($traitName->toString());
-                if (! $trait instanceof Trait_) {
-                    continue;
-                }
-
-                if ($this->propertyFetchAnalyzer->containsLocalPropertyFetchName($trait, $propertyName)) {
-                    return true;
-                }
             }
         }
 
