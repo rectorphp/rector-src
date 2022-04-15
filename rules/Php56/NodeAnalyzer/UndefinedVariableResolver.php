@@ -102,7 +102,7 @@ final class UndefinedVariableResolver
         return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true);
     }
 
-    private function isAsCoalesceLeftOrVar(Node $parentNode, Variable $variable): bool
+    private function isAsCoalesceLeftOrAssignOpCoalesceVar(Node $parentNode, Variable $variable): bool
     {
         if ($parentNode instanceof Coalesce && $parentNode->left === $variable) {
             return true;
@@ -134,7 +134,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->isAsCoalesceLeftOrVar($parentNode, $variable)) {
+        if ($this->isAsCoalesceLeftOrAssignOpCoalesceVar($parentNode, $variable)) {
             return true;
         }
 
