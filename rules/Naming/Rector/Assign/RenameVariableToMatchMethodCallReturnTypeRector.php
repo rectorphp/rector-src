@@ -26,6 +26,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector\RenameVariableToMatchMethodCallReturnTypeRectorTest
@@ -146,16 +147,12 @@ CODE_SAMPLE
                     return false;
                 }
 
-                /** @var FuncCall|StaticCall|MethodCall $node */
+                Assert::isAnyOf($passedNodeOriginalNode, [FuncCall::class, StaticCall::class, MethodCall::class]);
+                Assert::isAnyOf($usedNodeOriginalNode, [FuncCall::class, StaticCall::class, MethodCall::class]);
+
                 $passedNode = clone $passedNodeOriginalNode;
-
-                /** @var FuncCall|StaticCall|MethodCall $callNode */
                 $usedNode = clone $usedNodeOriginalNode;
-
-                /** @var FuncCall|StaticCall|MethodCall $passedNode */
                 $passedNode->args = [];
-
-                /** @var FuncCall|StaticCall|MethodCall $usedNode */
                 $usedNode->args = [];
 
                 return $this->nodeComparator->areNodesEqual($passedNode, $usedNode);
