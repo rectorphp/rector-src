@@ -138,11 +138,18 @@ CODE_SAMPLE
                     return false;
                 }
 
+                $passedNodeOriginalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+                $usedNodeOriginalNode = $callNode->getAttribute(AttributeKey::ORIGINAL_NODE);
+
+                if (! $passedNodeOriginalNode instanceof Node || ! $usedNodeOriginalNode instanceof Node) {
+                    return false;
+                }
+
                 /** @var FuncCall|StaticCall|MethodCall $node */
-                $passedNode = clone $node;
+                $passedNode = clone $passedNodeOriginalNode;
 
                 /** @var FuncCall|StaticCall|MethodCall $callNode */
-                $usedNode = clone $callNode;
+                $usedNode = clone $usedNodeOriginalNode;
 
                 /** @var FuncCall|StaticCall|MethodCall $passedNode */
                 $passedNode->args = [];
