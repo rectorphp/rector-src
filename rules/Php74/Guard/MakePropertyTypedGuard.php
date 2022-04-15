@@ -10,9 +10,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
-use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -22,8 +20,6 @@ final class MakePropertyTypedGuard
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly PropertyAnalyzer $propertyAnalyzer,
         private readonly PropertyManipulator $propertyManipulator
     ) {
