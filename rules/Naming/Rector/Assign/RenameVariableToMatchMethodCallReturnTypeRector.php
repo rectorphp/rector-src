@@ -142,14 +142,17 @@ CODE_SAMPLE
 
                 $usedNodeOriginalNode = $callNode->getAttribute(AttributeKey::ORIGINAL_NODE);
 
-                if (! $usedNodeOriginalNode instanceof CallLike) {
+                if (! $usedNodeOriginalNode instanceof Node) {
+                    return false;
+                }
+
+                if (! in_array($usedNodeOriginalNode::class, [FuncCall::class, StaticCall::class, MethodCall::class], true)) {
                     return false;
                 }
 
                 /** @var FuncCall|StaticCall|MethodCall $node */
                 $passedNode = clone $node;
 
-                /** @var FuncCall|StaticCall|MethodCall $callNode */
                 $usedNode = clone $usedNodeOriginalNode;
 
                 /** @var FuncCall|StaticCall|MethodCall $passedNode */
