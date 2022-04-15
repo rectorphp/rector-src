@@ -102,14 +102,22 @@ final class UndefinedVariableResolver
         return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true);
     }
 
-    private function isAsCoalesceLeft(Node $parentNode, Variable $variable): bool
+    private function isAsCoalesceLeftOrVar(Node $parentNode, Variable $variable): bool
     {
-        return $parentNode instanceof Coalesce && $parentNode->left === $variable;
+        if ($parentNode instanceof Coalesce && $parentNode->left === $variable) {
+            return true;
+        }
+
+        if (! $parentNode instanceof AssignOpCoalesce) {
+            return false;
+        }
+
+        return $parentNode->var === $variable;
     }
 
     private function isAssign(Node $parentNode): bool
     {
-        return in_array($parentNode::class, [Assign::class, AssignRef::class, AssignOpCoalesce::class], true);
+        return in_array($parentNode::class, [Assign::class, AssignRef::class], true);
     }
 
     private function shouldSkipVariable(Variable $variable, Node $parentNode): bool
@@ -126,7 +134,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->isAsCoalesceLeft($parentNode, $variable)) {
+        if ($this->isAsCoalesceLeftOrVar($parentNode, $variable)) {
             return true;
         }
 
