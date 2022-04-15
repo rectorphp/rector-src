@@ -24,11 +24,14 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\Unset_;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -83,7 +86,9 @@ final class PropertyManipulator
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PromotedPropertyResolver $promotedPropertyResolver,
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly AstResolver $astResolver,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -291,6 +296,24 @@ final class PropertyManipulator
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             if ($parameterReflection->passedByReference()->yes()) {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isUsedByTrait(Class_ $class, string $propertyName): bool
+    {
+        foreach ($class->getTraitUses() as $traitUse) {
+            foreach ($traitUse->traits as $traitName) {
+                $trait = $this->astResolver->resolveClassFromName($traitName->toString());
+                if (! $trait instanceof Trait_) {
+                    continue;
+                }
+
+                if ($this->propertyFetchAnalyzer->containsLocalPropertyFetchName($trait, $propertyName)) {
+                    return true;
+                }
             }
         }
 
