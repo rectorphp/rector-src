@@ -144,11 +144,7 @@ CODE_SAMPLE
                     return false;
                 }
 
-                if (! in_array(
-                    $usedNodeOriginalNode::class,
-                    [FuncCall::class, StaticCall::class, MethodCall::class],
-                    true
-                )) {
+                if ($usedNodeOriginalNode::class !== $callNode::class) {
                     return false;
                 }
 
