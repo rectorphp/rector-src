@@ -140,22 +140,22 @@ CODE_SAMPLE
                     return false;
                 }
 
-                $passedNodeOriginalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
                 $usedNodeOriginalNode = $callNode->getAttribute(AttributeKey::ORIGINAL_NODE);
-                if (! $passedNodeOriginalNode instanceof CallLike) {
-                    return false;
-                }
 
                 if (! $usedNodeOriginalNode instanceof CallLike) {
                     return false;
                 }
 
-                Assert::isAnyOf($passedNodeOriginalNode, [FuncCall::class, StaticCall::class, MethodCall::class]);
-                Assert::isAnyOf($usedNodeOriginalNode, [FuncCall::class, StaticCall::class, MethodCall::class]);
+                /** @var FuncCall|StaticCall|MethodCall $node */
+                $passedNode = clone $node;
 
-                $passedNode = clone $passedNodeOriginalNode;
+                /** @var FuncCall|StaticCall|MethodCall $callNode */
                 $usedNode = clone $usedNodeOriginalNode;
+
+                /** @var FuncCall|StaticCall|MethodCall $passedNode */
                 $passedNode->args = [];
+
+                /** @var FuncCall|StaticCall|MethodCall $usedNode */
                 $usedNode->args = [];
 
                 return $this->nodeComparator->areNodesEqual($passedNode, $usedNode);
