@@ -145,6 +145,7 @@ CODE_SAMPLE
                 if (! $passedNodeOriginalNode instanceof CallLike) {
                     return false;
                 }
+
                 if (! $usedNodeOriginalNode instanceof CallLike) {
                     return false;
                 }
