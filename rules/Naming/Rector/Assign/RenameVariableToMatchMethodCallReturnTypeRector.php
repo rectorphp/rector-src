@@ -151,6 +151,7 @@ CODE_SAMPLE
                 /** @var FuncCall|StaticCall|MethodCall $node */
                 $passedNode = clone $node;
 
+                /** @var FuncCall|StaticCall|MethodCall $usedNodeOriginalNode */
                 $usedNode = clone $usedNodeOriginalNode;
 
                 /** @var FuncCall|StaticCall|MethodCall $passedNode */
