@@ -6,7 +6,6 @@ namespace Rector\Naming\Rector\Assign;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -26,7 +25,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector\RenameVariableToMatchMethodCallReturnTypeRectorTest
@@ -146,7 +144,11 @@ CODE_SAMPLE
                     return false;
                 }
 
-                if (! in_array($usedNodeOriginalNode::class, [FuncCall::class, StaticCall::class, MethodCall::class], true)) {
+                if (! in_array(
+                    $usedNodeOriginalNode::class,
+                    [FuncCall::class, StaticCall::class, MethodCall::class],
+                    true
+                )) {
                     return false;
                 }
 
