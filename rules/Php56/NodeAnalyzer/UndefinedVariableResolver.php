@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\Cast\Unset_ as UnsetCast;
@@ -108,7 +109,7 @@ final class UndefinedVariableResolver
 
     private function isAssign(Node $parentNode): bool
     {
-        return in_array($parentNode::class, [Assign::class, AssignRef::class], true);
+        return in_array($parentNode::class, [Assign::class, AssignRef::class, AssignOpCoalesce::class], true);
     }
 
     private function shouldSkipVariable(Variable $variable, Node $parentNode): bool
