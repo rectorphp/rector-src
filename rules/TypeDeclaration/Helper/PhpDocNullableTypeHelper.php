@@ -12,7 +12,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class PhpDocNullableTypeHelper
