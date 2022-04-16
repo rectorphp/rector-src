@@ -61,7 +61,7 @@ final class PhpDocNullableTypeHelper
         );
 
         if ($resolvedType instanceof UnionType) {
-            return $this->cleanNullTypeOnMixedType($resolvedType);
+            return $this->cleanNullableMixed($resolvedType);
         }
 
         if ($resolvedType instanceof Type) {
@@ -72,15 +72,15 @@ final class PhpDocNullableTypeHelper
             return null;
         }
 
-        $cleanNullTypeOnMixedType = $this->cleanNullTypeOnMixedType($phpDocType);
-        if ($cleanNullTypeOnMixedType === $phpDocType) {
+        $cleanNullableMixed = $this->cleanNullableMixed($phpDocType);
+        if ($cleanNullableMixed === $phpDocType) {
             return null;
         }
 
-        return $cleanNullTypeOnMixedType;
+        return $cleanNullableMixed;
     }
 
-    private function cleanNullTypeOnMixedType(UnionType $unionType): Type
+    private function cleanNullableMixed(UnionType $unionType): Type
     {
         $types = $unionType->getTypes();
         $isNullable = false;
