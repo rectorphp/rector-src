@@ -97,7 +97,7 @@ final class PhpDocNullableTypeHelper
         }
 
         if ($isMixed && $isNullable) {
-            $unionType = TypeCombinator::removeNull($unionType);
+            return TypeCombinator::removeNull($unionType);
         }
 
         return $unionType;
