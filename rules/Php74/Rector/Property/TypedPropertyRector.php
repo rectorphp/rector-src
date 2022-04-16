@@ -129,7 +129,7 @@ CODE_SAMPLE
             return null;
         }
 
-      //  dump($varType);
+        //  dump($varType);
 
         if ($this->objectTypeAnalyzer->isSpecial($varType)) {
             return null;
