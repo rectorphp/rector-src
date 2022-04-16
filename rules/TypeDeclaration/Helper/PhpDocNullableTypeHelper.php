@@ -60,15 +60,24 @@ final class PhpDocNullableTypeHelper
             $isPhpParserTypeContainingNullType
         );
 
-        if ($isPhpParserTypeContainingNullType && ! $resolvedType instanceof UnionType && $phpDocType instanceof UnionType) {
-            return $this->cleanNullTypeOnMixedType($phpDocType);
+        if ($resolvedType instanceof UnionType) {
+            return $this->cleanNullTypeOnMixedType($resolvedType);
         }
 
-        if (! $resolvedType instanceof UnionType) {
+        if ($resolvedType instanceof Type) {
             return $resolvedType;
         }
 
-        return $this->cleanNullTypeOnMixedType($resolvedType);
+        if (! $phpDocType instanceof UnionType) {
+            return $resolvedType;
+        }
+
+        $cleanNullTypeOnMixedType = $this->cleanNullTypeOnMixedType($phpDocType);
+        if ($cleanNullTypeOnMixedType === $phpDocType) {
+            return $resolvedType;
+        }
+
+        return $cleanNullTypeOnMixedType;
     }
 
     private function cleanNullTypeOnMixedType(UnionType $unionType): Type
