@@ -69,7 +69,7 @@ final class PhpDocNullableTypeHelper
         }
 
         if (! $phpDocType instanceof UnionType) {
-            return $resolvedType;
+            return null;
         }
 
         $cleanNullTypeOnMixedType = $this->cleanNullTypeOnMixedType($phpDocType);
