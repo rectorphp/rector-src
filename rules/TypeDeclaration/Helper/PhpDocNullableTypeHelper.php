@@ -74,7 +74,7 @@ final class PhpDocNullableTypeHelper
 
         $cleanNullTypeOnMixedType = $this->cleanNullTypeOnMixedType($phpDocType);
         if ($cleanNullTypeOnMixedType === $phpDocType) {
-            return $resolvedType;
+            return null;
         }
 
         return $cleanNullTypeOnMixedType;
