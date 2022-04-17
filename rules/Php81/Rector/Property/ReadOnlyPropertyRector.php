@@ -103,10 +103,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->propertyFetchAssignManipulator->isAssignedMultipleTimes($property)) {
-            return null;
-        }
-
         if ($property->isReadonly()) {
             return null;
         }
@@ -124,6 +120,10 @@ CODE_SAMPLE
         }
 
         if ($property->isStatic()) {
+            return null;
+        }
+
+        if ($this->propertyFetchAssignManipulator->isAssignedMultipleTimes($property)) {
             return null;
         }
 
