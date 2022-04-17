@@ -45,12 +45,17 @@ final class PropertyFetchAssignManipulator
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $method->getStmts(),
-            function (Node $node) use ($propertyName, &$count): ?int {
+            function (Node $node) use ($propertyName, $classLike, &$count): ?int {
                 if (! $node instanceof Assign) {
                     return null;
                 }
 
                 if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($node->var, $propertyName)) {
+                    return null;
+                }
+
+                $parentClassLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+                if ($parentClassLike !== $classLike) {
                     return null;
                 }
 
