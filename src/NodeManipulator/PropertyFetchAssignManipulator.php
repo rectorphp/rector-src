@@ -35,8 +35,8 @@ final class PropertyFetchAssignManipulator
             return false;
         }
 
-        $method = $classLike->getMethod(MethodName::CONSTRUCT);
-        if (! $method instanceof ClassMethod) {
+        $classMethod = $classLike->getMethod(MethodName::CONSTRUCT);
+        if (! $classMethod instanceof ClassMethod) {
             return false;
         }
 
@@ -44,7 +44,7 @@ final class PropertyFetchAssignManipulator
         $propertyName = $this->nodeNameResolver->getName($property);
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $method->getStmts(),
+            (array) $classMethod->getStmts(),
             function (Node $node) use ($propertyName, $classLike, &$count): ?int {
                 if (! $node instanceof Assign) {
                     return null;
