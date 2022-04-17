@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\NodeTraverser;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -49,10 +50,15 @@ final class PropertyFetchAssignManipulator
             }
 
             ++$count;
+
+            if ($count === 2) {
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
             return null;
         });
 
-        return $count > 1;
+        return $count === 2;
     }
 
     /**

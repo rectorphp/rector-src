@@ -13,5 +13,9 @@ final class SkipMultipleAssign
         if ($flag) {
             $this->name = 'change';
         }
+
+        if ($flag) {
+            $this->name = 'change again';
+        }
     }
 }
