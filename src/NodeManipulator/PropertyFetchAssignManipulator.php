@@ -9,10 +9,12 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
@@ -26,18 +28,22 @@ final class PropertyFetchAssignManipulator
     ) {
     }
 
-    public function isAssignedMultipleTimes(Property $property): bool
+    public function isAssignedMultipleTimesInConstructor(Property $property): bool
     {
         $classLike = $this->betterNodeFinder->findParentType($property, ClassLike::class);
         if (! $classLike instanceof ClassLike) {
             return false;
         }
 
-        $methods = $classLike->getMethods();
+        $method = $classLike->getMethod(MethodName::CONSTRUCT);
+        if (! $method instanceof ClassMethod) {
+            return false;
+        }
+
         $count = 0;
         $propertyName = $this->nodeNameResolver->getName($property);
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($methods, function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $method->getStmts(), function (Node $node) use (
             $propertyName,
             &$count
         ): ?int {
