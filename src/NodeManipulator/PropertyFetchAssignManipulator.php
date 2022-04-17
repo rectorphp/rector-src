@@ -43,10 +43,9 @@ final class PropertyFetchAssignManipulator
         $count = 0;
         $propertyName = $this->nodeNameResolver->getName($property);
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $method->getStmts(), function (Node $node) use (
-            $propertyName,
-            &$count
-        ): ?int {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $method->getStmts(),
+            function (Node $node) use ($propertyName, &$count): ?int {
             if (! $node instanceof Assign) {
                 return null;
             }
@@ -62,7 +61,8 @@ final class PropertyFetchAssignManipulator
             }
 
             return null;
-        });
+        }
+        );
 
         return $count === 2;
     }
