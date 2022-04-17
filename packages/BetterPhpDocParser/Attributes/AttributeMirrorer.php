@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\Attributes;
 
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Node;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
+use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
+use Rector\Core\Configuration\Option;
+use Rector\Core\ValueObject\Configuration;
+use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class AttributeMirrorer
 {
@@ -21,20 +26,15 @@ final class AttributeMirrorer
         PhpDocAttributeKey::ORIG_NODE,
     ];
 
+    public function __construct(
+        private readonly ParameterProvider $parameterProvider,
+        private readonly ClassNameImportSkipper $classNameImportSkipper
+    )
+    {
+    }
+
     public function mirror(Node $oldNode, Node $newNode): void
     {
-        if ($newNode instanceof SpacelessPhpDocTagNode && $newNode->value instanceof DoctrineAnnotationTagValueNode) {
-            $startAndAnd = $oldNode->getAttribute(PhpDocAttributeKey::START_AND_END);
-            if ($startAndAnd instanceof StartAndEnd) {
-                $end = $startAndAnd->getEnd();
-                $lengthIdentifier = strlen((string) $newNode->value->identifierTypeNode);
-
-                if ($end === $lengthIdentifier && $newNode->value->getSilentValue() !== null) {
-                    return;
-                }
-            }
-        }
-
         foreach (self::ATTRIBUTES_TO_MIRROR as $attributeToMirror) {
             if (! $oldNode->hasAttribute($attributeToMirror)) {
                 continue;

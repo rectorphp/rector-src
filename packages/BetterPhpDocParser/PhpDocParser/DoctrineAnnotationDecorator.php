@@ -6,6 +6,7 @@ namespace Rector\BetterPhpDocParser\PhpDocParser;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
@@ -20,9 +21,13 @@ use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\DoctrineAnnotation\SilentKeyMap;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
+use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\CurrentNodeProvider;
+use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class DoctrineAnnotationDecorator
 {
@@ -49,7 +54,9 @@ final class DoctrineAnnotationDecorator
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,
         private readonly StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
-        private readonly AttributeMirrorer $attributeMirrorer
+        private readonly AttributeMirrorer $attributeMirrorer,
+        private readonly ClassNameImportSkipper $classNameImportSkipper,
+        private readonly ParameterProvider $parameterProvider
     ) {
     }
 
@@ -161,6 +168,7 @@ final class DoctrineAnnotationDecorator
         PhpDocNode $phpDocNode,
         Node $currentPhpNode
     ): void {
+        $uses = $currentPhpNode->getAttribute(AttributeKey::USE_NODES);
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
@@ -202,7 +210,14 @@ final class DoctrineAnnotationDecorator
                 $fullyQualifiedAnnotationClass
             );
 
-            $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+            $resolvedClass = $spacelessPhpDocTagNode->value->identifierTypeNode->getAttribute('resolved_class');
+            $isFoundInUse = $this->classNameImportSkipper->isFoundInUse(new FullyQualified($resolvedClass), $uses);
+            $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
+
+            if ($isFoundInUse && $isAutoImport) {
+                $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+            }
+
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
         }
     }
