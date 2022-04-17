@@ -46,22 +46,22 @@ final class PropertyFetchAssignManipulator
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $method->getStmts(),
             function (Node $node) use ($propertyName, &$count): ?int {
-            if (! $node instanceof Assign) {
+                if (! $node instanceof Assign) {
+                    return null;
+                }
+
+                if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($node->var, $propertyName)) {
+                    return null;
+                }
+
+                ++$count;
+
+                if ($count === 2) {
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 return null;
             }
-
-            if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($node->var, $propertyName)) {
-                return null;
-            }
-
-            ++$count;
-
-            if ($count === 2) {
-                return NodeTraverser::STOP_TRAVERSAL;
-            }
-
-            return null;
-        }
         );
 
         return $count === 2;
