@@ -67,11 +67,7 @@ final class PropertyFetchAnalyzer
     public function containsLocalPropertyFetchName(Node $node, string $propertyName): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($node, function (Node $node) use ($propertyName): bool {
-            if (! $node instanceof PropertyFetch) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node->name, $propertyName);
+            return $this->isLocalPropertyFetchName($node, $propertyName);
         });
     }
 
