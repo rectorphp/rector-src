@@ -52,8 +52,7 @@ final class ClassRenamer
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockClassRenamer $docBlockClassRenamer,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeRemover $nodeRemover,
-        private readonly ParameterProvider $parameterProvider
+        private readonly NodeRemover $nodeRemover
     ) {
     }
 
