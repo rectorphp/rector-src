@@ -7,7 +7,6 @@ use Rector\Arguments\ValueObject\SwapFuncCallArguments;
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
-    $services = $rectorConfig->services();
-    $services->set(SwapFuncCallArgumentsRector::class)
-        ->configure([new SwapFuncCallArguments('some_function', [1, 0])]);
+    $rectorConfig
+        ->ruleWithConfiguration(SwapFuncCallArgumentsRector::class, [new SwapFuncCallArguments('some_function', [1, 0])]);
 };

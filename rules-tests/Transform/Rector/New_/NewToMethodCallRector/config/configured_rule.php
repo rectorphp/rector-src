@@ -9,7 +9,6 @@ use Rector\Transform\Rector\New_\NewToMethodCallRector;
 use Rector\Transform\ValueObject\NewToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
-    $services = $rectorConfig->services();
-    $services->set(NewToMethodCallRector::class)
-        ->configure([new NewToMethodCall(MyClass::class, MyClassFactory::class, 'create')]);
+    $rectorConfig
+        ->ruleWithConfiguration(NewToMethodCallRector::class, [new NewToMethodCall(MyClass::class, MyClassFactory::class, 'create')]);
 };
