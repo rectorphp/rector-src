@@ -17,6 +17,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DogFood\NodeAnalyzer\ContainerConfiguratorCallAnalyzer;
 use Rector\DogFood\NodeManipulator\ContainerConfiguratorEmptyAssignRemover;
+use Rector\DogFood\NodeManipulator\ContainerConfiguratorImportsMerger;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -54,8 +55,8 @@ final class UpgradeRectorConfigRector extends AbstractRector
 
     public function __construct(
         private readonly ContainerConfiguratorCallAnalyzer $containerConfiguratorCallAnalyzer,
-        private readonly ContainerConfiguratorEmptyAssignRemover $emptyAssignRemover,
-        private \Rector\DogFood\NodeManipulator\ContainerConfiguratorImportsMerger $containerConfiguratorImportsMerger
+        private readonly ContainerConfiguratorEmptyAssignRemover $containerConfiguratorEmptyAssignRemover,
+        private readonly ContainerConfiguratorImportsMerger $containerConfiguratorImportsMerger
     ) {
     }
 
@@ -157,7 +158,7 @@ CODE_SAMPLE
             return null;
         });
 
-        $this->emptyAssignRemover->removeFromClosure($node);
+        $this->containerConfiguratorEmptyAssignRemover->removeFromClosure($node);
 
         return $node;
     }
