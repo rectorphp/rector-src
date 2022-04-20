@@ -8,5 +8,8 @@ use Rector\Renaming\ValueObject\RenameAnnotationByType;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(RenameAnnotationRector::class, [new RenameAnnotationByType('PHPUnit\Framework\TestCase', 'scenario', 'test')]);
+        ->ruleWithConfiguration(
+            RenameAnnotationRector::class,
+            [new RenameAnnotationByType('PHPUnit\Framework\TestCase', 'scenario', 'test')]
+        );
 };

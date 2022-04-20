@@ -10,5 +10,8 @@ use Rector\Transform\ValueObject\MethodCallToPropertyFetch;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(MethodCallToPropertyFetchRector::class, [new MethodCallToPropertyFetch(RenameToProperty::class, 'getEntityManager', 'entityManager')]);
+        ->ruleWithConfiguration(
+            MethodCallToPropertyFetchRector::class,
+            [new MethodCallToPropertyFetch(RenameToProperty::class, 'getEntityManager', 'entityManager')]
+        );
 };

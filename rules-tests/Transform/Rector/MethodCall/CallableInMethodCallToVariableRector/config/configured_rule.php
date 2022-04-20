@@ -9,5 +9,8 @@ use Rector\Transform\ValueObject\CallableInMethodCallToVariable;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(CallableInMethodCallToVariableRector::class, [new CallableInMethodCallToVariable(DummyCache::class, 'save', 1)]);
+        ->ruleWithConfiguration(
+            CallableInMethodCallToVariableRector::class,
+            [new CallableInMethodCallToVariable(DummyCache::class, 'save', 1)]
+        );
 };

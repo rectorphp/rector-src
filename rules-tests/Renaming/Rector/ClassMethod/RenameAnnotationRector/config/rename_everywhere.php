@@ -8,5 +8,8 @@ use Rector\Renaming\ValueObject\RenameAnnotation;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(RenameAnnotationRector::class, [new RenameAnnotation('psalm-ignore', 'phpstan-ignore')]);
+        ->ruleWithConfiguration(
+            RenameAnnotationRector::class,
+            [new RenameAnnotation('psalm-ignore', 'phpstan-ignore')]
+        );
 };

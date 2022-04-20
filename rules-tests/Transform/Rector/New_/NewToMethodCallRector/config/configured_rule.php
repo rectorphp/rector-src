@@ -10,5 +10,8 @@ use Rector\Transform\ValueObject\NewToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(NewToMethodCallRector::class, [new NewToMethodCall(MyClass::class, MyClassFactory::class, 'create')]);
+        ->ruleWithConfiguration(
+            NewToMethodCallRector::class,
+            [new NewToMethodCall(MyClass::class, MyClassFactory::class, 'create')]
+        );
 };

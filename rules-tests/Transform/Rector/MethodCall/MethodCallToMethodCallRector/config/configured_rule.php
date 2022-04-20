@@ -10,5 +10,8 @@ use Rector\Transform\ValueObject\MethodCallToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(MethodCallToMethodCallRector::class, [new MethodCallToMethodCall(FirstDependency::class, 'go', SecondDependency::class, 'away')]);
+        ->ruleWithConfiguration(
+            MethodCallToMethodCallRector::class,
+            [new MethodCallToMethodCall(FirstDependency::class, 'go', SecondDependency::class, 'away')]
+        );
 };

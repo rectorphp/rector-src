@@ -10,5 +10,8 @@ use Rector\Transform\ValueObject\NewToStaticCall;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(NewToStaticCallRector::class, [new NewToStaticCall(FromNewClass::class, IntoStaticClass::class, 'run')]);
+        ->ruleWithConfiguration(
+            NewToStaticCallRector::class,
+            [new NewToStaticCall(FromNewClass::class, IntoStaticClass::class, 'run')]
+        );
 };

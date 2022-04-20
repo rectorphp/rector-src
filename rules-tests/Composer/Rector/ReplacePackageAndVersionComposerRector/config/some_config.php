@@ -8,5 +8,8 @@ use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(ReplacePackageAndVersionComposerRector::class, [new ReplacePackageAndVersion('vendor1/package1', 'vendor1/package3', '^4.0')]);
+        ->ruleWithConfiguration(
+            ReplacePackageAndVersionComposerRector::class,
+            [new ReplacePackageAndVersion('vendor1/package1', 'vendor1/package3', '^4.0')]
+        );
 };

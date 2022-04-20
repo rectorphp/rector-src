@@ -9,5 +9,8 @@ use Rector\Transform\ValueObject\UnsetAndIssetToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(UnsetAndIssetToMethodCallRector::class, [new UnsetAndIssetToMethodCall(LocalContainer::class, 'hasService', 'removeService')]);
+        ->ruleWithConfiguration(
+            UnsetAndIssetToMethodCallRector::class,
+            [new UnsetAndIssetToMethodCall(LocalContainer::class, 'hasService', 'removeService')]
+        );
 };

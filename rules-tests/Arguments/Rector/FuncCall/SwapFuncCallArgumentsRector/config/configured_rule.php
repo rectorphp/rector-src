@@ -8,5 +8,8 @@ use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(SwapFuncCallArgumentsRector::class, [new SwapFuncCallArguments('some_function', [1, 0])]);
+        ->ruleWithConfiguration(
+            SwapFuncCallArgumentsRector::class,
+            [new SwapFuncCallArguments('some_function', [1, 0])]
+        );
 };

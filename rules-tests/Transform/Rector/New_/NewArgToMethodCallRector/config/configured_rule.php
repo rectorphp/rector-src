@@ -9,5 +9,8 @@ use Rector\Transform\ValueObject\NewArgToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(NewArgToMethodCallRector::class, [new NewArgToMethodCall(SomeDotenv::class, true, 'usePutenv')]);
+        ->ruleWithConfiguration(
+            NewArgToMethodCallRector::class,
+            [new NewArgToMethodCall(SomeDotenv::class, true, 'usePutenv')]
+        );
 };

@@ -8,5 +8,8 @@ use Rector\Restoration\ValueObject\CompleteImportForPartialAnnotation;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(CompleteImportForPartialAnnotationRector::class, [new CompleteImportForPartialAnnotation('Doctrine\ORM\Mapping', 'ORM')]);
+        ->ruleWithConfiguration(
+            CompleteImportForPartialAnnotationRector::class,
+            [new CompleteImportForPartialAnnotation('Doctrine\ORM\Mapping', 'ORM')]
+        );
 };

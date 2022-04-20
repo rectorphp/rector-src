@@ -17,5 +17,8 @@ return static function (RectorConfig $rectorConfig): void {
         ]);
 
     $rectorConfig
-        ->ruleWithConfiguration(RenameMethodRector::class, [new MethodCallRename(NewClassWithNewMethod::class, 'someMethod', 'someNewMethod')]);
+        ->ruleWithConfiguration(
+            RenameMethodRector::class,
+            [new MethodCallRename(NewClassWithNewMethod::class, 'someMethod', 'someNewMethod')]
+        );
 };

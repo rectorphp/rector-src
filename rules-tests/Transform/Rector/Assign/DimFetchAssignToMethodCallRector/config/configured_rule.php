@@ -10,5 +10,8 @@ use Rector\Transform\ValueObject\DimFetchAssignToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(DimFetchAssignToMethodCallRector::class, [new DimFetchAssignToMethodCall(SomeRouteList::class, SomeRoute::class, 'addRoute')]);
+        ->ruleWithConfiguration(
+            DimFetchAssignToMethodCallRector::class,
+            [new DimFetchAssignToMethodCall(SomeRouteList::class, SomeRoute::class, 'addRoute')]
+        );
 };
