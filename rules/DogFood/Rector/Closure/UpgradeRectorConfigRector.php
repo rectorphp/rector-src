@@ -6,6 +6,8 @@ namespace Rector\DogFood\Rector\Closure;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -13,6 +15,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DogFood\NodeAnalyzer\ContainerConfiguratorCallAnalyzer;
@@ -126,8 +129,11 @@ CODE_SAMPLE
 
         $this->updateClosureParam($onlyParam);
 
+        // 1. change import of sets to single sets() method call
+        $this->refactorSetImportMethodCalls($node);
+
         $this->traverseNodesWithCallable($node->getStmts(), function (Node $node): ?MethodCall {
-            // 1. call on rule
+            // 2. call on rule
             if ($node instanceof MethodCall) {
                 if ($this->containerConfiguratorCallAnalyzer->isMethodCallWithServicesSetConfiguredRectorRule($node)) {
                     return $this->refactorConfigureRuleMethodCall($node);
@@ -156,6 +162,21 @@ CODE_SAMPLE
         $this->emptyAssignRemover->removeFromClosure($node);
 
         return $node;
+    }
+
+    public function updateClosureParam(Param $param): void
+    {
+        if (! $param->type instanceof Name) {
+            return;
+        }
+        // update closure params
+        if (! $this->nodeNameResolver->isName($param->type, self::RECTOR_CONFIG_CLASS)) {
+            $param->type = new FullyQualified(self::RECTOR_CONFIG_CLASS);
+        }
+
+        if (! $this->nodeNameResolver->isName($param->var, self::RECTOR_CONFIG_VARIABLE)) {
+            $param->var = new Variable(self::RECTOR_CONFIG_VARIABLE);
+        }
     }
 
     /**
@@ -203,18 +224,43 @@ CODE_SAMPLE
         return null;
     }
 
-    public function updateClosureParam(Param $param): void
+    private function refactorSetImportMethodCalls(Closure $closure): void
     {
-        if (! $param->type instanceof Name) {
-            return;
-        }
-        // update closure params
-        if (!$this->nodeNameResolver->isName($param->type, self::RECTOR_CONFIG_CLASS)) {
-            $param->type = new FullyQualified(self::RECTOR_CONFIG_CLASS);
+        $setConstantFetches = [];
+        $lastImportKey = null;
+
+        foreach ($closure->getStmts() as $key => $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
+            }
+
+            $expr = $stmt->expr;
+            if (! $expr instanceof MethodCall) {
+                continue;
+            }
+
+            if (! $this->isName($expr->name, 'import')) {
+                continue;
+            }
+
+            $importArg = $expr->getArgs();
+            $argValue = $importArg[0]->value;
+            if (! $argValue instanceof ClassConstFetch) {
+                continue;
+            }
+
+            $setConstantFetches[] = $argValue;
+            unset($closure->stmts[$key]);
+            $lastImportKey = $key;
         }
 
-        if (!$this->nodeNameResolver->isName($param->var, self::RECTOR_CONFIG_VARIABLE)) {
-            $param->var = new Variable(self::RECTOR_CONFIG_VARIABLE);
+        if ($setConstantFetches === []) {
+            return;
         }
+
+        $args = $this->nodeFactory->createArgs([$setConstantFetches]);
+
+        $setsMethodCall = new MethodCall(new Variable(self::RECTOR_CONFIG_VARIABLE), 'sets', $args);
+        $closure->stmts[$lastImportKey] = new Expression($setsMethodCall);
     }
 }
