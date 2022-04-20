@@ -49,7 +49,12 @@ final class UpgradeRectorConfigRector extends AbstractRector
     /**
      * @var string
      */
-    private const PARAMETERS = 'parameters';
+    private const PARAMETERS_VARIABLE = 'parameters';
+
+    /**
+     * @var string
+     */
+    private const CONTAINER_CONFIGURATOR_VARIABLE = 'containerConfigurator';
 
     public function __construct(
         private readonly ContainerConfiguratorCallAnalyzer $containerConfiguratorCallAnalyzer
@@ -146,7 +151,11 @@ CODE_SAMPLE
                     return $node;
                 }
 
-                if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed($node, self::PARAMETERS, 'set')) {
+                if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
+                    $node,
+                    self::PARAMETERS_VARIABLE,
+                    'set'
+                )) {
                     return $this->refactorParameterName($node);
                 }
             }
@@ -175,7 +184,7 @@ CODE_SAMPLE
 
         if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
             $node->expr,
-            'containerConfigurator',
+            self::CONTAINER_CONFIGURATOR_VARIABLE,
             'services'
         )) {
             $this->removeNode($node);
@@ -191,8 +200,8 @@ CODE_SAMPLE
 
         if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
             $node->expr,
-            'containerConfigurator',
-            self::PARAMETERS
+            self::CONTAINER_CONFIGURATOR_VARIABLE,
+            self::PARAMETERS_VARIABLE
         )) {
             $this->removeNode($node);
         }
@@ -200,7 +209,7 @@ CODE_SAMPLE
         if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
             $node->expr,
             self::RECTOR_CONFIG_VARIABLE,
-            self::PARAMETERS
+            self::PARAMETERS_VARIABLE
         )) {
             $this->removeNode($node);
         }
