@@ -191,6 +191,7 @@ final class Option
     public const PARALLEL_TIMEOUT_IN_SECONDS = 'parallel-timeout-in-seconds';
 
     /**
+     * @deprecated Symlinks are enabled by default.
      * @var string
      */
     public const FOLLOW_SYMLINKS = 'follow-symlinks';
