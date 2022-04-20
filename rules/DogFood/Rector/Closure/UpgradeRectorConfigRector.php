@@ -162,6 +162,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    /**
+     * Remove helper methods calls like:
+     * $services = $containerConfigurator->services();
+     * $parameters = $containerConfigurator->parameters();
+     */
     public function removeHelperAssigns(Node $node): void
     {
         if (! $node instanceof Assign) {
