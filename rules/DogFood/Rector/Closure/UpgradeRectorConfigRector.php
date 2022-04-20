@@ -35,7 +35,6 @@ final class UpgradeRectorConfigRector extends AbstractRector
         Option::AUTO_IMPORT_NAMES => 'importNames',
         Option::PARALLEL => 'parallel',
         Option::PHPSTAN_FOR_RECTOR_PATH => 'phpstanConfig',
-        Option::PHP_VERSION_FEATURES => 'phpVersion',
     ];
 
     /**
@@ -219,8 +218,16 @@ CODE_SAMPLE
 
     private function refactorParameterName(MethodCall $methodCall): ?MethodCall
     {
+        $args = $methodCall->getArgs();
+        if ($this->valueResolver->isValue($args[0]->value, Option::PHP_VERSION_FEATURES)) {
+            $methodCall->var = new Variable(self::RECTOR_CONFIG_VARIABLE);
+            $methodCall->name = new Identifier('phpVersion');
+            $methodCall->args = [$args[1]];
+            return $methodCall;
+        }
+
         foreach (self::PARAMETER_NAME_TO_METHOD_CALL_MAP as $parameterName => $methodName) {
-            if (! $this->isOptionWithTrue($methodCall->getArgs(), $parameterName)) {
+            if (! $this->isOptionWithTrue($args, $parameterName)) {
                 continue;
             }
 
