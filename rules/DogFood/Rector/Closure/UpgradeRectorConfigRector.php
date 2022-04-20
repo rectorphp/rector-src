@@ -6,16 +6,17 @@ namespace Rector\DogFood\Rector\Closure;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DogFood\NodeAnalyzer\ContainerConfiguratorCallAnalyzer;
+use Rector\DogFood\NodeManipulator\EmptyAssignRemover;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -51,13 +52,9 @@ final class UpgradeRectorConfigRector extends AbstractRector
      */
     private const PARAMETERS_VARIABLE = 'parameters';
 
-    /**
-     * @var string
-     */
-    private const CONTAINER_CONFIGURATOR_VARIABLE = 'containerConfigurator';
-
     public function __construct(
-        private readonly ContainerConfiguratorCallAnalyzer $containerConfiguratorCallAnalyzer
+        private readonly ContainerConfiguratorCallAnalyzer $containerConfiguratorCallAnalyzer,
+        private readonly EmptyAssignRemover $emptyAssignRemover
     ) {
     }
 
@@ -127,14 +124,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // update closure params
-        if (! $this->nodeNameResolver->isName($paramType, self::RECTOR_CONFIG_CLASS)) {
-            $onlyParam->type = new FullyQualified(self::RECTOR_CONFIG_CLASS);
-        }
-
-        if (! $this->nodeNameResolver->isName($onlyParam->var, self::RECTOR_CONFIG_VARIABLE)) {
-            $onlyParam->var = new Variable(self::RECTOR_CONFIG_VARIABLE);
-        }
+        $this->updateClosureParam($onlyParam);
 
         $this->traverseNodesWithCallable($node->getStmts(), function (Node $node): ?MethodCall {
             // 1. call on rule
@@ -160,59 +150,12 @@ CODE_SAMPLE
                 }
             }
 
-            // look for "$services = $containerConfigurator->services()"
-            $this->removeHelperAssigns($node);
-
             return null;
         });
 
-        // change the node
+        $this->emptyAssignRemover->removeFromClosure($node);
 
         return $node;
-    }
-
-    /**
-     * Remove helper methods calls like:
-     * $services = $containerConfigurator->services();
-     * $parameters = $containerConfigurator->parameters();
-     */
-    public function removeHelperAssigns(Node $node): void
-    {
-        if (! $node instanceof Assign) {
-            return;
-        }
-
-        if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
-            $node->expr,
-            self::CONTAINER_CONFIGURATOR_VARIABLE,
-            'services'
-        )) {
-            $this->removeNode($node);
-        }
-
-        if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
-            $node->expr,
-            self::RECTOR_CONFIG_VARIABLE,
-            'services'
-        )) {
-            $this->removeNode($node);
-        }
-
-        if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
-            $node->expr,
-            self::CONTAINER_CONFIGURATOR_VARIABLE,
-            self::PARAMETERS_VARIABLE
-        )) {
-            $this->removeNode($node);
-        }
-
-        if ($this->containerConfiguratorCallAnalyzer->isMethodCallNamed(
-            $node->expr,
-            self::RECTOR_CONFIG_VARIABLE,
-            self::PARAMETERS_VARIABLE
-        )) {
-            $this->removeNode($node);
-        }
     }
 
     /**
@@ -258,5 +201,20 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    public function updateClosureParam(Param $param): void
+    {
+        if (! $param->type instanceof Name) {
+            return;
+        }
+        // update closure params
+        if (!$this->nodeNameResolver->isName($param->type, self::RECTOR_CONFIG_CLASS)) {
+            $param->type = new FullyQualified(self::RECTOR_CONFIG_CLASS);
+        }
+
+        if (!$this->nodeNameResolver->isName($param->var, self::RECTOR_CONFIG_VARIABLE)) {
+            $param->var = new Variable(self::RECTOR_CONFIG_VARIABLE);
+        }
     }
 }
