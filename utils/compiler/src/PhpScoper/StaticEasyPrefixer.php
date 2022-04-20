@@ -10,8 +10,6 @@ final class StaticEasyPrefixer
      * @var string[]
      */
     public const EXCLUDED_CLASSES = [
-        // part of public interface of configs.php
-        'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator',
         // for SmartFileInfo
         'Symplify\SmartFileSystem\SmartFileInfo',
         // for ComposerJson because it is part of the public API. I.e. ComposerRectorInterface
