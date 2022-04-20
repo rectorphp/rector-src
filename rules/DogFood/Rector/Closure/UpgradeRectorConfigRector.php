@@ -168,6 +168,7 @@ CODE_SAMPLE
         if (! $param->type instanceof Name) {
             return;
         }
+
         // update closure params
         if (! $this->nodeNameResolver->isName($param->type, self::RECTOR_CONFIG_CLASS)) {
             $param->type = new FullyQualified(self::RECTOR_CONFIG_CLASS);
