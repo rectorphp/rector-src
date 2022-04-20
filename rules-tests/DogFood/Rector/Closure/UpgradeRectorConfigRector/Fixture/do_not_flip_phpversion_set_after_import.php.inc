@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+namespace Rector\Tests\DogFood\Rector\Closure\UpgradeRectorConfigRector\Fixture;
 
 use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\Option;
