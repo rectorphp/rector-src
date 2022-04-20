@@ -53,6 +53,11 @@ final class UpgradeRectorConfigRector extends AbstractRector
      */
     private const PARAMETERS_VARIABLE = 'parameters';
 
+    /**
+     * @var string
+     */
+    private const CONTAINER_CONFIGURATOR_CLASS = 'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator';
+
     public function __construct(
         private readonly ContainerConfiguratorCallAnalyzer $containerConfiguratorCallAnalyzer,
         private readonly ContainerConfiguratorEmptyAssignRemover $containerConfiguratorEmptyAssignRemover,
@@ -119,10 +124,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isNames($paramType, [
-            'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator',
-            self::RECTOR_CONFIG_CLASS,
-        ])) {
+        if (! $this->isNames($paramType, [self::CONTAINER_CONFIGURATOR_CLASS, self::RECTOR_CONFIG_CLASS])) {
             return null;
         }
 
@@ -131,7 +133,11 @@ CODE_SAMPLE
         // 1. change import of sets to single sets() method call
         $this->containerConfiguratorImportsMerger->merge($node);
 
-        $this->traverseNodesWithCallable($node->getStmts(), function (Node $node): ?MethodCall {
+        $this->traverseNodesWithCallable($node->getStmts(), function (Node $node): ?Node {
+            if ($node instanceof Variable && $this->isName($node, 'containerConfigurator')) {
+                return new Variable(self::RECTOR_CONFIG_VARIABLE);
+            }
+
             // 2. call on rule
             if ($node instanceof MethodCall) {
                 if ($this->containerConfiguratorCallAnalyzer->isMethodCallWithServicesSetConfiguredRectorRule($node)) {
