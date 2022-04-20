@@ -28,10 +28,13 @@ class UnusedResult
             case 200:
             case 300:
                 null;
+                break;
             case 400:
-                (function() { echo 'not found'; })(),
+                (function() { echo 'not found'; })();
+                break;
             default:
                 'unknown status code';
+                break;
         }
     }
 }
