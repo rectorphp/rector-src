@@ -228,11 +228,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->valueResolver->isTrueOrFalse($args[1]->value)) {
-                $args = [];
-            } else {
-                $args = [$args[1]];
-            }
+            $args = $this->valueResolver->isTrueOrFalse($args[1]->value) ? [] : [$args[1]];
 
             return new MethodCall(new Variable(self::RECTOR_CONFIG_VARIABLE), $methodName, $args);
         }
