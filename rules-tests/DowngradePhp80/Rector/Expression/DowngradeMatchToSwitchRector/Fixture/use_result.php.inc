@@ -28,10 +28,13 @@ class UseResult
             case 200:
             case 300:
                 echo null;
+                break;
             case 400:
                 echo 'not found';
+                break;
             default:
                 echo 'unknown status code';
+                break;
         }
     }
 }
