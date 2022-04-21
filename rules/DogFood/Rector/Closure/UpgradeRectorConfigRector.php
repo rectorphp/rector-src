@@ -143,16 +143,13 @@ CODE_SAMPLE
                 $nodeVarType = $this->nodeTypeResolver->getType($node->var);
 
                 if ($nodeVarType instanceof FullyQualifiedObjectType && $nodeVarType->getClassName() === self::SERVICE_CONFIGURATOR_CLASS) {
+                    if ($this->isFoundFluentServiceCall($node)) {
+                        return null;
+                    }
+
                     $isPossiblyServiceDefinition = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
                         $node,
-                        function (Node $node): bool {
-                            if (! $node instanceof MethodCall) {
-                                return false;
-                            }
-
-                            $methodCall = $this->fluentChainMethodCallNodeAnalyzer->resolveRootMethodCall($node);
-                            return $methodCall instanceof Expr;
-                        }
+                        fn (Node $node): bool => $this->isFoundFluentServiceCall($node)
                     );
 
                     if ($isPossiblyServiceDefinition) {
@@ -187,6 +184,16 @@ CODE_SAMPLE
         $this->containerConfiguratorEmptyAssignRemover->removeFromClosure($node);
 
         return $node;
+    }
+
+    private function isFoundFluentServiceCall(Node $node): bool
+    {
+        if (! $node instanceof MethodCall) {
+            return false;
+        }
+
+        $chains = $this->fluentChainMethodCallNodeAnalyzer->collectMethodCallNamesInChain($node);
+        return count($chains) > 1;
     }
 
     public function updateClosureParam(Closure $closure): void
