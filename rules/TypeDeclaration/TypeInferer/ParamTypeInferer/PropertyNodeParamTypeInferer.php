@@ -68,7 +68,7 @@ final class PropertyNodeParamTypeInferer implements ParamTypeInfererInterface
             $varType = $this->nodeTypeResolver->getType($node->var);
             $nodeVarType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($varType, TypeKind::ANY());
 
-            if (! $this->nodeComparator->areNodesEqual($nodeExprType, $nodeVarType)) {
+            if ($nodeExprType instanceof Node && ! $this->nodeComparator->areNodesEqual($nodeExprType, $nodeVarType)) {
                 return null;
             }
 
