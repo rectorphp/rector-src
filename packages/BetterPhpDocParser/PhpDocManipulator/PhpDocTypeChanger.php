@@ -42,6 +42,13 @@ final class PhpDocTypeChanger
         ArrayShapeNode::class,
     ];
 
+    /**
+     * @var string[]
+     */
+    private const ALLOWED_IDENTIFIER_TYPENODE_TYPES = [
+        'class-string',
+    ];
+
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
@@ -163,7 +170,15 @@ final class PhpDocTypeChanger
             }
         }
 
-        return in_array($typeNode::class, self::ALLOWED_TYPES, true);
+        if (in_array($typeNode::class, self::ALLOWED_TYPES, true)) {
+            return true;
+        }
+
+        if (! $typeNode instanceof \PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode) {
+            return false;
+        }
+
+        return in_array((string) $typeNode, self::ALLOWED_IDENTIFIER_TYPENODE_TYPES, true);
     }
 
     public function copyPropertyDocToParam(Property $property, Param $param): void
