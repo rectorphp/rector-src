@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
@@ -172,7 +173,7 @@ final class PhpDocTypeChanger
             return true;
         }
 
-        if (! $typeNode instanceof \PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode) {
+        if (! $typeNode instanceof IdentifierTypeNode) {
             return false;
         }
 
