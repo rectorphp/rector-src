@@ -112,14 +112,12 @@ final class CountableAnalyzer
         }
 
         $classLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
-        // not in ClassLike? nothing we can do
         if (! $classLike instanceof ClassLike) {
-            return true;
+            return false;
         }
 
-        // not Identifier? nothing we can do
         if ($propertyFetch->name instanceof Expr) {
-            return true;
+            return false;
         }
 
         $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch->name);
