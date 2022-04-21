@@ -117,8 +117,9 @@ final class CountableAnalyzer
             return true;
         }
 
+        // not Identifier? nothing we can do
         if ($propertyFetch->name instanceof Expr) {
-            return false;
+            return true;
         }
 
         $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch->name);
