@@ -177,6 +177,22 @@ CODE_SAMPLE
         }
     }
 
+    public function isConfigClosure(Closure $closure): bool
+    {
+        $params = $closure->getParams();
+        if (count($params) !== 1) {
+            return false;
+        }
+
+        $onlyParam = $params[0];
+        $paramType = $onlyParam->type;
+        if (! $paramType instanceof Name) {
+            return false;
+        }
+
+        return $this->isNames($paramType, [self::CONTAINER_CONFIGURATOR_CLASS, self::RECTOR_CONFIG_CLASS]);
+    }
+
     /**
      * @param Arg[] $args
      */
@@ -224,21 +240,5 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    public function isConfigClosure(Closure $closure): bool
-    {
-        $params = $closure->getParams();
-        if (count($params) !== 1) {
-            return false;
-        }
-
-        $onlyParam = $params[0];
-        $paramType = $onlyParam->type;
-        if (! $paramType instanceof Name) {
-            return false;
-        }
-
-        return $this->isNames($paramType, [self::CONTAINER_CONFIGURATOR_CLASS, self::RECTOR_CONFIG_CLASS]);
     }
 }
