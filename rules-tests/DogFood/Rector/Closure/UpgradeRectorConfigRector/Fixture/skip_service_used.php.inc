@@ -13,5 +13,14 @@ return static function (RectorConfig $rectorConfig): void {
         ->autowire()
         ->autoconfigure();
 
+    $services->load('Rector\\', __DIR__ . '/../rules')
+        ->exclude([
+            __DIR__ . '/../rules/*/ValueObject/*',
+            __DIR__ . '/../rules/*/Rector/*',
+            __DIR__ . '/../rules/*/Contract/*',
+            __DIR__ . '/../rules/*/Exception/*',
+            __DIR__ . '/../rules/*/Enum/*',
+        ]);
+
     $services->set(UpgradeRectorConfigRector::class);
 };
