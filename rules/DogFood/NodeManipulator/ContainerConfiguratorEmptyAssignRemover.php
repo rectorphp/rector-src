@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DogFood\NodeManipulator;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
@@ -27,7 +28,16 @@ final class ContainerConfiguratorEmptyAssignRemover
                 continue;
             }
 
-            if ($this->exprUsedInNextNodeAnalyzer->isUsed($closure->stmts[$key]->expr->var)) {
+            /** @var Expression $expression */
+            $expression = $closure->stmts[$key];
+
+            /** @var Assign $assign */
+            $assign = $expression->expr;
+
+            /** @var Expr $var */
+            $var = $assign->var;
+
+            if ($this->exprUsedInNextNodeAnalyzer->isUsed($var)) {
                 continue;
             }
 
