@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use PHPStan\Type\ClassStringType;
-use PHPStan\Type\Generic\GenericClassStringType;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
@@ -15,7 +13,9 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PhpParser\NodeAbstract;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantBooleanType;
+use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -238,11 +238,7 @@ final class UnionTypeMapper implements TypeMapperInterface
     private function processResolveCompatibleStringCandidates(UnionType $unionType): ?Name
     {
         foreach ($unionType->getTypes() as $type) {
-            if (! in_array(
-                $type::class,
-                [ClassStringType::class, GenericClassStringType::class],
-                true
-            )) {
+            if (! in_array($type::class, [ClassStringType::class, GenericClassStringType::class], true)) {
                 return null;
             }
         }
