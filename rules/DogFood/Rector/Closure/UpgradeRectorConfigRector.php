@@ -143,19 +143,19 @@ CODE_SAMPLE
                 $nodeVarType = $this->nodeTypeResolver->getType($node->var);
 
                 if ($nodeVarType instanceof FullyQualifiedObjectType && $nodeVarType->getClassName() === self::SERVICE_CONFIGURATOR_CLASS) {
-                    $ispossiblyServiceDefinition = $this->betterNodeFinder->findFirstPreviousOfNode(
+                    $ispossiblyServiceDefinition = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
                         $node,
                         function (Node $node): bool {
-                        if (! $node instanceof MethodCall) {
-                            return false;
-                        }
+                            if (! $node instanceof MethodCall) {
+                                return false;
+                            }
 
-                        $methodCall = $this->fluentChainMethodCallNodeAnalyzer->resolveRootMethodCall($node);
-                        return $methodCall instanceof Expr;
-                    }
+                            $methodCall = $this->fluentChainMethodCallNodeAnalyzer->resolveRootMethodCall($node);
+                            return $methodCall instanceof Expr;
+                        }
                     );
 
-                    if ($ispossiblyServiceDefinition !== null) {
+                    if ($ispossiblyServiceDefinition) {
                         return null;
                     }
                 }
