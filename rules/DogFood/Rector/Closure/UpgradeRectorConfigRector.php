@@ -6,7 +6,6 @@ namespace Rector\DogFood\Rector\Closure;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -186,16 +185,6 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isFoundFluentServiceCall(Node $node): bool
-    {
-        if (! $node instanceof MethodCall) {
-            return false;
-        }
-
-        $chains = $this->fluentChainMethodCallNodeAnalyzer->collectMethodCallNamesInChain($node);
-        return count($chains) > 1;
-    }
-
     public function updateClosureParam(Closure $closure): void
     {
         $param = $closure->params[0];
@@ -227,6 +216,16 @@ CODE_SAMPLE
         }
 
         return $this->isNames($paramType, [self::CONTAINER_CONFIGURATOR_CLASS, self::RECTOR_CONFIG_CLASS]);
+    }
+
+    private function isFoundFluentServiceCall(Node $node): bool
+    {
+        if (! $node instanceof MethodCall) {
+            return false;
+        }
+
+        $chains = $this->fluentChainMethodCallNodeAnalyzer->collectMethodCallNamesInChain($node);
+        return count($chains) > 1;
     }
 
     /**
