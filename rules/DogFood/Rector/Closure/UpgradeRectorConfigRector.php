@@ -143,7 +143,7 @@ CODE_SAMPLE
                 $nodeVarType = $this->nodeTypeResolver->getType($node->var);
 
                 if ($nodeVarType instanceof FullyQualifiedObjectType && $nodeVarType->getClassName() === self::SERVICE_CONFIGURATOR_CLASS) {
-                    $ispossiblyServiceDefinition = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
+                    $isPossiblyServiceDefinition = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
                         $node,
                         function (Node $node): bool {
                             if (! $node instanceof MethodCall) {
@@ -155,7 +155,7 @@ CODE_SAMPLE
                         }
                     );
 
-                    if ($ispossiblyServiceDefinition) {
+                    if ($isPossiblyServiceDefinition) {
                         return null;
                     }
                 }
