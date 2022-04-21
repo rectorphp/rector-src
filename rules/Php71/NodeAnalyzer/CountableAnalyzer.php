@@ -117,7 +117,11 @@ final class CountableAnalyzer
             return true;
         }
 
-        $propertyName = $this->nodeNameResolver->getName($propertyFetch);
+        if ($propertyFetch->name instanceof Expr) {
+            return false;
+        }
+
+        $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch->name);
         return $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
     }
 
