@@ -9,12 +9,14 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ContainerConfiguratorEmptyAssignRemover
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
+        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer
     ) {
     }
 
@@ -22,6 +24,10 @@ final class ContainerConfiguratorEmptyAssignRemover
     {
         foreach ($closure->getStmts() as $key => $stmt) {
             if (! $this->isHelperAssign($stmt)) {
+                continue;
+            }
+
+            if ($this->exprUsedInNextNodeAnalyzer->isUsed($closure->stmts[$key]->expr->var)) {
                 continue;
             }
 
