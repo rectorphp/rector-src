@@ -15,7 +15,6 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
-use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -62,7 +61,6 @@ final class TypedPropertyRector extends AbstractRector implements AllowEmptyConf
         private readonly VendorLockResolver $vendorLockResolver,
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly VarTagRemover $varTagRemover,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly ObjectTypeAnalyzer $objectTypeAnalyzer,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
