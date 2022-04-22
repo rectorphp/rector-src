@@ -21,6 +21,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\ClassMethodPropertyFetchManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -29,9 +30,11 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ConstructorPropertyTypeInferer
@@ -45,7 +48,9 @@ final class ConstructorPropertyTypeInferer
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ParamAnalyzer $paramAnalyzer
+        private readonly ParamAnalyzer $paramAnalyzer,
+        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
+        private readonly TypeComparator $typeComparator
     ) {
     }
 
@@ -66,8 +71,23 @@ final class ConstructorPropertyTypeInferer
         // 1. direct property = param assign
         $param = $this->classMethodPropertyFetchManipulator->findParamAssignToPropertyName($classMethod, $propertyName);
         if ($param instanceof Param) {
-            if ($param->type !== null) {
-                return $this->resolveFromParamType($param, $classMethod, $propertyName);
+            if ($param->type === null) {
+                return null;
+            }
+
+            $resolvedType = $this->resolveFromParamType($param, $classMethod, $propertyName);
+            $exactType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
+                $property,
+                $propertyName,
+                $classLike
+            );
+
+            if (! $exactType instanceof unionType) {
+                return $resolvedType;
+            }
+
+            if ($this->typeComparator->areTypesEqual($resolvedType, $exactType)) {
+                return $resolvedType;
             }
 
             return null;
@@ -89,11 +109,9 @@ final class ConstructorPropertyTypeInferer
             return null;
         }
 
-        if (count($resolvedTypes) === 1) {
-            return $resolvedTypes[0];
-        }
-
-        return TypeCombinator::union(...$resolvedTypes);
+        return count($resolvedTypes) === 1
+            ? $resolvedTypes[0]
+            : TypeCombinator::union(...$resolvedTypes);
     }
 
     private function resolveFromParamType(Param $param, ClassMethod $classMethod, string $propertyName): Type
