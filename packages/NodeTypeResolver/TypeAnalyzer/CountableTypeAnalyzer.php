@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassLike;
@@ -38,8 +39,12 @@ final class CountableTypeAnalyzer
     public function isCountableType(Node $node): bool
     {
         if ($this->propertyFetchAnalyzer->isPropertyFetch($node)) {
+            $type = $node instanceof PropertyFetch
+                ? $this->nodeTypeResolver->getType($node->var)
+                : $this->nodeTypeResolver->getType($node->class);
+
             $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-            if (! $classLike instanceof ClassLike) {
+            if (! $classLike instanceof ClassLike && ! $type instanceof \PHPStan\Type\ObjectType) {
                 return true;
             }
         }
