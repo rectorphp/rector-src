@@ -50,8 +50,10 @@ final class CountableTypeAnalyzer
         }
 
         if ($node instanceof Variable) {
+            $type = $this->nodeTypeResolver->getType($node);
+
             $functionLike = $this->betterNodeFinder->findParentType($node, FunctionLike::class);
-            if (! $functionLike instanceof FunctionLike) {
+            if (! $functionLike instanceof FunctionLike && ! $type instanceof \PHPStan\Type\ObjectType) {
                 return true;
             }
         }
