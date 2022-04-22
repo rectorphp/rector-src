@@ -91,6 +91,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            $originalNode = $stmts[$key]->getAttribute(AttributeKey::ORIGINAL_NODE);
+            if (! $this->nodeComparator->areNodesEqual($originalNode, $stmts[$key])) {
+                continue;
+            }
+
             unset($stmts[$key]);
             $hasChanged = true;
         }
