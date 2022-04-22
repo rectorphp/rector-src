@@ -116,7 +116,7 @@ CODE_SAMPLE
             return $this->processCleanUpUnreachabelStmts($node, $toBeRemovedKeys);
         }
 
-        if (! $this->hasPreviousSideEffect($start, $stmts)) {
+        if (! $this->hasPreviousSideEffect($start - 2, $stmts)) {
             return $this->processCleanUpUnreachabelStmts($node, $toBeRemovedKeys);
         }
 
@@ -128,7 +128,7 @@ CODE_SAMPLE
      */
     private function hasPreviousSideEffect(int $start, array $stmts): bool
     {
-        for ($key = $start - 2; $key > 0; --$key) {
+        for ($key = $start; $key > 0; --$key) {
             $previousStmt = $stmts[$key];
             $hasSideEffect = (bool) $this->betterNodeFinder->findFirst(
                 $previousStmt,
