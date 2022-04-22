@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\NodeTypeCorrector\PregMatchTypeCorrector;
@@ -64,7 +65,7 @@ final class CountableTypeAnalyzer
                 : $this->nodeTypeResolver->getType($node->class);
 
             $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-            if (! $classLike instanceof ClassLike && ! $type instanceof ObjectType) {
+            if (! $classLike instanceof ClassLike && $type instanceof MixedType) {
                 return true;
             }
         }
@@ -73,7 +74,7 @@ final class CountableTypeAnalyzer
             $type = $this->nodeTypeResolver->getType($node);
 
             $functionLike = $this->betterNodeFinder->findParentType($node, FunctionLike::class);
-            if (! $functionLike instanceof FunctionLike && ! $type instanceof ObjectType) {
+            if (! $functionLike instanceof FunctionLike && $type instanceof MixedType) {
                 return true;
             }
         }
