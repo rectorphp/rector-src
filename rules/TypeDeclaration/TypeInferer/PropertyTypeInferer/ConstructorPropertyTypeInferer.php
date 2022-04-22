@@ -107,8 +107,7 @@ final class ConstructorPropertyTypeInferer
         string $propertyName,
         ClassLike $classLike,
         ?Type $resolvedType
-    ): ?Type
-    {
+    ): ?Type {
         if (! $resolvedType instanceof Type) {
             return null;
         }
