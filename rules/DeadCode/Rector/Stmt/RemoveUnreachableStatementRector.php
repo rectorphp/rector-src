@@ -128,7 +128,7 @@ CODE_SAMPLE
      */
     private function hasPreviousSideEffect(int $start, array $stmts): bool
     {
-        for ($key = $start - 1; $key > 0; --$key) {
+        for ($key = $start - 2; $key > 0; --$key) {
             $previousStmt = $stmts[$key];
             $hasSideEffect = (bool) $this->betterNodeFinder->findFirst(
                 $previousStmt,
