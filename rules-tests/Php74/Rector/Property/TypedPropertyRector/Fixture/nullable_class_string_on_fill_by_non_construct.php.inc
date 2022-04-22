@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class NullableClassString
+final class NullableClassStringOnFillByNonConstruct
 {
     /**
      * @var class-string
@@ -21,7 +21,7 @@ final class NullableClassString
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Fixture;
 
-final class NullableClassString
+final class NullableClassStringOnFillByNonConstruct
 {
     /**
      * @var class-string
