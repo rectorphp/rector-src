@@ -116,6 +116,8 @@ CODE_SAMPLE
             return $this->processCleanUpUnreachabelStmts($node, $toBeRemovedKeys);
         }
 
+        // check previous side effect can check against start jump key - 2
+        // as previously already checked as reachable part
         if (! $this->hasPreviousSideEffect($start - 2, $stmts)) {
             return $this->processCleanUpUnreachabelStmts($node, $toBeRemovedKeys);
         }
