@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\TypeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassLike;
@@ -38,7 +39,26 @@ final class CountableTypeAnalyzer
 
     public function isCountableType(Node $node): bool
     {
+        if ($this->shouldSkip($node)) {
+            return true;
+        }
+
+        $nodeType = $this->nodeTypeResolver->getType($node);
+        $nodeType = $this->pregMatchTypeCorrector->correct($node, $nodeType);
+
+        foreach ($this->countableObjectTypes as $countableObjectType) {
+            if ($countableObjectType->isSuperTypeOf($nodeType)->yes()) {
+                return true;
+            }
+        }
+
+        return $this->arrayTypeAnalyzer->isArrayType($node);
+    }
+
+    private function shouldSkip(Node $node): bool
+    {
         if ($this->propertyFetchAnalyzer->isPropertyFetch($node)) {
+            /** @var PropertyFetch|StaticPropertyFetch $node */
             $type = $node instanceof PropertyFetch
                 ? $this->nodeTypeResolver->getType($node->var)
                 : $this->nodeTypeResolver->getType($node->class);
@@ -58,15 +78,6 @@ final class CountableTypeAnalyzer
             }
         }
 
-        $nodeType = $this->nodeTypeResolver->getType($node);
-        $nodeType = $this->pregMatchTypeCorrector->correct($node, $nodeType);
-
-        foreach ($this->countableObjectTypes as $countableObjectType) {
-            if ($countableObjectType->isSuperTypeOf($nodeType)->yes()) {
-                return true;
-            }
-        }
-
-        return $this->arrayTypeAnalyzer->isArrayType($node);
+        return false;
     }
 }
