@@ -76,21 +76,7 @@ final class ConstructorPropertyTypeInferer
             }
 
             $resolvedType = $this->resolveFromParamType($param, $classMethod, $propertyName);
-            $exactType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
-                $property,
-                $propertyName,
-                $classLike
-            );
-
-            if (! $exactType instanceof unionType) {
-                return $resolvedType;
-            }
-
-            if ($this->typeComparator->areTypesEqual($resolvedType, $exactType)) {
-                return $resolvedType;
-            }
-
-            return null;
+            return $this->resolveType($property, $propertyName, $classLike, $resolvedType);
         }
 
         // 2. different assign
@@ -109,9 +95,39 @@ final class ConstructorPropertyTypeInferer
             return null;
         }
 
-        return count($resolvedTypes) === 1
+        $resolvedType = count($resolvedTypes) === 1
             ? $resolvedTypes[0]
             : TypeCombinator::union(...$resolvedTypes);
+
+        return $this->resolveType($property, $propertyName, $classLike, $resolvedType);
+    }
+
+    private function resolveType(
+        Property $property,
+        string $propertyName,
+        ClassLike $classLike,
+        ?Type $resolvedType
+    ): ?Type
+    {
+        if (! $resolvedType instanceof Type) {
+            return null;
+        }
+
+        $exactType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
+            $property,
+            $propertyName,
+            $classLike
+        );
+
+        if (! $exactType instanceof UnionType) {
+            return $resolvedType;
+        }
+
+        if ($this->typeComparator->areTypesEqual($resolvedType, $exactType)) {
+            return $resolvedType;
+        }
+
+        return null;
     }
 
     private function resolveFromParamType(Param $param, ClassMethod $classMethod, string $propertyName): Type
