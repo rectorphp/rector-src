@@ -44,7 +44,7 @@ final class CountableTypeAnalyzer
                 : $this->nodeTypeResolver->getType($node->class);
 
             $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-            if (! $classLike instanceof ClassLike && ! $type instanceof \PHPStan\Type\ObjectType) {
+            if (! $classLike instanceof ClassLike && ! $type instanceof ObjectType) {
                 return true;
             }
         }
@@ -53,7 +53,7 @@ final class CountableTypeAnalyzer
             $type = $this->nodeTypeResolver->getType($node);
 
             $functionLike = $this->betterNodeFinder->findParentType($node, FunctionLike::class);
-            if (! $functionLike instanceof FunctionLike && ! $type instanceof \PHPStan\Type\ObjectType) {
+            if (! $functionLike instanceof FunctionLike && ! $type instanceof ObjectType) {
                 return true;
             }
         }
