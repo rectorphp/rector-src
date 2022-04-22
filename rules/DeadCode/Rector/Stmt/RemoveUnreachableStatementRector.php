@@ -108,7 +108,7 @@ CODE_SAMPLE
 
         $start = reset($toBeRemovedKeys);
         if (! isset($stmts[$start - 1])) {
-            return $this->processCleanUpUnreachabelStmts($node, $toBeRemovedKeys);
+            return null;
         }
 
         $previousFirstUnreachable = $stmts[$start - 1];
