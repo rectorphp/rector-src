@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Type\ObjectType;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\NodeTypeCorrector\PregMatchTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
@@ -19,7 +24,9 @@ final class CountableTypeAnalyzer
     public function __construct(
         private readonly ArrayTypeAnalyzer $arrayTypeAnalyzer,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PregMatchTypeCorrector $pregMatchTypeCorrector
+        private readonly PregMatchTypeCorrector $pregMatchTypeCorrector,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
         $this->countableObjectTypes = [
             new ObjectType('Countable'),
@@ -30,6 +37,20 @@ final class CountableTypeAnalyzer
 
     public function isCountableType(Node $node): bool
     {
+        if ($this->propertyFetchAnalyzer->isPropertyFetch($node)) {
+            $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+            if (! $classLike instanceof ClassLike) {
+                return true;
+            }
+        }
+
+        if ($node instanceof Variable) {
+            $functionLike = $this->betterNodeFinder->findParentType($node, FunctionLike::class);
+            if (! $functionLike instanceof FunctionLike) {
+                return true;
+            }
+        }
+
         $nodeType = $this->nodeTypeResolver->getType($node);
         $nodeType = $this->pregMatchTypeCorrector->correct($node, $nodeType);
 
