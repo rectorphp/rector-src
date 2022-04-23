@@ -8,15 +8,21 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
+use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\Node\Stmt\While_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -63,7 +69,19 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Foreach_::class, FunctionLike::class, Else_::class, If_::class];
+        return [
+            For_::class,
+            Foreach_::class,
+            Do_::class,
+            While_::class,
+            FunctionLike::class,
+            If_::class,
+            ElseIf_::class,
+            Else_::class,
+            Case_::class,
+            Catch_::class,
+            Finally_::class,
+        ];
     }
 
     /**
