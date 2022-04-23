@@ -117,8 +117,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $node = $this->currentStmtResolver->resolve($node);
-
         if (! in_array($node::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
             return null;
         }

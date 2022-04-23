@@ -77,8 +77,7 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
         }
 
         if ($node instanceof Stmt) {
-            $currentStatement = $this->currentStmtResolver->resolve($node);
-            return in_array($currentStatement, $this->nodesToRemove, true);
+            return in_array($node, $this->nodesToRemove, true);
         }
 
         return false;
