@@ -70,15 +70,7 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
 
     public function isNodeRemoved(Node $node): bool
     {
-        if (in_array($node, $this->nodesToRemove, true)) {
-            return true;
-        }
-
-        if ($node instanceof Stmt) {
-            return in_array($node, $this->nodesToRemove, true);
-        }
-
-        return false;
+        return in_array($node, $this->nodesToRemove, true);
     }
 
     public function isActive(): bool
