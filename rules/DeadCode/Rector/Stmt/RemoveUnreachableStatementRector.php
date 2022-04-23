@@ -86,10 +86,10 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Stmt $stmts
-     * @return Stmt[]|null
+     * @param Stmt[] $stmts
+     * @return Stmt[]
      */
-    private function processRemovestmt(array $stmts): ?array
+    private function processRemoveStmt(array $stmts): array
     {
         $originalStmts = $stmts;
         foreach ($stmts as $key => $stmt) {
@@ -102,22 +102,8 @@ CODE_SAMPLE
             }
 
             $previousStmt = $stmts[$key - 1];
-            if ($previousStmt instanceof Throw_) {
-                unset($stmts[$key]);
-                break;
-            }
 
-            if ($previousStmt instanceof Expression && $previousStmt->expr instanceof Exit_) {
-                unset($stmts[$key]);
-                break;
-            }
-
-            if ($previousStmt instanceof Return_) {
-                unset($stmts[$key]);
-                break;
-            }
-
-            if ($previousStmt instanceof TryCatch && $previousStmt->finally instanceof Finally_ && $previousStmt->finally->stmts !== []) {
+            if ($this->shouldRemove($previousStmt)) {
                 unset($stmts[$key]);
                 break;
             }
@@ -127,6 +113,24 @@ CODE_SAMPLE
             return $originalStmts;
         }
 
-        return $this->processRemovestmt(array_values($stmts));
+        $stmts = array_values($stmts);
+        return $this->processRemoveStmt($stmts);
+    }
+
+    private function shouldRemove(Stmt $previousStmt): bool
+    {
+        if ($previousStmt instanceof Throw_) {
+            return true;
+        }
+
+        if ($previousStmt instanceof Expression && $previousStmt->expr instanceof Exit_) {
+            return true;
+        }
+
+        if ($previousStmt instanceof Return_) {
+            return true;
+        }
+
+        return $previousStmt instanceof TryCatch && $previousStmt->finally instanceof Finally_ && $previousStmt->finally->stmts !== [];
     }
 }
