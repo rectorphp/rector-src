@@ -19,6 +19,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -151,6 +152,10 @@ CODE_SAMPLE
     private function processCleanUpUnreachabelStmts(Foreach_|FunctionLike|Else_|If_ $node, array $toBeRemovedKeys): Node
     {
         foreach ($toBeRemovedKeys as $toBeRemovedKey) {
+            if (isset($node->stmts[$toBeRemovedKey - 1]) && in_array($node->stmts[$toBeRemovedKey - 1]::class, ContextAnalyzer::LOOP_NODES, true)) {
+                continue;
+            }
+
             unset($node->stmts[$toBeRemovedKey]);
         }
 
