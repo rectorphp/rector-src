@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
-use Attribute;
 use Doctrine\Common\Annotations\Annotation\Attributes;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
