@@ -314,29 +314,29 @@ final class BetterNodeFinder
      */
     public function findFirstPrevious(Node $node, callable $filter): ?Node
     {
-        $node = $node instanceof Expression ? $node : $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $node instanceof Node) {
+        $currentStmt = $this->resolveCurrentStatement($node);
+        if (! $currentStmt instanceof Node) {
             return null;
         }
 
-        $foundNode = $this->findFirst([$node], $filter);
+        $foundNode = $this->findFirst([$currentStmt], $filter);
         // we found what we need
         if ($foundNode instanceof Node) {
             return $foundNode;
         }
 
         // move to previous expression
-        $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
-        if ($previousStatement instanceof Node) {
-            return $this->findFirstPrevious($previousStatement, $filter);
-        }
+//        $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
+//        if ($previousStatement instanceof Node) {
+//            return $this->findFirstPrevious($previousStatement, $filter);
+//        }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        $parentStmt = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentStmt instanceof Node) {
             return null;
         }
 
-        return $this->findFirstPrevious($parent, $filter);
+        return $this->findFirstPrevious($parentStmt, $filter);
     }
 
     /**
@@ -525,6 +525,22 @@ final class BetterNodeFinder
         }
 
         return $foundNode;
+    }
+
+    public function resolveCurrentStatement(Node $node): ?Stmt
+    {
+        if ($node instanceof Stmt) {
+            return $node;
+        }
+
+        $currentStmt = $node;
+        while ($currentStmt = $currentStmt->getAttribute(AttributeKey::PARENT_NODE)) {
+            if ($currentStmt instanceof Stmt) {
+                return $currentStmt;
+            }
+        }
+
+        return null;
     }
 
     /**
