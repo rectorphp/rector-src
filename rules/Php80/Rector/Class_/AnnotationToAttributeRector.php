@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use Attribute;
+use Doctrine\Common\Annotations\Annotation\Attributes;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -23,6 +26,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
+use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
 use Rector\Php80\PhpDoc\PhpDocNodeFinder;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
@@ -54,6 +58,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpDocNodeFinder $phpDocNodeFinder,
         private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer,
         private readonly RemovableAnnotationAnalyzer $removableAnnotationAnalyzer,
+        private readonly AttributeGroupNamedArgumentManipulator $attributeGroupNamedArgumentManipulator
     ) {
     }
 
@@ -129,6 +134,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $attributeGroups = $this->attributeGroupNamedArgumentManipulator->processSpecialClassTypes($attributeGroups);
         $node->attrGroups = array_merge($node->attrGroups, $attributeGroups);
 
         return $node;
