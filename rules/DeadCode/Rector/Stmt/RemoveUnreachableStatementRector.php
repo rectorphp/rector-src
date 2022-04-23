@@ -18,7 +18,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -132,9 +131,15 @@ CODE_SAMPLE
             return true;
         }
 
-        return $previousStmt instanceof TryCatch && $previousStmt->finally instanceof Finally_ && $this->cleanNop($previousStmt->finally->stmts) !== [];
+        return $previousStmt instanceof TryCatch && $previousStmt->finally instanceof Finally_ && $this->cleanNop(
+            $previousStmt->finally->stmts
+        ) !== [];
     }
 
+    /**
+     * @param Stmt[] $stmts
+     * @return Stmt[]
+     */
     private function cleanNop(array $stmts): array
     {
         return array_filter($stmts, fn (Stmt $stmt): bool => ! $stmt instanceof Nop);
