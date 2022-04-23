@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
@@ -15,10 +14,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Nop;
-use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,10 +26,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUnreachableStatementRector extends AbstractRector
 {
-    public function __construct(private readonly SideEffectNodeDetector $sideEffectNodeDetector)
-    {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove unreachable statements', [
@@ -79,7 +71,7 @@ CODE_SAMPLE
         $stmts = $node->stmts;
 
         $isPassedTheUnreachable = false;
-        $toBeRemovedKeys = [];
+        $hasChanged = false;
 
         foreach ($stmts as $key => $stmt) {
             if ($this->shouldSkipNode($stmt)) {
@@ -99,61 +91,15 @@ CODE_SAMPLE
                 continue;
             }
 
-            $toBeRemovedKeys[] = $key;
+            unset($stmts[$key]);
+            $hasChanged = true;
         }
 
-        if ($toBeRemovedKeys === []) {
+        if (! $hasChanged) {
             return null;
         }
 
-        $start = reset($toBeRemovedKeys);
-        if (! isset($stmts[$start - 1])) {
-            return null;
-        }
-
-        $previousFirstUnreachable = $stmts[$start - 1];
-        if (in_array($previousFirstUnreachable::class, [Throw_::class, Return_::class, Exit_::class], true)) {
-            return $this->processCleanUpUnreachabelStmts($node, $toBeRemovedKeys);
-        }
-
-        // check previous side effect can check against start jump key - 2
-        // as previously already checked as reachable part
-        if (! $this->hasPreviousSideEffect($start - 2, $stmts)) {
-            return $this->processCleanUpUnreachabelStmts($node, $toBeRemovedKeys);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Stmt[] $stmts
-     */
-    private function hasPreviousSideEffect(int $start, array $stmts): bool
-    {
-        for ($key = $start; $key > 0; --$key) {
-            $previousStmt = $stmts[$key];
-            $hasSideEffect = (bool) $this->betterNodeFinder->findFirst(
-                $previousStmt,
-                fn (Node $node): bool => $this->sideEffectNodeDetector->detectCallExpr($node)
-            );
-
-            if ($hasSideEffect) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param int[] $toBeRemovedKeys
-     */
-    private function processCleanUpUnreachabelStmts(Foreach_|FunctionLike|Else_|If_ $node, array $toBeRemovedKeys): Node
-    {
-        foreach ($toBeRemovedKeys as $toBeRemovedKey) {
-            unset($node->stmts[$toBeRemovedKey]);
-        }
-
+        $node->stmts = $stmts;
         return $node;
     }
 
