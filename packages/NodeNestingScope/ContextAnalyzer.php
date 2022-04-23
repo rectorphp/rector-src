@@ -24,15 +24,15 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 final class ContextAnalyzer
 {
     /**
+     * @var array<class-string<Stmt>>
+     */
+    public const LOOP_NODES = [For_::class, Foreach_::class, While_::class, Do_::class];
+
+    /**
      * Nodes that break the scope they way up, e.g. class method
      * @var array<class-string<FunctionLike>>
      */
     private const BREAK_NODES = [FunctionLike::class, ClassMethod::class];
-
-    /**
-     * @var array<class-string<Stmt>>
-     */
-    public const LOOP_NODES = [For_::class, Foreach_::class, While_::class, Do_::class];
 
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,

@@ -152,7 +152,11 @@ CODE_SAMPLE
     private function processCleanUpUnreachabelStmts(Foreach_|FunctionLike|Else_|If_ $node, array $toBeRemovedKeys): Node
     {
         foreach ($toBeRemovedKeys as $toBeRemovedKey) {
-            if (isset($node->stmts[$toBeRemovedKey - 1]) && in_array($node->stmts[$toBeRemovedKey - 1]::class, ContextAnalyzer::LOOP_NODES, true)) {
+            if (isset($node->stmts[$toBeRemovedKey - 1]) && in_array(
+                $node->stmts[$toBeRemovedKey - 1]::class,
+                ContextAnalyzer::LOOP_NODES,
+                true
+            )) {
                 continue;
             }
 
