@@ -36,8 +36,7 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
         private readonly BreakingRemovalGuard $breakingRemovalGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator,
-        private readonly CurrentFileProvider $currentFileProvider,
-        private readonly CurrentStmtResolver $currentStmtResolver
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 

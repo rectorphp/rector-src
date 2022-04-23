@@ -64,11 +64,6 @@ final class NewlineAfterStatementRector extends AbstractRector
      */
     private array $stmtsHashed = [];
 
-    public function __construct(
-        private readonly CurrentStmtResolver $currentStmtResolver
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
