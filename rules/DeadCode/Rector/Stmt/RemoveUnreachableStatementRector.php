@@ -79,6 +79,7 @@ CODE_SAMPLE
             ElseIf_::class,
             Else_::class,
             Case_::class,
+            TryCatch::class,
             Catch_::class,
             Finally_::class,
         ];
