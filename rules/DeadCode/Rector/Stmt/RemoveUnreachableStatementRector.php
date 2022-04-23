@@ -29,6 +29,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
+use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -41,6 +42,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUnreachableStatementRector extends AbstractRector
 {
+    public function __construct(private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove unreachable statements', [
@@ -99,6 +104,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {
+            return null;
+        }
+
+        if ($this->inlineHTMLAnalyzer->hasInlineHTML($node)) {
             return null;
         }
 
