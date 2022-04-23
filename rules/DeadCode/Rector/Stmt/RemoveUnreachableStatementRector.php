@@ -75,7 +75,7 @@ CODE_SAMPLE
         }
 
         $originalStmts = $node->stmts;
-        $cleanedStmts = $this->processRemoveStmt($node->stmts);
+        $cleanedStmts = $this->processCleanUpUnreachabelStmts($node->stmts);
 
         if ($cleanedStmts === $originalStmts) {
             return null;
@@ -89,7 +89,7 @@ CODE_SAMPLE
      * @param Stmt[] $stmts
      * @return Stmt[]
      */
-    private function processRemoveStmt(array $stmts): array
+    private function processCleanUpUnreachabelStmts(array $stmts): array
     {
         $originalStmts = $stmts;
         foreach ($stmts as $key => $stmt) {
@@ -114,7 +114,7 @@ CODE_SAMPLE
         }
 
         $stmts = array_values($stmts);
-        return $this->processRemoveStmt($stmts);
+        return $this->processCleanUpUnreachabelStmts($stmts);
     }
 
     private function shouldRemove(Stmt $previousStmt): bool
