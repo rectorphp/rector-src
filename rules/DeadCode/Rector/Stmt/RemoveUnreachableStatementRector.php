@@ -107,10 +107,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->inlineHTMLAnalyzer->hasInlineHTML($node)) {
-            return null;
-        }
-
         $originalStmts = $node->stmts;
         $cleanedStmts = $this->processCleanUpUnreachabelStmts($node->stmts);
 
@@ -156,6 +152,10 @@ CODE_SAMPLE
 
     private function shouldRemove(Stmt $previousStmt, Stmt $currentStmt): bool
     {
+        if ($this->inlineHTMLAnalyzer->hasInlineHTML($currentStmt)) {
+            return false;
+        }
+
         if ($previousStmt instanceof Throw_) {
             return true;
         }
