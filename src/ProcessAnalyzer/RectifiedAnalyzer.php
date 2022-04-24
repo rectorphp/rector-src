@@ -56,8 +56,10 @@ final class RectifiedAnalyzer
 
         $startTokenPos = $node->getStartTokenPos();
         $endTokenPos = $node->getEndTokenPos();
-
-        if ($startTokenPos < 0 || $endTokenPos < 0) {
+        if ($startTokenPos < 0) {
+            return true;
+        }
+        if ($endTokenPos < 0) {
             return true;
         }
 
