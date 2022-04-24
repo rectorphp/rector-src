@@ -52,8 +52,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
         private readonly VariableNaming $variableNaming,
         private readonly ParentScopeFinder $parentScopeFinder,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
