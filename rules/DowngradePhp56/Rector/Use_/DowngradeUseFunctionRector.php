@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp56\Rector\Use_;
 
-use Couchbase\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -12,7 +11,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -23,6 +21,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DowngradeUseFunctionRector extends AbstractRector
 {
+    public function __construct(
+        private \Rector\Naming\Naming\UseImportsResolver $useImportsResolver,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -65,20 +68,9 @@ CODE_SAMPLE
             return null;
         }
 
-        dump_node($node);
+        $uses = $this->useImportsResolver->resolveForNode($node);
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if ($scope instanceof \PHPStan\Analyser\Scope) {
-            dump($scope->get);
-            dump('____');
-        }
-
-        dump($scope->getU);
-
-        die;
-
-        $useNodes = $node->getAttribute(AttributeKey::USE_NODES);
-        $name = $this->getFullyQualifiedName($useNodes, $node);
+        $name = $this->getFullyQualifiedName($uses, $node);
         if ($name === null) {
             return null;
         }
