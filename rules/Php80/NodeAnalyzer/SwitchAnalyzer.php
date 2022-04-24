@@ -22,7 +22,7 @@ final class SwitchAnalyzer
     }
 
     /**
-     * @var Case_[]
+     * @param Case_[] $cases
      */
     public function hasDifferentTypeCases(array $cases): bool
     {
