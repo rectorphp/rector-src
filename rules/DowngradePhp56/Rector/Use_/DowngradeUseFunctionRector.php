@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DowngradePhp56\Rector\Use_;
 
+use Couchbase\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -64,7 +65,20 @@ CODE_SAMPLE
             return null;
         }
 
-        $name = $this->getFullyQualifiedName($node->getAttribute(AttributeKey::USE_NODES), $node);
+        dump_node($node);
+
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if ($scope instanceof \PHPStan\Analyser\Scope) {
+            dump($scope->get);
+            dump('____');
+        }
+
+        dump($scope->getU);
+
+        die;
+
+        $useNodes = $node->getAttribute(AttributeKey::USE_NODES);
+        $name = $this->getFullyQualifiedName($useNodes, $node);
         if ($name === null) {
             return null;
         }
