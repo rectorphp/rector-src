@@ -39,7 +39,7 @@ final class ParentPropertyLookupGuard
         }
 
         if ($class->extends === null) {
-            return false;
+            return true;
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($property);

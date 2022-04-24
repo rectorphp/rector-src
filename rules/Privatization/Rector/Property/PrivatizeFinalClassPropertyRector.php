@@ -71,11 +71,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($classLike->extends === null) {
-            $this->visibilityManipulator->makePrivate($node);
-            return $node;
-        }
-
         if (! $this->parentPropertyLookupGuard->isLegal($node)) {
             return null;
         }
