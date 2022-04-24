@@ -15,12 +15,14 @@ use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 
 final class SwitchAnalyzer
 {
-    public function __construct(private readonly NodeTypeResolver $nodeTypeResolver, private readonly TypeFactory $typeFactory)
-    {
+    public function __construct(
+        private readonly NodeTypeResolver $nodeTypeResolver,
+        private readonly TypeFactory $typeFactory
+    ) {
     }
 
     /**
-     * @var Case_[] $cases
+     * @var Case_[]
      */
     public function hasDifferentTypeCases(array $cases): bool
     {
