@@ -23,13 +23,11 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -110,10 +108,7 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
                 continue;
             }
 
-            $this->nodesToAddCollector->addNodeBeforeNode(
-                $replacements->getAssign(),
-                $currentStatement
-            );
+            $this->nodesToAddCollector->addNodeBeforeNode($replacements->getAssign(), $currentStatement);
 
             $node->args[$key]->value = $replacements->getVariable();
 

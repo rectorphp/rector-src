@@ -17,7 +17,6 @@ use PHPStan\Type\MixedType;
 use Rector\CodeQuality\CompactConverter;
 use Rector\CodeQuality\NodeAnalyzer\ArrayCompacter;
 use Rector\CodeQuality\NodeAnalyzer\ArrayItemsAnalyzer;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
