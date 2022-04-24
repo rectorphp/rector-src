@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -28,6 +29,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -50,7 +52,8 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
         private readonly VariableNaming $variableNaming,
         private readonly ParentScopeFinder $parentScopeFinder,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -102,13 +105,15 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
 
             $replacements = $this->getReplacementsFor($argument, $currentScope, $scopeNode);
 
-            $current = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+            $currentStatement = $this->betterNodeFinder->resolveCurrentStatement($node);
 
-            $currentStatement = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
+            if (! $currentStatement instanceof Stmt) {
+                continue;
+            }
 
             $this->nodesToAddCollector->addNodeBeforeNode(
                 $replacements->getAssign(),
-                $current instanceof Return_ ? $current : $currentStatement
+                $currentStatement
             );
 
             $node->args[$key]->value = $replacements->getVariable();
