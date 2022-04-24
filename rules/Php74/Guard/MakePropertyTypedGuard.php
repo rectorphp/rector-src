@@ -14,6 +14,7 @@ use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 
 final class MakePropertyTypedGuard
 {
@@ -21,7 +22,8 @@ final class MakePropertyTypedGuard
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyAnalyzer $propertyAnalyzer,
-        private readonly PropertyManipulator $propertyManipulator
+        private readonly PropertyManipulator $propertyManipulator,
+        private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard
     ) {
     }
 
@@ -81,6 +83,10 @@ final class MakePropertyTypedGuard
             return false;
         }
 
-        return ! $class->extends instanceof FullyQualified;
+        if (! $class->extends instanceof FullyQualified) {
+            return true;
+        }
+
+        return $this->parentPropertyLookupGuard->isLegal($property);
     }
 }
