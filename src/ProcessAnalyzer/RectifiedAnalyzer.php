@@ -55,14 +55,13 @@ final class RectifiedAnalyzer
         }
 
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-
-        if (! $originalNode instanceof Node) {
-            $startTokenPos = $node->getStartTokenPos();
-            $endTokenPos = $node->getEndTokenPos();
-
-            return $startTokenPos < 0 || $endTokenPos < 0;
+        if ($originalNode instanceof Node) {
+            return true;
         }
 
-        return true;
+        $startTokenPos = $node->getStartTokenPos();
+        $endTokenPos = $node->getEndTokenPos();
+
+        return $startTokenPos < 0 || $endTokenPos < 0;
     }
 }
