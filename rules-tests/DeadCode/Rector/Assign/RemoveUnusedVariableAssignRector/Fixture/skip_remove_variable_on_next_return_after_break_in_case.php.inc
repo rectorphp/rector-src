@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-final class SkipSwitchReturnAfterBreak
+final class SkipRemoveVariableOnNextReturnAfterBreakInCase
 {
     public function run($a)
     {
