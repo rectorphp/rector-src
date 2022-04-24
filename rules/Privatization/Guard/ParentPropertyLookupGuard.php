@@ -50,12 +50,19 @@ final class ParentPropertyLookupGuard
         $propertyName = $this->nodeNameResolver->getName($property);
         $className = $classReflection->getName();
 
-        foreach ($classReflection->getParents() as $parentClassReflection) {
-            if ($parentClassReflection->hasProperty($propertyName)) {
+        $parents = $classReflection->getParents();
+
+        // parent class not autoloaded
+        if ($parents === []) {
+            return false;
+        }
+
+        foreach ($parents as $parent) {
+            if ($parent->hasProperty($propertyName)) {
                 return false;
             }
 
-            if ($this->isFoundInParentClassMethods($parentClassReflection, $propertyName, $className)) {
+            if ($this->isFoundInParentClassMethods($parent, $propertyName, $className)) {
                 return false;
             }
         }
