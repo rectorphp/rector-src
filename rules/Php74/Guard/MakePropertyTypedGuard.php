@@ -83,10 +83,6 @@ final class MakePropertyTypedGuard
             return false;
         }
 
-        if (! $class->extends instanceof FullyQualified) {
-            return true;
-        }
-
         return $this->parentPropertyLookupGuard->isLegal($property);
     }
 }
