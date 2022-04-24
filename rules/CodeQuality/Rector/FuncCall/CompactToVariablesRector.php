@@ -10,12 +10,14 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Stmt;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use Rector\CodeQuality\CompactConverter;
 use Rector\CodeQuality\NodeAnalyzer\ArrayCompacter;
 use Rector\CodeQuality\NodeAnalyzer\ArrayItemsAnalyzer;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -118,6 +120,12 @@ CODE_SAMPLE
             return null;
         }
 
+        $currentStatement = $this->betterNodeFinder->resolveCurrentStatement($funcCall);
+
+        if (! $currentStatement instanceof Stmt) {
+            return null;
+        }
+
         $isCompactOfUndefinedVariables = $this->arrayItemsAnalyzer->hasArrayExclusiveDefinedVariableNames(
             $array,
             $assignScope
@@ -148,7 +156,6 @@ CODE_SAMPLE
         $assignVariable = $firstArg->value;
         $preAssign = new Assign($assignVariable, $array);
 
-        $currentStatement = $funcCall->getAttribute(AttributeKey::CURRENT_STATEMENT);
         $this->nodesToAddCollector->addNodeBeforeNode($preAssign, $currentStatement);
 
         return $expr;
