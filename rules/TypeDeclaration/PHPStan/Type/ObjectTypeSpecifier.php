@@ -41,33 +41,13 @@ final class ObjectTypeSpecifier
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
         ObjectType $objectType,
-<<<<<<< HEAD
         Scope|null $scope
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f461a04de4... add ObjectTypeSpecifier
-=======
-        Scope $scope
->>>>>>> 3f015bb943... require Scope
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
-        $sameNamespacedFullyQualifiedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
-        if ($sameNamespacedFullyQualifiedObjectType !== null) {
-            return $sameNamespacedFullyQualifiedObjectType;
-<<<<<<< HEAD
-=======
-    ): FullyQualifiedObjectType | AliasedObjectType | ShortenedObjectType | ShortenedGenericObjectType | StaticType | SelfObjectType | NonExistingObjectType | UnionType | MixedType {
-        $sameNamespacedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
-        if ($sameNamespacedObjectType !== null) {
-            return $sameNamespacedObjectType;
->>>>>>> 7fd43e5501... narrow to FQN
-=======
->>>>>>> f461a04de4... add ObjectTypeSpecifier
-        }
-
-        foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
-            if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
-                return $typeWithClassTypeSpecifier->resolveObjectReferenceType($objectType, $scope);
+        if ($scope instanceof Scope) {
+            foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
+                if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
+                    return $typeWithClassTypeSpecifier->resolveObjectReferenceType($objectType, $scope);
+                }
             }
         }
 
@@ -204,27 +184,6 @@ final class ObjectTypeSpecifier
                     return $partialNamespaceObjectType;
                 }
             }
-        }
-
-        return null;
-    }
-
-    private function matchSameNamespacedObjectType(Node $node, ObjectType $objectType): ?FullyQualifiedObjectType
-    {
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
-        $namespaceName = $scope->getNamespace();
-        if ($namespaceName === null) {
-            return null;
-        }
-
-        $namespacedObject = $namespaceName . '\\' . ltrim($objectType->getClassName(), '\\');
-
-        if ($this->reflectionProvider->hasClass($namespacedObject)) {
-            return new FullyQualifiedObjectType($namespacedObject);
         }
 
         return null;
