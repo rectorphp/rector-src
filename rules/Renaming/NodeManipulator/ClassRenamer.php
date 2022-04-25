@@ -416,6 +416,11 @@ final class ClassRenamer
     private function isValidUseImportChange(string $newName, UseUse $useUse): bool
     {
         $uses = $this->useImportsResolver->resolveForNode($useUse);
+<<<<<<< HEAD
+=======
+
+        // no imports → we can rename
+>>>>>>> remove USE_NODES from class renamer
         if ($uses === []) {
             return true;
         }

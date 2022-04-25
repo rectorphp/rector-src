@@ -39,8 +39,17 @@ final class FileProcessor
     public function refactor(File $file, Configuration $configuration): void
     {
         $newStmts = $this->fileWithoutNamespaceNodeTraverser->traverse($file->getNewStmts());
+<<<<<<< HEAD
         $newStmts = $this->rectorNodeTraverser->traverse($newStmts);
 
+=======
+
+        $newStmts = $this->rectorNodeTraverser->traverse($newStmts);
+<<<<<<< HEAD
+>>>>>>> separate FileWithoutNamespace from RectorNodeTraverser
+=======
+
+>>>>>>> remove use nodes from mirroring
         $file->changeNewStmts($newStmts);
 
         $this->affectedFilesCollector->removeFromList($file);
