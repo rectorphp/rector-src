@@ -39,7 +39,6 @@ final class ClassAnnotationMatcher
 
         $tag = ltrim($tag, '@');
 
-        /** @var Use_[] $uses */
         $uses = $this->useImportsResolver->resolveForNode($node);
         $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
 

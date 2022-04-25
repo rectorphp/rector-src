@@ -13,14 +13,14 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 final class UseImportsResolver
 {
     public function __construct(
-        private BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
     /**
      * @return Use_[]
      */
-    public function resolveForNode(\PhpParser\Node $node): array
+    public function resolveForNode(Node $node): array
     {
         $namespace = $this->betterNodeFinder->findParentByTypes(
             $node,

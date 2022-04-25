@@ -11,6 +11,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Naming\Naming\UseImportsResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -22,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DowngradeUseFunctionRector extends AbstractRector
 {
     public function __construct(
-        private \Rector\Naming\Naming\UseImportsResolver $useImportsResolver,
+        private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
 

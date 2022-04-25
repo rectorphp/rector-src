@@ -43,10 +43,12 @@ final class RectorNodeTraverser extends NodeTraverser
                 $node->setAttribute(AttributeKey::PARENT_NODE, $fileWithoutNamespace);
             }
 
-            return parent::traverse([$fileWithoutNamespace]);
+            $nodesToTraverse = [$fileWithoutNamespace];
+        } else {
+            $nodesToTraverse = $nodes;
         }
 
-        return parent::traverse($nodes);
+        return parent::traverse($nodesToTraverse);
     }
 
     /**

@@ -11,6 +11,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
@@ -29,6 +30,11 @@ final class TagValueNodeReprintTest extends AbstractTestCase
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
+    /**
+     * @var mixed|object
+     */
+    private mixed $fileWithoutNamespaceNodeTraverser;
+
     protected function setUp(): void
     {
         $this->boot();
@@ -38,6 +44,7 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
+        $this->fileWithoutNamespaceNodeTraverser = $this->getService(FileWithoutNamespaceNodeTraverser::class);
     }
 
     /**
