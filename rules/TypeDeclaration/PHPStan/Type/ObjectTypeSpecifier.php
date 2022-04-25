@@ -25,6 +25,7 @@ use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -37,7 +38,8 @@ use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 final class ObjectTypeSpecifier
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
 
@@ -46,18 +48,19 @@ final class ObjectTypeSpecifier
         ObjectType $objectType,
         Scope|null $scope
     ): TypeWithClassName | UnionType | MixedType {
-        /** @var Use_[]|null $uses */
-        $uses = $node->getAttribute(AttributeKey::USE_NODES);
-        if ($uses === null) {
+        $uses = $this->useImportsResolver->resolveForNode($node);
+
+        // no imports to modify the object type
+        if ($uses === []) {
             return $objectType;
         }
 
-        $aliasedObjectType = $this->matchAliasedObjectType($node, $objectType);
+        $aliasedObjectType = $this->matchAliasedObjectType($node, $objectType, $uses);
         if ($aliasedObjectType !== null) {
             return $aliasedObjectType;
         }
 
-        $shortenedObjectType = $this->matchShortenedObjectType($node, $objectType);
+        $shortenedObjectType = $this->matchShortenedObjectType($objectType, $uses);
         if ($shortenedObjectType !== null) {
             return $shortenedObjectType;
         }
@@ -91,11 +94,12 @@ final class ObjectTypeSpecifier
         return new NonExistingObjectType($className);
     }
 
-    private function matchAliasedObjectType(Node $node, ObjectType $objectType): ?AliasedObjectType
+    /**
+     * @param Use_[] $uses
+     */
+    private function matchAliasedObjectType(Node $node, ObjectType $objectType, array $uses): ?AliasedObjectType
     {
-        /** @var Use_[]|null $uses */
-        $uses = $node->getAttribute(AttributeKey::USE_NODES);
-        if ($uses === null) {
+        if ($uses === []) {
             return null;
         }
 
@@ -154,13 +158,14 @@ final class ObjectTypeSpecifier
         return null;
     }
 
+    /**
+     * @param Use_[] $uses
+     */
     private function matchShortenedObjectType(
-        Node $node,
-        ObjectType $objectType
+        ObjectType $objectType,
+        array $uses
     ): ShortenedObjectType|ShortenedGenericObjectType|null {
-        /** @var Use_[]|null $uses */
-        $uses = $node->getAttribute(AttributeKey::USE_NODES);
-        if ($uses === null) {
+        if ($uses === []) {
             return null;
         }
 

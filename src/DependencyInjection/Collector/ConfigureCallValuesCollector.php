@@ -81,11 +81,7 @@ final class ConfigureCallValuesCollector
                             }
 
                             $warningMessage = sprintf(
-<<<<<<< HEAD
                                 'The constant for "%s::%s" is deprecated.%sUse "$rectorConfig->ruleWithConfiguration()" instead.',
-=======
-                                'The constant for "%s::%s" is deprecated.%sUse "->ruleWithConfiguration()" instead.',
->>>>>>> remove use nodes from mirroring
                                 $rectorClass,
                                 $constantName,
                                 PHP_EOL
