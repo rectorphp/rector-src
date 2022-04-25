@@ -10,31 +10,31 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
-use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
-use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
+use Rector\TypeDeclaration\Contract\PHPStan\TypeWithClassTypeSpecifierInterface;
 
 final class ObjectTypeSpecifier
 {
+    /**
+     * @param TypeWithClassTypeSpecifierInterface[] $typeWithClassTypeSpecifiers
+     */
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly UseImportsResolver $useImportsResolver,
+        private readonly array $typeWithClassTypeSpecifiers
     ) {
     }
 
@@ -42,17 +42,17 @@ final class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType,
         Scope|null $scope
-    ): FullyQualifiedObjectType | AliasedObjectType | ShortenedObjectType | ShortenedGenericObjectType | StaticType | SelfObjectType | NonExistingObjectType | UnionType | MixedType {
-        $sameNamespacedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
-        if ($sameNamespacedObjectType !== null) {
-            return $sameNamespacedObjectType;
+    ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
+        $sameNamespacedFullyQualifiedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
+        if ($sameNamespacedFullyQualifiedObjectType !== null) {
+            return $sameNamespacedFullyQualifiedObjectType;
         }
 
         if ($scope instanceof Scope) {
-            $className = ltrim($objectType->getClassName(), '\\');
-            $objectReferenceType = $this->resolveObjectReferenceType($scope, $className);
-            if ($objectReferenceType instanceof Type) {
-                return $objectReferenceType;
+            foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
+                if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
+                    return $typeWithClassTypeSpecifier->resolveObjectReferenceType($objectType, $scope);
+                }
             }
         }
 
@@ -80,17 +80,6 @@ final class ObjectTypeSpecifier
         }
 
         $className = ltrim($objectType->getClassName(), '\\');
-
-        if (ObjectReference::isValid($className)) {
-            if (! $scope instanceof Scope) {
-                throw new ShouldNotHappenException();
-            }
-
-            $resolvedType = $this->resolveObjectReferenceType($scope, $className);
-            if ($resolvedType instanceof Type) {
-                return $resolvedType;
-            }
-        }
 
         if ($this->reflectionProvider->hasClass($className)) {
             return new FullyQualifiedObjectType($className);
@@ -265,34 +254,5 @@ final class ObjectTypeSpecifier
         }
 
         return new ShortenedObjectType($objectType->getClassName(), $useUse->name->toString());
-    }
-
-    private function resolveObjectReferenceType(
-        Scope $scope,
-        string $classReferenceValue
-    ): StaticType|SelfObjectType|null {
-        $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        if (ObjectReference::STATIC()->getValue() === $classReferenceValue) {
-            return new StaticType($classReflection);
-        }
-
-        if (ObjectReference::SELF()->getValue() === $classReferenceValue) {
-            return new SelfObjectType($classReferenceValue, null, $classReflection);
-        }
-
-        if (ObjectReference::PARENT()->getValue() === $classReferenceValue) {
-            $parentClassReflection = $classReflection->getParentClass();
-            if (! $parentClassReflection instanceof ClassReflection) {
-                throw new ShouldNotHappenException();
-            }
-
-            return new ParentStaticType($parentClassReflection);
-        }
-
-        return null;
     }
 }
