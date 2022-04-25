@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeMatchToSwitchRector\Fixture;
 
-class UseResult
+class UsedResult
 {
     public function run($statusCode)
     {
@@ -20,7 +20,7 @@ class UseResult
 
 namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeMatchToSwitchRector\Fixture;
 
-class UseResult
+class UsedResult
 {
     public function run($statusCode)
     {
