@@ -85,6 +85,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        /** @var Match_|null $match */
         $match = $this->betterNodeFinder->findFirst(
             $node,
             fn (Node $subNode): bool => $subNode instanceof Match_
@@ -151,16 +152,14 @@ CODE_SAMPLE
         } elseif ($node instanceof Echo_) {
             $stmts[] = new Echo_([$matchArm->body]);
             $stmts[] = new Break_();
-        } elseif ($node instanceof Expression) {
-            if ($node->expr instanceof Assign) {
-                /** @var Assign $assign */
-                $assign = $node->expr;
-                $stmts[] = new Expression(new Assign($assign->var, $matchArm->body));
-                $stmts[] = new Break_();
-            } elseif ($node->expr instanceof Match_) {
-                $stmts[] = new Expression($matchArm->body);
-                $stmts[] = new Break_();
-            }
+        } elseif ($node->expr instanceof Assign) {
+            /** @var Assign $assign */
+            $assign = $node->expr;
+            $stmts[] = new Expression(new Assign($assign->var, $matchArm->body));
+            $stmts[] = new Break_();
+        } elseif ($node->expr instanceof Match_) {
+            $stmts[] = new Expression($matchArm->body);
+            $stmts[] = new Break_();
         }
 
         return $stmts;
