@@ -15,7 +15,6 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -42,10 +41,17 @@ final class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType,
         Scope|null $scope
+<<<<<<< HEAD
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
         $sameNamespacedFullyQualifiedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
         if ($sameNamespacedFullyQualifiedObjectType !== null) {
             return $sameNamespacedFullyQualifiedObjectType;
+=======
+    ): FullyQualifiedObjectType | AliasedObjectType | ShortenedObjectType | ShortenedGenericObjectType | StaticType | SelfObjectType | NonExistingObjectType | UnionType | MixedType {
+        $sameNamespacedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
+        if ($sameNamespacedObjectType !== null) {
+            return $sameNamespacedObjectType;
+>>>>>>> 7fd43e5501... narrow to FQN
         }
 
         if ($scope instanceof Scope) {
