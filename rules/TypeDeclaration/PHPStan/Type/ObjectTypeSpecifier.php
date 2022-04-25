@@ -17,7 +17,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -43,7 +42,7 @@ final class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType,
         Scope|null $scope
-    ): TypeWithClassName | UnionType | MixedType {
+    ): FullyQualifiedObjectType | AliasedObjectType | ShortenedObjectType | ShortenedGenericObjectType | StaticType | SelfObjectType | NonExistingObjectType | UnionType | MixedType {
         $sameNamespacedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
         if ($sameNamespacedObjectType !== null) {
             return $sameNamespacedObjectType;
@@ -206,7 +205,7 @@ final class ObjectTypeSpecifier
         return null;
     }
 
-    private function matchSameNamespacedObjectType(Node $node, ObjectType $objectType): ?ObjectType
+    private function matchSameNamespacedObjectType(Node $node, ObjectType $objectType): ?FullyQualifiedObjectType
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
