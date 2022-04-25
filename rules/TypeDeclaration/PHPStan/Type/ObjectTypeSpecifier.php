@@ -48,7 +48,7 @@ final class ObjectTypeSpecifier
         ObjectType $objectType,
         Scope|null $scope
     ): TypeWithClassName | UnionType | MixedType {
-        /** @var Use_[]|null $uses */
+        // this change will break \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ParamTypeResolver\ParamTypeResolverTest
         $uses = $node->getAttribute(AttributeKey::USE_NODES);
         if ($uses === null) {
             return $objectType;
@@ -159,8 +159,9 @@ final class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType
     ): ShortenedObjectType|ShortenedGenericObjectType|null {
-        $uses = $this->useImportsResolver->resolveForNode($node);
-        if ($uses === []) {
+        // breaks @see \Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\AutoImportTest
+        $uses = $node->getAttribute(AttributeKey::USE_NODES);
+        if ($uses === null) {
             return null;
         }
 
