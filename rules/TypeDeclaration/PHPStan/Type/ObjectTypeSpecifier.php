@@ -159,9 +159,8 @@ final class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType
     ): ShortenedObjectType|ShortenedGenericObjectType|null {
-        /** @var Use_[]|null $uses */
-        $uses = $node->getAttribute(AttributeKey::USE_NODES);
-        if ($uses === null) {
+        $uses = $this->useImportsResolver->resolveForNode($node);
+        if ($uses === []) {
             return null;
         }
 
