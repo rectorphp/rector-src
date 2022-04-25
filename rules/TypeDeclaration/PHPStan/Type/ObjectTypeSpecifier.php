@@ -41,11 +41,15 @@ final class ObjectTypeSpecifier
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
         ObjectType $objectType,
+<<<<<<< HEAD
         Scope|null $scope
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> f461a04de4... add ObjectTypeSpecifier
+=======
+        Scope $scope
+>>>>>>> 3f015bb943... require Scope
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
         $sameNamespacedFullyQualifiedObjectType = $this->matchSameNamespacedObjectType($node, $objectType);
         if ($sameNamespacedFullyQualifiedObjectType !== null) {
@@ -61,11 +65,9 @@ final class ObjectTypeSpecifier
 >>>>>>> f461a04de4... add ObjectTypeSpecifier
         }
 
-        if ($scope instanceof Scope) {
-            foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
-                if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
-                    return $typeWithClassTypeSpecifier->resolveObjectReferenceType($objectType, $scope);
-                }
+        foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
+            if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
+                return $typeWithClassTypeSpecifier->resolveObjectReferenceType($objectType, $scope);
             }
         }
 
