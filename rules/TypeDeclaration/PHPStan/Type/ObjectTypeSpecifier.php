@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -159,9 +158,8 @@ final class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType
     ): ShortenedObjectType|ShortenedGenericObjectType|null {
-        // breaks @see \Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\AutoImportTest
-        $uses = $node->getAttribute(AttributeKey::USE_NODES);
-        if ($uses === null) {
+        $uses = $this->useImportsResolver->resolveForNode($node);
+        if ($uses === []) {
             return null;
         }
 
