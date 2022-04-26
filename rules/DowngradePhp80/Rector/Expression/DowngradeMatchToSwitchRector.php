@@ -6,7 +6,6 @@ namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
@@ -166,7 +165,7 @@ CODE_SAMPLE
         } elseif ($node->expr instanceof Match_) {
             $stmts[] = new Expression($matchArm->body);
             $stmts[] = new Break_();
-        } elseif ($node->expr instanceof CallLike)  {
+        } elseif ($node->expr instanceof CallLike) {
             /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $call */
             $call = clone $node->expr;
             $call->args = [new Arg($matchArm->body)];
