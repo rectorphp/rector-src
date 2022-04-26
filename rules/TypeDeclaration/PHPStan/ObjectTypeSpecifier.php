@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\TypeDeclaration\PHPStan\Type;
+namespace Rector\TypeDeclaration\PHPStan;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
@@ -15,7 +15,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Naming\Naming\UseImportsResolver;

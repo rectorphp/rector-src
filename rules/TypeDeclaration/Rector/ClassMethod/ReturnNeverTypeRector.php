@@ -107,13 +107,6 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->isName($node, 'runParallel')) {
-            dump($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class));
-
-            dump('ddd');
-            die;
-        }
-
         if ($hasReturn) {
             return true;
         }
@@ -123,8 +116,6 @@ CODE_SAMPLE
             $node,
             $yieldAndConditionalNodes
         );
-
-        dump($hasNotNeverNodes);
 
         if ($hasNotNeverNodes) {
             return true;
