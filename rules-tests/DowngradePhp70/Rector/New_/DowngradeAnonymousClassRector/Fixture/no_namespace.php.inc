@@ -18,10 +18,10 @@ class NoNamespace
 {
     public function run()
     {
-        return new Anonymous__%s__0();
+        return new Anonymous__1d04bdd061e5548df3200e0a8bd62e19__0();
     }
 }
-class Anonymous__%s__0
+class Anonymous__1d04bdd061e5548df3200e0a8bd62e19__0
 {
     public function execute()
     {

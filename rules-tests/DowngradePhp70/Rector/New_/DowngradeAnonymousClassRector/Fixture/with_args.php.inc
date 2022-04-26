@@ -24,10 +24,10 @@ class WithArgs
 {
     public function run($arg1, $arg2)
     {
-        return new Anonymous__%s__0($arg1, $arg2);
+        return new Anonymous__1524929001f1c36c7e4ce268f40d4c0a__0($arg1, $arg2);
     }
 }
-class Anonymous__%s__0
+class Anonymous__1524929001f1c36c7e4ce268f40d4c0a__0
 {
     public function execute()
     {
