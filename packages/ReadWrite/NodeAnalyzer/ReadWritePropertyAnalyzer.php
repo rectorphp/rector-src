@@ -43,6 +43,10 @@ final class ReadWritePropertyAnalyzer
             throw new ShouldNotHappenException();
         }
 
+        if ($parent instanceof PreInc || $parent instanceof PreDec || $parent instanceof PostInc || $parent instanceof PostDec) {
+            return true;
+        }
+
         $parent = $this->unwrapPostPreIncDec($parent);
 
         if ($parent instanceof Arg) {
@@ -108,7 +112,7 @@ final class ReadWritePropertyAnalyzer
 
     private function isNotInsideIssetUnset(ArrayDimFetch $arrayDimFetch): bool
     {
-        return ! (bool) $this->betterNodeFinder->findParentByTypes($arrayDimFetch, [Isset_::class, Unset_::class]);
+        return $this->betterNodeFinder->findParentByTypes($arrayDimFetch, [Isset_::class, Unset_::class]) === null;
     }
 
     private function isArrayDimFetchRead(ArrayDimFetch $arrayDimFetch): bool
