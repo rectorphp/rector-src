@@ -7,6 +7,8 @@ namespace Rector\ReadWrite\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PostDec;
@@ -48,6 +50,16 @@ final class ReadWritePropertyAnalyzer
             if ($readArg) {
                 return true;
             }
+        }
+
+        if ($parent instanceof AssignOp) {
+            return true;
+        }
+
+        // multiple assign
+        $next = $node->getAttribute(AttributeKey::NEXT_NODE);
+        if ($next instanceof Assign) {
+            return true;
         }
 
         if ($parent instanceof ArrayDimFetch && $parent->dim === $node && $this->isNotInsideIssetUnset($parent)) {
