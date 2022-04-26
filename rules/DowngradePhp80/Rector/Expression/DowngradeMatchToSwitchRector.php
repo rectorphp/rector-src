@@ -10,7 +10,12 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\MatchArm;
 use PhpParser\Node\Stmt;
@@ -161,7 +166,8 @@ CODE_SAMPLE
         } elseif ($node->expr instanceof Match_) {
             $stmts[] = new Expression($matchArm->body);
             $stmts[] = new Break_();
-        } elseif ($node->expr instanceof Expr)  {
+        } elseif ($node->expr instanceof CallLike)  {
+            /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $call */
             $call = clone $node->expr;
             $call->args = [new Arg($matchArm->body)];
             $stmts[] = new Expression($call);
