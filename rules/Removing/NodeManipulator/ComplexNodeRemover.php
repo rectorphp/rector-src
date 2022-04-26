@@ -6,66 +6,32 @@ namespace Rector\Removing\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Property;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\ValueObject\MethodName;
-use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\AssignRemover;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Removing\NodeAnalyzer\ForbiddenPropertyRemovalAnalyzer;
 
 final class ComplexNodeRemover
 {
     public function __construct(
         private readonly AssignRemover $assignRemover,
-        private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeRemover $nodeRemover,
         private readonly NodeComparator $nodeComparator,
-        private readonly ForbiddenPropertyRemovalAnalyzer $forbiddenPropertyRemovalAnalyzer,
-        private readonly SideEffectNodeDetector $sideEffectNodeDetector
     ) {
     }
 
-    public function removePropertyAndUsages(Property $property, bool $removeAssignSideEffect = true): void
-    {
-        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($property);
-        $assigns = [];
-
-        foreach ($propertyFetches as $propertyFetch) {
-            $assign = $this->resolveAssign($propertyFetch);
-            if (! $assign instanceof Assign) {
-                return;
-            }
-
-            if ($assign->expr instanceof Assign) {
-                return;
-            }
-
-            if (! $removeAssignSideEffect && $this->sideEffectNodeDetector->detect($assign->expr)) {
-                return;
-            }
-
-            $assigns[] = $assign;
-        }
-
-        $this->processRemovePropertyAssigns($assigns);
-        $this->nodeRemover->removeNode($property);
-    }
-
     /**
+     * @deprecated
+     *
      * @param Param[] $params
      * @param int[] $paramKeysToBeRemoved
      * @return int[]
@@ -101,47 +67,13 @@ final class ComplexNodeRemover
     /**
      * @param Assign[] $assigns
      */
-    private function processRemovePropertyAssigns(array $assigns): void
+    public function removePropertyAssigns(array $assigns): void
     {
         foreach ($assigns as $assign) {
             // remove assigns
             $this->assignRemover->removeAssignNode($assign);
             $this->removeConstructorDependency($assign);
         }
-    }
-
-    private function resolveAssign(PropertyFetch | StaticPropertyFetch $expr): ?Assign
-    {
-        $assign = $expr->getAttribute(AttributeKey::PARENT_NODE);
-
-        while ($assign instanceof Node && ! $assign instanceof Assign) {
-            $assign = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        }
-
-        if (! $assign instanceof Assign) {
-            return null;
-        }
-
-        $isInExpr = (bool) $this->betterNodeFinder->findFirst(
-            $assign->expr,
-            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $expr)
-        );
-
-        if ($isInExpr) {
-            return null;
-        }
-
-        $classLike = $this->betterNodeFinder->findParentType($expr, ClassLike::class);
-        $propertyName = (string) $this->nodeNameResolver->getName($expr);
-
-        if ($this->forbiddenPropertyRemovalAnalyzer->isForbiddenInNewCurrentClassNameSelfClone(
-            $propertyName,
-            $classLike
-        )) {
-            return null;
-        }
-
-        return $assign;
     }
 
     private function removeConstructorDependency(Assign $assign): void
