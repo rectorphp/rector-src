@@ -13,9 +13,9 @@ function inFunctionNoNamespace()
 
 function inFunctionNoNamespace()
 {
-    return new Anonymous__60cd16e8cd388ee3c469e74b249ed0e3__0();
+    return new Anonymous__%s__0();
 }
-class Anonymous__60cd16e8cd388ee3c469e74b249ed0e3__0
+class Anonymous__%s__0
 {
     public function execute()
     {

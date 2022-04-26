@@ -8,8 +8,8 @@ return new class {
 -----
 <?php
 
-return new Anonymous__14972b1cb4f751429a61b4df2d83203d__0();
-class Anonymous__14972b1cb4f751429a61b4df2d83203d__0
+return new Anonymous__%s__0();
+class Anonymous__%s__0
 {
     public function execute()
     {

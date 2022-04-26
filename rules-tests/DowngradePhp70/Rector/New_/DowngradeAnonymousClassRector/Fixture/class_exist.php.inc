@@ -30,10 +30,10 @@ class ClassExists
 {
     public function run()
     {
-        return new Anonymous__8012caaa6db2848028c58729537f4951__0();
+        return new Anonymous__%s__0();
     }
 }
-class Anonymous__8012caaa6db2848028c58729537f4951__0
+class Anonymous__%s__0
 {
     public function execute()
     {

@@ -26,14 +26,14 @@ trait ClassInTrait
     {
         $message = 'error';
 
-        $first = new Anonymous__3e394521acb7827bb92d281feff1e6ff__0($message);
+        $first = new Anonymous__%s__0($message);
 
-        $second = new Anonymous__3e394521acb7827bb92d281feff1e6ff__1();
+        $second = new Anonymous__%s__1();
     }
 }
-class Anonymous__3e394521acb7827bb92d281feff1e6ff__0 extends \InvalidArgumentException
+class Anonymous__%s__0 extends \InvalidArgumentException
 {
 }
-class Anonymous__3e394521acb7827bb92d281feff1e6ff__1 extends \Exception
+class Anonymous__%s__1 extends \Exception
 {
 }
