@@ -103,6 +103,17 @@ CODE_SAMPLE
     private function shouldSkip(ClassMethod | Function_ | Closure $node): bool
     {
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class);
+        if ($node instanceof ClassMethod && $node->isMagic()) {
+            return true;
+        }
+
+        if ($this->isName($node, 'runParallel')) {
+            dump($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class));
+
+            dump('ddd');
+            die;
+        }
+
         if ($hasReturn) {
             return true;
         }
@@ -112,6 +123,8 @@ CODE_SAMPLE
             $node,
             $yieldAndConditionalNodes
         );
+
+        dump($hasNotNeverNodes);
 
         if ($hasNotNeverNodes) {
             return true;

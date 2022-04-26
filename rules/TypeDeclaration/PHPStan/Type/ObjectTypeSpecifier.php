@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -64,12 +65,12 @@ final class ObjectTypeSpecifier
             );
         }
 
-        $aliasedObjectType = $this->matchAliasedObjectType($node, $objectType);
+        $aliasedObjectType = $this->matchAliasedObjectType($node, $objectType, $uses);
         if ($aliasedObjectType !== null) {
             return $aliasedObjectType;
         }
 
-        $shortenedObjectType = $this->matchShortenedObjectType($node, $objectType);
+        $shortenedObjectType = $this->matchShortenedObjectType($objectType, $uses);
         if ($shortenedObjectType !== null) {
             return $shortenedObjectType;
         }
@@ -84,15 +85,16 @@ final class ObjectTypeSpecifier
         return new NonExistingObjectType($className);
     }
 
-    private function matchAliasedObjectType(Node $node, ObjectType $objectType): ?AliasedObjectType
+    /**
+     * @param Use_[] $uses
+     */
+    private function matchAliasedObjectType(Node $node, ObjectType $objectType, array $uses): ?AliasedObjectType
     {
-        $uses = $this->useImportsResolver->resolveForNode($node);
         if ($uses === []) {
             return null;
         }
 
         $className = $objectType->getClassName();
-
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         foreach ($uses as $use) {
@@ -112,6 +114,7 @@ final class ObjectTypeSpecifier
                     $parent,
                     $fullyQualifiedName
                 );
+
                 if ($processAliasedObject instanceof AliasedObjectType) {
                     return $processAliasedObject;
                 }
@@ -146,11 +149,13 @@ final class ObjectTypeSpecifier
         return null;
     }
 
+    /**
+     * @param Use_[] $uses
+     */
     private function matchShortenedObjectType(
-        Node $node,
-        ObjectType $objectType
+        ObjectType $objectType,
+        array $uses
     ): ShortenedObjectType|ShortenedGenericObjectType|null {
-        $uses = $this->useImportsResolver->resolveForNode($node);
         if ($uses === []) {
             return null;
         }

@@ -86,10 +86,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         /** @var Match_|null $match */
-        $match = $this->betterNodeFinder->findFirst(
-            $node,
-            fn (Node $subNode): bool => $subNode instanceof Match_
-        );
+        $match = $this->betterNodeFinder->findFirst($node, fn (Node $subNode): bool => $subNode instanceof Match_);
 
         if ($match === null || $this->shouldSkip($match)) {
             return null;
