@@ -156,7 +156,7 @@ CODE_SAMPLE
         } elseif ($node instanceof Echo_) {
             $stmts[] = new Echo_([$matchArm->body]);
             $stmts[] = new Break_();
-        } else if ($node->expr instanceof MethodCall || $node->expr instanceof FuncCall) {
+        } else if ($node->expr instanceof CallLike) {
             $call = clone $node->expr;
             $call->args = [new Arg($matchArm->body)];
             $stmts[] = new Expression($call);
