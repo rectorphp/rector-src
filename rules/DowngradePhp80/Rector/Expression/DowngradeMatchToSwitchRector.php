@@ -9,9 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\MatchArm;
 use PhpParser\Node\Stmt;
@@ -156,7 +154,7 @@ CODE_SAMPLE
         } elseif ($node instanceof Echo_) {
             $stmts[] = new Echo_([$matchArm->body]);
             $stmts[] = new Break_();
-        } else if ($node->expr instanceof CallLike) {
+        } elseif ($node->expr instanceof CallLike) {
             $call = clone $node->expr;
             $call->args = [new Arg($matchArm->body)];
             $stmts[] = new Expression($call);
