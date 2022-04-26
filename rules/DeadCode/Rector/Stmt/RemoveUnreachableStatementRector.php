@@ -5,20 +5,31 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\ElseIf_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Finally_;
+use PhpParser\Node\Stmt\For_;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\InlineHTML;
+use PhpParser\Node\Stmt\Label;
 use PhpParser\Node\Stmt\Nop;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Throw_;
+use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
-use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -31,16 +42,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUnreachableStatementRector extends AbstractRector
 {
-    /**
-     * @var array<class-string<Node>>
-     */
-    private const STMTS_WITH_IS_UNREACHABLE = [If_::class, While_::class, Do_::class];
-
-    public function __construct(
-        private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove unreachable statements', [
@@ -75,127 +76,114 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Stmt::class];
+        return [
+            For_::class,
+            Foreach_::class,
+            Do_::class,
+            While_::class,
+            ClassMethod::class,
+            Function_::class,
+            Closure::class,
+            If_::class,
+            ElseIf_::class,
+            Else_::class,
+            Case_::class,
+            TryCatch::class,
+            Catch_::class,
+            Finally_::class,
+        ];
     }
 
     /**
-     * @param Stmt $node
+     * @param For_|Foreach_|Do_|While_|ClassMethod|Function_|Closure|If_|ElseIf_|Else_|Case_|TryCatch|Catch_|Finally_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkipNode($node)) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        // might be PHPStan false positive, better skip
-        $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
-        if ($previousStatement instanceof Stmt && in_array(
-            $previousStatement::class,
-            self::STMTS_WITH_IS_UNREACHABLE,
-            true
-        )) {
-            $node->setAttribute(
-                AttributeKey::IS_UNREACHABLE,
-                $previousStatement->getAttribute(AttributeKey::IS_UNREACHABLE)
-            );
-        }
+        $originalStmts = $node->stmts;
+        $cleanedStmts = $this->processCleanUpUnreachabelStmts($node->stmts);
 
-        if (! $this->isUnreachable($node)) {
+        if ($cleanedStmts === $originalStmts) {
             return null;
         }
 
-        if ($this->isAfterMarkTestSkippedMethodCall($node)) {
-            $node->setAttribute(AttributeKey::IS_UNREACHABLE, false);
-            return null;
-        }
-
-        $this->removeNode($node);
-
-        return null;
-    }
-
-    private function shouldSkipNode(Stmt $stmt): bool
-    {
-        if ($stmt instanceof Nop) {
-            return true;
-        }
-
-        if ($stmt instanceof ClassLike) {
-            return true;
-        }
-
-        if ($stmt instanceof FunctionLike) {
-            return true;
-        }
-
-        return $this->inlineHTMLAnalyzer->hasInlineHTML($stmt);
-    }
-
-    private function isUnreachable(Stmt $stmt): bool
-    {
-        $isUnreachable = $stmt->getAttribute(AttributeKey::IS_UNREACHABLE);
-        if ($isUnreachable === true) {
-            return true;
-        }
-
-        // traverse up for unreachable node in the same scope
-        $previousNode = $stmt->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
-
-        while ($previousNode instanceof Stmt && ! $this->isBreakingScopeNode($previousNode)) {
-            $isUnreachable = $previousNode->getAttribute(AttributeKey::IS_UNREACHABLE);
-            if ($isUnreachable === true) {
-                return true;
-            }
-
-            $previousNode = $previousNode->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
-        }
-
-        return false;
+        $node->stmts = $cleanedStmts;
+        return $node;
     }
 
     /**
-     * Keep content after markTestSkipped(), intentional temporary
+     * @param Stmt[] $stmts
+     * @return Stmt[]
      */
-    private function isAfterMarkTestSkippedMethodCall(Stmt $stmt): bool
+    private function processCleanUpUnreachabelStmts(array $stmts): array
     {
-        return (bool) $this->betterNodeFinder->findFirstPrevious($stmt, function (Node $node): bool {
-            if (! $node instanceof MethodCall && ! $node instanceof StaticCall) {
-                return false;
+        $originalStmts = $stmts;
+        foreach ($stmts as $key => $stmt) {
+            if (! isset($stmts[$key - 1])) {
+                continue;
             }
 
-            if ($node->name instanceof MethodCall) {
-                return false;
+            if ($stmt instanceof Nop) {
+                continue;
             }
 
-            if ($node->name instanceof StaticCall) {
-                return false;
-            }
+            $previousStmt = $stmts[$key - 1];
 
-            return $this->isNames($node->name, ['markTestSkipped', 'markTestIncomplete']);
-        });
+            if ($this->shouldRemove($previousStmt, $stmt)) {
+                unset($stmts[$key]);
+                break;
+            }
+        }
+
+        if ($originalStmts === $stmts) {
+            return $originalStmts;
+        }
+
+        $stmts = array_values($stmts);
+        return $this->processCleanUpUnreachabelStmts($stmts);
+    }
+
+    private function shouldRemove(Stmt $previousStmt, Stmt $currentStmt): bool
+    {
+        if ($currentStmt instanceof InlineHTML) {
+            return false;
+        }
+
+        if ($previousStmt instanceof Throw_) {
+            return true;
+        }
+
+        if ($previousStmt instanceof Expression && $previousStmt->expr instanceof Exit_) {
+            return true;
+        }
+
+        if ($previousStmt instanceof Goto_ && $currentStmt instanceof Label) {
+            return false;
+        }
+
+        if (in_array($previousStmt::class, [Return_::class, Break_::class, Continue_::class, Goto_::class], true)) {
+            return true;
+        }
+
+        if (! $previousStmt instanceof TryCatch) {
+            return false;
+        }
+
+        $isUnreachable = $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE);
+        return $isUnreachable === true && $previousStmt->finally instanceof Finally_ && $this->cleanNop(
+            $previousStmt->finally->stmts
+        ) !== [];
     }
 
     /**
-     * Check nodes that breaks scope while traversing up
+     * @param Stmt[] $stmts
+     * @return Stmt[]
      */
-    private function isBreakingScopeNode(Stmt $stmt): bool
+    private function cleanNop(array $stmts): array
     {
-        if ($stmt instanceof ClassLike) {
-            return true;
-        }
-
-        if ($stmt instanceof ClassMethod) {
-            return true;
-        }
-
-        if ($stmt instanceof Function_) {
-            return true;
-        }
-
-        if ($stmt instanceof Namespace_) {
-            return true;
-        }
-
-        return $stmt instanceof Else_;
+        return array_filter($stmts, fn (Stmt $stmt): bool => ! $stmt instanceof Nop);
     }
 }

@@ -15,9 +15,11 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Defluent\NodeAnalyzer\FluentChainMethodCallNodeAnalyzer;
 use Rector\DogFood\NodeAnalyzer\ContainerConfiguratorCallAnalyzer;
 use Rector\DogFood\NodeManipulator\ContainerConfiguratorEmptyAssignRemover;
 use Rector\DogFood\NodeManipulator\ContainerConfiguratorImportsMerger;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -60,10 +62,16 @@ final class UpgradeRectorConfigRector extends AbstractRector
      */
     private const CONTAINER_CONFIGURATOR_CLASS = 'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator';
 
+    /**
+     * @var string
+     */
+    private const SERVICE_CONFIGURATOR_CLASS = 'Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator';
+
     public function __construct(
         private readonly ContainerConfiguratorCallAnalyzer $containerConfiguratorCallAnalyzer,
         private readonly ContainerConfiguratorEmptyAssignRemover $containerConfiguratorEmptyAssignRemover,
-        private readonly ContainerConfiguratorImportsMerger $containerConfiguratorImportsMerger
+        private readonly ContainerConfiguratorImportsMerger $containerConfiguratorImportsMerger,
+        private readonly FluentChainMethodCallNodeAnalyzer $fluentChainMethodCallNodeAnalyzer
     ) {
     }
 
@@ -115,22 +123,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $params = $node->getParams();
-        if (count($params) !== 1) {
+        if (! $this->isConfigClosure($node)) {
             return null;
         }
 
-        $onlyParam = $params[0];
-        $paramType = $onlyParam->type;
-        if (! $paramType instanceof Name) {
-            return null;
-        }
-
-        if (! $this->isNames($paramType, [self::CONTAINER_CONFIGURATOR_CLASS, self::RECTOR_CONFIG_CLASS])) {
-            return null;
-        }
-
-        $this->updateClosureParam($onlyParam);
+        $this->updateClosureParam($node);
 
         // 1. change import of sets to single sets() method call
         $this->containerConfiguratorImportsMerger->merge($node);
@@ -142,6 +139,23 @@ CODE_SAMPLE
 
             // 2. call on rule
             if ($node instanceof MethodCall) {
+                $nodeVarType = $this->nodeTypeResolver->getType($node->var);
+
+                if ($nodeVarType instanceof FullyQualifiedObjectType && $nodeVarType->getClassName() === self::SERVICE_CONFIGURATOR_CLASS) {
+                    if ($this->isFoundFluentServiceCall($node)) {
+                        return null;
+                    }
+
+                    $isPossiblyServiceDefinition = (bool) $this->betterNodeFinder->findFirstPreviousOfNode(
+                        $node,
+                        fn (Node $node): bool => $this->isFoundFluentServiceCall($node)
+                    );
+
+                    if ($isPossiblyServiceDefinition) {
+                        return null;
+                    }
+                }
+
                 if ($this->containerConfiguratorCallAnalyzer->isMethodCallWithServicesSetConfiguredRectorRule($node)) {
                     return $this->refactorConfigureRuleMethodCall($node);
                 }
@@ -171,8 +185,9 @@ CODE_SAMPLE
         return $node;
     }
 
-    public function updateClosureParam(Param $param): void
+    public function updateClosureParam(Closure $closure): void
     {
+        $param = $closure->params[0];
         if (! $param->type instanceof Name) {
             return;
         }
@@ -185,6 +200,32 @@ CODE_SAMPLE
         if (! $this->nodeNameResolver->isName($param->var, self::RECTOR_CONFIG_VARIABLE)) {
             $param->var = new Variable(self::RECTOR_CONFIG_VARIABLE);
         }
+    }
+
+    public function isConfigClosure(Closure $closure): bool
+    {
+        $params = $closure->getParams();
+        if (count($params) !== 1) {
+            return false;
+        }
+
+        $onlyParam = $params[0];
+        $paramType = $onlyParam->type;
+        if (! $paramType instanceof Name) {
+            return false;
+        }
+
+        return $this->isNames($paramType, [self::CONTAINER_CONFIGURATOR_CLASS, self::RECTOR_CONFIG_CLASS]);
+    }
+
+    private function isFoundFluentServiceCall(Node $node): bool
+    {
+        if (! $node instanceof MethodCall) {
+            return false;
+        }
+
+        $chains = $this->fluentChainMethodCallNodeAnalyzer->collectMethodCallNamesInChain($node);
+        return count($chains) > 1;
     }
 
     /**

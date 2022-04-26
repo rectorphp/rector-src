@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -22,8 +23,10 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\PackageBuilder\Php\TypeChecker;
@@ -312,42 +315,47 @@ final class BetterNodeFinder
     /**
      * @param callable(Node $node): bool $filter
      */
-    public function findFirstPrevious(Node $node, callable $filter): ?Node
+    public function findFirstPrevious(Node $node, callable $filter, ?File $file = null): ?Node
     {
-        $node = $node instanceof Expression ? $node : $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        if (! $node instanceof Node) {
+        $currentStmt = $this->resolveCurrentStatement($node);
+        if (! $currentStmt instanceof Node) {
             return null;
         }
 
-        $foundNode = $this->findFirst([$node], $filter);
-        // we found what we need
-        if ($foundNode instanceof Node) {
-            return $foundNode;
+        $parentStmtIterator = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+
+        // @todo add root virtual node for namespace-less nodes
+        if ($parentStmtIterator instanceof Node) {
+            // @todo assert iteratble interface that will be added in vendor patch
+            $parentStmts = $parentStmtIterator->stmts;
+        } else {
+            // fallback to parent stmts iterator
+            if (! $file instanceof File) {
+                $errorMessage = sprintf('File argument is missing in "%s()" method', __METHOD__);
+                throw new ShouldNotHappenException($errorMessage);
+            }
+
+            $parentStmts = $file->getNewStmts();
         }
 
-        // move to previous expression
-        $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_STATEMENT);
-        if ($previousStatement instanceof Node) {
-            return $this->findFirstPrevious($previousStatement, $filter);
-        }
-
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        if ($parentStmts === null) {
             return null;
         }
 
-        return $this->findFirstPrevious($parent, $filter);
+        // @todo we don't need the first one; maybe find first above current node... check for positions...?
+        return $this->findFirst($parentStmts, $filter);
     }
 
     /**
      * @template T of Node
      * @param array<class-string<T>> $types
      */
-    public function findFirstPreviousOfTypes(Node $mainNode, array $types): ?Node
+    public function findFirstPreviousOfTypes(Node $mainNode, array $types, ?File $file = null): ?Node
     {
         return $this->findFirstPrevious(
             $mainNode,
-            fn (Node $node): bool => $this->typeChecker->isInstanceOf($node, $types)
+            fn (Node $node): bool => $this->typeChecker->isInstanceOf($node, $types),
+            $file
         );
     }
 
@@ -359,7 +367,10 @@ final class BetterNodeFinder
         $next = $node->getAttribute(AttributeKey::NEXT_NODE);
         if ($next instanceof Node) {
             if ($next instanceof Return_ && $next->expr === null) {
-                return null;
+                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+                if (! $parent instanceof Case_) {
+                    return null;
+                }
             }
 
             $found = $this->findFirst($next, $filter);
@@ -525,6 +536,26 @@ final class BetterNodeFinder
         }
 
         return $foundNode;
+    }
+
+    public function resolveCurrentStatement(Node $node): ?Stmt
+    {
+        if ($node instanceof Stmt) {
+            return $node;
+        }
+
+        $currentStmt = $node;
+        while ($currentStmt = $currentStmt->getAttribute(AttributeKey::PARENT_NODE)) {
+            if ($currentStmt instanceof Stmt) {
+                return $currentStmt;
+            }
+
+            if (! $currentStmt instanceof Node) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     /**
