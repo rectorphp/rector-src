@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -159,6 +158,14 @@ CODE_SAMPLE
         } elseif ($node instanceof Echo_) {
             $stmts[] = new Echo_([$matchArm->body]);
             $stmts[] = new Break_();
+<<<<<<< HEAD
+=======
+        } elseif ($node->expr instanceof MethodCall || $node->expr instanceof FuncCall) {
+            $call = clone $node->expr;
+            $call->args = [new Arg($matchArm->body)];
+            $stmts[] = new Expression($call);
+            $stmts[] = new Break_();
+>>>>>>> 8b793b3348... fix cs
         } elseif ($node->expr instanceof Assign) {
             $stmts[] = new Expression(new Assign($node->expr->var, $matchArm->body));
             $stmts[] = new Break_();
