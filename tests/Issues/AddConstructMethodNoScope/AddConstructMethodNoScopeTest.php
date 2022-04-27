@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AnnotationImport;
+namespace Rector\Core\Tests\Issues\AddConstructMethodNoScope;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

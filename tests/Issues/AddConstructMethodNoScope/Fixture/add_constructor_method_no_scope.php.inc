@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Core\Tests\Issues\AddConstructMethodNoScope\Fixture;
+
 use App\Entity\Sage\FDocligne;
 use App\Repository\Sage\FDocenteteRepository;
 use Doctrine\Common\Collections\Collection;
@@ -17,6 +19,8 @@ class FDocentete
 ?>
 -----
 <?php
+
+namespace Rector\Core\Tests\Issues\AddConstructMethodNoScope\Fixture;
 
 use App\Entity\Sage\FDocligne;
 use App\Repository\Sage\FDocenteteRepository;
