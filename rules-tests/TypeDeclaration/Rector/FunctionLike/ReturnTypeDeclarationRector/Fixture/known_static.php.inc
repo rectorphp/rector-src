@@ -19,7 +19,7 @@ class KnownStatic
         return 'hello';
     }
 
-    public function getMoreItems(): \Closure
+    public function getMoreItems()
     {
         if (rand(0, 10)) {
             return [];
