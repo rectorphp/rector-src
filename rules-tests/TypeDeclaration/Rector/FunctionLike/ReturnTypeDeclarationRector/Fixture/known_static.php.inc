@@ -19,7 +19,7 @@ class KnownStatic
         return 'hello';
     }
 
-    public function getMoreItems()
+    public function getMoreItems(): \Closure
     {
         if (rand(0, 10)) {
             return [];
@@ -67,7 +67,7 @@ class KnownStatic
         return [];
     }
 
-    public function getCallable(): callable
+    public function getCallable(): \Closure
     {
         return function () {
         };

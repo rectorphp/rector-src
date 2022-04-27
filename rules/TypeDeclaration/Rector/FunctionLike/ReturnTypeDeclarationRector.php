@@ -137,29 +137,8 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function hasBuiltInFullyQualifiedReturn(ClassMethod | Function_ $node): bool
-    {
-        $returnType = $node->getReturnType();
-
-        if (! $returnType instanceof FullyQualified) {
-            return false;
-        }
-
-        $className = $returnType->toString();
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return false;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($className);
-        return $classReflection->isBuiltin();
-    }
-
     private function processType(ClassMethod | Function_ $node, Type $inferedType): ?Node
     {
-        if ($this->hasBuiltInFullyQualifiedReturn($node)) {
-            return null;
-        }
-
         $inferredReturnNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
             $inferedType,
             TypeKind::RETURN()

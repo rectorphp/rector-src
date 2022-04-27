@@ -6,6 +6,7 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ClosureType;
@@ -55,7 +56,7 @@ final class ClosureTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        return new Name('callable');
+        return new FullyQualified('Closure');
     }
 
     #[Required]
