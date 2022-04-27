@@ -29,7 +29,7 @@ use Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Sourc
 
 final class MyEntity
 {
-    #[ORM\ManyToOne(targetEntity: AnotherClass::class)]
+    #[ORM\ManyToOne(targetEntity: \Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\AnotherClass::class)]
     private readonly ?Collection $items;
 
     public function addItem(AnotherClass $myOtherEntity): void

@@ -11,9 +11,11 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
@@ -38,7 +40,8 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
     ];
 
     public function __construct(
-        private readonly ClassLikeExistenceChecker $classLikeExistenceChecker
+        private readonly ClassLikeExistenceChecker $classLikeExistenceChecker,
+        private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
 
@@ -93,6 +96,15 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $classLikeName = $node->value;
+
+        $uses = $this->useImportsResolver->resolveForNode($node);
+        foreach ($uses as $use) {
+            $_classLikeName = $this->nodeNameResolver->getName($use) ?? '';
+            if ($use->type === Use_::TYPE_NORMAL && str_ends_with($_classLikeName, $classLikeName)) {
+                $classLikeName = $_classLikeName;
+                break;
+            }
+        }
 
         // remove leading slash
         $classLikeName = ltrim($classLikeName, '\\');
