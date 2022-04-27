@@ -150,8 +150,8 @@ CODE_SAMPLE
             return false;
         }
 
-        $reflectionClass = $this->reflectionProvider->getClass($className);
-        return $reflectionClass->isBuiltin();
+        $classReflection = $this->reflectionProvider->getClass($className);
+        return $classReflection->isBuiltin();
     }
 
     private function processType(ClassMethod | Function_ $node, Type $inferedType): ?Node
