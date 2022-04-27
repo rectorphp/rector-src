@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -31,6 +32,7 @@ use Rector\VendorLocker\VendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
@@ -47,6 +49,7 @@ final class ReturnTypeDeclarationRector extends AbstractRector implements MinPhp
         private readonly VendorLockResolver $vendorLockResolver,
         private readonly PhpParserTypeAnalyzer $phpParserTypeAnalyzer,
         private readonly ObjectTypeComparator $objectTypeComparator,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -134,8 +137,29 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
+    private function hasBuiltInFullyQualifiedReturn(ClassMethod | Function_ $node): bool
+    {
+        $returnType = $node->getReturnType();
+
+        if (! $returnType instanceof FullyQualified) {
+            return false;
+        }
+
+        $className = $returnType->toString();
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return false;
+        }
+
+        $reflectionClass = $this->reflectionProvider->getClass($className);
+        return $reflectionClass->isBuiltin();
+    }
+
     private function processType(ClassMethod | Function_ $node, Type $inferedType): ?Node
     {
+        if ($this->hasBuiltInFullyQualifiedReturn($node)) {
+            return null;
+        }
+
         $inferredReturnNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
             $inferedType,
             TypeKind::RETURN()
