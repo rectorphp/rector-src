@@ -39,9 +39,6 @@ final class VariableDimFetchAssignResolver
             }
 
             $assign = $stmtExpr;
-            if (! $assign->var instanceof ArrayDimFetch) {
-                return [];
-            }
 
             $keyExpr = $this->matchKeyOnArrayDimFetchOfVariable($assign, $variable);
             if (! $keyExpr instanceof Expr) {
@@ -56,6 +53,10 @@ final class VariableDimFetchAssignResolver
 
     public function matchKeyOnArrayDimFetchOfVariable(Assign $assign, Variable $variable): ?Expr
     {
+        if (! $assign->var instanceof ArrayDimFetch) {
+            return null;
+        }
+
         $arrayDimFetch = $assign->var;
         if (! $this->nodeComparator->areNodesEqual($arrayDimFetch->var, $variable)) {
             return null;
