@@ -106,7 +106,7 @@ final class NodeTypeResolver
         if ($resolvedType instanceof ObjectType) {
             try {
                 return $this->resolveObjectType($resolvedType, $requiredObjectType);
-            } catch (ClassAutoloadingException) {
+            } catch (ClassAutoloadingException | \PHPStan\Reflection\Runtime\RuntimeReflectionProvider) {
                 // in some type checks, the provided type in rector.php configuration does not have to exists
                 return false;
             }
