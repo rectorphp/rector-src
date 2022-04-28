@@ -88,7 +88,9 @@ final class BetterNodeFinder
             if (is_a($parent, $type, true)) {
                 return $parent;
             }
-        } while ($parent = $parent->getAttribute(AttributeKey::PARENT_NODE));
+
+            $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+        } while ($parent instanceof Node);
 
         return null;
     }
