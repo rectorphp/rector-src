@@ -150,8 +150,8 @@ CODE_SAMPLE
     private function createArray(array $keysAndExprs): Array_
     {
         $arrayItems = [];
-        foreach ($keysAndExprs as $keysAndExpr) {
-            $arrayItems[] = new ArrayItem($keysAndExpr->getExpr(), $keysAndExpr->getKeyExpr());
+        foreach ($keysAndExprs as $keyAndExpr) {
+            $arrayItems[] = new ArrayItem($keyAndExpr->getExpr(), $keyAndExpr->getKeyExpr());
         }
 
         return new Array_($arrayItems);
