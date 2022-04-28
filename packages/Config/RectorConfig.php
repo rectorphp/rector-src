@@ -54,6 +54,12 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PARALLEL, true);
     }
 
+    public function parallelTimoutInSeconds(int $seconds): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, $seconds);
+    }
+
     /**
      * @param array<int|string, mixed> $criteria
      */

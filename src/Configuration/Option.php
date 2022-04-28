@@ -196,6 +196,7 @@ final class Option
     public const PARALLEL_MAX_NUMBER_OF_PROCESSES = 'parallel-max-number-of-processes';
 
     /**
+     * @deprecated Use @see \Rector\Config\RectorConfig::parallelTimoutInSeconds() instead
      * @var string
      */
     public const PARALLEL_TIMEOUT_IN_SECONDS = 'parallel-timeout-in-seconds';
