@@ -48,16 +48,14 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PARALLEL, false);
     }
 
-    public function parallel(): void
+    public function parallel(int $seconds = 120): void
     {
         $parameters = $this->parameters();
         $parameters->set(Option::PARALLEL, true);
-    }
 
-    public function parallelTimoutInSeconds(int $seconds): void
-    {
-        $parameters = $this->parameters();
-        $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, $seconds);
+        if (is_int($seconds)) {
+            $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, $seconds);
+        }
     }
 
     /**
