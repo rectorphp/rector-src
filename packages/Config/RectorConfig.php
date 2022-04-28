@@ -52,10 +52,7 @@ final class RectorConfig extends ContainerConfigurator
     {
         $parameters = $this->parameters();
         $parameters->set(Option::PARALLEL, true);
-
-        if (is_int($seconds)) {
-            $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, $seconds);
-        }
+        $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, $seconds);
     }
 
     /**
