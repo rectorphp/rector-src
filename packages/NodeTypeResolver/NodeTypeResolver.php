@@ -22,6 +22,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Broker\ClassAutoloadingException;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Reflection\Runtime\RuntimeReflectionProvider;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
@@ -106,7 +107,7 @@ final class NodeTypeResolver
         if ($resolvedType instanceof ObjectType) {
             try {
                 return $this->resolveObjectType($resolvedType, $requiredObjectType);
-            } catch (ClassAutoloadingException | \PHPStan\Reflection\Runtime\RuntimeReflectionProvider) {
+            } catch (ClassAutoloadingException | RuntimeReflectionProvider) {
                 // in some type checks, the provided type in rector.php configuration does not have to exists
                 return false;
             }
