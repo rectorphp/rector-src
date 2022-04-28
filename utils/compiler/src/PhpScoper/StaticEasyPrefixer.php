@@ -38,6 +38,7 @@ final class StaticEasyPrefixer
 
         // this is public API of a Rector rule
         'Symplify\RuleDocGenerator\*',
+        'Symplify\PackageBuilder\Parameter\ParameterProvider',
     ];
 
     /**
