@@ -48,9 +48,6 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PARALLEL, false);
     }
 
-    /**
-     * @param array<string, int> $criteria
-     */
     public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 20): void
     {
         $parameters = $this->parameters();
