@@ -68,13 +68,13 @@ final class MakePropertyTypedGuard
         return $this->isSafeProtectedProperty($property, $classReflection);
     }
 
-    private function isSafeProtectedProperty(Property $property, ClassReflection $class): bool
+    private function isSafeProtectedProperty(Property $property, ClassReflection $classReflection): bool
     {
         if (! $property->isProtected()) {
             return false;
         }
 
-        if (! $class->isFinal()) {
+        if (! $classReflection->isFinal()) {
             return false;
         }
 
