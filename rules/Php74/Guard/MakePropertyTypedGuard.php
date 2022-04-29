@@ -50,7 +50,7 @@ final class MakePropertyTypedGuard
          * - trait properties are unpredictable based on class context they appear in
          * - on interface properties as well, as interface not allowed to have property
          */
-        if ($classReflection->isClass()) {
+        if (! $classReflection->isClass()) {
             return false;
         }
 
