@@ -120,10 +120,7 @@ CODE_SAMPLE
      */
     private function processCleanUpUnreachabelStmts(array $stmts): array
     {
-        $cleanedStmts = [];
         foreach ($stmts as $key => $stmt) {
-            $cleanedStmts[] = $stmt;
-
             if (! isset($stmts[$key - 1])) {
                 continue;
             }
@@ -135,8 +132,8 @@ CODE_SAMPLE
             $previousStmt = $stmts[$key - 1];
 
             if ($this->shouldRemove($previousStmt, $stmt)) {
-                array_pop($cleanedStmts);
-                return $cleanedStmts;
+                array_splice($stmts, $key);
+                return $stmts;
             }
         }
 
