@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
@@ -39,8 +38,6 @@ final class RectifiedAnalyzer
             return null;
         }
 
-        // re-set to refill next
-        $this->previousFileWithNodes[$realPath] = null;
         return $rectifiedNode;
     }
 
@@ -48,10 +45,6 @@ final class RectifiedAnalyzer
     {
         if ($rectifiedNode->getRectorClass() === $rector::class && $rectifiedNode->getNode() === $node) {
             return false;
-        }
-
-        if ($node instanceof Stmt) {
-            return true;
         }
 
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
