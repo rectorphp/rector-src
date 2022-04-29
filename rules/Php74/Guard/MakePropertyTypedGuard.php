@@ -26,7 +26,6 @@ final class MakePropertyTypedGuard
 
     public function isLegal(Property $property, bool $inlinePublic = true): bool
     {
-        $class = null;
         if ($property->type !== null) {
             return false;
         }
