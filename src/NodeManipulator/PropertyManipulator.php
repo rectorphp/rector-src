@@ -45,6 +45,7 @@ use Rector\ReadWrite\Guard\VariableToConstantGuard;
 use Rector\ReadWrite\NodeAnalyzer\ReadWritePropertyAnalyzer;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\PackageBuilder\Php\TypeChecker;
+use PHPStan\Reflection\ClassReflection;
 
 /**
  * For inspiration to improve this service,
@@ -234,18 +235,16 @@ final class PropertyManipulator
         return null;
     }
 
-    public function isUsedByTrait(Class_ $class, string $propertyName): bool
+    public function isUsedByTrait(ClassReflection $classReflection, string $propertyName): bool
     {
-        foreach ($class->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $traitName) {
-                $trait = $this->astResolver->resolveClassFromName($traitName->toString());
-                if (! $trait instanceof Trait_) {
-                    continue;
-                }
+        foreach ($classReflection->getTraits() as $traitUse) {
+            $trait = $this->astResolver->resolveClassFromName($traitUse->getName());
+            if (! $trait instanceof Trait_) {
+                continue;
+            }
 
-                if ($this->propertyFetchAnalyzer->containsLocalPropertyFetchName($trait, $propertyName)) {
-                    return true;
-                }
+            if ($this->propertyFetchAnalyzer->containsLocalPropertyFetchName($trait, $propertyName)) {
+                return true;
             }
         }
 

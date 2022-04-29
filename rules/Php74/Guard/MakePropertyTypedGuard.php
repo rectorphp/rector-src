@@ -50,14 +50,13 @@ final class MakePropertyTypedGuard
          * - trait properties are unpredictable based on class context they appear in
          * - on interface properties as well, as interface not allowed to have property
          */
-        $class = $this->betterNodeFinder->findParentType($property, Class_::class);
-        if (! $class instanceof Class_) {
+        if ($classReflection->isClass()) {
             return false;
         }
 
         $propertyName = $this->nodeNameResolver->getName($property);
 
-        if ($this->propertyManipulator->isUsedByTrait($class, $propertyName)) {
+        if ($this->propertyManipulator->isUsedByTrait($classReflection, $propertyName)) {
             return false;
         }
 
