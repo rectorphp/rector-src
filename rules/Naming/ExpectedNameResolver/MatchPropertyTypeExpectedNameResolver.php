@@ -6,6 +6,7 @@ namespace Rector\Naming\ExpectedNameResolver;
 
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -13,7 +14,6 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\NodeNameResolver\NodeNameResolver;
-use PHPStan\Reflection\ClassReflection;
 
 final class MatchPropertyTypeExpectedNameResolver
 {
