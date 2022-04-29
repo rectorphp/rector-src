@@ -10,7 +10,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
@@ -18,7 +17,6 @@ use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 final class MakePropertyTypedGuard
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyAnalyzer $propertyAnalyzer,
         private readonly PropertyManipulator $propertyManipulator,
@@ -28,6 +26,7 @@ final class MakePropertyTypedGuard
 
     public function isLegal(Property $property, bool $inlinePublic = true): bool
     {
+        $class = null;
         if ($property->type !== null) {
             return false;
         }
