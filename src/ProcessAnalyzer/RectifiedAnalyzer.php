@@ -33,10 +33,8 @@ final class RectifiedAnalyzer
         }
 
         foreach ($this->previousFileWithNodes[$realPath] as $previousFileWithNode) {
-            /** @var RectifiedNode $rectifiedNode */
-            $rectifiedNode = $previousFileWithNode;
-            if (! $this->shouldContinue($rectifiedNode, $rector, $node)) {
-                return $rectifiedNode;
+            if (! $this->shouldContinue($previousFileWithNode, $rector, $node)) {
+                return $previousFileWithNode;
             }
         }
 
