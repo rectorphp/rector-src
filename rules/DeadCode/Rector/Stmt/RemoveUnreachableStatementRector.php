@@ -120,8 +120,14 @@ CODE_SAMPLE
      */
     private function processCleanUpUnreachabelStmts(array $stmts): array
     {
-        $originalStmts = $stmts;
+        $isRemoved = false;
+
         foreach ($stmts as $key => $stmt) {
+            if ($isRemoved) {
+                unset($stmts[$key]);
+                continue;
+            }
+
             if (! isset($stmts[$key - 1])) {
                 continue;
             }
@@ -132,18 +138,15 @@ CODE_SAMPLE
 
             $previousStmt = $stmts[$key - 1];
 
-            if ($this->shouldRemove($previousStmt, $stmt)) {
-                unset($stmts[$key]);
-                break;
+            if (! $this->shouldRemove($previousStmt, $stmt)) {
+                continue;
             }
+
+            unset($stmts[$key]);
+            $isRemoved = true;
         }
 
-        if ($originalStmts === $stmts) {
-            return $originalStmts;
-        }
-
-        $stmts = array_values($stmts);
-        return $this->processCleanUpUnreachabelStmts($stmts);
+        return $stmts;
     }
 
     private function shouldRemove(Stmt $previousStmt, Stmt $currentStmt): bool
