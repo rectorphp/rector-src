@@ -18,7 +18,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class RectifiedAnalyzer
 {
     /**
-     * @var array<string, RectifiedNode[]>
+     * @var array<string, RectifiedNode|null>
      */
     private array $previousFileWithNodes = [];
 
@@ -28,17 +28,17 @@ final class RectifiedAnalyzer
         $realPath = $smartFileInfo->getRealPath();
 
         if (! isset($this->previousFileWithNodes[$realPath])) {
-            $this->previousFileWithNodes[$realPath][] = new RectifiedNode($rector::class, $node);
+            $this->previousFileWithNodes[$realPath] = new RectifiedNode($rector::class, $node);
             return null;
         }
 
-        foreach ($this->previousFileWithNodes[$realPath] as $previousFileWithNode) {
-            if (! $this->shouldContinue($previousFileWithNode, $rector, $node)) {
-                return $previousFileWithNode;
-            }
+        /** @var RectifiedNode $rectifiedNode */
+        $rectifiedNode = $this->previousFileWithNodes[$realPath];
+        if ($this->shouldContinue($rectifiedNode, $rector, $node)) {
+            return null;
         }
 
-        return null;
+        return $rectifiedNode;
     }
 
     private function shouldContinue(RectifiedNode $rectifiedNode, RectorInterface $rector, Node $node): bool
