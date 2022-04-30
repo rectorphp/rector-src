@@ -89,10 +89,8 @@ final class BetterNodeFinder
                 return $parent;
             }
 
-            if (! $parent instanceof Node) {
-                return null;
-            }
-        } while ($parent = $parent->getAttribute(AttributeKey::PARENT_NODE));
+            $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+        } while ($parent instanceof Node);
 
         return null;
     }
@@ -217,14 +215,9 @@ final class BetterNodeFinder
      */
     public function findFirstNonAnonymousClass(array $nodes): ?Node
     {
-        return $this->findFirst($nodes, function (Node $node): bool {
-            if (! $node instanceof ClassLike) {
-                return false;
-            }
-
-            // skip anonymous classes
-            return ! ($node instanceof Class_ && $this->classAnalyzer->isAnonymousClass($node));
-        });
+        // skip anonymous classes
+        return $this->findFirst($nodes, fn (Node $node): bool =>
+            $node instanceof Class_ && ! $this->classAnalyzer->isAnonymousClass($node));
     }
 
     /**

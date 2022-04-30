@@ -22,7 +22,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
@@ -40,7 +39,6 @@ use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\Skipper\Skipper\Skipper;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
@@ -73,10 +71,6 @@ CODE_SAMPLE;
     protected NodeNameResolver $nodeNameResolver;
 
     protected NodeTypeResolver $nodeTypeResolver;
-
-    protected ParameterProvider $parameterProvider;
-
-    protected PhpVersionProvider $phpVersionProvider;
 
     protected StaticTypeMapper $staticTypeMapper;
 
@@ -129,10 +123,8 @@ CODE_SAMPLE;
         SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         NodeFactory $nodeFactory,
         PhpDocInfoFactory $phpDocInfoFactory,
-        PhpVersionProvider $phpVersionProvider,
         ExclusionManager $exclusionManager,
         StaticTypeMapper $staticTypeMapper,
-        ParameterProvider $parameterProvider,
         CurrentRectorProvider $currentRectorProvider,
         CurrentNodeProvider $currentNodeProvider,
         Skipper $skipper,
@@ -151,10 +143,8 @@ CODE_SAMPLE;
         $this->simpleCallableNodeTraverser = $simpleCallableNodeTraverser;
         $this->nodeFactory = $nodeFactory;
         $this->phpDocInfoFactory = $phpDocInfoFactory;
-        $this->phpVersionProvider = $phpVersionProvider;
         $this->exclusionManager = $exclusionManager;
         $this->staticTypeMapper = $staticTypeMapper;
-        $this->parameterProvider = $parameterProvider;
         $this->currentRectorProvider = $currentRectorProvider;
         $this->currentNodeProvider = $currentNodeProvider;
         $this->skipper = $skipper;
@@ -334,15 +324,6 @@ CODE_SAMPLE;
         }
 
         return $currentArgs;
-    }
-
-    protected function unwrapExpression(Stmt $stmt): Expr | Stmt
-    {
-        if ($stmt instanceof Expression) {
-            return $stmt->expr;
-        }
-
-        return $stmt;
     }
 
     protected function removeNode(Node $node): void

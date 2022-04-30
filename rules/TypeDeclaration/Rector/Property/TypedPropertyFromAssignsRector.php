@@ -13,6 +13,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
+use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -37,7 +38,7 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements All
      * Default to false, which only apply changes:
      *
      *  – private modifier property
-     *  - protected modifier property on final class without extends
+     *  - protected modifier property on final class without extends or has extends but property and/or its usage only in current class
      *
      * Set to true will allow change other modifiers as well as far as not forbidden, eg: callable type, null type, etc.
      */
@@ -48,7 +49,8 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements All
         private readonly PropertyTypeDecorator $propertyTypeDecorator,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly VarTagRemover $varTagRemover,
-        private readonly MakePropertyTypedGuard $makePropertyTypedGuard
+        private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
+        private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
 

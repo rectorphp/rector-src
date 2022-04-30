@@ -6,7 +6,7 @@ namespace Rector\Compiler\PhpScoper;
 
 final class StaticEasyPrefixer
 {
-    /**
+    /**ParameterP
      * @var string[]
      */
     public const EXCLUDED_CLASSES = [

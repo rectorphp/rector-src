@@ -13,7 +13,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
-use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -30,7 +30,8 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
 {
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
-        private readonly ClassRenamer $classRenamer
+        private readonly ClassRenamer $classRenamer,
+        private readonly RectorConfigProvider $rectorConfigProvider,
     ) {
     }
 
@@ -99,7 +100,7 @@ CODE_SAMPLE
             return $this->classRenamer->renameNode($node, $oldToNewClasses, $this->file);
         }
 
-        if (! $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
+        if (! $this->rectorConfigProvider->shouldImportNames()) {
             return null;
         }
 
