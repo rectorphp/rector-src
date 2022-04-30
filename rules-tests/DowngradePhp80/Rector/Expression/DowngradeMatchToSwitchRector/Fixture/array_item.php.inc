@@ -27,7 +27,7 @@ class ArrayItem
     public function run($statusCode)
     {
         return [
-            (function() use ($statusCode) {
+            (function () use ($statusCode) {
                 switch ($statusCode) {
                     case 200:
                     case 300:
@@ -37,7 +37,7 @@ class ArrayItem
                     default:
                         return 'unknown status code';
                 }
-            })()
+            })(),
         ];
     }
 }
