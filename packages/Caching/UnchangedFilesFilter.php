@@ -23,21 +23,21 @@ final class UnchangedFilesFilter
         $changedFileInfos = [];
         $dependentFileInfos = [];
 
-        foreach ($fileInfosOrPaths as $fileInfo) {
-            $fileInfo = is_string($fileInfo)
-                ? new SmartFileInfo($fileInfo)
-                : $fileInfo;
+        foreach ($fileInfosOrPaths as $fileInfoOrPath) {
+            $fileInfoOrPath = is_string($fileInfoOrPath)
+                ? new SmartFileInfo($fileInfoOrPath)
+                : $fileInfoOrPath;
 
-            if (! $this->changedFilesDetector->hasFileChanged($fileInfo)) {
+            if (! $this->changedFilesDetector->hasFileChanged($fileInfoOrPath)) {
                 continue;
             }
 
-            $changedFileInfos[] = $fileInfo;
-            $this->changedFilesDetector->invalidateFile($fileInfo);
+            $changedFileInfos[] = $fileInfoOrPath;
+            $this->changedFilesDetector->invalidateFile($fileInfoOrPath);
 
             $dependentFileInfos = array_merge(
                 $dependentFileInfos,
-                $this->changedFilesDetector->getDependentFileInfos($fileInfo)
+                $this->changedFilesDetector->getDependentFileInfos($fileInfoOrPath)
             );
         }
 
