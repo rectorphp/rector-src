@@ -55,15 +55,13 @@ final class BetterNodeFinder
     {
         Assert::allIsAOf($types, Node::class);
 
-        while ($currentNode = $currentNode->getAttribute(AttributeKey::PARENT_NODE)) {
-            if (! $currentNode instanceof Node) {
-                return null;
-            }
-
-            foreach ($types as $type) {
-                if (is_a($currentNode, $type, true)) {
-                    return $currentNode;
-                }
+        foreach ($types as $type) {
+            /**
+             * @var class-string<T> $type
+             */
+            $parent = $this->findParentType($currentNode, $type);
+            if ($parent instanceof Node) {
+                return $parent;
             }
         }
 
