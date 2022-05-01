@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Property;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,13 +20,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassAnnotationMatcher $classAnnotationMatcher
+        private readonly ClassAnnotationMatcher $classAnnotationMatcher,
+        private readonly AttributeFinder $attributeFinder
     )
     {
     }
 
     public function changeTypeInAnnotationTypes(
-        Node       $node,
+        Node $node,
         PhpDocInfo $phpDocInfo
     ): void
     {
@@ -43,9 +46,49 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
         $this->processDoctrineToMany($doctrineAnnotationTagValueNode, $node);
     }
 
+    protected function changeTypeInAttributeTypes(
+        Node $node,
+    ): ?Node
+    {
+        $attribute = $this->attributeFinder->findAttributeByClasses($node, [
+            'Doctrine\ORM\Mapping\OneToMany',
+            'Doctrine\ORM\Mapping\ManyToOne',
+            'Doctrine\ORM\Mapping\OneToOne',
+            'Doctrine\ORM\Mapping\ManyToMany',
+            'Doctrine\ORM\Mapping\Embedded',
+        ]);
+
+        foreach ($attribute->args as $arg) {
+            $argName = $arg->name;
+            if (! $argName instanceof Identifier) {
+                continue;
+            }
+
+            if (! $this->isName($argName, 'targetEntity')) {
+                continue;
+            }
+
+            $value = $this->valueResolver->getValue($arg->value);
+            $fullyQualified = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $node);
+
+            if ($fullyQualified === $value) {
+                continue;
+            }
+
+            $arg->value = $this->nodeFactory->createClassConstFetch(
+                $fullyQualified,
+                'class'
+            );
+
+            return $node;
+        }
+
+        return null;
+    }
+
     private function processDoctrineToMany(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
-        Node                           $node
+        Node $node
     ): void
     {
         $key = $doctrineAnnotationTagValueNode->hasClassName(
@@ -70,7 +113,7 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert targetEntities defined as String to Class Constants in Doctrine Entities.', [
+        return new RuleDefinition('Convert targetEntities defined as String to <class>::class Constants in Doctrine Entities.', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
@@ -114,9 +157,13 @@ CODE_SAMPLE
         return [Property::class];
     }
 
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $this->changeTypeInAnnotationTypes($node, $phpDocInfo);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if ($phpDocInfo) {
+            $this->changeTypeInAnnotationTypes($node, $phpDocInfo);
+        }
+
+        return $this->changeTypeInAttributeTypes($node);
     }
 }
