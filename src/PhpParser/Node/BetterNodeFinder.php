@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
@@ -25,7 +24,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\PackageBuilder\Php\TypeChecker;
@@ -350,7 +348,7 @@ final class BetterNodeFinder
      * @template T of Node
      * @param array<class-string<T>> $types
      */
-    public function findFirstPreviousOfTypes(Node $mainNode, array $types, ?File $file = null): ?Node
+    public function findFirstPreviousOfTypes(Node $mainNode, array $types): ?Node
     {
         return $this->findFirstPrevious(
             $mainNode,
