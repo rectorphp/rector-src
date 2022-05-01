@@ -14,6 +14,7 @@ use PHPStan\Type\ThisType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNestingScope\ContextAnalyzer;
+use Rector\NodeNestingScope\ValueObject\ControlStructure;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\NodeFinder\NodeUsageFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -138,7 +139,7 @@ CODE_SAMPLE
 
     private function shouldSkipAsOtherLoop(Foreach_ $foreach): bool
     {
-        $foreachParent = $this->betterNodeFinder->findParentByTypes($foreach, ContextAnalyzer::LOOP_NODES);
+        $foreachParent = $this->betterNodeFinder->findParentByTypes($foreach, ControlStructure::LOOP_NODES);
         return $foreachParent instanceof Node;
     }
 }

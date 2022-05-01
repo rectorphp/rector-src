@@ -18,16 +18,12 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\NodeNestingScope\ValueObject\ControlStructure;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class ContextAnalyzer
 {
-    /**
-     * @var array<class-string<Stmt>>
-     */
-    public const LOOP_NODES = [For_::class, Foreach_::class, While_::class, Do_::class];
-
     /**
      * Nodes that break the scope they way up, e.g. class method
      * @var array<class-string<FunctionLike>>
@@ -42,7 +38,7 @@ final class ContextAnalyzer
 
     public function isInLoop(Node $node): bool
     {
-        $stopNodes = array_merge(self::LOOP_NODES, self::BREAK_NODES);
+        $stopNodes = array_merge(ControlStructure::LOOP_NODES, self::BREAK_NODES);
 
         $firstParent = $this->betterNodeFinder->findParentByTypes($node, $stopNodes);
         if (! $firstParent instanceof Node) {
