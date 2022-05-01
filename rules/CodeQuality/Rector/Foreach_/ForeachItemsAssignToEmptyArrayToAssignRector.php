@@ -96,7 +96,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->shouldSkipAsOtherLoop($foreach)) {
+        if ($this->shouldSkipAsPartOfOtherLoop($foreach)) {
             return true;
         }
 
@@ -136,7 +136,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function shouldSkipAsOtherLoop(Foreach_ $foreach): bool
+    private function shouldSkipAsPartOfOtherLoop(Foreach_ $foreach): bool
     {
         $foreachParent = $this->betterNodeFinder->findParentByTypes($foreach, ControlStructure::LOOP_NODES);
         return $foreachParent instanceof Node;
