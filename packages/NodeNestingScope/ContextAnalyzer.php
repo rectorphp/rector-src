@@ -45,7 +45,7 @@ final class ContextAnalyzer
             return false;
         }
 
-        foreach (self::LOOP_NODES as $type) {
+        foreach (ControlStructure::LOOP_NODES as $type) {
             if (is_a($firstParent, $type, true)) {
                 return true;
             }
@@ -73,7 +73,7 @@ final class ContextAnalyzer
 
     public function isHasAssignWithIndirectReturn(Node $node, If_ $if): bool
     {
-        foreach (self::LOOP_NODES as $loopNode) {
+        foreach (ControlStructure::LOOP_NODES as $loopNode) {
             $loopObjectType = new ObjectType($loopNode);
             $parentType = $this->nodeTypeResolver->getType($node);
             $superType = $parentType->isSuperTypeOf($loopObjectType);
