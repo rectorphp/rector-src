@@ -25,7 +25,8 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
     ) {
     }
 
-    public function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): void {
+    public function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): void
+    {
         $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses([
             'Doctrine\ORM\Mapping\OneToMany',
             'Doctrine\ORM\Mapping\ManyToOne',
@@ -46,8 +47,8 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
         return new RuleDefinition(
             'Convert targetEntities defined as String to <class>::class Constants in Doctrine Entities.',
             [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
     /**
@@ -59,8 +60,8 @@ final class SomeClass
     private readonly ?Collection $items2;
 }
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
     /**
@@ -72,9 +73,10 @@ final class SomeClass
     private readonly ?Collection $items2;
 }
 CODE_SAMPLE
-            ),
-        
-        ]);
+                ),
+
+            ]
+        );
     }
 
     public function provideMinPhpVersion(): int
@@ -100,7 +102,8 @@ CODE_SAMPLE
         return $this->changeTypeInAttributeTypes($node);
     }
 
-    protected function changeTypeInAttributeTypes(Node $node,): ?Node {
+    protected function changeTypeInAttributeTypes(Node $node): ?Node
+    {
         $attribute = $this->attributeFinder->findAttributeByClasses($node, [
             'Doctrine\ORM\Mapping\OneToMany',
             'Doctrine\ORM\Mapping\ManyToOne',
@@ -108,6 +111,10 @@ CODE_SAMPLE
             'Doctrine\ORM\Mapping\ManyToMany',
             'Doctrine\ORM\Mapping\Embedded',
         ]);
+
+        if ($attribute === null) {
+            return null;
+        }
 
         foreach ($attribute->args as $arg) {
             $argName = $arg->name;
