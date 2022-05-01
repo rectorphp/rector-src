@@ -63,7 +63,7 @@ final class ClassRenamer
     /**
      * @param array<string, string> $oldToNewClasses
      */
-    public function renameNode(Node $node, array $oldToNewClasses, ?File $file = null): ?Node
+    public function renameNode(Node $node, array $oldToNewClasses): ?Node
     {
         $oldToNewTypes = [];
         foreach ($oldToNewClasses as $oldClass => $newClass) {
