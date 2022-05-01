@@ -34,7 +34,7 @@ final class FunctionLikeManipulator
         $returnedLocalPropertyNames = [];
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($functionLike, function (Node $node) use (
             &$returnedLocalPropertyNames
-        ) {
+        ): void {
             if (! $node instanceof Return_) {
                 return null;
             }

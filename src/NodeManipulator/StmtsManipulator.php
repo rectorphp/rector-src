@@ -42,7 +42,7 @@ final class StmtsManipulator
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $classMethod->stmts,
-            function (Node $node) use (&$stmts) {
+            function (Node $node) use (&$stmts): void {
                 foreach ($stmts as $key => $assign) {
                     if (! $this->nodeComparator->areNodesEqual($node, $assign)) {
                         continue;

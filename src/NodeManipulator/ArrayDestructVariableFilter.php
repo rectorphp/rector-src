@@ -31,7 +31,7 @@ final class ArrayDestructVariableFilter
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classMethod, function (Node $node) use (
             &$arrayDestructionCreatedVariables
-        ) {
+        ): void {
             if (! $node instanceof Assign) {
                 return null;
             }

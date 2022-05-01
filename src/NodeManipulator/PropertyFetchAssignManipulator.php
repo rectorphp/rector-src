@@ -82,7 +82,7 @@ final class PropertyFetchAssignManipulator
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($node, function (Node $node) use (
             $paramName,
             &$propertyNames
-        ) {
+        ): void {
             if (! $node instanceof Assign) {
                 return null;
             }
