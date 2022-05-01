@@ -143,8 +143,7 @@ CODE_SAMPLE
     private function createSwitchCasesFromMatchArms(
         ArrayItem | Echo_ | Expression | Return_ $node,
         array $matchArms
-    ): array
-    {
+    ): array {
         $switchCases = [];
 
         foreach ($matchArms as $matchArm) {
