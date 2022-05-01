@@ -7,12 +7,14 @@ namespace Rector\CodeQuality\Rector\Foreach_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\NodeFinder\NodeUsageFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -95,7 +97,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->shouldSkipAsPartOfNestedForeach($foreach)) {
+        if ($this->shouldSkipAsOtherLoop($foreach)) {
             return true;
         }
 
@@ -135,9 +137,9 @@ CODE_SAMPLE
         return false;
     }
 
-    private function shouldSkipAsPartOfNestedForeach(Foreach_ $foreach): bool
+    private function shouldSkipAsOtherLoop(Foreach_ $foreach): bool
     {
-        $foreachParent = $this->betterNodeFinder->findParentType($foreach, Foreach_::class);
-        return $foreachParent !== null;
+        $foreachParent = $this->betterNodeFinder->findParentByTypes($foreach, ContextAnalyzer::LOOP_NODES);
+        return $foreachParent instanceof Node;
     }
 }
