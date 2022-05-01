@@ -46,7 +46,7 @@ final class AssignToPropertyTypeInferer
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
             $propertyName,
             &$assignedExprTypes
-        ) {
+        ): void {
             if (! $node instanceof Assign) {
                 return null;
             }

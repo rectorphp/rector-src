@@ -112,7 +112,7 @@ final class ShortNameResolver
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             &$shortNamesToFullyQualifiedNames
-        ) {
+        ): void {
             // class name is used!
             if ($node instanceof ClassLike && $node->name instanceof Identifier) {
                 $fullyQualifiedName = $this->nodeNameResolver->getName($node);
@@ -161,7 +161,7 @@ final class ShortNameResolver
         $shortNames = [];
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             &$shortNames
-        ) {
+        ): void {
             // speed up for nodes that are
             $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
             if (! $phpDocInfo instanceof PhpDocInfo) {
@@ -172,7 +172,7 @@ final class ShortNameResolver
             $phpDocNodeTraverser->traverseWithCallable(
                 $phpDocInfo->getPhpDocNode(),
                 '',
-                function ($node) use (&$shortNames) {
+                function ($node) use (&$shortNames): void {
                     if ($node instanceof PhpDocTagNode) {
                         $shortName = trim($node->name, '@');
                         if (StringUtils::isMatch($shortName, self::BIG_LETTER_START_REGEX)) {

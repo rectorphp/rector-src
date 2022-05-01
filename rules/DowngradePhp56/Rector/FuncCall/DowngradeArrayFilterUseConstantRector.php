@@ -143,7 +143,7 @@ CODE_SAMPLE
             $key,
             $value,
             &$stmts
-        ) {
+        ): void {
             if (! $subNode instanceof Stmt) {
                 return null;
             }
@@ -188,7 +188,7 @@ CODE_SAMPLE
             $key,
             $arrayValue,
             &$stmts
-        ) {
+        ): void {
             if (! $subNode instanceof Stmt) {
                 return null;
             }

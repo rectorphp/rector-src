@@ -110,7 +110,7 @@ final class ClassMethodParameterTypeManipulator
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classMethod->stmts, function (Node $node) use (
             $param,
             $methodsReturningClassInstance
-        ) {
+        ): void {
             if (! $node instanceof MethodCall) {
                 return null;
             }

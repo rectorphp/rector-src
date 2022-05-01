@@ -155,7 +155,7 @@ CODE_SAMPLE
             return;
         }
 
-        $this->traverseNodesWithCallable($tokensForeach, function (Node $node) use ($singleToken) {
+        $this->traverseNodesWithCallable($tokensForeach, function (Node $node) use ($singleToken): void {
             $this->tokenManipulator->refactorArrayToken([$node], $singleToken);
             $this->tokenManipulator->refactorNonArrayToken([$node], $singleToken);
             $this->tokenManipulator->refactorTokenIsKind([$node], $singleToken);

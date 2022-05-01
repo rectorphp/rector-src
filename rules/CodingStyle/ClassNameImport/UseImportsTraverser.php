@@ -47,7 +47,7 @@ final class UseImportsTraverser
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             $callable,
             $desiredType
-        ) {
+        ): void {
             if ($node instanceof Use_) {
                 // only import uses
                 if ($node->type !== $desiredType) {

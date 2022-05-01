@@ -115,7 +115,7 @@ CODE_SAMPLE
     private function collectPropertyNamesWithMissingDefaultArray(Class_ $class): array
     {
         $propertyNames = [];
-        $this->traverseNodesWithCallable($class, function (Node $node) use (&$propertyNames) {
+        $this->traverseNodesWithCallable($class, function (Node $node) use (&$propertyNames): void {
             if (! $node instanceof PropertyProperty) {
                 return null;
             }

@@ -54,7 +54,7 @@ final class PropertyNodeParamTypeInferer implements ParamTypeInfererInterface
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classMethod, function (Node $node) use (
             $paramName,
             &$propertyStaticTypes
-        ) {
+        ): void {
             if (! $node instanceof Assign) {
                 return null;
             }

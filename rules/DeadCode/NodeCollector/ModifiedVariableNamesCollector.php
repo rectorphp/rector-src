@@ -42,7 +42,7 @@ final class ModifiedVariableNamesCollector
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmt, function (Node $node) use (
             &$variableNames
-        ) {
+        ): void {
             if (! $node instanceof Arg) {
                 return null;
             }
@@ -71,7 +71,7 @@ final class ModifiedVariableNamesCollector
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmt, function (Node $node) use (
             &$modifiedVariableNames
-        ) {
+        ): void {
             if (! $node instanceof Assign) {
                 return null;
             }
