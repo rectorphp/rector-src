@@ -316,7 +316,8 @@ final class BetterNodeFinder
 
         $foundInCurrentStmt = $this->findFirst($currentStmt, $filter);
 
-        if ($foundInCurrentStmt instanceof Node) {
+        // ensure find first Node is not equals with existing Node
+        if ($foundInCurrentStmt instanceof Node && $foundInCurrentStmt !== $node) {
             return $foundInCurrentStmt;
         }
 
