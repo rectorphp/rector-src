@@ -22,15 +22,10 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
     public function __construct(
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,
         private readonly AttributeFinder $attributeFinder
-    )
-    {
+    ) {
     }
 
-    public function changeTypeInAnnotationTypes(
-        Node $node,
-        PhpDocInfo $phpDocInfo
-    ): void
-    {
+    public function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): void {
         $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses([
             'Doctrine\ORM\Mapping\OneToMany',
             'Doctrine\ORM\Mapping\ManyToOne',
@@ -39,81 +34,18 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
             'Doctrine\ORM\Mapping\Embedded',
         ]);
 
-        if (!$doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
+        if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return;
         }
 
         $this->processDoctrineToMany($doctrineAnnotationTagValueNode, $node);
     }
 
-    protected function changeTypeInAttributeTypes(
-        Node $node,
-    ): ?Node
-    {
-        $attribute = $this->attributeFinder->findAttributeByClasses($node, [
-            'Doctrine\ORM\Mapping\OneToMany',
-            'Doctrine\ORM\Mapping\ManyToOne',
-            'Doctrine\ORM\Mapping\OneToOne',
-            'Doctrine\ORM\Mapping\ManyToMany',
-            'Doctrine\ORM\Mapping\Embedded',
-        ]);
-
-        foreach ($attribute->args as $arg) {
-            $argName = $arg->name;
-            if (! $argName instanceof Identifier) {
-                continue;
-            }
-
-            if (! $this->isName($argName, 'targetEntity')) {
-                continue;
-            }
-
-            $value = $this->valueResolver->getValue($arg->value);
-            $fullyQualified = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $node);
-
-            if ($fullyQualified === $value) {
-                continue;
-            }
-
-            $arg->value = $this->nodeFactory->createClassConstFetch(
-                $fullyQualified,
-                'class'
-            );
-
-            return $node;
-        }
-
-        return null;
-    }
-
-    private function processDoctrineToMany(
-        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
-        Node $node
-    ): void
-    {
-        $key = $doctrineAnnotationTagValueNode->hasClassName(
-            'Doctrine\ORM\Mapping\Embedded'
-        ) ? 'class' : 'targetEntity';
-
-        $targetEntity = $doctrineAnnotationTagValueNode->getValueWithoutQuotes($key);
-        if ($targetEntity === null) {
-            return;
-        }
-
-        // resolve to FQN
-        $tagFullyQualifiedName = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($targetEntity, $node);
-
-        if ($tagFullyQualifiedName === $targetEntity) {
-            return;
-        }
-
-        $doctrineAnnotationTagValueNode->removeValue($key);
-        $doctrineAnnotationTagValueNode->values[$key] = '\\' . $tagFullyQualifiedName . '::class';
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert targetEntities defined as String to <class>::class Constants in Doctrine Entities.', [
+        return new RuleDefinition(
+            'Convert targetEntities defined as String to <class>::class Constants in Doctrine Entities.',
+            [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
@@ -141,6 +73,7 @@ final class SomeClass
 }
 CODE_SAMPLE
             ),
+        
         ]);
     }
 
@@ -165,5 +98,63 @@ CODE_SAMPLE
         }
 
         return $this->changeTypeInAttributeTypes($node);
+    }
+
+    protected function changeTypeInAttributeTypes(Node $node,): ?Node {
+        $attribute = $this->attributeFinder->findAttributeByClasses($node, [
+            'Doctrine\ORM\Mapping\OneToMany',
+            'Doctrine\ORM\Mapping\ManyToOne',
+            'Doctrine\ORM\Mapping\OneToOne',
+            'Doctrine\ORM\Mapping\ManyToMany',
+            'Doctrine\ORM\Mapping\Embedded',
+        ]);
+
+        foreach ($attribute->args as $arg) {
+            $argName = $arg->name;
+            if (! $argName instanceof Identifier) {
+                continue;
+            }
+
+            if (! $this->isName($argName, 'targetEntity')) {
+                continue;
+            }
+
+            $value = $this->valueResolver->getValue($arg->value);
+            $fullyQualified = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $node);
+
+            if ($fullyQualified === $value) {
+                continue;
+            }
+
+            $arg->value = $this->nodeFactory->createClassConstFetch($fullyQualified, 'class');
+
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function processDoctrineToMany(
+        DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
+        Node $node
+    ): void {
+        $key = $doctrineAnnotationTagValueNode->hasClassName(
+            'Doctrine\ORM\Mapping\Embedded'
+        ) ? 'class' : 'targetEntity';
+
+        $targetEntity = $doctrineAnnotationTagValueNode->getValueWithoutQuotes($key);
+        if ($targetEntity === null) {
+            return;
+        }
+
+        // resolve to FQN
+        $tagFullyQualifiedName = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($targetEntity, $node);
+
+        if ($tagFullyQualifiedName === $targetEntity) {
+            return;
+        }
+
+        $doctrineAnnotationTagValueNode->removeValue($key);
+        $doctrineAnnotationTagValueNode->values[$key] = '\\' . $tagFullyQualifiedName . '::class';
     }
 }
