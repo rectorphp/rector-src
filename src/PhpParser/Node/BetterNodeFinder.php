@@ -354,8 +354,7 @@ final class BetterNodeFinder
     {
         return $this->findFirstPrevious(
             $mainNode,
-            fn (Node $node): bool => $this->typeChecker->isInstanceOf($node, $types),
-            $file
+            fn (Node $node): bool => $this->typeChecker->isInstanceOf($node, $types)
         );
     }
 
