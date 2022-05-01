@@ -6,11 +6,9 @@ namespace Rector\DowngradePhp80\Rector\Expression;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -142,7 +140,10 @@ CODE_SAMPLE
      * @param MatchArm[] $matchArms
      * @return Case_[]
      */
-    private function createSwitchCasesFromMatchArms(ArrayItem | Echo_ | Expression | Return_ $node, array $matchArms): array
+    private function createSwitchCasesFromMatchArms(
+        ArrayItem | Echo_ | Expression | Return_ $node,
+        array $matchArms
+    ): array
     {
         $switchCases = [];
 
