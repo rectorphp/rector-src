@@ -106,6 +106,7 @@ CODE_SAMPLE
         if (! $match instanceof Match_) {
             return null;
         }
+
         if ($this->shouldSkipMatch($match)) {
             return null;
         }
