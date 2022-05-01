@@ -7,7 +7,6 @@ namespace Rector\CodeQuality\Rector\Foreach_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
