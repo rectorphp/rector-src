@@ -308,35 +308,43 @@ final class BetterNodeFinder
     /**
      * @param callable(Node $node): bool $filter
      */
-    public function findFirstPrevious(Node $node, callable $filter, ?File $file = null): ?Node
+    public function findFirstPrevious(Node $node, callable $filter): ?Node
     {
         $currentStmt = $this->resolveCurrentStatement($node);
-        if (! $currentStmt instanceof Node) {
+
+        // current Stmt not an Stmt may caused by Node already removed
+        if (! $currentStmt instanceof Stmt) {
             return null;
         }
 
-        $parentStmtIterator = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+        $foundInCurrentStmt = $this->findFirst($currentStmt, $filter);
 
-        // @todo add root virtual node for namespace-less nodes
-        if ($parentStmtIterator instanceof Node) {
-            // @todo assert iteratble interface that will be added in vendor patch
-            $parentStmts = $parentStmtIterator->stmts;
-        } else {
-            // fallback to parent stmts iterator
-            if (! $file instanceof File) {
-                $errorMessage = sprintf('File argument is missing in "%s()" method', __METHOD__);
-                throw new ShouldNotHappenException($errorMessage);
-            }
-
-            $parentStmts = $file->getNewStmts();
+        if ($foundInCurrentStmt instanceof Node) {
+            return $foundInCurrentStmt;
         }
 
-        if ($parentStmts === null) {
+        // previous Stmt of Stmt must be Stmt if found
+        $previousStatement = $currentStmt->getAttribute(AttributeKey::PREVIOUS_NODE);
+
+        if ($previousStatement instanceof Stmt) {
+            return $this->findFirstPrevious($previousStatement, $filter);
+        }
+
+        $parent = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+
+        // parent Stmt not an Stmt may caused by Node already removed
+        if (! $parent instanceof Stmt) {
             return null;
         }
 
-        // @todo we don't need the first one; maybe find first above current node... check for positions...?
-        return $this->findFirst($parentStmts, $filter);
+        // previous Stmt of Stmt must be Stmt if found
+        $previousStatement = $parent->getAttribute(AttributeKey::PREVIOUS_NODE);
+
+        if ($previousStatement instanceof Stmt) {
+            return $this->findFirstPrevious($previousStatement, $filter);
+        }
+
+        return null;
     }
 
     /**
