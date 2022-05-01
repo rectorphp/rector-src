@@ -103,8 +103,10 @@ CODE_SAMPLE
         }
 
         $match = $this->betterNodeFinder->findFirst($node, fn (Node $subNode): bool => $subNode instanceof Match_);
-
-        if (! $match instanceof Match_ || $this->shouldSkipMatch($match)) {
+        if (! $match instanceof Match_) {
+            return null;
+        }
+        if ($this->shouldSkipMatch($match)) {
             return null;
         }
 
@@ -121,11 +123,7 @@ CODE_SAMPLE
 
     private function shouldSkipNode(Node $node): bool
     {
-        if ($node instanceof Return_ && ! $node->expr instanceof Match_) {
-            return true;
-        }
-
-        return false;
+        return $node instanceof Return_ && ! $node->expr instanceof Match_;
     }
 
     private function shouldSkipMatch(Match_ $match): bool
