@@ -277,8 +277,7 @@ final class BetterNodeFinder
         callable $filter,
         bool $lookupParent = true,
         bool $stopOnFunctionLike = true
-    ): ?Node
-    {
+    ): ?Node {
         // move to previous Node
         $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
         if ($previousStatement instanceof Node) {
