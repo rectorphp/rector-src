@@ -277,14 +277,14 @@ final class BetterNodeFinder
         // move to previous Node
         $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
         if ($previousStatement instanceof Node) {
-            $foundNode = $this->findFirst([$previousStatement], $filter, $lookupParent);
+            $foundNode = $this->findFirst([$previousStatement], $filter);
 
             // we found what we need
             if ($foundNode instanceof Node) {
                 return $foundNode;
             }
 
-            return $this->findFirstPrevious($previousStatement, $filter);
+            return $this->findFirstPrevious($previousStatement, $filter, $lookupParent);
         }
 
         if (! $lookupParent) {
