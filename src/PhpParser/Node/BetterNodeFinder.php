@@ -272,7 +272,12 @@ final class BetterNodeFinder
     /**
      * @param callable(Node $node): bool $filter
      */
-    public function findFirstPrevious(Node $node, callable $filter, bool $lookupParent = true, bool $stopOnFunctionLike = true): ?Node
+    public function findFirstPrevious(
+        Node $node,
+        callable $filter,
+        bool $lookupParent = true,
+        bool $stopOnFunctionLike = true
+    ): ?Node
     {
         // move to previous Node
         $previousStatement = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
