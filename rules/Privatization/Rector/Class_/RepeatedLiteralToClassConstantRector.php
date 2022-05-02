@@ -253,7 +253,7 @@ CODE_SAMPLE
         }
 
         // skip values in another constants
-        $parentConst = $this->scopeAwareNodeFinder->findParentType($string, [ClassConst::class]);
+        $parentConst = $this->betterNodeFinder->findParentType($string, ClassConst::class);
         if ($parentConst !== null) {
             return true;
         }
