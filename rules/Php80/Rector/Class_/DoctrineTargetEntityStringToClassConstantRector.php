@@ -92,12 +92,16 @@ CODE_SAMPLE
 
     public function refactor(Node $node): ?Node
     {
+        $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if ($phpDocInfo !== null) {
-            $this->changeTypeInAnnotationTypes($node, $phpDocInfo);
+            $hasChanged = $this->changeTypeInAnnotationTypes($node, $phpDocInfo);
+            if ($hasChanged !== true) {
+                $hasChanged = $phpDocInfo->hasChanged();
+            }
         }
 
-        return $this->changeTypeInAttributeTypes($node, $phpDocInfo->hasChanged());
+        return $this->changeTypeInAttributeTypes($node, $hasChanged);
     }
 
     private function changeTypeInAttributeTypes(Node $node, bool $hasChanged): ?Node
@@ -133,38 +137,40 @@ CODE_SAMPLE
         return $hasChanged ? $node : null;
     }
 
-    private function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): void
+    private function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): bool
     {
         $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses(self::VALID_DOCTRINE_CLASSES);
 
         if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
-            return;
+            return false;
         }
 
-        $this->processDoctrineToMany($doctrineAnnotationTagValueNode, $node);
+        return $this->processDoctrineToMany($doctrineAnnotationTagValueNode, $node);
     }
 
     private function processDoctrineToMany(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
         Node $node
-    ): void {
+    ): bool {
         $key = $doctrineAnnotationTagValueNode->hasClassName(
             'Doctrine\ORM\Mapping\Embedded'
         ) ? self::ATTRIBUTE_NAME__CLASS : self::ATTRIBUTE_NAME__TARGET_ENTITY;
 
         $targetEntity = $doctrineAnnotationTagValueNode->getValueWithoutQuotes($key);
         if ($targetEntity === null) {
-            return;
+            return false;
         }
 
         // resolve to FQN
         $tagFullyQualifiedName = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($targetEntity, $node);
 
         if ($tagFullyQualifiedName === $targetEntity) {
-            return;
+            return false;
         }
 
         $doctrineAnnotationTagValueNode->removeValue($key);
         $doctrineAnnotationTagValueNode->values[$key] = '\\' . $tagFullyQualifiedName . '::class';
+
+        return true;
     }
 }
