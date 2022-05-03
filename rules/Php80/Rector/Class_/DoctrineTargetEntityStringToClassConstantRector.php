@@ -100,7 +100,7 @@ CODE_SAMPLE
         return $this->changeTypeInAttributeTypes($node, $phpDocInfo->hasChanged());
     }
 
-    protected function changeTypeInAttributeTypes(Node $node, bool $hasChanged): ?Node
+    private function changeTypeInAttributeTypes(Node $node, bool $hasChanged): ?Node
     {
         $attribute = $this->attributeFinder->findAttributeByClasses($node, self::VALID_DOCTRINE_CLASSES);
 
