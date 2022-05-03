@@ -93,7 +93,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if ($phpDocInfo) {
+        if ($phpDocInfo !== null) {
             $this->changeTypeInAnnotationTypes($node, $phpDocInfo);
         }
 
