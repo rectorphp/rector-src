@@ -138,7 +138,7 @@ CODE_SAMPLE
             return $node;
         }
 
-        return null;
+        return $hasChanged ? $node : null;
     }
 
     private function processDoctrineToMany(
