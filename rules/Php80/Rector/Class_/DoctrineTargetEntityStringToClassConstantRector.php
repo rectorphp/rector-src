@@ -22,6 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var class-string[]
+     */
     private const VALID_DOCTRINE_CLASSES = [
         'Doctrine\ORM\Mapping\OneToMany',
         'Doctrine\ORM\Mapping\ManyToOne',
