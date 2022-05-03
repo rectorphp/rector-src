@@ -113,7 +113,7 @@ CODE_SAMPLE
         ]);
 
         if ($attribute === null) {
-            return null;
+            return $hasChanged ? $node : null;
         }
 
         foreach ($attribute->args as $arg) {
