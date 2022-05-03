@@ -32,7 +32,7 @@ final class ClassConstantFetchValueFactory
         $constantNamesToValues = $this->classConstantsResolver->getClassConstantNamesToValues($classWithConstants);
         foreach ($constantNamesToValues as $constantName => $constantValue) {
             if ($caseInsensitive) {
-                $constantValue = strtolower($constantValue);
+                $constantValue = strtolower((string) $constantValue);
                 $value = strtolower($value);
             }
 
