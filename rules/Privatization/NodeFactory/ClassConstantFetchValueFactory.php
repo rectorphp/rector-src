@@ -33,7 +33,7 @@ final class ClassConstantFetchValueFactory
         foreach ($constantNamesToValues as $constantName => $constantValue) {
             if ($caseInsensitive) {
                 $constantValue = strtolower((string) $constantValue);
-                $value = strtolower($value);
+                $value = strtolower((string) $value);
             }
 
             if ($constantValue !== $value) {
