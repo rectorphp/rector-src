@@ -99,7 +99,7 @@ CODE_SAMPLE
             $this->changeTypeInAnnotationTypes($node, $phpDocInfo);
         }
 
-        return $this->changeTypeInAttributeTypes($node);
+        return $this->changeTypeInAttributeTypes($node, $phpDocInfo->hasChanged());
     }
 
     protected function changeTypeInAttributeTypes(Node $node): ?Node
