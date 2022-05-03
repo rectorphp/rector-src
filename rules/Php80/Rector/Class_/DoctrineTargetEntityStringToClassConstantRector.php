@@ -102,7 +102,7 @@ CODE_SAMPLE
         return $this->changeTypeInAttributeTypes($node, $phpDocInfo->hasChanged());
     }
 
-    protected function changeTypeInAttributeTypes(Node $node): ?Node
+    protected function changeTypeInAttributeTypes(Node $node, bool $hasChanged): ?Node
     {
         $attribute = $this->attributeFinder->findAttributeByClasses($node, [
             'Doctrine\ORM\Mapping\OneToMany',
