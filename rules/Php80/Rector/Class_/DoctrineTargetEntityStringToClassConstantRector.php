@@ -25,23 +25,6 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
     ) {
     }
 
-    public function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): void
-    {
-        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses([
-            'Doctrine\ORM\Mapping\OneToMany',
-            'Doctrine\ORM\Mapping\ManyToOne',
-            'Doctrine\ORM\Mapping\OneToOne',
-            'Doctrine\ORM\Mapping\ManyToMany',
-            'Doctrine\ORM\Mapping\Embedded',
-        ]);
-
-        if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
-            return;
-        }
-
-        $this->processDoctrineToMany($doctrineAnnotationTagValueNode, $node);
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -139,6 +122,23 @@ CODE_SAMPLE
         }
 
         return $hasChanged ? $node : null;
+    }
+
+    private function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): void
+    {
+        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses([
+            'Doctrine\ORM\Mapping\OneToMany',
+            'Doctrine\ORM\Mapping\ManyToOne',
+            'Doctrine\ORM\Mapping\OneToOne',
+            'Doctrine\ORM\Mapping\ManyToMany',
+            'Doctrine\ORM\Mapping\Embedded',
+        ]);
+
+        if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
+            return;
+        }
+
+        $this->processDoctrineToMany($doctrineAnnotationTagValueNode, $node);
     }
 
     private function processDoctrineToMany(
