@@ -19,6 +19,18 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRector implements MinPhpVersionInterface
 {
+    private const VALID_DOCTRINE_CLASSES = [
+        'Doctrine\ORM\Mapping\OneToMany',
+        'Doctrine\ORM\Mapping\ManyToOne',
+        'Doctrine\ORM\Mapping\OneToOne',
+        'Doctrine\ORM\Mapping\ManyToMany',
+        'Doctrine\ORM\Mapping\Embedded',
+    ];
+
+    private const ATTRIBUTE_NAME__TARGET_ENTITY = 'targetEntity';
+
+    private const ATTRIBUTE_NAME__CLASS = 'class';
+
     public function __construct(
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,
         private readonly AttributeFinder $attributeFinder
@@ -87,13 +99,7 @@ CODE_SAMPLE
 
     protected function changeTypeInAttributeTypes(Node $node, bool $hasChanged): ?Node
     {
-        $attribute = $this->attributeFinder->findAttributeByClasses($node, [
-            'Doctrine\ORM\Mapping\OneToMany',
-            'Doctrine\ORM\Mapping\ManyToOne',
-            'Doctrine\ORM\Mapping\OneToOne',
-            'Doctrine\ORM\Mapping\ManyToMany',
-            'Doctrine\ORM\Mapping\Embedded',
-        ]);
+        $attribute = $this->attributeFinder->findAttributeByClasses($node, self::VALID_DOCTRINE_CLASSES);
 
         if ($attribute === null) {
             return $hasChanged ? $node : null;
@@ -105,7 +111,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isName($argName, 'targetEntity')) {
+            if (! $this->isName($argName, self::ATTRIBUTE_NAME__TARGET_ENTITY)) {
                 continue;
             }
 
@@ -126,13 +132,7 @@ CODE_SAMPLE
 
     private function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): void
     {
-        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses([
-            'Doctrine\ORM\Mapping\OneToMany',
-            'Doctrine\ORM\Mapping\ManyToOne',
-            'Doctrine\ORM\Mapping\OneToOne',
-            'Doctrine\ORM\Mapping\ManyToMany',
-            'Doctrine\ORM\Mapping\Embedded',
-        ]);
+        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses(self::VALID_DOCTRINE_CLASSES);
 
         if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return;
@@ -147,7 +147,7 @@ CODE_SAMPLE
     ): void {
         $key = $doctrineAnnotationTagValueNode->hasClassName(
             'Doctrine\ORM\Mapping\Embedded'
-        ) ? 'class' : 'targetEntity';
+        ) ? self::ATTRIBUTE_NAME__CLASS : self::ATTRIBUTE_NAME__TARGET_ENTITY;
 
         $targetEntity = $doctrineAnnotationTagValueNode->getValueWithoutQuotes($key);
         if ($targetEntity === null) {
