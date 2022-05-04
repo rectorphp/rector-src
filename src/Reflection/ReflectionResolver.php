@@ -14,6 +14,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -56,7 +57,7 @@ final class ReflectionResolver
         return $this->reflectionProvider->getClass($className);
     }
 
-    public function resolveClassReflection(ClassMethod|Property|Class_|New_ $classMethod): ?ClassReflection
+    public function resolveClassReflection(ClassMethod|Property|Class_|New_|Function_ $classMethod): ?ClassReflection
     {
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
 
