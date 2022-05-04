@@ -100,6 +100,10 @@ CODE_SAMPLE
 
     public function refactor(Node $node): ?Node
     {
+        if (!$node instanceof Property) {
+            return null;
+        }
+
         $hasChanged = false;
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if ($phpDocInfo !== null) {
@@ -110,7 +114,7 @@ CODE_SAMPLE
         return $this->changeTypeInAttributeTypes($node, $hasChanged);
     }
 
-    private function changeTypeInAttributeTypes(Node $node, bool $hasChanged): ?Node
+    private function changeTypeInAttributeTypes(Property $node, bool $hasChanged): ?Property
     {
         $attribute = $this->attributeFinder->findAttributeByClasses($node, self::VALID_DOCTRINE_CLASSES);
 
@@ -143,7 +147,7 @@ CODE_SAMPLE
         return $hasChanged ? $node : null;
     }
 
-    private function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo): ?Node
+    private function changeTypeInAnnotationTypes(Property $node, PhpDocInfo $phpDocInfo): ?Property
     {
         $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses(self::VALID_DOCTRINE_CLASSES);
 
@@ -156,8 +160,8 @@ CODE_SAMPLE
 
     private function processDoctrineToMany(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
-        Node $node
-    ): ?Node {
+        Property $node
+    ): ?Property {
         $key = $doctrineAnnotationTagValueNode->hasClassName(
             Embedded::class
         ) ? self::ATTRIBUTE_NAME__CLASS : self::ATTRIBUTE_NAME__TARGET_ENTITY;
