@@ -205,7 +205,7 @@ CODE_SAMPLE
         return StringUtils::isMatch($matchInnerUnionRegex['content'], self::NEW_LINE_REGEX);
     }
 
-    private function hasEscpedQuote(string $printedString, string $value): bool
+    private function hasEscapedQuote(string $printedString, string $value): bool
     {
         if (str_starts_with($printedString, '"') && str_contains($value, '"')) {
             return true;
@@ -224,7 +224,7 @@ CODE_SAMPLE
         $string = $arg->value;
         $printedString = $this->nodePrinter->print($string);
 
-        if ($this->hasEscpedQuote($printedString, $string->value)) {
+        if ($this->hasEscapedQuote($printedString, $string->value)) {
             return null;
         }
 
