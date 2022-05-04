@@ -31,11 +31,11 @@ final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRect
      * @var class-string<OneToMany|ManyToOne|OneToOne|ManyToMany|Embedded>[]
      */
     private const VALID_DOCTRINE_CLASSES = [
-        'Doctrine\ORM\Mapping\OneToMany',
-        'Doctrine\ORM\Mapping\ManyToOne',
-        'Doctrine\ORM\Mapping\OneToOne',
-        'Doctrine\ORM\Mapping\ManyToMany',
-        'Doctrine\ORM\Mapping\Embedded',
+        OneToMany::class,
+        ManyToOne::class,
+        OneToOne::class,
+        ManyToMany::class,
+        Embedded::class,
     ];
 
     private const ATTRIBUTE_NAME__TARGET_ENTITY = 'targetEntity';
@@ -159,7 +159,7 @@ CODE_SAMPLE
         Node $node
     ): ?Node {
         $key = $doctrineAnnotationTagValueNode->hasClassName(
-            'Doctrine\ORM\Mapping\Embedded'
+            Embedded::class
         ) ? self::ATTRIBUTE_NAME__CLASS : self::ATTRIBUTE_NAME__TARGET_ENTITY;
 
         $targetEntity = $doctrineAnnotationTagValueNode->getValueWithoutQuotes($key);
