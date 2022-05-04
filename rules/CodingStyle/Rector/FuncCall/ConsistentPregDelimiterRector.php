@@ -205,7 +205,16 @@ CODE_SAMPLE
         return StringUtils::isMatch($matchInnerUnionRegex['content'], self::NEW_LINE_REGEX);
     }
 
-    private function refactorArgument(FuncCall|StaticCall $node, Arg $arg): FuncCall|StaticCall|null
+    private function hasEscpedQuote(string $printedString, string $value): bool
+    {
+        if (str_starts_with($printedString, '"') && str_contains($value, '"')) {
+            return true;
+        }
+
+        return str_starts_with($printedString, "'") && str_contains($value, "'");
+    }
+
+    private function refactorArgument(FuncCall|StaticCall $node, Arg $arg): Node|null
     {
         if (! $arg->value instanceof String_) {
             return null;
@@ -215,11 +224,7 @@ CODE_SAMPLE
         $string = $arg->value;
         $printedString = $this->nodePrinter->print($string);
 
-        if (str_starts_with($printedString, '"') && str_contains($string->value, '"')) {
-            return null;
-        }
-
-        if (str_starts_with($printedString, "'") && str_contains($string->value, "'")) {
+        if ($this->hasEscpedQuote($printedString, $string->value)) {
             return null;
         }
 
