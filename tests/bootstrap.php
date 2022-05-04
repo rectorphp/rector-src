@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src/constants.php';
-
 // make local php-parser a priority to avoid conflict
 require_once __DIR__ . '/../preload.php';
 require_once __DIR__ . '/../vendor/autoload.php';
