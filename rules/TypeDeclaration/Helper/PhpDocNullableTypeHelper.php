@@ -116,7 +116,7 @@ final class PhpDocNullableTypeHelper
 
     private function isParserTypeContainingNullType(Type $phpParserType): bool
     {
-        if ($phpParserType instanceof \PHPStan\Type\MixedType) {
+        if ($phpParserType instanceof MixedType) {
             return true;
         }
 
