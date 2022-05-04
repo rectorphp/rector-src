@@ -243,13 +243,7 @@ CODE_SAMPLE
                 $innerPattern[strlen($innerPattern) - 1] = $this->delimiter;
             }
 
-            $result = $innerPattern . $match['close'];
-            // ensure no double \ by clean first
-            $result = str_replace('\"', '"', $result);
-            // re-add \
-            $result = str_replace('"', '\"', $result);
-
-            return $result;
+            return $innerPattern . $match['close'];
         });
     }
 }
