@@ -115,7 +115,7 @@ final class ComplexNodeRemover
             $assigns[] = $assign;
         }
 
-        $this->processRemovePropertyAssigns($assigns);
+        $this->processRemovePropertyAssigns($class, $assigns);
         $this->nodeRemover->removeNode($property);
     }
 
@@ -155,11 +155,11 @@ final class ComplexNodeRemover
     /**
      * @param Assign[] $assigns
      */
-    private function processRemovePropertyAssigns(array $assigns): void
+    private function processRemovePropertyAssigns(Class_ $class, array $assigns): void
     {
         foreach ($assigns as $assign) {
             // remove assigns
-            $this->removeConstructorDependency($assign);
+            $this->removeConstructorDependency($class, $assign);
         }
     }
 
@@ -197,35 +197,22 @@ final class ComplexNodeRemover
         return $assign;
     }
 
-    private function removeConstructorDependency(Assign $assign): void
+    private function removeConstructorDependency(Class_ $class, Assign $assign): void
     {
-        $classMethod = $this->betterNodeFinder->findParentType($assign, ClassMethod::class);
-        if (! $classMethod instanceof  ClassMethod) {
+        $classMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $classMethod instanceof ClassMethod) {
             return;
         }
 
-        if (! $this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
-            return;
-        }
-
-        $class = $this->betterNodeFinder->findParentType($assign, Class_::class);
-        if (! $class instanceof Class_) {
-            return;
-        }
-
-        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
-        if (! $constructClassMethod instanceof ClassMethod) {
-            return;
-        }
-
-        $params = $constructClassMethod->getParams();
+//        $params = $classMethod->params getParams();
         $paramKeysToBeRemoved = [];
 
         /** @var Variable[] $variables */
-        $variables = $this->resolveVariables($constructClassMethod);
-        foreach ($params as $key => $param) {
+        $variables = $this->resolveVariables($classMethod);
+
+        foreach ($classMethod->params as $key => $param) {
             $variable = $this->betterNodeFinder->findFirst(
-                (array) $constructClassMethod->stmts,
+                (array) $classMethod->stmts,
                 fn (Node $node): bool => $this->nodeComparator->areNodesEqual($param->var, $node)
             );
 
@@ -245,10 +232,10 @@ final class ComplexNodeRemover
                 continue;
             }
 
-            $paramKeysToBeRemoved[] = $key;
+            unset($classMethod->params[$key]);
         }
 
-        $this->processRemoveParamWithKeys($params, $paramKeysToBeRemoved);
+        //$this->processRemoveParamWithKeys($params, $paramKeysToBeRemoved);
     }
 
     /**
