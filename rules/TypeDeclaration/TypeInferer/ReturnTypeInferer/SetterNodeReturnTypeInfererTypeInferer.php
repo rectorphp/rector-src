@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
@@ -15,7 +14,7 @@ use PHPStan\Type\Type;
 use Rector\Core\NodeManipulator\FunctionLikeManipulator;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
@@ -27,7 +26,8 @@ final class SetterNodeReturnTypeInfererTypeInferer implements ReturnTypeInfererI
         private readonly FunctionLikeManipulator $functionLikeManipulator,
         private readonly TypeFactory $typeFactory,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly AstResolver $astResolver
+        private readonly AstResolver $astResolver,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -39,13 +39,8 @@ final class SetterNodeReturnTypeInfererTypeInferer implements ReturnTypeInfererI
         }
 
         $returnedPropertyNames = $this->functionLikeManipulator->getReturnedLocalPropertyNames($functionLike);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classLike);
 
-        $scope = $classLike->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return new MixedType();
-        }
-
-        $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return new MixedType();
         }
