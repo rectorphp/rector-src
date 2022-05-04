@@ -15,6 +15,7 @@ use Rector\Core\NodeManipulator\FunctionLikeManipulator;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
@@ -46,6 +47,7 @@ final class SetterNodeReturnTypeInfererTypeInferer implements ReturnTypeInfererI
         }
 
         $types = [];
+        $scope = $classLike->getAttribute(AttributeKey::SCOPE);
         foreach ($returnedPropertyNames as $returnedPropertyName) {
             if (! $classReflection->hasProperty($returnedPropertyName)) {
                 continue;
