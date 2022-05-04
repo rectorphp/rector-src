@@ -16,6 +16,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeAwarePhpRectorInterface
 {
+    /**
+     * Process Node of matched type with its PHPStan scope
+     * @return Node|Node[]|null
+     */
     public function refactor(Node $node)
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
