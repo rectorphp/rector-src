@@ -26,7 +26,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         if (! $scope instanceof Scope) {
             $errorMessage = sprintf(
                 'Scope not available on "%s" node, but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
-                get_class($node),
+                $node::class,
                 static::class,
             );
 
