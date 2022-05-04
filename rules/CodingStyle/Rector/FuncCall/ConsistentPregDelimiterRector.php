@@ -205,13 +205,15 @@ CODE_SAMPLE
         return StringUtils::isMatch($matchInnerUnionRegex['content'], self::NEW_LINE_REGEX);
     }
 
-    private function hasEscapedQuote(string $printedString, string $value): bool
+    private function hasEscapedQuote(String_ $string): bool
     {
-        if (str_starts_with($printedString, '"') && str_contains($value, '"')) {
+        $kind = $string->getAttribute(AttributeKey::KIND);
+
+        if ($kind === String_::KIND_DOUBLE_QUOTED && str_contains($string->value, '"')) {
             return true;
         }
 
-        return str_starts_with($printedString, "'") && str_contains($value, "'");
+        return $kind === String_::KIND_SINGLE_QUOTED && str_contains($string->value, "'");
     }
 
     private function refactorArgument(FuncCall|StaticCall $node, Arg $arg): Node|null
@@ -222,9 +224,8 @@ CODE_SAMPLE
 
         /** @var String_ $string */
         $string = $arg->value;
-        $printedString = $this->nodePrinter->print($string);
 
-        if ($this->hasEscapedQuote($printedString, $string->value)) {
+        if ($this->hasEscapedQuote($string)) {
             return null;
         }
 
