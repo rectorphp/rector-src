@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector\Fixture;
 
-final class SkipArraykeyWithNullCoalescing
+final class SkipArraykeyWithNullCoalescingReturnMixed
 {
     /** @param array<string, string|int|null> $information */
     public function __construct(private readonly array $information)
