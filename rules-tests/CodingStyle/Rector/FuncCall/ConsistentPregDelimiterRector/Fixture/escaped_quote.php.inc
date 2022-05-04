@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector\Fixture;
 
-final class PregReplacer
+final class EscapedQuote
 {
     public function test_escaped_double_quote($content)
     {
@@ -16,7 +16,7 @@ final class PregReplacer
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector\Fixture;
 
-final class PregReplacer
+final class EscapedQuote
 {
     public function test_escaped_double_quote($content)
     {
