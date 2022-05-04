@@ -2,10 +2,10 @@
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector\Fixture;
 
-final class EscapedQuote
+final class EscapedQuote2
 {
     public function test_escaped_double_quote($content)
     {
-        return preg_replace("/src(=[\"'].*)/U", '', $content);
+        return preg_replace('/src(=[\"\'].*)/U', '', $content);
     }
 }

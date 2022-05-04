@@ -156,9 +156,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $this->refactorArgument($node->args[$position]);
-
-                return $node;
+                return $this->refactorArgument($node, $node->args[$position]);
             }
         }
 
@@ -181,9 +179,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->refactorArgument($funcCall->args[$position]);
-
-            return $funcCall;
+            return $this->refactorArgument($funcCall, $funcCall->args[$position]);
         }
 
         return null;
@@ -209,17 +205,26 @@ CODE_SAMPLE
         return StringUtils::isMatch($matchInnerUnionRegex['content'], self::NEW_LINE_REGEX);
     }
 
-    private function refactorArgument(Arg $arg): void
+    private function refactorArgument(FuncCall|StaticCall $node, Arg $arg): FuncCall|StaticCall|null
     {
         if (! $arg->value instanceof String_) {
-            return;
+            return null;
         }
 
         /** @var String_ $string */
         $string = $arg->value;
+        $printedString = $this->nodePrinter->print($string);
+
+        if (str_starts_with($printedString, '"') && str_contains($string->value, '"')) {
+            return null;
+        }
+
+        if (str_starts_with($printedString, "'") && str_contains($string->value, "'")) {
+            return null;
+        }
 
         if ($this->hasNewLineWithUnicodeModifier($string->value)) {
-            return;
+            return null;
         }
 
         $string->value = Strings::replace($string->value, self::INNER_REGEX, function (array $match) use (
@@ -245,5 +250,6 @@ CODE_SAMPLE
 
             return $innerPattern . $match['close'];
         });
+        return $node;
     }
 }
