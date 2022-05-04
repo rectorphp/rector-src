@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
@@ -93,10 +92,7 @@ final class ClassMethodReturnTypeOverrideGuard
     /**
      * @param ClassReflection[] $childrenClassReflections
      */
-    private function shouldSkipHasChildNoReturn(
-        array $childrenClassReflections,
-        ClassMethod $classMethod
-    ): bool {
+    private function shouldSkipHasChildNoReturn(array $childrenClassReflections, ClassMethod $classMethod): bool {
         $methodName = $this->nodeNameResolver->getName($classMethod);
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
 
