@@ -151,7 +151,6 @@ CODE_SAMPLE
             return true;
         }
 
-
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return true;
