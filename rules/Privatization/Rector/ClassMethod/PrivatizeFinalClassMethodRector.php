@@ -72,6 +72,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $classReflection->isClass()) {
+            return null;
+        }
+
         if (! $classReflection->isFinal()) {
             return null;
         }
