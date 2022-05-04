@@ -105,7 +105,7 @@ final class ComplexNodeRemover
     {
         foreach ($assigns as $assign) {
             // remove assigns
-            $this->assignRemover->removeAssignNode($assign);
+            $this->assignRemover->removeAssign($assign);
             $this->removeConstructorDependency($assign);
         }
     }

@@ -155,7 +155,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->assignRemover->removeAssignNode($assign);
+            $this->assignRemover->removeAssign($assign);
         }
     }
 

@@ -24,7 +24,7 @@ final class AssignRemover
     ) {
     }
 
-    public function removeAssignNode(Assign $assign): void
+    public function removeAssign(Assign $assign): void
     {
         $currentStatement = $this->betterNodeFinder->resolveCurrentStatement($assign);
 
@@ -45,7 +45,7 @@ final class AssignRemover
         $this->rectorChangeCollector->notifyNodeFileInfo($assign->expr);
 
         if ($parent instanceof Assign) {
-            $this->removeAssignNode($parent);
+            $this->removeAssign($parent);
         }
     }
 }
