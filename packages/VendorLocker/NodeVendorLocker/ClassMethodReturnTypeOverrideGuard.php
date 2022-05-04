@@ -92,7 +92,8 @@ final class ClassMethodReturnTypeOverrideGuard
     /**
      * @param ClassReflection[] $childrenClassReflections
      */
-    private function shouldSkipHasChildNoReturn(array $childrenClassReflections, ClassMethod $classMethod): bool {
+    private function shouldSkipHasChildNoReturn(array $childrenClassReflections, ClassMethod $classMethod): bool
+    {
         $methodName = $this->nodeNameResolver->getName($classMethod);
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
 
