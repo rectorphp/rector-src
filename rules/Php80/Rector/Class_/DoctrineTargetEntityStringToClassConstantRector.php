@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use Doctrine\ORM\Mapping\Embedded;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\OneToOne;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Property;
@@ -23,7 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
-     * @var class-string[]
+     * @var class-string<OneToMany|ManyToOne|OneToOne|ManyToMany|Embedded>[]
      */
     private const VALID_DOCTRINE_CLASSES = [
         'Doctrine\ORM\Mapping\OneToMany',
