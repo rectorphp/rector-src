@@ -116,6 +116,10 @@ final class PhpDocNullableTypeHelper
 
     private function isParserTypeContainingNullType(Type $phpParserType): bool
     {
+        if ($phpParserType instanceof \PHPStan\Type\MixedType) {
+            return true;
+        }
+
         if ($phpParserType instanceof UnionType) {
             return TypeCombinator::containsNull($phpParserType);
         }
