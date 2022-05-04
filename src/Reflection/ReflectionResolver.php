@@ -60,8 +60,7 @@ final class ReflectionResolver
 
     public function resolveClassReflection(
         ClassMethod|Property|ClassLike|New_|Function_|ClassConst $classMethod
-    ): ?ClassReflection
-    {
+    ): ?ClassReflection {
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
 
         if (! $scope instanceof Scope) {
