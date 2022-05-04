@@ -16,7 +16,6 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
-use Rector\NodeRemoval\AssignRemover;
 use Rector\PostRector\Collector\PropertyToAddCollector;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Transform\NodeFactory\PropertyFetchFactory;
@@ -38,7 +37,6 @@ final class NewToConstructorInjectionRector extends AbstractRector implements Co
         private readonly PropertyFetchFactory $propertyFetchFactory,
         private readonly PropertyNaming $propertyNaming,
         private readonly PropertyToAddCollector $propertyToAddCollector,
-        // private readonly AssignRemover $assignRemover
     ) {
     }
 
@@ -150,12 +148,7 @@ CODE_SAMPLE
 
     private function refactorAssignExpression(Expression $expression, Assign $assign): void
     {
-        if ($assign->expr instanceof Assign) {
-            $currentAssign = $assign->expr;
-        } else {
-            $currentAssign = $assign;
-        }
-
+        $currentAssign = $assign->expr instanceof Assign ? $assign->expr : $assign;
         if (! $currentAssign->expr instanceof New_) {
             return;
         }

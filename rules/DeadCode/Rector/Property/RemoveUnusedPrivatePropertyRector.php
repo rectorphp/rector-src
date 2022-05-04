@@ -94,7 +94,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->complexNodeRemover->removePropertyAndUsages($property, $this->removeAssignSideEffect);
+            $this->complexNodeRemover->removePropertyAndUsages($node, $property, $this->removeAssignSideEffect);
 
             $hasChanged = true;
         }
