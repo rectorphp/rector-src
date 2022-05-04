@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector\Fixture;
 
-final class EscapedQuote
+final class SkipEscapedQuote
 {
     public function test_escaped_double_quote($content)
     {
