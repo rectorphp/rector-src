@@ -6,6 +6,7 @@ namespace Rector\Core\Contract\Rector;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitor;
+use PHPStan\Analyser\Scope;
 
 interface PhpRectorInterface extends NodeVisitor, RectorInterface
 {
@@ -17,9 +18,16 @@ interface PhpRectorInterface extends NodeVisitor, RectorInterface
      */
     public function getNodeTypes(): array;
 
+    // child must implement one of following methods
     /**
      * Process Node of matched type
      * @return Node|Node[]|null
      */
-    public function refactor(Node $node);
+    // public function refactor(Node $node);
+
+    /**
+     * Process Node of matched type with its PHPStan scope
+     * @return Node|Node[]|null
+     */
+    // public function refactorWithScope(Node $node, Scope $scope);
 }

@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -202,7 +203,19 @@ CODE_SAMPLE;
 
         $originalAttributes = $node->getAttributes();
 
-        $node = $this->refactor($node);
+        // @todo use interface
+        if (method_exists($this, 'refactorWithScope')) {
+            $scope = $node->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                throw new ShouldNotHappenException(
+                    'Scope not available, but has to be. Fix scope refresh on changed nodes'
+                );
+            }
+
+            $node = $this->refactorWithScope($node, $scope);
+        } else {
+            $node = $this->refactor($node);
+        }
 
         // nothing to change → continue
         if ($node === null) {

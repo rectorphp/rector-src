@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\Array_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -91,14 +92,12 @@ CODE_SAMPLE
     /**
      * @param Array_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $arrayCallable = $this->arrayCallableMethodMatcher->match($node);
         if (! $arrayCallable instanceof ArrayCallable) {
             return null;
         }
-
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
 
         $phpMethodReflection = $this->reflectionResolver->resolveMethodReflection(
             $arrayCallable->getClass(),
