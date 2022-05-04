@@ -21,6 +21,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ClassMethodReturnTypeOverrideGuard
 {
@@ -67,7 +68,7 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        if ($this->shouldSkipHasChildNoReturn($childrenClassReflections, $classMethod, $scope)) {
+        if ($this->shouldSkipHasChildNoReturn($childrenClassReflections, $classMethod)) {
             return true;
         }
 
@@ -94,10 +95,11 @@ final class ClassMethodReturnTypeOverrideGuard
      */
     private function shouldSkipHasChildNoReturn(
         array $childrenClassReflections,
-        ClassMethod $classMethod,
-        Scope $scope
+        ClassMethod $classMethod
     ): bool {
         $methodName = $this->nodeNameResolver->getName($classMethod);
+        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
+
         foreach ($childrenClassReflections as $childClassReflection) {
             if (! $childClassReflection->hasMethod($methodName)) {
                 continue;
