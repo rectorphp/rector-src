@@ -204,13 +204,13 @@ final class ComplexNodeRemover
             return;
         }
 
-//        $params = $classMethod->params getParams();
+        $params = $classMethod->getParams();
         $paramKeysToBeRemoved = [];
 
         /** @var Variable[] $variables */
         $variables = $this->resolveVariables($classMethod);
 
-        foreach ($classMethod->params as $key => $param) {
+        foreach ($params as $key => $param) {
             $variable = $this->betterNodeFinder->findFirst(
                 (array) $classMethod->stmts,
                 fn (Node $node): bool => $this->nodeComparator->areNodesEqual($param->var, $node)
@@ -232,10 +232,10 @@ final class ComplexNodeRemover
                 continue;
             }
 
-            unset($classMethod->params[$key]);
+            $paramKeysToBeRemoved[] = $key;
         }
 
-        //$this->processRemoveParamWithKeys($params, $paramKeysToBeRemoved);
+        $this->processRemoveParamWithKeys($params, $paramKeysToBeRemoved);
     }
 
     /**

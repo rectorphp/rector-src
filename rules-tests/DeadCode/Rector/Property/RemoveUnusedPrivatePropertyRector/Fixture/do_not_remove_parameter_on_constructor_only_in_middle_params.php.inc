@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-class DoNotRemoveParameterOnConstructorOnlyInMiddleParams
+final class DoNotRemoveParameterOnConstructorOnlyInMiddleParams
 {
     /**
      * @var int
@@ -27,7 +27,7 @@ class DoNotRemoveParameterOnConstructorOnlyInMiddleParams
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-class DoNotRemoveParameterOnConstructorOnlyInMiddleParams
+final class DoNotRemoveParameterOnConstructorOnlyInMiddleParams
 {
     public function __construct(int $contentFinder, \stdClass $stdClass)
     {
