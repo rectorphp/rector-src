@@ -150,15 +150,13 @@ final class ComplexNodeRemover
             }
 
             $stmtExpr = $stmt->expr;
-            if ($stmtExpr instanceof Assign) {
-                if ($stmtExpr->var instanceof PropertyFetch) {
-                    $propertyFetch = $stmtExpr->var;
-                    if ($this->nodeNameResolver->isName($propertyFetch, $propertyName)) {
-                        unset($classMethod->stmts[$key]);
+            if ($stmtExpr instanceof Assign && $stmtExpr->var instanceof PropertyFetch) {
+                $propertyFetch = $stmtExpr->var;
+                if ($this->nodeNameResolver->isName($propertyFetch, $propertyName)) {
+                    unset($classMethod->stmts[$key]);
 
-                        if ($stmtExpr->expr instanceof Variable) {
-                            $this->clearParamFromConstructor($classMethod, $stmtExpr->expr);
-                        }
+                    if ($stmtExpr->expr instanceof Variable) {
+                        $this->clearParamFromConstructor($classMethod, $stmtExpr->expr);
                     }
                 }
             }
@@ -193,9 +191,10 @@ final class ComplexNodeRemover
         // is variable used somewhere else? skip it
         $variables = $this->betterNodeFinder->findInstanceOf($classMethod, Variable::class);
 
-        $paramNamedVariables = array_filter($variables, function (Variable $variable) use ($assignedVariable) {
-            return $this->nodeNameResolver->areNamesEqual($variable, $assignedVariable);
-        });
+        $paramNamedVariables = array_filter(
+            $variables,
+            fn (Variable $variable): bool => $this->nodeNameResolver->areNamesEqual($variable, $assignedVariable)
+        );
 
         // there is more than 1 use, keep it in the constructor
         if (count($paramNamedVariables) > 1) {
