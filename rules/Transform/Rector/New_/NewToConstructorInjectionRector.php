@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Expression;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -37,7 +38,7 @@ final class NewToConstructorInjectionRector extends AbstractRector implements Co
         private readonly PropertyFetchFactory $propertyFetchFactory,
         private readonly PropertyNaming $propertyNaming,
         private readonly PropertyToAddCollector $propertyToAddCollector,
-        private readonly AssignRemover $assignRemover
+        // private readonly AssignRemover $assignRemover
     ) {
     }
 
@@ -86,11 +87,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [New_::class, Assign::class, MethodCall::class];
+        return [New_::class, Assign::class, MethodCall::class, Expression::class];
     }
 
     /**
-     * @param New_|Assign|MethodCall $node
+     * @param New_|Assign|MethodCall|Expression $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -98,8 +99,11 @@ CODE_SAMPLE
             return $this->refactorMethodCall($node);
         }
 
-        if ($node instanceof Assign) {
-            $this->refactorAssign($node);
+        if ($node instanceof Expression) {
+            $nodeExpr = $node->expr;
+            if ($nodeExpr instanceof Assign) {
+                $this->refactorAssignExpression($node, $nodeExpr);
+            }
         }
 
         if ($node instanceof New_) {
@@ -144,18 +148,24 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorAssign(Assign $assign): void
+    private function refactorAssignExpression(Expression $expression, Assign $assign): void
     {
-        if (! $assign->expr instanceof New_) {
+        if ($assign->expr instanceof Assign) {
+            $currentAssign = $assign->expr;
+        } else {
+            $currentAssign = $assign;
+        }
+
+        if (! $currentAssign->expr instanceof New_) {
             return;
         }
 
         foreach ($this->constructorInjectionObjectTypes as $constructorInjectionObjectType) {
-            if (! $this->isObjectType($assign->expr, $constructorInjectionObjectType)) {
+            if (! $this->isObjectType($currentAssign->expr, $constructorInjectionObjectType)) {
                 continue;
             }
 
-            $this->assignRemover->removeAssign($assign);
+            $this->removeNode($expression);
         }
     }
 

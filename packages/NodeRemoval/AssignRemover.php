@@ -34,7 +34,6 @@ final class AssignRemover
 
         $this->livingCodeManipulator->addLivingCodeBeforeNode($assign->var, $currentStatement);
 
-        /** @var Assign $assign */
         $parent = $assign->getAttribute(AttributeKey::PARENT_NODE);
         if ($parent instanceof Expression) {
             $this->nodeRemover->removeNode($assign);
