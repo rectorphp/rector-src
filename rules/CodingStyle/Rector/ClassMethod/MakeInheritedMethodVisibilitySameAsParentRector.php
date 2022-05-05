@@ -5,17 +5,11 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
-use Rector\Core\ValueObject\MethodName;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use ReflectionMethod;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,7 +24,6 @@ final class MakeInheritedMethodVisibilitySameAsParentRector extends AbstractScop
 {
     public function __construct(
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -97,6 +90,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $parentClassReflections = $classReflection->getParents();
+
         foreach ($node->getMethods() as $classMethod) {
             if ($classMethod->isMagic()) {
                 continue;
@@ -105,11 +100,7 @@ CODE_SAMPLE
             /** @var string $methodName */
             $methodName = $this->getName($classMethod->name);
 
-            if ($this->isConstructorWithStaticFactory($node, $methodName)) {
-                continue;
-            }
-
-            foreach ($classReflection->getParents() as $parentClassReflection) {
+            foreach ($parentClassReflections as $parentClassReflection) {
                 $nativeClassReflection = $parentClassReflection->getNativeReflection();
 
                 // the class reflection above takes also @method annotations into an account
@@ -146,42 +137,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return $reflectionMethod->isPrivate() && $classMethod->isPrivate();
-    }
-
-    /**
-     * Parent constructor visibility override is allowed only since PHP 7.2+
-     * @see https://3v4l.org/RFYmn
-     */
-    private function isConstructorWithStaticFactory(Class_ $class, string $methodName): bool
-    {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PARENT_VISIBILITY_OVERRIDE)) {
+        if (! $reflectionMethod->isPrivate()) {
             return false;
         }
 
-        if ($methodName !== MethodName::CONSTRUCT) {
-            return false;
-        }
-
-        foreach ($class->getMethods() as $iteratedClassMethod) {
-            if (! $iteratedClassMethod->isPublic()) {
-                continue;
-            }
-
-            if (! $iteratedClassMethod->isStatic()) {
-                continue;
-            }
-
-            $isStaticSelfFactory = $this->isStaticNamedConstructor($iteratedClassMethod);
-
-            if (! $isStaticSelfFactory) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
+        return $classMethod->isPrivate();
     }
 
     private function changeClassMethodVisibilityBasedOnReflectionMethod(
@@ -201,37 +161,5 @@ CODE_SAMPLE
         if ($reflectionMethod->isPrivate()) {
             $this->visibilityManipulator->makePrivate($classMethod);
         }
-    }
-
-    /**
-     * Looks for:
-     * public static someMethod() { return new self(); }
-     * or
-     * public static someMethod() { return new static(); }
-     */
-    private function isStaticNamedConstructor(ClassMethod $classMethod): bool
-    {
-        if (! $classMethod->isPublic()) {
-            return false;
-        }
-
-        if (! $classMethod->isStatic()) {
-            return false;
-        }
-
-        return (bool) $this->betterNodeFinder->findFirst($classMethod, function (Node $node): bool {
-            if (! $node instanceof Return_) {
-                return false;
-            }
-
-            if (! $node->expr instanceof New_) {
-                return false;
-            }
-
-            return $this->isNames(
-                $node->expr->class,
-                [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue()]
-            );
-        });
     }
 }
