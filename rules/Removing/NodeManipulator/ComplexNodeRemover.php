@@ -201,7 +201,7 @@ final class ComplexNodeRemover
             $expr = $expr->var;
         }
 
-        if ($this->propertyFetchAnalyzer->isPropertyFetch($expr)) {
+        if ($this->propertyFetchAnalyzer->isLocalPropertyFetch($expr)) {
             $propertyFetches = $this->collectPropertyFetches($expr, $propertyFetches);
         }
 
