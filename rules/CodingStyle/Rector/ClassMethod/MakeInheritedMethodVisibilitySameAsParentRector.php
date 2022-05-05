@@ -13,10 +13,9 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use ReflectionMethod;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,7 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector\MakeInheritedMethodVisibilitySameAsParentRectorTest
  */
-final class MakeInheritedMethodVisibilitySameAsParentRector extends AbstractRector
+final class MakeInheritedMethodVisibilitySameAsParentRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly VisibilityManipulator $visibilityManipulator,
@@ -79,51 +78,56 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->isMagic()) {
-            return null;
-        }
-
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            // possibly trait
-            return null;
-        }
+        $hasChanged = false;
 
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        /** @var string $methodName */
-        $methodName = $this->getName($node->name);
+        if ($classReflection->getParents() === []) {
+            return null;
+        }
 
-        foreach ($classReflection->getParents() as $parentClassReflection) {
-            $nativeClassReflection = $parentClassReflection->getNativeReflection();
-
-            // the class reflection aboves takes also @method annotations into an account
-            if (! $nativeClassReflection->hasMethod($methodName)) {
+        foreach ($node->getMethods() as $classMethod) {
+            if ($classMethod->isMagic()) {
                 continue;
             }
 
-            $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
-            if ($this->isClassMethodCompatibleWithParentReflectionMethod($node, $parentReflectionMethod)) {
-                return null;
+            /** @var string $methodName */
+            $methodName = $this->getName($classMethod->name);
+
+            foreach ($classReflection->getParents() as $parentClassReflection) {
+                $nativeClassReflection = $parentClassReflection->getNativeReflection();
+
+                // the class reflection above takes also @method annotations into an account
+                if (! $nativeClassReflection->hasMethod($methodName)) {
+                    continue;
+                }
+
+                $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
+                if ($this->isClassMethodCompatibleWithParentReflectionMethod($classMethod, $parentReflectionMethod)) {
+                    continue;
+                }
+
+                if ($this->isConstructorWithStaticFactory($node, $methodName)) {
+                    continue;
+                }
+
+                $this->changeClassMethodVisibilityBasedOnReflectionMethod($classMethod, $parentReflectionMethod);
+                $hasChanged = true;
             }
+        }
 
-            if ($this->isConstructorWithStaticFactory($node, $methodName)) {
-                return null;
-            }
-
-            $this->changeClassMethodVisibilityBasedOnReflectionMethod($node, $parentReflectionMethod);
-
+        if ($hasChanged) {
             return $node;
         }
 
@@ -142,18 +146,14 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $reflectionMethod->isPrivate()) {
-            return false;
-        }
-
-        return $classMethod->isPrivate();
+        return $reflectionMethod->isPrivate() && $classMethod->isPrivate();
     }
 
     /**
      * Parent constructor visibility override is allowed only since PHP 7.2+
      * @see https://3v4l.org/RFYmn
      */
-    private function isConstructorWithStaticFactory(ClassMethod $classMethod, string $methodName): bool
+    private function isConstructorWithStaticFactory(Class_ $class, string $methodName): bool
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PARENT_VISIBILITY_OVERRIDE)) {
             return false;
@@ -163,13 +163,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
-        if (! $classLike instanceof Class_) {
-            return false;
-        }
-
-        foreach ($classLike->getMethods() as $iteratedClassMethod) {
+        foreach ($class->getMethods() as $iteratedClassMethod) {
             if (! $iteratedClassMethod->isPublic()) {
                 continue;
             }
