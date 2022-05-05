@@ -143,6 +143,7 @@ final class ComplexNodeRemover
         }
 
         $stmts = (array) $classMethod->stmts;
+        $paramKeysToBeRemoved = [];
 
         foreach ($stmts as $key => $stmt) {
             if (! $stmt instanceof Expression) {
@@ -156,11 +157,20 @@ final class ComplexNodeRemover
                     unset($classMethod->stmts[$key]);
 
                     if ($stmtExpr->expr instanceof Variable) {
-                        $this->clearParamFromConstructor($classMethod, $stmtExpr->expr);
+                        $key = $this->resolveToBeClearedParamFromConstructor($classMethod, $stmtExpr->expr);
+                        if (is_int($key)) {
+                            $paramKeysToBeRemoved[] = $key;
+                        }
                     }
                 }
             }
         }
+
+        if ($paramKeysToBeRemoved === []) {
+            return;
+        }
+
+        $this->processRemoveParamWithKeys($classMethod->getParams(), $paramKeysToBeRemoved);
     }
 
     /**
@@ -186,7 +196,7 @@ final class ComplexNodeRemover
         return $propertyFetches;
     }
 
-    private function clearParamFromConstructor(ClassMethod $classMethod, Variable $assignedVariable): void
+    private function resolveToBeClearedParamFromConstructor(ClassMethod $classMethod, Variable $assignedVariable): ?int
     {
         // is variable used somewhere else? skip it
         $variables = $this->betterNodeFinder->findInstanceOf($classMethod, Variable::class);
@@ -198,17 +208,17 @@ final class ComplexNodeRemover
 
         // there is more than 1 use, keep it in the constructor
         if (count($paramNamedVariables) > 1) {
-            return;
+            return null;
         }
 
         $paramName = $this->nodeNameResolver->getName($assignedVariable);
         if (! is_string($paramName)) {
-            return;
+            return null;
         }
 
         foreach ($classMethod->params as $paramKey => $param) {
             if ($this->nodeNameResolver->isName($param->var, $paramName)) {
-                unset($classMethod->params[$paramKey]);
+                return $paramKey;
             }
         }
     }
