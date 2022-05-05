@@ -7,7 +7,6 @@ namespace Rector\Php70\NodeAnalyzer;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class Php4ConstructorClassMethodAnalyzer
 {
