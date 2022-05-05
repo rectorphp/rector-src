@@ -8,6 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+<<<<<<< HEAD
+=======
+use Rector\Core\Rector\AbstractRector;
+>>>>>>> f4537d105e... make ChangeMethodVisibilityRector use the scope aware
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\Visibility;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
