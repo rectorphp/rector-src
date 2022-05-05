@@ -270,6 +270,8 @@ final class BetterNodeFinder
     }
 
     /**
+     * Only search in prevous Node/Stmt
+     *
      * @param callable(Node $node): bool $filter
      */
     public function findFirstInlinedPrevious(Node $node, callable $filter): ?Node
@@ -290,6 +292,8 @@ final class BetterNodeFinder
     }
 
     /**
+     * Search in prevous Node/Stmt, when no Node found, lookup previous Stmt of Parent Node
+     *
      * @param callable(Node $node): bool $filter
      */
     public function findFirstPrevious(Node $node, callable $filter): ?Node
