@@ -58,7 +58,7 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
-     * @return Expression[]
+     * @return Expression[]|null
      */
     public function refactor(Node $node): ?array
     {
