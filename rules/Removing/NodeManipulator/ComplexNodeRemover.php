@@ -210,7 +210,7 @@ final class ComplexNodeRemover
 
     /**
      * @param StaticPropertyFetch[]|PropertyFetch[] $propertyFetches
-     * @return StaticPropertyFetch[]|PropertyFetch[]
+     * @return PropertyFetch[]|StaticPropertyFetch[]|Node[]
      */
     private function collectPropertyFetches(?Node $node, array $propertyFetches): array
     {
