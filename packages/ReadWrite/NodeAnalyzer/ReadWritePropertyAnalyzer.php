@@ -37,6 +37,8 @@ final class ReadWritePropertyAnalyzer
 
     public function isRead(PropertyFetch | StaticPropertyFetch $node): bool
     {
+        // @todo split to collector
+
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parent instanceof Node) {
             throw new ShouldNotHappenException();
