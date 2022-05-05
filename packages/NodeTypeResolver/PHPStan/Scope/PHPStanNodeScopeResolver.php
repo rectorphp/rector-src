@@ -15,7 +15,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
-use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
@@ -69,7 +68,11 @@ final class PHPStanNodeScopeResolver
      * @param Stmt[] $stmts
      * @return Stmt[]
      */
-    public function processNodes(array $stmts, SmartFileInfo $smartFileInfo, ?Scope $formerScope = null): array {
+    public function processNodes(
+        array $stmts,
+        SmartFileInfo $smartFileInfo,
+        ?MutatingScope $formerMutatingScope = null
+    ): array {
         /**
          * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
          * @see vendor/phpstan/phpstan/phpstan.phar/src/Analyser/NodeScopeResolver.php:282
@@ -77,7 +80,7 @@ final class PHPStanNodeScopeResolver
 
         $this->removeDeepChainMethodCallNodes($stmts);
 
-        $scope = $formerScope ?: $this->scopeFactory->createFromFile($smartFileInfo);
+        $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($smartFileInfo);
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback): void {

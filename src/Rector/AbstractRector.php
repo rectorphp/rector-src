@@ -211,15 +211,6 @@ CODE_SAMPLE;
 
         $originalAttributes = $node->getAttributes();
 
-        // scope is missing even in original node... but why?
-        if (! in_array('scope', array_keys($originalAttributes), true)) {
-            dump_node(
-                $node->getAttribute(AttributeKey::PARENT_NODE)->getAttribute(AttributeKey::PARENT_NODE)
-//                ->getAttribute(AttributeKey::PARENT_NODE)
-            );
-            die;
-        }
-
         $node = $this->refactor($node);
 
         // nothing to change → continue
