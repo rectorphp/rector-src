@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Property;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -27,20 +28,20 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DoctrineTargetEntityStringToClassConstantRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var class-string<OneToMany|ManyToOne|OneToOne|ManyToMany|Embedded>[]
-     */
-    private const VALID_DOCTRINE_CLASSES = [
-        OneToMany::class,
-        ManyToOne::class,
-        OneToOne::class,
-        ManyToMany::class,
-        Embedded::class,
-    ];
-
     private const ATTRIBUTE_NAME__TARGET_ENTITY = 'targetEntity';
 
     private const ATTRIBUTE_NAME__CLASS = 'class';
+
+    /**
+     * @var array<class-string<OneToMany|ManyToOne|OneToOne|ManyToMany|Embedded>, string>
+     */
+    private const VALID_DOCTRINE_CLASSES = [
+        OneToMany::class => self::ATTRIBUTE_NAME__TARGET_ENTITY,
+        ManyToOne::class => self::ATTRIBUTE_NAME__TARGET_ENTITY,
+        OneToOne::class => self::ATTRIBUTE_NAME__TARGET_ENTITY,
+        ManyToMany::class => self::ATTRIBUTE_NAME__TARGET_ENTITY,
+        Embedded::class => self::ATTRIBUTE_NAME__CLASS,
+    ];
 
     public function __construct(
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,
@@ -116,19 +117,20 @@ CODE_SAMPLE
 
     private function changeTypeInAttributeTypes(Property $node, bool $hasChanged): ?Property
     {
-        $attribute = $this->attributeFinder->findAttributeByClasses($node, self::VALID_DOCTRINE_CLASSES);
+        $attribute = $this->attributeFinder->findAttributeByClasses($node, $this->getAttributeClasses());
 
         if ($attribute === null) {
             return $hasChanged ? $node : null;
         }
 
+        $attributeName = $this->getAttributeName($attribute);
         foreach ($attribute->args as $arg) {
             $argName = $arg->name;
             if (! $argName instanceof Identifier) {
                 continue;
             }
 
-            if (! $this->isName($argName, self::ATTRIBUTE_NAME__TARGET_ENTITY)) {
+            if (! $this->isName($argName, $attributeName)) {
                 continue;
             }
 
@@ -149,7 +151,7 @@ CODE_SAMPLE
 
     private function changeTypeInAnnotationTypes(Property $node, PhpDocInfo $phpDocInfo): ?Property
     {
-        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses(self::VALID_DOCTRINE_CLASSES);
+        $doctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClasses($this->getAttributeClasses());
 
         if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return null;
@@ -182,5 +184,18 @@ CODE_SAMPLE
         $doctrineAnnotationTagValueNode->values[$key] = '\\' . $tagFullyQualifiedName . '::class';
 
         return $node;
+    }
+
+    /**
+     * @return class-string[]
+     */
+    private function getAttributeClasses(): array
+    {
+        return array_keys(self::VALID_DOCTRINE_CLASSES);
+    }
+
+    private function getAttributeName(Attribute $attribute): string
+    {
+        return self::VALID_DOCTRINE_CLASSES[$attribute->name->toString()];
     }
 }
