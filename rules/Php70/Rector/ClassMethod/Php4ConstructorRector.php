@@ -17,9 +17,12 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use Rector\Core\Rector\AbstractRector;
 >>>>>>> 2938ec854b... make Php4ConstructorRector scope aware
+=======
+>>>>>>> fccf9b58d3... use Scope aware in AddClosureReturnTypeRector
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
