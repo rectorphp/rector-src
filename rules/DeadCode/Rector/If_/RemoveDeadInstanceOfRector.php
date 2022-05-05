@@ -21,6 +21,7 @@ use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
@@ -31,7 +32,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\RemoveDeadInstanceOfRectorTest
  */
-final class RemoveDeadInstanceOfRector extends AbstractRector
+final class RemoveDeadInstanceOfRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
@@ -84,15 +85,8 @@ CODE_SAMPLE
     /**
      * @param If_ $node
      */
-    public function refactor(Node $node): ?If_
+    public function refactorWithScope(Node $node, Scope $scope): ?If_
     {
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-
-        // a trait
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
             return null;
         }
