@@ -71,7 +71,7 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        foreach ($node->catches as $key => $catch) {
+        foreach ($node->catches as $catch) {
             if (! $this->shouldAddExceptionFallback($catch, $node)) {
                 continue;
             }
@@ -128,8 +128,9 @@ CODE_SAMPLE
         if (! $this->isCatchingType($catch->types, 'Throwable')) {
             return false;
         }
-
-        return ! $this->isCatchingType($catch->types, self::EXCEPTION)
-            && ! $this->isCaughtByAnotherClause($catch->stmts, $tryCatch->catches);
+        if ($this->isCatchingType($catch->types, self::EXCEPTION)) {
+            return false;
+        }
+        return ! $this->isCaughtByAnotherClause($catch->stmts, $tryCatch->catches);
     }
 }
