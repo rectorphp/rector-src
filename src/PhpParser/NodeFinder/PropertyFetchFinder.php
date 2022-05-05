@@ -40,31 +40,31 @@ final class PropertyFetchFinder
     /**
      * @return PropertyFetch[]|StaticPropertyFetch[]
      */
-    public function findPrivatePropertyFetches(Property | Param $propertyOrPromotedParam): array
+    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam): array
     {
-        $classLike = $this->betterNodeFinder->findParentType($propertyOrPromotedParam, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return [];
-        }
+//        $classLike = $this->betterNodeFinder->findParentType($propertyOrPromotedParam, ClassLike::class);
+//        if (! $classLike instanceof ClassLike) {
+//            return [];
+//        }
 
-        if ($classLike instanceof Interface_) {
-            return [];
-        }
+//        if ($classLike instanceof Interface_) {
+//            return [];
+//        }
 
         $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
         if ($propertyName === null) {
             return [];
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($classLike);
+        $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($class);
 
-        $nodes = [$classLike];
+        $nodes = [$class];
         $nodesTrait = $this->astResolver->parseClassReflectionTraits($classReflection);
         $hasTrait = $nodesTrait !== [];
         $nodes = array_merge($nodes, $nodesTrait);
 
-        /** @var Class_|Trait_ $classLike */
-        return $this->findPropertyFetchesInClassLike($classLike, $nodes, $propertyName, $hasTrait);
+//        /** @var Class_|Trait_ $classLike */
+        return $this->findPropertyFetchesInClassLike($class, $nodes, $propertyName, $hasTrait);
     }
 
     /**
