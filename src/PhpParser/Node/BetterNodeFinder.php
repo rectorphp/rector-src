@@ -270,7 +270,7 @@ final class BetterNodeFinder
     }
 
     /**
-     * Only search in prevous Node/Stmt
+     * Only search in previous Node/Stmt
      *
      * @param callable(Node $node): bool $filter
      */
@@ -292,7 +292,7 @@ final class BetterNodeFinder
     }
 
     /**
-     * Search in prevous Node/Stmt, when no Node found, lookup previous Stmt of Parent Node
+     * Search in previous Node/Stmt, when no Node found, lookup previous Stmt of Parent Node
      *
      * @param callable(Node $node): bool $filter
      */
