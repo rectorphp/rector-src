@@ -16,6 +16,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -62,7 +63,11 @@ A) Return null for no change:
 
     return null;
 
+<<<<<<< HEAD
 B) Remove the Node:
+=======
+2) Remove the Node:
+>>>>>>> const naming
 
     \$this->removeNode(\$node);
     return \$node;
@@ -113,6 +118,8 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
+    private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -133,7 +140,8 @@ CODE_SAMPLE;
         NodeComparator $nodeComparator,
         CurrentFileProvider $currentFileProvider,
         RectifiedAnalyzer $rectifiedAnalyzer,
-        CreatedByRuleDecorator $createdByRuleDecorator
+        CreatedByRuleDecorator $createdByRuleDecorator,
+        ChangedNodeScopeRefresher $changedNodeScopeRefresher
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -154,6 +162,7 @@ CODE_SAMPLE;
         $this->currentFileProvider = $currentFileProvider;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
+        $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
     }
 
     /**
@@ -202,6 +211,15 @@ CODE_SAMPLE;
 
         $originalAttributes = $node->getAttributes();
 
+        // scope is missing even in original node... but why?
+        if (! in_array('scope', array_keys($originalAttributes), true)) {
+            dump_node(
+                $node->getAttribute(AttributeKey::PARENT_NODE)->getAttribute(AttributeKey::PARENT_NODE)
+//                ->getAttribute(AttributeKey::PARENT_NODE)
+            );
+            die;
+        }
+
         $node = $this->refactor($node);
 
         // nothing to change → continue
@@ -210,8 +228,12 @@ CODE_SAMPLE;
         }
 
         if ($node === []) {
+<<<<<<< HEAD
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
+=======
+            throw new ShouldNotHappenException(sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class));
+>>>>>>> const naming
         }
 
         /** @var Node[]|Node $node */
@@ -236,6 +258,9 @@ CODE_SAMPLE;
         // update parents relations - must run before connectParentNodes()
         /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
+
+        $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo());
+
         $this->connectParentNodes($node);
 
         // is equals node type? return node early
