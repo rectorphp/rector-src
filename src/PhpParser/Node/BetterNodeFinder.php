@@ -269,6 +269,9 @@ final class BetterNodeFinder
         });
     }
 
+    /**
+     * @param callable(Node $node): bool $filter
+     */
     public function findFirstInlinedPrevious(Node $node, callable $filter): ?Node
     {
         $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
