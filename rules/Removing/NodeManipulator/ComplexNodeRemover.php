@@ -189,7 +189,7 @@ final class ComplexNodeRemover
     }
 
     /**
-     * @return StaticPropertyFetch[]|PropertyFetch[]
+     * @return Node[]
      */
     private function resolvePropertyFetchFromDimFetch(Expr $expr): array
     {
