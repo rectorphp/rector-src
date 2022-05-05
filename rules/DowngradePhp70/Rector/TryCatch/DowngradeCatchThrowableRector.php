@@ -128,9 +128,11 @@ CODE_SAMPLE
         if (! $this->isCatchingType($catch->types, 'Throwable')) {
             return false;
         }
+
         if ($this->isCatchingType($catch->types, self::EXCEPTION)) {
             return false;
         }
+
         return ! $this->isCaughtByAnotherClause($catch->stmts, $tryCatch->catches);
     }
 }
