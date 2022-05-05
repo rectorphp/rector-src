@@ -8,9 +8,12 @@ if (class_exists('Doctrine\ORM\Mapping\Embedded')) {
     return;
 }
 
+/**
+ * @see https://github.com/doctrine/orm/blob/2.12.x/lib/Doctrine/ORM/Mapping/Embedded.php
+ */
 final class Embedded
 {
-    public function __construct($targetEntity)
+    public function __construct(?string $class = null, $columnPrefix = null)
     {
     }
 }
