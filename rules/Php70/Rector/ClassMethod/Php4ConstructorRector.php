@@ -16,6 +16,10 @@ use PhpParser\Node\Stmt\Expression;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
+<<<<<<< HEAD
+=======
+use Rector\Core\Rector\AbstractRector;
+>>>>>>> 2938ec854b... make Php4ConstructorRector scope aware
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
