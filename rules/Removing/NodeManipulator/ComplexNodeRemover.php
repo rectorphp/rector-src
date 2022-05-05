@@ -50,38 +50,42 @@ final class ComplexNodeRemover
             &$isPartoFAnotherAssign
         ) {
             // here should be checked all expr like stmts that can hold assign, e.f. if, foreach etc. etc.
-            if ($node instanceof Expression) {
-                $nodeExpr = $node->expr;
+            if (! $node instanceof Expression) {
+                return null;
+            }
 
-                // remove direct assigns
-                if ($nodeExpr instanceof Assign) {
-                    $assign = $nodeExpr;
+            $nodeExpr = $node->expr;
 
-                    // skip double assigns
-                    if ($assign->expr instanceof Assign) {
-                        $isPartoFAnotherAssign = true;
+            // remove direct assigns
+            if (! $nodeExpr instanceof Assign) {
+                return null;
+            }
+
+            $assign = $nodeExpr;
+
+            // skip double assigns
+            if ($assign->expr instanceof Assign) {
+                $isPartoFAnotherAssign = true;
+                return null;
+            }
+
+            $propertyFetches = $this->resolvePropertyFetchFromDimFetch($assign->var);
+            if ($propertyFetches === []) {
+                return null;
+            }
+
+            foreach ($propertyFetches as $propertyFetch) {
+                if (! $this->nodeNameResolver->isName($propertyFetch->var, 'this')) {
+                    continue;
+                }
+
+                if ($this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
+                    if (! $removeAssignSideEffect && $this->sideEffectNodeDetector->detect($assign->expr)) {
+                        $hasSideEffect = true;
                         return null;
                     }
 
-                    $propertyFetches = $this->resolvePropertyFetchFromDimFetch($assign->var);
-                    if ($propertyFetches === []) {
-                        return null;
-                    }
-
-                    foreach ($propertyFetches as $propertyFetch) {
-                        if (! $this->nodeNameResolver->isName($propertyFetch->var, 'this')) {
-                            continue;
-                        }
-
-                        if ($this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
-                            if (! $removeAssignSideEffect && $this->sideEffectNodeDetector->detect($assign->expr)) {
-                                $hasSideEffect = true;
-                                return null;
-                            }
-
-                            $this->nodeRemover->removeNode($node);
-                        }
-                    }
+                    $this->nodeRemover->removeNode($node);
                 }
             }
 
@@ -151,18 +155,29 @@ final class ComplexNodeRemover
             }
 
             $stmtExpr = $stmt->expr;
-            if ($stmtExpr instanceof Assign && $stmtExpr->var instanceof PropertyFetch) {
-                $propertyFetch = $stmtExpr->var;
-                if ($this->nodeNameResolver->isName($propertyFetch, $propertyName)) {
-                    unset($classMethod->stmts[$key]);
 
-                    if ($stmtExpr->expr instanceof Variable) {
-                        $key = $this->resolveToBeClearedParamFromConstructor($classMethod, $stmtExpr->expr);
-                        if (is_int($key)) {
-                            $paramKeysToBeRemoved[] = $key;
-                        }
-                    }
-                }
+            if (! $stmtExpr instanceof Assign) {
+                continue;
+            }
+
+            if (! $stmtExpr->var instanceof PropertyFetch) {
+                continue;
+            }
+
+            $propertyFetch = $stmtExpr->var;
+            if (! $this->nodeNameResolver->isName($propertyFetch, $propertyName)) {
+                continue;
+            }
+
+            unset($classMethod->stmts[$key]);
+
+            if (! $stmtExpr->expr instanceof Variable) {
+                continue;
+            }
+
+            $key = $this->resolveToBeClearedParamFromConstructor($classMethod, $stmtExpr->expr);
+            if (is_int($key)) {
+                $paramKeysToBeRemoved[] = $key;
             }
         }
 
@@ -221,5 +236,7 @@ final class ComplexNodeRemover
                 return $paramKey;
             }
         }
+
+        return null;
     }
 }
