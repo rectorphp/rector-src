@@ -189,7 +189,7 @@ final class ComplexNodeRemover
     }
 
     /**
-     * @return Node[]
+     * @return StaticPropertyFetch[]|PropertyFetch[]
      */
     private function resolvePropertyFetchFromDimFetch(Expr $expr): array
     {
@@ -210,15 +210,16 @@ final class ComplexNodeRemover
 
     /**
      * @param StaticPropertyFetch[]|PropertyFetch[] $propertyFetches
-     * @return PropertyFetch[]|StaticPropertyFetch[]|Node[]
+     * @return PropertyFetch[]|StaticPropertyFetch[]
      */
-    private function collectPropertyFetches(?Node $node, array $propertyFetches): array
+    private function collectPropertyFetches(?Expr $node, array $propertyFetches): array
     {
-        if (! $node instanceof Node) {
+        if (! $node instanceof Expr) {
             return $propertyFetches;
         }
 
         if ($this->propertyFetchAnalyzer->isLocalPropertyFetch($node)) {
+            /** @var StaticPropertyFetch|PropertyFetch $node */
             return array_merge($propertyFetches, [$node]);
         }
 
