@@ -63,11 +63,7 @@ A) Return null for no change:
 
     return null;
 
-<<<<<<< HEAD
 B) Remove the Node:
-=======
-2) Remove the Node:
->>>>>>> const naming
 
     \$this->removeNode(\$node);
     return \$node;
@@ -219,12 +215,8 @@ CODE_SAMPLE;
         }
 
         if ($node === []) {
-<<<<<<< HEAD
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
-=======
-            throw new ShouldNotHappenException(sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class));
->>>>>>> const naming
         }
 
         /** @var Node[]|Node $node */

@@ -46,7 +46,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     /**
      * @deprecated Return created nodes right in refactor() method to keep context instead.
      */
-    public function addNodeBeforeNode(Node $addedNode, Node $positionNode, ?SmartFileInfo $smartFileInfo): void
+    public function addNodeBeforeNode(Node $addedNode, Node $positionNode, ?SmartFileInfo $smartFileInfo = null): void
     {
         if ($positionNode->getAttributes() === []) {
             $message = sprintf('Switch arguments in "%s()" method', __METHOD__);
@@ -55,7 +55,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
 
         // @todo the node must be returned here, so traverser can refresh it
         // this is nasty hack to verify it works
-        if ($smartFileInfo) {
+        if ($smartFileInfo instanceof SmartFileInfo) {
             $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
             $this->changedNodeScopeRefresher->refresh($addedNode, $smartFileInfo, $currentScope);
         }
@@ -131,7 +131,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     public function addNodesBeforeNode(array $newNodes, Node $positionNode): void
     {
         foreach ($newNodes as $newNode) {
-            $this->addNodeBeforeNode($newNode, $positionNode);
+            $this->addNodeBeforeNode($newNode, $positionNode, null);
         }
 
         $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);

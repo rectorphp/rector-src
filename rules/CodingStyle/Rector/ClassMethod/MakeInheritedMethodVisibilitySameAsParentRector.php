@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 =======
@@ -22,6 +23,9 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 >>>>>>> 7f16c82a55... make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
+=======
+use Rector\Core\Rector\AbstractScopeAwareRector;
+>>>>>>> prepare adding refrehs scope to node to addd collectotr
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use ReflectionMethod;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -102,13 +106,10 @@ CODE_SAMPLE
         if ($parentClassReflections === []) {
             return null;
         }
-<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
         $parentClassReflections = $classReflection->getParents();
-=======
->>>>>>> 7f16c82a55... make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
 
 <<<<<<< HEAD
         $hasChanged = false;
@@ -123,7 +124,6 @@ CODE_SAMPLE
             /** @var string $methodName */
             $methodName = $this->getName($classMethod->name);
 
-<<<<<<< HEAD
             foreach ($parentClassReflections as $parentClassReflection) {
                 $nativeClassReflection = $parentClassReflection->getNativeReflection();
 
@@ -134,22 +134,6 @@ CODE_SAMPLE
 
                 $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
                 if ($this->isClassMethodCompatibleWithParentReflectionMethod($classMethod, $parentReflectionMethod)) {
-=======
-            foreach ($classReflection->getParents() as $parentClassReflection) {
-                $nativeClassReflection = $parentClassReflection->getNativeReflection();
-
-                // the class reflection above takes also @method annotations into an account
-                if (! $nativeClassReflection->hasMethod($methodName)) {
-                    continue;
-                }
-
-                $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
-                if ($this->isClassMethodCompatibleWithParentReflectionMethod($classMethod, $parentReflectionMethod)) {
-                    continue;
-                }
-
-                if ($this->isConstructorWithStaticFactory($node, $methodName)) {
->>>>>>> 7f16c82a55... make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
                     continue;
                 }
 
@@ -180,44 +164,6 @@ CODE_SAMPLE
         return $reflectionMethod->isPrivate() && $classMethod->isPrivate();
     }
 
-<<<<<<< HEAD
-=======
-    /**
-     * Parent constructor visibility override is allowed only since PHP 7.2+
-     * @see https://3v4l.org/RFYmn
-     */
-    private function isConstructorWithStaticFactory(Class_ $class, string $methodName): bool
-    {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PARENT_VISIBILITY_OVERRIDE)) {
-            return false;
-        }
-
-        if ($methodName !== MethodName::CONSTRUCT) {
-            return false;
-        }
-
-        foreach ($class->getMethods() as $iteratedClassMethod) {
-            if (! $iteratedClassMethod->isPublic()) {
-                continue;
-            }
-
-            if (! $iteratedClassMethod->isStatic()) {
-                continue;
-            }
-
-            $isStaticSelfFactory = $this->isStaticNamedConstructor($iteratedClassMethod);
-
-            if (! $isStaticSelfFactory) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
->>>>>>> 7f16c82a55... make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
     private function changeClassMethodVisibilityBasedOnReflectionMethod(
         ClassMethod $classMethod,
         ReflectionMethod $reflectionMethod
