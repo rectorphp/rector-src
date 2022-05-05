@@ -87,7 +87,6 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Foreach_) {
                 // decorate value as well
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                return;
             }
 
             if ($node instanceof Trait_) {

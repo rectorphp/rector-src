@@ -316,7 +316,7 @@ parameters:
         -
             message: '#This call has duplicate argument#'
             paths:
-                 - rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
+                - rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
 
         -
             message: '#foreach\(\), while\(\), for\(\) or if\(\) cannot contain a complex expression\. Extract it to a new variable on a line before#'
@@ -582,12 +582,18 @@ parameters:
         - '#Class "Rector\\DeadCode\\Rector\\ConstFetch\\RemovePhpVersionIdCheckRector" has invalid namespace category "ConstFetch"\. Pick one of\: "If_"#'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactor\(\)" is 11, keep it under 10#'
 =======
 <<<<<<< HEAD
         - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 11, keep it under 10#'
 <<<<<<< HEAD
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
+=======
+        - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 11, keep it under 10#'
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> prepare adding refrehs scope to node to addd collectotr
         -
             message: '#Cognitive complexity for "Rector\\EarlyReturn\\Rector\\If_\\ChangeAndIfToEarlyReturnRector\:\:refactor\(\)" is \d+, keep it under 10#'
             paths:
@@ -661,6 +667,17 @@ parameters:
         - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 12, keep it under 10#'
 >>>>>>> 7f16c82a55... make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
+<<<<<<< HEAD
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
+<<<<<<< HEAD
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
+<<<<<<< HEAD
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
+=======
+=======
+=======
+=======
+>>>>>>> prepare adding refrehs scope to node to addd collectotr
+>>>>>>> prepare adding refrehs scope to node to addd collectotr
+>>>>>>> prepare adding refrehs scope to node to addd collectotr
+>>>>>>> prepare adding refrehs scope to node to addd collectotr

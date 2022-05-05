@@ -154,7 +154,11 @@ CODE_SAMPLE
         $assignVariable = $firstArg->value;
         $preAssign = new Assign($assignVariable, $array);
 
+<<<<<<< HEAD
         $this->nodesToAddCollector->addNodeBeforeNode($preAssign, $currentStmt);
+=======
+        $this->nodesToAddCollector->addNodeBeforeNode($preAssign, $currentStatement, $this->file->getSmartFileInfo());
+>>>>>>> prepare adding refrehs scope to node to addd collectotr
 
         return $expr;
     }

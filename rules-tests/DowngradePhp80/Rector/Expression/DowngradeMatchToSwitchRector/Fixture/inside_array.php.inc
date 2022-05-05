@@ -2,11 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeMatchToSwitchRector\Fixture;
 
-<<<<<<< HEAD:rules-tests/DowngradePhp80/Rector/Expression/DowngradeMatchToSwitchRector/Fixture/inside_array.php.inc
 final class InsideArray
-=======
-final class InsideArrayItem
->>>>>>> extract use case with missing scope on new array:rules-tests/DowngradePhp80/Rector/Expression/DowngradeMatchToSwitchRector/Fixture/inside_array_item.php.inc
 {
     public function run($statusCode)
     {
@@ -26,11 +22,7 @@ final class InsideArrayItem
 
 namespace Rector\Tests\DowngradePhp80\Rector\Expression\DowngradeMatchToSwitchRector\Fixture;
 
-<<<<<<< HEAD:rules-tests/DowngradePhp80/Rector/Expression/DowngradeMatchToSwitchRector/Fixture/inside_array.php.inc
 final class InsideArray
-=======
-final class InsideArrayItem
->>>>>>> extract use case with missing scope on new array:rules-tests/DowngradePhp80/Rector/Expression/DowngradeMatchToSwitchRector/Fixture/inside_array_item.php.inc
 {
     public function run($statusCode)
     {

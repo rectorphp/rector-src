@@ -20,7 +20,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
@@ -31,7 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\RemoveDeadInstanceOfRectorTest
  */
-final class RemoveDeadInstanceOfRector extends AbstractScopeAwareRector
+final class RemoveDeadInstanceOfRector extends AbstractRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
@@ -86,10 +86,14 @@ CODE_SAMPLE
      * @return Stmt[]|null|If_
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     public function refactor(Node $node): null|array|If_
 =======
     public function refactorWithScope(Node $node, Scope $scope): ?If_
 >>>>>>> make RemoveDeadInstanceOfRector use of scope awre
+=======
+    public function refactor(Node $node): ?If_
+>>>>>>> prepare adding refrehs scope to node to addd collectotr
     {
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
             return null;

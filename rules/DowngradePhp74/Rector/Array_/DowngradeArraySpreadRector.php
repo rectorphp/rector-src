@@ -241,7 +241,7 @@ CODE_SAMPLE
         $newVariable = new Variable($variableName);
 
         $newVariableAssign = new Assign($newVariable, $arrayItem->value);
-        $this->nodesToAddCollector->addNodeBeforeNode($newVariableAssign, $array);
+        $this->nodesToAddCollector->addNodeBeforeNode($newVariableAssign, $array, $this->file->getSmartFileInfo());
 
         return $newVariable;
     }
