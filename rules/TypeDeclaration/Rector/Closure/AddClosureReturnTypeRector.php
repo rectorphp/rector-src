@@ -7,6 +7,10 @@ namespace Rector\TypeDeclaration\Rector\Closure;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PHPStan\Analyser\Scope;
+<<<<<<< HEAD
+=======
+use Rector\Core\Rector\AbstractRector;
+>>>>>>> fccf9b58d3... use Scope aware in AddClosureReturnTypeRector
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
