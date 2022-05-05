@@ -70,6 +70,11 @@ final class PHPStanNodeScopeResolver
      */
     public function processNodes(array $stmts, SmartFileInfo $smartFileInfo): array
     {
+        /**
+         * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
+         * @see vendor/phpstan/phpstan/phpstan.phar/src/Analyser/NodeScopeResolver.php:282
+         */
+
         $this->removeDeepChainMethodCallNodes($stmts);
 
         $scope = $this->scopeFactory->createFromFile($smartFileInfo);
@@ -79,6 +84,7 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Foreach_) {
                 // decorate value as well
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                return;
             }
 
             if ($node instanceof Trait_) {

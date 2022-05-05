@@ -8,9 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PHPStan\Analyser\Scope;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use Rector\Core\Rector\AbstractRector;
 >>>>>>> fccf9b58d3... use Scope aware in AddClosureReturnTypeRector
+=======
+>>>>>>> 6c7119b03e... make DowngradeParentTypeDeclarationRector use of scope aware
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
