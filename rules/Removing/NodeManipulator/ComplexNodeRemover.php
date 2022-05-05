@@ -210,17 +210,17 @@ final class ComplexNodeRemover
 
     /**
      * @param StaticPropertyFetch[]|PropertyFetch[] $propertyFetches
-     * @return PropertyFetch[]|StaticPropertyFetch[]
+     * @return PropertyFetch[]|StaticPropertyFetch[]|mixed[]
      */
-    private function collectPropertyFetches(?Expr $node, array $propertyFetches): array
+    private function collectPropertyFetches(?Expr $expr, array $propertyFetches): array
     {
-        if (! $node instanceof Expr) {
+        if (! $expr instanceof Expr) {
             return $propertyFetches;
         }
 
-        if ($this->propertyFetchAnalyzer->isLocalPropertyFetch($node)) {
-            /** @var StaticPropertyFetch|PropertyFetch $node */
-            return array_merge($propertyFetches, [$node]);
+        if ($this->propertyFetchAnalyzer->isLocalPropertyFetch($expr)) {
+            /** @var StaticPropertyFetch|PropertyFetch $expr */
+            return array_merge($propertyFetches, [$expr]);
         }
 
         return $propertyFetches;
