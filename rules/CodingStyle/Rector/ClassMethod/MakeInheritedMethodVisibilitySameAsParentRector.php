@@ -105,6 +105,10 @@ CODE_SAMPLE
             /** @var string $methodName */
             $methodName = $this->getName($classMethod->name);
 
+            if ($this->isConstructorWithStaticFactory($node, $methodName)) {
+                continue;
+            }
+
             foreach ($classReflection->getParents() as $parentClassReflection) {
                 $nativeClassReflection = $parentClassReflection->getNativeReflection();
 
@@ -115,10 +119,6 @@ CODE_SAMPLE
 
                 $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
                 if ($this->isClassMethodCompatibleWithParentReflectionMethod($classMethod, $parentReflectionMethod)) {
-                    continue;
-                }
-
-                if ($this->isConstructorWithStaticFactory($node, $methodName)) {
                     continue;
                 }
 
