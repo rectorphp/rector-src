@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRector\Fixture\Attribute;
+namespace Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRector\Fixture\Annotation;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -32,7 +32,7 @@ final class MyEntity
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRector\Fixture\Attribute;
+namespace Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRector\Fixture\Annotation;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
