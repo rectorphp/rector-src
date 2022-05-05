@@ -97,6 +97,8 @@ CODE_SAMPLE;
 
     protected NodesToAddCollector $nodesToAddCollector;
 
+    protected ChangedNodeScopeRefresher $changedNodeScopeRefresher;
+
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
     private ExclusionManager $exclusionManager;
@@ -117,8 +119,6 @@ CODE_SAMPLE;
     private RectifiedAnalyzer $rectifiedAnalyzer;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
-
-    private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
     #[Required]
     public function autowire(

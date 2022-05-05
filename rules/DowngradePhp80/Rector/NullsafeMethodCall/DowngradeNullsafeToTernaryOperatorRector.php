@@ -13,10 +13,8 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Analyser\Scope;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Naming\Naming\VariableNaming;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -60,11 +58,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): Ternary
     {
-        $tempVarName = $this->variableNaming->resolveFromNodeWithScopeCountAndFallbackName(
-            $node->var,
-            $scope,
-            '_'
-        );
+        $tempVarName = $this->variableNaming->resolveFromNodeWithScopeCountAndFallbackName($node->var, $scope, '_');
 
         $variable = new Variable($tempVarName);
         $called = $node instanceof NullsafeMethodCall
