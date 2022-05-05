@@ -9,8 +9,6 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\TypeWithClassName;
@@ -42,15 +40,6 @@ final class PropertyFetchFinder
      */
     public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam): array
     {
-//        $classLike = $this->betterNodeFinder->findParentType($propertyOrPromotedParam, ClassLike::class);
-//        if (! $classLike instanceof ClassLike) {
-//            return [];
-//        }
-
-//        if ($classLike instanceof Interface_) {
-//            return [];
-//        }
-
         $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
         if ($propertyName === null) {
             return [];
@@ -63,7 +52,6 @@ final class PropertyFetchFinder
         $hasTrait = $nodesTrait !== [];
         $nodes = array_merge($nodes, $nodesTrait);
 
-//        /** @var Class_|Trait_ $classLike */
         return $this->findPropertyFetchesInClassLike($class, $nodes, $propertyName, $hasTrait);
     }
 

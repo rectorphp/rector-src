@@ -588,7 +588,6 @@ parameters:
 
         # cleanup after merge of assing remover refactoring
         - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removePropertyAndUsages\(\)" is \d+, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removeConstructorDependency\(\)" is \d+, keep it under 10#'
 
         # avoid moving rule around, while re-targeting to stmt
         - '#Class "Rector\\(.*?)\\Rector\\(.*?) has invalid namespace category "(.*?)"\. Pick one of\: "(Expression|Class_)"#'

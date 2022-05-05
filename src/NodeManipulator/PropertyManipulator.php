@@ -22,7 +22,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\Unset_;
@@ -151,11 +150,6 @@ final class PropertyManipulator
         if (! $class instanceof Class_) {
             return true;
         }
-
-//        // Property or Param in interface? return true early as no property in interface
-//        if ($classLike instanceof Interface_) {
-//            return true;
-//        }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
         if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
