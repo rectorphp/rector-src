@@ -8,7 +8,7 @@ use Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRe
 
 final class MyEntity
 {
-    #[ORM\Embedded(targetEntity: "AnotherClass")]
+    #[ORM\Embedded(class: "AnotherClass")]
     private readonly ?Collection $other;
     #[ORM\OneToMany(targetEntity: "AnotherClass")]
     private readonly ?Collection $items;
@@ -41,7 +41,7 @@ use Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRe
 
 final class MyEntity
 {
-    #[ORM\Embedded(targetEntity: \Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRector\Source\AnotherClass::class)]
+    #[ORM\Embedded(class: \Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRector\Source\AnotherClass::class)]
     private readonly ?Collection $other;
     #[ORM\OneToMany(targetEntity: \Rector\Tests\Php80\Rector\Class_\DoctrineTargetEntityStringToClassConstantRector\Source\AnotherClass::class)]
     private readonly ?Collection $items;
