@@ -259,7 +259,8 @@ CODE_SAMPLE;
         /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
 
-        $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo());
+        $currentScope = $node->getAttribute(AttributeKey::SCOPE);
+        $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
 
         $this->connectParentNodes($node);
 
