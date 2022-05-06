@@ -101,10 +101,7 @@ CODE_SAMPLE
         }
 
         $originalAttrGroups = $node->attrGroups;
-        if (
-            count($this->configuration) === 1 &&
-            $this->configuration[0] === self::ALPHABETICALLY
-        ) {
+        if ($this->isAlphabetically($this->configuration)) {
             $currentAttrGroups = $this->sortAlphabetically($originalAttrGroups);
         } else {
             $currentAttrGroups = $this->sortBySpecificOrder($originalAttrGroups);
