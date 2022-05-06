@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use PhpParser\Node\Expr;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Analyser\MutatingScope;
@@ -35,7 +36,13 @@ final class ChangedNodeScopeRefresher
         } elseif ($node instanceof Expr) {
             $stmts = [new Expression($node)];
         } else {
-            throw new ShouldNotHappenException(get_class($node));
+            if ($node instanceof Param) {
+                // param type cannot be refreshed
+                return;
+            }
+
+            $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', get_class($node));
+            throw new ShouldNotHappenException($errorMessage);
         }
 
         $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $currentScope);
