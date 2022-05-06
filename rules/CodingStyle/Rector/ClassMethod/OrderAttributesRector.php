@@ -99,7 +99,7 @@ CODE_SAMPLE
     /**
      * @param mixed[] $configuration
      */
-    public function configure(array $configuration): void
+    public function configure(array $configuration = [self::ALPHABETICALLY]): void
     {
         Assert::allString($configuration);
         Assert::count($configuration, 1);
