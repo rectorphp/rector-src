@@ -20,20 +20,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\OrderAttributesRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\OrderAttributesRectorTest
  */
 final class OrderAttributesRector extends AbstractRector implements ConfigurableRectorInterface
 {
     public const ALPHABETICALLY = 'alphabetically';
 
-    private const OPTIONS = [
-        self::ALPHABETICALLY,
-    ];
-
     /**
-     * @var string|null
+     * @var array<string, int>
      */
-    private ?string $option = null;
+    private array $configuration = [];
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -46,7 +42,7 @@ class Someclass
 {
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 #[First]
 #[Second]
@@ -54,8 +50,27 @@ class Someclass
 {
 }
 CODE_SAMPLE
-,
+                ,
                 ['First', 'Second'],
+            ),
+            new ConfiguredCodeSample(
+                <<<'CODE_SAMPLE'
+#[BAttribute]
+#[AAttribute]
+class Someclass
+{
+}
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+#[AAttribute]
+#[BAttribute]
+class Someclass
+{
+}
+CODE_SAMPLE
+                ,
+                [self::ALPHABETICALLY],
             ),
         ]);
     }
@@ -86,7 +101,14 @@ CODE_SAMPLE
         }
 
         $originalAttrGroups = $node->attrGroups;
-        $currentAttrGroups = $this->{$this->option}($originalAttrGroups);
+        if (
+            count($this->configuration) === 1 &&
+            $this->configuration[0] === self::ALPHABETICALLY
+        ) {
+            $currentAttrGroups = $this->sortAlphabetically($originalAttrGroups);
+        } else {
+            $currentAttrGroups = $this->sortBySpecificOrder($originalAttrGroups);
+        }
 
         if ($currentAttrGroups === $originalAttrGroups) {
             return null;
@@ -102,13 +124,16 @@ CODE_SAMPLE
     public function configure(array $configuration = [self::ALPHABETICALLY]): void
     {
         Assert::allString($configuration);
-        Assert::count($configuration, 1);
-        Assert::inArray($configuration[0], self::OPTIONS);
+        Assert::minCount($configuration, 1);
 
-        $this->option = $configuration[0];
+        if ($this->isAlphabetically($configuration)) {
+            $this->configuration = $configuration;
+        } else {
+            $this->configuration = array_flip($configuration);
+        }
     }
 
-    private function alphabetically(array $originalAttrGroups): array
+    private function sortAlphabetically(array $originalAttrGroups): array
     {
         usort($originalAttrGroups, function (
             AttributeGroup $firstAttributeGroup,
@@ -119,5 +144,31 @@ CODE_SAMPLE
             return strcmp($currentNamespace, $nextNamespace);
         });
         return $originalAttrGroups;
+    }
+
+    private function sortBySpecificOrder(array $originalAttrGroups): array
+    {
+        usort($originalAttrGroups, function (
+            AttributeGroup $firstAttributeGroup,
+            AttributeGroup $secondAttributeGroup,
+        ): int {
+            $firstAttributePosition = $this->resolveAttributeGroupPosition($firstAttributeGroup);
+            $secondAttributePosition = $this->resolveAttributeGroupPosition($secondAttributeGroup);
+
+            return $firstAttributePosition <=> $secondAttributePosition;
+        });
+        return $originalAttrGroups;
+    }
+
+    private function resolveAttributeGroupPosition(AttributeGroup $attributeGroup): int
+    {
+        $attrName = $this->getName($attributeGroup->attrs[0]->name);
+        return $this->configuration[$attrName] ?? count($this->configuration);
+    }
+
+    private function isAlphabetically(array $configuration): bool
+    {
+        return count($configuration) === 1 &&
+            $configuration[0] === self::ALPHABETICALLY;
     }
 }
