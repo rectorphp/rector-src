@@ -73,6 +73,8 @@ final class PHPStanNodeScopeResolver
         SmartFileInfo $smartFileInfo,
         ?MutatingScope $formerMutatingScope = null
     ): array {
+        $isScopeRefreshing = $formerMutatingScope instanceof MutatingScope;
+
         /**
          * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
          * @see vendor/phpstan/phpstan/phpstan.phar/src/Analyser/NodeScopeResolver.php:282
@@ -83,7 +85,10 @@ final class PHPStanNodeScopeResolver
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($smartFileInfo);
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback): void {
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
+            &$nodeCallback,
+            $isScopeRefreshing
+        ): void {
             if ($node instanceof Foreach_) {
                 // decorate value as well
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -125,7 +130,7 @@ final class PHPStanNodeScopeResolver
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_) {
                 /** @var MutatingScope $mutatingScope */
-                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
+                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
             }
 
             // special case for unreachable nodes
@@ -172,7 +177,8 @@ final class PHPStanNodeScopeResolver
 
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ $classLike,
-        MutatingScope $mutatingScope
+        MutatingScope $mutatingScope,
+        bool $isScopeRefreshing
     ): MutatingScope {
         $className = $this->resolveClassName($classLike);
 
@@ -183,6 +189,12 @@ final class PHPStanNodeScopeResolver
             return $mutatingScope;
         } else {
             $classReflection = $this->reflectionProvider->getClass($className);
+        }
+
+        // on refresh, remove entered class avoid entering the class again
+        if ($isScopeRefreshing && $mutatingScope->isInClass()) {
+            $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
+            $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
         }
 
         return $mutatingScope->enterClass($classReflection);

@@ -33,9 +33,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
                 static::class,
             );
 
-            // @todo the node in
-            print_node($node);
-
             throw new ShouldNotHappenException($errorMessage);
         }
 

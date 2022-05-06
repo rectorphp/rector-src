@@ -588,12 +588,16 @@ parameters:
 <<<<<<< HEAD
         - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 11, keep it under 10#'
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
 =======
         - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 11, keep it under 10#'
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> prepare adding refrehs scope to node to addd collectotr
+=======
+
+>>>>>>> cache old to new types
         -
             message: '#Cognitive complexity for "Rector\\EarlyReturn\\Rector\\If_\\ChangeAndIfToEarlyReturnRector\:\:refactor\(\)" is \d+, keep it under 10#'
             paths:
@@ -628,6 +632,7 @@ parameters:
         -
             message: '#Use separate function calls with readable variable names#'
             path: rules/CodingStyle/Rector/ClassMethod/OrderAttributesRector.php
+<<<<<<< HEAD
 <<<<<<< HEAD
         - '#Class "Rector\\CodeQuality\\Rector\\FunctionLike\\RemoveAlwaysTrueConditionSetInConstructorRector" has invalid namespace category "FunctionLike"\. Pick one of\: "If_"#'
 <<<<<<< HEAD
@@ -681,3 +686,20 @@ parameters:
 >>>>>>> prepare adding refrehs scope to node to addd collectotr
 >>>>>>> prepare adding refrehs scope to node to addd collectotr
 >>>>>>> prepare adding refrehs scope to node to addd collectotr
+=======
+
+        - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 12, keep it under 10#'
+
+        # hash key
+        -
+            path: rules/Renaming/NodeManipulator/ClassRenamer.php
+            message: '#Use separate function calls with readable variable names#'
+
+        - '#Cognitive complexity for "Rector\\Core\\Rector\\AbstractRector\:\:enterNode\(\)" is 15, keep it under 10#'
+<<<<<<< HEAD
+>>>>>>> cache old to new types
+=======
+
+        # false positive by php-parser, the args can be null
+        - '#Parameter \#2 \$args of class PhpParser\\Node\\Expr\\FuncCall constructor expects array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder>, array<int, PhpParser\\Node\\Arg\|null> given#'
+>>>>>>> skip parent

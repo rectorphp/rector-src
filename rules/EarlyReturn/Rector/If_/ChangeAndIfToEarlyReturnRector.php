@@ -90,8 +90,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+<<<<<<< HEAD
         $stmts = (array) $node->stmts;
         if ($stmts === []) {
+=======
+        $stmts = $node->stmts;
+        if ($stmts === null) {
+>>>>>>> cache old to new types
             return null;
         }
 
@@ -204,7 +209,11 @@ CODE_SAMPLE
         return array_merge($result, [$ifNextReturnClone]);
     }
 
+<<<<<<< HEAD
     private function shouldSkip(StmtsAwareInterface $stmtsAware, If_ $if, ?Stmt $nexStmt): bool
+=======
+    private function shouldSkip(StmtsAwareInterface $parentNode, If_ $if, ?Stmt $nexStmt): bool
+>>>>>>> cache old to new types
     {
         if (! $this->ifManipulator->isIfWithOnlyOneStmt($if)) {
             return true;
@@ -249,7 +258,11 @@ CODE_SAMPLE
         return false;
     }
 
+<<<<<<< HEAD
     private function isParentIfReturnsVoidOrParentIfHasNextNode(StmtsAwareInterface $stmtsAware): bool
+=======
+    private function isParentIfReturnsVoidOrParentIfHasNextNode(StmtsAwareInterface $parentNode): bool
+>>>>>>> cache old to new types
     {
         if (! $stmtsAware instanceof If_) {
             return false;

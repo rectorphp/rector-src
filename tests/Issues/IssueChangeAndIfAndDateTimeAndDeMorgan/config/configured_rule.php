@@ -10,5 +10,5 @@ use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(SimplifyDeMorganBinaryRector::class);
     $rectorConfig->rule(ChangeAndIfToEarlyReturnRector::class);
-    $rectorConfig->rule(DateTimeToDateTimeInterfaceRector::class);
+//    $rectorConfig->rule(DateTimeToDateTimeInterfaceRector::class);
 };
