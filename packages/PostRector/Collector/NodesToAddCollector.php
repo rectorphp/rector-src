@@ -34,7 +34,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly RectorChangeCollector $rectorChangeCollector,
         private readonly NodePrinterInterface $nodePrinter,
-        private ChangedNodeScopeRefresher $changedNodeScopeRefresher
+        private readonly ChangedNodeScopeRefresher $changedNodeScopeRefresher
     ) {
     }
 

@@ -74,7 +74,6 @@ CODE_SAMPLE
             $args[] = $arrayItem instanceof ArrayItem ? new Arg($arrayItem->value) : null;
         }
 
-        /** @var Arg[]|VariadicPlaceholder[] $args */
         return new FuncCall(new Name('list'), $args);
     }
 }

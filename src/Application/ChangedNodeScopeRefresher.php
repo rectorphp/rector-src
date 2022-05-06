@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
@@ -24,9 +25,9 @@ final class ChangedNodeScopeRefresher
     }
 
     public function refresh(
-        Expr|Stmt|\PhpParser\Node $node,
+        Expr|Stmt|Node $node,
         SmartFileInfo $smartFileInfo,
-        MutatingScope $currentScope
+        MutatingScope $mutatingScope
     ): void {
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
         // so we need to somehow get a parent scope that is already in the same place the $node is
@@ -41,10 +42,10 @@ final class ChangedNodeScopeRefresher
                 return;
             }
 
-            $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', get_class($node));
+            $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $currentScope);
+        $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
     }
 }

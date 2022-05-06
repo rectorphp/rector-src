@@ -85,15 +85,7 @@ CODE_SAMPLE
      * @param If_ $node
      * @return Stmt[]|null|If_
      */
-<<<<<<< HEAD
-<<<<<<< HEAD
-    public function refactor(Node $node): null|array|If_
-=======
-    public function refactorWithScope(Node $node, Scope $scope): ?If_
->>>>>>> make RemoveDeadInstanceOfRector use of scope awre
-=======
-    public function refactor(Node $node): ?If_
->>>>>>> prepare adding refrehs scope to node to addd collectotr
+    public function refactor(Node $node): If_|array|null
     {
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
             return null;

@@ -108,6 +108,7 @@ CODE_SAMPLE
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         $parentClassReflections = $classReflection->getParents();
 
@@ -116,6 +117,8 @@ CODE_SAMPLE
 =======
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
 >>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
+=======
+>>>>>>> cache old to new types
         foreach ($node->getMethods() as $classMethod) {
             if ($classMethod->isMagic()) {
                 continue;

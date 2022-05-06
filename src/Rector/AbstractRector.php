@@ -7,6 +7,7 @@ namespace Rector\Core\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeTraverser;
@@ -242,8 +243,24 @@ CODE_SAMPLE;
         /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
 
-        $currentScope = $node->getAttribute(AttributeKey::SCOPE);
-        $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
+        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
+
+        // names do not have scope in PHPStan
+        if (! $node instanceof Name) {
+            if ($currentScope === null) {
+                print_node($originalNode);
+
+                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+                $errorMessage = sprintf(
+                    'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+                    $node::class,
+                    $parent instanceof \PhpParser\Node ? $parent::class : null
+                );
+                throw new ShouldNotHappenException($errorMessage);
+            }
+
+            $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
+        }
 
         $this->connectParentNodes($node);
 
