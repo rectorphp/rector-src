@@ -9,5 +9,5 @@ use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\Source\Sec
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(OrderAttributesRector::class, [FirstAttribute::class, SecondAttribute::class]);
+        ->ruleWithConfiguration(OrderAttributesRector::class, [OrderAttributesRector::ALPHABETICALLY]);
 };

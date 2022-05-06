@@ -24,10 +24,16 @@ use Webmozart\Assert\Assert;
  */
 final class OrderAttributesRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    public const ALPHABETICALLY = 'alphabetically';
+
+    private const OPTIONS = [
+        self::ALPHABETICALLY,
+    ];
+
     /**
-     * @var array<string, int>
+     * @var string|null
      */
-    private array $attributesOrderByName = [];
+    private ?string $option = null;
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -80,17 +86,7 @@ CODE_SAMPLE
         }
 
         $originalAttrGroups = $node->attrGroups;
-        $currentAttrGroups = $originalAttrGroups;
-
-        usort($currentAttrGroups, function (
-            AttributeGroup $firstAttributeGroup,
-            AttributeGroup $secondAttributeGroup,
-        ): int {
-            $firstAttributePosition = $this->resolveAttributeGroupPosition($firstAttributeGroup);
-            $secondAttributePosition = $this->resolveAttributeGroupPosition($secondAttributeGroup);
-
-            return $firstAttributePosition <=> $secondAttributePosition;
-        });
+        $currentAttrGroups = $this->{$this->option}($originalAttrGroups);
 
         if ($currentAttrGroups === $originalAttrGroups) {
             return null;
@@ -106,15 +102,22 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allString($configuration);
+        Assert::count($configuration, 1);
+        Assert::inArray($configuration[0], self::OPTIONS);
 
-        $this->attributesOrderByName = array_flip($configuration);
+        $this->option = $configuration[0];
     }
 
-    private function resolveAttributeGroupPosition(AttributeGroup $attributeGroup): int
+    private function alphabetically(array $originalAttrGroups): array
     {
-        $attrName = $this->getName($attributeGroup->attrs[0]->name);
-
-        // 1000 makes the attribute last, as positioned attributes have a higher priority
-        return $this->attributesOrderByName[$attrName] ?? 1000;
+        usort($originalAttrGroups, function (
+            AttributeGroup $firstAttributeGroup,
+            AttributeGroup $secondAttributeGroup,
+        ): int {
+            $currentNamespace = $this->getName($firstAttributeGroup->attrs[0]->name);
+            $nextNamespace = $this->getName($secondAttributeGroup->attrs[0]->name);
+            return strcmp($currentNamespace, $nextNamespace);
+        });
+        return $originalAttrGroups;
     }
 }
