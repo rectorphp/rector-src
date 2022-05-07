@@ -21,7 +21,6 @@ class NoStmts
 {
     public function run()
     {
-        echo 'do something';
     }
 }
 
