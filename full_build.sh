@@ -30,6 +30,7 @@ cd rector-build
 
 # avoid syntax error in php 7.2
 rm rector.php
+
 cp ../build/target-repository/bootstrap.php .
 cp ../preload.php .
 
