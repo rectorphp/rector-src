@@ -16,8 +16,8 @@ final class BootstrapFilesIncluder
      * @var string[]
      */
     private const STUBS = [
-        __DIR__ . '/../../stubs-rector/PHPUnit/Framework/TestCase.php',
-        __DIR__ . '/../../stubs-rector/Internal/EnumInterfaces.php',
+        '/../../stubs-rector/PHPUnit/Framework/TestCase.php',
+        '/../../stubs-rector/Internal/EnumInterfaces.php',
     ];
 
     public function __construct(
@@ -58,8 +58,8 @@ final class BootstrapFilesIncluder
         }
 
         foreach (self::STUBS as $stub) {
-            if (is_file($stub)) {
-                require_once $stub;
+            if (is_file(__DIR__ . $stub)) {
+                require_once __DIR__ . $stub;
             }
         }
     }
