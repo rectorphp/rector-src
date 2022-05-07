@@ -140,13 +140,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->removeNode($if);
-
-        if ($if->cond === $instanceof) {
-            return count($if->stmts) > 0 ? $if->stmts : $if;
+        if ($if->cond === $instanceof && $if->stmts !== []) {
+            return $if->stmts;
         }
 
-        return null;
+        $this->removeNode($if);
+        return $if;
     }
 
     private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool
