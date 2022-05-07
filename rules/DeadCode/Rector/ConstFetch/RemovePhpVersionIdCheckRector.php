@@ -115,12 +115,15 @@ CODE_SAMPLE
         if ($binaryOp->left instanceof ConstFetch && $this->isName($binaryOp->left->name, 'PHP_VERSION_ID')) {
             return $this->refactorConstFetch($binaryOp->left, $node, $binaryOp);
         }
+
         if (! $binaryOp->right instanceof ConstFetch) {
             return null;
         }
+
         if (! $this->isName($binaryOp->right->name, 'PHP_VERSION_ID')) {
             return null;
         }
+
         return $this->refactorConstFetch($binaryOp->right, $node, $binaryOp);
     }
 
