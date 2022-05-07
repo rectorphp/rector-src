@@ -30,7 +30,7 @@ cd rector-build
 
 # avoid syntax error in php 7.2
 rm rector.php
-
+cp ../build/target-repository/bootstrap.php .
 cp ../preload.php .
 
 # Check php 7.2 can be used locally with PHP72_BIN_PATH env
@@ -57,6 +57,7 @@ cd ..
 #
 sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 cd rector-prefixed-downgraded
+cp ../build/target-repository/bootstrap.php .
 cp ../preload.php .
 
 if test -z ${PHP72_BIN_PATH+y}; then
