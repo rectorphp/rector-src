@@ -28,6 +28,7 @@ if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) 
 require_once __DIR__ . '/../src/constants.php';
 
 $autoloadIncluder = new AutoloadIncluder();
+$autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 $autoloadIncluder->autoloadProjectAutoloaderFile();
 $autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
 $autoloadIncluder->autoloadFromCommandLine();
@@ -68,6 +69,17 @@ final class AutoloadIncluder
      * @var string[]
      */
     private $alreadyLoadedAutoloadFiles = [];
+
+    public function includeDependencyOrRepositoryVendorAutoloadIfExists(): void
+    {
+        // Rector's vendor is already loaded
+        if (class_exists(RectorKernel::class)) {
+            return;
+        }
+
+        // in Rector develop repository
+        $this->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/autoload.php');
+    }
 
     /**
      * In case Rector is installed as vendor dependency,
