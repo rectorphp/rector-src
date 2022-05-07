@@ -200,7 +200,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Stmt[]|null
+     * @return null|If_|Stmt[]
      */
     private function processGreaterOrEqualLeft(GreaterOrEqual $greaterOrEqual, If_ $if): null|If_|array
     {
@@ -221,9 +221,6 @@ CODE_SAMPLE
         return $if->stmts;
     }
 
-    /**
-     * @return null
-     */
     private function processGreaterOrEqualRight(GreaterOrEqual $greaterOrEqual, If_ $if): ?If_
     {
         $value = $greaterOrEqual->left;
