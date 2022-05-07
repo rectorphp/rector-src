@@ -22,23 +22,28 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'stderr');
 gc_disable();
 
-define('__RECTOR_RUNNING__', true);
-
-
-// Require Composer autoload.php
-$autoloadIncluder = new AutoloadIncluder();
-$autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
-
-
 if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) {
     require_once __DIR__ . '/../preload.php';
 }
 
 require_once __DIR__ . '/../src/constants.php';
 
-$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
+$autoloadIncluder = new AutoloadIncluder();
+
+// project autoload to be loaded first after preload and constants loaded
+// so projects PHPStan will be used instead of prefixed vendor PHPStan
 $autoloadIncluder->autoloadProjectAutoloaderFile();
+
+// include prefixed repository autoload
+$autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
+
+// include scoper autoload
+$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
+
+// include global autoload
 $autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
+
+// include autoload from command line
 $autoloadIncluder->autoloadFromCommandLine();
 
 $rectorConfigsResolver = new RectorConfigsResolver();
