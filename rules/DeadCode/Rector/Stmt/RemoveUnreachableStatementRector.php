@@ -81,7 +81,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param For_|Foreach_|Do_|While_|ClassMethod|Function_|Closure|If_|ElseIf_|Else_|Case_|TryCatch|Catch_|Finally_ $node
+     * @param ClassMethod|Function_|If_|Else_|ElseIf_|Do_|Foreach_|TryCatch|While_|For_|Closure|Finally_|Case_|Catch_ $node
      */
     public function refactor(Node $node): ?Node
     {
