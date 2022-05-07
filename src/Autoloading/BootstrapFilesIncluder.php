@@ -60,7 +60,7 @@ final class BootstrapFilesIncluder
 
         foreach (self::STUBS as $stub) {
             if (is_file(__DIR__ . '/../../stubs-rector/' . $stub)) {
-                require_once __DIR__ . '/../../stubs-rector/'. $stub;
+                require_once __DIR__ . '/../../stubs-rector/' . $stub;
             }
         }
     }
