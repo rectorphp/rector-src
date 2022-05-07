@@ -30,6 +30,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
+use Rector\CodeQuality\NodeTypeGroup;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -76,22 +77,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [
-            For_::class,
-            Foreach_::class,
-            Do_::class,
-            While_::class,
-            ClassMethod::class,
-            Function_::class,
-            Closure::class,
-            If_::class,
-            ElseIf_::class,
-            Else_::class,
-            Case_::class,
-            TryCatch::class,
-            Catch_::class,
-            Finally_::class,
-        ];
+        return NodeTypeGroup::STMTS_AWARE;
     }
 
     /**

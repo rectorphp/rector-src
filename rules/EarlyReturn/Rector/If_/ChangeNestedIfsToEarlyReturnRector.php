@@ -80,7 +80,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Function_|ClassMethod $node
+     * @param For_|Foreach_|Do_|While_|ClassMethod|Function_|Closure|If_|ElseIf_|Else_|Case_|TryCatch|Catch_|Finally_ $node
      */
     public function refactor(Node $node): ?Node
     {
