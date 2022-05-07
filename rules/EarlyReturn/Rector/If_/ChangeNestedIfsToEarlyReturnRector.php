@@ -7,6 +7,8 @@ namespace Rector\EarlyReturn\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\NodeManipulator\IfManipulator;
@@ -73,11 +75,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class];
+        return [Function_::class, ClassMethod::class];
     }
 
     /**
-     * @param If_ $node
+     * @param Function_|ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
