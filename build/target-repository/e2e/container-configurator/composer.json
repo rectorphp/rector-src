@@ -1,7 +1,7 @@
 {
     "autoload": {
         "psr-4": {
-            "App\\": "src"
+            "Rector\\e2e\\": "src"
         }
     }
 }

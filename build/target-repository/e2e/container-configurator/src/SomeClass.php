@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Rector\e2e;
 
 class SomeClass
 {
