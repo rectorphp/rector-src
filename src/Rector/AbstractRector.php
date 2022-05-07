@@ -204,22 +204,22 @@ CODE_SAMPLE;
 
         $node = $this->refactor($node);
 
-        // nothing to change → continue
-        if ($node === null) {
-            return null;
-        }
-
         if ($node === []) {
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        /** @var Node[]|Node $node */
-        $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
-
         /** @var Node $originalNode */
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
+
+        // nothing to change → continue
+        if ($node === null) {
+            return null;
+        }
+
+        /** @var Node[]|Node $node */
+        $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
         /** @var Node $originalNode */
         if (is_array($node)) {
