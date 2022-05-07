@@ -15,7 +15,7 @@ spl_autoload_register(function (string $class): void {
     if (strpos($class, 'RectorPrefix') === 0 || strpos($class, 'Rector\\') === 0) {
         if ($composerAutoloader === null) {
             // prefixed version autoload
-            $composerAutoloader = require __DIR__ . '/vendor/autoload.php';
+            $composerAutoloader = require_once __DIR__ . '/vendor/autoload.php';
         }
 
         // some weird collision with PHPStan custom rule tests
