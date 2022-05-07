@@ -34,12 +34,6 @@ $autoloadIncluder = new AutoloadIncluder();
 // so projects PHPStan will be used instead of prefixed vendor PHPStan
 $autoloadIncluder->autoloadProjectAutoloaderFile();
 
-// include prefixed repository autoload
-$autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
-
-// include scoper autoload
-$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
-
 // include global autoload
 $autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
 
