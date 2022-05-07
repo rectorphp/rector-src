@@ -28,8 +28,8 @@ if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) 
 require_once __DIR__ . '/../src/constants.php';
 
 $autoloadIncluder = new AutoloadIncluder();
-$autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 $autoloadIncluder->autoloadProjectAutoloaderFile();
+$autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 $autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
 $autoloadIncluder->autoloadFromCommandLine();
 
