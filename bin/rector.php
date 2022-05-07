@@ -79,6 +79,9 @@ final class AutoloadIncluder
 
         // in Rector develop repository
         $this->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/autoload.php');
+
+        // in Rector prefix repository, run directly without composer install
+        $this->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
     }
 
     /**
