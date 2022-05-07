@@ -83,19 +83,29 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // A. next node is return
-        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $nextNode instanceof Return_) {
+        $stmts = $node->stmts;
+        if ($stmts === null) {
             return null;
         }
 
-        $nestedIfsWithOnlyReturn = $this->ifManipulator->collectNestedIfsWithOnlyReturn($node);
-        if ($nestedIfsWithOnlyReturn === []) {
-            return null;
-        }
+        foreach ($stmts as $key => $stmt) {
+            $nextStmt = $stmts[$key + 1] ?? null;
+            if (! $nextStmt instanceof Return_) {
+                continue;
+            }
 
-        $this->processNestedIfsWithOnlyReturn($node, $nestedIfsWithOnlyReturn, $nextNode);
-        $this->removeNode($node);
+            if (! $stmt instanceof If_) {
+                continue;
+            }
+
+            $nestedIfsWithOnlyReturn = $this->ifManipulator->collectNestedIfsWithOnlyReturn($stmt);
+            if ($nestedIfsWithOnlyReturn === []) {
+                return null;
+            }
+
+            $this->processNestedIfsWithOnlyReturn($stmt, $nestedIfsWithOnlyReturn, $nextStmt);
+            $this->removeNode($stmt);
+        }
 
         return null;
     }
