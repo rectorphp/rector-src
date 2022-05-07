@@ -29,15 +29,8 @@ if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) 
 require_once __DIR__ . '/../src/constants.php';
 
 $autoloadIncluder = new AutoloadIncluder();
-
-// project autoload to be loaded first after preload and constants loaded
-// so projects PHPStan will be used instead of prefixed vendor PHPStan
 $autoloadIncluder->autoloadProjectAutoloaderFile();
-
-// include global autoload
 $autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
-
-// include autoload from command line
 $autoloadIncluder->autoloadFromCommandLine();
 
 $rectorConfigsResolver = new RectorConfigsResolver();
