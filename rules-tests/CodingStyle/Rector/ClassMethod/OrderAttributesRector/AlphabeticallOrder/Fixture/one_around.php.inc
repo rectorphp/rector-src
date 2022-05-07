@@ -14,7 +14,7 @@ class OneAround
 }
 
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\AlphabeticallOrder\Fixture;

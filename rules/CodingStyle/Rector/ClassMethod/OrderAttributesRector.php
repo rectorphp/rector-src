@@ -27,7 +27,7 @@ final class OrderAttributesRector extends AbstractRector implements Configurable
     public const ALPHABETICALLY = 'alphabetically';
 
     /**
-     * @var array<string, int>
+     * @var array<string, int>|array<string>
      */
     private array $configuration = [];
 
@@ -130,6 +130,10 @@ CODE_SAMPLE
         }
     }
 
+    /**
+     * @param array<AttributeGroup> $originalAttrGroups
+     * @return array<AttributeGroup>
+     */
     private function sortAlphabetically(array $originalAttrGroups): array
     {
         usort($originalAttrGroups, function (
@@ -138,11 +142,15 @@ CODE_SAMPLE
         ): int {
             $currentNamespace = $this->getName($firstAttributeGroup->attrs[0]->name);
             $nextNamespace = $this->getName($secondAttributeGroup->attrs[0]->name);
-            return strcmp($currentNamespace, $nextNamespace);
+            return $this->strcmp($currentNamespace, $nextNamespace);
         });
         return $originalAttrGroups;
     }
 
+    /**
+     * @param array<AttributeGroup> $originalAttrGroups
+     * @return array<AttributeGroup>
+     */
     private function sortBySpecificOrder(array $originalAttrGroups): array
     {
         usort($originalAttrGroups, function (
@@ -160,12 +168,20 @@ CODE_SAMPLE
     private function resolveAttributeGroupPosition(AttributeGroup $attributeGroup): int
     {
         $attrName = $this->getName($attributeGroup->attrs[0]->name);
-        return $this->configuration[$attrName] ?? count($this->configuration);
+        return (int)($this->configuration[$attrName] ?? count($this->configuration));
     }
 
+    /**
+     * @param array<string, int>|array<string> $configuration
+     */
     private function isAlphabetically(array $configuration): bool
     {
         return count($configuration) === 1 &&
             $configuration[0] === self::ALPHABETICALLY;
+    }
+
+    private function strcmp(string $string1, string $string2): int
+    {
+        return strcmp($string1, $string2);
     }
 }
