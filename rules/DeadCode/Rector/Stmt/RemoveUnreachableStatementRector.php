@@ -35,6 +35,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @changelog https://github.com/phpstan/phpstan/blob/83078fe308a383c618b8c1caec299e5765d9ac82/src/Node/UnreachableStatementNode.php
@@ -80,11 +81,10 @@ CODE_SAMPLE
         return NodeTypeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param ClassMethod|Function_|If_|Else_|ElseIf_|Do_|Foreach_|TryCatch|While_|For_|Closure|Finally_|Case_|Catch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
+        Assert::propertyExists($node, 'stmts');
+
         if ($node->stmts === null) {
             return null;
         }

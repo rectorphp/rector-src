@@ -29,6 +29,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\EarlyReturn\Rector\If_\ChangeNestedIfsToEarlyReturnRector\ChangeNestedIfsToEarlyReturnRectorTest
@@ -90,11 +91,10 @@ CODE_SAMPLE
         return NodeTypeGroup::STMTS_AWARE;
     }
 
-    /**
-     * @param ClassMethod|Function_|If_|Else_|ElseIf_|Do_|Foreach_|TryCatch|While_|For_|Closure|Finally_|Case_|Catch_ $node
-     */
     public function refactor(Node $node): ?Node
     {
+        Assert::propertyExists($node, 'stmts');
+
         $stmts = $node->stmts;
         if ($stmts === null) {
             return null;
