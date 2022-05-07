@@ -17,7 +17,7 @@ final class BootstrapFilesIncluder
      */
     private const STUBS = [
         __DIR__ . '/../../stubs-rector/PHPUnit/Framework/TestCase.php',
-        __DIR__ . '/../../stubs-rector/Internal/EnumInterfaces.php'
+        __DIR__ . '/../../stubs-rector/Internal/EnumInterfaces.php',
     ];
 
     public function __construct(
