@@ -16,9 +16,9 @@ final class BootstrapFilesIncluder
      * @var string[]
      */
     private const STUBS = [
-        'PHPUnit/Framework/TestCase.php',
         'Internal/EnumInterfaces.php',
         'Internal/NativeClasses.php',
+        'PHPUnit/Framework/TestCase.php',
     ];
 
     public function __construct(
