@@ -18,6 +18,7 @@ final class BootstrapFilesIncluder
     private const STUBS = [
         '/../../stubs-rector/PHPUnit/Framework/TestCase.php',
         '/../../stubs-rector/Internal/EnumInterfaces.php',
+        '/../../stubs-rector/Internal/NativeClasses.php',
     ];
 
     public function __construct(
