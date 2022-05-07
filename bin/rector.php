@@ -9,7 +9,6 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\RectorConsoleOutputStyleFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
-use Rector\Core\Kernel\RectorKernel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symplify\PackageBuilder\Reflection\PrivatesCaller;
