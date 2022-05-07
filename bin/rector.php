@@ -70,17 +70,6 @@ final class AutoloadIncluder
      */
     private $alreadyLoadedAutoloadFiles = [];
 
-    public function includeDependencyOrRepositoryVendorAutoloadIfExists(): void
-    {
-        // Rector's vendor is already loaded
-        if (class_exists(RectorKernel::class)) {
-            return;
-        }
-
-        // in Rector develop repository
-        $this->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/autoload.php');
-    }
-
     /**
      * In case Rector is installed as vendor dependency,
      * this autoloads the project vendor/autoload.php, including Rector
