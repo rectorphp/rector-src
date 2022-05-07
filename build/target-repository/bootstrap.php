@@ -22,13 +22,7 @@ spl_autoload_register(function (string $class): void {
         if (! is_int($composerAutoloader)) {
             $composerAutoloader->loadClass($class);
         }
-    }
 
-    // aliased by php-scoper, that's why its missing
-    if ($class === 'Symplify\SmartFileSystem\SmartFileInfo') {
-        $filePath = __DIR__ . '/vendor/symplify/smart-file-system/src/SmartFileInfo.php';
-        if (file_exists($filePath)) {
-            require $filePath;
-        }
+        require_once __DIR__ . '/vendor/scoper-autoload.php';
     }
 });
