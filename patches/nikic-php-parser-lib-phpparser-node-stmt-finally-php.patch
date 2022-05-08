@@ -1,0 +1,22 @@
+--- /dev/null
++++ ../lib/PhpParser/Node/Stmt/Finally_.php
+@@ -3,8 +3,9 @@
+ namespace PhpParser\Node\Stmt;
+ 
+ use PhpParser\Node;
++use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+ 
+-class Finally_ extends Node\Stmt
++class Finally_ extends Node\Stmt implements StmtsAwareInterface
+ {
+     /** @var Node\Stmt[] Statements */
+     public $stmts;
+@@ -23,7 +24,7 @@
+     public function getSubNodeNames() : array {
+         return ['stmts'];
+     }
+-    
++
+     public function getType() : string {
+         return 'Stmt_Finally';
+     }
