@@ -6,23 +6,16 @@ namespace Rector\Core\Autoloading;
 
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\FileSystem\FilesFinder;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Throwable;
 use Webmozart\Assert\Assert;
 
 final class BootstrapFilesIncluder
 {
-    /**
-     * @var string[]
-     */
-    private const STUBS = [
-        'Internal/EnumInterfaces.php',
-        'Internal/NativeClasses.php',
-        'PHPUnit/Framework/TestCase.php',
-    ];
-
     public function __construct(
-        private readonly ParameterProvider $parameterProvider
+        private readonly ParameterProvider $parameterProvider,
+        private readonly FilesFinder $filesFinder
     ) {
     }
 
@@ -63,9 +56,9 @@ final class BootstrapFilesIncluder
             return;
         }
 
-        $stubsRectorDirectory .= '/';
-        foreach (self::STUBS as $stub) {
-            require_once $stubsRectorDirectory . $stub;
+        $stubs = $this->filesFinder->findInDirectoriesAndFiles([$stubsRectorDirectory], ['php']);
+        foreach ($stubs as $stub) {
+            require_once (string) $stub;
         }
     }
 }
