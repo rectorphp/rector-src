@@ -66,50 +66,68 @@ CODE_SAMPLE
     /**
      * @param String_ $node
      */
-    public function refactor(Node $node): String_
+    public function refactor(Node $node): ?String_
     {
+        $hasChangedSingleQuoted = null;
+        $hasChangedDoubleQuoted = null;
         $doubleQuoteCount = substr_count($node->value, '"');
         $singleQuoteCount = substr_count($node->value, "'");
         $kind = $node->getAttribute(AttributeKey::KIND);
 
         if ($kind === String_::KIND_SINGLE_QUOTED) {
-            $this->processSingleQuoted($node, $doubleQuoteCount, $singleQuoteCount);
+            $hasChangedSingleQuoted = $this->processSingleQuoted($node, $doubleQuoteCount, $singleQuoteCount);
         }
 
         $quoteKind = $node->getAttribute(AttributeKey::KIND);
         if ($quoteKind === String_::KIND_DOUBLE_QUOTED) {
-            $this->processDoubleQuoted($node, $singleQuoteCount, $doubleQuoteCount);
+            $hasChangedDoubleQuoted = $this->processDoubleQuoted($node, $singleQuoteCount, $doubleQuoteCount);
         }
 
-        return $node;
+        if ($hasChangedSingleQuoted) {
+            return $node;
+        }
+
+        if ($hasChangedDoubleQuoted) {
+            return $node;
+        }
+
+        return null;
     }
 
-    private function processSingleQuoted(String_ $string, int $doubleQuoteCount, int $singleQuoteCount): void
+    private function processSingleQuoted(String_ $string, int $doubleQuoteCount, int $singleQuoteCount): bool
     {
         if ($doubleQuoteCount === 0 && $singleQuoteCount > 0) {
             // contains chars that will be newly escaped
             if ($this->isMatchEscapedChars($string->value)) {
-                return;
+                return false;
             }
 
             $string->setAttribute(AttributeKey::KIND, String_::KIND_DOUBLE_QUOTED);
             // invoke override
             $string->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+
+            return true;
         }
+
+        return false;
     }
 
-    private function processDoubleQuoted(String_ $string, int $singleQuoteCount, int $doubleQuoteCount): void
+    private function processDoubleQuoted(String_ $string, int $singleQuoteCount, int $doubleQuoteCount): bool
     {
         if ($singleQuoteCount === 0 && $doubleQuoteCount > 0) {
             // contains chars that will be newly escaped
             if ($this->isMatchEscapedChars($string->value)) {
-                return;
+                return false;
             }
 
             $string->setAttribute(AttributeKey::KIND, String_::KIND_SINGLE_QUOTED);
             // invoke override
             $string->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+
+            return true;
         }
+
+        return false;
     }
 
     private function isMatchEscapedChars(string $string): bool
