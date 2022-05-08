@@ -67,10 +67,6 @@ final class FilesystemTweaker
         $foundDirectories = [];
 
         foreach ((array) glob($directory, GLOB_ONLYDIR) as $foundDirectory) {
-            if (! is_string($foundDirectory)) {
-                continue;
-            }
-
             $foundDirectories[] = $foundDirectory;
         }
 
@@ -85,10 +81,6 @@ final class FilesystemTweaker
         $foundPaths = [];
 
         foreach ((array) glob($path) as $foundPath) {
-            if (! is_string($foundPath)) {
-                continue;
-            }
-
             if (! file_exists($foundPath)) {
                 continue;
             }
