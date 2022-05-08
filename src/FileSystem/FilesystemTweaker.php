@@ -42,7 +42,7 @@ final class FilesystemTweaker
      *
      * @param string[] $paths
      *
-     * @return string[]|bool[]
+     * @return string[]
      */
     public function resolveWithFnmatch(array $paths): array
     {
