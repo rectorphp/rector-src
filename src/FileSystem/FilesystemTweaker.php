@@ -42,7 +42,7 @@ final class FilesystemTweaker
      *
      * @param string[] $paths
      *
-     * @return string[]
+     * @return string[]|bool[]
      */
     public function resolveWithFnmatch(array $paths): array
     {
@@ -64,12 +64,8 @@ final class FilesystemTweaker
      */
     private function findDirectoriesInGlob(string $directory): array
     {
-        $foundDirectories = [];
-
-        foreach ((array) glob($directory, GLOB_ONLYDIR) as $foundDirectory) {
-            $foundDirectories[] = $foundDirectory;
-        }
-
+        /** @var string[] $foundDirectories */
+        $foundDirectories = (array) glob($directory, GLOB_ONLYDIR);
         return $foundDirectories;
     }
 
@@ -79,13 +75,15 @@ final class FilesystemTweaker
     private function foundInGlob(string $path): array
     {
         $foundPaths = [];
+        /** @var string[] $paths */
+        $paths = (array) glob($path);
 
-        foreach ((array) glob($path) as $foundPath) {
-            if (! file_exists($foundPath)) {
+        foreach ($paths as $path) {
+            if (! file_exists($path)) {
                 continue;
             }
 
-            $foundPaths[] = $foundPath;
+            $foundPaths[] = $path;
         }
 
         return $foundPaths;
