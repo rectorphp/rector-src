@@ -50,7 +50,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Expression $node
+     * @param Expression[] $node
      * @param Expression[]|null $node
      */
     public function refactor(Node $node): ?array
