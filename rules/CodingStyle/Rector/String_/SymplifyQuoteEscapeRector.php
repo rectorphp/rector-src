@@ -23,6 +23,8 @@ final class SymplifyQuoteEscapeRector extends AbstractRector
      */
     private const ESCAPED_CHAR_REGEX = '#\\\\|\$|\\n|\\t#sim';
 
+    private bool $hasChanged = false;
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -71,63 +73,53 @@ CODE_SAMPLE
         $doubleQuoteCount = substr_count($node->value, '"');
         $singleQuoteCount = substr_count($node->value, "'");
         $kind = $node->getAttribute(AttributeKey::KIND);
-        $hasChangedSingleQuoted = false;
-        $hasChangedDoubleQuoted = false;
 
         if ($kind === String_::KIND_SINGLE_QUOTED) {
-            $hasChangedSingleQuoted = $this->processSingleQuoted($node, $doubleQuoteCount, $singleQuoteCount);
+            $this->processSingleQuoted($node, $doubleQuoteCount, $singleQuoteCount);
         }
 
         $quoteKind = $node->getAttribute(AttributeKey::KIND);
         if ($quoteKind === String_::KIND_DOUBLE_QUOTED) {
-            $hasChangedDoubleQuoted = $this->processDoubleQuoted($node, $singleQuoteCount, $doubleQuoteCount);
+            $this->processDoubleQuoted($node, $singleQuoteCount, $doubleQuoteCount);
         }
 
-        if ($hasChangedSingleQuoted) {
-            return $node;
+        if (! $this->hasChanged) {
+            return null;
         }
 
-        if ($hasChangedDoubleQuoted) {
-            return $node;
-        }
-
-        return null;
+        return $node;
     }
 
-    private function processSingleQuoted(String_ $string, int $doubleQuoteCount, int $singleQuoteCount): bool
+    private function processSingleQuoted(String_ $string, int $doubleQuoteCount, int $singleQuoteCount): void
     {
         if ($doubleQuoteCount === 0 && $singleQuoteCount > 0) {
             // contains chars that will be newly escaped
             if ($this->isMatchEscapedChars($string->value)) {
-                return false;
+                return;
             }
 
             $string->setAttribute(AttributeKey::KIND, String_::KIND_DOUBLE_QUOTED);
             // invoke override
             $string->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
-            return true;
+            $this->hasChanged = true;
         }
-
-        return false;
     }
 
-    private function processDoubleQuoted(String_ $string, int $singleQuoteCount, int $doubleQuoteCount): bool
+    private function processDoubleQuoted(String_ $string, int $singleQuoteCount, int $doubleQuoteCount): void
     {
         if ($singleQuoteCount === 0 && $doubleQuoteCount > 0) {
             // contains chars that will be newly escaped
             if ($this->isMatchEscapedChars($string->value)) {
-                return false;
+                return;
             }
 
             $string->setAttribute(AttributeKey::KIND, String_::KIND_SINGLE_QUOTED);
             // invoke override
             $string->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
-            return true;
+            $this->hasChanged = true;
         }
-
-        return false;
     }
 
     private function isMatchEscapedChars(string $string): bool
