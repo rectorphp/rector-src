@@ -68,11 +68,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?String_
     {
-        $hasChangedSingleQuoted = null;
-        $hasChangedDoubleQuoted = null;
         $doubleQuoteCount = substr_count($node->value, '"');
         $singleQuoteCount = substr_count($node->value, "'");
         $kind = $node->getAttribute(AttributeKey::KIND);
+        $hasChangedSingleQuoted = false;
+        $hasChangedDoubleQuoted = false;
 
         if ($kind === String_::KIND_SINGLE_QUOTED) {
             $hasChangedSingleQuoted = $this->processSingleQuoted($node, $doubleQuoteCount, $singleQuoteCount);
