@@ -600,3 +600,18 @@ parameters:
         -
             message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
             path: src/Autoloading/BootstrapFilesIncluder.php # 54
+
+        -
+            message: '#PHPDoc tag @param for parameter \$node with type array<PhpParser\\Node\\Stmt\\Expression>\|null is incompatible with native type PhpParser\\Node#'
+            paths:
+                - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
+
+        -
+            message: '#Method Rector\\CodeQuality\\Rector\\FuncCall\\ChangeArrayPushToArrayAssignRector\:\:refactor\(\) return type has no value type specified in iterable type array#'
+            paths:
+                - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
+
+        -
+            message: '#Access to an undefined property PhpParser\\Node\:\:\$expr#'
+            paths:
+                - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
