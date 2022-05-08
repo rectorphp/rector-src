@@ -76,5 +76,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         TypeWithClassTypeSpecifierInterface::class,
         ParentNodeReadAnalyzerInterface::class,
         StmtsAwareInterface::class,
+        \Rector\CodeQuality\NodeTypeGroup::class,
     ]);
 };
