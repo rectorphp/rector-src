@@ -74,18 +74,9 @@ final class FilesystemTweaker
      */
     private function foundInGlob(string $path): array
     {
-        $foundPaths = [];
         /** @var string[] $paths */
         $paths = (array) glob($path);
 
-        foreach ($paths as $path) {
-            if (! file_exists($path)) {
-                continue;
-            }
-
-            $foundPaths[] = $path;
-        }
-
-        return $foundPaths;
+        return array_filter($paths, fn (string $path): bool => file_exists($path));
     }
 }
