@@ -58,7 +58,7 @@ final class BootstrapFilesIncluder
 
         $stubs = $this->filesFinder->findInDirectoriesAndFiles([$stubsRectorDirectory], ['php']);
         foreach ($stubs as $stub) {
-            require_once (string) $stub;
+            require_once $stub->getRealPath();
         }
     }
 }
