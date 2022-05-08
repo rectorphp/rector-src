@@ -6,6 +6,7 @@ namespace Rector\Naming\PropertyRenamer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\VarLikeIdentifier;
@@ -30,6 +31,7 @@ final class PropertyFetchRenamer
                     return null;
                 }
 
+                /** @var StaticPropertyFetch|PropertyFetch $node */
                 $node->name = $node instanceof PropertyFetch
                     ? new Identifier($expectedName)
                     : new VarLikeIdentifier($expectedName);
