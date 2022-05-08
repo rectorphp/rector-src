@@ -6,7 +6,6 @@ namespace Rector\Naming\PropertyRenamer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\VarLikeIdentifier;
