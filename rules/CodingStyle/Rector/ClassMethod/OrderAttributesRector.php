@@ -142,7 +142,7 @@ CODE_SAMPLE
         ): int {
             $currentNamespace = $this->getName($firstAttributeGroup->attrs[0]->name);
             $nextNamespace = $this->getName($secondAttributeGroup->attrs[0]->name);
-            return $this->strcmp($currentNamespace, $nextNamespace);
+            return strcmp($currentNamespace, $nextNamespace);
         });
         return $originalAttrGroups;
     }
@@ -178,10 +178,5 @@ CODE_SAMPLE
     {
         return count($configuration) === 1 &&
             $configuration[0] === self::ALPHABETICALLY;
-    }
-
-    private function strcmp(string $string1, string $string2): int
-    {
-        return strcmp($string1, $string2);
     }
 }
