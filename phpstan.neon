@@ -599,4 +599,4 @@ parameters:
         # stubs-rector directory exists on target-repository
         -
             message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
-            path: src/Autoloading/BootstrapFilesIncluder.php #61
+            path: src/Autoloading/BootstrapFilesIncluder.php # 54
