@@ -90,6 +90,8 @@ final class PromotedPropertyCandidateResolver
             }
 
             $assign = $stmt;
+
+            // promoted property must use non-static property only
             if (! $assign->var instanceof PropertyFetch) {
                 continue;
             }
