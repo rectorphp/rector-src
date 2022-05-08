@@ -58,10 +58,13 @@ final class BootstrapFilesIncluder
             }
         }
 
+        $stubsRectorDirectory = __DIR__ . '/../../stubs-rector/';
+        if (realpath($stubsRectorDirectory) === false) {
+            return;
+        }
+
         foreach (self::STUBS as $stub) {
-            if (is_file(__DIR__ . '/../../stubs-rector/' . $stub)) {
-                require_once __DIR__ . '/../../stubs-rector/' . $stub;
-            }
+            require_once $stubsRectorDirectory . $stub;
         }
     }
 }
