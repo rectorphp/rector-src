@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -43,6 +45,39 @@ final class ClosureArrowFunctionAnalyzer
         }
 
         return $return->expr;
+    }
+
+    public function matchArrowFunctionExprIfElse(Closure $closure): ?Expr
+    {
+        if (count($closure->stmts) !== 2) {
+            return null;
+        }
+
+        if (! $closure->stmts[0] instanceof If_) {
+            return null;
+        }
+
+        if ($closure->stmts[0]->stmts === []) {
+            return null;
+        }
+
+        if (! $closure->stmts[0]->stmts[0] instanceof Return_) {
+            return null;
+        }
+
+        if (! $closure->stmts[0]->stmts[0]->expr instanceof Expr) {
+            return null;
+        }
+
+        if (! $closure->stmts[1] instanceof Return_) {
+            return null;
+        }
+
+        if (! $closure->stmts[1]->expr instanceof Expr) {
+            return null;
+        }
+
+        return new Ternary($closure->stmts[0]->cond, $closure->stmts[0]->stmts[0]->expr, $closure->stmts[1]->expr);
     }
 
     private function shouldSkipForUsedReferencedValue(Closure $closure): bool

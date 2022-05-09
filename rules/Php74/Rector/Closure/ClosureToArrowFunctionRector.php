@@ -72,6 +72,10 @@ CODE_SAMPLE
     {
         $returnExpr = $this->closureArrowFunctionAnalyzer->matchArrowFunctionExpr($node);
         if (! $returnExpr instanceof Expr) {
+            $returnExpr = $this->closureArrowFunctionAnalyzer->matchArrowFunctionExprIfElse($node);
+        }
+
+        if (! $returnExpr instanceof Expr) {
             return null;
         }
 
