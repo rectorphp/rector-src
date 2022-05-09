@@ -195,7 +195,7 @@ final class FamilyRelationsAnalyzer
             $classMethod->stmts,
             fn (Node $node): bool => $node instanceof Assign && ($kindPropertyFetch === $node->var::class && $this->nodeNameResolver->isName(
                 $node->var,
-            $propertyName
+                $propertyName
             ))
         );
     }

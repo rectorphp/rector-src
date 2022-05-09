@@ -27,7 +27,10 @@ final class ParamAnalyzer
     {
         return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
             $classMethod,
-            fn (Node $node): bool => $node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $param->var)
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeComparator->areNodesEqual(
+                $node,
+                $param->var
+            )
         );
     }
 

@@ -165,7 +165,10 @@ final class RegexPatternArgumentManipulator
 
         return $this->betterNodeFinder->find(
             [$classMethod],
-            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual($node->var, $variable)
+            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
+                $node->var,
+                $variable
+            )
         );
     }
 
