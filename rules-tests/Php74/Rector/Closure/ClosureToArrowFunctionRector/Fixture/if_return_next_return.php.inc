@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
 
-class IfElseReturn
+class IfReturnNextReturn
 {
     public function run($meetups)
     {
@@ -22,7 +22,7 @@ class IfElseReturn
 
 namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
 
-class IfElseReturn
+class IfReturnNextReturn
 {
     public function run($meetups)
     {

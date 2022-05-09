@@ -47,7 +47,7 @@ final class ClosureArrowFunctionAnalyzer
         return $return->expr;
     }
 
-    public function matchArrowFunctionExprIfElse(Closure $closure): ?Expr
+    public function matchArrowFunctionExprIfReturnNextReturn(Closure $closure): ?Expr
     {
         if (count($closure->stmts) !== 2) {
             return null;
