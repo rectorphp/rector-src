@@ -6,6 +6,7 @@ namespace Rector\Php74\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\Ternary;
@@ -47,7 +48,7 @@ final class ClosureArrowFunctionAnalyzer
         return $return->expr;
     }
 
-    public function matchArrowFunctionExprIfElse(Closure $closure): ?Expr
+    public function matchArrowFunctionExprIfReturnNextReturn(Closure $closure): ?Expr
     {
         if (count($closure->stmts) !== 2) {
             return null;
@@ -74,6 +75,14 @@ final class ClosureArrowFunctionAnalyzer
         }
 
         if (! $closure->stmts[1]->expr instanceof Expr) {
+            return null;
+        }
+
+        if ($closure->stmts[0]->stmts[0]->expr instanceof BinaryOp) {
+            return null;
+        }
+
+        if ($closure->stmts[1]->expr instanceof BinaryOp) {
             return null;
         }
 
