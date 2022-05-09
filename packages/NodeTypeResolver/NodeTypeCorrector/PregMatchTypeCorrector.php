@@ -88,12 +88,9 @@ final class PregMatchTypeCorrector
             return [];
         }
 
-        return $this->betterNodeFinder->find((array) $scope->stmts, function (Node $node) use ($variable): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $node->name === $variable->name;
-        });
+        return $this->betterNodeFinder->find(
+            (array) $scope->stmts,
+            fn (Node $node): bool => $node instanceof Variable && $node->name === $variable->name
+        );
     }
 }

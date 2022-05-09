@@ -43,13 +43,14 @@ final class VariadicAnalyzer
                 return false;
             }
 
-            return (bool) $this->betterNodeFinder->findFirst($function->stmts, function (Node $node): bool {
-                if (! $node instanceof FuncCall) {
-                    return false;
-                }
-
-                return $this->nodeNameResolver->isNames($node, ['func_get_args', 'func_num_args', 'func_get_arg']);
-            });
+            return (bool) $this->betterNodeFinder->findFirst(
+                $function->stmts,
+                fn (Node $node): bool => $node instanceof FuncCall && $this->nodeNameResolver->isNames($node, [
+                    'func_get_args',
+                    'func_num_args',
+                    'func_get_arg',
+                ])
+            );
         }
 
         return false;

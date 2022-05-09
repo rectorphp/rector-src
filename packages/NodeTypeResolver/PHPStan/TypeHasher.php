@@ -96,13 +96,9 @@ final class TypeHasher
         // change alias to non-alias
         $normalizedUnionType = TypeTraverser::map(
             $normalizedUnionType,
-            function (Type $type, callable $callable): Type {
-                if (! $type instanceof AliasedObjectType && ! $type instanceof ShortenedObjectType) {
-                    return $callable($type);
-                }
-
-                return new FullyQualifiedObjectType($type->getFullyQualifiedName());
-            }
+            fn (Type $type, callable $callable): Type => ! $type instanceof AliasedObjectType && ! $type instanceof ShortenedObjectType ? $callable($type) : new FullyQualifiedObjectType(
+                $type->getFullyQualifiedName()
+            )
         );
 
         return $normalizedUnionType->describe(VerbosityLevel::precise());

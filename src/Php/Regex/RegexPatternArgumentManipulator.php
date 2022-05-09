@@ -163,13 +163,10 @@ final class RegexPatternArgumentManipulator
             return [];
         }
 
-        return $this->betterNodeFinder->find([$classMethod], function (Node $node) use ($variable): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->var, $variable);
-        });
+        return $this->betterNodeFinder->find(
+            [$classMethod],
+            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual($node->var, $variable)
+        );
     }
 
     /**

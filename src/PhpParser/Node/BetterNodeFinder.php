@@ -260,13 +260,10 @@ final class BetterNodeFinder
      */
     public function findPreviousAssignToExpr(Expr $expr): ?Node
     {
-        return $this->findFirstPrevious($expr, function (Node $node) use ($expr): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->var, $expr);
-        });
+        return $this->findFirstPrevious(
+            $expr,
+            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual($node->var, $expr)
+        );
     }
 
     /**

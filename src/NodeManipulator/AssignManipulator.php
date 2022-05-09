@@ -117,12 +117,11 @@ final class AssignManipulator
      */
     public function resolveAssignsToLocalPropertyFetches(FunctionLike $functionLike): array
     {
-        return $this->betterNodeFinder->find((array) $functionLike->getStmts(), function (Node $node): bool {
-            if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($node)) {
-                return false;
-            }
-
-            return $this->isLeftPartOfAssign($node);
-        });
+        return $this->betterNodeFinder->find(
+            (array) $functionLike->getStmts(),
+            fn (Node $node): bool => $this->propertyFetchAnalyzer->isLocalPropertyFetch(
+                $node
+            ) && $this->isLeftPartOfAssign($node)
+        );
     }
 }

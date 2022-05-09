@@ -142,13 +142,10 @@ final class ClassMethodReturnTypeOverrideGuard
 
     private function hasClassMethodExprReturn(ClassMethod $classMethod): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node): bool {
-            if (! $node instanceof Return_) {
-                return false;
-            }
-
-            return $node->expr instanceof Expr;
-        });
+        return (bool) $this->betterNodeFinder->findFirst(
+            (array) $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr
+        );
     }
 
     private function isFirstArrayTypeMoreAdvanced(Type $oldType, Type $newType): bool

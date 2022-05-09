@@ -191,18 +191,12 @@ final class FamilyRelationsAnalyzer
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($classMethod->stmts, function (Node $node) use (
-            $propertyName,
-            $kindPropertyFetch
-        ): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            return $kindPropertyFetch === $node->var::class && $this->nodeNameResolver->isName(
+        return (bool) $this->betterNodeFinder->findFirst(
+            $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof Assign && ($kindPropertyFetch === $node->var::class && $this->nodeNameResolver->isName(
                 $node->var,
-                $propertyName
-            );
-        });
+            $propertyName
+            ))
+        );
     }
 }

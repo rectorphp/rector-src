@@ -25,15 +25,10 @@ final class ParamAnalyzer
 
     public function isParamUsedInClassMethod(ClassMethod $classMethod, Param $param): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($classMethod, function (Node $node) use (
-            $param
-        ): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node, $param->var);
-        });
+        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $classMethod,
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $param->var)
+        );
     }
 
     /**

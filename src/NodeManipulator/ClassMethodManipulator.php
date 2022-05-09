@@ -45,13 +45,10 @@ final class ClassMethodManipulator
         }
 
         /** @var FuncCall[] $compactFuncCalls */
-        $compactFuncCalls = $this->betterNodeFinder->find((array) $classMethod->stmts, function (Node $node): bool {
-            if (! $node instanceof FuncCall) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node, 'compact');
-        });
+        $compactFuncCalls = $this->betterNodeFinder->find(
+            (array) $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof FuncCall && $this->nodeNameResolver->isName($node, 'compact')
+        );
 
         $arguments = $this->funcCallManipulator->extractArgumentsFromCompactFuncCalls($compactFuncCalls);
 

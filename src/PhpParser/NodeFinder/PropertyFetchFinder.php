@@ -107,17 +107,14 @@ final class PropertyFetchFinder
         $propertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, PropertyFetch::class);
 
         /** @var PropertyFetch[] $matchingPropertyFetches */
-        $matchingPropertyFetches = array_filter($propertyFetches, function (PropertyFetch $propertyFetch) use (
-            $propertyName,
-            $class,
-            $hasTrait
-        ): bool {
-            if ($this->isInAnonymous($propertyFetch, $class, $hasTrait)) {
-                return false;
-            }
-
-            return $this->isNamePropertyNameEquals($propertyFetch, $propertyName, $class);
-        });
+        $matchingPropertyFetches = array_filter(
+            $propertyFetches,
+            fn (PropertyFetch $propertyFetch): bool => $this->isInAnonymous(
+                $propertyFetch,
+                $class,
+                $hasTrait
+            ) ? false : $this->isNamePropertyNameEquals($propertyFetch, $propertyName, $class)
+        );
 
         /** @var StaticPropertyFetch[] $staticPropertyFetches */
         $staticPropertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, StaticPropertyFetch::class);

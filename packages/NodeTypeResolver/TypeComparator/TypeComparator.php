@@ -283,13 +283,10 @@ final class TypeComparator
 
     private function normalizeConstantBooleanType(Type $type): Type
     {
-        return TypeTraverser::map($type, function (Type $type, callable $callable): Type {
-            if ($type instanceof ConstantBooleanType) {
-                return new BooleanType();
-            }
-
-            return $callable($type);
-        });
+        return TypeTraverser::map(
+            $type,
+            fn (Type $type, callable $callable): Type => $type instanceof ConstantBooleanType ? new BooleanType() : $callable($type)
+        );
     }
 
     private function isTypeSelfAndDocParamTypeStatic(
