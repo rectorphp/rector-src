@@ -6,12 +6,12 @@ namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use PHPStan\Analyser\Scope;
-use Rector\Core\Rector\AbstractScopeAwareRector;
 
 /**
  * This service verify if the Node already rectified with same Rector rule before current Rector rule with condition
