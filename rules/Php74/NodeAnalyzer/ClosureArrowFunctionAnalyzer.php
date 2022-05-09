@@ -78,6 +78,10 @@ final class ClosureArrowFunctionAnalyzer
             return null;
         }
 
+        if ($closure->stmts[0]->cond instanceof BinaryOp) {
+            return null;
+        }
+
         if ($closure->stmts[0]->stmts[0]->expr instanceof BinaryOp) {
             return null;
         }
