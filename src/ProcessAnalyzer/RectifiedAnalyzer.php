@@ -10,6 +10,8 @@ use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use PHPStan\Analyser\Scope;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 
 /**
  * This service verify if the Node already rectified with same Rector rule before current Rector rule with condition
@@ -60,8 +62,15 @@ final class RectifiedAnalyzer
         }
 
         $startTokenPos = $node->getStartTokenPos();
-        $endTokenPos = $node->getEndTokenPos();
+        if ($startTokenPos >= 0) {
+            return false;
+        }
 
-        return $startTokenPos < 0 || $endTokenPos < 0;
+        if (! $rector instanceof AbstractScopeAwareRector) {
+            return true;
+        }
+
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        return $scope instanceof Scope;
     }
 }
