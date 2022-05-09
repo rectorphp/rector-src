@@ -122,36 +122,30 @@ return [
         },
 
         // unprefixed ContainerConfigurator
-        fn (string $filePath, string $prefix, string $content): string => // keep vendor prefixed the prefixed file loading; not part of public API
-// except @see https://github.com/symfony/symfony/commit/460b46f7302ec7319b8334a43809523363bfef39#diff-1cd56b329433fc34d950d6eeab9600752aa84a76cbe0693d3fab57fed0f547d3R110
-str_contains($filePath, 'vendor/symfony') && ! str_ends_with(
-    $filePath,
-    'vendor/symfony/dependency-injection/Loader/PhpFileLoader.php'
-) ? $content : Strings::replace(
-            $content,
-            '#' . $prefix . '\\\\Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\Configurator\\\\ContainerConfigurator#',
-            'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'
-        ),
+        fn (string $filePath, string $prefix, string $content): string =>
+        // keep vendor prefixed the prefixed file loading; not part of public API
+        // except @see https://github.com/symfony/symfony/commit/460b46f7302ec7319b8334a43809523363bfef39#diff-1cd56b329433fc34d950d6eeab9600752aa84a76cbe0693d3fab57fed0f547d3R110
+        str_contains($filePath, 'vendor/symfony') && ! str_ends_with(
+            $filePath,
+            'vendor/symfony/dependency-injection/Loader/PhpFileLoader.php'
+        ) ? $content
+          : Strings::replace(
+              $content,
+              '#' . $prefix . '\\\\Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\Configurator\\\\ContainerConfigurator#',
+              'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'
+          ),
 
         // get version for prefixed version
         fn (string $filePath, string $prefix, string $content): string => \str_ends_with(
             $filePath,
             'src/Configuration/Configuration.php'
-        ) ? Strings::replace(
-            $content,
-            '#\(\'rector\/rector-src\'\)#',
-            "('rector/rector')"
-        ) : $content,
+        ) ? Strings::replace($content, '#\(\'rector\/rector-src\'\)#', "('rector/rector')") : $content,
 
         // un-prefix composer plugin
         fn (string $filePath, string $prefix, string $content): string => \str_ends_with(
             $filePath,
             'vendor/rector/extension-installer/src/Plugin.php'
-        ) ? Strings::replace(
-            $content,
-            '#' . $prefix . '\\\\Composer\\\\#',
-            'Composer\\'
-        ) : $content,
+        ) ? Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\#', 'Composer\\') : $content,
 
         // fixes https://github.com/rectorphp/rector/issues/6007
         function (string $filePath, string $prefix, string $content): string {
@@ -217,11 +211,7 @@ str_contains($filePath, 'vendor/symfony') && ! str_ends_with(
         fn (string $filePath, string $prefix, string $content): string => Strings::match(
             $filePath,
             POLYFILL_FILE_NAME_REGEX
-        ) ? Strings::replace(
-            $content,
-            '#namespace ' . $prefix . ';#',
-            ''
-        ) : $content,
+        ) ? Strings::replace($content, '#namespace ' . $prefix . ';#', '') : $content,
 
         // remove namespace from polyfill stubs
         function (string $filePath, string $prefix, string $content): string {
