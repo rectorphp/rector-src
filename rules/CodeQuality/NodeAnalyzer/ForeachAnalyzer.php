@@ -107,7 +107,10 @@ final class ForeachAnalyzer
     {
         $isUsedInStmts = (bool) $this->betterNodeFinder->findFirst(
             $foreach->stmts,
-            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $singularValueVarName)
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName(
+                $node,
+                $singularValueVarName
+            )
         );
 
         if ($isUsedInStmts) {
@@ -116,7 +119,10 @@ final class ForeachAnalyzer
 
         return (bool) $this->betterNodeFinder->findFirstNext(
             $foreach,
-            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $singularValueVarName)
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName(
+                $node,
+                $singularValueVarName
+            )
         );
     }
 }

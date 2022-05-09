@@ -142,7 +142,10 @@ final class ForAnalyzer
     {
         return (bool) $this->betterNodeFinder->findFirstNext(
             $for,
-            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $iteratedVariableSingle)
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName(
+                $node,
+                $iteratedVariableSingle
+            )
         );
     }
 

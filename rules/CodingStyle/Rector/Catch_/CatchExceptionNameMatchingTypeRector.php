@@ -193,7 +193,10 @@ CODE_SAMPLE
         /** @var Variable[] $variables */
         $variables = $this->betterNodeFinder->find(
             $nextNode,
-            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $oldVariableName)
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName(
+                $node,
+                $oldVariableName
+            )
         );
 
         $processRenameVariables = $this->processRenameVariable($variables, $oldVariableName, $newVariableName);

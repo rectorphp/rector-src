@@ -44,7 +44,10 @@ final class RegexFuncAnalyzer
         /** @var Assign|null $assignExprVariable */
         $assignExprVariable = $this->betterNodeFinder->findFirstPrevious(
             $funcCall,
-            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual($node->var, $variable)
+            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
+                $node->var,
+                $variable
+            )
         );
 
         if (! $assignExprVariable instanceof Assign) {

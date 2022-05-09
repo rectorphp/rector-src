@@ -139,7 +139,10 @@ CODE_SAMPLE
     {
         return $this->betterNodeFinder->find(
             (array) $functionLike->stmts,
-            fn (Node $node): bool => $node instanceof Foreach_ && $this->nodeComparator->areNodesEqual($node->expr, $assignedExpr)
+            fn (Node $node): bool => $node instanceof Foreach_ && $this->nodeComparator->areNodesEqual(
+                $node->expr,
+                $assignedExpr
+            )
         );
     }
 

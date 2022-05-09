@@ -143,7 +143,10 @@ CODE_SAMPLE
 
         return (bool) $this->betterNodeFinder->findFirstPrevious(
             $node,
-            fn (Node $subNode): bool => $subNode instanceof FuncCall && $this->nodeNameResolver->isName($subNode, 'extract')
+            fn (Node $subNode): bool => $subNode instanceof FuncCall && $this->nodeNameResolver->isName(
+                $subNode,
+                'extract'
+            )
         );
     }
 
