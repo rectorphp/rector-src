@@ -49,7 +49,10 @@ final class NodeUsageFinder
 
     public function findPreviousForeachNodeUsage(Foreach_ $foreach, Expr $expr): ?Node
     {
-        return $this->scopeAwareNodeFinder->findParent($foreach, fn (Node $node): bool => // skip itself
-$node === $expr ? false : $this->nodeComparator->areNodesEqual($node, $expr), [Foreach_::class]);
+        return $this->scopeAwareNodeFinder->findParent($foreach, fn (Node $node): bool =>
+            // skip itself
+            $node === $expr
+                ? false
+                : $this->nodeComparator->areNodesEqual($node, $expr), [Foreach_::class]);
     }
 }
