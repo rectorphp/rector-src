@@ -105,28 +105,18 @@ final class ForeachAnalyzer
 
     public function isValueVarUsed(Foreach_ $foreach, string $singularValueVarName): bool
     {
-        $isUsedInStmts = (bool) $this->betterNodeFinder->findFirst($foreach->stmts, function (Node $node) use (
-            $singularValueVarName
-        ): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node, $singularValueVarName);
-        });
+        $isUsedInStmts = (bool) $this->betterNodeFinder->findFirst(
+            $foreach->stmts,
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $singularValueVarName)
+        );
 
         if ($isUsedInStmts) {
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstNext($foreach, function (Node $node) use (
-            $singularValueVarName
-        ): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node, $singularValueVarName);
-        });
+        return (bool) $this->betterNodeFinder->findFirstNext(
+            $foreach,
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $singularValueVarName)
+        );
     }
 }

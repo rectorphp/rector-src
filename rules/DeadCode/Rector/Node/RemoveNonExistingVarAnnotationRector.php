@@ -141,13 +141,10 @@ CODE_SAMPLE
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstPrevious($node, function (Node $subNode): bool {
-            if (! $subNode instanceof FuncCall) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($subNode, 'extract');
-        });
+        return (bool) $this->betterNodeFinder->findFirstPrevious(
+            $node,
+            fn (Node $subNode): bool => $subNode instanceof FuncCall && $this->nodeNameResolver->isName($subNode, 'extract')
+        );
     }
 
     private function shouldSkip(Node $node): bool
@@ -165,12 +162,9 @@ CODE_SAMPLE
 
     private function hasVariableName(Node $node, string $variableName): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($node, function (Node $node) use ($variableName): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $this->isName($node, $variableName);
-        });
+        return (bool) $this->betterNodeFinder->findFirst(
+            $node,
+            fn (Node $node): bool => $node instanceof Variable && $this->isName($node, $variableName)
+        );
     }
 }

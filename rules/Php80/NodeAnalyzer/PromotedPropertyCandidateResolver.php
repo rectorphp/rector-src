@@ -130,15 +130,10 @@ final class PromotedPropertyCandidateResolver
         foreach ($classMethod->params as $param) {
             $paramName = $this->nodeNameResolver->getName($param);
 
-            $firstParamVariable = $this->betterNodeFinder->findFirst((array) $classMethod->stmts, function (Node $node) use (
-                $paramName
-            ): bool {
-                if (! $node instanceof Variable) {
-                    return false;
-                }
-
-                return $this->nodeNameResolver->isName($node, $paramName);
-            });
+            $firstParamVariable = $this->betterNodeFinder->findFirst(
+                (array) $classMethod->stmts,
+                fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $paramName)
+            );
 
             if (! $firstParamVariable instanceof Node) {
                 continue;

@@ -124,13 +124,10 @@ CODE_SAMPLE
 
     private function getVariableAssign(Identical $identical, Expr $expr): ?Node
     {
-        return $this->betterNodeFinder->findFirstPrevious($identical, function (Node $node) use ($expr): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->var, $expr);
-        });
+        return $this->betterNodeFinder->findFirstPrevious(
+            $identical,
+            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual($node->var, $expr)
+        );
     }
 
     /**

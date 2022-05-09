@@ -107,13 +107,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->shouldIncrement = (bool) $this->betterNodeFinder->findFirstNext($node, function (Node $subNode): bool {
-            if (! $subNode instanceof Array_) {
-                return false;
-            }
-
-            return $this->shouldRefactor($subNode);
-        });
+        $this->shouldIncrement = (bool) $this->betterNodeFinder->findFirstNext(
+            $node,
+            fn (Node $subNode): bool => $subNode instanceof Array_ && $this->shouldRefactor($subNode)
+        );
 
         return $this->refactorNode($node);
     }

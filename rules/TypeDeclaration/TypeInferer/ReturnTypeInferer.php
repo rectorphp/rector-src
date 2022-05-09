@@ -161,13 +161,7 @@ final class ReturnTypeInferer
         if ($resolvedType instanceof VoidType) {
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $functionLike,
-                function (Node $subNode): bool {
-                    if (! $subNode instanceof Return_) {
-                        return false;
-                    }
-
-                    return $subNode->expr instanceof Expr;
-                }
+                fn (Node $subNode): bool => $subNode instanceof Return_ && $subNode->expr instanceof Expr
             );
 
             if ($hasReturnValue) {

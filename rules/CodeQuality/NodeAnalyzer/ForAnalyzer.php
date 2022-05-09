@@ -140,15 +140,10 @@ final class ForAnalyzer
 
     public function isValueVarUsedNext(For_ $for, string $iteratedVariableSingle): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstNext($for, function (Node $node) use (
-            $iteratedVariableSingle
-        ): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node, $iteratedVariableSingle);
-        });
+        return (bool) $this->betterNodeFinder->findFirstNext(
+            $for,
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $iteratedVariableSingle)
+        );
     }
 
     /**

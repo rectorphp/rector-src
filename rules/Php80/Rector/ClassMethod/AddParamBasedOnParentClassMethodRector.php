@@ -191,13 +191,10 @@ CODE_SAMPLE
 
             $isUsedInStmts = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $node,
-                function (Node $subNode) use ($parentClassMethodParam): bool {
-                    if (! $subNode instanceof Variable) {
-                        return false;
-                    }
-
-                    return $this->nodeComparator->areNodesEqual($subNode, $parentClassMethodParam->var);
-                }
+                fn (Node $subNode): bool => $subNode instanceof Variable && $this->nodeComparator->areNodesEqual(
+                    $subNode,
+                    $parentClassMethodParam->var
+                )
             );
 
             if ($isUsedInStmts) {

@@ -118,14 +118,9 @@ CODE_SAMPLE
      */
     private function isArray(string $undefinedVariable, array $stmts): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($stmts, function (Node $node) use (
-            $undefinedVariable
-        ): bool {
-            if (! $node instanceof ArrayDimFetch) {
-                return false;
-            }
-
-            return $this->isName($node->var, $undefinedVariable);
-        });
+        return (bool) $this->betterNodeFinder->findFirst(
+            $stmts,
+            fn (Node $node): bool => $node instanceof ArrayDimFetch && $this->isName($node->var, $undefinedVariable)
+        );
     }
 }

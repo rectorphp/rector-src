@@ -122,15 +122,10 @@ final class BreakingVariableRenameGuard
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->find((array) $classMethod->stmts, function (Node $node) use (
-            $expectedName
-        ): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node, $expectedName);
-        });
+        return (bool) $this->betterNodeFinder->find(
+            (array) $classMethod->stmts,
+            fn (Node $node): bool => $node instanceof Variable && $this->nodeNameResolver->isName($node, $expectedName)
+        );
     }
 
     private function isVariableAlreadyDefined(Variable $variable, string $currentVariableName): bool

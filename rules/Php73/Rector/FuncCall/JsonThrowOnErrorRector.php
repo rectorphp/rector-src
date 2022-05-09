@@ -101,13 +101,13 @@ CODE_SAMPLE
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstNext($funcCall, function (Node $node): bool {
-            if (! $node instanceof FuncCall) {
-                return false;
-            }
-
-            return $this->isNames($node, ['json_last_error', 'json_last_error_msg']);
-        });
+        return (bool) $this->betterNodeFinder->findFirstNext(
+            $funcCall,
+            fn (Node $node): bool => $node instanceof FuncCall && $this->isNames($node, [
+                'json_last_error',
+                'json_last_error_msg',
+            ])
+        );
     }
 
     private function processJsonEncode(FuncCall $funcCall): ?FuncCall

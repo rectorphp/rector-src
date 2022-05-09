@@ -137,15 +137,10 @@ CODE_SAMPLE
      */
     private function findForeachesOverTokenVariable(ClassMethod | Function_ $functionLike, Expr $assignedExpr): array
     {
-        return $this->betterNodeFinder->find((array) $functionLike->stmts, function (Node $node) use (
-            $assignedExpr
-        ): bool {
-            if (! $node instanceof Foreach_) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->expr, $assignedExpr);
-        });
+        return $this->betterNodeFinder->find(
+            (array) $functionLike->stmts,
+            fn (Node $node): bool => $node instanceof Foreach_ && $this->nodeComparator->areNodesEqual($node->expr, $assignedExpr)
+        );
     }
 
     private function refactorTokenInForeach(Foreach_ $tokensForeach): void
