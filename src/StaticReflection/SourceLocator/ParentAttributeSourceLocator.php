@@ -47,8 +47,8 @@ final class ParentAttributeSourceLocator implements SourceLocator
             $identifierName
         )) {
             $classReflection = $this->reflectionProvider->getClass($identifierName);
-            $class = $this->astResolver->resolveClassFromClassReflection($classReflection);
 
+            $class = $this->astResolver->resolveClassFromClassReflection($classReflection);
             if ($class === null) {
                 return null;
             }
