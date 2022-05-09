@@ -140,24 +140,24 @@ return [
         },
 
         // get version for prefixed version
-        function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with($filePath, 'src/Configuration/Configuration.php')) {
-                return $content;
-            }
-
-            // @see https://regex101.com/r/gLefQk/1
-            return Strings::replace($content, '#\(\'rector\/rector-src\'\)#', "('rector/rector')");
-        },
+        fn (string $filePath, string $prefix, string $content): string => \str_ends_with(
+            $filePath,
+            'src/Configuration/Configuration.php'
+        ) ? Strings::replace(
+            $content,
+            '#\(\'rector\/rector-src\'\)#',
+            "('rector/rector')"
+        ) : $content,
 
         // un-prefix composer plugin
-        function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with($filePath, 'vendor/rector/extension-installer/src/Plugin.php')) {
-                return $content;
-            }
-
-            // see https://regex101.com/r/v8zRMm/1
-            return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\#', 'Composer\\');
-        },
+        fn (string $filePath, string $prefix, string $content): string => \str_ends_with(
+            $filePath,
+            'vendor/rector/extension-installer/src/Plugin.php'
+        ) ? Strings::replace(
+            $content,
+            '#' . $prefix . '\\\\Composer\\\\#',
+            'Composer\\'
+        ) : $content,
 
         // fixes https://github.com/rectorphp/rector/issues/6007
         function (string $filePath, string $prefix, string $content): string {
@@ -220,13 +220,14 @@ return [
 
         // unprefix polyfill functions
         // @see https://github.com/humbug/php-scoper/issues/440#issuecomment-795160132
-        function (string $filePath, string $prefix, string $content): string {
-            if (! Strings::match($filePath, POLYFILL_FILE_NAME_REGEX)) {
-                return $content;
-            }
-
-            return Strings::replace($content, '#namespace ' . $prefix . ';#', '');
-        },
+        fn (string $filePath, string $prefix, string $content): string => Strings::match(
+            $filePath,
+            POLYFILL_FILE_NAME_REGEX
+        ) ? Strings::replace(
+            $content,
+            '#namespace ' . $prefix . ';#',
+            ''
+        ) : $content,
 
         // remove namespace from polyfill stubs
         function (string $filePath, string $prefix, string $content): string {
