@@ -248,8 +248,6 @@ CODE_SAMPLE;
         // names do not have scope in PHPStan
         if (! $node instanceof Name) {
             if ($currentScope === null) {
-                print_node($originalNode);
-
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
                 $errorMessage = sprintf(
                     'Node "%s" with parent of "%s" is missing scope required for scope refresh.',

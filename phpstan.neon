@@ -670,4 +670,10 @@ parameters:
             message: '#Use separate function calls with readable variable names#'
 
         - '#Cognitive complexity for "Rector\\Core\\Rector\\AbstractRector\:\:enterNode\(\)" is 15, keep it under 10#'
+<<<<<<< HEAD
 >>>>>>> cache old to new types
+=======
+
+        # false positive by php-parser, the args can be null
+        - '#Parameter \#2 \$args of class PhpParser\\Node\\Expr\\FuncCall constructor expects array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder>, array<int, PhpParser\\Node\\Arg\|null> given#'
+>>>>>>> skip parent
