@@ -245,19 +245,35 @@ CODE_SAMPLE;
 
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
 
+        $requiresScopeRefresh = true;
+
         // names do not have scope in PHPStan
         if (! $node instanceof Name) {
             if ($currentScope === null) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-                $errorMessage = sprintf(
-                    'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                    $node::class,
-                    $parent instanceof \PhpParser\Node ? $parent::class : null
-                );
-                throw new ShouldNotHappenException($errorMessage);
+
+                // in case of unreachable stmts, no other node will have available scope
+                if ($parent instanceof Stmt) {
+                    if ($parent->getAttribute(AttributeKey::IS_UNREACHABLE)) {
+                        // here the scope is never available for next stmt so we have nothing to refresh
+                        $requiresScopeRefresh = false;
+                    }
+                }
+
+                if ($requiresScopeRefresh) {
+                    $errorMessage = sprintf(
+                        'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+                        $node::class,
+                        $parent instanceof \PhpParser\Node ? $parent::class : null
+                    );
+
+                    throw new ShouldNotHappenException($errorMessage);
+                }
             }
 
-            $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
+            if ($requiresScopeRefresh) {
+                $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
+            }
         }
 
         $this->connectParentNodes($node);

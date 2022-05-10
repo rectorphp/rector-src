@@ -7,7 +7,6 @@ namespace Rector\Core\NodeManipulator;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\FuncCall;
