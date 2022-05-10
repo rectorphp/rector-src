@@ -51,9 +51,7 @@ final class ReflectionResolver
     }
 
     #[Required]
-    public function autowire(
-        AstResolver $astResolver
-    ): void {
+    public function autowire(AstResolver $astResolver): void {
         $this->astResolver = $astResolver;
     }
 
