@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Reflection;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -72,6 +73,10 @@ final class ReflectionResolver
     public function resolveClassReflection(
         ClassMethod|Property|ClassLike|New_|Function_|ClassConst|MethodCall|StaticCall|null $node
     ): ?ClassReflection {
+        if (! $node instanceof Node) {
+            return null;
+        }
+
         if ($node instanceof MethodCall || $node instanceof StaticCall) {
             $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
             return $this->resolveClassReflection($classMethod);
