@@ -105,6 +105,8 @@ CODE_SAMPLE
 
             $previousStmt = $stmts[$key - 1];
 
+            // unset...
+
             if ($this->shouldRemove($previousStmt, $stmt)) {
                 array_splice($stmts, $key);
                 return $stmts;
