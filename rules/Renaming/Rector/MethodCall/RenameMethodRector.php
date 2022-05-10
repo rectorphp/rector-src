@@ -141,12 +141,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
-            if (! $classMethod instanceof ClassMethod) {
-                return false;
-            }
-
-            $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
             if (! $classReflection instanceof ClassReflection) {
                 return false;
             }
