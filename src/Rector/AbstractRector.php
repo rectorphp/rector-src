@@ -10,6 +10,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
@@ -248,7 +249,7 @@ CODE_SAMPLE;
         $requiresScopeRefresh = true;
 
         // names do not have scope in PHPStan
-        if (! $node instanceof Name) {
+        if (! $node instanceof Name && ! $node instanceof Namespace_) {
             if ($currentScope === null) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
@@ -275,7 +276,7 @@ CODE_SAMPLE;
                     $errorMessage = sprintf(
                         'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
                         $node::class,
-                        $parent instanceof \PhpParser\Node ? $parent::class : null
+                        $parent instanceof Node ? $parent::class : null
                     );
 
                     throw new ShouldNotHappenException($errorMessage);
