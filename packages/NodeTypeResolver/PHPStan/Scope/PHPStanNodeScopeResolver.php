@@ -109,6 +109,7 @@ final class PHPStanNodeScopeResolver
 
                 $traitContext = clone $scopeContext;
 
+                // before entering the class/trait again, we have to tell scope no class was set, otherwise it crashes
                 $this->privatesAccessor->setPrivatePropertyOfClass(
                     $traitContext,
                     'classReflection',
@@ -135,9 +136,9 @@ final class PHPStanNodeScopeResolver
 
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
-                $originalNode = $node->getOriginalStatement();
-                $originalNode->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-                $originalNode->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $originalStmt = $node->getOriginalStatement();
+                $originalStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+                $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             } else {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }

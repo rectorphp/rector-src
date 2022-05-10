@@ -102,8 +102,12 @@ CODE_SAMPLE
         }
 
         if ($ifStmt->stmts === []) {
+<<<<<<< HEAD
             $this->removeNode($ifStmt);
             return $ifStmt;
+=======
+            return null;
+>>>>>>> if stmts is always array
         }
 
         return $ifStmt->stmts;
