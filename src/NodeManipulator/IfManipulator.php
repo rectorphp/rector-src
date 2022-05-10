@@ -83,7 +83,7 @@ final class IfManipulator
             return null;
         }
 
-        if (! $if->cond instanceof Identical) {
+        if (! $if->cond instanceof Expr\BinaryOp\Identical) {
             return null;
         }
 

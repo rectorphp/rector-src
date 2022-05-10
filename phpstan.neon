@@ -89,6 +89,7 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
                 - packages/NodeTypeResolver/NodeTypeResolver.php
                 - rules/Renaming/NodeManipulator/ClassRenamer.php
+                - src/Rector/AbstractRector.php
 
         - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 10$#"
         - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 10#'
@@ -632,9 +633,9 @@ parameters:
         -
             message: '#Use separate function calls with readable variable names#'
             path: rules/CodingStyle/Rector/ClassMethod/OrderAttributesRector.php
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         - '#Class "Rector\\CodeQuality\\Rector\\FunctionLike\\RemoveAlwaysTrueConditionSetInConstructorRector" has invalid namespace category "FunctionLike"\. Pick one of\: "If_"#'
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         # doc arrays cannot be trusted
@@ -687,6 +688,8 @@ parameters:
 >>>>>>> prepare adding refrehs scope to node to addd collectotr
 >>>>>>> prepare adding refrehs scope to node to addd collectotr
 =======
+=======
+>>>>>>> fix previous unreachable stmts, as next stmt have no scope
 
         - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 12, keep it under 10#'
 
@@ -695,11 +698,10 @@ parameters:
             path: rules/Renaming/NodeManipulator/ClassRenamer.php
             message: '#Use separate function calls with readable variable names#'
 
-        - '#Cognitive complexity for "Rector\\Core\\Rector\\AbstractRector\:\:enterNode\(\)" is 15, keep it under 10#'
-<<<<<<< HEAD
->>>>>>> cache old to new types
-=======
+        - '#Cognitive complexity for "Rector\\Core\\Rector\\AbstractRector\:\:enterNode\(\)" is \d+, keep it under 10#'
 
         # false positive by php-parser, the args can be null
         - '#Parameter \#2 \$args of class PhpParser\\Node\\Expr\\FuncCall constructor expects array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder>, array<int, PhpParser\\Node\\Arg\|null> given#'
->>>>>>> skip parent
+
+        # known type
+        - '#Anonymous variable in a `\$parentStmt\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'

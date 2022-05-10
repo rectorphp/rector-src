@@ -253,10 +253,21 @@ CODE_SAMPLE;
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
                 // in case of unreachable stmts, no other node will have available scope
+                // loop all previous expressions, until we find nothing or is_unreachable
                 if ($parent instanceof Stmt) {
-                    if ($parent->getAttribute(AttributeKey::IS_UNREACHABLE)) {
+                    $parentStmt = $parent;
+                    if ($parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
                         // here the scope is never available for next stmt so we have nothing to refresh
                         $requiresScopeRefresh = false;
+                    } else {
+                        while ($parentStmt = $parentStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
+                            if ($parentStmt instanceof Stmt && $parentStmt->getAttribute(
+                                AttributeKey::IS_UNREACHABLE
+                            ) === true) {
+                                $requiresScopeRefresh = false;
+                                break;
+                            }
+                        }
                     }
                 }
 
