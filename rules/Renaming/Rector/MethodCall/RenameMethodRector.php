@@ -145,6 +145,7 @@ CODE_SAMPLE
                 return false;
             }
 
+            // different with configured ClassLike source? it is a child, which may has old and new exists
             if (! $classReflection->hasMethod($methodCallRename->getOldMethod())) {
                 return false;
             }
