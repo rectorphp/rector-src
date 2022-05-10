@@ -129,22 +129,19 @@ CODE_SAMPLE
         MethodCallRenameInterface $methodCallRename
     ): bool {
         if (! $node instanceof ClassMethod) {
+            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+
+            if (! $classReflection instanceof ClassReflection) {
+                return false;
+            }
+
             $targetClass = $methodCallRename->getClass();
             if (! $this->reflectionProvider->hasClass($targetClass)) {
                 return false;
             }
 
             $targetClassReflection = $this->reflectionProvider->getClass($targetClass);
-            if (! $targetClassReflection->isInterface()) {
-                return false;
-            }
-
-            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            if (! $classReflection instanceof ClassReflection) {
-                return false;
-            }
-
-            if ($classReflection->isInterface()) {
+            if ($classReflection->getName() === $targetClassReflection->getName()) {
                 return false;
             }
 
