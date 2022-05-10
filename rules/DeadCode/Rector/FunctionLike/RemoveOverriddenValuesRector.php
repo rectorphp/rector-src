@@ -6,10 +6,8 @@ namespace Rector\DeadCode\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeCollector\NodeByTypeAndPositionCollector;
