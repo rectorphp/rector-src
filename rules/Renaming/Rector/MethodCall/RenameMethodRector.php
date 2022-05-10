@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeManipulator\ClassManipulator;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Renaming\Collector\MethodCallRenameCollector;
 use Rector\Renaming\Contract\MethodCallRenameInterface;
@@ -35,13 +36,14 @@ final class RenameMethodRector extends AbstractRector implements ConfigurableRec
 
     public function __construct(
         private readonly ClassManipulator $classManipulator,
-        private readonly MethodCallRenameCollector $methodCallRenameCollector
+        private readonly MethodCallRenameCollector $methodCallRenameCollector,
+        private readonly AstResolver $astResolver
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Turns method names to new ones.', [
+        return new RuleDefinition('Turns method names to new ones when old one no longer exists.', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 $someObject = new SomeExampleClass;
@@ -124,6 +126,11 @@ CODE_SAMPLE
         MethodCallRenameInterface $methodCallRename
     ): bool {
         if (! $node instanceof ClassMethod) {
+            $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
+            if ($classMethod instanceof ClassMethod) {
+                return $this->shouldSkipForAlreadyExistingClassMethod($classMethod, $methodCallRename);
+            }
+
             return false;
         }
 
