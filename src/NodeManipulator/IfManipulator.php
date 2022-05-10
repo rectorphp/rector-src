@@ -7,6 +7,7 @@ namespace Rector\Core\NodeManipulator;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\FuncCall;
@@ -83,7 +84,7 @@ final class IfManipulator
             return null;
         }
 
-        if (! $if->cond instanceof Expr\BinaryOp\Identical) {
+        if (! $if->cond instanceof Identical) {
             return null;
         }
 
