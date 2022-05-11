@@ -90,7 +90,7 @@ CODE_SAMPLE
         }
 
         if (! $hasChanged) {
-            return true;
+            return null;
         }
 
         return $node;
