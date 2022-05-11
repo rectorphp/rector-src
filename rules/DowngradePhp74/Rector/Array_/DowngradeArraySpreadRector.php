@@ -138,7 +138,7 @@ CODE_SAMPLE
     {
         $newItems = $this->createArrayItems($array, $scope);
         // Replace this array node with an `array_merge`
-        return $this->createArrayMerge($array, $newItems, $scope);
+        return $this->createArrayMerge($newItems, $scope);
     }
 
     /**
@@ -187,7 +187,7 @@ CODE_SAMPLE
     /**
      * @param (ArrayItem|null)[] $items
      */
-    private function createArrayMerge(Array_ $array, array $items, Scope $scope): FuncCall
+    private function createArrayMerge(array $items, Scope $scope): FuncCall
     {
         $args = array_map(function (ArrayItem|null $arrayItem) use ($scope): Arg {
             if ($arrayItem === null) {

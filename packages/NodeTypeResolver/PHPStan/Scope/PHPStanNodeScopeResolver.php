@@ -123,6 +123,8 @@ final class PHPStanNodeScopeResolver
                     ScopeContext::class
                 );
 
+                $node->setAttribute(AttributeKey::SCOPE, $traitScope);
+
                 $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
                 return;
             }
