@@ -72,5 +72,5 @@ return static function (RectorConfig $rectorConfig): void {
             'MYSQL_PRIMARY_KEY_FLAG' => 'MYSQLI_PRI_KEY_FLAG',
         ]);
 
-    $rectorConfig->rule(MysqlQueryMysqlErrorWithLinkRector::class);
+//    $rectorConfig->rule(MysqlQueryMysqlErrorWithLinkRector::class);
 };
