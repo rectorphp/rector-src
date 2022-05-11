@@ -237,7 +237,7 @@ final class PHPStanNodeScopeResolver
         }
 
         // on refresh, remove entered class avoid entering the class again
-        if ($isScopeRefreshing && $mutatingScope->isInClass()) {
+        if ($isScopeRefreshing && $mutatingScope->isInClass() && ! $classReflection->isAnonymous()) {
             $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
             $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
         }
