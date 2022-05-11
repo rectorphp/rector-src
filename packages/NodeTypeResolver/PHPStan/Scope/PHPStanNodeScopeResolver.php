@@ -6,15 +6,23 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use PhpParser\Node;
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 use PhpParser\Node\Name;
 =======
 use PhpParser\Node\AttributeGroup;
 >>>>>>> add scope refresh support for attributes
+=======
+>>>>>>> add assign scope as well
+=======
+use PhpParser\Node\Expr;
+>>>>>>> cleanup
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
@@ -97,6 +105,19 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Foreach_) {
                 // decorate value as well
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+
+            if ($node instanceof Node\Expr\Assign) {
+                // decorate value as well
+                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+
+            if ($node instanceof Return_) {
+                // decorate value as well
+                if ($node->expr instanceof Expr) {
+                    $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
             }
 
             // scope is missing on attributes
