@@ -217,17 +217,20 @@ final class TypeComparator
 
     private function isMutualObjectSubtypes(Type $firstArrayItemType, Type $secondArrayItemType): bool
     {
-        if ($firstArrayItemType instanceof ObjectType && $secondArrayItemType instanceof ObjectType) {
-            if ($firstArrayItemType->isSuperTypeOf($secondArrayItemType)->yes()) {
-                return true;
-            }
-
-            if ($secondArrayItemType->isSuperTypeOf($firstArrayItemType)->yes()) {
-                return true;
-            }
+        if (! $firstArrayItemType instanceof ObjectType) {
+            return false;
         }
 
-        return false;
+        if (! $secondArrayItemType instanceof ObjectType) {
+            return false;
+        }
+
+        if ($firstArrayItemType->isSuperTypeOf($secondArrayItemType)->yes()) {
+            return true;
+        }
+
+        return $secondArrayItemType->isSuperTypeOf($firstArrayItemType)
+            ->yes();
     }
 
     private function normalizeSingleUnionType(Type $type): Type
@@ -254,11 +257,7 @@ final class TypeComparator
             return false;
         }
 
-        if ($firstType instanceof ConstantArrayType) {
-            return false;
-        }
-
-        if ($secondType instanceof ConstantArrayType) {
+        if ($firstType instanceof ConstantArrayType || $secondType instanceof ConstantArrayType) {
             return false;
         }
 
@@ -320,22 +319,22 @@ final class TypeComparator
     {
         $isStaticReturnDocTypeWithThisType = $phpStanDocType instanceof StaticType && $phpParserNodeType instanceof ThisType;
 
-        if ($isStaticReturnDocTypeWithThisType) {
-            $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-
-            if (! $class instanceof Class_) {
-                return false;
-            }
-
-            return $class->isFinal();
+        if (! $isStaticReturnDocTypeWithThisType) {
+            /**
+             * Special case for $this/(self|static) compare
+             *
+             * $this refers to the exact object identity, not just the same type. Therefore, it's valid and should not be removed
+             * @see https://wiki.php.net/rfc/this_return_type for more context
+             */
+            return ! ($phpStanDocType instanceof ThisType && $phpParserNodeType instanceof StaticType);
         }
 
-        /**
-         * Special case for $this/(self|static) compare
-         *
-         * $this refers to the exact object identity, not just the same type. Therefore, it's valid and should not be removed
-         * @see https://wiki.php.net/rfc/this_return_type for more context
-         */
-        return ! ($phpStanDocType instanceof ThisType && $phpParserNodeType instanceof StaticType);
+        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+
+        if (! $class instanceof Class_) {
+            return false;
+        }
+
+        return $class->isFinal();
     }
 }
