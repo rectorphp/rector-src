@@ -257,19 +257,8 @@ CODE_SAMPLE;
                 // in case of unreachable stmts, no other node will have available scope
                 // loop all previous expressions, until we find nothing or is_unreachable
                 if ($parent instanceof Stmt) {
-                    $parentStmt = $parent;
-                    if ($parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
-                        // here the scope is never available for next stmt so we have nothing to refresh
+                    if ($this->isStmtPHPStanUnreachable($parent)) {
                         $requiresScopeRefresh = false;
-                    } else {
-                        while ($parentStmt = $parentStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
-                            if ($parentStmt instanceof Stmt && $parentStmt->getAttribute(
-                                AttributeKey::IS_UNREACHABLE
-                            ) === true) {
-                                $requiresScopeRefresh = false;
-                                break;
-                            }
-                        }
                     }
                 }
 
@@ -318,6 +307,23 @@ CODE_SAMPLE;
 
         // update parents relations!!!
         return $this->nodesToReturn[$objectHash] ?? $node;
+    }
+
+    private function isStmtPHPStanUnreachable(Stmt $stmt): bool
+    {
+        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+            // here the scope is never available for next stmt so we have nothing to refresh
+            return true;
+        }
+
+        $parentStmt = $stmt;
+        while ($parentStmt = $parentStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
+            if ($parentStmt instanceof Stmt && $parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function isName(Node $node, string $name): bool
