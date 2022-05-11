@@ -120,6 +120,10 @@ CODE_SAMPLE
         }
 
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($funcCall);
+<<<<<<< HEAD
+=======
+
+>>>>>>> use current stmt
         if (! $currentStmt instanceof Stmt) {
             return null;
         }
@@ -155,10 +159,14 @@ CODE_SAMPLE
         $preAssign = new Assign($assignVariable, $array);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $this->nodesToAddCollector->addNodeBeforeNode($preAssign, $currentStmt);
 =======
         $this->nodesToAddCollector->addNodeBeforeNode($preAssign, $currentStatement, $this->file->getSmartFileInfo());
 >>>>>>> prepare adding refrehs scope to node to addd collectotr
+=======
+        $this->nodesToAddCollector->addNodeBeforeNode($preAssign, $currentStmt, $this->file->getSmartFileInfo());
+>>>>>>> use current stmt
 
         return $expr;
     }

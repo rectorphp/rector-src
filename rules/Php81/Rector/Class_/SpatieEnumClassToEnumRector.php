@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\Class_;
 
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
@@ -75,10 +76,14 @@ CODE_SAMPLE
      * @param Class_ $node
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     public function refactor(Node $node): ?Enum_
 =======
     public function refactor(Node $node): ?Node\Stmt\Enum_
 >>>>>>> add enum suport
+=======
+    public function refactor(Node $node): ?Enum_
+>>>>>>> use current stmt
     {
         if (! $this->isObjectType($node, new ObjectType('Spatie\Enum\Enum'))) {
             return null;
