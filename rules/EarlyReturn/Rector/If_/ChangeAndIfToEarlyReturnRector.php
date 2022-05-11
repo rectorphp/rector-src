@@ -249,23 +249,23 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isParentIfReturnsVoidOrParentIfHasNextNode(Node $parentNode): bool
+    private function isParentIfReturnsVoidOrParentIfHasNextNode(StmtsAwareInterface $stmtsAware): bool
     {
-        if (! $parentNode instanceof If_) {
+        if (! $stmtsAware instanceof If_) {
             return false;
         }
 
-        $nextParent = $parentNode->getAttribute(AttributeKey::NEXT_NODE);
+        $nextParent = $stmtsAware->getAttribute(AttributeKey::NEXT_NODE);
         return $nextParent instanceof Node;
     }
 
-    private function isNestedIfInLoop(If_ $if, ?Node $parentNode): bool
+    private function isNestedIfInLoop(If_ $if, StmtsAwareInterface $stmtsAware): bool
     {
         if (! $this->contextAnalyzer->isInLoop($if)) {
             return false;
         }
 
-        return $parentNode instanceof If_ || $parentNode instanceof Else_ || $parentNode instanceof ElseIf_;
+        return $stmtsAware instanceof If_ || $stmtsAware instanceof Else_ || $stmtsAware instanceof ElseIf_;
     }
 
     private function isLastIfOrBeforeLastReturn(If_ $if, ?Stmt $nextStmt): bool
