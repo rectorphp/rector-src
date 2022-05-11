@@ -257,7 +257,10 @@ CODE_SAMPLE;
 
                 // in case of unreachable stmts, no other node will have available scope
                 // loop all previous expressions, until we find nothing or is_unreachable
-                if ($parent instanceof Stmt && $this->isStmtPHPStanUnreachable($parent)) {
+
+                $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($parent);
+
+                if ($currentStmt instanceof Stmt && $this->isStmtPHPStanUnreachable($currentStmt)) {
                     $requiresScopeRefresh = false;
                 }
 
@@ -382,7 +385,7 @@ CODE_SAMPLE;
 
         $parentStmt = $stmt;
         while ($parentStmt = $parentStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
-            if (! $parentStmt instanceof Stmt) {
+            if (! $parentStmt instanceof Node) {
                 break;
             }
 
