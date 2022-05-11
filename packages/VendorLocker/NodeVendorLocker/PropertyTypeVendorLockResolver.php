@@ -9,7 +9,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -18,16 +17,21 @@ final class PropertyTypeVendorLockResolver
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
 
     public function isVendorLocked(Property $property): bool
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($property);
-        if (! $classReflection instanceof ClassReflection) {
+        $scope = $property->getAttribute(AttributeKey::SCOPE);
+        // possibly trait
+        if (! $scope instanceof Scope) {
             return true;
+        }
+
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
         }
 
         if (count($classReflection->getAncestors()) === 1) {
