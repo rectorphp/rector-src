@@ -107,6 +107,19 @@ final class PHPStanNodeScopeResolver
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
+            if ($node instanceof Stmt\Switch_) {
+                // decorate value as well
+                foreach ($node->cases as $case) {
+                    $case->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
+
+            if ($node instanceof Stmt\TryCatch) {
+                if ($node->finally instanceof Stmt\Finally_) {
+                    $node->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
+
             if ($node instanceof Node\Expr\Assign) {
                 // decorate value as well
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
