@@ -7,17 +7,14 @@ namespace Rector\EarlyReturn\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
-use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\EarlyReturn\NodeFactory\InvertedIfFactory;
@@ -85,26 +82,16 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [
-            Function_::class,
-            ClassMethod::class,
-            Closure::class,
-            Foreach_::class,
-            If_::class,
-            Else_::class,
-            ElseIf_::class,
-        ];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Function_|ClassMethod|Closure|Foreach_|If_|Else_|ElseIf_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        /** @var Stmt[]|null $stmts */
-        $stmts = $node->stmts;
-
-        if ($stmts === null) {
+        $stmts = (array) $node->stmts;
+        if ($stmts === []) {
             return null;
         }
 
@@ -217,7 +204,7 @@ CODE_SAMPLE
         return array_merge($result, [$ifNextReturnClone]);
     }
 
-    private function shouldSkip(Node $parentNode, If_ $if, ?Stmt $nexStmt): bool
+    private function shouldSkip(StmtsAwareInterface $stmtsAware, If_ $if, ?Stmt $nexStmt): bool
     {
         if (! $this->ifManipulator->isIfWithOnlyOneStmt($if)) {
             return true;
@@ -231,11 +218,11 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->isParentIfReturnsVoidOrParentIfHasNextNode($parentNode)) {
+        if ($this->isParentIfReturnsVoidOrParentIfHasNextNode($stmtsAware)) {
             return true;
         }
 
-        if ($this->isNestedIfInLoop($if, $parentNode)) {
+        if ($this->isNestedIfInLoop($if, $stmtsAware)) {
             return true;
         }
 
