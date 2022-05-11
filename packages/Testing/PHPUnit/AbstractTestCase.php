@@ -48,6 +48,7 @@ abstract class AbstractTestCase extends TestCase
      *
      * @template T of object
      * @param class-string<T> $type
+     * @return T
      */
     protected function getService(string $type): object
     {
