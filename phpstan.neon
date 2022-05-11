@@ -352,9 +352,6 @@ parameters:
         - '#Access to an undefined property PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
         - '#(.*?), array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
 
-        # scope & mutating scope mish-mash
-        - '#Parameter \#3 \$nodeCallback of method PHPStan\\Analyser\\NodeScopeResolver\:\:processNodes\(\) expects callable\(PhpParser\\Node, PHPStan\\Analyser\\Scope\)\: void, Closure\(PhpParser\\Node, PHPStan\\Analyser\\MutatingScope\)\: void given#'
-
         # share configuration to avoid duplication in 5 rules
         -
             message: '#Instead of abstract class, use specific service with composition#'
@@ -524,7 +521,7 @@ parameters:
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
 
         # Scope vs MutatingScope interchangable false positive
-        - '#Parameter \#3 \$nodeCallback of method PHPStan\\Analyser\\NodeScopeResolver\:\:processNodes\(\) expects callable\(PhpParser\\Node, PHPStan\\Analyser\\Scope\)\: void, callable\(PhpParser\\Node, PHPStan\\Analyser\\MutatingScope\)\: void given#'
+        - '#Parameter \#3 \$nodeCallback of method PHPStan\\Analyser\\NodeScopeResolver\:\:processNodes\(\) expects callable\(PhpParser\\Node, PHPStan\\Analyser\\Scope\)\: void, (callable|Closure)\(PhpParser\\Node, PHPStan\\Analyser\\MutatingScope\)\: void given#'
 
         # internal reflection
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
@@ -679,3 +676,5 @@ parameters:
 
         # known type
         - '#Anonymous variable in a `\$parentStmt\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
+
+        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:processNodes\(\)" is \d+, keep it under 10#'
