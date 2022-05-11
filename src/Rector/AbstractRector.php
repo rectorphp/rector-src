@@ -7,6 +7,7 @@ namespace Rector\Core\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
@@ -250,7 +251,7 @@ CODE_SAMPLE;
         $requiresScopeRefresh = true;
 
         // names do not have scope in PHPStan
-        if (! $node instanceof Name && ! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace && ! $node instanceof Node\Identifier) {
+        if (! $node instanceof Name && ! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace && ! $node instanceof Identifier) {
             if ($currentScope === null) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
@@ -381,7 +382,11 @@ CODE_SAMPLE;
 
         $parentStmt = $stmt;
         while ($parentStmt = $parentStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
-            if ($parentStmt instanceof Stmt && $parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+            if (! $parentStmt instanceof Stmt) {
+                break;
+            }
+
+            if ($parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
                 return true;
             }
         }
