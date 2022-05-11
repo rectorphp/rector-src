@@ -702,3 +702,9 @@ parameters:
         # depends on falsy docs
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Stmt> and (.*?)Stmt(.*?) will always evaluate to true#'
 
+        # doc validation
+        -
+            message: '#Call to function array_key_exists\(\) with (.*?) and array(.*?) will always evaluate to true#'
+            path: packages/FileFormatter/ValueObject/Indent.php
+
+        - '#Parameter \#1 \$indentStyle of method Rector\\FileFormatter\\ValueObjectFactory\\EditorConfigConfigurationBuilder\:\:withIndentStyle\(\) expects (.*?), string given#'
