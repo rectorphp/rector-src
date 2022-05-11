@@ -41,6 +41,11 @@ final class ChangedNodeScopeRefresher
             $node = new Property(0, [], [], null, [$attributeGroup]);
         }
 
+        // phpstan cannot process for some reason
+        if ($node instanceof Stmt\Enum_) {
+            return;
+        }
+
         if ($node instanceof Stmt) {
             $stmts = [$node];
         } elseif ($node instanceof Expr) {
