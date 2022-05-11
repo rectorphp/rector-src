@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
@@ -32,6 +33,11 @@ final class ChangedNodeScopeRefresher
         SmartFileInfo $smartFileInfo,
         MutatingScope $mutatingScope
     ): void {
+        // nothing to refresh
+        if ($node instanceof Identifier) {
+            return;
+        }
+
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
         // so we need to somehow get a parent scope that is already in the same place the $node is
 
