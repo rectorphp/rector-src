@@ -49,7 +49,7 @@ abstract class AbstractTestCase extends TestCase
      * @template T of object
      * @param class-string<T> $type
      */
-    protected function getService(string $type): \T
+    protected function getService(string $type): object
     {
         if (self::$currentContainer === null) {
             throw new ShouldNotHappenException('First, create container with "bootWithConfigFileInfos([...])"');
