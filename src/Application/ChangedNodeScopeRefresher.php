@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
@@ -31,6 +34,12 @@ final class ChangedNodeScopeRefresher
     ): void {
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
         // so we need to somehow get a parent scope that is already in the same place the $node is
+
+        if ($node instanceof Attribute) {
+            // we'll have to fake-traverse 2 layers up, as PHPStan skips Scope for AttributeGroups and consequently Attributes
+            $attributeGroup = new AttributeGroup([$node]);
+            $node = new Property(0, [], [], null, [$attributeGroup]);
+        }
 
         if ($node instanceof Stmt) {
             $stmts = [$node];
