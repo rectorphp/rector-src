@@ -467,7 +467,11 @@ parameters:
                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
                 - src/Contract/Processor/FileProcessorInterface.php
                 - packages/Parallel/Application/ParallelFileProcessor.php
+<<<<<<< HEAD
 >>>>>>> remove requires from tests, as all tests run on PHP 8.1
+=======
+                - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
+>>>>>>> extract getter factory
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'
@@ -502,6 +506,7 @@ parameters:
                 - packages/Parallel/Application/ParallelFileProcessor.php
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
+                - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
                 - rules/Php70/EregToPcreTransformer.php
                 - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
 
@@ -630,8 +635,6 @@ parameters:
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface>> will always evaluate to true#'
             path: packages/Config/RectorConfig.php
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         # hash key
         -
@@ -654,35 +657,8 @@ parameters:
             path: packages/FileFormatter/ValueObject/Indent.php
 
         - '#Parameter \#1 \$indentStyle of method Rector\\FileFormatter\\ValueObjectFactory\\EditorConfigConfigurationBuilder\:\:withIndentStyle\(\) expects (.*?), string given#'
-=======
-=======
-=======
-=======
-=======
-        - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 12, keep it under 10#'
->>>>>>> 7f16c82a55... make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
->>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
-<<<<<<< HEAD
->>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
-<<<<<<< HEAD
->>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
-<<<<<<< HEAD
->>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
-=======
-=======
-=======
-=======
->>>>>>> prepare adding refrehs scope to node to addd collectotr
->>>>>>> prepare adding refrehs scope to node to addd collectotr
->>>>>>> prepare adding refrehs scope to node to addd collectotr
->>>>>>> prepare adding refrehs scope to node to addd collectotr
-=======
-=======
->>>>>>> fix previous unreachable stmts, as next stmt have no scope
 
         - '#Cognitive complexity for "Rector\\CodingStyle\\Rector\\ClassMethod\\MakeInheritedMethodVisibilitySameAsParentRector\:\:refactorWithScope\(\)" is 12, keep it under 10#'
-=======
->>>>>>> skip irelevant PHPStan errors
 
         # hash key
         -

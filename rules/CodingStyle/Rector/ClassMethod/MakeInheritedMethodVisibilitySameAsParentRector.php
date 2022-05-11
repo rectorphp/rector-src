@@ -91,8 +91,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentClassReflections = $classReflection->getParents();
-
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
