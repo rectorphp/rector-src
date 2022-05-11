@@ -5,22 +5,9 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use PhpParser\Node;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-use PhpParser\Node\Name;
-=======
-use PhpParser\Node\AttributeGroup;
->>>>>>> add scope refresh support for attributes
-=======
->>>>>>> add assign scope as well
-=======
 use PhpParser\Node\Expr;
-<<<<<<< HEAD
->>>>>>> cleanup
-=======
 use PhpParser\Node\Expr\Assign;
->>>>>>> validate array of stmts
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
@@ -260,11 +247,7 @@ final class PHPStanNodeScopeResolver
 
     private function resolveClassName(Class_ | Interface_ | Trait_| Enum_ $classLike): string
     {
-<<<<<<< HEAD
         if ($classLike->namespacedName instanceof Name) {
-=======
-        if ($classLike->namespacedName instanceof Node\Name) {
->>>>>>> validate array of stmts
             return (string) $classLike->namespacedName;
         }
 
