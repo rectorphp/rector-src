@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeComparator;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ArrayType;
@@ -22,6 +23,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
@@ -38,7 +40,8 @@ final class TypeComparator
         private readonly ArrayTypeComparator $arrayTypeComparator,
         private readonly ScalarTypeComparator $scalarTypeComparator,
         private readonly TypeFactory $typeFactory,
-        private readonly UnionTypeAnalyzer $unionTypeAnalyzer
+        private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -108,7 +111,7 @@ final class TypeComparator
             return false;
         }
 
-        return $this->isThisTypeInFinalClass($phpStanDocType, $phpParserNodeType);
+        return $this->isThisTypeInFinalClass($phpStanDocType, $phpParserNodeType, $phpParserNode);
     }
 
     public function isSubtype(Type $checkedType, Type $mainType): bool
@@ -313,8 +316,19 @@ final class TypeComparator
                 ->yes();
     }
 
-    private function isThisTypeInFinalClass(Type $phpStanDocType, Type $phpParserNodeType): bool
+    private function isThisTypeInFinalClass(Type $phpStanDocType, Type $phpParserNodeType, Node $node): bool
     {
+        $isStaticReturnDocTypeWithThisType = $phpStanDocType instanceof StaticType && $phpParserNodeType instanceof ThisType;
+
+        if ($isStaticReturnDocTypeWithThisType) {
+            $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+
+            if (! $class instanceof Class_) {
+                return false;
+            }
+
+            return $class->isFinal();
+        }
 
         /**
          * Special case for $this/(self|static) compare
