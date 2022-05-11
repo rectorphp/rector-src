@@ -58,11 +58,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof Foreach_) {
-            if ($node->valueVar instanceof Array_) {
-                $node->valueVar = $this->processToList($node->valueVar);
-                return $node;
-            }
+        if ($node instanceof Foreach_ && $node->valueVar instanceof Array_) {
+            $node->valueVar = $this->processToList($node->valueVar);
+            return $node;
         }
 
         return null;
