@@ -73,16 +73,16 @@ final class Indent implements Stringable
     }
 
     /**
-     * @param Indent::TAB|Indent::SPACE $style
+     * @param IndentType::* $style
      */
     public static function fromSizeAndStyle(int $size, string $style): self
     {
         if ($size < self::MINIMUM_SIZE) {
-            throw InvalidIndentSizeException::fromSizeAndMinimumSize($size, self::MINIMUM_SIZE);
+            throw new InvalidIndentSizeException($size, self::MINIMUM_SIZE);
         }
 
         if (! array_key_exists($style, self::CHARACTERS)) {
-            throw InvalidIndentStyleException::fromStyleAndAllowedStyles($style, array_keys(self::CHARACTERS));
+            throw new InvalidIndentStyleException($style);
         }
 
         $value = str_repeat(self::CHARACTERS[$style], $size);
@@ -97,7 +97,7 @@ final class Indent implements Stringable
             return self::fromString($match['indent']);
         }
 
-        throw ParseIndentException::fromString($content);
+        throw new ParseIndentException($content);
     }
 
     public function getIndentSize(): int
@@ -105,6 +105,9 @@ final class Indent implements Stringable
         return strlen($this->string);
     }
 
+    /**
+     * @return IndentType::*
+     */
     public function getIndentStyle(): string
     {
         return $this->startsWithSpace() ? IndentType::SPACE : IndentType::TAB;
