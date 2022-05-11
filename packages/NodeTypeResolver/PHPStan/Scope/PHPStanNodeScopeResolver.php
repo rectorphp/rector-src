@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use PhpParser\Node\Stmt\Switch_;
+use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\Node\Stmt\Finally_;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -107,30 +112,26 @@ final class PHPStanNodeScopeResolver
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof Stmt\Switch_) {
+            if ($node instanceof Switch_) {
                 // decorate value as well
                 foreach ($node->cases as $case) {
                     $case->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 }
             }
 
-            if ($node instanceof Stmt\TryCatch) {
-                if ($node->finally instanceof Stmt\Finally_) {
-                    $node->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
+            if ($node instanceof TryCatch && $node->finally instanceof Finally_) {
+                $node->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof Node\Expr\Assign) {
+            if ($node instanceof Assign) {
                 // decorate value as well
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof Return_) {
-                // decorate value as well
-                if ($node->expr instanceof Expr) {
-                    $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
+            // decorate value as well
+            if ($node instanceof Return_ && $node->expr instanceof Expr) {
+                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             // scope is missing on attributes
@@ -180,7 +181,7 @@ final class PHPStanNodeScopeResolver
 
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
-            if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Stmt\Enum_) {
+            if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
             }
@@ -228,7 +229,7 @@ final class PHPStanNodeScopeResolver
     }
 
     private function resolveClassOrInterfaceScope(
-        Class_ | Interface_ | Stmt\Enum_ $classLike,
+        Class_ | Interface_ | Enum_ $classLike,
         MutatingScope $mutatingScope,
         bool $isScopeRefreshing
     ): MutatingScope {
@@ -252,7 +253,7 @@ final class PHPStanNodeScopeResolver
         return $mutatingScope->enterClass($classReflection);
     }
 
-    private function resolveClassName(Class_ | Interface_ | Trait_| Stmt\Enum_ $classLike): string
+    private function resolveClassName(Class_ | Interface_ | Trait_| Enum_ $classLike): string
     {
         if ($classLike->namespacedName instanceof Name) {
             return (string) $classLike->namespacedName;
