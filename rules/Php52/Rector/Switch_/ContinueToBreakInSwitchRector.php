@@ -84,6 +84,11 @@ CODE_SAMPLE
                     continue;
                 }
 
+                $stmt = $this->processContinueStatement($caseStmt);
+                if ($stmt === $caseStmt) {
+                    continue;
+                }
+
                 $case->stmts[$key] = $this->processContinueStatement($caseStmt);
                 $hasChanged = true;
             }
