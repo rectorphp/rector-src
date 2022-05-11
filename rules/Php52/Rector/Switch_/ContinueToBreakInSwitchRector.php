@@ -77,6 +77,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): Switch_
     {
+        $hasChanged = false;
         foreach ($node->cases as $case) {
             foreach ($case->stmts as $key => $caseStmt) {
                 if (! $caseStmt instanceof Continue_) {
@@ -84,7 +85,12 @@ CODE_SAMPLE
                 }
 
                 $case->stmts[$key] = $this->processContinueStatement($caseStmt);
+                $hasChanged = true;
             }
+        }
+
+        if (! $hasChanged) {
+            return true;
         }
 
         return $node;
