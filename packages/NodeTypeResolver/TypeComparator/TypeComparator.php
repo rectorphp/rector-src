@@ -168,19 +168,15 @@ final class TypeComparator
 
     private function areAliasedObjectMatchingFqnObject(Type $firstType, Type $secondType): bool
     {
-        if ($firstType instanceof AliasedObjectType && $secondType instanceof ObjectType && $firstType->getFullyQualifiedName() === $secondType->getClassName()) {
-            return true;
+        if ($firstType instanceof AliasedObjectType && $secondType instanceof ObjectType) {
+            return $firstType->getFullyQualifiedName() === $secondType->getClassName();
         }
 
-        if (! $secondType instanceof AliasedObjectType) {
-            return false;
+        if ($firstType instanceof ObjectType && $secondType instanceof AliasedObjectType) {
+            return $secondType->getFullyQualifiedName() === $firstType->getClassName();
         }
 
-        if (! $firstType instanceof ObjectType) {
-            return false;
-        }
-
-        return $secondType->getFullyQualifiedName() === $firstType->getClassName();
+        return false;
     }
 
     /**
