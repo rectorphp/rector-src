@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\TryCatch;
-use PhpParser\Node\Stmt\Finally_;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -21,14 +16,22 @@ use PhpParser\Node\AttributeGroup;
 >>>>>>> add assign scope as well
 =======
 use PhpParser\Node\Expr;
+<<<<<<< HEAD
 >>>>>>> cleanup
+=======
+use PhpParser\Node\Expr\Assign;
+>>>>>>> validate array of stmts
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
@@ -51,6 +54,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
+use Webmozart\Assert\Assert;
 
 /**
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
@@ -98,6 +102,7 @@ final class PHPStanNodeScopeResolver
          * @see vendor/phpstan/phpstan/phpstan.phar/src/Analyser/NodeScopeResolver.php:282
          */
 
+        Assert::allIsInstanceOf($stmts, Stmt::class);
         $this->removeDeepChainMethodCallNodes($stmts);
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($smartFileInfo);
@@ -255,7 +260,11 @@ final class PHPStanNodeScopeResolver
 
     private function resolveClassName(Class_ | Interface_ | Trait_| Enum_ $classLike): string
     {
+<<<<<<< HEAD
         if ($classLike->namespacedName instanceof Name) {
+=======
+        if ($classLike->namespacedName instanceof Node\Name) {
+>>>>>>> validate array of stmts
             return (string) $classLike->namespacedName;
         }
 

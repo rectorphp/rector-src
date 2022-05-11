@@ -11,6 +11,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\MutatingScope;
@@ -48,7 +49,7 @@ final class ChangedNodeScopeRefresher
         }
 
         // phpstan cannot process for some reason
-        if ($node instanceof Stmt\Enum_) {
+        if ($node instanceof Enum_) {
             return;
         }
 

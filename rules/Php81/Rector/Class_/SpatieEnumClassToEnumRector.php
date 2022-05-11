@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\Class_;
 
-use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
