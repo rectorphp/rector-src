@@ -119,7 +119,11 @@ CODE_SAMPLE
 
         $comments = $node->getComments();
         if (isset($comments[1])) {
+<<<<<<< HEAD
             // skip edge case with double comment, as impossible to resolve by PHPStan doc parser
+=======
+            // skip edge case with double comment, as impossible to resolve by PHPStan
+>>>>>>> add few required scopes
             return null;
         }
 
