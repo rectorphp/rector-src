@@ -39,7 +39,7 @@ parameters:
     scanDirectories:
         - stubs
 
-#    reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: false
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
@@ -192,8 +192,6 @@ parameters:
             paths:
                 # on PhpParser Nodes
                 - packages/NodeNameResolver/NodeNameResolver.php
-                - packages/NodeNameResolver/NodeNameResolver/ClassNameResolver.php
-                - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
 
         # known types
         - '#Call to an undefined method PHPStan\\Type\\ConstantType\:\:getValue\(\)#'
@@ -386,7 +384,6 @@ parameters:
             message: '#Use separate function calls with readable variable names#'
             paths:
                 - src/DependencyInjection/Loader/Configurator/RectorServiceConfigurator.php
-                - rules/Renaming/NodeManipulator/ClassRenamer.php
 
         # on purpose to make use of worker paralle pattern
         -
@@ -453,15 +450,13 @@ parameters:
 
         # parallel
         -
-             message: '#Instead of array shape, use value object with specific types in constructor and getters#'
-             paths:
-                 - src/ValueObjectFactory/ProcessResultFactory.php
-                 - src/*/*Processor.php
-                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
-                 - src/Contract/Processor/FileProcessorInterface.php
-                 - packages/Parallel/Application/ParallelFileProcessor.php
-
-        - '#Call to function property_exists\(\) with PhpParser\\Node\\Stmt\\ClassLike and (.*?) will always evaluate to true#'
+            message: '#Instead of array shape, use value object with specific types in constructor and getters#'
+            paths:
+                - src/ValueObjectFactory/ProcessResultFactory.php
+                - src/*/*Processor.php
+                - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
+                - src/Contract/Processor/FileProcessorInterface.php
+                - packages/Parallel/Application/ParallelFileProcessor.php
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'

@@ -157,10 +157,6 @@ CODE_SAMPLE
         $identical = new Identical($args[1]->value, $this->nodeFactory->createNull());
         $constFetch = new ConstFetch(new Name('ARRAY_FILTER_USE_BOTH'));
 
-        return new Ternary(
-            $identical,
-            $constFetch,
-            isset($args[2]) ? $args[2]->value : new LNumber(0)
-        );
+        return new Ternary($identical, $constFetch, isset($args[2]) ? $args[2]->value : new LNumber(0));
     }
 }
