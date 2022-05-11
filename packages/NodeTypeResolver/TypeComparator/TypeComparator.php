@@ -317,16 +317,20 @@ final class TypeComparator
 
     private function isThisTypeInFinalClass(Type $phpStanDocType, Type $phpParserNodeType, Node $node): bool
     {
+        /**
+         * Special case for $this/(self|static) compare
+         *
+         * $this refers to the exact object identity, not just the same type. Therefore, it's valid and should not be removed
+         * @see https://wiki.php.net/rfc/this_return_type for more context
+         */
+        if ($phpStanDocType instanceof ThisType && $phpParserNodeType instanceof StaticType) {
+            return false;
+        }
+
         $isStaticReturnDocTypeWithThisType = $phpStanDocType instanceof StaticType && $phpParserNodeType instanceof ThisType;
 
         if (! $isStaticReturnDocTypeWithThisType) {
-            /**
-             * Special case for $this/(self|static) compare
-             *
-             * $this refers to the exact object identity, not just the same type. Therefore, it's valid and should not be removed
-             * @see https://wiki.php.net/rfc/this_return_type for more context
-             */
-            return ! ($phpStanDocType instanceof ThisType && $phpParserNodeType instanceof StaticType);
+            return true;
         }
 
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
