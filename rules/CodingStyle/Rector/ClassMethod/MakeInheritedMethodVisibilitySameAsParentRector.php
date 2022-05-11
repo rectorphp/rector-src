@@ -164,7 +164,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return $reflectionMethod->isPrivate() && $classMethod->isPrivate();
+        if (! $reflectionMethod->isPrivate()) {
+            return false;
+        }
+
+        return $classMethod->isPrivate();
     }
 
     private function changeClassMethodVisibilityBasedOnReflectionMethod(
