@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\FileFormatter\ValueObject;
 
 use Nette\Utils\Strings;
+use Rector\FileFormatter\Enum\IndentType;
 use Rector\FileFormatter\Exception\InvalidIndentSizeException;
 use Rector\FileFormatter\Exception\InvalidIndentStringException;
 use Rector\FileFormatter\Exception\InvalidIndentStyleException;
@@ -20,19 +21,9 @@ final class Indent implements Stringable
      * @var array<string, string>
      */
     public const CHARACTERS = [
-        self::SPACE => ' ',
-        self::TAB => "\t",
+        IndentType::SPACE => ' ',
+        IndentType::TAB => "\t",
     ];
-
-    /**
-     * @var string
-     */
-    private const SPACE = 'space';
-
-    /**
-     * @var string
-     */
-    private const TAB = 'tab';
 
     /**
      * @see https://regex101.com/r/A2XiaF/1
@@ -73,14 +64,17 @@ final class Indent implements Stringable
 
     public static function createSpaceWithSize(int $size): self
     {
-        return self::fromSizeAndStyle($size, self::SPACE);
+        return self::fromSizeAndStyle($size, IndentType::SPACE);
     }
 
     public static function createTab(): self
     {
-        return self::fromSizeAndStyle(1, self::TAB);
+        return self::fromSizeAndStyle(1, IndentType::TAB);
     }
 
+    /**
+     * @param Indent::TAB|Indent::SPACE $style
+     */
     public static function fromSizeAndStyle(int $size, string $style): self
     {
         if ($size < self::MINIMUM_SIZE) {
@@ -113,12 +107,12 @@ final class Indent implements Stringable
 
     public function getIndentStyle(): string
     {
-        return $this->startsWithSpace() ? self::SPACE : self::TAB;
+        return $this->startsWithSpace() ? IndentType::SPACE : IndentType::TAB;
     }
 
     public function getIndentStyleCharacter(): string
     {
-        return $this->startsWithSpace() ? self::CHARACTERS[self::SPACE] : self::CHARACTERS[self::TAB];
+        return $this->startsWithSpace() ? self::CHARACTERS[IndentType::SPACE] : self::CHARACTERS[IndentType::TAB];
     }
 
     private function startsWithSpace(): bool
