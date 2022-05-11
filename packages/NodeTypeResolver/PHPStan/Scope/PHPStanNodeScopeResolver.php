@@ -146,7 +146,7 @@ final class PHPStanNodeScopeResolver
 
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
-            if ($node instanceof Class_ || $node instanceof Interface_) {
+            if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Stmt\Enum_) {
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
             }
@@ -194,7 +194,7 @@ final class PHPStanNodeScopeResolver
     }
 
     private function resolveClassOrInterfaceScope(
-        Class_ | Interface_ $classLike,
+        Class_ | Interface_ | Stmt\Enum_ $classLike,
         MutatingScope $mutatingScope,
         bool $isScopeRefreshing
     ): MutatingScope {
@@ -218,7 +218,7 @@ final class PHPStanNodeScopeResolver
         return $mutatingScope->enterClass($classReflection);
     }
 
-    private function resolveClassName(Class_ | Interface_ | Trait_ $classLike): string
+    private function resolveClassName(Class_ | Interface_ | Trait_| Stmt\Enum_ $classLike): string
     {
         if ($classLike->namespacedName instanceof Name) {
             return (string) $classLike->namespacedName;
