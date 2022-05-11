@@ -250,7 +250,7 @@ CODE_SAMPLE;
         $requiresScopeRefresh = true;
 
         // names do not have scope in PHPStan
-        if (! $node instanceof Name && ! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
+        if (! $node instanceof Name && ! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace && ! $node instanceof Node\Identifier) {
             if ($currentScope === null) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
