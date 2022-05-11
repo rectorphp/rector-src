@@ -74,15 +74,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-<<<<<<< HEAD
-<<<<<<< HEAD
     public function refactor(Node $node): ?Enum_
-=======
-    public function refactor(Node $node): ?Node\Stmt\Enum_
->>>>>>> add enum suport
-=======
-    public function refactor(Node $node): ?Enum_
->>>>>>> use current stmt
     {
         if (! $this->isObjectType($node, new ObjectType('Spatie\Enum\Enum'))) {
             return null;

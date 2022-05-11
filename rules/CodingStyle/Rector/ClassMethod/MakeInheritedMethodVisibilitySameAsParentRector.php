@@ -8,24 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-<<<<<<< HEAD
-<<<<<<< HEAD
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
-=======
-<<<<<<< HEAD
-use Rector\Core\Rector\AbstractScopeAwareRector;
-=======
-use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\Rector\AbstractScopeAwareRector;
-use Rector\Core\ValueObject\MethodName;
-use Rector\Core\ValueObject\PhpVersionFeature;
->>>>>>> 7f16c82a55... make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
->>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
-=======
-use Rector\Core\Rector\AbstractScopeAwareRector;
->>>>>>> prepare adding refrehs scope to node to addd collectotr
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use ReflectionMethod;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -107,18 +91,10 @@ CODE_SAMPLE
             return null;
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         $parentClassReflections = $classReflection->getParents();
 
-<<<<<<< HEAD
         $hasChanged = false;
-=======
->>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
->>>>>>> make MakeInheritedMethodVisibilitySameAsParentRector work with scope and Class_ node
-=======
->>>>>>> cache old to new types
+
         foreach ($node->getMethods() as $classMethod) {
             if ($classMethod->isMagic()) {
                 continue;
