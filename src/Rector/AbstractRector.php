@@ -263,17 +263,11 @@ CODE_SAMPLE;
             return $this->processResultSingleNode($node, $originalNode);
         }
 
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+        if (! $this instanceof AbstractScopeAwareRector) {
+            return $this->processResultSingleNode($node, $originalNode);
+        }
+
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-        if ($currentStmt instanceof Stmt && $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
-            return $this->processResultSingleNode($node, $originalNode);
-        }
-
-        if ($parent instanceof Node && $currentStmt === $parent) {
-            return $this->processResultSingleNode($node, $originalNode);
-        }
-
         $errorMessage = sprintf(
             'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
             $node::class,
