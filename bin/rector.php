@@ -34,7 +34,7 @@ final class AutoloadIncluder
     /**
      * @var string[]
      */
-    private $alreadyLoadedAutoloadFiles = [];
+    private array $alreadyLoadedAutoloadFiles = [];
 
     public function includeDependencyOrRepositoryVendorAutoloadIfExists(): void
     {
@@ -76,8 +76,14 @@ final class AutoloadIncluder
     {
         $cliArgs = $_SERVER['argv'];
 
-        $autoloadOptionPosition = array_search('-a', $cliArgs, true) ?: array_search('--autoload-file', $cliArgs, true);
-        if (! $autoloadOptionPosition) {
+        $aOptionPosition = array_search('-a', $cliArgs, true);
+        $autoloadFileOptionPosition = array_search('--autoload-file', $cliArgs, true);
+
+        if (is_int($aOptionPosition)) {
+            $autoloadOptionPosition = $aOptionPosition;
+        } elseif (is_int($autoloadFileOptionPosition)) {
+            $autoloadOptionPosition = $autoloadFileOptionPosition;
+        } else {
             return;
         }
 
@@ -100,7 +106,12 @@ final class AutoloadIncluder
             return;
         }
 
-        $this->alreadyLoadedAutoloadFiles[] = realpath($filePath);
+        $realPath = realpath($filePath);
+        if (! is_string($realPath)) {
+            return;
+        }
+
+        $this->alreadyLoadedAutoloadFiles[] = $realPath;
 
         require_once $filePath;
     }
