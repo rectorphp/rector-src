@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\NodeAnalyzer\PromotedPropertyParamCleaner;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -34,7 +35,8 @@ final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionI
     public function __construct(
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
+        private readonly PromotedPropertyParamCleaner $promotedPropertyParamCleaner
     ) {
     }
 
@@ -85,7 +87,14 @@ CODE_SAMPLE
 
         $this->visibilityManipulator->changeNodeVisibility($node, Visibility::READONLY);
 
-        // update all properties, both in defined property or in property promotino to not readonly, as class already readonly
+        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        if ($constructClassMethod instanceof ClassMethod) {die;
+            $this->promotedPropertyParamCleaner->cleanFromFlags($constructClassMethod->getParams());
+        }
+
+        foreach ($node->getProperties() as $property) {
+            $this->visibilityManipulator->removeReadonly($property);
+        }
 
         return $node;
     }
@@ -133,7 +142,7 @@ CODE_SAMPLE
 
         foreach ($params as $param) {
             // has non-property promotion, skip
-            if ($param->flags !== 0) {
+            if (! $this->visibilityManipulator->hasVisibility($param, Visibility::READONLY)) {
                 return true;
             }
         }

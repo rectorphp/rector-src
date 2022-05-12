@@ -65,6 +65,10 @@ final class VisibilityManipulator
             return;
         }
 
+        if ($node instanceof Class_) {
+            return;
+        }
+
         // no modifier
         if ($node->flags === 0) {
             return;
