@@ -27,6 +27,7 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -122,6 +123,8 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
+    private UnreachableStmtAnalyzer $unreachableStmtAnalyzer;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -143,7 +146,8 @@ CODE_SAMPLE;
         CurrentFileProvider $currentFileProvider,
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
-        ChangedNodeScopeRefresher $changedNodeScopeRefresher
+        ChangedNodeScopeRefresher $changedNodeScopeRefresher,
+        UnreachableStmtAnalyzer $unreachableStmtAnalyzer
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -165,6 +169,7 @@ CODE_SAMPLE;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
+        $this->unreachableStmtAnalyzer = $unreachableStmtAnalyzer;
     }
 
     /**
@@ -248,11 +253,7 @@ CODE_SAMPLE;
         /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
 
-        if (in_array(
-            $node::class,
-            [Name::class, FullyQualified::class, Namespace_::class, FileWithoutNamespace::class, Identifier::class],
-            true
-        )) {
+        if ($this->isNamedNodes($node)) {
             return $this->processResultSingleNode($node, $originalNode);
         }
 
@@ -263,10 +264,7 @@ CODE_SAMPLE;
             return $this->processResultSingleNode($node, $originalNode);
         }
 
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        $isUnreachable = $currentStmt instanceof Stmt
-            ? $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE)
-            : $node->getAttribute(AttributeKey::IS_UNREACHABLE);
+        $isUnreachable = $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($node);
 
         if ($isUnreachable === true) {
             return $this->processResultSingleNode($node, $originalNode);
@@ -281,6 +279,11 @@ CODE_SAMPLE;
         );
 
         throw new ShouldNotHappenException($errorMessage);
+    }
+
+    private function isNamedNodes(Node $node): bool
+    {
+        return $node instanceof Name || $node instanceof Namespace_ || $node instanceof FileWithoutNamespace || $node instanceof Identifier;
     }
 
     /**
