@@ -102,6 +102,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if (! $class->isFinal()) {
+            return true;
+        }
+
         if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE)) {
             return true;
         }
