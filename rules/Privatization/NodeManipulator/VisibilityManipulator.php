@@ -58,7 +58,7 @@ final class VisibilityManipulator
     /**
      * This way "abstract", "static", "final" are kept
      */
-    public function removeVisibility(ClassMethod | Property | ClassConst $node): void
+    public function removeVisibility(Class_ | ClassMethod | Property | ClassConst $node): void
     {
         // no modifier
         if ($node->flags === 0) {
@@ -87,6 +87,7 @@ final class VisibilityManipulator
             Visibility::STATIC,
             Visibility::ABSTRACT,
             Visibility::FINAL,
+            Visibility::READONLY
         ]);
 
         $this->replaceVisibilityFlag($node, $visibility);
@@ -146,7 +147,7 @@ final class VisibilityManipulator
         $node->flags &= ~$visibility;
     }
 
-    private function replaceVisibilityFlag(ClassMethod | Property | ClassConst $node, int $visibility): void
+    private function replaceVisibilityFlag(Class_ | ClassMethod | Property | ClassConst $node, int $visibility): void
     {
         $isStatic = $node instanceof ClassMethod && $node->isStatic();
         if ($isStatic) {
