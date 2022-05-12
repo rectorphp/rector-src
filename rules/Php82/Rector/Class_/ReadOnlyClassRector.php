@@ -17,8 +17,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @changelog https://wiki.php.net/rfc/readonly_classes
- *
- * @see \Rector\Tests\Php82\Rector\Class_\ReadOnlyPropertyRector\ReadOnlyClassRectorTest
  */
 final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -85,13 +83,13 @@ CODE_SAMPLE
         return PhpVersionFeature::READONLY_CLASS;
     }
 
-    private function shouldSkip(Class_ $node): bool
+    private function shouldSkip(Class_ $class): bool
     {
-        if ($this->classAnalyzer->isAnonymousClass($node)) {
+        if ($this->classAnalyzer->isAnonymousClass($class)) {
             return true;
         }
 
-        $properties = $node->getProperties();
+        $properties = $class->getProperties();
         foreach ($properties as $property) {
             if (! $property->isReadonly()) {
                 return true;
