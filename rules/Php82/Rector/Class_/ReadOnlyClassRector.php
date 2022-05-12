@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\NodeAnalyzer\PromotedPropertyParamCleaner;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -35,8 +34,7 @@ final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionI
     public function __construct(
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly PromotedPropertyParamCleaner $promotedPropertyParamCleaner
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -89,8 +87,9 @@ CODE_SAMPLE
 
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
         if ($constructClassMethod instanceof ClassMethod) {
-            die;
-            $this->promotedPropertyParamCleaner->cleanFromFlags($constructClassMethod->getParams());
+            foreach ($constructClassMethod->getParams() as $param) {
+                $this->visibilityManipulator->removeReadonly($param);
+            }
         }
 
         foreach ($node->getProperties() as $property) {
