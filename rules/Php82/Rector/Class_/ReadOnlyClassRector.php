@@ -9,6 +9,8 @@ use PhpParser\Node\Stmt\Class_;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Core\ValueObject\Visibility;
+use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -20,7 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly ClassAnalyzer $classAnalyzer)
+    public function __construct(
+        private readonly ClassAnalyzer $classAnalyzer,
+        private readonly VisibilityManipulator $visibilityManipulator
+    )
     {
     }
 
@@ -65,21 +70,34 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->classAnalyzer->isAnonymousClass($node)) {
+        if ($this->shouldSkip($node)) {
             return null;
+        }
+
+        $this->visibilityManipulator->changeNodeVisibility($node, Visibility::READONLY);
+
+        // update all properties, both in defined property or in property promotino to not readonly, as class already readonly
+
+        return $node;
+    }
+
+    private function shouldSkip(Class_ $node): bool
+    {
+        if ($this->classAnalyzer->isAnonymousClass($node)) {
+            return true;
         }
 
         $properties = $node->getProperties();
         foreach ($properties as $property) {
             if (! $property->isReadonly()) {
-                return null;
+                return true;
             }
         }
 
         // property promotion
         // has `#[AllowDynamicProperties]`
 
-        return $node;
+        return false;
     }
 
     public function provideMinPhpVersion(): int

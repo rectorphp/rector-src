@@ -78,7 +78,7 @@ final class VisibilityManipulator
         }
     }
 
-    public function changeNodeVisibility(ClassMethod | Property | ClassConst $node, int $visibility): void
+    public function changeNodeVisibility(Class_ | ClassMethod | Property | ClassConst $node, int $visibility): void
     {
         Assert::oneOf($visibility, [
             Visibility::PUBLIC,
