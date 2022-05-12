@@ -284,8 +284,6 @@ CODE_SAMPLE;
         throw new ShouldNotHappenException($errorMessage);
     }
 
-    private function throw
-
     /**
      * Replacing nodes in leaveNode() method avoids infinite recursion
      * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
