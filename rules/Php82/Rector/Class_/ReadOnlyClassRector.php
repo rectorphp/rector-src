@@ -21,6 +21,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @changelog https://wiki.php.net/rfc/readonly_classes
+ *
+ * @see \Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\ReadOnlyClassRectorTest
  */
 final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionInterface
 {
