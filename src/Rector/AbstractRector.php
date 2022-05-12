@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -46,7 +47,6 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\Skipper\Skipper\Skipper;
-use PHPStan\Analyser\MutatingScope;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
@@ -248,7 +248,11 @@ CODE_SAMPLE;
         /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
 
-        if (in_array($node::class, [Name::class, FullyQualified::class, Namespace_::class, FileWithoutNamespace::class, Identifier::class], true)) {
+        if (in_array(
+            $node::class,
+            [Name::class, FullyQualified::class, Namespace_::class, FileWithoutNamespace::class, Identifier::class],
+            true
+        )) {
             return $this->processResultSingleNode($node, $originalNode);
         }
 
@@ -277,28 +281,6 @@ CODE_SAMPLE;
         );
 
         throw new ShouldNotHappenException($errorMessage);
-
-    }
-
-    private function processResultSingleNode(Node $node, Node $originalNode): Node
-    {
-        $this->connectParentNodes($node);
-
-        // is equals node type? return node early
-        if ($originalNode::class === $node::class) {
-            return $node;
-        }
-
-        // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-        $originalNodeHash = spl_object_hash($originalNode);
-
-        if ($originalNode instanceof Stmt && $node instanceof Expr) {
-            $node = new Expression($node);
-        }
-
-        $this->nodesToReturn[$originalNodeHash] = $node;
-
-        return $node;
     }
 
     /**
@@ -376,6 +358,27 @@ CODE_SAMPLE;
     protected function removeNode(Node $node): void
     {
         $this->nodeRemover->removeNode($node);
+    }
+
+    private function processResultSingleNode(Node $node, Node $originalNode): Node
+    {
+        $this->connectParentNodes($node);
+
+        // is equals node type? return node early
+        if ($originalNode::class === $node::class) {
+            return $node;
+        }
+
+        // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
+        $originalNodeHash = spl_object_hash($originalNode);
+
+        if ($originalNode instanceof Stmt && $node instanceof Expr) {
+            $node = new Expression($node);
+        }
+
+        $this->nodesToReturn[$originalNodeHash] = $node;
+
+        return $node;
     }
 
     /**
