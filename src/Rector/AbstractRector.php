@@ -26,7 +26,6 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
-use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -123,8 +122,6 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
-    private UnreachableStmtAnalyzer $unreachableStmtAnalyzer;
-
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -146,8 +143,7 @@ CODE_SAMPLE;
         CurrentFileProvider $currentFileProvider,
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
-        ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        UnreachableStmtAnalyzer $unreachableStmtAnalyzer
+        ChangedNodeScopeRefresher $changedNodeScopeRefresher
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -169,7 +165,6 @@ CODE_SAMPLE;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
-        $this->unreachableStmtAnalyzer = $unreachableStmtAnalyzer;
     }
 
     /**
@@ -264,22 +259,26 @@ CODE_SAMPLE;
             return $this->processResultSingleNode($node, $originalNode);
         }
 
-        // in case of unreachable stmts, no other node will have available scope
-        // loop all previous expressions, until we find nothing or is_unreachable
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
 
-        if (! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            $errorMessage = sprintf(
-                'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                $node::class,
-                $parent instanceof Node ? $parent::class : null
-            );
+        if ($currentStmt instanceof Stmt) {
+            $isUnreachable = $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE);
 
-            throw new ShouldNotHappenException($errorMessage);
+            if ($isUnreachable === true) {
+                return $this->processResultSingleNode($node, $originalNode);
+            }
         }
 
-        return $this->processResultSingleNode($node, $originalNode);
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+        $errorMessage = sprintf(
+            'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+            $node::class,
+            $parent instanceof Node ? $parent::class : null
+        );
+
+        throw new ShouldNotHappenException($errorMessage);
+
     }
 
     private function processResultSingleNode(Node $node, Node $originalNode): Node
