@@ -19,7 +19,7 @@ final class UnreachableStmtAnalyzer
     {
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
         return $currentStmt instanceof Stmt
-            ? $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE)
+            ? $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true
             : false;
     }
 }
