@@ -78,7 +78,7 @@ final class VisibilityManipulator
         }
     }
 
-    public function changeNodeVisibility(Class_ | ClassMethod | Property | ClassConst $node, int $visibility): void
+    public function changeNodeVisibility(ClassMethod | Property | ClassConst $node, int $visibility): void
     {
         Assert::oneOf($visibility, [
             Visibility::PUBLIC,
@@ -86,8 +86,7 @@ final class VisibilityManipulator
             Visibility::PRIVATE,
             Visibility::STATIC,
             Visibility::ABSTRACT,
-            Visibility::FINAL,
-            Visibility::READONLY,
+            Visibility::FINAL
         ]);
 
         $this->replaceVisibilityFlag($node, $visibility);
@@ -118,7 +117,7 @@ final class VisibilityManipulator
         $classMethod->flags -= Class_::MODIFIER_ABSTRACT;
     }
 
-    public function makeReadonly(Property | Param $node): void
+    public function makeReadonly(Class_ | Property | Param $node): void
     {
         $this->addVisibilityFlag($node, Visibility::READONLY);
     }
@@ -147,14 +146,14 @@ final class VisibilityManipulator
         $node->flags &= ~$visibility;
     }
 
-    private function replaceVisibilityFlag(Class_ | ClassMethod | Property | ClassConst $node, int $visibility): void
+    private function replaceVisibilityFlag(ClassMethod | Property | ClassConst $node, int $visibility): void
     {
         $isStatic = $node instanceof ClassMethod && $node->isStatic();
         if ($isStatic) {
             $this->makeNonStatic($node);
         }
 
-        if ($visibility !== Visibility::STATIC && $visibility !== Visibility::ABSTRACT && $visibility !== Visibility::FINAL && $visibility !== Visibility::READONLY) {
+        if ($visibility !== Visibility::STATIC && $visibility !== Visibility::ABSTRACT && $visibility !== Visibility::FINAL) {
             $this->removeVisibility($node);
         }
 

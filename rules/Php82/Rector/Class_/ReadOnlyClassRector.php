@@ -83,7 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->visibilityManipulator->changeNodeVisibility($node, Visibility::READONLY);
+        $this->visibilityManipulator->makeReadonly($node);
 
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
         if ($constructClassMethod instanceof ClassMethod) {
