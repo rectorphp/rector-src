@@ -102,7 +102,15 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return strncasecmp(PHP_OS, 'WIN', 3) === 0;
     }
 
+    /**
+     * @deprecated The doTestFileInfois deprecated use assertTestFileInfo instead.
+     */
     protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo, bool $allowMatches = true): void
+    {
+        $this->assertTestFileInfo($$ixtureFileInfo, $allowMatches);
+    }
+
+    protected function assertTestFileInfo(SmartFileInfo $fixtureFileInfo, bool $allowMatches = true): void
     {
         $inputFileInfoAndExpectedFileInfo = StaticFixtureSplitter::splitFileInfoToLocalInputAndExpectedFileInfos(
             $fixtureFileInfo
