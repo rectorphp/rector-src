@@ -60,27 +60,26 @@ final class VisibilityManipulator
      */
     public function removeVisibility(Class_ | ClassMethod | Property | ClassConst $node): void
     {
-        // no modifier
-        if ($node->flags === 0) {
-            if ($node instanceof Class_) {
-                $node->flags -= Class_::MODIFIER_READONLY;
-            }
-
+        if ($node instanceof Class_ && $node->flags === 0) {
+            $node->flags -= Class_::MODIFIER_READONLY;
             return;
         }
 
-        if (! $node instanceof Class_) {
-            if ($node->isPublic()) {
-                $node->flags -= Class_::MODIFIER_PUBLIC;
-            }
+        // no modifier
+        if ($node->flags === 0) {
+            return;
+        }
 
-            if ($node->isProtected()) {
-                $node->flags -= Class_::MODIFIER_PROTECTED;
-            }
+        if ($node->isPublic()) {
+            $node->flags -= Class_::MODIFIER_PUBLIC;
+        }
 
-            if ($node->isPrivate()) {
-                $node->flags -= Class_::MODIFIER_PRIVATE;
-            }
+        if ($node->isProtected()) {
+            $node->flags -= Class_::MODIFIER_PROTECTED;
+        }
+
+        if ($node->isPrivate()) {
+            $node->flags -= Class_::MODIFIER_PRIVATE;
         }
     }
 
