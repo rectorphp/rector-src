@@ -97,6 +97,7 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class): bool
     {
+        // need to have test fixture once feature added to  nikic/PHP-Parser
         if ($this->visibilityManipulator->hasVisibility($class, Visibility::READONLY)) {
             return true;
         }
