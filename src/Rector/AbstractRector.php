@@ -264,6 +264,11 @@ CODE_SAMPLE;
             return $this->processResultSingleNode($node, $originalNode);
         }
 
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+        if ($currentStmt instanceof Stmt) {
+            return $this->processResultSingleNode($node, $originalNode);
+        }
+
         $isUnreachable = $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($node);
 
         if ($isUnreachable === true) {
