@@ -45,7 +45,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Array_ $node
+     * @param Array_|Assign|Foreach_ $node
      */
     public function refactor(Node $node): ?Node
     {

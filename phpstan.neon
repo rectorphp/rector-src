@@ -463,6 +463,7 @@ parameters:
                  - src/Contract/Processor/FileProcessorInterface.php
                  - packages/Parallel/Application/ParallelFileProcessor.php
                  - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
+                 - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
 
         - '#Call to function property_exists\(\) with PhpParser\\Node\\Stmt\\ClassLike and (.*?) will always evaluate to true#'
 
