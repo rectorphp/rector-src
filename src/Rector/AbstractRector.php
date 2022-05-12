@@ -263,13 +263,12 @@ CODE_SAMPLE;
             return $this->processResultSingleNode($node, $originalNode);
         }
 
-        $isUnreachable = $node->getAttribute(AttributeKey::IS_UNREACHABLE);
-        if ($isUnreachable === true) {
-            return $this->processResultSingleNode($node, $originalNode);
-        }
-
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        if ($currentStmt instanceof Stmt) {
+        $isUnreachable = $currentStmt instanceof Stmt
+            ? $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE)
+            : $node->getAttribute(AttributeKey::IS_UNREACHABLE);
+
+        if ($isUnreachable === true) {
             return $this->processResultSingleNode($node, $originalNode);
         }
 
