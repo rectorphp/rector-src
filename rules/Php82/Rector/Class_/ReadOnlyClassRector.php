@@ -10,6 +10,7 @@ use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Core\ValueObject\Visibility;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,9 +21,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const ATTRIBUTE = 'AllowDynamicProperties';
+
     public function __construct(
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly VisibilityManipulator $visibilityManipulator
+        private readonly VisibilityManipulator $visibilityManipulator,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -97,7 +104,10 @@ CODE_SAMPLE
         }
 
         // property promotion
-        // has `#[AllowDynamicProperties]`
+
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE)) {
+            return true;
+        }
 
         return false;
     }
