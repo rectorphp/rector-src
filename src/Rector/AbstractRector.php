@@ -9,7 +9,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
@@ -286,11 +285,6 @@ CODE_SAMPLE;
         throw new ShouldNotHappenException($errorMessage);
     }
 
-    private function isNamedNodes(Node $node): bool
-    {
-        return $node instanceof Name || $node instanceof Namespace_ || $node instanceof FileWithoutNamespace || $node instanceof Identifier;
-    }
-
     /**
      * Replacing nodes in leaveNode() method avoids infinite recursion
      * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
@@ -366,6 +360,11 @@ CODE_SAMPLE;
     protected function removeNode(Node $node): void
     {
         $this->nodeRemover->removeNode($node);
+    }
+
+    private function isNamedNodes(Node $node): bool
+    {
+        return $node instanceof Name || $node instanceof Namespace_ || $node instanceof FileWithoutNamespace || $node instanceof Identifier;
     }
 
     private function processResultSingleNode(Node $node, Node $originalNode): Node
