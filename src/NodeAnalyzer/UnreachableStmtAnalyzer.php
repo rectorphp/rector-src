@@ -17,9 +17,19 @@ final class UnreachableStmtAnalyzer
 
     public function isStmtPHPStanUnreachable(Node $node): bool
     {
+        $isUnreachable = $node->getAttribute(AttributeKey::IS_UNREACHABLE);
+
+        if ($isUnreachable === true) {
+            return true;
+        }
+
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        return $currentStmt instanceof Stmt
-            ? $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true
-            : true;
+        if (! $currentStmt instanceof Stmt) {
+            return false;
+        }
+
+        $isUnreachable = $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE);
+
+        return $isUnreachable === true;
     }
 }
