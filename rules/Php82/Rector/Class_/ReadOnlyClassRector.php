@@ -115,10 +115,17 @@ CODE_SAMPLE
 
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
-            return false;
+            // no __construct means no property promotion, skip if no property
+            return $properties === [];
         }
 
-        foreach ($constructClassMethod->getParams() as $param) {
+        $params = $constructClassMethod->getParams();
+        if ($params === []) {
+            // no params means no property promotion, skip if no property
+            return $properties === [];
+        }
+
+        foreach ($params as $param) {
             if ($param->flags !== 0) {
                 return true;
             }
