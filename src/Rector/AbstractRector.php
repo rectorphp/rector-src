@@ -263,12 +263,13 @@ CODE_SAMPLE;
             return $this->processResultSingleNode($node, $originalNode);
         }
 
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        $isUnreachable = $currentStmt instanceof Stmt
-            ? $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE)
-            : $node->getAttribute(AttributeKey::IS_UNREACHABLE);
-
+        $isUnreachable = $node->getAttribute(AttributeKey::IS_UNREACHABLE);
         if ($isUnreachable === true) {
+            return $this->processResultSingleNode($node, $originalNode);
+        }
+
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+        if ($currentStmt instanceof Stmt) {
             return $this->processResultSingleNode($node, $originalNode);
         }
 
@@ -282,6 +283,8 @@ CODE_SAMPLE;
 
         throw new ShouldNotHappenException($errorMessage);
     }
+
+    private function throw
 
     /**
      * Replacing nodes in leaveNode() method avoids infinite recursion
