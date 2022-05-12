@@ -7,6 +7,7 @@ namespace Rector\Php82\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -111,10 +112,8 @@ CODE_SAMPLE
         }
 
         $properties = $class->getProperties();
-        foreach ($properties as $property) {
-            if (! $property->isReadonly()) {
-                return true;
-            }
+        if ($this->hasWritableProperty($properties)) {
+            return true;
         }
 
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
@@ -132,6 +131,20 @@ CODE_SAMPLE
         foreach ($params as $param) {
             // has non-property promotion, skip
             if ($param->flags !== 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Property[] $properties
+     */
+    private function hasWritableProperty(array $properties): bool
+    {
+        foreach ($properties as $property) {
+            if (! $property->isReadonly()) {
                 return true;
             }
         }
