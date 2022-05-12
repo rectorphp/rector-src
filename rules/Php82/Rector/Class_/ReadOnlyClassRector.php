@@ -76,6 +76,9 @@ CODE_SAMPLE
             }
         }
 
+        // property promotion
+        // has `#[AllowDynamicProperties]`
+
         return $node;
     }
 
