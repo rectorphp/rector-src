@@ -86,7 +86,7 @@ final class VisibilityManipulator
             Visibility::PRIVATE,
             Visibility::STATIC,
             Visibility::ABSTRACT,
-            Visibility::FINAL
+            Visibility::FINAL,
         ]);
 
         $this->replaceVisibilityFlag($node, $visibility);
