@@ -270,7 +270,7 @@ CODE_SAMPLE;
 
         $isUnreachable = $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($node);
 
-        if ($isUnreachable === true) {
+        if ($isUnreachable) {
             return $this->processResultSingleNode($node, $originalNode);
         }
 
