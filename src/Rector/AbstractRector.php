@@ -264,12 +264,8 @@ CODE_SAMPLE;
         }
 
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        if ($currentStmt instanceof Stmt) {
-            $isUnreachable = $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt);
-
-            if ($isUnreachable === true) {
-                return $this->processResultSingleNode($node, $originalNode);
-            }
+        if ($currentStmt instanceof Stmt && $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
+            return $this->processResultSingleNode($node, $originalNode);
         }
 
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
