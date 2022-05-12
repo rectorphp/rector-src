@@ -51,7 +51,7 @@ use Symplify\Skipper\Skipper\Skipper;
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
     /**
-     * @var array<AttributeKey:*>
+     * @var array<AttributeKey::*>
      */
     private const ATTRIBUTES_TO_MIRROR = [
         AttributeKey::SCOPE,
@@ -450,9 +450,6 @@ CODE_SAMPLE;
         }
 
         $this->rectorOutputStyle->writeln('[file] ' . $this->file->getRelativeFilePath());
-
-        // prevent spamming with the same class over and over
-        // indented on purpose to improve log nesting under [refactoring]
         $this->rectorOutputStyle->writeln('[rule] ' . static::class);
         $this->rectorOutputStyle->newLine(1);
     }
