@@ -92,6 +92,10 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class): bool
     {
+        if ($this->visibilityManipulator->hasVisibility($class, Visibility::READONLY)) {
+            return true;
+        }
+
         if ($this->classAnalyzer->isAnonymousClass($class)) {
             return true;
         }
