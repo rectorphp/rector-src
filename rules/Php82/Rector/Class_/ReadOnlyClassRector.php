@@ -25,8 +25,7 @@ final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionI
     public function __construct(
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -81,6 +80,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::READONLY_CLASS;
+    }
+
     private function shouldSkip(Class_ $node): bool
     {
         if ($this->classAnalyzer->isAnonymousClass($node)) {
@@ -98,10 +102,5 @@ CODE_SAMPLE
         // has `#[AllowDynamicProperties]`
 
         return false;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::READONLY_CLASS;
     }
 }
