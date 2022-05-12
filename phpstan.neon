@@ -450,16 +450,6 @@ parameters:
 
         # parallel
         -
-<<<<<<< HEAD
-             message: '#Instead of array shape, use value object with specific types in constructor and getters#'
-             paths:
-                 - src/ValueObjectFactory/ProcessResultFactory.php
-                 - src/*/*Processor.php
-                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
-                 - src/Contract/Processor/FileProcessorInterface.php
-                 - packages/Parallel/Application/ParallelFileProcessor.php
-                 - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
-=======
             message: '#Instead of array shape, use value object with specific types in constructor and getters#'
             paths:
                 - src/ValueObjectFactory/ProcessResultFactory.php
@@ -467,11 +457,7 @@ parameters:
                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
                 - src/Contract/Processor/FileProcessorInterface.php
                 - packages/Parallel/Application/ParallelFileProcessor.php
-<<<<<<< HEAD
->>>>>>> remove requires from tests, as all tests run on PHP 8.1
-=======
                 - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
->>>>>>> extract getter factory
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'

@@ -383,13 +383,13 @@ CODE_SAMPLE;
             return true;
         }
 
-        $parentStmt = $stmt;
-        while ($parentStmt = $parentStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
-            if (! $parentStmt instanceof Node) {
+        $previousStmt = $stmt;
+        while ($previousStmt = $previousStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
+            if (! $previousStmt instanceof Node) {
                 break;
             }
 
-            if ($parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+            if ($previousStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
                 return true;
             }
         }

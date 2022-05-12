@@ -58,23 +58,9 @@ CODE_SAMPLE
             return null;
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         if ($node instanceof Foreach_ && $node->valueVar instanceof Array_) {
             $node->valueVar = $this->processToList($node->valueVar);
             return $node;
-=======
-        if ($node instanceof Foreach_) {
-            if ($node->valueVar instanceof Array_) {
-                $node->valueVar = $this->processToList($node->valueVar);
-                return $node;
-            }
->>>>>>> fix entering class again
-=======
-        if ($node instanceof Foreach_ && $node->valueVar instanceof Array_) {
-            $node->valueVar = $this->processToList($node->valueVar);
-            return $node;
->>>>>>> fix trait scope
         }
 
         return null;

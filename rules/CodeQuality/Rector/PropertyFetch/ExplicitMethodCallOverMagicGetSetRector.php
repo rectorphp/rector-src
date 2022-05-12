@@ -130,14 +130,7 @@ CODE_SAMPLE
             return false;
         }
 
-<<<<<<< HEAD
         return $parent->var === $propertyFetch;
-=======
-        return (bool) $this->betterNodeFinder->findFirst(
-            $parent->var,
-            fn (Node $subNode): bool => $subNode === $propertyFetch
-        );
->>>>>>> extract getter factory
     }
 
     private function refactorPropertyFetch(PropertyFetch $propertyFetch): MethodCall|null
