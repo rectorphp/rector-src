@@ -88,7 +88,8 @@ CODE_SAMPLE
         $this->visibilityManipulator->changeNodeVisibility($node, Visibility::READONLY);
 
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
-        if ($constructClassMethod instanceof ClassMethod) {die;
+        if ($constructClassMethod instanceof ClassMethod) {
+            die;
             $this->promotedPropertyParamCleaner->cleanFromFlags($constructClassMethod->getParams());
         }
 
