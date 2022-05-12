@@ -6,8 +6,10 @@ namespace Rector\Php82\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Core\ValueObject\Visibility;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
@@ -100,13 +102,28 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE)) {
+            return true;
+        }
+
         $properties = $class->getProperties();
         foreach ($properties as $property) {
             if (! $property->isReadonly()) {
                 return true;
             }
         }
-        // property promotion
-        return $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
+
+        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        foreach ($constructClassMethod->getParams() as $param) {
+            if ($param->flags !== 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
