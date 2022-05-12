@@ -103,7 +103,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     }
 
     /**
-     * @deprecated The doTestFileInfois deprecated use assertTestFileInfo instead.
+     * @deprecated The doTestFileInfo is deprecated use assertTestFileInfo instead.
      */
     protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo, bool $allowMatches = true): void
     {
