@@ -29,48 +29,6 @@ define('__RECTOR_RUNNING__', true);
 $autoloadIncluder = new AutoloadIncluder();
 $autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
 
-
-if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) {
-    require_once __DIR__ . '/../preload.php';
-}
-
-require_once __DIR__ . '/../src/constants.php';
-
-$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
-$autoloadIncluder->autoloadProjectAutoloaderFile();
-$autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
-$autoloadIncluder->autoloadFromCommandLine();
-
-$rectorConfigsResolver = new RectorConfigsResolver();
-
-try {
-    $bootstrapConfigs = $rectorConfigsResolver->provide();
-    $rectorContainerFactory = new RectorContainerFactory();
-    $container = $rectorContainerFactory->createFromBootstrapConfigs($bootstrapConfigs);
-} catch (Throwable $throwable) {
-    // for json output
-    $argvInput = new ArgvInput();
-    $outputFormat = $argvInput->getParameterOption('--' . Option::OUTPUT_FORMAT);
-
-    // report fatal error in json format
-    if ($outputFormat === JsonOutputFormatter::NAME) {
-        echo Json::encode([
-            'fatal_errors' => [$throwable->getMessage()],
-        ]);
-    } else {
-        // report fatal errors in console format
-        $rectorConsoleOutputStyleFactory = new RectorConsoleOutputStyleFactory(new PrivatesCaller());
-        $rectorConsoleOutputStyle = $rectorConsoleOutputStyleFactory->create();
-        $rectorConsoleOutputStyle->error($throwable->getMessage());
-    }
-
-    exit(Command::FAILURE);
-}
-
-/** @var ConsoleApplication $application */
-$application = $container->get(ConsoleApplication::class);
-exit($application->run());
-
 final class AutoloadIncluder
 {
     /**
@@ -147,3 +105,44 @@ final class AutoloadIncluder
         require_once $filePath;
     }
 }
+
+if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) {
+    require_once __DIR__ . '/../preload.php';
+}
+
+require_once __DIR__ . '/../src/constants.php';
+
+$autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
+$autoloadIncluder->autoloadProjectAutoloaderFile();
+$autoloadIncluder->autoloadRectorInstalledAsGlobalDependency();
+$autoloadIncluder->autoloadFromCommandLine();
+
+$rectorConfigsResolver = new RectorConfigsResolver();
+
+try {
+    $bootstrapConfigs = $rectorConfigsResolver->provide();
+    $rectorContainerFactory = new RectorContainerFactory();
+    $container = $rectorContainerFactory->createFromBootstrapConfigs($bootstrapConfigs);
+} catch (Throwable $throwable) {
+    // for json output
+    $argvInput = new ArgvInput();
+    $outputFormat = $argvInput->getParameterOption('--' . Option::OUTPUT_FORMAT);
+
+    // report fatal error in json format
+    if ($outputFormat === JsonOutputFormatter::NAME) {
+        echo Json::encode([
+            'fatal_errors' => [$throwable->getMessage()],
+        ]);
+    } else {
+        // report fatal errors in console format
+        $rectorConsoleOutputStyleFactory = new RectorConsoleOutputStyleFactory(new PrivatesCaller());
+        $rectorConsoleOutputStyle = $rectorConsoleOutputStyleFactory->create();
+        $rectorConsoleOutputStyle->error($throwable->getMessage());
+    }
+
+    exit(Command::FAILURE);
+}
+
+/** @var ConsoleApplication $application */
+$application = $container->get(ConsoleApplication::class);
+exit($application->run());
