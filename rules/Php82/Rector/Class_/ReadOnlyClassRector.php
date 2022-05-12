@@ -106,13 +106,7 @@ CODE_SAMPLE
                 return true;
             }
         }
-
         // property promotion
-
-        if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE)) {
-            return true;
-        }
-
-        return false;
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
     }
 }
