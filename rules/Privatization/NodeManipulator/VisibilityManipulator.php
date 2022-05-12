@@ -62,19 +62,25 @@ final class VisibilityManipulator
     {
         // no modifier
         if ($node->flags === 0) {
+            if ($node instanceof Class_) {
+                $node->flags -= Class_::MODIFIER_READONLY;
+            }
+
             return;
         }
 
-        if ($node->isPublic()) {
-            $node->flags -= Class_::MODIFIER_PUBLIC;
-        }
+        if (! $node instanceof Class_) {
+            if ($node->isPublic()) {
+                $node->flags -= Class_::MODIFIER_PUBLIC;
+            }
 
-        if ($node->isProtected()) {
-            $node->flags -= Class_::MODIFIER_PROTECTED;
-        }
+            if ($node->isProtected()) {
+                $node->flags -= Class_::MODIFIER_PROTECTED;
+            }
 
-        if ($node->isPrivate()) {
-            $node->flags -= Class_::MODIFIER_PRIVATE;
+            if ($node->isPrivate()) {
+                $node->flags -= Class_::MODIFIER_PRIVATE;
+            }
         }
     }
 
