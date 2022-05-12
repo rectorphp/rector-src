@@ -46,6 +46,7 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\Skipper\Skipper\Skipper;
+use PHPStan\Analyser\MutatingScope;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
@@ -251,41 +252,37 @@ CODE_SAMPLE;
         /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
 
-        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
-
-        $requiresScopeRefresh = true;
-
-        // names do not have scope in PHPStan
-        if (! $node instanceof Name && ! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace && ! $node instanceof Identifier) {
-            if ($currentScope === null) {
-                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-                // in case of unreachable stmts, no other node will have available scope
-                // loop all previous expressions, until we find nothing or is_unreachable
-                $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($parent);
-
-                if ($currentStmt instanceof Stmt && $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable(
-                    $currentStmt
-                )) {
-                    $requiresScopeRefresh = false;
-                }
-
-                if ($requiresScopeRefresh) {
-                    $errorMessage = sprintf(
-                        'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                        $node::class,
-                        $parent instanceof Node ? $parent::class : null
-                    );
-
-                    throw new ShouldNotHappenException($errorMessage);
-                }
-            }
-
-            if ($requiresScopeRefresh) {
-                $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
-            }
+        if (in_array($node::class, [Name::class, Namespace_::class, FileWithoutNamespace::class, Identifier::class], true)) {
+            return $this->processResultSingleNode($node, $originalNode);
         }
 
+        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
+
+        if ($currentScope instanceof MutatingScope) {
+            $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
+            return $this->processResultSingleNode($node, $originalNode);
+        }
+
+        // in case of unreachable stmts, no other node will have available scope
+        // loop all previous expressions, until we find nothing or is_unreachable
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+
+        if (! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            $errorMessage = sprintf(
+                'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+                $node::class,
+                $parent instanceof Node ? $parent::class : null
+            );
+
+            throw new ShouldNotHappenException($errorMessage);
+        }
+
+        return $this->processResultSingleNode($node, $originalNode);
+    }
+
+    private function processResultSingleNode(Node $node, Node $originalNode): Node
+    {
         $this->connectParentNodes($node);
 
         // is equals node type? return node early
