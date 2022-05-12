@@ -126,6 +126,7 @@ CODE_SAMPLE
         }
 
         foreach ($params as $param) {
+            // has non-property promotion, skip
             if ($param->flags !== 0) {
                 return true;
             }
