@@ -51,7 +51,7 @@ use Symplify\Skipper\Skipper\Skipper;
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
     /**
-     * @var array<AttributeKey::*>
+     * @var string[]
      */
     private const ATTRIBUTES_TO_MIRROR = [
         AttributeKey::SCOPE,
