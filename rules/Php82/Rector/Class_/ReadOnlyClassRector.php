@@ -69,6 +69,13 @@ CODE_SAMPLE
             return null;
         }
 
+        $properties = $node->getProperties();
+        foreach ($properties as $property) {
+            if (! $property->isReadonly()) {
+                return null;
+            }
+        }
+
         return $node;
     }
 
