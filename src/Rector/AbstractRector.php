@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
@@ -252,7 +253,7 @@ CODE_SAMPLE;
         /** @var Node $node */
         $this->mirrorAttributes($originalAttributes, $node);
 
-        if (in_array($node::class, [Name::class, Namespace_::class, FileWithoutNamespace::class, Identifier::class], true)) {
+        if (in_array($node::class, [Name::class, FullyQualified::class, Namespace_::class, FileWithoutNamespace::class, Identifier::class], true)) {
             return $this->processResultSingleNode($node, $originalNode);
         }
 
