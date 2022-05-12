@@ -25,6 +25,7 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -120,6 +121,8 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
+    private UnreachableStmtAnalyzer $unreachableStmtAnalyzer;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -141,7 +144,8 @@ CODE_SAMPLE;
         CurrentFileProvider $currentFileProvider,
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
-        ChangedNodeScopeRefresher $changedNodeScopeRefresher
+        ChangedNodeScopeRefresher $changedNodeScopeRefresher,
+        UnreachableStmtAnalyzer $unreachableStmtAnalyzer
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -163,6 +167,7 @@ CODE_SAMPLE;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
+        $this->unreachableStmtAnalyzer = $unreachableStmtAnalyzer;
     }
 
     /**
@@ -257,10 +262,11 @@ CODE_SAMPLE;
 
                 // in case of unreachable stmts, no other node will have available scope
                 // loop all previous expressions, until we find nothing or is_unreachable
-
                 $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($parent);
 
-                if ($currentStmt instanceof Stmt && $this->isStmtPHPStanUnreachable($currentStmt)) {
+                if ($currentStmt instanceof Stmt && $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable(
+                    $currentStmt
+                )) {
                     $requiresScopeRefresh = false;
                 }
 
@@ -374,27 +380,6 @@ CODE_SAMPLE;
     protected function removeNode(Node $node): void
     {
         $this->nodeRemover->removeNode($node);
-    }
-
-    private function isStmtPHPStanUnreachable(Stmt $stmt): bool
-    {
-        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
-            // here the scope is never available for next stmt so we have nothing to refresh
-            return true;
-        }
-
-        $previousStmt = $stmt;
-        while ($previousStmt = $previousStmt->getAttribute(AttributeKey::PREVIOUS_NODE)) {
-            if (! $previousStmt instanceof Node) {
-                break;
-            }
-
-            if ($previousStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
