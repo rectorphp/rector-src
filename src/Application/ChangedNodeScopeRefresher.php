@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
@@ -60,6 +61,11 @@ final class ChangedNodeScopeRefresher
         } else {
             if ($node instanceof Param) {
                 // param type cannot be refreshed
+                return;
+            }
+
+            if ($node instanceof Arg) {
+                // arg type cannot be refreshed
                 return;
             }
 
