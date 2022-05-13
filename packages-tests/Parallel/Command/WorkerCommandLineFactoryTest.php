@@ -92,7 +92,7 @@ final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
                 self::COMMAND => 'process',
                 Option::SOURCE => ['src'],
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
-                '--' . Option::DEBUG => true
+                '--' . Option::DEBUG => true,
             ],
             "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
