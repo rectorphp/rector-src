@@ -96,6 +96,10 @@ final class WorkerCommandLineFactory
             $workerCommandArray[] = $input->getOption(Option::CONFIG);
         }
 
+        if ($input->hasOption(Option::DEBUG)) {
+            $workerCommandArray[] = '--debug';
+        }
+
         return implode(' ', $workerCommandArray);
     }
 
