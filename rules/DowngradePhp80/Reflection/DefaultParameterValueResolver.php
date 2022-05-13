@@ -35,23 +35,6 @@ final class DefaultParameterValueResolver
         return $this->resolveValueFromType($defaultValue);
     }
 
-    public function resolveFromFunctionLikeAndPosition(
-        MethodReflection | FunctionReflection $functionLikeReflection,
-        int $position
-    ): ?Expr {
-        $parametersAcceptor = $functionLikeReflection->getVariants()[0] ?? null;
-        if (! $parametersAcceptor instanceof ParametersAcceptor) {
-            return null;
-        }
-
-        $parameterReflection = $parametersAcceptor->getParameters()[$position] ?? null;
-        if (! $parameterReflection instanceof ParameterReflection) {
-            return null;
-        }
-
-        return $this->resolveFromParameterReflection($parameterReflection);
-    }
-
     private function resolveValueFromType(ConstantType $constantType): ConstFetch | Expr
     {
         if ($constantType instanceof ConstantBooleanType) {
