@@ -96,7 +96,7 @@ final class WorkerCommandLineFactory
             $workerCommandArray[] = $input->getOption(Option::CONFIG);
         }
 
-        if ($input->hasOption(Option::DEBUG)) {
+        if ($input->getOption(Option::DEBUG) === true) {
             $workerCommandArray[] = '--debug';
         }
 
