@@ -26,6 +26,7 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -47,6 +48,7 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\Skipper\Skipper\Skipper;
+use PHPStan\Analyser\MutatingScope;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
@@ -126,6 +128,8 @@ CODE_SAMPLE;
 
     private RectorOutputStyle $rectorOutputStyle;
 
+    private ScopeAnalyzer $scopeAnalyzer;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -150,6 +154,7 @@ CODE_SAMPLE;
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         UnreachableStmtAnalyzer $unreachableStmtAnalyzer,
         RectorOutputStyle $rectorOutputStyle,
+        ScopeAnalyzer $scopeAnalyzer
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -173,6 +178,7 @@ CODE_SAMPLE;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->unreachableStmtAnalyzer = $unreachableStmtAnalyzer;
         $this->rectorOutputStyle = $rectorOutputStyle;
+        $this->scopeAnalyzer = $scopeAnalyzer;
     }
 
     /**
@@ -260,36 +266,26 @@ CODE_SAMPLE;
 
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
 
-        $requiresScopeRefresh = true;
+        if ($currentScope instanceof MutatingScope) {
+            $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
+        } else {
+            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
 
-        // names do not have scope in PHPStan
-        if (! $node instanceof Name && ! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace && ! $node instanceof Identifier) {
-            if ($currentScope === null) {
+            /**
+             * Original Node does not has Scope, while:
+             *
+             * 1. Node is Scope aware
+             * 2. Reachable
+             */
+            if ($this->scopeAnalyzer->hasScope($node) && ! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+                $errorMessage = sprintf(
+                    'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+                    $node::class,
+                    $parent instanceof Node ? $parent::class : null
+                );
 
-                // in case of unreachable stmts, no other node will have available scope
-                // loop all previous expressions, until we find nothing or is_unreachable
-                $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($parent);
-
-                if ($currentStmt instanceof Stmt && $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable(
-                    $currentStmt
-                )) {
-                    $requiresScopeRefresh = false;
-                }
-
-                if ($requiresScopeRefresh) {
-                    $errorMessage = sprintf(
-                        'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                        $node::class,
-                        $parent instanceof Node ? $parent::class : null
-                    );
-
-                    throw new ShouldNotHappenException($errorMessage);
-                }
-            }
-
-            if ($requiresScopeRefresh) {
-                $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
+                throw new ShouldNotHappenException($errorMessage);
             }
         }
 
