@@ -15,6 +15,9 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final class ScopeAnalyzer
 {
+    /**
+     * @var array<class-string<Node>>
+     */
     private const NO_SCOPE_NODES = [
         Name::class,
         Namespace_::class,

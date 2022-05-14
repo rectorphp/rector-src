@@ -23,8 +23,6 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
-use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
-use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -119,11 +117,7 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
-    private UnreachableStmtAnalyzer $unreachableStmtAnalyzer;
-
     private RectorOutputStyle $rectorOutputStyle;
-
-    private ScopeAnalyzer $scopeAnalyzer;
 
     #[Required]
     public function autowire(
@@ -147,9 +141,7 @@ CODE_SAMPLE;
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        UnreachableStmtAnalyzer $unreachableStmtAnalyzer,
-        RectorOutputStyle $rectorOutputStyle,
-        ScopeAnalyzer $scopeAnalyzer
+        RectorOutputStyle $rectorOutputStyle
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -171,9 +163,7 @@ CODE_SAMPLE;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
-        $this->unreachableStmtAnalyzer = $unreachableStmtAnalyzer;
         $this->rectorOutputStyle = $rectorOutputStyle;
-        $this->scopeAnalyzer = $scopeAnalyzer;
     }
 
     /**
