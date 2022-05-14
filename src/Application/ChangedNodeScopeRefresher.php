@@ -65,13 +65,9 @@ final class ChangedNodeScopeRefresher
             $node = new Property(0, [], [], null, [$attributeGroup]);
         }
 
-        if ($node instanceof Stmt) {
-            $stmts = [$node];
-        }
-
-        if ($node instanceof Expr) {
-            $stmts = [new Expression($node)];
-        }
+        $stmts = $node instanceof Stmt
+            ? [$node]
+            : [new Expression($node)];
 
         $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
     }
