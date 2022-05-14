@@ -261,33 +261,7 @@ CODE_SAMPLE;
         $this->mirrorAttributes($originalAttributes, $node);
 
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
-
-        if ($currentScope instanceof MutatingScope) {
-            $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
-        } else {
-            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-
-            /**
-             * Original Node does not has Scope, while:
-             *
-             * 1. Node is Scope aware
-             * 2. Reachable check by verify
-             *      - in case of unreachable stmts, no other node will have available scope
-             *      - loop all previous expressions, until we find nothing or is_unreachable
-             */
-            if ($this->scopeAnalyzer->hasScope($node) && ! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable(
-                $currentStmt
-            )) {
-                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-                $errorMessage = sprintf(
-                    'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                    $node::class,
-                    $parent instanceof Node ? $parent::class : null
-                );
-
-                throw new ShouldNotHappenException($errorMessage);
-            }
-        }
+        $this->changedNodeScopeRefresher->refresh($node, $this->file->getSmartFileInfo(), $currentScope);
 
         $this->connectParentNodes($node);
 

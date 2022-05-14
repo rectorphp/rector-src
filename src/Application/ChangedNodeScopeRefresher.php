@@ -17,6 +17,9 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
+use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -27,17 +30,35 @@ final class ChangedNodeScopeRefresher
 {
     public function __construct(
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
+        private readonly ScopeAnalyzer $scopeAnalyzer,
+        private readonly UnreachableStmtAnalyzer $unreachableStmtAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
     public function refresh(
-        Expr|Stmt|Node $node,
+        Node $node,
         SmartFileInfo $smartFileInfo,
-        MutatingScope $mutatingScope
+        ?MutatingScope $mutatingScope
     ): void {
-        // nothing to refresh
-        if ($node instanceof Identifier) {
+        if (! $this->scopeAnalyzer->hasScope($node)) {
             return;
+        }
+
+        if (! $mutatingScope instanceof MutatingScope) {
+            /**
+             * Node does not has Scope, while:
+             *
+             * 1. Node is Scope aware
+             * 2. Reachable check by verify
+             *      - in case of unreachable stmts, no other node will have available scope
+             *      - loop all previous expressions, until we find nothing or is_unreachable
+             */
+            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+            if (! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
+                $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
+                throw new ShouldNotHappenException($errorMessage);
+            }
         }
 
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
@@ -49,28 +70,12 @@ final class ChangedNodeScopeRefresher
             $node = new Property(0, [], [], null, [$attributeGroup]);
         }
 
-        // phpstan cannot process for some reason
-        if ($node instanceof Enum_) {
-            return;
-        }
-
         if ($node instanceof Stmt) {
             $stmts = [$node];
-        } elseif ($node instanceof Expr) {
+        }
+
+        if ($node instanceof Expr) {
             $stmts = [new Expression($node)];
-        } else {
-            if ($node instanceof Param) {
-                // param type cannot be refreshed
-                return;
-            }
-
-            if ($node instanceof Arg) {
-                // arg type cannot be refreshed
-                return;
-            }
-
-            $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
-            throw new ShouldNotHappenException($errorMessage);
         }
 
         $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
