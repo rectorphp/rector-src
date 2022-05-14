@@ -7,8 +7,8 @@ namespace Rector\Core\Rector;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Webmozart\Assert\Assert;
 
 /**
  * @internal Currently in experimental testing for core Rector rules. So we can verify if this feature is useful or not.
@@ -23,18 +23,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     public function refactor(Node $node)
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-            $errorMessage = sprintf(
-                'Scope not available on "%s" node with parent node of "%s", but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
-                $node::class,
-                $parent::class,
-                static::class,
-            );
-
-            throw new ShouldNotHappenException($errorMessage);
-        }
+        Assert::isInstanceOf($scope, Scope::class);
 
         return $this->refactorWithScope($node, $scope);
     }
