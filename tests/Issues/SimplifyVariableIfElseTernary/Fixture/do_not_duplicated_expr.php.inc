@@ -6,7 +6,8 @@ namespace Rector\Core\Tests\Issues\SimplifyVariableIfElseTernary\Fixture;
 
 final class DoNotDuplicateExpr
 {
-    function test($foo, $bar) {
+    function test($foo, $bar)
+    {
         if ($foo > 0) {
             $baz = 'a';
         } else {
@@ -27,7 +28,8 @@ namespace Rector\Core\Tests\Issues\SimplifyVariableIfElseTernary\Fixture;
 
 final class DoNotDuplicateExpr
 {
-    function test($foo, $bar) {
+    function test($foo, $bar)
+    {
         return $foo > 0 ? 'a' : 'b';
     }
 }

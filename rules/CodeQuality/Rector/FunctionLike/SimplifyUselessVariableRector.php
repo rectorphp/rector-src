@@ -73,51 +73,59 @@ CODE_SAMPLE
             return null;
         }
 
-        $previousStmt = null;
-        $hasChanged = false;
-
-        foreach ($stmts as $stmt) {
-            if ($previousStmt === null || ! $stmt instanceof Return_) {
-                $previousStmt = $stmt;
+        foreach ($stmts as $key => $stmt) {
+            if (! isset($stmts[$key - 1])) {
                 continue;
             }
 
+            if (! $stmt instanceof Return_) {
+                continue;
+            }
+
+            $previousStmt = $stmts[$key - 1];
             if ($this->shouldSkipStmt($stmt, $previousStmt)) {
-                $previousStmt = $stmt;
                 continue;
             }
 
-            /** @var Expression $previousStmt */
-            /** @var Assign|AssignOp $previousNode */
-            $previousNode = $previousStmt->expr;
+            if ($this->isReturnWithVarAnnotation($stmt)) {
+                continue;
+            }
 
-            /** @var Return_ $stmt */
-            if ($previousNode instanceof Assign) {
-                if ($this->isReturnWithVarAnnotation($stmt)) {
-                    continue;
-                }
-
-                $stmt->expr = $previousNode->expr;
-            } else {
-                $binaryClass = $this->assignAndBinaryMap->getAlternative($previousNode);
+            /**
+             * @var Expression $previousStmt
+             * @var Assign|AssignOp $previousStmtExpr
+             */
+            $previousStmtExpr = $previousStmt->expr;
+            if (! $previousStmtExpr instanceof Assign) {
+                $binaryClass = $this->assignAndBinaryMap->getAlternative($previousStmt->expr);
                 if ($binaryClass === null) {
                     continue;
                 }
 
-                $stmt->expr = new $binaryClass($previousNode->var, $previousNode->expr);
+                $stmt->expr = new $binaryClass($previousStmtExpr->var, $previousStmtExpr->expr);
+                unset($node->stmts[$key - 1]);
+
+                return $node;
             }
 
-            $this->removeNode($previousStmt);
-            $hasChanged = true;
-
-            $previousStmt = $stmt;
-        }
-
-        if ($hasChanged) {
-            return $node;
+            /** @var Assign $assign */
+            $assign = $previousStmt->expr;
+            return $this->processPreviousAssign($node, $stmt, $assign, $key);
         }
 
         return null;
+    }
+
+    private function processPreviousAssign(
+        FunctionLike $functionLike,
+        Return_ $return,
+        Assign $assign,
+        int $key
+    ): FunctionLike {
+        $return->expr = $assign->expr;
+        unset($functionLike->stmts[$key - 1]);
+
+        return $functionLike;
     }
 
     private function shouldSkipStmt(Return_ $return, Stmt $previousStmt): bool
