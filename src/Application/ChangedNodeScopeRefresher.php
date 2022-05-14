@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\MutatingScope;
@@ -36,11 +32,7 @@ final class ChangedNodeScopeRefresher
     ) {
     }
 
-    public function refresh(
-        Node $node,
-        SmartFileInfo $smartFileInfo,
-        ?MutatingScope $mutatingScope
-    ): void {
+    public function refresh(Node $node, SmartFileInfo $smartFileInfo, ?MutatingScope $mutatingScope): void {
         if (! $this->scopeAnalyzer->hasScope($node)) {
             return;
         }
