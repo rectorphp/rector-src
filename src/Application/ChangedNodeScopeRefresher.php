@@ -34,7 +34,6 @@ final class ChangedNodeScopeRefresher
 
     public function refresh(Node $node, SmartFileInfo $smartFileInfo, ?MutatingScope $mutatingScope): void
     {
-        $stmts = null;
         // nothing to refresh
         if (! $this->scopeAnalyzer->hasScope($node)) {
             return;
