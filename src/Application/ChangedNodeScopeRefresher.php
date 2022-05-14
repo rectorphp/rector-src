@@ -16,6 +16,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -48,7 +49,13 @@ final class ChangedNodeScopeRefresher
              */
             $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
             if (! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
-                $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
+                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+                $errorMessage = sprintf(
+                    'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+                    $node::class,
+                    $parent instanceof Node ? $parent::class : null
+                );
+
                 throw new ShouldNotHappenException($errorMessage);
             }
         }
@@ -62,9 +69,15 @@ final class ChangedNodeScopeRefresher
             $node = new Property(0, [], [], null, [$attributeGroup]);
         }
 
-        $stmts = $node instanceof Stmt
-            ? [$node]
-            : [new Expression($node)];
+        if ($node instanceof Stmt) {
+            $stmts = [$node];
+        } elseif ($node instanceof Expr) {
+            $stmts = [new Expression($node)];
+        } else {
+            $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
+            throw new ShouldNotHappenException($errorMessage);
+        }
+
 
         $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
     }
