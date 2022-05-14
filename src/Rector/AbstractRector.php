@@ -7,14 +7,12 @@ namespace Rector\Core\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -31,7 +29,6 @@ use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
@@ -48,7 +45,6 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\Skipper\Skipper\Skipper;
-use PHPStan\Analyser\MutatingScope;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
@@ -279,7 +275,9 @@ CODE_SAMPLE;
              *      - in case of unreachable stmts, no other node will have available scope
              *      - loop all previous expressions, until we find nothing or is_unreachable
              */
-            if ($this->scopeAnalyzer->hasScope($node) && ! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
+            if ($this->scopeAnalyzer->hasScope($node) && ! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable(
+                $currentStmt
+            )) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
                 $errorMessage = sprintf(
                     'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
