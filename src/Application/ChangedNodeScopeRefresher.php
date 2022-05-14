@@ -58,8 +58,6 @@ final class ChangedNodeScopeRefresher
 
                 throw new ShouldNotHappenException($errorMessage);
             }
-
-            return;
         }
 
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
