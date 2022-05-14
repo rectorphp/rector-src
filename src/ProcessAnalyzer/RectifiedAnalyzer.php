@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
-use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -49,11 +47,6 @@ final class RectifiedAnalyzer
     {
         if ($rectifiedNode->getRectorClass() === $rector::class && $rectifiedNode->getNode() === $node) {
             return false;
-        }
-
-        if ($rector instanceof AbstractScopeAwareRector) {
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-            return $scope instanceof Scope;
         }
 
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
