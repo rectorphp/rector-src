@@ -275,7 +275,9 @@ CODE_SAMPLE;
              * Original Node does not has Scope, while:
              *
              * 1. Node is Scope aware
-             * 2. Reachable
+             * 2. Reachable check by verify
+             *      - in case of unreachable stmts, no other node will have available scope
+             *      - loop all previous expressions, until we find nothing or is_unreachable
              */
             if ($this->scopeAnalyzer->hasScope($node) && ! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
