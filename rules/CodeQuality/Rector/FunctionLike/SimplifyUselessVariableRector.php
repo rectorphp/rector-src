@@ -93,38 +93,33 @@ CODE_SAMPLE
 
             /**
              * @var Expression $previousStmt
-             * @var Assign|AssignOp $previousStmtExpr
+             * @var Assign|AssignOp $assign
              */
-            $previousStmtExpr = $previousStmt->expr;
-            if (! $previousStmtExpr instanceof Assign) {
-                $binaryClass = $this->assignAndBinaryMap->getAlternative($previousStmt->expr);
-                if ($binaryClass === null) {
-                    continue;
-                }
-
-                $stmt->expr = new $binaryClass($previousStmtExpr->var, $previousStmtExpr->expr);
-                unset($node->stmts[$key - 1]);
-
-                return $node;
-            }
-
-            /** @var Assign $assign */
             $assign = $previousStmt->expr;
-            return $this->processPreviousAssign($node, $stmt, $assign, $key);
+            return $this->processSimplifyUselessVariable($node, $stmt, $assign, $key);
         }
 
         return null;
     }
 
-    private function processPreviousAssign(
+    private function processSimplifyUselessVariable(
         FunctionLike $functionLike,
         Return_ $return,
-        Assign $assign,
+        Assign|AssignOp $assign,
         int $key
-    ): FunctionLike {
-        $return->expr = $assign->expr;
-        unset($functionLike->stmts[$key - 1]);
+    ): ?FunctionLike {
+        if (! $assign instanceof Assign) {
+            $binaryClass = $this->assignAndBinaryMap->getAlternative($assign);
+            if ($binaryClass === null) {
+                return null;
+            }
 
+            $return->expr = new $binaryClass($assign->var, $assign->expr);
+        } else {
+            $return->expr = $assign->expr;
+        }
+
+        unset($functionLike->stmts[$key - 1]);
         return $functionLike;
     }
 
