@@ -12,20 +12,8 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final class ScopeAnalyzer
 {
-    /**
-     * @var array<class-string<Node>>
-     */
-    private const NAME_NODES = [Name::class, Namespace_::class, FileWithoutNamespace::class, Identifier::class];
-
     public function hasScope(Node $node): bool
     {
-        $nodeClass = $node::class;
-        foreach (self::NAME_NODES as $nameNode) {
-            if (is_a($nodeClass, $nameNode, true)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $node instanceof Name || $node instanceof Namespace_ || $node instanceof FileWithoutNamespace || $node instanceof Identifier;
     }
 }
