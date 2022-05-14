@@ -84,11 +84,11 @@ CODE_SAMPLE
 
             $previousStmt = $stmts[$key - 1];
             if ($this->shouldSkipStmt($stmt, $previousStmt)) {
-                continue;
+                return null;
             }
 
             if ($this->isReturnWithVarAnnotation($stmt)) {
-                continue;
+                return null;
             }
 
             /**
