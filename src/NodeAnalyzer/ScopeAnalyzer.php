@@ -19,8 +19,9 @@ final class ScopeAnalyzer
 
     public function hasScope(Node $node): bool
     {
+        $nodeClass = $node::class;
         foreach (self::NAME_NODES as $nameNode) {
-            if ($node instanceof $nameNode) {
+            if (is_a($nodeClass, $nameNode, true)) {
                 return false;
             }
         }
