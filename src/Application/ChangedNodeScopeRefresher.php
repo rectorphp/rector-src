@@ -44,9 +44,7 @@ final class ChangedNodeScopeRefresher
              * Node does not has Scope, while:
              *
              * 1. Node is Scope aware
-             * 2. Reachable check by verify
-             *      - in case of unreachable stmts, no other node will have available scope
-             *      - loop all previous expressions, until we find nothing or is_unreachable
+             * 2. Its current Stmt is Reachable
              */
             $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
             if (! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
