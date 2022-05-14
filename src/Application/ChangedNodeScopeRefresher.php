@@ -71,16 +71,24 @@ final class ChangedNodeScopeRefresher
             $node = new Property(0, [], [], null, [$attributeGroup]);
         }
 
+        $stmts = $this->resolveStmts($node);
+        $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function resolveStmts(Node $node): array
+    {
         if ($node instanceof Stmt) {
-            $stmts = [$node];
-        } elseif ($node instanceof Expr) {
-            $stmts = [new Expression($node)];
-        } else {
-            $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
-            throw new ShouldNotHappenException($errorMessage);
+            return [$node];
         }
 
+        if ($node instanceof Expr) {
+            return [new Expression($node)];
+        }
 
-        $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
+        $errorMessage = sprintf('Complete parent node of "%s" be a stmt.', $node::class);
+        throw new ShouldNotHappenException($errorMessage);
     }
 }
