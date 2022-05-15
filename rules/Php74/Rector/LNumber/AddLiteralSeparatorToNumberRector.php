@@ -109,18 +109,17 @@ CODE_SAMPLE
     {
         $rawValue = $node->getAttribute(AttributeKey::RAW_VALUE);
 
-        $numericValueAsString = (string) $node->value;
         if ($this->shouldSkip($node, $rawValue)) {
             return null;
         }
 
-        if (\str_contains($numericValueAsString, '.')) {
-            [$mainPart, $decimalPart] = explode('.', $numericValueAsString);
+        if (\str_contains($rawValue, '.')) {
+            [$mainPart, $decimalPart] = explode('.', $rawValue);
 
             $chunks = $this->strSplitNegative($mainPart, self::GROUP_SIZE);
             $literalSeparatedNumber = implode('_', $chunks) . '.' . $decimalPart;
         } else {
-            $chunks = $this->strSplitNegative($numericValueAsString, self::GROUP_SIZE);
+            $chunks = $this->strSplitNegative($rawValue, self::GROUP_SIZE);
             $literalSeparatedNumber = implode('_', $chunks);
 
             // PHP converts: (string) 1000.0 -> "1000"!
@@ -139,8 +138,9 @@ CODE_SAMPLE
         return PhpVersionFeature::LITERAL_SEPARATOR;
     }
 
-    private function shouldSkip(LNumber | DNumber $node, string $originalValue): bool
+    private function shouldSkip(LNumber | DNumber $node, mixed $rawValue): bool
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         $startTokenPos = $node->getStartTokenPos();
 
@@ -151,11 +151,14 @@ CODE_SAMPLE
 =======
         if (! is_string($originalValue)) {
 >>>>>>> make AddLiteralSeparatorToNumberRector use of rawValue
+=======
+        if (! is_string($rawValue)) {
+>>>>>>> make use of RAW_VALUE in DowngradeNumericLiteralSeparatorRector
             return true;
         }
 
         // already contains separator
-        if (str_contains($originalValue, '_')) {
+        if (str_contains($rawValue, '_')) {
             return true;
         }
 
@@ -169,12 +172,12 @@ CODE_SAMPLE
         }
 
         // e+/e-
-        if (StringUtils::isMatch($originalValue, '#e#i')) {
+        if (StringUtils::isMatch($rawValue, '#e#i')) {
             return true;
         }
 
         // too short
-        return Strings::length($originalValue) <= self::GROUP_SIZE;
+        return Strings::length($rawValue) <= self::GROUP_SIZE;
     }
 
     /**
