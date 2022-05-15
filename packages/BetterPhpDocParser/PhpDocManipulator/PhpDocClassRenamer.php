@@ -138,6 +138,9 @@ final class PhpDocClassRenamer
 
         // resolve to FQN
         $tagFullyQualifiedName = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($targetEntity, $node);
+        if ($tagFullyQualifiedName === null) {
+            $tagFullyQualifiedName = $targetEntity;
+        }
 
         foreach ($oldToNewClasses as $oldClass => $newClass) {
             if ($tagFullyQualifiedName !== $oldClass) {

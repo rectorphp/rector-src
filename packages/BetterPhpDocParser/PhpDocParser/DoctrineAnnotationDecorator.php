@@ -179,6 +179,9 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 $phpDocChildNode->name,
                 $currentPhpNode
             );
+            if ($fullyQualifiedAnnotationClass === null) {
+                $fullyQualifiedAnnotationClass = $phpDocChildNode->name;
+            }
 
             // not an annotations class
             if (! \str_contains($fullyQualifiedAnnotationClass, '\\') && ! in_array(

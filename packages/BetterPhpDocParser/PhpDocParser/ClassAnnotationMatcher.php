@@ -31,7 +31,7 @@ final class ClassAnnotationMatcher
     ) {
     }
 
-    public function resolveTagFullyQualifiedName(string $tag, Node $node): string
+    public function resolveTagFullyQualifiedName(string $tag, Node $node): ?string
     {
         $uniqueHash = $tag . spl_object_hash($node);
         if (isset($this->fullyQualifiedNameByHash[$uniqueHash])) {
@@ -43,6 +43,10 @@ final class ClassAnnotationMatcher
         $uses = $this->useImportsResolver->resolveForNode($node);
         $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
 
+        if ($fullyQualifiedClass === null) {
+            return null;
+        }
+
         $this->fullyQualifiedNameByHash[$uniqueHash] = $fullyQualifiedClass;
 
         return $fullyQualifiedClass;
@@ -51,7 +55,7 @@ final class ClassAnnotationMatcher
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag): string
+    private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag): ?string
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
@@ -66,16 +70,24 @@ final class ClassAnnotationMatcher
                 if (! str_contains($tag, '\\')) {
                     return $this->resolveAsAliased($uses, $tag);
                 }
+
+                if (str_starts_with($tag, '\\')
+                    && substr_count($tag, '\\') === 1
+                    && $this->reflectionProvider->hasClass($tag)
+                ) {
+                    // Global Class
+                    return $tag;
+                }
             }
         }
 
-        return $this->useImportNameMatcher->matchNameWithUses($tag, $uses) ?? $tag;
+        return $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
     }
 
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveAsAliased(array $uses, string $tag): string
+    private function resolveAsAliased(array $uses, string $tag): ?string
     {
         foreach ($uses as $use) {
             $prefix = $use instanceof GroupUse
@@ -93,6 +105,6 @@ final class ClassAnnotationMatcher
             }
         }
 
-        return $this->useImportNameMatcher->matchNameWithUses($tag, $uses) ?? $tag;
+        return $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
     }
 }
