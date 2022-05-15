@@ -1,29 +1,5 @@
 includes:
-    - vendor/symplify/phpstan-rules/config/array-rules.neon
-    - vendor/symplify/phpstan-rules/config/code-complexity-rules.neon
-    - vendor/symplify/phpstan-rules/config/doctrine-rules.neon
-    - vendor/symplify/phpstan-rules/config/forbidden-static-rules.neon
-    - vendor/symplify/phpstan-rules/config/naming-rules.neon
-    - vendor/symplify/phpstan-rules/config/regex-rules.neon
-    - vendor/symplify/phpstan-rules/config/static-rules.neon
-    - vendor/symplify/phpstan-rules/packages/symfony/config/symfony-rules.neon
-    - vendor/symplify/phpstan-rules/config/test-rules.neon
-
-services:
-    -
-        class: Symplify\PHPStanRules\Rules\Enum\RequireConstantInMethodCallPositionRule
-        tags: [phpstan.rules.rule]
-        arguments:
-            requiredConstantInMethodCall:
-                Symfony\Component\Console\Command\Command:
-                    addArgument: [0]
-                    addOption: [0]
-                Symfony\Component\Console\Input\InputInterface:
-                    getOption: [0]
-                    getArgument: [0]
-                PhpParser\Node:
-                    getAttribute: [0]
-                    setAttribute: [0]
+    - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
 parameters:
     level: 8
