@@ -103,7 +103,7 @@ CODE_SAMPLE
             $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty($node, $paramName);
             $toPropertyAssigns = array_filter(
                 $toPropertyAssigns,
-                fn ($value): bool => $value->expr instanceof Coalesce
+                fn (Assign $assign): bool => $assign->expr instanceof Coalesce
             );
 
             foreach ($toPropertyAssigns as $toPropertyAssign) {
