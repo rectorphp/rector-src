@@ -101,7 +101,10 @@ CODE_SAMPLE
             $paramName = $this->getName($param->var);
 
             $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty($node, $paramName);
-            $toPropertyAssigns = array_filter($toPropertyAssigns, fn ($value): bool => $value->expr instanceof Coalesce);
+            $toPropertyAssigns = array_filter(
+                $toPropertyAssigns,
+                fn ($value): bool => $value->expr instanceof Coalesce
+            );
 
             foreach ($toPropertyAssigns as $toPropertyAssign) {
                 /** @var Coalesce $coalesce */
