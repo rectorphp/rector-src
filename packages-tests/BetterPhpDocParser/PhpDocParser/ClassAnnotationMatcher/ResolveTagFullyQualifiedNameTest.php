@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
@@ -26,6 +27,8 @@ class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
+    private NodeNameResolver $nodeNameResolver;
+
     protected function setUp(): void
     {
         $this->boot();
@@ -34,6 +37,7 @@ class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
         $this->testingParser = $this->getService(TestingParser::class);
         $this->nodeFinder = $this->getService(BetterNodeFinder::class);
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
+        $this->nodeNameResolver = $this->getService(NodeNameResolver::class);
     }
 
     /**
@@ -52,8 +56,8 @@ class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
             $value = $varTag->type->__toString();
 
             $result = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $property);
-            if (str_starts_with($this->getPropertyName($property), 'known')) {
-                $this->assertStringEndsWith($value, $result);
+            if (str_starts_with($this->nodeNameResolver->getName($property), 'known')) {
+                $this->assertStringEndsWith($value, $result ?? '');
             } else {
                 $this->assertNull($result);
             }
@@ -67,15 +71,5 @@ class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
     {
         $directory = __DIR__ . '/Fixture';
         return StaticFixtureFinder::yieldDirectoryExclusively($directory);
-    }
-
-    private function getPropertyName(Property $property): ?string
-    {
-        foreach ($property->props as $propertyProperty) {
-            if (! $propertyProperty instanceof PropertyProperty) {
-                continue;
-            }
-            return $propertyProperty->name->toString();
-        }
     }
 }
