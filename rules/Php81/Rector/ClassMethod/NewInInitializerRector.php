@@ -194,6 +194,6 @@ CODE_SAMPLE
             return [];
         }
 
-        return array_filter($classMethod->params, fn ($value): bool => $value->type instanceof NullableType);
+        return array_filter($classMethod->params, fn (Param $param): bool => $param->type instanceof NullableType);
     }
 }
