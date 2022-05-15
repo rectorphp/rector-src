@@ -64,6 +64,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $node->getAttribute(AttributeKey::RAW_VALUE)
+
         if ($this->shouldSkip($node)) {
             return null;
         }

@@ -34,8 +34,11 @@ final class NodeByTypeAndPositionCollector
 
         foreach ($assignedVariables as $assignedVariable) {
             $startTokenPos = $assignedVariable->getStartTokenPos();
+<<<<<<< HEAD
 
             // "-1" is empty value default
+=======
+>>>>>>> add RAW_VALUE to ide provided constants for attributes
             if ($startTokenPos === -1) {
                 continue;
             }
@@ -60,8 +63,11 @@ final class NodeByTypeAndPositionCollector
 
         foreach ($assignedVariablesUse as $assignedVariableUse) {
             $startTokenPos = $assignedVariableUse->getStartTokenPos();
+<<<<<<< HEAD
 
             // "-1" is empty value default
+=======
+>>>>>>> add RAW_VALUE to ide provided constants for attributes
             if ($startTokenPos === -1) {
                 continue;
             }

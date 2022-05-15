@@ -110,14 +110,6 @@ final class AttributeKey
     public const DOC_INDENTATION = 'docIndentation';
 
     /**
-     * Internal php-parser name.
-     * Do not change this even if you want!
-     *
-     * @var string
-     */
-    public const START_TOKEN_POSITION = 'startTokenPos';
-
-    /**
      * @var string
      * Use often in php-parser
      */
