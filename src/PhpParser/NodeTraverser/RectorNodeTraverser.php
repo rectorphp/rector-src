@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeTraverser;
 
+use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
