@@ -107,8 +107,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $rawValue = $node->getAttribute(AttributeKey::RAW_VALUE);
+
         $numericValueAsString = (string) $node->value;
-        if ($this->shouldSkip($node, $numericValueAsString)) {
+        if ($this->shouldSkip($node, $rawValue)) {
             return null;
         }
 
@@ -137,28 +139,27 @@ CODE_SAMPLE
         return PhpVersionFeature::LITERAL_SEPARATOR;
     }
 
-    private function shouldSkip(LNumber | DNumber $node, string $numericValueAsString): bool
+    private function shouldSkip(LNumber | DNumber $node, string $originalValue): bool
     {
+<<<<<<< HEAD
         $startTokenPos = $node->getStartTokenPos();
 
         $oldTokens = $this->file->getOldTokens();
         $tokenValue = $oldTokens[$startTokenPos][1] ?? null;
 
         if (! is_string($tokenValue)) {
+=======
+        if (! is_string($originalValue)) {
+>>>>>>> make AddLiteralSeparatorToNumberRector use of rawValue
             return true;
         }
 
         // already contains separator
-        if (str_contains($tokenValue, '_')) {
+        if (str_contains($originalValue, '_')) {
             return true;
         }
 
-        if ($numericValueAsString < $this->limitValue) {
-            return true;
-        }
-
-        // already separated
-        if (\str_contains($numericValueAsString, '_')) {
+        if ($node->value < $this->limitValue) {
             return true;
         }
 
@@ -168,12 +169,12 @@ CODE_SAMPLE
         }
 
         // e+/e-
-        if (StringUtils::isMatch($numericValueAsString, '#e#i')) {
+        if (StringUtils::isMatch($originalValue, '#e#i')) {
             return true;
         }
 
         // too short
-        return Strings::length($numericValueAsString) <= self::GROUP_SIZE;
+        return Strings::length($originalValue) <= self::GROUP_SIZE;
     }
 
     /**
