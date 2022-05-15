@@ -680,3 +680,13 @@ parameters:
         -
             message: '#Creating new PHPStan\\Reflection\\Php\\PhpParameterReflection is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: rules/DowngradePhp80/NodeAnalyzer/NamedToUnnamedArgs.php
+
+        # override parent method named "p"
+        -
+            message: '#Do not name "p", shorter than 2 chars#'
+            path: src/PhpParser/Printer/BetterStandardPrinter.php #153
+
+        # Symfony Finder filter
+        -
+            message: '#Instead of "Symfony\\Component\\Finder\\SplFileInfo" class/interface use "Symplify\\SmartFileSystem\\SmartFileInfo"#'
+            path: src/FileSystem/FilesFinder.php #113
