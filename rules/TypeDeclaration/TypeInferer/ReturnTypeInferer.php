@@ -201,7 +201,7 @@ final class ReturnTypeInferer
         }
 
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
-        $returnsWithExpr = array_filter($returns, fn ($v): bool => $v->expr instanceof Expr);
+        $returnsWithExpr = array_filter($returns, fn ($value): bool => $value->expr instanceof Expr);
 
         if ($returns !== $returnsWithExpr) {
             return $unionType;

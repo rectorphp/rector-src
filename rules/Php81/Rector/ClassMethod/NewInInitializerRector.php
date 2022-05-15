@@ -101,7 +101,7 @@ CODE_SAMPLE
             $paramName = $this->getName($param->var);
 
             $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty($node, $paramName);
-            $toPropertyAssigns = array_filter($toPropertyAssigns, fn ($v): bool => $v->expr instanceof Coalesce);
+            $toPropertyAssigns = array_filter($toPropertyAssigns, fn ($value): bool => $value->expr instanceof Coalesce);
 
             foreach ($toPropertyAssigns as $toPropertyAssign) {
                 /** @var Coalesce $coalesce */
@@ -191,6 +191,6 @@ CODE_SAMPLE
             return [];
         }
 
-        return array_filter($classMethod->params, fn ($v): bool => $v->type instanceof NullableType);
+        return array_filter($classMethod->params, fn ($value): bool => $value->type instanceof NullableType);
     }
 }

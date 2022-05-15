@@ -693,3 +693,17 @@ parameters:
         -
             message: '#Instead of "Symfony\\Component\\Finder\\SplFileInfo" class/interface use "Symplify\\SmartFileSystem\\SmartFileInfo"#'
             path: src/FileSystem/FilesFinder.php #113
+
+        # format specifiers definition rule
+        -
+            message: '#Modifier "%s" is not matching passed variable type "array<int, string>"\. The "string" type is expected \- see https\://dibiphp\.com/en/documentation\#toc\-modifiers\-for\-arrays#'
+            path: rules/CodingStyle/Rector/Encapsed/EncapsedStringsToSprintfRector.php #35
+
+        # PropertyFetches inside method are different
+        -
+            message: '#Content of method "processGreater(Left|Right)\(\)" is duplicated with method "processGreaterOrEqual(Left|Right)\(\)" in "Rector\\DeadCode\\Rector\\ConstFetch\\RemovePhpVersionIdCheckRector" class\. Use unique content or service instead#'
+            path: rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
+
+        -
+            message: '#Instead of "DateTime" class/interface use "Nette\\Utils\\DateTime"#'
+            path: src/Application/VersionResolver.php
