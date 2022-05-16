@@ -35,7 +35,7 @@ final class DowngradeReadonlyClassRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove "readonly" class type, decorte all properties to "readonly"',
+            'Remove "readonly" class type, decorate all properties to "readonly"',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
