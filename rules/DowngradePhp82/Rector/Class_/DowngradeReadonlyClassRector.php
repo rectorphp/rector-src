@@ -118,10 +118,12 @@ CODE_SAMPLE
                 continue;
             }
 
+            // not property promotion, just param
             if ($param->flags === 0) {
                 continue;
             }
 
+            // not typed, just param
             if ($param->type === null) {
                 continue;
             }
