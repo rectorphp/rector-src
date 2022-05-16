@@ -54,7 +54,9 @@ final class RectifiedAnalyzer
     {
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         if ($rectifiedNode->getRectorClass() === $rector::class && $rectifiedNode->getNode() === $node) {
-            // allow to revisit the Node if Node is changed
+            /**
+             * allow to revisit the Node with same Rector rule if Node is changed by other rule
+             */
             return ! $this->nodeComparator->areNodesEqual($originalNode, $node);
         }
 
