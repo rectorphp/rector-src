@@ -123,7 +123,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // not typed, just param
+            // also not typed, just param
             if ($param->type === null) {
                 continue;
             }
