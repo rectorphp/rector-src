@@ -76,22 +76,48 @@ CODE_SAMPLE
         }
 
         $this->visibilityManipulator->removeReadonly($node);
-
-        foreach ($node->getProperties() as $property) {
-            if (! $property->isReadonly() && $property->type !== null) {
-                $this->visibilityManipulator->makeReadonly($property);
-            }
-        }
-
-        $construct = $node->getMethod(MethodName::CONSTRUCT);
-        if ($construct instanceof ClassMethod) {
-            foreach ($construct->getParams() as $param) {
-                if (! $this->visibilityManipulator->isReadonly($param) && $param->type !== null && $param->flags !== 0) {
-                    $this->visibilityManipulator->makeReadonly($param);
-                }
-            }
-        }
+        $this->makePropertiesReadonly($node);
+        $this->makePromotedPropertiesReadonly($node);
 
         return $node;
+    }
+
+    private function makePropertiesReadonly(Class_ $class): void
+    {
+        foreach ($class->getProperties() as $property) {
+            if ($property->isReadonly()) {
+                continue;
+            }
+
+            if ($property->type === null) {
+                continue;
+            }
+
+            $this->visibilityManipulator->makeReadonly($property);
+        }
+    }
+
+    private function makePromotedPropertiesReadonly(Class_ $class): void
+    {
+        $classMethod = $class->getMethod(MethodName::CONSTRUCT);
+        if (! $classMethod instanceof ClassMethod) {
+            return;
+        }
+
+        foreach ($classMethod->getParams() as $param) {
+            if ($this->visibilityManipulator->isReadonly($param)) {
+                continue;
+            }
+
+            if ($param->type === null) {
+                continue;
+            }
+
+            if ($param->flags === 0) {
+                continue;
+            }
+
+            $this->visibilityManipulator->makeReadonly($param);
+        }
     }
 }

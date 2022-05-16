@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DowngradePhp81\Rector\Property\DowngradeReadonlyClassRector\Fixture;
+namespace Rector\Tests\DowngradePhp81\Rector\Class_\DowngradeReadonlyClassRector\Fixture;
 
 final readonly class ReadonlyClassWithPropertyPromotion
 {
@@ -13,7 +13,7 @@ final readonly class ReadonlyClassWithPropertyPromotion
 -----
 <?php
 
-namespace Rector\Tests\DowngradePhp81\Rector\Property\DowngradeReadonlyClassRector\Fixture;
+namespace Rector\Tests\DowngradePhp81\Rector\Class_\DowngradeReadonlyClassRector\Fixture;
 
 final class ReadonlyClassWithPropertyPromotion
 {

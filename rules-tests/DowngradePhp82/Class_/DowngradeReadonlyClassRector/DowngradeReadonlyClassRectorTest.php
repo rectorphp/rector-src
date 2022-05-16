@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DowngradePhp82\Rector\Property\DowngradeReadonlyClassRector;
+namespace Rector\Tests\DowngradePhp82\Rector\Class_\DowngradeReadonlyClassRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

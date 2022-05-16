@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DowngradePhp81\Rector\Property\DowngradeReadonlyClassRector\Fixture;
+namespace Rector\Tests\DowngradePhp81\Rector\Class_\DowngradeReadonlyClassRector\Fixture;
 
 class SkipNotReadonly
 {
