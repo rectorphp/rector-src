@@ -13,7 +13,7 @@ final readonly class StaticProperty
 
 namespace Rector\Tests\DowngradePhp82\Rector\Class_\DowngradeReadonlyClassRector\Fixture;
 
-final readonly class StaticProperty
+final class StaticProperty
 {
     public static string $foo;
 }
