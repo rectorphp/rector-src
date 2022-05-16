@@ -6,7 +6,9 @@ namespace Rector\DowngradePhp82\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -81,7 +83,14 @@ CODE_SAMPLE
             }
         }
 
-        // add readonly to properties on property promotion
+        $construct = $node->getMethod(MethodName::CONSTRUCT);
+        if ($construct instanceof ClassMethod) {
+            foreach ($construct->getParams() as $param) {
+                if (! $this->visibilityManipulator->isReadonly($param) && $param->type !== null && $param->flags !== 0) {
+                    $this->visibilityManipulator->makeReadonly($param);
+                }
+            }
+        }
 
         return $node;
     }
