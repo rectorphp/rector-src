@@ -89,7 +89,16 @@ CODE_SAMPLE
                 continue;
             }
 
+            // it technically impossible that readonly class has:
+            //    - non-typed property
+            //    - static property
+            //
+            // but here to ensure no flip-flop when using direct rule for multiple rules applied
             if ($property->type === null) {
+                continue;
+            }
+
+            if ($property->isStatic()) {
                 continue;
             }
 
@@ -109,11 +118,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($param->type === null) {
+            if ($param->flags === 0) {
                 continue;
             }
 
-            if ($param->flags === 0) {
+            if ($param->type === null) {
                 continue;
             }
 
