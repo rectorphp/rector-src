@@ -50,7 +50,8 @@ final class VariableDimFetchAssignResolver
 
             $isFoundInExpr = (bool) $this->betterNodeFinder->findFirst(
                 $assign->expr,
-                fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $variable));
+                fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $variable)
+            );
 
             if ($isFoundInExpr) {
                 return [];
