@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -12,11 +13,13 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\CodeQuality\ValueObject\KeyAndExpr;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class VariableDimFetchAssignResolver
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -42,6 +45,14 @@ final class VariableDimFetchAssignResolver
 
             $keyExpr = $this->matchKeyOnArrayDimFetchOfVariable($assign, $variable);
             if (! $keyExpr instanceof Expr) {
+                return [];
+            }
+
+            $isFoundInExpr = (bool) $this->betterNodeFinder->findFirst(
+                $assign->expr,
+                fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $variable));
+
+            if ($isFoundInExpr) {
                 return [];
             }
 
