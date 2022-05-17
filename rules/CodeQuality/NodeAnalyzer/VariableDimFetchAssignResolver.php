@@ -54,7 +54,7 @@ final class VariableDimFetchAssignResolver
         return $keysAndExprs;
     }
 
-    public function matchKeyOnArrayDimFetchOfVariable(Assign $assign, Variable $variable): ?Expr
+    private function matchKeyOnArrayDimFetchOfVariable(Assign $assign, Variable $variable): ?Expr
     {
         if (! $assign->var instanceof ArrayDimFetch) {
             return null;
