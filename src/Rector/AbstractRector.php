@@ -240,9 +240,7 @@ CODE_SAMPLE;
             $this->nodesToReturn[$originalNodeHash] = $node;
 
             $firstNodeKey = array_key_first($node);
-            if (! $node[$firstNodeKey] instanceof Nop) {
-                $this->mirrorComments($node[$firstNodeKey], $originalNode);
-            }
+            $this->mirrorComments($node[$firstNodeKey], $originalNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
@@ -328,6 +326,10 @@ CODE_SAMPLE;
 
     protected function mirrorComments(Node $newNode, Node $oldNode): void
     {
+        if ($newNode instanceof Nop) {
+            return;
+        }
+
         $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO));
         $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
     }
