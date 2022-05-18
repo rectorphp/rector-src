@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
@@ -239,7 +240,9 @@ CODE_SAMPLE;
             $this->nodesToReturn[$originalNodeHash] = $node;
 
             $firstNodeKey = array_key_first($node);
-            $this->mirrorComments($node[$firstNodeKey], $originalNode);
+            if (! $node[$firstNodeKey] instanceof Nop) {
+                $this->mirrorComments($node[$firstNodeKey], $originalNode);
+            }
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
