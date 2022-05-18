@@ -523,4 +523,27 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     {
         return $wrap . $string->value . $wrap;
     }
+
+    /**
+     * Override parent pModifiers to set position of final and abstract modifier early, so instead of
+     *
+     *      public final const MY_CONSTANT = "Hello world!";
+     *
+     * it should be
+     *
+     *      final public const MY_CONSTANT = "Hello world!";
+     *
+     * @see https://github.com/rectorphp/rector/issues/6963
+     * @see https://github.com/nikic/PHP-Parser/pull/826
+     */
+    protected function pModifiers(int $modifiers)
+    {
+        return ($modifiers & Class_::MODIFIER_FINAL    ? 'final '     : '')
+            . ($modifiers & Class_::MODIFIER_ABSTRACT  ? 'abstract '  : '')
+            . ($modifiers & Class_::MODIFIER_PUBLIC    ? 'public '    : '')
+            . ($modifiers & Class_::MODIFIER_PROTECTED ? 'protected ' : '')
+            . ($modifiers & Class_::MODIFIER_PRIVATE   ? 'private '   : '')
+            . ($modifiers & Class_::MODIFIER_STATIC    ? 'static '    : '')
+            . ($modifiers & Class_::MODIFIER_READONLY  ? 'readonly ' : '');
+    }
 }
