@@ -120,7 +120,12 @@ CODE_SAMPLE
         if ($parentMatch instanceof ArrowFunction) {
             $stmts = [new Return_($match)];
             $parentOfParentMatch = $parentMatch->getAttribute(AttributeKey::PARENT_NODE);
-            $parentMatch = $this->anonymousFunctionFactory->create($parentMatch->params, $stmts, $parentMatch->returnType, $parentMatch->static);
+            $parentMatch = $this->anonymousFunctionFactory->create(
+                $parentMatch->params,
+                $stmts,
+                $parentMatch->returnType,
+                $parentMatch->static
+            );
 
             if ($parentOfParentMatch instanceof Arg) {
                 $parentOfParentMatch->value = $parentMatch;
