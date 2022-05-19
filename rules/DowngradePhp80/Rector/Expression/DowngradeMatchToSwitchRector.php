@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -214,7 +215,10 @@ CODE_SAMPLE
     {
         $stmts = [];
 
-        if ($matchArm->body instanceof Throw_) {
+        $hasParentArrayItem = (bool) $this->betterNodeFinder->findParentType($matchArm, ArrayItem::class);
+        if ($hasParentArrayItem) {
+            $stmts[] = new Return_($matchArm->body);
+        } elseif ($matchArm->body instanceof Throw_) {
             $stmts[] = new Expression($matchArm->body);
         } elseif ($node instanceof ArrayItem || $node instanceof Return_) {
             $stmts[] = new Return_($matchArm->body);
