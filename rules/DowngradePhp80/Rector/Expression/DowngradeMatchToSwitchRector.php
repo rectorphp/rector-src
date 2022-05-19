@@ -136,6 +136,10 @@ CODE_SAMPLE
             return null;
         }
 
+        /**
+         * Yes, Pass Match_ object itself to Return_
+         * Let the Rule revisit the Match_ the ArrowFunction converted to Closure_
+         */
         $stmts = [new Return_($match)];
         $closure = $this->anonymousFunctionFactory->create(
             $arrowFunction->params,
