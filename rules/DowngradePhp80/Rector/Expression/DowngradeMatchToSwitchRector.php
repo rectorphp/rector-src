@@ -166,7 +166,8 @@ CODE_SAMPLE
      * @param MatchArm[] $matchArms
      * @return Case_[]
      */
-    private function createSwitchCasesFromMatchArms(Echo_ | Expression | Return_ $node, array $matchArms): array {
+    private function createSwitchCasesFromMatchArms(Echo_ | Expression | Return_ $node, array $matchArms): array
+    {
         $switchCases = [];
 
         foreach ($matchArms as $matchArm) {
