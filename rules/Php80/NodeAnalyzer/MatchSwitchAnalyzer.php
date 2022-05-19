@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
-use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -136,9 +135,7 @@ final class MatchSwitchAnalyzer
         }
 
         foreach ($switch->cases as $case) {
-            /**
-             * @var Expression[] $expressions
-             */
+            /** @var Expression[] $expressions */
             $expressions = array_filter($case->stmts, fn (Node $node): bool => $node instanceof Expression);
             foreach ($expressions as $expression) {
                 if (! $expression->expr instanceof Assign) {
