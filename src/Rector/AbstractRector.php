@@ -215,7 +215,6 @@ CODE_SAMPLE;
 
         $this->printDebugCurrentFileAndRule();
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         $node = $this->refactor($node);
 
         // nothing to change → continue
