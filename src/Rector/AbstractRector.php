@@ -215,6 +215,7 @@ CODE_SAMPLE;
 
         $this->printDebugCurrentFileAndRule();
 
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         $node = $this->refactor($node);
 
         // nothing to change → continue
@@ -225,6 +226,10 @@ CODE_SAMPLE;
         if ($node === []) {
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
+        }
+
+        if (is_array($node) && ! $parentNode instanceof Node) {
+            return null;
         }
 
         /** @var Node[]|Node $node */
