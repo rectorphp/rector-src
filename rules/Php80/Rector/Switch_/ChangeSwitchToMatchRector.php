@@ -162,16 +162,15 @@ CODE_SAMPLE
             if ($this->nodeComparator->areNodesEqual($default, $prevInitializedAssign->var)) {
                 return $assign;
             }
-
-            $parentAssign = $prevInitializedAssign->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentAssign instanceof Expression) {
-                $this->removeNode($parentAssign);
-            }
-
-            return $assign;
+        } else {
+            $match->arms[count($match->arms)] = new MatchArm(null, $prevInitializedAssign->expr);
         }
 
-        $match->arms[count($match->arms)] = new MatchArm(null, $prevInitializedAssign->var);
+        $parentAssign = $prevInitializedAssign->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentAssign instanceof Expression) {
+            $this->removeNode($parentAssign);
+        }
+
         return $assign;
     }
 
