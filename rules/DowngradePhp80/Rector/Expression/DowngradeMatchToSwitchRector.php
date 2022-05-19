@@ -137,7 +137,6 @@ CODE_SAMPLE
         }
 
         $stmts = [new Return_($match)];
-        $originalParentMatch = $arrowFunction;
         $closure = $this->anonymousFunctionFactory->create(
             $arrowFunction->params,
             $stmts,
@@ -145,17 +144,17 @@ CODE_SAMPLE
             $arrowFunction->static
         );
 
-        if ($parentOfParentMatch instanceof Arg && $parentOfParentMatch->value === $originalParentMatch) {
+        if ($parentOfParentMatch instanceof Arg && $parentOfParentMatch->value === $arrowFunction) {
             $parentOfParentMatch->value = $closure;
             return $node;
         }
 
-        if (($parentOfParentMatch instanceof Assign || $parentOfParentMatch instanceof Expression || $parentOfParentMatch instanceof Return_) && $parentOfParentMatch->expr === $originalParentMatch) {
+        if (($parentOfParentMatch instanceof Assign || $parentOfParentMatch instanceof Expression || $parentOfParentMatch instanceof Return_) && $parentOfParentMatch->expr === $arrowFunction) {
             $parentOfParentMatch->expr = $closure;
             return $node;
         }
 
-        if ($parentOfParentMatch instanceof FuncCall && $parentOfParentMatch->name === $originalParentMatch) {
+        if ($parentOfParentMatch instanceof FuncCall && $parentOfParentMatch->name === $arrowFunction) {
             $parentOfParentMatch->name = $closure;
             return $node;
         }
