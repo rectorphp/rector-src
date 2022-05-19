@@ -92,18 +92,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ArrayItem::class, Echo_::class, Expression::class, Return_::class];
+        return [Echo_::class, Expression::class, Return_::class];
     }
 
     /**
-     * @param ArrayItem|Echo_|Expression|Return_ $node
+     * @param Echo_|Expression|Return_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkipNode($node)) {
-            return null;
-        }
-
         $match = $this->betterNodeFinder->findFirst($node, fn (Node $subNode): bool => $subNode instanceof Match_);
         if (! $match instanceof Match_) {
             return null;
@@ -118,39 +114,54 @@ CODE_SAMPLE
 
         $parentMatch = $match->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentMatch instanceof ArrowFunction) {
-            $stmts = [new Return_($match)];
-            $parentOfParentMatch = $parentMatch->getAttribute(AttributeKey::PARENT_NODE);
-            $parentMatch = $this->anonymousFunctionFactory->create(
-                $parentMatch->params,
-                $stmts,
-                $parentMatch->returnType,
-                $parentMatch->static
-            );
-
-            if ($parentOfParentMatch instanceof Arg) {
-                $parentOfParentMatch->value = $parentMatch;
-                return $node;
-            }
-
-            if ($parentOfParentMatch instanceof Assign) {
-                $parentOfParentMatch->expr = $parentMatch;
-                return $node;
-            }
-
-            return null;
+            return $this->refactorInArrowFunction($parentMatch, $match, $node);
         }
 
-        if ($node instanceof ArrayItem) {
-            $node->value = new FuncCall($this->anonymousFunctionFactory->create([], [$switch], null));
+        if ($parentMatch instanceof ArrayItem) {
+            $parentMatch->value = new FuncCall($this->anonymousFunctionFactory->create([], [$switch], null));
             return $node;
         }
 
         return $switch;
     }
 
-    private function shouldSkipNode(Node $node): bool
+    private function refactorInArrowFunction(
+        ArrowFunction $arrowFunction,
+        Match_ $match,
+        Echo_|Expression|Return_ $node
+    ): Echo_|Expression|Return_|null
     {
-        return $node instanceof Return_ && ! $node->expr instanceof Match_;
+        $parentOfParentMatch = $arrowFunction->getAttribute(AttributeKey::PARENT_NODE);
+
+        if (! $parentOfParentMatch instanceof Node) {
+            return null;
+        }
+
+        $stmts = [new Return_($match)];
+        $originalParentMatch = $arrowFunction;
+        $arrowFunction = $this->anonymousFunctionFactory->create(
+            $arrowFunction->params,
+            $stmts,
+            $arrowFunction->returnType,
+            $arrowFunction->static
+        );
+
+        if ($parentOfParentMatch instanceof Arg && $parentOfParentMatch->value === $originalParentMatch) {
+            $parentOfParentMatch->value = $arrowFunction;
+            return $node;
+        }
+
+        if (($parentOfParentMatch instanceof Assign || $parentOfParentMatch instanceof Expression || $parentOfParentMatch instanceof Return_) && $parentOfParentMatch->expr === $originalParentMatch) {
+            $parentOfParentMatch->expr = $arrowFunction;
+            return $node;
+        }
+
+        if ($parentOfParentMatch instanceof FuncCall && $parentOfParentMatch->name === $originalParentMatch) {
+            $parentOfParentMatch->name = $arrowFunction;
+            return $node;
+        }
+
+        return null;
     }
 
     private function shouldSkipMatch(Match_ $match): bool
