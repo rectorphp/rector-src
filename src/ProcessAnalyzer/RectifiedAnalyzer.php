@@ -57,7 +57,7 @@ final class RectifiedAnalyzer
             /**
              * allow to revisit the Node with same Rector rule if Node is changed by other rule
              */
-            return $originalNode instanceof Node && ! $this->nodeComparator->areNodesEqual($originalNode, $node);
+            return ! $this->nodeComparator->areNodesEqual($originalNode, $node);
         }
 
         if ($rector instanceof AbstractScopeAwareRector) {
