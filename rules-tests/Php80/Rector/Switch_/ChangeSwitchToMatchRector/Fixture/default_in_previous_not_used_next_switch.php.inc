@@ -33,7 +33,7 @@ final class DefaultInPreviousNotUsedNextSwitch
         $result = match ($input) {
             'a', 'b' => 0,
             'Monsieur' => 1,
-            default => $result
+            default => $result,
         };
     }
 }
