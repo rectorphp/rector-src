@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -106,10 +105,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipMatch($match)) {
-            return null;
-        }
-
         $switchCases = $this->createSwitchCasesFromMatchArms($node, $match->arms);
         $switch = new Switch_($match->cond, $switchCases);
 
@@ -167,22 +162,11 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkipMatch(Match_ $match): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst(
-            $match,
-            fn (Node $subNode): bool => $subNode instanceof ArrayItem && $subNode->unpack
-        );
-    }
-
     /**
      * @param MatchArm[] $matchArms
      * @return Case_[]
      */
-    private function createSwitchCasesFromMatchArms(
-        ArrayItem | Echo_ | Expression | Return_ $node,
-        array $matchArms
-    ): array {
+    private function createSwitchCasesFromMatchArms(Echo_ | Expression | Return_ $node, array $matchArms): array {
         $switchCases = [];
 
         foreach ($matchArms as $matchArm) {
@@ -211,16 +195,16 @@ CODE_SAMPLE
     /**
      * @return Stmt[]
      */
-    private function createSwitchStmts(ArrayItem | Echo_ | Expression | Return_ $node, MatchArm $matchArm): array
+    private function createSwitchStmts(Echo_ | Expression | Return_ $node, MatchArm $matchArm): array
     {
         $stmts = [];
 
-        $hasParentArrayItem = (bool) $this->betterNodeFinder->findParentType($matchArm, ArrayItem::class);
-        if ($hasParentArrayItem) {
+        $parentArrayItem = $this->betterNodeFinder->findParentType($matchArm, ArrayItem::class);
+        if ($parentArrayItem instanceof ArrayItem) {
             $stmts[] = new Return_($matchArm->body);
         } elseif ($matchArm->body instanceof Throw_) {
             $stmts[] = new Expression($matchArm->body);
-        } elseif ($node instanceof ArrayItem || $node instanceof Return_) {
+        } elseif ($node instanceof Return_) {
             $stmts[] = new Return_($matchArm->body);
         } elseif ($node instanceof Echo_) {
             $stmts[] = new Echo_([$matchArm->body]);
