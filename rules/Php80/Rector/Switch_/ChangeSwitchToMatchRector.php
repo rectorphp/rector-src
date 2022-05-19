@@ -151,6 +151,8 @@ CODE_SAMPLE
             )
         );
 
+        print_node($prevInitializedAssign);
+
         $assign = new Assign($assignExpr, $match);
         if (! $prevInitializedAssign instanceof Assign) {
             return $assign;
