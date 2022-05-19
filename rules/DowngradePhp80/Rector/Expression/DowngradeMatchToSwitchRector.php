@@ -129,8 +129,7 @@ CODE_SAMPLE
         ArrowFunction $arrowFunction,
         Match_ $match,
         Echo_|Expression|Return_ $node
-    ): Echo_|Expression|Return_|null
-    {
+    ): Echo_|Expression|Return_|null {
         $parentOfParentMatch = $arrowFunction->getAttribute(AttributeKey::PARENT_NODE);
 
         if (! $parentOfParentMatch instanceof Node) {
