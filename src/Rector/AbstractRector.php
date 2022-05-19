@@ -228,10 +228,6 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        if (is_array($node) && is_array($parentNode)) {
-            return null;
-        }
-
         /** @var Node[]|Node $node */
         $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
