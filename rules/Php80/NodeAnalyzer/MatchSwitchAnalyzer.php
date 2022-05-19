@@ -136,17 +136,16 @@ final class MatchSwitchAnalyzer
         }
 
         foreach ($switch->cases as $case) {
-            $stmtsWithoutBreak = array_filter($case->stmts, fn (Node $node): bool => ! $node instanceof Break_);
-            foreach ($stmtsWithoutBreak as $stmtWithoutBreak) {
-                if (! $stmtWithoutBreak instanceof Expression) {
+            /**
+             * @var Expression[] $expressions
+             */
+            $expressions = array_filter($case->stmts, fn (Node $node): bool => $node instanceof Expression);
+            foreach ($expressions as $expression) {
+                if (! $expression->expr instanceof Assign) {
                     continue;
                 }
 
-                if (! $stmtWithoutBreak->expr instanceof Assign) {
-                    continue;
-                }
-
-                if (! $this->nodeComparator->areNodesEqual($stmtWithoutBreak->expr->var, $next->expr)) {
+                if (! $this->nodeComparator->areNodesEqual($expression->expr->var, $next->expr)) {
                     return false;
                 }
             }
