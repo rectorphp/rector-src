@@ -228,7 +228,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        if (is_array($node) && ! $parentNode instanceof Node) {
+        if (is_array($node) && is_array($parentNode)) {
             return null;
         }
 
