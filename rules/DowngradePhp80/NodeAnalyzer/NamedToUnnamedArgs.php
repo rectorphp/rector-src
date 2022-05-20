@@ -94,27 +94,26 @@ final class NamedToUnnamedArgs
                 $reflectionParameter = $functionLikeReflection->getParameters()[$i];
                 $isPassedByReference = $reflectionParameter->isPassedByReference();
                 $isVariadic = $reflectionParameter->isVariadic();
-                $defaultValueType = $this->defaultParameterValueResolver->resolveDefaultValueConstantType($reflectionParameter);
+                $defaultValueType = $this->defaultParameterValueResolver->resolveDefaultValueConstantType(
+                    $reflectionParameter
+                );
                 $defaultValue = $this->defaultParameterValueResolver->resolveValueFromType($defaultValueType);
             } else {
                 /** @var ParameterReflection|PhpParameterReflection $parameterReflection */
                 $parameterReflection = $parameters[$i];
-                $isPassedByReference  = $parameterReflection->passedByReference()->yes();
+                $isPassedByReference = $parameterReflection->passedByReference()
+                    ->yes();
                 $isVariadic = $parameterReflection->isVariadic();
-                $defaultValue = $this->defaultParameterValueResolver->resolveFromParameterReflection($parameterReflection);
+                $defaultValue = $this->defaultParameterValueResolver->resolveFromParameterReflection(
+                    $parameterReflection
+                );
             }
 
             if (! $defaultValue instanceof Expr) {
                 continue;
             }
 
-            $unnamedArgs[$i] = new Arg(
-                $defaultValue,
-                $isPassedByReference,
-                $isVariadic,
-                [],
-                null
-            );
+            $unnamedArgs[$i] = new Arg($defaultValue, $isPassedByReference, $isVariadic, [], null);
         }
 
         return $unnamedArgs;
