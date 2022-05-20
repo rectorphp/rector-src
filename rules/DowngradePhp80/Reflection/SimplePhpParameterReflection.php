@@ -33,7 +33,8 @@ final class SimplePhpParameterReflection implements ParameterReflection
     }
 
     /**
-     * getType() is never used yet
+     * getType() is never used yet and the implementation require PHPStan $phpDocType services injection
+     * @see https://github.com/phpstan/phpstan-src/blob/92420cd4b190b57d1ba8bf9e800eb97c8c0ee2f2/src/Reflection/Php/PhpParameterReflection.php#L24
      */
     public function getType(): Type
     {
