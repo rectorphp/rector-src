@@ -12,9 +12,12 @@ use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\ConstantType;
+use PHPStan\Type\ConstantTypeHelper;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 use Rector\Core\Exception\ShouldNotHappenException;
+use ReflectionParameter;
+use Throwable;
 
 final class DefaultParameterValueResolver
 {
@@ -32,8 +35,32 @@ final class DefaultParameterValueResolver
         return $this->resolveValueFromType($defaultValue);
     }
 
-    private function resolveValueFromType(ConstantType $constantType): ConstFetch | Expr
+    public function resolveDefaultValueConstantType(ReflectionParameter $reflectionParameter): ?ConstantType
     {
+        try {
+            if ($reflectionParameter->isDefaultValueAvailable()) {
+                $defaultValue = $reflectionParameter->getDefaultValue();
+                $defaultValueType = ConstantTypeHelper::getTypeFromValue($defaultValue);
+
+                if (! $defaultValueType instanceof ConstantType) {
+                    throw new ShouldNotHappenException();
+                }
+
+                return $defaultValueType;
+            }
+        } catch (Throwable) {
+            return null;
+        }
+
+        return null;
+    }
+
+    public function resolveValueFromType(?ConstantType $constantType): null | ConstFetch | Expr
+    {
+        if (! $constantType instanceof ConstantType) {
+            return null;
+        }
+
         if ($constantType instanceof ConstantBooleanType) {
             return $this->resolveConstantBooleanType($constantType);
         }
