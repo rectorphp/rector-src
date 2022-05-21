@@ -139,10 +139,10 @@ CODE_SAMPLE
 
     private function shouldSkip(LNumber | DNumber $node, string $numericValueAsString): bool
     {
-        $startToken = $node->getStartTokenPos();
+        $startTokenPos = $node->getStartTokenPos();
 
         $oldTokens = $this->file->getOldTokens();
-        $tokenValue = $oldTokens[$startToken][1] ?? null;
+        $tokenValue = $oldTokens[$startTokenPos][1] ?? null;
 
         if (! is_string($tokenValue)) {
             return true;
