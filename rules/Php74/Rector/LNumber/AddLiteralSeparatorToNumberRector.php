@@ -139,8 +139,7 @@ CODE_SAMPLE
 
     private function shouldSkip(LNumber | DNumber $node, string $numericValueAsString): bool
     {
-        /** @var int $startToken */
-        $startToken = $node->getAttribute(AttributeKey::START_TOKEN_POSITION);
+        $startToken = $node->getStartTokenPos();
 
         $oldTokens = $this->file->getOldTokens();
         $tokenValue = $oldTokens[$startToken][1] ?? null;
