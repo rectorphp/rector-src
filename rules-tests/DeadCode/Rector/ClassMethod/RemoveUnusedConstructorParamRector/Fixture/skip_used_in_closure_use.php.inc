@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector\Fixture;
 
-final class SomeClass
+final class SkipUsedInClosureUse
 {
     public function __construct($hey, $man)
     {
