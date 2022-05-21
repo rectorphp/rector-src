@@ -140,20 +140,7 @@ CODE_SAMPLE
 
     private function shouldSkip(LNumber | DNumber $node, mixed $rawValue): bool
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $startTokenPos = $node->getStartTokenPos();
-
-        $oldTokens = $this->file->getOldTokens();
-        $tokenValue = $oldTokens[$startTokenPos][1] ?? null;
-
-        if (! is_string($tokenValue)) {
-=======
-        if (! is_string($originalValue)) {
->>>>>>> make AddLiteralSeparatorToNumberRector use of rawValue
-=======
         if (! is_string($rawValue)) {
->>>>>>> make use of RAW_VALUE in DowngradeNumericLiteralSeparatorRector
             return true;
         }
 
