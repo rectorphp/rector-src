@@ -142,7 +142,7 @@ final class RectorConfig extends ContainerConfigurator
     }
 
     /**
-     * @param PhpVersion::* $phpVersion e.g. 80106 for PHP 8.1.6
+     * @param PhpVersion::* $phpVersion e.g. 80100 for PHP 8.1
      */
     public function phpVersion(int $phpVersion): void
     {
