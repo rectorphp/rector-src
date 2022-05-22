@@ -15,7 +15,7 @@ use Rector\Tests\Naming\Naming\UseImportsResolver\Source\SecondClass;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-class UseImportsResolverTest extends AbstractTestCase
+final class UseImportsResolverTest extends AbstractTestCase
 {
     private UseImportsResolver $useImportsResolver;
 
@@ -53,6 +53,9 @@ class UseImportsResolverTest extends AbstractTestCase
         $this->assertContains(SecondClass::class, $stringUses);
     }
 
+    /**
+     * @return Iterator<SmartFileInfo>
+     */
     public function provideData(): Iterator
     {
         $directory = __DIR__ . '/Fixture';
