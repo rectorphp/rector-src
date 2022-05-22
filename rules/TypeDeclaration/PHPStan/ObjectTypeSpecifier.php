@@ -205,7 +205,11 @@ final class ObjectTypeSpecifier
         return null;
     }
 
-    private function matchPartialNamespaceObjectType(string $prefix, ObjectType $objectType, UseUse $useUse): ?ShortenedObjectType
+    private function matchPartialNamespaceObjectType(
+        string $prefix,
+        ObjectType $objectType,
+        UseUse $useUse
+    ): ?ShortenedObjectType
     {
         // partial namespace
         if (! \str_starts_with($objectType->getClassName(), $useUse->name->getLast() . '\\')) {
@@ -229,7 +233,11 @@ final class ObjectTypeSpecifier
     /**
      * @return FullyQualifiedObjectType|ShortenedObjectType|null
      */
-    private function matchClassWithLastUseImportPart(string $prefix, ObjectType $objectType, UseUse $useUse): ?ObjectType
+    private function matchClassWithLastUseImportPart(
+        string $prefix,
+        ObjectType $objectType,
+        UseUse $useUse
+    ): ?ObjectType
     {
         if ($useUse->name->getLast() !== $objectType->getClassName()) {
             return null;
