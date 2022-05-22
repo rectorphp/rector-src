@@ -9,7 +9,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
@@ -21,7 +20,7 @@ final class UseImportsResolver
     }
 
     /**
-     * @return Use_[]
+     * @return Use_[]|GroupUse[]
      */
     public function resolveForNode(Node $node): array
     {
@@ -42,17 +41,11 @@ final class UseImportsResolver
             }
 
             if ($stmt instanceof GroupUse) {
-                $groupUseUses = [];
-                foreach ($stmt->uses as $useUse) {
-                    $groupUseUses[] = new UseUse(
-                        new Name($stmt->prefix . '\\' . $useUse->name),
-                        $useUse->alias,
-                        $useUse->type,
-                        $useUse->getAttributes()
-                    );
+                foreach ($stmt->uses as $key => $useUse) {
+                    $stmt->uses[$key]->name = new Name($stmt->prefix . '\\' . $useUse->name);
                 }
 
-                $collectedUses[] = new Use_($groupUseUses, $stmt->type, $stmt->getAttributes());
+                $collectedUses[] = $stmt;
             }
         }
 
