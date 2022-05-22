@@ -41,11 +41,10 @@ class UseImportsResolverTest extends AbstractTestCase
         $firstProperty = $this->nodeFinder->findFirstInstanceOf($nodes, Property::class);
         $resolvedUses = $this->useImportsResolver->resolveForNode($firstProperty);
 
-        print_node($resolvedUses);
 
         $stringUses = array_map(fn ($use) => $use->uses[0]->name->toString(), $resolvedUses);
 
-        $this->assertContains('FirstClass', $stringUses);
+        $this->assertContains(FirstClass::class, $stringUses);
         $this->assertContains(SecondClass::class, $stringUses);
     }
 
