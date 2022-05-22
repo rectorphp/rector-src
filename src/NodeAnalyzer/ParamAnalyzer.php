@@ -50,7 +50,7 @@ final class ParamAnalyzer
                 return false;
             }
 
-            $arguments = $this->funcCallManipulator->extractArgumentsFromCompactFuncCall($node);
+            $arguments = $this->funcCallManipulator->extractArgumentsFromCompactFuncCalls([$node]);
             return $this->nodeNameResolver->isNames($param, $arguments);
         });
     }

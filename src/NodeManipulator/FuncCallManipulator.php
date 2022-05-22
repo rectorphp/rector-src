@@ -16,22 +16,25 @@ final class FuncCallManipulator
     }
 
     /**
+     * @param FuncCall[] $compactFuncCalls
      * @return string[]
      */
-    public function extractArgumentsFromCompactFuncCall(FuncCall $funcCall): array
+    public function extractArgumentsFromCompactFuncCalls(array $compactFuncCalls): array
     {
         $arguments = [];
-        foreach ($funcCall->args as $arg) {
-            if (! $arg instanceof Arg) {
-                continue;
-            }
+        foreach ($compactFuncCalls as $compactFuncCall) {
+            foreach ($compactFuncCall->args as $arg) {
+                if (! $arg instanceof Arg) {
+                    continue;
+                }
 
-            $value = $this->valueResolver->getValue($arg->value);
-            if ($value === null) {
-                continue;
-            }
+                $value = $this->valueResolver->getValue($arg->value);
+                if ($value === null) {
+                    continue;
+                }
 
-            $arguments[] = $value;
+                $arguments[] = $value;
+            }
         }
 
         return $arguments;
