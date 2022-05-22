@@ -65,7 +65,7 @@ final class FunctionLikeManipulator
     {
         $paramNames = [];
 
-        foreach ($functionLike->params as $param) {
+        foreach ($functionLike->getParams() as $param) {
             $paramNames[] = $this->nodeNameResolver->getName($param);
         }
 
