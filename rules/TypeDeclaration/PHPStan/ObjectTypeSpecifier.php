@@ -169,17 +169,20 @@ final class ObjectTypeSpecifier
         }
 
         foreach ($uses as $use) {
+            $prefix = $use instanceof GroupUse
+                ? $use->prefix . '\\'
+                : '';
             foreach ($use->uses as $useUse) {
                 if ($useUse->alias !== null) {
                     continue;
                 }
 
-                $partialNamespaceObjectType = $this->matchPartialNamespaceObjectType($objectType, $useUse);
+                $partialNamespaceObjectType = $this->matchPartialNamespaceObjectType($prefix, $objectType, $useUse);
                 if ($partialNamespaceObjectType !== null) {
                     return $partialNamespaceObjectType;
                 }
 
-                $partialNamespaceObjectType = $this->matchClassWithLastUseImportPart($objectType, $useUse);
+                $partialNamespaceObjectType = $this->matchClassWithLastUseImportPart($prefix, $objectType, $useUse);
                 if ($partialNamespaceObjectType instanceof FullyQualifiedObjectType) {
                     // keep Generic items
                     if ($objectType instanceof GenericObjectType) {
@@ -202,7 +205,7 @@ final class ObjectTypeSpecifier
         return null;
     }
 
-    private function matchPartialNamespaceObjectType(ObjectType $objectType, UseUse $useUse): ?ShortenedObjectType
+    private function matchPartialNamespaceObjectType(string $prefix, ObjectType $objectType, UseUse $useUse): ?ShortenedObjectType
     {
         // partial namespace
         if (! \str_starts_with($objectType->getClassName(), $useUse->name->getLast() . '\\')) {
@@ -211,7 +214,7 @@ final class ObjectTypeSpecifier
 
         $classNameWithoutLastUsePart = Strings::after($objectType->getClassName(), '\\', 1);
 
-        $connectedClassName = $useUse->name->toString() . '\\' . $classNameWithoutLastUsePart;
+        $connectedClassName = $prefix . $useUse->name->toString() . '\\' . $classNameWithoutLastUsePart;
         if (! $this->reflectionProvider->hasClass($connectedClassName)) {
             return null;
         }
@@ -226,20 +229,20 @@ final class ObjectTypeSpecifier
     /**
      * @return FullyQualifiedObjectType|ShortenedObjectType|null
      */
-    private function matchClassWithLastUseImportPart(ObjectType $objectType, UseUse $useUse): ?ObjectType
+    private function matchClassWithLastUseImportPart(string $prefix, ObjectType $objectType, UseUse $useUse): ?ObjectType
     {
         if ($useUse->name->getLast() !== $objectType->getClassName()) {
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($useUse->name->toString())) {
+        if (! $this->reflectionProvider->hasClass($prefix . $useUse->name->toString())) {
             return null;
         }
 
-        if ($objectType->getClassName() === $useUse->name->toString()) {
+        if ($objectType->getClassName() === $prefix . $useUse->name->toString()) {
             return new FullyQualifiedObjectType($objectType->getClassName());
         }
 
-        return new ShortenedObjectType($objectType->getClassName(), $useUse->name->toString());
+        return new ShortenedObjectType($objectType->getClassName(), $prefix . $useUse->name->toString());
     }
 }
