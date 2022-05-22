@@ -6,10 +6,12 @@ namespace Rector\Naming\Naming;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class UseImportsResolver
 {
@@ -31,6 +33,19 @@ final class UseImportsResolver
             return [];
         }
 
-        return array_filter($namespace->stmts, fn (Stmt $stmt): bool => $stmt instanceof Use_);
+        $uses = [];
+
+        foreach ($namespace->stmts as $stmt) {
+            if ($stmt instanceof Use_) {
+                $uses[] = $stmt;
+                continue;
+            }
+
+            if ($stmt instanceof GroupUse) {
+                $uses[] = new Use_($stmt->uses);
+            }
+        }
+
+        return $uses;
     }
 }
