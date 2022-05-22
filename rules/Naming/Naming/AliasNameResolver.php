@@ -6,6 +6,7 @@ namespace Rector\Naming\Naming;
 
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\GroupUse;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class AliasNameResolver
@@ -22,25 +23,22 @@ final class AliasNameResolver
         $nameString = $name->toString();
 
         foreach ($uses as $use) {
+            $prefix = $use instanceof GroupUse
+                ? $use->prefix . '\\'
+                : '';
             $useUses = $use->uses;
-            if (count($useUses) > 1) {
-                continue;
-            }
+            foreach ($useUses as $useUse) {
+                if (! $useUse->alias instanceof Identifier) {
+                    continue;
+                }
 
-            if (! isset($useUses[0])) {
-                continue;
-            }
+                $name = $prefix . $useUse->name->toString();
+                if ($name !== $nameString) {
+                    continue;
+                }
 
-            $useUse = $useUses[0];
-            if (! $useUse->alias instanceof Identifier) {
-                continue;
+                return (string) $useUse->getAlias();
             }
-
-            if (! $this->nodeNameResolver->isName($useUse->name, $nameString)) {
-                continue;
-            }
-
-            return (string) $useUse->getAlias();
         }
 
         return null;
