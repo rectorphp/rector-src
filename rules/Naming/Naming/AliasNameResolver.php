@@ -7,12 +7,10 @@ namespace Rector\Naming\Naming;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 final class AliasNameResolver
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
