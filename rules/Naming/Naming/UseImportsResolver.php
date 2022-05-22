@@ -51,7 +51,7 @@ final class UseImportsResolver
                     );
                 }
 
-                $collectedUses[] = new Use_($groupUseUses);
+                $collectedUses[] = new Use_($groupUseUses, $stmt->type, $stmt->getAttributes());
             }
         }
 
