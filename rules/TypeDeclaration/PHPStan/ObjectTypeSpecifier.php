@@ -103,14 +103,17 @@ final class ObjectTypeSpecifier
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         foreach ($uses as $use) {
+            $prefix = $use instanceof GroupUse
+                ? $use->prefix . '\\'
+                : '';
             foreach ($use->uses as $useUse) {
                 if ($useUse->alias === null) {
                     continue;
                 }
 
-                $useName = $useUse->name->toString();
+                $useName = $prefix . $useUse->name->toString();
                 $alias = $useUse->alias->toString();
-                $fullyQualifiedName = $useUse->name->toString();
+                $fullyQualifiedName = $prefix . $useUse->name->toString();
 
                 $processAliasedObject = $this->processAliasedObject(
                     $alias,
