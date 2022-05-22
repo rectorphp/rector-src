@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming\Naming;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
@@ -32,23 +32,6 @@ final class UseImportsResolver
             return [];
         }
 
-        $collectedUses = [];
-
-        foreach ($namespace->stmts as $stmt) {
-            if ($stmt instanceof Use_) {
-                $collectedUses[] = $stmt;
-                continue;
-            }
-
-            if ($stmt instanceof GroupUse) {
-                foreach ($stmt->uses as $key => $useUse) {
-                    $stmt->uses[$key]->name = new Name($stmt->prefix . '\\' . $useUse->name);
-                }
-
-                $collectedUses[] = $stmt;
-            }
-        }
-
-        return $collectedUses;
+        return array_filter($namespace->stmts, fn (Stmt $stmt): bool => $stmt instanceof Use_ || $stmt instanceof GroupUse);
     }
 }
