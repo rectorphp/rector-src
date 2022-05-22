@@ -32,6 +32,9 @@ final class UseImportsResolver
             return [];
         }
 
-        return array_filter($namespace->stmts, fn (Stmt $stmt): bool => $stmt instanceof Use_ || $stmt instanceof GroupUse);
+        return array_filter(
+            $namespace->stmts,
+            fn (Stmt $stmt): bool => $stmt instanceof Use_ || $stmt instanceof GroupUse
+        );
     }
 }
