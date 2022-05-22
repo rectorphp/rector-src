@@ -55,17 +55,6 @@ final class ParamAnalyzer
         });
     }
 
-    private function isVariableInClosureUses(Closure $closure, Variable $variable): bool
-    {
-        foreach ($closure->uses as $use) {
-            if ($this->nodeComparator->areNodesEqual($use->var, $variable)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
      * @param Param[] $params
      */
@@ -96,5 +85,16 @@ final class ParamAnalyzer
     public function hasDefaultNull(Param $param): bool
     {
         return $param->default instanceof ConstFetch && $this->valueResolver->isNull($param->default);
+    }
+
+    private function isVariableInClosureUses(Closure $closure, Variable $variable): bool
+    {
+        foreach ($closure->uses as $use) {
+            if ($this->nodeComparator->areNodesEqual($use->var, $variable)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
