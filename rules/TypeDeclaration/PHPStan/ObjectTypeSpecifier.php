@@ -209,8 +209,7 @@ final class ObjectTypeSpecifier
         string $prefix,
         ObjectType $objectType,
         UseUse $useUse
-    ): ?ShortenedObjectType
-    {
+    ): ?ShortenedObjectType {
         // partial namespace
         if (! \str_starts_with($objectType->getClassName(), $useUse->name->getLast() . '\\')) {
             return null;
@@ -237,8 +236,7 @@ final class ObjectTypeSpecifier
         string $prefix,
         ObjectType $objectType,
         UseUse $useUse
-    ): ?ObjectType
-    {
+    ): ?ObjectType {
         if ($useUse->name->getLast() !== $objectType->getClassName()) {
             return null;
         }
