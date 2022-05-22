@@ -6,7 +6,6 @@ namespace Rector\Tests\Naming\Naming\UseImportsResolver;
 
 use Iterator;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Use_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
