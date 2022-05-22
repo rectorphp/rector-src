@@ -6,6 +6,7 @@ namespace Rector\Tests\Naming\Naming\UseImportsResolver;
 
 use Iterator;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Use_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -41,8 +42,13 @@ class UseImportsResolverTest extends AbstractTestCase
         $firstProperty = $this->nodeFinder->findFirstInstanceOf($nodes, Property::class);
         $resolvedUses = $this->useImportsResolver->resolveForNode($firstProperty);
 
+        $stringUses = [];
 
-        $stringUses = array_map(fn ($use) => $use->uses[0]->name->toString(), $resolvedUses);
+        foreach ($resolvedUses as $resolvedUse) {
+            foreach ($resolvedUse->uses as $useUse) {
+                $stringUses[] = $useUse->name->tostring();
+            }
+        }
 
         $this->assertContains(FirstClass::class, $stringUses);
         $this->assertContains(SecondClass::class, $stringUses);

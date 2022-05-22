@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\Naming\Naming;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\UseUse;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -33,19 +35,26 @@ final class UseImportsResolver
             return [];
         }
 
-        $uses = [];
+        $collectedUses = [];
 
         foreach ($namespace->stmts as $stmt) {
             if ($stmt instanceof Use_) {
-                $uses[] = $stmt;
+                $collectedUses[] = $stmt;
                 continue;
             }
 
             if ($stmt instanceof GroupUse) {
-                $uses[] = new Use_($stmt->uses);
+                $groupUseUses = [];
+                foreach ($stmt->uses as $useUse) {
+                    $groupUseUses[] = new UseUse(
+                        new Name((string) $stmt->prefix . '\\' . (string) $useUse->name) , $useUse->alias, $useUse->type, $useUse->getAttributes()
+                    );
+                }
+
+                $collectedUses[] = new Use_($groupUseUses);
             }
         }
 
-        return $uses;
+        return $collectedUses;
     }
 }
