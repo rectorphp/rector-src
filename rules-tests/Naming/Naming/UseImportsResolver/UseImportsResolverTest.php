@@ -45,7 +45,7 @@ class UseImportsResolverTest extends AbstractTestCase
 
         $stringUses = array_map(fn ($use) => $use->uses[0]->name->toString(), $resolvedUses);
 
-        $this->assertContains(FirstClass::class, $stringUses);
+        $this->assertContains('FirstClass', $stringUses);
         $this->assertContains(SecondClass::class, $stringUses);
     }
 
