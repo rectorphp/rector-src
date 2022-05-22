@@ -43,20 +43,27 @@ final class ParamAnalyzer
             }
 
             if ($node instanceof Closure) {
-                foreach ($node->uses as $use) {
-                    if ($this->nodeComparator->areNodesEqual($use->var, $param->var)) {
-                        return true;
-                    }
-                }
+                return $this->isVariableInClosureUses($node, $param->var);
             }
 
             if (! $this->nodeNameResolver->isName($node, 'compact')) {
                 return false;
             }
 
-            $arguments = $this->funcCallManipulator->extractArgumentsFromCompactFuncCalls([$node]);
+            $arguments = $this->funcCallManipulator->extractArgumentsFromCompactFuncCall($node);
             return $this->nodeNameResolver->isNames($param, $arguments);
         });
+    }
+
+    private function isVariableInClosureUses(Closure $closure, Variable $variable): bool
+    {
+        foreach ($closure->uses as $use) {
+            if ($this->nodeComparator->areNodesEqual($use->var, $variable)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
