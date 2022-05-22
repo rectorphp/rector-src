@@ -114,18 +114,21 @@ CODE_SAMPLE
         $typeFilter = $node instanceof ConstFetch ? Use_::TYPE_CONSTANT : Use_::TYPE_FUNCTION;
 
         foreach ($useNodes as $useNode) {
+            $prefix = $useNode instanceof GroupUse
+                ? $useNode->prefix . '\\'
+                : '';
             if ($useNode->type !== $typeFilter) {
                 continue;
             }
 
             foreach ($useNode->uses as $useUse) {
-                if ($name === $useUse->name->toLowerString()) {
-                    return $useUse->name->toString();
+                if ($name === $prefix . $useUse->name->toLowerString()) {
+                    return $prefix . $useUse->name->toString();
                 }
 
                 $alias = $useUse->getAlias();
                 if ($name === $alias->toLowerString()) {
-                    return $useUse->name->toString();
+                    return $prefix . $useUse->name->toString();
                 }
             }
         }
