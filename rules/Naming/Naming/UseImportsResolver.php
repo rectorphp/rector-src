@@ -45,7 +45,7 @@ final class UseImportsResolver
                 $groupUseUses = [];
                 foreach ($stmt->uses as $useUse) {
                     $groupUseUses[] = new UseUse(
-                        new Name((string) $stmt->prefix . '\\' . (string) $useUse->name),
+                        new Name($stmt->prefix . '\\' . $useUse->name),
                         $useUse->alias,
                         $useUse->type,
                         $useUse->getAttributes()
