@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
@@ -90,7 +91,7 @@ final class ObjectTypeSpecifier
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     private function matchAliasedObjectType(Node $node, ObjectType $objectType, array $uses): ?AliasedObjectType
     {
@@ -154,7 +155,7 @@ final class ObjectTypeSpecifier
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     private function matchShortenedObjectType(
         ObjectType $objectType,

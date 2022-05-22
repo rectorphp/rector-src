@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\NodeAnalyzer;
 
 use Nette\Utils\Strings;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -37,7 +38,7 @@ final class UseImportNameMatcher
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     public function matchNameWithUses(string $tag, array $uses): ?string
     {

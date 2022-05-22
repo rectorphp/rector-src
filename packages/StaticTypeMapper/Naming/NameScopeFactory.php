@@ -6,6 +6,7 @@ namespace Rector\StaticTypeMapper\Naming;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\NameScope;
@@ -81,7 +82,7 @@ final class NameScopeFactory
     }
 
     /**
-     * @param Use_[] $useNodes
+     * @param Use_[]|GroupUse[] $useNodes
      * @return array<string, string>
      */
     private function resolveUseNamesByAlias(array $useNodes): array

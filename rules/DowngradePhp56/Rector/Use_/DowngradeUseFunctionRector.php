@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\UseImportsResolver;
@@ -101,7 +102,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Use_[] $useNodes
+     * @param Use_[]|GroupUse[] $useNodes
      */
     private function getFullyQualifiedName(array $useNodes, ConstFetch|FuncCall $node): ?string
     {

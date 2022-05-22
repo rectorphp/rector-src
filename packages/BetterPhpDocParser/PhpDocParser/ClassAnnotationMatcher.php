@@ -6,6 +6,7 @@ namespace Rector\BetterPhpDocParser\PhpDocParser;
 
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -48,7 +49,7 @@ final class ClassAnnotationMatcher
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag): string
     {
@@ -72,7 +73,7 @@ final class ClassAnnotationMatcher
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     private function resolveAsAliased(array $uses, string $tag): string
     {
