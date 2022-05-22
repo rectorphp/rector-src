@@ -7,20 +7,25 @@ namespace Rector\Core\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Core\NodeManipulator\FuncCallManipulator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ParamAnalyzer
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly FuncCallManipulator $funcCallManipulator
     ) {
     }
 
@@ -29,7 +34,7 @@ final class ParamAnalyzer
         return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($classMethod, function (Node $node) use (
             $param
         ): bool {
-            if (! $node instanceof Variable && ! $node instanceof Closure) {
+            if (! $node instanceof Variable && ! $node instanceof Closure && ! $node instanceof FuncCall) {
                 return false;
             }
 
@@ -37,13 +42,20 @@ final class ParamAnalyzer
                 return $this->nodeComparator->areNodesEqual($node, $param->var);
             }
 
-            foreach ($node->uses as $use) {
-                if ($this->nodeComparator->areNodesEqual($use->var, $param->var)) {
-                    return true;
+            if ($node instanceof Closure) {
+                foreach ($node->uses as $use) {
+                    if ($this->nodeComparator->areNodesEqual($use->var, $param->var)) {
+                        return true;
+                    }
                 }
             }
 
-            return false;
+            if (! $this->nodeNameResolver->isName($node, 'compact')) {
+                return false;
+            }
+
+            $arguments = $this->funcCallManipulator->extractArgumentsFromCompactFuncCalls([$node]);
+            return $this->nodeNameResolver->isNames($param, $arguments);
         });
     }
 
