@@ -12,7 +12,6 @@ use Rector\Core\NodeManipulator\FunctionLikeManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\ExpectedNameResolver\MatchParamTypeExpectedNameResolver;
 use Rector\Naming\PhpArray\ArrayFilter;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ConflictingNameResolver
 {
@@ -25,7 +24,6 @@ final class ConflictingNameResolver
         private readonly ArrayFilter $arrayFilter,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ExpectedNameResolver $expectedNameResolver,
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver,
         private readonly FunctionLikeManipulator $functionLikeManipulator
     ) {
