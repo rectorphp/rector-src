@@ -43,30 +43,33 @@ final class UseImportNameMatcher
     public function matchNameWithUses(string $tag, array $uses): ?string
     {
         foreach ($uses as $use) {
+            $prefix = $use instanceof GroupUse
+                ? $use->prefix . '\\'
+                : '';
             foreach ($use->uses as $useUse) {
                 if (! $this->isUseMatchingName($tag, $useUse)) {
                     continue;
                 }
 
-                return $this->resolveName($tag, $useUse);
+                return $this->resolveName($prefix, $tag, $useUse);
             }
         }
 
         return null;
     }
 
-    public function resolveName(string $tag, UseUse $useUse): string
+    public function resolveName(string $prefix, string $tag, UseUse $useUse): string
     {
         if ($useUse->alias === null) {
-            return $useUse->name->toString();
+            return $prefix . $useUse->name->toString();
         }
 
         $unaliasedShortClass = Strings::substring($tag, Strings::length($useUse->alias->toString()));
         if (\str_starts_with($unaliasedShortClass, '\\')) {
-            return $useUse->name . $unaliasedShortClass;
+            return $prefix . $useUse->name . $unaliasedShortClass;
         }
 
-        return $useUse->name . '\\' . $unaliasedShortClass;
+        return $prefix . $useUse->name . '\\' . $unaliasedShortClass;
     }
 
     private function isUseMatchingName(string $tag, UseUse $useUse): bool
