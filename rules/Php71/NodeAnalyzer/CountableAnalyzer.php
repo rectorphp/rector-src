@@ -88,10 +88,6 @@ final class CountableAnalyzer
             return false;
         }
 
-        if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($expr)) {
-            return false;
-        }
-
         $propertyDefaultValue = $propertiesDefaults[$propertyName];
         return $propertyDefaultValue === null;
     }

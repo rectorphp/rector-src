@@ -7,11 +7,18 @@ namespace Rector\TypeDeclaration\AlreadyAssignDetector;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\VarLikeIdentifier;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\ObjectType;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
@@ -29,7 +36,8 @@ final class ConstructorAssignDetector
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PropertyAssignMatcher $propertyAssignMatcher,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer
+        private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -66,6 +74,18 @@ final class ConstructorAssignDetector
 
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             });
+        }
+
+        if (! $isAssignedInConstructor) {
+            $propertyFetch = new PropertyFetch(new Variable('this'), new Identifier($propertyName));
+            if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyFetch)) {
+                return true;
+            }
+
+            $staticPropertyFetch = new StaticPropertyFetch(new Name('self'), new VarLikeIdentifier($propertyName));
+            if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $staticPropertyFetch)) {
+                return true;
+            }
         }
 
         return $isAssignedInConstructor;

@@ -8,18 +8,22 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ObjectType;
 
 final class PropertyFetchAnalyzer
 {
@@ -134,44 +138,40 @@ final class PropertyFetchAnalyzer
         return $this->isLocalPropertyFetch($node->var);
     }
 
-    public function isFilledViaMethodCallInConstructStmts(PropertyFetch $propertyFetch): bool
+    public function isFilledViaMethodCallInConstructStmts(ClassLike $classLike, StaticPropertyFetch|PropertyFetch $propertyFetch): bool
     {
-        $class = $this->betterNodeFinder->findParentType($propertyFetch, Class_::class);
-        if (! $class instanceof Class_) {
-            return false;
-        }
-
-        $construct = $class->getMethod(MethodName::CONSTRUCT);
+        $construct = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $construct instanceof ClassMethod) {
             return false;
         }
 
-        /** @var MethodCall[] $methodCalls */
-        $methodCalls = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
-            $construct,
-            [MethodCall::class]
-        );
+        $className = (string) $this->nodeNameResolver->getName($classLike);
+        $stmts = (array) $construct->stmts;
 
-        foreach ($methodCalls as $methodCall) {
-            if (! $methodCall->var instanceof Variable) {
+        foreach ($stmts as $stmt) {
+            if (! $stmt instanceof Expression) {
                 continue;
             }
 
-            if (! $this->nodeNameResolver->isName($methodCall->var, self::THIS)) {
+            if (! $stmt->expr instanceof MethodCall && ! $stmt->expr instanceof StaticCall) {
                 continue;
             }
 
-            $classMethod = $this->astResolver->resolveClassMethodFromMethodCall($methodCall);
-            if (! $classMethod instanceof ClassMethod) {
+            $callerClassMethod = $this->astResolver->resolveClassMethodFromCall($stmt->expr);
+            if (! $callerClassMethod instanceof ClassMethod) {
                 continue;
             }
 
-            $isFound = $this->isPropertyAssignFoundInClassMethod($classMethod, $propertyFetch);
-            if (! $isFound) {
+            $callerClass = $this->betterNodeFinder->findParentType($callerClassMethod, Class_::class);
+            if (! $callerClass instanceof Class_) {
                 continue;
             }
 
-            return true;
+            $callerClassName = (string) $this->nodeNameResolver->getName($callerClass);
+            $isFound = $this->isPropertyAssignFoundInClassMethod($classLike, $className, $callerClassName, $callerClassMethod, $propertyFetch);
+            if ($isFound) {
+                return true;
+            }
         }
 
         return false;
@@ -190,21 +190,31 @@ final class PropertyFetchAnalyzer
         return $this->nodeNameResolver->isNames($node->name, $propertyNames);
     }
 
-    private function isPropertyAssignFoundInClassMethod(ClassMethod $classMethod, PropertyFetch $propertyFetch): bool
+    private function isPropertyAssignFoundInClassMethod(ClassLike $classLike, string $className, string $callerClassName, ClassMethod $classMethod, StaticPropertyFetch|PropertyFetch $propertyFetch): bool
     {
-        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-            $classMethod,
-            function (Node $subNode) use ($propertyFetch): bool {
-                if (! $subNode instanceof Assign) {
-                    return false;
-                }
+        if ($className !== $callerClassName && ! $classLike->isTrait()) {
+            $objectType = new ObjectType($className);
+            $callerObjectType = new ObjectType($callerClassName);
 
-                if (! $subNode->var instanceof PropertyFetch) {
-                    return false;
-                }
-
-                return $this->nodeComparator->areNodesEqual($propertyFetch, $subNode->var);
+            if (! $callerObjectType->isSuperTypeOf($objectType)->yes()) {
+                return false;
             }
-        );
+        }
+
+        foreach ((array) $classMethod->stmts as $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
+            }
+
+            if (! $stmt->expr instanceof Assign) {
+                continue;
+            }
+
+            if ($this->nodeComparator->areNodesEqual($propertyFetch, $stmt->expr->var)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
