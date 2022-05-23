@@ -7,6 +7,7 @@ namespace Rector\Php71\NodeAnalyzer;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Analyser\Scope;
@@ -19,6 +20,7 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -32,13 +34,14 @@ final class CountableAnalyzer
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
     public function isCastableArrayType(Expr $expr, ArrayType $arrayType): bool
     {
-        if (! $expr instanceof PropertyFetch) {
+        if (! $this->propertyFetchAnalyzer->isPropertyFetch($expr)) {
             return false;
         }
 
@@ -46,7 +49,12 @@ final class CountableAnalyzer
             return false;
         }
 
-        $callerObjectType = $this->nodeTypeResolver->getType($expr->var);
+        /**
+         * @var StaticPropertyFetch|PropertyFetch $expr
+         */
+        $callerObjectType = $expr instanceof StaticPropertyFetch
+            ? $this->nodeTypeResolver->getType($expr->class)
+            : $this->nodeTypeResolver->getType($expr->var);
 
         $propertyName = $this->nodeNameResolver->getName($expr->name);
         if (! is_string($propertyName)) {
@@ -99,7 +107,7 @@ final class CountableAnalyzer
         return is_a($typeWithClassName->getClassName(), Array_::class, true);
     }
 
-    private function isIterableOrFilledAtConstruct(Type $nativeType, PropertyFetch $propertyFetch): bool
+    private function isIterableOrFilledAtConstruct(Type $nativeType, StaticPropertyFetch|PropertyFetch $propertyFetch): bool
     {
         if ($nativeType->isIterable()->yes()) {
             return true;
@@ -119,7 +127,7 @@ final class CountableAnalyzer
     }
 
     private function resolveProperty(
-        PropertyFetch $propertyFetch,
+        StaticPropertyFetch|PropertyFetch $propertyFetch,
         ClassReflection $classReflection,
         string $propertyName
     ): ?PropertyReflection {
