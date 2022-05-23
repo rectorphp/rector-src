@@ -11,14 +11,12 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\Node\VarLikeIdentifier;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
@@ -59,7 +57,7 @@ final class PropertyFetchAnalyzer
 
             return $this->nodeNameResolver->isNames($node->class, [
                 ObjectReference::SELF()->getValue(),
-                ObjectReference::STATIC()->getValue()
+                ObjectReference::STATIC()->getValue(),
             ]);
         }
 
@@ -143,10 +141,7 @@ final class PropertyFetchAnalyzer
         return $this->isLocalPropertyFetch($node->var);
     }
 
-    public function isFilledViaMethodCallInConstructStmts(
-        ClassLike $classLike,
-        string $propertyName
-    ): bool {
+    public function isFilledViaMethodCallInConstructStmts(ClassLike $classLike, string $propertyName): bool {
         $classMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $classMethod instanceof ClassMethod) {
             return false;

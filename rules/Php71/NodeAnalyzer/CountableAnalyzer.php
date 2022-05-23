@@ -49,9 +49,7 @@ final class CountableAnalyzer
             return false;
         }
 
-        /**
-         * @var StaticPropertyFetch|PropertyFetch $expr
-         */
+        /** @var StaticPropertyFetch|PropertyFetch $expr */
         $callerObjectType = $expr instanceof StaticPropertyFetch
             ? $this->nodeTypeResolver->getType($expr->class)
             : $this->nodeTypeResolver->getType($expr->var);
@@ -107,7 +105,10 @@ final class CountableAnalyzer
         return is_a($typeWithClassName->getClassName(), Array_::class, true);
     }
 
-    private function isIterableOrFilledAtConstruct(Type $nativeType, StaticPropertyFetch|PropertyFetch $propertyFetch): bool
+    private function isIterableOrFilledAtConstruct(
+        Type $nativeType,
+        StaticPropertyFetch|PropertyFetch $propertyFetch
+    ): bool
     {
         if ($nativeType->isIterable()->yes()) {
             return true;
