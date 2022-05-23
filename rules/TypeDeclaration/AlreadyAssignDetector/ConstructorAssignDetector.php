@@ -91,7 +91,9 @@ final class ConstructorAssignDetector
         }
 
         foreach (['self', 'static'] as $staticClass) {
-            $staticPropertyFetch = new StaticPropertyFetch(new Name($staticClass), new VarLikeIdentifier($propertyName));
+            $staticPropertyFetch = new StaticPropertyFetch(new Name($staticClass), new VarLikeIdentifier(
+                $propertyName
+            ));
             if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $staticPropertyFetch)) {
                 return true;
             }
