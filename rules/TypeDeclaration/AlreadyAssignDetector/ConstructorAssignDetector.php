@@ -82,13 +82,11 @@ final class ConstructorAssignDetector
                 return true;
             }
 
-            // @see https://3v4l.org/N683D
             $staticPropertyFetch = new StaticPropertyFetch(new Name('self'), new VarLikeIdentifier($propertyName));
             if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $staticPropertyFetch)) {
                 return true;
             }
 
-            // @see https://3v4l.org/Pa7KG
             $staticPropertyFetch = new StaticPropertyFetch(new Name('static'), new VarLikeIdentifier($propertyName));
             if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $staticPropertyFetch)) {
                 return true;
