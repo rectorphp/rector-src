@@ -57,7 +57,10 @@ final class PropertyFetchAnalyzer
                 return false;
             }
 
-            return $this->nodeNameResolver->isName($node->class, ObjectReference::SELF()->getValue());
+            return $this->nodeNameResolver->isNames($node->class, [
+                ObjectReference::SELF()->getValue(),
+                ObjectReference::STATIC()->getValue()
+            ]);
         }
 
         return false;
@@ -225,18 +228,8 @@ final class PropertyFetchAnalyzer
                 continue;
             }
 
-            $propertyFetch = new PropertyFetch(new Variable('this'), new Identifier($propertyName));
-            if ($this->nodeComparator->areNodesEqual($propertyFetch, $stmt->expr->var)) {
+            if ($this->isLocalPropertyFetchName($stmt->expr->var, $propertyName)) {
                 return true;
-            }
-
-            foreach (['self', 'static'] as $staticClass) {
-                $staticPropertyFetch = new StaticPropertyFetch(new Name($staticClass), new VarLikeIdentifier(
-                    $propertyName
-                ));
-                if ($this->nodeComparator->areNodesEqual($staticPropertyFetch, $stmt->expr->var)) {
-                    return true;
-                }
             }
         }
 
