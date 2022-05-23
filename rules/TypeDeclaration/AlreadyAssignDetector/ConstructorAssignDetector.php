@@ -77,23 +77,27 @@ final class ConstructorAssignDetector
         }
 
         if (! $isAssignedInConstructor) {
-            $propertyFetch = new PropertyFetch(new Variable('this'), new Identifier($propertyName));
-            if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyFetch)) {
-                return true;
-            }
+            return $this->isPropertyFetchAssignedViaMethodCall($classLike, $propertyName);
+        }
 
-            $staticPropertyFetch = new StaticPropertyFetch(new Name('self'), new VarLikeIdentifier($propertyName));
-            if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $staticPropertyFetch)) {
-                return true;
-            }
+        return $isAssignedInConstructor;
+    }
 
-            $staticPropertyFetch = new StaticPropertyFetch(new Name('static'), new VarLikeIdentifier($propertyName));
+    private function isPropertyFetchAssignedViaMethodCall(ClassLike $classLike, string $propertyName): bool
+    {
+        $propertyFetch = new PropertyFetch(new Variable('this'), new Identifier($propertyName));
+        if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyFetch)) {
+            return true;
+        }
+
+        foreach (['self', 'static'] as $staticClass) {
+            $staticPropertyFetch = new StaticPropertyFetch(new Name($staticClass), new VarLikeIdentifier($propertyName));
             if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $staticPropertyFetch)) {
                 return true;
             }
         }
 
-        return $isAssignedInConstructor;
+        return false;
     }
 
     private function matchAssignExprToPropertyName(Node $node, string $propertyName): ?Expr

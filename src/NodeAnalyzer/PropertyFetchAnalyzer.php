@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
@@ -204,7 +205,7 @@ final class PropertyFetchAnalyzer
         ClassMethod $classMethod,
         StaticPropertyFetch|PropertyFetch $propertyFetch
     ): bool {
-        if ($className !== $callerClassName && ! $classLike->isTrait()) {
+        if ($className !== $callerClassName && ! $classLike instanceof Trait_) {
             $objectType = new ObjectType($className);
             $callerObjectType = new ObjectType($callerClassName);
 
