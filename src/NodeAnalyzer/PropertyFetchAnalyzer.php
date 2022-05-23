@@ -141,13 +141,13 @@ final class PropertyFetchAnalyzer
         ClassLike $classLike,
         StaticPropertyFetch|PropertyFetch $propertyFetch
     ): bool {
-        $construct = $classLike->getMethod(MethodName::CONSTRUCT);
-        if (! $construct instanceof ClassMethod) {
+        $classMethod = $classLike->getMethod(MethodName::CONSTRUCT);
+        if (! $classMethod instanceof ClassMethod) {
             return false;
         }
 
         $className = (string) $this->nodeNameResolver->getName($classLike);
-        $stmts = (array) $construct->stmts;
+        $stmts = (array) $classMethod->stmts;
 
         foreach ($stmts as $stmt) {
             if (! $stmt instanceof Expression) {
