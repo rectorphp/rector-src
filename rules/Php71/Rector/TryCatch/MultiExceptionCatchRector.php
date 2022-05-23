@@ -73,6 +73,7 @@ CODE_SAMPLE
         }
 
         $catchKeysByContent = $this->collectCatchKeysByContent($node);
+        $hasChanged = false;
         /** @var Catch_[] $catchKeys */
         foreach ($catchKeysByContent as $catchKeys) {
             // no duplicates
@@ -89,7 +90,12 @@ CODE_SAMPLE
 
             foreach ($catchKeys as $catchKey) {
                 $this->removeNode($catchKey);
+                $hasChanged = true;
             }
+        }
+
+        if (! $hasChanged) {
+            return null;
         }
 
         return $node;
