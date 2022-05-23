@@ -16,14 +16,13 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PHPStan\Type\ObjectType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
-use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\ObjectType;
 
 final class PropertyFetchAnalyzer
 {
@@ -138,7 +137,10 @@ final class PropertyFetchAnalyzer
         return $this->isLocalPropertyFetch($node->var);
     }
 
-    public function isFilledViaMethodCallInConstructStmts(ClassLike $classLike, StaticPropertyFetch|PropertyFetch $propertyFetch): bool
+    public function isFilledViaMethodCallInConstructStmts(
+        ClassLike $classLike,
+        StaticPropertyFetch|PropertyFetch $propertyFetch
+    ): bool
     {
         $construct = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $construct instanceof ClassMethod) {
@@ -168,7 +170,13 @@ final class PropertyFetchAnalyzer
             }
 
             $callerClassName = (string) $this->nodeNameResolver->getName($callerClass);
-            $isFound = $this->isPropertyAssignFoundInClassMethod($classLike, $className, $callerClassName, $callerClassMethod, $propertyFetch);
+            $isFound = $this->isPropertyAssignFoundInClassMethod(
+                $classLike,
+                $className,
+                $callerClassName,
+                $callerClassMethod,
+                $propertyFetch
+            );
             if ($isFound) {
                 return true;
             }
@@ -190,7 +198,13 @@ final class PropertyFetchAnalyzer
         return $this->nodeNameResolver->isNames($node->name, $propertyNames);
     }
 
-    private function isPropertyAssignFoundInClassMethod(ClassLike $classLike, string $className, string $callerClassName, ClassMethod $classMethod, StaticPropertyFetch|PropertyFetch $propertyFetch): bool
+    private function isPropertyAssignFoundInClassMethod(
+        ClassLike $classLike,
+        string $className,
+        string $callerClassName,
+        ClassMethod $classMethod,
+        StaticPropertyFetch|PropertyFetch $propertyFetch
+    ): bool
     {
         if ($className !== $callerClassName && ! $classLike->isTrait()) {
             $objectType = new ObjectType($className);
