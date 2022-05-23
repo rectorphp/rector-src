@@ -77,25 +77,10 @@ final class ConstructorAssignDetector
         }
 
         if (! $isAssignedInConstructor) {
-            return $this->isPropertyFetchAssignedViaMethodCall($classLike, $propertyName);
+            return $this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyName);
         }
 
         return $isAssignedInConstructor;
-    }
-
-    private function isPropertyFetchAssignedViaMethodCall(ClassLike $classLike, string $propertyName): bool
-    {
-        if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyName)) {
-            return true;
-        }
-
-        foreach (['self', 'static'] as $staticClass) {
-            if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyName)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function matchAssignExprToPropertyName(Node $node, string $propertyName): ?Expr
