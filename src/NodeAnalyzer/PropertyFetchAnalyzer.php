@@ -141,7 +141,8 @@ final class PropertyFetchAnalyzer
         return $this->isLocalPropertyFetch($node->var);
     }
 
-    public function isFilledViaMethodCallInConstructStmts(ClassLike $classLike, string $propertyName): bool {
+    public function isFilledViaMethodCallInConstructStmts(ClassLike $classLike, string $propertyName): bool
+    {
         $classMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $classMethod instanceof ClassMethod) {
             return false;

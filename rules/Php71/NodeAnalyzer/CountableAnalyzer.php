@@ -108,8 +108,7 @@ final class CountableAnalyzer
     private function isIterableOrFilledAtConstruct(
         Type $nativeType,
         StaticPropertyFetch|PropertyFetch $propertyFetch
-    ): bool
-    {
+    ): bool {
         if ($nativeType->isIterable()->yes()) {
             return true;
         }
