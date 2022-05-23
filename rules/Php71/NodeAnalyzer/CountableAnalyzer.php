@@ -19,7 +19,6 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
-use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -32,7 +31,6 @@ final class CountableAnalyzer
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
