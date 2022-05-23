@@ -140,8 +140,7 @@ final class PropertyFetchAnalyzer
     public function isFilledViaMethodCallInConstructStmts(
         ClassLike $classLike,
         StaticPropertyFetch|PropertyFetch $propertyFetch
-    ): bool
-    {
+    ): bool {
         $construct = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $construct instanceof ClassMethod) {
             return false;
@@ -204,8 +203,7 @@ final class PropertyFetchAnalyzer
         string $callerClassName,
         ClassMethod $classMethod,
         StaticPropertyFetch|PropertyFetch $propertyFetch
-    ): bool
-    {
+    ): bool {
         if ($className !== $callerClassName && ! $classLike->isTrait()) {
             $objectType = new ObjectType($className);
             $callerObjectType = new ObjectType($callerClassName);
