@@ -11,12 +11,14 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\VarLikeIdentifier;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
@@ -140,7 +142,7 @@ final class PropertyFetchAnalyzer
 
     public function isFilledViaMethodCallInConstructStmts(
         ClassLike $classLike,
-        StaticPropertyFetch|PropertyFetch $propertyFetch
+        string $propertyName
     ): bool {
         $classMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $classMethod instanceof ClassMethod) {
@@ -175,7 +177,7 @@ final class PropertyFetchAnalyzer
                 $className,
                 $callerClassName,
                 $callerClassMethod,
-                $propertyFetch
+                $propertyName
             );
             if ($isFound) {
                 return true;
@@ -203,7 +205,7 @@ final class PropertyFetchAnalyzer
         string $className,
         string $callerClassName,
         ClassMethod $classMethod,
-        StaticPropertyFetch|PropertyFetch $propertyFetch
+        string $propertyName
     ): bool {
         if ($className !== $callerClassName && ! $classLike instanceof Trait_) {
             $objectType = new ObjectType($className);
@@ -223,8 +225,18 @@ final class PropertyFetchAnalyzer
                 continue;
             }
 
+            $propertyFetch = new PropertyFetch(new Variable('this'), new Identifier($propertyName));
             if ($this->nodeComparator->areNodesEqual($propertyFetch, $stmt->expr->var)) {
                 return true;
+            }
+
+            foreach (['self', 'static'] as $staticClass) {
+                $staticPropertyFetch = new StaticPropertyFetch(new Name($staticClass), new VarLikeIdentifier(
+                    $propertyName
+                ));
+                if ($this->nodeComparator->areNodesEqual($staticPropertyFetch, $stmt->expr->var)) {
+                    return true;
+                }
             }
         }
 

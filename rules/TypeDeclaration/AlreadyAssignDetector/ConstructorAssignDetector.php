@@ -85,16 +85,12 @@ final class ConstructorAssignDetector
 
     private function isPropertyFetchAssignedViaMethodCall(ClassLike $classLike, string $propertyName): bool
     {
-        $propertyFetch = new PropertyFetch(new Variable('this'), new Identifier($propertyName));
-        if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyFetch)) {
+        if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyName)) {
             return true;
         }
 
         foreach (['self', 'static'] as $staticClass) {
-            $staticPropertyFetch = new StaticPropertyFetch(new Name($staticClass), new VarLikeIdentifier(
-                $propertyName
-            ));
-            if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $staticPropertyFetch)) {
+            if ($this->propertyFetchAnalyzer->isFilledViaMethodCallInConstructStmts($classLike, $propertyName)) {
                 return true;
             }
         }
