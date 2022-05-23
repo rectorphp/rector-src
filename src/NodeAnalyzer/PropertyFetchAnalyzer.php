@@ -20,7 +20,6 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -35,7 +34,6 @@ final class PropertyFetchAnalyzer
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeComparator $nodeComparator,
         private readonly AstResolver $astResolver
     ) {
     }
