@@ -66,7 +66,7 @@ final class RectifiedAnalyzer
         }
 
         if ($originalNode instanceof Node) {
-            return true;
+            return false;
         }
 
         $startTokenPos = $node->getStartTokenPos();
