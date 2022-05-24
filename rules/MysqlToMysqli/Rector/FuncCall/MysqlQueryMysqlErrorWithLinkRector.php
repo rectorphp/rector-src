@@ -131,7 +131,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            print_node($node);
             $args = $node->args;
             if (
                 $args === [] || ! $this->isProbablyMysql($args[0]->value)
@@ -186,7 +185,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $this->isObjectType($node->expr, new ObjectType('mysqli'));
+            return $node->expr instanceof FuncCall && $this->nodeNameResolver->isName($node->expr, 'mysqli_connect');
         });
 
         if (! $connectionAssign instanceof Assign) {
