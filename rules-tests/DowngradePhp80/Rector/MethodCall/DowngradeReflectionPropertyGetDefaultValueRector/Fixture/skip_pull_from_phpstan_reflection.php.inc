@@ -4,7 +4,7 @@ namespace Rector\Tests\DowngradePhp80\Rector\MethodCall\DowngradeReflectionPrope
 
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 
-class PullFromPHPStanReflection
+class SkipPullFromPHPStanReflection
 {
     public function get(PhpPropertyReflection $phpPropertyReflection)
     {
