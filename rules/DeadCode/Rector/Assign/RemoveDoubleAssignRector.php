@@ -100,10 +100,13 @@ CODE_SAMPLE
                 continue;
             }
 
+            // early check self referencing, ensure that variable not re-used
             if ($this->isSelfReferencing($nextAssign)) {
                 continue;
             }
 
+            // detect call expression has side effect
+            // no calls on right, could hide e.g. array_pop()|array_shift()
             if ($this->sideEffectNodeDetector->detectCallExpr($stmt->expr->expr)) {
                 continue;
             }
@@ -112,6 +115,7 @@ CODE_SAMPLE
                 continue;
             }
 
+            // remove current Stmt if will be overriden in next stmt
             $this->removeNode($stmt);
             $hasRemovedStmt = true;
         }
