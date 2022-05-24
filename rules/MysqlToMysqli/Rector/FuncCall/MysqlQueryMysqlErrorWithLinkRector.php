@@ -185,6 +185,10 @@ CODE_SAMPLE
                 return false;
             }
 
+            if ($this->isObjectType($node->expr, new ObjectType('mysqli'))) {
+                return true;
+            }
+
             return $node->expr instanceof FuncCall && $this->nodeNameResolver->isName($node->expr, 'mysqli_connect');
         });
 
