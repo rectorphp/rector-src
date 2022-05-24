@@ -27,7 +27,7 @@ final class UnreachableStmtAnalyzer
 
         $previousStmt = $stmt->getAttribute(AttributeKey::PREVIOUS_NODE);
         if (! $previousStmt instanceof Node) {
-            return $this->isStmtPHPStanUnreachable($previousStmt);
+            return false;
         }
 
         if ($previousStmt instanceof Stmt) {
