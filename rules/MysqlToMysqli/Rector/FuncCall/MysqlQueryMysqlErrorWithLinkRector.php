@@ -131,6 +131,7 @@ CODE_SAMPLE
                 continue;
             }
 
+            print_node($node);
             $args = $node->args;
             if (
                 $args === [] || ! $this->isProbablyMysql($args[0]->value)
