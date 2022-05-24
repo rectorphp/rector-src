@@ -26,7 +26,7 @@ final class UnreachableStmtAnalyzer
         }
 
         $previousStmt = $stmt->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if ($previousStmt instanceof Node && ! $stmt instanceof Stmt) {
+        if ($previousStmt instanceof Node && ! $previousStmt instanceof Stmt) {
             return true;
         }
 
