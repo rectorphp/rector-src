@@ -29,9 +29,11 @@ final class UnreachableStmtAnalyzer
         if (! $previousStmt instanceof Node) {
             return $this->isStmtPHPStanUnreachable($previousStmt);
         }
+
         if ($previousStmt instanceof Stmt) {
             return $this->isStmtPHPStanUnreachable($previousStmt);
         }
+
         return true;
     }
 }
