@@ -95,9 +95,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            /**
-             * @var Assign $previousAssign
-             */
             $nextAssign = $nextStmt->expr;
             if (! $this->nodeComparator->areNodesEqual($nextAssign->var, $stmt->expr->var)) {
                 continue;
