@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\VariadicAwareParamTagValueNode;
@@ -28,7 +29,7 @@ final class TagRemovalGuard
     ) {
     }
 
-    public function isLegal(ParamTagValueNode|ReturnTagValueNode $tagValueNode, Node $node): bool
+    public function isLegal(ParamTagValueNode|ReturnTagValueNode|VarTagValueNode $tagValueNode, Node $node): bool
     {
         if (in_array($tagValueNode->type::class, PhpDocTypeChanger::ALLOWED_TYPES, true)) {
             return false;

@@ -7,6 +7,7 @@ namespace Rector\DeadCode\PhpDoc;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\UnionType;
+use Rector\DeadCode\PhpDoc\Guard\TagRemovalGuard;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -15,6 +16,7 @@ final class DeadVarTagValueNodeAnalyzer
     public function __construct(
         private readonly TypeComparator $typeComparator,
         private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly TagRemovalGuard $tagRemovalGuard
     ) {
     }
 
@@ -40,6 +42,6 @@ final class DeadVarTagValueNodeAnalyzer
             return false;
         }
 
-        return $varTagValueNode->description === '';
+        return $this->tagRemovalGuard->isLegal($varTagValueNode, $property->type);
     }
 }
