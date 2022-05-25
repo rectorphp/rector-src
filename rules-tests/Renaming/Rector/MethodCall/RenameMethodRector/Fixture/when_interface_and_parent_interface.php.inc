@@ -2,9 +2,24 @@
 
 namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture;
 
-use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SubscriberInterface;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\DifferentInterface;
 
-interface WhenInterfaceAndParentInterface extends SubscriberInterface
+interface WhenInterfaceAndParentInterface extends DifferentInterface
 {
-    public function old(): int;
+    public function renameMe(): int;
 }
+
+?>
+-----
+<?php
+
+namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture;
+
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\DifferentInterface;
+
+interface WhenInterfaceAndParentInterface extends DifferentInterface
+{
+    public function toNewVersion(): int;
+}
+
+?>
