@@ -55,11 +55,11 @@ final class DeadReturnTagValueNodeAnalyzer
             return $returnTagValueNode->description === '';
         }
 
-        if ($this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type)) {
+        if ($this->mixedArrayTypeNodeAnalyzer->hasMixedArrayType($returnTagValueNode->type)) {
             return false;
         }
 
-        if ($this->mixedArrayTypeNodeAnalyzer->hasMixedArrayType($returnTagValueNode->type)) {
+        if ($this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type)) {
             return false;
         }
 
