@@ -26,6 +26,7 @@ use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
@@ -56,7 +57,8 @@ final class DoctrineAnnotationDecorator
         private readonly TokenIteratorFactory $tokenIteratorFactory,
         private readonly AttributeMirrorer $attributeMirrorer,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly ParameterProvider $parameterProvider
+        private readonly ParameterProvider $parameterProvider,
+        private readonly UseImportsResolver $useImportsResolver
     ) {
     }
 
@@ -168,7 +170,7 @@ final class DoctrineAnnotationDecorator
         PhpDocNode $phpDocNode,
         Node $currentPhpNode
     ): void {
-        $uses = $currentPhpNode->getAttribute(AttributeKey::USE_NODES);
+        $uses = $this->useImportsResolver->resolveForNode($currentPhpNode);
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
@@ -210,13 +212,7 @@ final class DoctrineAnnotationDecorator
                 $fullyQualifiedAnnotationClass
             );
 
-            $resolvedClass = $spacelessPhpDocTagNode->value->identifierTypeNode->getAttribute('resolved_class');
-            $isFoundInUse = $this->classNameImportSkipper->isFoundInUse(new FullyQualified($resolvedClass), $uses);
-            $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
-
-            if ($isFoundInUse && $isAutoImport) {
-                $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
-            }
+            $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
 
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
         }
