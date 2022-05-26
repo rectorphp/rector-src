@@ -191,10 +191,7 @@ final class PhpDocInfoPrinter
     ): string {
         $output = '';
 
-        $shouldReprintChildNode = true;
-
-        // debugging
-        $this->shouldReprint($phpDocChildNode);
+        $shouldReprintChildNode = $this->shouldReprint($phpDocChildNode);
 
         if ($phpDocChildNode instanceof PhpDocTagNode) {
             if ($shouldReprintChildNode && ($phpDocChildNode->value instanceof ParamTagValueNode || $phpDocChildNode->value instanceof ThrowsTagValueNode || $phpDocChildNode->value instanceof VarTagValueNode || $phpDocChildNode->value instanceof ReturnTagValueNode || $phpDocChildNode->value instanceof PropertyTagValueNode)) {
