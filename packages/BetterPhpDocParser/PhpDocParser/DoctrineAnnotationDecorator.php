@@ -203,7 +203,6 @@ final class DoctrineAnnotationDecorator
             );
 
             $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
-
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
         }
     }
