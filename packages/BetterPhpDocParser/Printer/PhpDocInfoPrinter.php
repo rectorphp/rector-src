@@ -359,7 +359,8 @@ final class PhpDocInfoPrinter
         return $this->hasSilentValue($parent, $phpDocChildNode);
     }
 
-    private function hasSilentValue(PhpDocNode $phpDocNode, SpacelessPhpDocTagNode $spacelessPhpDocTagNode): bool {
+    private function hasSilentValue(PhpDocNode $phpDocNode, SpacelessPhpDocTagNode $spacelessPhpDocTagNode): bool
+    {
         foreach ($phpDocNode->children as $key => $child) {
             if ($child !== $spacelessPhpDocTagNode) {
                 return false;
