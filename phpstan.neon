@@ -80,6 +80,7 @@ parameters:
                 - packages/NodeTypeResolver/NodeTypeResolver.php
                 - rules/Renaming/NodeManipulator/ClassRenamer.php
                 - src/Rector/AbstractRector.php
+                - packages/BetterPhpDocParser/Printer/PhpDocInfoPrinter.php
 
         - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 10$#"
         - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 10#'

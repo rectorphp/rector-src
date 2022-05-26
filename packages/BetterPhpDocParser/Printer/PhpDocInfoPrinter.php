@@ -347,10 +347,45 @@ final class PhpDocInfoPrinter
             return false;
         }
 
-        /**
-         * DoctrineAnnotationTagValueNode always has hasChanged marked as true, so it requires reprint
-         */
-        return $phpDocChildNode->value instanceof DoctrineAnnotationTagValueNode;
+        if (! $phpDocChildNode->value instanceof DoctrineAnnotationTagValueNode) {
+            return false;
+        }
+
+        $parent = $phpDocChildNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if (! $parent instanceof PhpDocNode) {
+            return false;
+        }
+
+        return $this->hasSilentValue($parent, $phpDocChildNode);
+    }
+
+    private function hasSilentValue(
+        PhpDocNode $phpDocNode,
+        SpacelessPhpDocTagNode $spacelessPhpDocTagNode
+    ): bool
+    {
+        foreach ($phpDocNode->children as $key => $child) {
+            if ($child !== $spacelessPhpDocTagNode) {
+                continue;
+            }
+
+            if (! isset($phpDocNode->children[$key + 1])) {
+                continue;
+            }
+
+            $next = $phpDocNode->children[$key + 1];
+            if (! $next instanceof SpacelessPhpDocTagNode) {
+                continue;
+            }
+
+            if (! $next->value instanceof DoctrineAnnotationTagValueNode) {
+                continue;
+            }
+
+            return (bool) $next->value->getSilentValue();
+        }
+
+        return false;
     }
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string
