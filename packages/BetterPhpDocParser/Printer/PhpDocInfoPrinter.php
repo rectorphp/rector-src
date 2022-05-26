@@ -366,20 +366,20 @@ final class PhpDocInfoPrinter
     {
         foreach ($phpDocNode->children as $key => $child) {
             if ($child !== $spacelessPhpDocTagNode) {
-                continue;
+                return false;
             }
 
             if (! isset($phpDocNode->children[$key + 1])) {
-                continue;
+                return false;
             }
 
             $next = $phpDocNode->children[$key + 1];
             if (! $next instanceof SpacelessPhpDocTagNode) {
-                continue;
+                return false;
             }
 
             if (! $next->value instanceof DoctrineAnnotationTagValueNode) {
-                continue;
+                return false;
             }
 
             return (bool) $next->value->getSilentValue();
