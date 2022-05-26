@@ -23,7 +23,6 @@ use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
-use Rector\Naming\Naming\UseImportsResolver;
 
 final class DoctrineAnnotationDecorator
 {
@@ -50,8 +49,7 @@ final class DoctrineAnnotationDecorator
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,
         private readonly StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
-        private readonly AttributeMirrorer $attributeMirrorer,
-        private readonly UseImportsResolver $useImportsResolver
+        private readonly AttributeMirrorer $attributeMirrorer
     ) {
     }
 
@@ -163,7 +161,6 @@ final class DoctrineAnnotationDecorator
         PhpDocNode $phpDocNode,
         Node $currentPhpNode
     ): void {
-        $this->useImportsResolver->resolveForNode($currentPhpNode);
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
