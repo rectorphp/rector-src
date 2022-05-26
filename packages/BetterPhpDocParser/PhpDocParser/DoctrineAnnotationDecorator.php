@@ -20,12 +20,10 @@ use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\DoctrineAnnotation\SilentKeyMap;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
-use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
 use Rector\Naming\Naming\UseImportsResolver;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class DoctrineAnnotationDecorator
 {
@@ -53,8 +51,6 @@ final class DoctrineAnnotationDecorator
         private readonly StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
         private readonly AttributeMirrorer $attributeMirrorer,
-        private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly ParameterProvider $parameterProvider,
         private readonly UseImportsResolver $useImportsResolver
     ) {
     }
@@ -167,7 +163,7 @@ final class DoctrineAnnotationDecorator
         PhpDocNode $phpDocNode,
         Node $currentPhpNode
     ): void {
-        $uses = $this->useImportsResolver->resolveForNode($currentPhpNode);
+        $this->useImportsResolver->resolveForNode($currentPhpNode);
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
