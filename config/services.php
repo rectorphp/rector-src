@@ -13,7 +13,6 @@ use PhpParser\Lexer;
 use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
-use PhpParser\ParserFactory;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
 use PHPStan\Dependency\DependencyResolver;
@@ -84,7 +83,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(SimpleCallableNodeTraverser::class);
 
-    $services->set(ParserFactory::class);
     $services->set(BuilderFactory::class);
     $services->set(CloningVisitor::class);
     $services->set(NodeFinder::class);
