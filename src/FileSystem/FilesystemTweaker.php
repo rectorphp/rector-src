@@ -4,15 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\FileSystem;
 
-use Symplify\SmartFileSystem\FileSystemGuard;
-
 final class FilesystemTweaker
 {
-    public function __construct(
-        private readonly FileSystemGuard $fileSystemGuard
-    ) {
-    }
-
     /**
      * This will turn paths like "src/Symfony/Component/*\/Tests" to existing directory paths
      *
@@ -33,16 +26,6 @@ final class FilesystemTweaker
         }
 
         return $absolutePathsFound;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function findDirectoriesInGlob(string $directory): array
-    {
-        /** @var string[] $foundDirectories */
-        $foundDirectories = (array) glob($directory, GLOB_ONLYDIR);
-        return $foundDirectories;
     }
 
     /**

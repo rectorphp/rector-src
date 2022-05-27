@@ -41,7 +41,6 @@ use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Php\TypeChecker;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\PackageBuilder\Reflection\PrivatesCaller;
-use Symplify\PackageBuilder\Strings\StringFormatConverter;
 use Symplify\SmartFileSystem\FileSystemFilter;
 use Symplify\SmartFileSystem\FileSystemGuard;
 use Symplify\SmartFileSystem\Finder\FinderSanitizer;
@@ -106,8 +105,6 @@ return static function (RectorConfig $rectorConfig): void {
         ->arg('$container', service('service_container'));
 
     $services->set(SmartFileSystem::class);
-
-    $services->set(StringFormatConverter::class);
 
     $services->set(JsonFileSystem::class);
     $services->set(NodeConnectingVisitor::class);
