@@ -16,7 +16,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
-use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocNodeTraverser\ChangedPhpDocNodeTraverserFactory;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
@@ -339,50 +338,7 @@ final class PhpDocInfoPrinter
     private function shouldReprint(PhpDocChildNode $phpDocChildNode): bool
     {
         $this->changedPhpDocNodeTraverser->traverse($phpDocChildNode);
-        if ($this->changedPhpDocNodeVisitor->hasChanged()) {
-            return true;
-        }
-
-        if (! $phpDocChildNode instanceof SpacelessPhpDocTagNode) {
-            return false;
-        }
-
-        if (! $phpDocChildNode->value instanceof DoctrineAnnotationTagValueNode) {
-            return false;
-        }
-
-        $parent = $phpDocChildNode->getAttribute(PhpDocAttributeKey::PARENT);
-        if (! $parent instanceof PhpDocNode) {
-            return false;
-        }
-
-        return $this->hasSilentValue($parent, $phpDocChildNode);
-    }
-
-    private function hasSilentValue(PhpDocNode $phpDocNode, SpacelessPhpDocTagNode $spacelessPhpDocTagNode): bool
-    {
-        foreach ($phpDocNode->children as $key => $child) {
-            if ($child !== $spacelessPhpDocTagNode) {
-                return false;
-            }
-
-            if (! isset($phpDocNode->children[$key + 1])) {
-                return false;
-            }
-
-            $next = $phpDocNode->children[$key + 1];
-            if (! $next instanceof SpacelessPhpDocTagNode) {
-                return false;
-            }
-
-            if (! $next->value instanceof DoctrineAnnotationTagValueNode) {
-                return false;
-            }
-
-            return (bool) $next->value->getSilentValue();
-        }
-
-        return false;
+        return $this->changedPhpDocNodeVisitor->hasChanged();
     }
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string
