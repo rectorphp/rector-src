@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Ternary;
 use Rector\Core\PhpParser\Node\Value\TernaryBracketWrapper;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -81,7 +82,9 @@ CODE_SAMPLE
         [$node->if, $node->else] = [$node->else, $node->if];
 
         if ($node->if instanceof Ternary) {
-            $this->ternaryBracketWrapper->wrapWithBracket($node->if);
+            $ternary = $node->if;
+            $ternary->setAttribute(AttributeKey::KIND, 'wrapped_with_brackets');
+            $ternary->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
         return $node;
