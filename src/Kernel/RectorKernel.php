@@ -96,14 +96,12 @@ final class RectorKernel implements LightKernelInterface
      */
     private function createDefaultConfigFiles(): array
     {
-        $configFiles = [];
-
-        $configFiles[] = __DIR__ . '/../../config/config.php';
-        $configFiles[] = AstralConfig::FILE_PATH;
-        $configFiles[] = ComposerJsonManipulatorConfig::FILE_PATH;
-        $configFiles[] = SkipperConfig::FILE_PATH;
-        $configFiles[] = ConsoleColorDiffConfig::FILE_PATH;
-
-        return $configFiles;
+        return [
+            __DIR__ . '/../../config/config.php',
+            AstralConfig::FILE_PATH,
+            ComposerJsonManipulatorConfig::FILE_PATH,
+            SkipperConfig::FILE_PATH,
+            ConsoleColorDiffConfig::FILE_PATH,
+        ];
     }
 }
