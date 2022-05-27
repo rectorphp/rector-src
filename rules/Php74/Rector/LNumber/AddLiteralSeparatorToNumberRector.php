@@ -113,8 +113,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if (\str_contains($rawValue, '.')) {
-            [$mainPart, $decimalPart] = explode('.', $rawValue);
+        if (\str_contains((string) $rawValue, '.')) {
+            [$mainPart, $decimalPart] = explode('.', (string) $rawValue);
 
             $chunks = $this->strSplitNegative($mainPart, self::GROUP_SIZE);
             $literalSeparatedNumber = implode('_', $chunks) . '.' . $decimalPart;

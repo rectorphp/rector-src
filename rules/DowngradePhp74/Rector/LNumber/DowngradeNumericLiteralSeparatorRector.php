@@ -69,7 +69,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (\str_contains($rawValue, '+')) {
+        if (\str_contains((string) $rawValue, '+')) {
             return null;
         }
 
