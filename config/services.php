@@ -38,7 +38,6 @@ use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\Dy
 use Symfony\Component\Console\Application;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
-use Symplify\PackageBuilder\Console\Command\CommandNaming;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Php\TypeChecker;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -108,7 +107,6 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(ParameterProvider::class)
         ->arg('$container', service('service_container'));
 
-    $services->set(CommandNaming::class);
     $services->set(SmartFileSystem::class);
 
     $services->set(StringFormatConverter::class);
