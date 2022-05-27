@@ -8,7 +8,6 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
-use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
@@ -33,7 +32,6 @@ final class ProcessCommand extends AbstractProcessCommand
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly MissingRectorRulesReporter $missingRectorRulesReporter,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly BootstrapFilesIncluder $bootstrapFilesIncluder,
         private readonly ProcessResultFactory $processResultFactory,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,
