@@ -11,6 +11,7 @@ use Psr\Container\ContainerInterface;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Autoloading\AdditionalAutoloader;
+use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\Application\File;
@@ -69,6 +70,10 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $additionalAutoloader = $this->getService(AdditionalAutoloader::class);
 
         $additionalAutoloader->autoloadPaths();
+
+        /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
+        $bootstrapFilesIncluder = $this->getService(BootstrapFilesIncluder::class);
+        $bootstrapFilesIncluder->includeBootstrapFiles();
     }
 
     protected function tearDown(): void
