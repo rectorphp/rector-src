@@ -694,4 +694,6 @@ parameters:
         - '#Parameter \#2 \$args of class PhpParser\\Node\\Expr\\FuncCall constructor expects array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder>, array<int, PhpParser\\Node\\Arg\|null> given#'
 
         # validate class-string input
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:isInstanceOf\(\) with class\-string<Rector\\Caching\\Contract\\ValueObject\\Storage\\CacheStorageInterface> and (.*?) will always evaluate to false#'
+        -
+            message: '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
+            path: packages/Config/RectorConfig.php
