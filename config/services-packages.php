@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 
-use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
 
 return static function (RectorConfig $rectorConfig): void {
-    // make use of https://github.com/symplify/easy-parallel
-    $rectorConfig->import(EasyParallelConfig::FILE_PATH);
-
     $services = $rectorConfig->services();
 
     $services->defaults()

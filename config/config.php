@@ -5,11 +5,15 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Core\Bootstrap\ExtensionConfigResolver;
 use Rector\Core\Configuration\Option;
+use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__ . '/services.php');
     $rectorConfig->import(__DIR__ . '/services-rules.php');
     $rectorConfig->import(__DIR__ . '/services-packages.php');
+
+    // make use of https://github.com/symplify/easy-parallel
+    $rectorConfig->import(EasyParallelConfig::FILE_PATH);
 
     // paths and extensions
     $rectorConfig->paths([]);
@@ -25,9 +29,7 @@ return static function (RectorConfig $rectorConfig): void {
     // parallel
     $rectorConfig->disableParallel();
 
-    $parameters->set(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, 16);
-    $parameters->set(Option::PARALLEL_JOB_SIZE, 20);
-    $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, 120);
+    $rectorConfig->parallel(seconds: 120, maxNumberOfProcess: 16, jobSize: 20);
 
     // FQN class importing
     $rectorConfig->disableImportNames();
@@ -36,8 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
     $parameters->set(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, 60);
 
     $rectorConfig->skip([]);
-
-    $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, null);
 
     // cache
     $parameters->set(Option::CACHE_DIR, sys_get_temp_dir() . '/rector_cached_files');
