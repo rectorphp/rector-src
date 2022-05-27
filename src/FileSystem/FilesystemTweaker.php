@@ -16,30 +16,6 @@ final class FilesystemTweaker
     /**
      * This will turn paths like "src/Symfony/Component/*\/Tests" to existing directory paths
      *
-     * @param string[] $directories
-     * @return string[]
-     */
-    public function resolveDirectoriesWithFnmatch(array $directories): array
-    {
-        $absoluteDirectories = [];
-        foreach ($directories as $directory) {
-            // is fnmatch for directories
-            if (\str_contains($directory, '*')) {
-                $foundDirectories = $this->findDirectoriesInGlob($directory);
-                $absoluteDirectories = array_merge($absoluteDirectories, $foundDirectories);
-            } else {
-                // is classic directory
-                $this->fileSystemGuard->ensureDirectoryExists($directory, '');
-                $absoluteDirectories[] = $directory;
-            }
-        }
-
-        return $absoluteDirectories;
-    }
-
-    /**
-     * This will turn paths like "src/Symfony/Component/*\/Tests" to existing directory paths
-     *
      * @param string[] $paths
      *
      * @return string[]
