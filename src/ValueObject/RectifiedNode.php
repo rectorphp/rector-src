@@ -11,7 +11,6 @@ final class RectifiedNode
 {
     /**
      * @param class-string<RectorInterface> $rectorClass
-     * @param Node $node
      */
     public function __construct(
         private readonly string $rectorClass,
