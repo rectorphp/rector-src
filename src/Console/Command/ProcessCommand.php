@@ -67,9 +67,6 @@ final class ProcessCommand extends AbstractProcessCommand
             $this->rectorOutputStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
-        // register autoloaded and included files
-        $this->bootstrapFilesIncluder->includeBootstrapFiles();
-
         $this->additionalAutoloader->autoloadInput($input);
         $this->additionalAutoloader->autoloadPaths();
 

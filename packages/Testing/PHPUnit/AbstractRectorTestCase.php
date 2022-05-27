@@ -70,10 +70,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $additionalAutoloader = $this->getService(AdditionalAutoloader::class);
 
         $additionalAutoloader->autoloadPaths();
-
-        /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
-        $bootstrapFilesIncluder = $this->getService(BootstrapFilesIncluder::class);
-        $bootstrapFilesIncluder->includeBootstrapFiles();
     }
 
     protected function tearDown(): void
