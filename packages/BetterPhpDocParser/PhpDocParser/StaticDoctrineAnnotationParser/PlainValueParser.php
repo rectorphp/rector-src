@@ -114,9 +114,6 @@ final class PlainValueParser
             $annotationShortName,
             $currentNode
         );
-        if ($fullyQualifiedAnnotationClass === null) {
-            $fullyQualifiedAnnotationClass = $annotationShortName;
-        }
 
         // keep the last ")"
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);

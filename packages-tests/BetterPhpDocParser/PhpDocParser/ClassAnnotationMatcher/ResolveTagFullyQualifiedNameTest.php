@@ -6,7 +6,6 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 
 use Iterator;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
@@ -17,7 +16,7 @@ use Rector\Testing\TestingParser\TestingParser;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
+final class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
 {
     private ClassAnnotationMatcher $classAnnotationMatcher;
 
@@ -55,7 +54,7 @@ class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
             $varTag = $phpDoc->getByType(VarTagValueNode::class)[0];
             $value = $varTag->type->__toString();
 
-            $result = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $property);
+            $result = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $property, true);
             if (str_starts_with($this->nodeNameResolver->getName($property), 'known')) {
                 $this->assertStringEndsWith($value, $result ?? '');
             } else {

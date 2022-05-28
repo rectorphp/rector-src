@@ -31,7 +31,11 @@ final class ClassAnnotationMatcher
     ) {
     }
 
-    public function resolveTagFullyQualifiedName(string $tag, Node $node): ?string
+    public function resolveTagFullyQualifiedName(
+        string $tag,
+        Node $node,
+        bool $returnNullOnUnknownClass = false
+    ): ?string
     {
         $uniqueHash = $tag . spl_object_hash($node);
         if (isset($this->fullyQualifiedNameByHash[$uniqueHash])) {
@@ -44,7 +48,11 @@ final class ClassAnnotationMatcher
         $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
 
         if ($fullyQualifiedClass === null) {
-            return null;
+            if ($returnNullOnUnknownClass) {
+                return null;
+            }
+
+            $fullyQualifiedClass = $tag;
         }
 
         $this->fullyQualifiedNameByHash[$uniqueHash] = $fullyQualifiedClass;
