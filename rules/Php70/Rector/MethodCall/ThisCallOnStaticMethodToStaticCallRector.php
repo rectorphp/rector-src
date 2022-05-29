@@ -123,7 +123,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return ObjectReference::static|ObjectReference::self
+     * @return ObjectReference::STATIC|ObjectReference::SELF
      */
     private function resolveClassSelf(MethodCall $methodCall): string
     {

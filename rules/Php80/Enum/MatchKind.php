@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Enum;
 
-final class MatchKind extends Enum
+final class MatchKind
 {
     /**
      * @var string
      */
-    private const NORMAL = 'normal';
+    public const NORMAL = 'normal';
 
     /**
      * @var string
      */
-    private const ASSIGN = 'assign';
+    public const ASSIGN = 'assign';
 
     /**
      * @var string
      */
-    private const RETURN = 'return';
+    public const RETURN = 'return';
 
     /**
      * @var string
      */
-    private const THROW = 'throw';
+    public const THROW = 'throw';
 }
