@@ -52,17 +52,17 @@ final class StaticTypeMapper implements TypeMapperInterface
     {
         // special case, for autocomplete of return type
         if ($type instanceof SimpleStaticType) {
-            return new Name(ObjectReference::STATIC()->getValue());
+            return new Name(ObjectReference::STATIC);
         }
 
         if ($type instanceof SelfStaticType) {
-            return new Name(ObjectReference::SELF()->getValue());
+            return new Name(ObjectReference::SELF);
         }
 
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
-            return new Name(ObjectReference::STATIC()->getValue());
+            return new Name(ObjectReference::STATIC);
         }
 
-        return new Name(ObjectReference::SELF()->getValue());
+        return new Name(ObjectReference::SELF);
     }
 }

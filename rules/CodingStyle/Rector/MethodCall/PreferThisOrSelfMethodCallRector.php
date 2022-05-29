@@ -120,7 +120,7 @@ CODE_SAMPLE
     {
         if ($node instanceof StaticCall && ! $this->isNames(
             $node->class,
-            [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue()]
+            [ObjectReference::SELF, ObjectReference::STATIC]
         )) {
             return null;
         }
@@ -139,7 +139,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->nodeFactory->createStaticCall(ObjectReference::SELF(), $name, $node->args);
+        return $this->nodeFactory->createStaticCall(ObjectReference::SELF, $name, $node->args);
     }
 
     private function processToThis(MethodCall | StaticCall $node): ?MethodCall
@@ -148,10 +148,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isNames(
-            $node->class,
-            [ObjectReference::SELF()->getValue(), ObjectReference::STATIC()->getValue()]
-        )) {
+        if (! $this->isNames($node->class, [ObjectReference::SELF, ObjectReference::STATIC])) {
             return null;
         }
 

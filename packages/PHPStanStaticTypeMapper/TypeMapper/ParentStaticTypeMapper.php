@@ -31,7 +31,7 @@ final class ParentStaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
-        return new IdentifierTypeNode(ObjectReference::PARENT()->getValue());
+        return new IdentifierTypeNode(ObjectReference::PARENT);
     }
 
     /**
@@ -39,6 +39,6 @@ final class ParentStaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        return new Name(ObjectReference::PARENT()->getValue());
+        return new Name(ObjectReference::PARENT);
     }
 }

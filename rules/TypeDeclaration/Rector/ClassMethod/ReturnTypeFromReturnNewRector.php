@@ -128,13 +128,13 @@ CODE_SAMPLE
             throw new ShouldNotHappenException();
         }
 
-        if ($className === ObjectReference::STATIC()->getValue() || $className === ObjectReference::SELF()->getValue()) {
+        if ($className === ObjectReference::STATIC || $className === ObjectReference::SELF) {
             $classReflection = $this->reflectionResolver->resolveClassReflection($new);
             if (! $classReflection instanceof ClassReflection) {
                 throw new ShouldNotHappenException();
             }
 
-            if ($className === ObjectReference::SELF()->getValue()) {
+            if ($className === ObjectReference::SELF) {
                 return new SelfStaticType($classReflection);
             }
 
