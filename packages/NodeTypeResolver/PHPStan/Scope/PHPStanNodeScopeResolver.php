@@ -100,7 +100,6 @@ final class PHPStanNodeScopeResolver
             &$nodeCallback,
             $isScopeRefreshing
         ): void {
-
             if ($node instanceof Arg) {
                 $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
