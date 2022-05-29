@@ -31,8 +31,7 @@ class SomeClass
     public function run(string $file)
     {
         try {
-            $validateSchema = \Closure::fromCallable(array($this, 'validateSchema'));
-            $dom = XmlUtils::loadFile($file, $validateSchema);
+            $dom = XmlUtils::loadFile($file, \Closure::fromCallable([$this, 'validateSchema']));
         } catch (Exception) {}
     }
 
