@@ -74,7 +74,7 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param UnionType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, TypeKind $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
         $unionTypesNodes = [];
         $skipIterable = $this->shouldSkipIterable($type);
@@ -94,7 +94,7 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param UnionType $type
      */
-    public function mapToPhpParserNode(Type $type, TypeKind $typeKind): ?Node
+    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
         $arrayNode = $this->matchArrayTypes($type);
         if ($arrayNode !== null) {
@@ -201,9 +201,10 @@ final class UnionTypeMapper implements TypeMapperInterface
     }
 
     /**
+     * @param TypeKind::* $typeKind
      * @return Name|FullyQualified|PhpParserUnionType|NullableType|null
      */
-    private function matchTypeForUnionedObjectTypes(UnionType $unionType, TypeKind $typeKind): ?Node
+    private function matchTypeForUnionedObjectTypes(UnionType $unionType, string $typeKind): ?Node
     {
         $phpParserUnionType = $this->matchPhpParserUnionType($unionType, $typeKind);
         if ($phpParserUnionType !== null) {
@@ -264,7 +265,10 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new FullyQualified($compatibleObjectType->getClassName());
     }
 
-    private function matchPhpParserUnionType(UnionType $unionType, TypeKind $typeKind): ?PhpParserUnionType
+    /**
+     * @param TypeKind::* $typeKind
+     */
+    private function matchPhpParserUnionType(UnionType $unionType, string $typeKind): ?PhpParserUnionType
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             return null;
@@ -284,7 +288,7 @@ final class UnionTypeMapper implements TypeMapperInterface
              *
              * @var Identifier|Name|null $phpParserNode
              */
-            $phpParserNode = $unionedType instanceof NullType && $typeKind->equals(TypeKind::PROPERTY())
+            $phpParserNode = $unionedType instanceof NullType && $typeKind === TypeKind::PROPERTY
                 ? new Name('null')
                 : $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
 

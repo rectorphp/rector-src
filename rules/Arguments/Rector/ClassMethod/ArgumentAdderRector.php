@@ -277,7 +277,7 @@ CODE_SAMPLE
 
         $param = new Param(new Variable($argumentName), BuilderHelpers::normalizeValue($defaultValue));
         if ($type !== null) {
-            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM());
+            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
             $param->type = $typeNode;
         }
 
