@@ -5,7 +5,7 @@ namespace Rector\Tests\DowngradePhp81\Rector\FuncCall\DowngradeFirstClassCallabl
 use Exception;
 use Symfony\Component\Config\Util\XmlUtils;
 
-class SomeClass
+class FuncCallInArg
 {
     public function run(string $file)
     {
@@ -26,7 +26,7 @@ namespace Rector\Tests\DowngradePhp81\Rector\FuncCall\DowngradeFirstClassCallabl
 use Exception;
 use Symfony\Component\Config\Util\XmlUtils;
 
-class SomeClass
+class FuncCallInArg
 {
     public function run(string $file)
     {
