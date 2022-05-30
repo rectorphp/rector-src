@@ -88,7 +88,8 @@ final class ClassAnnotationMatcher
             }
         }
 
-        return $this->resolveClass($tag, $uses);
+        $class = $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
+        return $this->resolveClass($class);
     }
 
     /**
@@ -108,24 +109,20 @@ final class ClassAnnotationMatcher
 
                 if ($useUse->alias->toString() === $tag) {
                     $class = $prefix . $useUse->name->toString();
-                    return $this->reflectionProvider->hasClass($class) ? $class : null;
+                    return $this->resolveClass($class);
                 }
             }
         }
 
-        return $this->resolveClass($tag, $uses);
+        $class = $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
+        return $this->resolveClass($class);
     }
 
-    /**
-     * @param Use_[]|GroupUse[] $uses
-     */
-    private function resolveClass(string $tag, array $uses): ?string
+    private function resolveClass(?string $class): ?string
     {
-        $class = $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
-        if ($class !== null && !$this->reflectionProvider->hasClass($class)) {
+        if (null === $class) {
             return null;
         }
-
-        return $class;
+        return $this->reflectionProvider->hasClass($class) ? $class : null;
     }
 }
