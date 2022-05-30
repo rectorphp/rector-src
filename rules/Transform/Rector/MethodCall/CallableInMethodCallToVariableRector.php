@@ -81,13 +81,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?MethodCall
     {
-
         foreach ($this->callableInMethodCallToVariable as $singleCallableInMethodCallToVariable) {
             if (! $this->isObjectType($node->var, $singleCallableInMethodCallToVariable->getObjectType())) {
                 continue;
             }
 
-            if (! $this->nodeNameResolver->isName($node->name, $singleCallableInMethodCallToVariable->getMethodName())) {
+            if (! $this->nodeNameResolver->isName(
+                $node->name,
+                $singleCallableInMethodCallToVariable->getMethodName()
+            )) {
                 continue;
             }
 
