@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\Autoloading;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilesFinder;
@@ -14,8 +16,7 @@ use Webmozart\Assert\Assert;
 final class BootstrapFilesIncluder
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
-        private readonly FilesFinder $filesFinder
+        private readonly ParameterProvider $parameterProvider
     ) {
     }
 
@@ -56,9 +57,11 @@ final class BootstrapFilesIncluder
             return;
         }
 
-        $stubs = $this->filesFinder->findInDirectoriesAndFiles([$stubsRectorDirectory], ['php']);
+        $dir   = new RecursiveDirectoryIterator($stubsRectorDirectory, RecursiveDirectoryIterator::SKIP_DOTS);
+        $stubs = new RecursiveIteratorIterator($dir);
+
         foreach ($stubs as $stub) {
-            require_once $stub->getRealPath();
+            require_once $stub;
         }
     }
 }
