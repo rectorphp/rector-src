@@ -44,7 +44,7 @@ final class ClassAnnotationMatcher
         $tag = ltrim($tag, '@');
 
         $uses = $this->useImportsResolver->resolveForNode($node);
-        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
+        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag, $returnNullOnUnknownClass);
 
         if ($fullyQualifiedClass === null) {
             if ($returnNullOnUnknownClass) {
@@ -62,7 +62,7 @@ final class ClassAnnotationMatcher
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag): ?string
+    private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag, bool $returnNullOnUnknownClass): ?string
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
@@ -75,7 +75,7 @@ final class ClassAnnotationMatcher
                 }
 
                 if (! str_contains($tag, '\\')) {
-                    return $this->resolveAsAliased($uses, $tag);
+                    return $this->resolveAsAliased($uses, $tag, $returnNullOnUnknownClass);
                 }
 
                 if (str_starts_with($tag, '\\')
@@ -89,13 +89,13 @@ final class ClassAnnotationMatcher
         }
 
         $class = $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
-        return $this->resolveClass($class);
+        return $this->resolveClass($class, $returnNullOnUnknownClass);
     }
 
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveAsAliased(array $uses, string $tag): ?string
+    private function resolveAsAliased(array $uses, string $tag, bool $returnNullOnUnknownClass): ?string
     {
         foreach ($uses as $use) {
             $prefix = $use instanceof GroupUse
@@ -109,20 +109,21 @@ final class ClassAnnotationMatcher
 
                 if ($useUse->alias->toString() === $tag) {
                     $class = $prefix . $useUse->name->toString();
-                    return $this->resolveClass($class);
+                    return $this->resolveClass($class, $returnNullOnUnknownClass);
                 }
             }
         }
 
         $class = $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
-        return $this->resolveClass($class);
+        return $this->resolveClass($class, $returnNullOnUnknownClass);
     }
 
-    private function resolveClass(?string $class): ?string
+    private function resolveClass(?string $class, bool $returnNullOnUnknownClass): ?string
     {
         if (null === $class) {
             return null;
         }
-        return $this->reflectionProvider->hasClass($class) ? $class : null;
+        $resolvedClass = $this->reflectionProvider->hasClass($class) ? $class : null;
+        return $returnNullOnUnknownClass ? $resolvedClass : $class;
     }
 }
