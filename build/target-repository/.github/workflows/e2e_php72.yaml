@@ -30,4 +30,3 @@ jobs:
             -
                 run: vendor/bin/rector process --ansi
                 working-directory: e2e/reflection-union-php72
-
