@@ -35,8 +35,7 @@ final class ClassAnnotationMatcher
         string $tag,
         Node $node,
         bool $returnNullOnUnknownClass = false
-    ): ?string
-    {
+    ): ?string {
         $uniqueHash = $tag . spl_object_hash($node);
         if (isset($this->fullyQualifiedNameByHash[$uniqueHash])) {
             return $this->fullyQualifiedNameByHash[$uniqueHash];
@@ -89,7 +88,7 @@ final class ClassAnnotationMatcher
             }
         }
 
-        return $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
+        return $this->resolveClass($tag, $uses);
     }
 
     /**
@@ -113,6 +112,19 @@ final class ClassAnnotationMatcher
             }
         }
 
-        return $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
+        return $this->resolveClass($tag, $uses);
+    }
+
+    /**
+     * @param Use_[]|GroupUse[] $uses
+     */
+    private function resolveClass(string $tag, array $uses): ?string
+    {
+        $class = $this->useImportNameMatcher->matchNameWithUses($tag, $uses);
+        if ($class !== null && !$this->reflectionProvider->hasClass($class)) {
+            return null;
+        }
+
+        return $class;
     }
 }

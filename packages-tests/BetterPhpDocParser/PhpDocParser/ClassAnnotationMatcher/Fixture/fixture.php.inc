@@ -15,12 +15,8 @@ class MyClass
     private $unknownClass;
     /** @var \My\Namespace\UnknownClass */
     private $unknownNamespacedClass;
-// This testcase is commented out, because we currently
-// cannot handle it properly. `OtherUnknownClass` is
-// imported via a use statement, but points to an
-// unknown class.
-//    /** @var OtherUnknownClass */
-//    private $unknownUsedClass;
+    /** @var OtherUnknownClass */
+    private $unknownUsedClass;
     /** @var \UnknownGlobalClass */
     private $unknownGlobalClass;
 }
