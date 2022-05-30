@@ -60,7 +60,7 @@ final class BootstrapFilesIncluder
         $stubs = new RecursiveIteratorIterator($dir);
 
         foreach ($stubs as $stub) {
-            require_once $stub;
+            require_once $stub->getRealPath();
         }
     }
 }
