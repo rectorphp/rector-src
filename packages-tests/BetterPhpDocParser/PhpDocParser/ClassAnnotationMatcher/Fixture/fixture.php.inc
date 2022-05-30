@@ -3,15 +3,21 @@
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\Fixture;
 
 use Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\Source\KnownClass;
+use Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\Source\KnownClass as AliasedKnownClass;
 use My\Namespace\OtherUnknownClass;
 use My\Namespace\OtherUnknownClass as AliasedUnknownClass;
+use SplHeap as AliasedSplHeap;
 
 class MyClass
 {
     /** @var KnownClass */
-    private $known;
+    private $knownClass;
+    /** @var AliasedKnownClass */
+    private $knownAliasedClass;
     /** @var \SplHeap */
     private $knownGlobalClass;
+    /** @var AliasedSplHeap */
+    private $knownAliasedGlobalClass;
     /** @var UnknownClass */
     private $unknownClass;
     /** @var \My\Namespace\UnknownClass */

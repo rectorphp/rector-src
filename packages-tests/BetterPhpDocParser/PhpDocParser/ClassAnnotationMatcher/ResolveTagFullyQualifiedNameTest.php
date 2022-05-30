@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -53,12 +54,18 @@ final class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
             /** @var VarTagValueNode $varTag */
             $varTag = $phpDoc->getByType(VarTagValueNode::class)[0];
             $value = $varTag->type->__toString();
+            $propertyName = strtolower($this->nodeNameResolver->getName($property));
 
             $result = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $property, true);
-            if (str_starts_with($this->nodeNameResolver->getName($property), 'known')) {
+            if (str_starts_with($propertyName, 'unknown')) {
+                $this->assertNull($result);
+            } elseif (str_contains($propertyName, 'aliased')) {
+                $unaliasedClass = str_replace('Aliased', '', $value);
+                $this->assertStringEndsWith($unaliasedClass, $result ?? '');
+            } elseif (str_starts_with($propertyName, 'known')) {
                 $this->assertStringEndsWith($value, $result ?? '');
             } else {
-                $this->assertNull($result);
+                throw new ShouldNotHappenException('All Variables should start with "known" or "unknown"!');
             }
         }
     }
