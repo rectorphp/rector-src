@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Core\Autoloading;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\FileSystem\FilesFinder;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -57,7 +56,7 @@ final class BootstrapFilesIncluder
             return;
         }
 
-        $dir   = new RecursiveDirectoryIterator($stubsRectorDirectory, RecursiveDirectoryIterator::SKIP_DOTS);
+        $dir = new RecursiveDirectoryIterator($stubsRectorDirectory, RecursiveDirectoryIterator::SKIP_DOTS);
         $stubs = new RecursiveIteratorIterator($dir);
 
         foreach ($stubs as $stub) {
