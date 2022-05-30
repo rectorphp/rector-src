@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Autoloading;
 
+use SplFileInfo;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use RecursiveDirectoryIterator;
@@ -57,6 +58,7 @@ final class BootstrapFilesIncluder
         }
 
         $dir = new RecursiveDirectoryIterator($stubsRectorDirectory, RecursiveDirectoryIterator::SKIP_DOTS);
+        /** @var SplFileInfo[] $stubs */
         $stubs = new RecursiveIteratorIterator($dir);
 
         foreach ($stubs as $stub) {
