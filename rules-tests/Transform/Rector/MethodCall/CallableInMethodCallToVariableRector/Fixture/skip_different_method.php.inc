@@ -8,7 +8,7 @@ final class SkipDifferentMethod
 {
     public function run(DummyCache $dummyCache, $someValue)
     {
-        $dummyCache->save('key', function ($someValue) {
+        $dummyCache->load('key', function ($someValue) {
             $someValue= $someValue + 1000;
             return $someValue + 10;
         });
