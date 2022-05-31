@@ -76,6 +76,6 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
     public function provideData(): Iterator
     {
         $directory = __DIR__ . '/Fixture';
-        return StaticFixtureFinder::yieldDirectoryExclusively($directory);
+        return StaticFixtureFinder::yieldDirectory($directory);
     }
 }

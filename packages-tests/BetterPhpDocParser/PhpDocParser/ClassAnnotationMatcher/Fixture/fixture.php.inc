@@ -14,6 +14,8 @@ class MyClass
     private $knownClass;
     /** @var \Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\Source\KnownClass */
     private $knownInlinedClass;
+    /** @var SiblingClass */
+    private $knownSiblingClass;
     /** @var AliasedKnownClass */
     private $knownAliasedClass;
     /** @var \SplHeap */
