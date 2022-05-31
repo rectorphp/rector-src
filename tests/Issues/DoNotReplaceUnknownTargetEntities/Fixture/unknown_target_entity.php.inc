@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\DoctrineTargetEntityStringToClassConstantRector\Fixture;
+namespace Rector\Core\Tests\Issues\DoNotReplaceUnknownTargetEntities\Fixture;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +18,7 @@ final class MyEntity
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\DoctrineTargetEntityStringToClassConstantRector\Fixture;
+namespace Rector\Core\Tests\Issues\DoNotReplaceUnknownTargetEntities\Fixture;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

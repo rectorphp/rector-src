@@ -1,12 +1,12 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\DoctrineTargetEntityStringToClassConstantRector;
+namespace Rector\Core\Tests\Issues\DoNotReplaceUnknownTargetEntities;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-class DoctrineTargetEntityStringToClassConstantRectorTest extends AbstractRectorTestCase
+class DoNotReplaceUnknownTargetEntitiesTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
