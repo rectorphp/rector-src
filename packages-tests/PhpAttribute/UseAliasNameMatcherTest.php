@@ -16,6 +16,16 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribut
 
 final class UseAliasNameMatcherTest extends AbstractTestCase
 {
+    /**
+     * @var string
+     */
+    private const USE_IMPORT_NAME = 'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi';
+
+    /**
+     * @var string
+     */
+    private const USE_ALIAS = 'OA';
+
     private UseAliasNameMatcher $useAliasNameMatcher;
 
     protected function setUp(): void
@@ -28,10 +38,7 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
     {
         $annotationToAttribute = new AnnotationToAttribute(PastAnnotation::class, FutureAttribute::class);
 
-        $useImportName = 'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi';
-        $useAlias = 'OA';
-
-        $uses = [new Use_([new UseUse(new Name($useImportName), $useAlias), $useAlias])];
+        $uses = [new Use_([new UseUse(new Name(self::USE_IMPORT_NAME), self::USE_ALIAS), self::USE_ALIAS])];
 
         // uses
         $useAliasMetadata = $this->useAliasNameMatcher->match($uses, '@OA\PastAnnotation', $annotationToAttribute);
