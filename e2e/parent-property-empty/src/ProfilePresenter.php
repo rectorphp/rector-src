@@ -5,6 +5,9 @@ namespace App;
 use Nette\Security\Passwords;
 use Nette;
 
+/**
+ * Future note: multiple classes in single file is needed to reproduce the issue for parent of property is empty
+ */
 abstract class MyBasePresenter extends Nette\Application\UI\Presenter
 {
 }
