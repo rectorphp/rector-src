@@ -17,7 +17,7 @@ use Rector\Testing\TestingParser\TestingParser;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class ResolveTagFullyQualifiedNameTest extends AbstractTestCase
+final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
 {
     private ClassAnnotationMatcher $classAnnotationMatcher;
 
