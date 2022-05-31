@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\Annotation as OA;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi as OA;
 
 final class AliasUsedWithUsePartialRename
 {
     /**
-     * @OA\NestedPastAnnotation
+     * @OA\PastAnnotation
      */
     public $value;
 }
@@ -18,11 +18,11 @@ final class AliasUsedWithUsePartialRename
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute as OA;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi as OA;
 
 final class AliasUsedWithUsePartialRename
 {
-    #[OA\NestedFutureAttribute]
+    #[OA\FutureAttribute]
     public $value;
 }
 
