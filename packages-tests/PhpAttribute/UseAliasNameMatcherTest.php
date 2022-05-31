@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PhpAttribute;
 
+use Iterator;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -52,7 +53,7 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
         $this->assertSame($expectedAttributeUseImportName, $useAliasMetadata->getUseImportName());
     }
 
-    public function provideData(): \Iterator
+    public function provideData(): Iterator
     {
         yield [
             // configuration
