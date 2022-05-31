@@ -88,11 +88,8 @@ final class ClassAnnotationMatcher
                     return $this->resolveAsAliased($uses, $tag, $returnNullOnUnknownClass);
                 }
 
-                if (str_starts_with($tag, '\\')
-                    && substr_count($tag, '\\') === 1
-                    && $this->reflectionProvider->hasClass($tag)
-                ) {
-                    // Global Class
+                if (str_starts_with($tag, '\\') && $this->reflectionProvider->hasClass($tag)) {
+                    // Global or absolute Class
                     return $tag;
                 }
             }
