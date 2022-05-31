@@ -44,7 +44,7 @@ final class VariableDimFetchAssignResolver
             $assign = $stmtExpr;
 
             $keyExpr = $this->matchKeyOnArrayDimFetchOfVariable($assign, $variable);
-            $keysAndExprs[] = new KeyAndExpr($keyExpr, $assign->expr);
+            $keysAndExprs[] = new KeyAndExpr($keyExpr, $assign->expr, $stmt->getComments());
         }
 
         // we can only work with same variable

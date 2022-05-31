@@ -148,7 +148,10 @@ CODE_SAMPLE
     {
         $arrayItems = [];
         foreach ($keysAndExprs as $keyAndExpr) {
-            $arrayItems[] = new ArrayItem($keyAndExpr->getExpr(), $keyAndExpr->getKeyExpr());
+            $arrayItem = new ArrayItem($keyAndExpr->getExpr(), $keyAndExpr->getKeyExpr());
+            $arrayItem->setAttribute('comments', $keyAndExpr->getComments());
+
+            $arrayItems[] = $arrayItem;
         }
 
         return new Array_($arrayItems);
