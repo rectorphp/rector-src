@@ -31,10 +31,20 @@ final class ClassAnnotationMatcher
     ) {
     }
 
-    public function resolveTagFullyQualifiedName(
+    public function resolveTagToKnownFullyQualifiedName(string $tag, Node $node): ?string
+    {
+        return $this->_resolveTagFullyQualifiedName($tag, $node, true);
+    }
+
+    public function resolveTagFullyQualifiedName(string $tag, Node $node): ?string
+    {
+        return $this->_resolveTagFullyQualifiedName($tag, $node, false);
+    }
+
+    private function _resolveTagFullyQualifiedName(
         string $tag,
         Node $node,
-        bool $returnNullOnUnknownClass = false
+        bool $returnNullOnUnknownClass
     ): ?string {
         $uniqueHash = $tag . spl_object_hash($node);
         if (isset($this->fullyQualifiedNameByHash[$uniqueHash])) {
