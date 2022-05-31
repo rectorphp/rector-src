@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute\NodeFactory;
 
-use Nette\Utils\Strings;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Use_;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\UseAliasNameMatcher;
@@ -40,7 +38,7 @@ final class AttributeNameFactory
         // B. different name
         $useAliasMetadata = $this->useAliasNameMatcher->match(
             $uses,
-            $doctrineAnnotationTagValueNode->identifierTypeNode,
+            $doctrineAnnotationTagValueNode->identifierTypeNode->name,
             $annotationToAttribute
         );
         if ($useAliasMetadata instanceof UseAliasMetadata) {
@@ -59,48 +57,4 @@ final class AttributeNameFactory
         // 3. the class is not aliased and is compeltelly new... return the FQN version
         return new FullyQualified($annotationToAttribute->getAttributeClass());
     }
-
-//    /**
-//     * @param Use_[] $uses
-//     */
-//    private function matchUseAliasMetadata(
-//        array $uses,
-//        IdentifierTypeNode $identifierTypeNode,
-//        AnnotationToAttribute $annotationToAttribute
-//    ): ?UseAliasMetadata {
-//        $shortAnnotationName = trim($identifierTypeNode->name, '@');
-//
-//        foreach ($uses as $use) {
-//            foreach ($use->uses as $useUse) {
-//                if ($useUse->alias === null) {
-//                    continue;
-//                }
-//
-//                $alias = $useUse->alias->toString();
-//                if (! str_starts_with($shortAnnotationName, $alias)) {
-//                    continue;
-//                }
-//
-//                $importName = $useUse->name->toString();
-//
-//                // previous keyword
-//                $lastImportKeyword = Strings::after($importName, '\\', -1);
-//                if ($lastImportKeyword === null) {
-//                    continue;
-//                }
-//
-//                // resolve new short name
-//                $newShortname = Strings::after($annotationToAttribute->getAttributeClass(), $lastImportKeyword);
-//
-//                $beforeImportName = Strings::before(
-//                    $annotationToAttribute->getAttributeClass(),
-//                    $lastImportKeyword
-//                ) . $lastImportKeyword;
-//
-//                return new UseAliasMetadata($alias . $newShortname, $beforeImportName, $useUse);
-//            }
-//        }
-//
-//        return null;
-//    }
 }
