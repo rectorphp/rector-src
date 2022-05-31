@@ -44,11 +44,24 @@ final class VariableDimFetchAssignResolver
             $assign = $stmtExpr;
 
             $keyExpr = $this->matchKeyOnArrayDimFetchOfVariable($assign, $variable);
-            if (! $keyExpr instanceof Expr) {
-                return [];
-            }
-
             $keysAndExprs[] = new KeyAndExpr($keyExpr, $assign->expr);
+        }
+
+        // we can only work with same variable
+        // and exclusively various keys or empty keys
+        $alwaysNullKey = true;
+        $alwaysStringKey = true;
+        foreach ($keysAndExprs as $keysAndExpr) {
+            if ($keysAndExpr->getKeyExpr() !== null) {
+                $alwaysNullKey = false;
+            } else {
+                $alwaysStringKey = false;
+            }
+        }
+
+        // not united
+        if ($alwaysNullKey === false && $alwaysStringKey === false) {
+            return [];
         }
 
         return $keysAndExprs;

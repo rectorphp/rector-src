@@ -25,10 +25,7 @@ final class EmptyArray
 {
     public function run()
     {
-        return [
-            'Timmy',
-            'Back',
-        ];
+        return ['Timmy', 'Back'];
     }
 }
 

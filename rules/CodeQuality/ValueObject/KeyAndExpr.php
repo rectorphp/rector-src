@@ -9,12 +9,12 @@ use PhpParser\Node\Expr;
 final class KeyAndExpr
 {
     public function __construct(
-        private readonly Expr $keyExpr,
+        private readonly ?Expr $keyExpr,
         private readonly Expr $expr
     ) {
     }
 
-    public function getKeyExpr(): Expr
+    public function getKeyExpr(): ?Expr
     {
         return $this->keyExpr;
     }
