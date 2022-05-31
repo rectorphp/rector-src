@@ -11,7 +11,9 @@ use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\UseAliasNameMatcher;
 use Rector\PhpAttribute\ValueObject\UseAliasMetadata;
 use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\Annotation\NestedPastAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\PastAnnotation;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute\NestedFutureAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\FutureAttribute;
 
 final class UseAliasNameMatcherTest extends AbstractTestCase
@@ -67,6 +69,23 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
             'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi',
             // expected attribute short name
             'OA\FutureAttribute',
+        ];
+
+        yield [
+            // configuration
+            new AnnotationToAttribute(NestedPastAnnotation::class, NestedFutureAttribute::class),
+
+            // use import
+            'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Annotation\OpenApi\Annotation',
+            // use import alias
+            'OA',
+            // short attribute name
+            '@OA\NestedPastAnnotation',
+
+            // expected attribute import
+            'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Attribute\OpenApi\Attribute',
+            // expected attribute short name
+            'OA\NestedFutureAttribute',
         ];
     }
 }
