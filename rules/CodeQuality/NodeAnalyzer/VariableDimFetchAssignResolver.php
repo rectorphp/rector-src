@@ -49,26 +49,11 @@ final class VariableDimFetchAssignResolver
 
         // we can only work with same variable
         // and exclusively various keys or empty keys
-        $alwaysNullKey = true;
-        $alwaysStringKey = true;
-        foreach ($keysAndExprs as $keyAndExpr) {
-            if ($keyAndExpr->getKeyExpr() !== null) {
-                $alwaysNullKey = false;
-            } else {
-                $alwaysStringKey = false;
-            }
+        if (! $this->hasExclusivelyNullKeyOrFilledKey($keysAndExprs)) {
+            return [];
         }
 
-        // not united
-        if ($alwaysNullKey) {
-            return $keysAndExprs;
-        }
-
-        if ($alwaysStringKey) {
-            return $keysAndExprs;
-        }
-
-        return [];
+        return $keysAndExprs;
     }
 
     private function matchKeyOnArrayDimFetchOfVariable(Assign $assign, Variable $variable): ?Expr
@@ -92,5 +77,28 @@ final class VariableDimFetchAssignResolver
         }
 
         return $arrayDimFetch->dim;
+    }
+
+    /**
+     * @param KeyAndExpr[] $keysAndExprs
+     */
+    private function hasExclusivelyNullKeyOrFilledKey(array $keysAndExprs): bool
+    {
+        $alwaysNullKey = true;
+        $alwaysStringKey = true;
+
+        foreach ($keysAndExprs as $keyAndExpr) {
+            if ($keyAndExpr->getKeyExpr() !== null) {
+                $alwaysNullKey = false;
+            } else {
+                $alwaysStringKey = false;
+            }
+        }
+
+        if ($alwaysNullKey) {
+            return true;
+        }
+
+        return $alwaysStringKey;
     }
 }
