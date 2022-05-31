@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use My\Namespace\UsedUnknownClass;
 
-final class MyEntity
+final class SkipUnknownTargetEntity
 {
     /**
      * @ORM\ManyToOne(targetEntity="UsedUnknownClass")
