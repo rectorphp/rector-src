@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\DoNotReplaceUnknownTargetEntities\Fixture;
+namespace Rector\Core\Tests\Issues\DoNotReplaceUnknownClasses\Fixture;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
