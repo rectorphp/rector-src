@@ -28,9 +28,11 @@ use Doctrine\ORM\Mapping\Id;
 
 class MirrorAdditionalDocblock
 {
+    /**
+     * @param string $name
+     */
     public function __construct(
         /**
-         * @var string
          * @Id
          */
         public $name
