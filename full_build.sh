@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# usage:
+#
+#   export PHP72_BIN_PATH=/opt/homebrew/Cellar/php@7.2/7.2.34_4/bin/php PHP80_BIN_PATH=/opt/homebrew/Cellar/php@8.0/8.0.19/bin/php && sh ./full_build.sh
+
 # see https://stackoverflow.com/questions/66644233/how-to-propagate-colors-from-bash-script-to-github-action?noredirect=1#comment117811853_66644233
 export TERM=xterm-color
 
@@ -30,11 +34,6 @@ php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config r
 sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 
 # Check php 7.2 can be used locally with PHP72_BIN_PATH env
-#
-# usage:
-#
-#   export PHP72_BIN_PATH=/opt/homebrew/Cellar/php@7.2/7.2.34_4/bin/php PHP80_BIN_PATH=/opt/homebrew/Cellar/php@8.0/8.0.19/bin/php && sh ./full_build.sh
-
 # rector-prefixed-downgraded check
 cp -R build/target-repository/. rector-prefixed-downgraded
 cp -R templates rector-prefixed-downgraded/
