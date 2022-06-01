@@ -38,7 +38,7 @@
         "symfony/contracts": "3.0.*",
         "symfony/dependency-injection": "6.0.*",
         "symfony/finder": "6.0.*",
-        "symfony/string": "6.0.*",
+        "symfony/string": "6.1.*",
         "symplify/astral": "^10.2",
         "symplify/autowire-array-parameter": "^10.2",
         "symplify/composer-json-manipulator": "^10.2",
