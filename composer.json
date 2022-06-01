@@ -36,7 +36,7 @@
         "ssch/typo3-rector": "dev-main",
         "symfony/console": "6.0.*",
         "symfony/contracts": "3.0.*",
-        "symfony/dependency-injection": "6.0.*",
+        "symfony/dependency-injection": "6.1.*",
         "symfony/finder": "6.0.*",
         "symfony/string": "6.0.*",
         "symplify/astral": "^10.2",
