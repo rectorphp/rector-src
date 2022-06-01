@@ -4,9 +4,9 @@ use My\Namespace\UnknownClass;
 
 final class SkipUnknownClassInVar
 {
-    private $otherClass;
+    private ?\My\Namespace\UnknownClass $otherClass = null;
 
-    public function getOtherClass()
+    public function getOtherClass(): ?\My\Namespace\UnknownClass
     {
         return $this->otherClass;
     }
