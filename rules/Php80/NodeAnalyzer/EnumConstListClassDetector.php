@@ -11,7 +11,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 final class EnumConstListClassDetector
 {
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -44,13 +44,8 @@ final class EnumConstListClassDetector
         }
 
         $constantUniqueTypeCount = $this->resolveConstantUniqueTypeCount($classConstants);
-
         // must be exactly 1 type
-        if ($constantUniqueTypeCount !== 1) {
-            return false;
-        }
-
-        return true;
+        return $constantUniqueTypeCount === 1;
     }
 
     /**
@@ -61,10 +56,10 @@ final class EnumConstListClassDetector
         $typeClasses = [];
 
         // all constants must have same type
-        foreach ($classConsts as $classConstant) {
-            $const = $classConstant->consts[0];
+        foreach ($classConsts as $classConst) {
+            $const = $classConst->consts[0];
             $constantType = $this->nodeTypeResolver->getType($const->value);
-            $typeClasses[] = get_class($constantType);
+            $typeClasses[] = $constantType::class;
         }
 
         $uniqueTypeClasses = array_unique($typeClasses);
