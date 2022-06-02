@@ -132,10 +132,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             }
         }
 
-        if ($namespacedName !== $name) {
-            $currentNamespace = Strings::before($namespacedName, '\\', -1);
-
-            dump($currentNamespace);
+        if (str_contains($namespacedName, '\\')) {
+            return $namespacedName;
         }
 
         return $name;
