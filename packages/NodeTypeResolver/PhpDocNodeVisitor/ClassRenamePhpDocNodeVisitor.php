@@ -126,32 +126,9 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                     }
                 }
             }
+
+            return $name;
         }
-
-        $namespacedName = $namespace->name->toString() . '\\' . $name;
-
-
-        foreach ($uses as $use) {
-            $prefix = $use instanceof GroupUse
-                ? $use->prefix . '\\'
-                : '';
-
-            foreach ($use->uses as $useUse) {
-                if ($useUse->alias instanceof Identifier) {
-                    continue;
-                }
-
-                $useUseName = $prefix . $useUse->name->toString();
-                if ($useUseName === $namespacedName) {
-                    return $name;
-                }
-
-                if ($useUse->name->getLast() === $namespacedName) {
-                    return $useUseName;
-                }
-            }
-        }
-
 
         return $name;
     }
