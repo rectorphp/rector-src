@@ -105,7 +105,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $namespace = $this->betterNodeFinder->findParentType($phpParserNode, Namespace_::class);
         $namespacedName = $namespace instanceof Namespace_
-            ? $namespace->name->toString() . $name
+            ? $namespace->name->toString() . '\\' . $name
             : $name;
 
         $uses = $this->useImportsResolver->resolveForNode($phpParserNode);
