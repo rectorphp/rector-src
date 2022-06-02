@@ -32,7 +32,8 @@ final class BetterPhpDocParser extends PhpDocParser
         TypeParser $typeParser,
         ConstExprParser $constExprParser,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
-        private readonly DoctrineAnnotationDecorator $doctrineAnnotationDecorator
+        private readonly DoctrineAnnotationDecorator $doctrineAnnotationDecorator,
+        private readonly ConstExprClassNameDecorator $constExprClassNameDecorator,
     ) {
         parent::__construct($typeParser, $constExprParser);
 
@@ -61,6 +62,7 @@ final class BetterPhpDocParser extends PhpDocParser
         $phpDocNode = new PhpDocNode($children);
         // replace generic nodes with DoctrineAnnotations
         $this->doctrineAnnotationDecorator->decorate($phpDocNode);
+        $this->constExprClassNameDecorator->decorate($phpDocNode);
 
         return $phpDocNode;
     }
