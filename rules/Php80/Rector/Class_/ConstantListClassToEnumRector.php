@@ -107,6 +107,7 @@ CODE_SAMPLE
         if ($haveParamsChanged) {
             return $classMethod;
         }
+
         if ($hasReturnChanged) {
             return $classMethod;
         }
