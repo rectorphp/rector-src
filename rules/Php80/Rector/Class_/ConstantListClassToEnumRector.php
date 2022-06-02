@@ -104,8 +104,10 @@ CODE_SAMPLE
         $haveParamsChanged = $this->refactorParams($methodReflection, $phpDocInfo, $classMethod);
 
         $hasReturnChanged = $this->refactorReturn($phpDocInfo, $classMethod);
-
-        if ($haveParamsChanged || $hasReturnChanged) {
+        if ($haveParamsChanged) {
+            return $classMethod;
+        }
+        if ($hasReturnChanged) {
             return $classMethod;
         }
 
