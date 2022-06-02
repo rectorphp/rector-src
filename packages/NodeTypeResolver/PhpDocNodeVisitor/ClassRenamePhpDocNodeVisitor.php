@@ -56,10 +56,11 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException();
         }
 
-        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($node, $phpParserNode);
-        $namespacedName = $this->resolveNamespacedName($phpParserNode, $node->name);
+        $identifier = clone $node;
 
-        dump($namespacedName);
+        $namespacedName = $this->resolveNamespacedName($phpParserNode, $identifier->name);
+        $identifier->name = $namespacedName;
+        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
 
         // make sure to compare FQNs
         if ($staticType instanceof ShortenedObjectType) {
@@ -96,22 +97,18 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $this->oldToNewTypes = $oldToNewTypes;
     }
 
-    private function resolveNamespacedName(PhpParserNode $node, string $name): string
+    private function resolveNamespacedName(PhpParserNode $node, string $name): ?string
     {
-        $uses = $this->useImportsResolver->resolveForNode($node);
-
         if (str_starts_with($name, '\\')) {
             return $name;
         }
 
         $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
-        if (! $namespace instanceof Namespace_) {
-            return $name;
-        }
-
         $namespacedName = $namespace instanceof Namespace_
-            ? $namespace->name->toString() . '\\' . $name
+            ? $namespace->name->toString() . $name
             : $name;
+
+        $uses = $this->useImportsResolver->resolveForNode($node);
 
         foreach ($uses as $use) {
             $prefix = $use instanceof GroupUse
@@ -119,16 +116,22 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 : '';
 
             foreach ($use->uses as $useUse) {
-                if ($use->alias instanceof Identifier) {
+                if ($useUse->alias instanceof Identifier) {
                     continue;
                 }
 
                 $useUseName = $prefix . $useUse->name->toString();
                 if ($useUseName === $namespacedName) {
-                    return $namespacedName;
+                    return $name;
+                }
+
+                if ($useUse->name->getLast() === $namespacedName) {
+                    return $useUseName;
                 }
             }
         }
+
+        dump($namespacedName === $name);
 
         return $name;
     }
