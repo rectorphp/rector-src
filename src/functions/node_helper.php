@@ -28,9 +28,9 @@ if (! function_exists('dn')) {
 
 if (! function_exists('dump_node')) {
     /**
-     * @param Node|Node[] $node
+     * @param \PhpParser\Node|mixed[] $node
      */
-    function dump_node(Node | array $node, int $depth = 2): void
+    function dump_node($node, int $depth = 2): void
     {
         $nodes = is_array($node) ? $node : [$node];
 
@@ -45,9 +45,9 @@ if (! function_exists('dump_node')) {
 
 if (! function_exists('print_node')) {
     /**
-     * @param Node|Node[] $node
+     * @param \PhpParser\Node|mixed[] $node
      */
-    function print_node(Node | array $node): void
+    function print_node($node): void
     {
         $standard = new Standard();
 
