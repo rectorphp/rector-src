@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
-use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -37,8 +36,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ClassNameImportSkipper $classNameImportSkipper
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -111,23 +109,50 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $uses = $this->useImportsResolver->resolveBareUsesForNode($phpParserNode);
 
         if (! $namespace instanceof Namespace_) {
-            if ($uses === []) {
-                return $name;
-            }
+            return $this->resolveNamefromUse($uses, $name);
+        }
 
-            foreach ($uses as $use) {
-                foreach ($use->uses as $useUse) {
-                    if ($useUse->alias instanceof Identifier) {
-                        continue;
-                    }
+        $originalNode = $namespace->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $originalNode instanceof Namespace_) {
+            return $name;
+        }
 
-                    if (Strings::after($useUse->name->toString(), '\\', -1) === $name) {
-                        return $useUse->name->toString();
-                    }
+        if (! $namespace->name instanceof Name) {
+            return $name;
+        }
+
+        if (! $originalNode->name instanceof Name) {
+            return $name;
+        }
+
+        $namespaceName = $namespace->name->toString();
+        if ($originalNode->name->toString() !== $namespaceName) {
+            return $name;
+        }
+
+        if ($uses === []) {
+            return $namespaceName . '\\' . $name;
+        }
+
+        return $this->resolveNamefromUse($uses, $name);
+    }
+
+    /**
+     * @param Use_[] $uses
+     */
+    private function resolveNamefromUse(array $uses, string $name): string
+    {
+        foreach ($uses as $use) {
+            foreach ($use->uses as $useUse) {
+                if ($useUse->alias instanceof Identifier) {
+                    continue;
+                }
+
+                $lastName = $useUse->name->getLast();
+                if ($lastName === $name) {
+                    return $useUse->name->toString();
                 }
             }
-
-            return $name;
         }
 
         return $name;
