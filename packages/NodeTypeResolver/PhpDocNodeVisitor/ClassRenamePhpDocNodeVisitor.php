@@ -97,18 +97,18 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $this->oldToNewTypes = $oldToNewTypes;
     }
 
-    private function resolveNamespacedName(PhpParserNode $node, string $name): ?string
+    private function resolveNamespacedName(PhpParserNode $phpParserNode, string $name): string
     {
         if (str_starts_with($name, '\\')) {
             return $name;
         }
 
-        $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
+        $namespace = $this->betterNodeFinder->findParentType($phpParserNode, Namespace_::class);
         $namespacedName = $namespace instanceof Namespace_
             ? $namespace->name->toString() . $name
             : $name;
 
-        $uses = $this->useImportsResolver->resolveForNode($node);
+        $uses = $this->useImportsResolver->resolveForNode($phpParserNode);
 
         foreach ($uses as $use) {
             $prefix = $use instanceof GroupUse
