@@ -9,9 +9,8 @@ use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
+use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Core\Configuration\CurrentNodeProvider;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 
@@ -19,26 +18,19 @@ use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
  * Decorate node with fully qualified class name for const epxr,
  * e.g. Direction::*
  */
-final class ConstExprClassNameDecorator
+final class ConstExprClassNameDecorator implements PhpDocNodeDecoratorInterface
 {
     public function __construct(
-        private CurrentNodeProvider $currentNodeProvider,
-        private NameScopeFactory $nameScopeFactory,
-        private PhpDocNodeTraverser $phpDocNodeTraverser
+        private readonly NameScopeFactory $nameScopeFactory,
+        private readonly PhpDocNodeTraverser $phpDocNodeTraverser
     ) {
     }
 
-    public function decorate(PhpDocNode $phpDocNode): void
+    public function decorate(PhpDocNode $phpDocNode, PhpNode $phpNode): void
     {
-        $phpNode = $this->currentNodeProvider->getNode();
-
-        if (! $phpNode instanceof PhpNode) {
-            throw new ShouldNotHappenException();
-        }
-
         $this->phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function (Node $node) use (
             $phpNode
-        ): int|Node|null {
+        ): Node|null {
             if (! $node instanceof ConstExprNode) {
                 return null;
             }
@@ -53,13 +45,13 @@ final class ConstExprClassNameDecorator
         });
     }
 
-    private function resolveFullyQualifiedClass(ConstExprNode $constExprNode, PhpNode $node): ?string
+    private function resolveFullyQualifiedClass(ConstExprNode $constExprNode, PhpNode $phpNode): ?string
     {
         if (! $constExprNode instanceof ConstFetchNode) {
             return null;
         }
 
-        $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
+        $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($phpNode);
         return $nameScope->resolveStringName($constExprNode->className);
     }
 }

@@ -32,10 +32,8 @@ final class EnumConstListClassDetector
         }
 
         // all constant must be public
-        foreach ($classConstants as $classConstant) {
-            if (! $classConstant->isPublic()) {
-                return false;
-            }
+        if (! $this->hasExclusivelyPublicClassConsts($classConstants)) {
+            return false;
         }
 
         // all constants must have exactly 1 value
@@ -61,7 +59,7 @@ final class EnumConstListClassDetector
 
     /**
      * @param ClassConst[] $classConsts
-     * @return string[]
+     * @return array<class-string<Type>>
      */
     private function resolveClassConstTypes(array $classConsts): array
     {
@@ -71,9 +69,23 @@ final class EnumConstListClassDetector
         foreach ($classConsts as $classConst) {
             $const = $classConst->consts[0];
             $type = $this->nodeTypeResolver->getType($const->value);
-            $typeClasses[] = get_class($type);
+            $typeClasses[] = $type::class;
         }
 
         return array_unique($typeClasses);
+    }
+
+    /**
+     * @param ClassConst[] $classConsts
+     */
+    private function hasExclusivelyPublicClassConsts(array $classConsts): bool
+    {
+        foreach ($classConsts as $classConst) {
+            if (! $classConst->isPublic()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
-use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\Php\PhpParameterReflection;
-use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Php80\NodeAnalyzer\EnumConstListClassDetector;
+use Rector\Php80\NodeAnalyzer\EnumParamAnalyzer;
 use Rector\Php81\NodeFactory\EnumFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,7 +30,9 @@ final class ConstantListClassToEnumRector extends AbstractRector
     public function __construct(
         private readonly EnumConstListClassDetector $enumConstListClassDetector,
         private readonly EnumFactory $enumFactory,
+        private readonly EnumParamAnalyzer $enumParamAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
+        private readonly PhpDocTagRemover $phpDocTagRemover
     ) {
     }
 
@@ -96,28 +99,49 @@ CODE_SAMPLE
         }
 
         $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($classMethod);
+        if (! $methodReflection instanceof MethodReflection) {
+            return null;
+        }
+
+        $hasNodeChanged = false;
 
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
-            if (! $parameterReflection instanceof PhpParameterReflection) {
+            $enumLikeClass = $this->enumParamAnalyzer->matchClassName($parameterReflection, $phpDocInfo);
+            if ($enumLikeClass === null) {
                 continue;
             }
 
-            // should be union, that is how PHPStan resolves it
-            if (! $parameterReflection->getType() instanceof UnionType) {
+            $param = $this->getParamByName($classMethod, $parameterReflection->getName());
+            if (! $param instanceof Param) {
                 continue;
             }
 
+            // change and remove
+            $param->type = new FullyQualified($enumLikeClass);
+            $hasNodeChanged = true;
+
+            /** @var ParamTagValueNode $paramTagValueNode */
             $paramTagValueNode = $phpDocInfo->getParamTagValueByName($parameterReflection->getName());
-            if ($paramTagValueNode->type instanceof ConstTypeNode) {
-                $constTypeNode = $paramTagValueNode->type;
-                if ($constTypeNode->constExpr instanceof ConstFetchNode) {
-                    $constExpr = $constTypeNode->constExpr;
-                    dump($constExpr->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS));
-                    dump('___');
-                    die;
-                }
+            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $paramTagValueNode);
+        }
+
+        if ($hasNodeChanged) {
+            return $classMethod;
+        }
+
+        return null;
+    }
+
+    private function getParamByName(ClassMethod $classMethod, string $desiredParamName): ?Param
+    {
+        foreach ($classMethod->params as $param) {
+            if (! $this->nodeNameResolver->isName($param, $desiredParamName)) {
+                continue;
             }
+
+            return $param;
         }
 
         return null;
