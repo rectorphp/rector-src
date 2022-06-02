@@ -84,9 +84,9 @@ final class EnumAnalyzer
         return $enumExprTypes;
     }
 
-    private function resolveEnumCaseType(EnumCase $classStmt): Type
+    private function resolveEnumCaseType(EnumCase $enumCase): Type
     {
-        $classExpr = $classStmt->expr;
+        $classExpr = $enumCase->expr;
         if ($classExpr instanceof Expr) {
             return $this->nodeTypeResolver->getType($classExpr);
         }

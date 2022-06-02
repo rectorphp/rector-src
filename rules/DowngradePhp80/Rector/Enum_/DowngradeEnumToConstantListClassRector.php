@@ -111,14 +111,9 @@ CODE_SAMPLE
         return null;
     }
 
-    public function resolveParamType(ClassReflection $classLikeReflection): ?Identifier
+    public function resolveParamType(ClassReflection $classReflection): ?Identifier
     {
-        $enumTypeIdentifier = $this->enumAnalyzer->resolveType($classLikeReflection);
-        if ($enumTypeIdentifier instanceof Identifier) {
-            return $enumTypeIdentifier;
-        }
-        // unclear param type
-        return null;
+        return $this->enumAnalyzer->resolveType($classReflection);
     }
 
     private function decorateParamDocType(
