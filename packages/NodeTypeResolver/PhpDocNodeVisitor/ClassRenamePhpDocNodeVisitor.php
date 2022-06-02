@@ -9,11 +9,13 @@ use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\UseUse;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -35,7 +37,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ClassNameImportSkipper $classNameImportSkipper
     ) {
     }
 
@@ -105,11 +108,28 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $namespace = $this->betterNodeFinder->findParentType($phpParserNode, Namespace_::class);
-        $namespacedName = $namespace instanceof Namespace_
-            ? $namespace->name->toString() . '\\' . $name
-            : $name;
+        $uses = $this->useImportsResolver->resolveBareUsesForNode($phpParserNode);
 
-        $uses = $this->useImportsResolver->resolveForNode($phpParserNode);
+        if (! $namespace instanceof Namespace_) {
+            if ($uses === []) {
+                return $name;
+            }
+
+            foreach ($uses as $use) {
+                foreach ($use->uses as $useUse) {
+                    if ($useUse->alias instanceof Identifier) {
+                        continue;
+                    }
+
+                    if (Strings::after($useUse->name->toString(), '\\', -1) === $name) {
+                        return $useUse->name->toString();
+                    }
+                }
+            }
+        }
+
+        $namespacedName = $namespace->name->toString() . '\\' . $name;
+
 
         foreach ($uses as $use) {
             $prefix = $use instanceof GroupUse
@@ -132,9 +152,6 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             }
         }
 
-        if (str_contains($namespacedName, '\\')) {
-            return $namespacedName;
-        }
 
         return $name;
     }
