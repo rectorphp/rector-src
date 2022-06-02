@@ -8,7 +8,6 @@ use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -89,6 +88,14 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         return null;
     }
 
+    /**
+     * @param OldToNewType[] $oldToNewTypes
+     */
+    public function setOldToNewTypes(array $oldToNewTypes): void
+    {
+        $this->oldToNewTypes = $oldToNewTypes;
+    }
+
     private function resolveNamespacedName(PhpParserNode $node, string $name): string
     {
         $uses = $this->useImportsResolver->resolveForNode($node);
@@ -124,13 +131,5 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         return $name;
-    }
-
-    /**
-     * @param OldToNewType[] $oldToNewTypes
-     */
-    public function setOldToNewTypes(array $oldToNewTypes): void
-    {
-        $this->oldToNewTypes = $oldToNewTypes;
     }
 }
