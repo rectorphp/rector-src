@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
+use Nette\Utils\Strings;
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
@@ -131,7 +132,11 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             }
         }
 
-        dump($namespacedName === $name);
+        if ($namespacedName !== $name) {
+            $currentNamespace = Strings::before($namespacedName, '\\', -1);
+
+            dump($currentNamespace);
+        }
 
         return $name;
     }
