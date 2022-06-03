@@ -22,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveJustPropertyFetchForAssignRector extends AbstractRector
 {
     public function __construct(
-        private JustPropertyFetchVariableAssignMatcher $justPropertyFetchVariableAssignMatcher
+        private readonly JustPropertyFetchVariableAssignMatcher $justPropertyFetchVariableAssignMatcher
     ) {
     }
 

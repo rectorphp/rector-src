@@ -16,7 +16,7 @@ use Rector\DeadCode\ValueObject\VariableAndPropertyFetchAssign;
 final class JustPropertyFetchVariableAssignMatcher
 {
     public function __construct(
-        private NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
