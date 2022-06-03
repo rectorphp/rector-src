@@ -136,15 +136,6 @@ final class ParallelFileProcessor
             }
 
             $processIdentifier = Random::generate();
-
-            if ($input->hasOption(Option::CONFIG)) {
-                $config = $input->getOption(Option::CONFIG);
-                if (is_string($config) && str_contains($config, ' ')) {
-                    $config = str_replace(' ', '\ ', (string) $input->getOption(Option::CONFIG));
-                    $input->setOption(Option::CONFIG, $config);
-                }
-            }
-
             $workerCommandLine = $this->workerCommandLineFactory->create(
                 $mainScript,
                 ProcessCommand::class,

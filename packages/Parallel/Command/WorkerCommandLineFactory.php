@@ -93,7 +93,7 @@ final class WorkerCommandLineFactory
 
         if ($input->hasOption(Option::CONFIG)) {
             $workerCommandArray[] = '--config';
-            $workerCommandArray[] = $input->getOption(Option::CONFIG);
+            $workerCommandArray[] = escapeshellarg($input->getOption(Option::CONFIG));
         }
 
         return implode(' ', $workerCommandArray);
