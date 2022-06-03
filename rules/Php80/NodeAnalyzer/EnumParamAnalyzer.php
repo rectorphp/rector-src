@@ -30,8 +30,7 @@ final class EnumParamAnalyzer
     public function matchParameterClassName(
         ParameterReflection $parameterReflection,
         PhpDocInfo $phpDocInfo
-    ): ?ClassNameAndTagValueNode
-    {
+    ): ?ClassNameAndTagValueNode {
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($parameterReflection->getName());
         if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return null;
