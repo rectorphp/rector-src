@@ -139,7 +139,7 @@ final class ParallelFileProcessor
 
             if ($input->hasOption(Option::CONFIG)) {
                 $config = $input->getOption(Option::CONFIG);
-                if (is_string($config)) {
+                if (is_string($config) && str_contains($config, ' ')) {
                     $config = str_replace(' ', '\ ', (string) $input->getOption(Option::CONFIG));
                     $input->setOption(Option::CONFIG, $config);
                 }
