@@ -93,6 +93,23 @@ final class WorkerCommandLineFactory
 
         if ($input->hasOption(Option::CONFIG)) {
             $workerCommandArray[] = '--config';
+            /**
+             * On parallel, the command is generated with `--config` addition
+             * Using escapeshellarg() to ensure the --config path escaped, even when it has a space.
+             *
+             * eg:
+             *    --config /path/e2e/parallel with space/rector.php
+             *
+             * that can cause error:
+             *
+             *    File /rector-src/e2e/parallel\" was not found
+             *
+             * the escaped result is:
+             *
+             *    --config '/path/e2e/parallel with space/rector.php'
+             *
+             * tested in macOS and Ubuntu (github action)
+             */
             $workerCommandArray[] = escapeshellarg($input->getOption(Option::CONFIG));
         }
 
