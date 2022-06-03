@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node;
@@ -106,7 +107,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $namespace = $this->betterNodeFinder->findParentType($phpParserNode, Namespace_::class);
-        $uses = $this->useImportsResolver->resolveBareUsesForNode($phpParserNode);
+        $uses = $this->useImportsResolver->resolveForNode($phpParserNode);
 
         if (! $namespace instanceof Namespace_) {
             return $this->resolveNamefromUse($uses, $name);
@@ -138,11 +139,15 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     private function resolveNamefromUse(array $uses, string $name): string
     {
         foreach ($uses as $use) {
+            $prefix = $use instanceof GroupUse
+                ? $use->prefix . '\\'
+                : '';
+
             foreach ($use->uses as $useUse) {
                 if ($useUse->alias instanceof Identifier) {
                     continue;
@@ -150,7 +155,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
                 $lastName = $useUse->name->getLast();
                 if ($lastName === $name) {
-                    return $useUse->name->toString();
+                    return $prefix . $useUse->name->toString();
                 }
             }
         }
