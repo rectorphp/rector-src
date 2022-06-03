@@ -136,8 +136,14 @@ final class ParallelFileProcessor
             }
 
             $processIdentifier = Random::generate();
-            $config = str_replace(' ', '\ ', (string) $input->getOption(Option::CONFIG));
-            $input->setOption(Option::CONFIG, $config);
+
+            if ($input->hasOption(Option::CONFIG)) {
+                $config = $input->getOption(Option::CONFIG);
+                if (is_string($config)) {
+                    $config = str_replace(' ', '\ ', (string) $input->getOption(Option::CONFIG));
+                    $input->setOption(Option::CONFIG, $config);
+                }
+            }
 
             $workerCommandLine = $this->workerCommandLineFactory->create(
                 $mainScript,
