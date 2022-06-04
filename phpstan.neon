@@ -628,7 +628,9 @@ parameters:
 
         # resolve later with configurable types
         - '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
+<<<<<<< HEAD
         - '#Instead of calling all public methods of value object, pass it directly#'
+<<<<<<< HEAD
 
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
@@ -656,7 +658,22 @@ parameters:
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
+<<<<<<< HEAD
 
         - '#Class has a static method must so must contains "Static" in its name#'
+<<<<<<< HEAD
 
         - '#Class method ".+\(\)" is never used#'
+=======
+=======
+=======
+=======
+
+        # update after phpstan uses php-parser 5-dev
+        -
+            message: '#Removing parent param type is forbidden#'
+            path: src/PhpParser/Printer/BetterStandardPrinter.php
+>>>>>>> fix space
+>>>>>>> [CI] require dev-master php-parser in packages tests
+>>>>>>> [CI] require dev-master php-parser in packages tests
+>>>>>>> Remove modifier order workaround in StandardPrinter, now native

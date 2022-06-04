@@ -32,10 +32,10 @@ class NoReturnForVoid
 {
     public function run(array $values)
     {
-        usort($values, function () : void {
+        usort($values, function (): void {
             $this->thisReturnsVoid();
         });
-        usort($values, function () : void {
+        usort($values, function (): void {
             $this->thisReturnsNothing();
         });
 

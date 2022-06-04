@@ -12,12 +12,12 @@ final class SkipInGetterAndOnThis
         return $this->foo;
     }
 
-    public function getFoo() : ?string
+    public function getFoo(): ?string
     {
         return $this->foo;
     }
 
-    public function bar() : ?string
+    public function bar(): ?string
     {
         $this->foo = 'bar';
     }

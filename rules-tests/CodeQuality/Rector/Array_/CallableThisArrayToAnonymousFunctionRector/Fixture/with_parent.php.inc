@@ -31,7 +31,7 @@ class WithParent extends ParentClass
 {
     public function run(array $values)
     {
-        usort($values, function (int $first, $second) : bool {
+        usort($values, function (int $first, $second): bool {
             return $this->compareSize($first, $second);
         });
 

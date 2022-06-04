@@ -24,7 +24,7 @@ class ArrowFunctionParamThrowable
 {
     public function run()
     {
-        $value = function ($param) : bool {
+        $value = function ($param): bool {
             return true;
         };
     }

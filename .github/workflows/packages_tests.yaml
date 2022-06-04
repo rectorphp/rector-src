@@ -51,6 +51,9 @@ jobs:
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
                 if: ${{ github.event_name == 'pull_request' }}
 
+            -
+                run: composer require nikic/php-parser "dev-master as 4.14" --no-update
+
             -   run: composer install --ansi
 
             -   run: vendor/bin/phpunit
