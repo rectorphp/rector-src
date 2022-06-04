@@ -21,6 +21,7 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 
 final class ClassMethodReturnTypeOverrideGuard
 {
@@ -37,7 +38,8 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -55,6 +57,10 @@ final class ClassMethodReturnTypeOverrideGuard
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
+            return true;
+        }
+
+        if (! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed($classMethod)) {
             return true;
         }
 
