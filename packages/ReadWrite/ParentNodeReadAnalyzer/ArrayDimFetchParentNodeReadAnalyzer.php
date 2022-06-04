@@ -7,6 +7,7 @@ namespace Rector\ReadWrite\ParentNodeReadAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
 
@@ -33,15 +34,14 @@ final class ArrayDimFetchParentNodeReadAnalyzer implements ParentNodeReadAnalyze
 
     private function isLeftPartOfAssign(Expr $expr): bool
     {
-        $parentAssign = $this->betterNodeFinder->findParentType($expr, Expr\Assign::class);
-        if (! $parentAssign instanceof Expr\Assign) {
+        $parentAssign = $this->betterNodeFinder->findParentType($expr, Assign::class);
+        if (! $parentAssign instanceof Assign) {
             return true;
         }
 
-        return ! (bool) $this->betterNodeFinder->findFirst($parentAssign->var, function (\PhpParser\Node $node) use (
-            $expr
-        ) {
-            return $node === $expr;
-        });
+        return ! (bool) $this->betterNodeFinder->findFirst(
+            $parentAssign->var,
+            fn (Node $node): bool => $node === $expr
+        );
     }
 }
