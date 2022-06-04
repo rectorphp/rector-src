@@ -44,7 +44,7 @@ return static function (RectorConfig $rectorConfig): void {
         new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
     ]);
 
-    // $rectorConfig->rule(RemoveJustPropertyFetchRector::class);
+    $rectorConfig->rule(RemoveJustPropertyFetchRector::class);
 
     $rectorConfig->paths([
         __DIR__ . '/bin',
