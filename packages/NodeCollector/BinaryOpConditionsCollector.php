@@ -36,9 +36,10 @@ final class BinaryOpConditionsCollector
         /** @var BinaryOp|Expr $expr */
         while ($expr instanceof BinaryOp) {
             $conditions[] = $expr->right;
+            $expr = $expr->left;
 
-            if ($binaryOpClass !== $expr->left::class) {
-                $conditions[] = $expr->left;
+            if ($binaryOpClass !== $expr::class) {
+                $conditions[] = $expr;
                 break;
             }
         }
