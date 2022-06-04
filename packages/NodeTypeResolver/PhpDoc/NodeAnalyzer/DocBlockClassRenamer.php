@@ -27,6 +27,7 @@ final class DocBlockClassRenamer
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->addPhpDocNodeVisitor($this->classRenamePhpDocNodeVisitor);
+
         $this->classRenamePhpDocNodeVisitor->setOldToNewTypes($oldToNewTypes);
 
         $phpDocNodeTraverser->traverse($phpDocInfo->getPhpDocNode());
