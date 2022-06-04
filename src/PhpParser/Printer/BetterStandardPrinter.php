@@ -11,7 +11,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Name;
@@ -20,7 +19,6 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\TraitUse;
@@ -60,12 +58,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
 
     /**
-     * @see https://regex101.com/r/qZiqGo/13
-     * @var string
-     */
-    private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
-
-    /**
      * Use space by default
      */
     private string $tabOrSpaceIndentCharacter = ' ';
@@ -79,13 +71,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         array $options = []
     ) {
         parent::__construct($options);
-
-        // print return type double colon right after the bracket "function(): string"
-        $this->initializeInsertionMap();
-        $this->insertionMap['Stmt_ClassMethod->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Stmt_Function->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
     }
 
     /**
@@ -319,23 +304,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
 
         return parent::pStmts($nodes, $indent);
-    }
-
-    /**
-     * "...$params) : ReturnType"
-     * ↓
-     * "...$params): ReturnType"
-     */
-    protected function pStmt_ClassMethod(ClassMethod $classMethod): string
-    {
-        $content = parent::pStmt_ClassMethod($classMethod);
-
-        if (! $classMethod->returnType instanceof Node) {
-            return $content;
-        }
-
-        // this approach is chosen, to keep changes in parent pStmt_ClassMethod() updated
-        return Strings::replace($content, self::REPLACE_COLON_WITH_SPACE_REGEX, '$1: ');
     }
 
     /**
