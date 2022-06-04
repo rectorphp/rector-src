@@ -121,12 +121,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $name;
         }
 
-        $namespaceName = (string) $this->nodeNameResolver->getName($namespace);
-        if (! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
-            return $name;
-        }
-
         if ($uses === []) {
+            $namespaceName = (string) $this->nodeNameResolver->getName($namespace);
             return $namespaceName . '\\' . $name;
         }
 
