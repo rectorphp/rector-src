@@ -101,11 +101,11 @@ CODE_SAMPLE
     }
 
     private function refactorToVariableAssign(
-        Assign $middleAssign,
+        Assign $assign,
         VariableAndPropertyFetchAssign $variableAndPropertyFetchAssign,
         StmtsAwareInterface $stmtsAware
     ): StmtsAwareInterface|Node|null {
-        $middleVariable = $middleAssign->var;
+        $middleVariable = $assign->var;
 
         if (! $this->nodeComparator->areNodesEqual($middleVariable, $variableAndPropertyFetchAssign->getVariable())) {
             return null;
@@ -115,17 +115,17 @@ CODE_SAMPLE
         unset($stmtsAware->stmts[0]);
         unset($stmtsAware->stmts[2]);
 
-        $middleAssign->var = $variableAndPropertyFetchAssign->getPropertyFetch();
+        $assign->var = $variableAndPropertyFetchAssign->getPropertyFetch();
 
         return $stmtsAware;
     }
 
     private function removeToArrayDimFetchAssign(
-        Assign $middleAssign,
+        Assign $assign,
         VariableAndPropertyFetchAssign $variableAndPropertyFetchAssign,
         StmtsAwareInterface $stmtsAware
     ): StmtsAwareInterface|null {
-        $middleArrayDimFetch = $middleAssign->var;
+        $middleArrayDimFetch = $assign->var;
         if (! $middleArrayDimFetch instanceof ArrayDimFetch) {
             return null;
         }
