@@ -1,6 +1,6 @@
 <?php
 
-namespace MyNamespace;
+namespace MyNamespace {
 
 class MyClass
 {
@@ -13,11 +13,13 @@ class MyClass
     }
 }
 
+}
+
 ?>
 -----
 <?php
 
-namespace MyNewNamespace;
+namespace MyNewNamespace {
 
 class MyNewClass
 {
@@ -28,6 +30,8 @@ class MyNewClass
     {
         return new \MyNewNamespace\MyNewClass;
     }
+}
+
 }
 
 ?>
