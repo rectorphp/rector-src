@@ -6,7 +6,6 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
@@ -17,8 +16,10 @@ use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -37,7 +38,9 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -114,20 +117,12 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $originalNode = $namespace->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $originalNode instanceof Namespace_) {
+        if (! $this->nodeComparator->areNodesEqual($originalNode, $namespace)) {
             return $name;
         }
 
-        if (! $namespace->name instanceof Name) {
-            return $name;
-        }
-
-        if (! $originalNode->name instanceof Name) {
-            return $name;
-        }
-
-        $namespaceName = $namespace->name->toString();
-        if ($originalNode->name->toString() !== $namespaceName) {
+        $namespaceName = (string) $this->nodeNameResolver->getName($namespace);
+        if (! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
             return $name;
         }
 
