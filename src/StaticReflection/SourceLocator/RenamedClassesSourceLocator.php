@@ -33,7 +33,6 @@ final class RenamedClassesSourceLocator implements SourceLocator
             return null;
         }
 
-
         $identifierName = $identifier->getName();
         foreach ($this->renamedClassesDataCollector->getOldClasses() as $oldClass) {
             if ($identifierName !== $oldClass) {
