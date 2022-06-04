@@ -128,26 +128,16 @@ CODE_SAMPLE
                 return null;
             }
 
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-            // replace on @var/@param/@return/@throws
-            foreach ($this->pseudoNamespacesToNamespaces as $pseudoNamespaceToNamespace) {
-                $hasDocTypeChanged = $this->phpDocTypeRenamer->changeUnderscoreType(
-                    $phpDocInfo,
-                    $node,
-                    $pseudoNamespaceToNamespace
-                );
-                if ($hasDocTypeChanged) {
-                    $hasChanged = true;
-                }
+            if ($this->refactorPhpDoc($node)) {
+                $hasChanged = true;
             }
 
             // @todo - update rule to allow for bool instanceof check
             if ($node instanceof Name || $node instanceof Identifier) {
-                $chahgedNode = $this->processNameOrIdentifier($node);
-                if ($chahgedNode instanceof \PhpParser\Node) {
+                $changedNode = $this->processNameOrIdentifier($node);
+                if ($changedNode instanceof Node) {
                     $hasChanged = true;
-                    return $chahgedNode;
+                    return $changedNode;
                 }
             }
 
@@ -237,5 +227,26 @@ CODE_SAMPLE
         }
 
         return $namespace;
+    }
+
+    private function refactorPhpDoc(Name|FunctionLike|Identifier|Property $node): bool
+    {
+        $hasChanged = false;
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        // replace on @var/@param/@return/@throws
+        foreach ($this->pseudoNamespacesToNamespaces as $pseudoNamespaceToNamespace) {
+            $hasDocTypeChanged = $this->phpDocTypeRenamer->changeUnderscoreType(
+                $phpDocInfo,
+                $node,
+                $pseudoNamespaceToNamespace
+            );
+
+            if ($hasDocTypeChanged) {
+                $hasChanged = true;
+            }
+        }
+
+        return $hasChanged;
     }
 }
