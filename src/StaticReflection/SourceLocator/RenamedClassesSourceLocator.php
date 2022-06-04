@@ -27,12 +27,6 @@ final class RenamedClassesSourceLocator implements SourceLocator
 
     public function locateIdentifier(Reflector $reflector, Identifier $identifier): ?Reflection
     {
-        $identifierType = $identifier->getType();
-        $typeName = $identifierType->getName();
-        if ($typeName !== 'PHPStan\BetterReflection\Reflection\ReflectionClass') {
-            return null;
-        }
-
         $identifierName = $identifier->getName();
         foreach ($this->renamedClassesDataCollector->getOldClasses() as $oldClass) {
             if ($identifierName !== $oldClass) {
@@ -54,13 +48,19 @@ final class RenamedClassesSourceLocator implements SourceLocator
         return [];
     }
 
-    private function createFakeReflectionClassFromClassName(string $oldClass): ReflectionClass
+    private function createFakeReflectionClassFromClassName(string $oldClass): ?ReflectionClass
     {
         $classBuilder = new ClassBuilder($oldClass);
         $class = $classBuilder->getNode();
         $fakeLocatedSource = new LocatedSource('virtual', null);
 
         $classReflector = new ClassReflector($this);
-        return ReflectionClass::createFromNode($classReflector, $class, $fakeLocatedSource);
+        $reflectionClass = ReflectionClass::createFromNode($classReflector, $class, $fakeLocatedSource);
+
+        if ($reflectionClass->getStartLine() < 0) {
+            return null;
+        }
+
+        return $reflectionClass;
     }
 }
