@@ -29,12 +29,12 @@ final class RenamedClassesSourceLocator implements SourceLocator
     {
         $identifierType = $identifier->getType();
         $typeName = $identifierType->getName();
-        if ($typeName === 'PHPStan\BetterReflection\Reflection\ReflectionFunction') {
+        if ($typeName !== 'PHPStan\BetterReflection\Reflection\ReflectionClass') {
             return null;
         }
 
-        $identifierName = $identifier->getName();
 
+        $identifierName = $identifier->getName();
         foreach ($this->renamedClassesDataCollector->getOldClasses() as $oldClass) {
             if ($identifierName !== $oldClass) {
                 continue;
