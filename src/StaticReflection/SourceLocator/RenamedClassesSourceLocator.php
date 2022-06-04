@@ -59,9 +59,11 @@ final class RenamedClassesSourceLocator implements SourceLocator
         if ($reflectionClass->getStartLine() >= 0) {
             return $reflectionClass;
         }
+
         if ($reflectionClass->getStartColumn() >= 0) {
             return $reflectionClass;
         }
+
         return null;
     }
 }
