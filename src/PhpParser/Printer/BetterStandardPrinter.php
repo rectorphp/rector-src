@@ -48,12 +48,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
     /**
      * @var string
-     * @see https://regex101.com/r/F5x783/1
-     */
-    private const USE_REGEX = '#( use)\(#';
-
-    /**
-     * @var string
      * @see https://regex101.com/r/DrsMY4/1
      */
     private const QUOTED_SLASH_REGEX = "#'|\\\\(?=[\\\\']|$)#";
@@ -257,23 +251,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         return parent::pScalar_DNumber($dNumber);
-    }
-
-    /**
-     * Add space:
-     * "use("
-     * ↓
-     * "use ("
-     */
-    protected function pExpr_Closure(Closure $closure): string
-    {
-        $closureContent = parent::pExpr_Closure($closure);
-
-        if ($closure->uses === []) {
-            return $closureContent;
-        }
-
-        return Strings::replace($closureContent, self::USE_REGEX, '$1 (');
     }
 
     /**
