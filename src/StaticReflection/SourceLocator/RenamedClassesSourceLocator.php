@@ -57,7 +57,8 @@ final class RenamedClassesSourceLocator implements SourceLocator
         $classReflector = new ClassReflector($this);
         $reflectionClass = ReflectionClass::createFromNode($classReflector, $class, $fakeLocatedSource);
 
-        if ($reflectionClass->getStartLine() < 0) {
+        $locatedSource = $reflectionClass->getLocatedSource();
+        if ($locatedSource->getName() === null) {
             return null;
         }
 
