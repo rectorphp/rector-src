@@ -27,10 +27,7 @@ final class RenamedClassesSourceLocator implements SourceLocator
 
     public function locateIdentifier(Reflector $reflector, Identifier $identifier): ?Reflection
     {
-        $identifierType = $identifier->getType();
-        $typeName = $identifierType->getName();
-
-        if ($typeName === 'PHPStan\BetterReflection\Reflection\ReflectionFunction') {
+        if (! $identifier->isClass()) {
             return null;
         }
 
