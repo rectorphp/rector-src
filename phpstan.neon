@@ -29,6 +29,9 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
+        # @todo remove after phsptan gets to php-parser 5
+        - src/PhpParser/Printer
+        - tests/PhpParser/Printer
         # too modern code for PHPStan 0.12.2
         - bin/validate-phpstan-version.php
         - bin/detect-rules-not-used-in-any-set.php
