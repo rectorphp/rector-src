@@ -135,7 +135,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return ltrim($content);
     }
 
-    protected function p(Node $node, $parentFormatPreserved = false): string
+    protected function p(Node $node, bool $parentFormatPreserved = false): string
     {
         $content = parent::p($node, $parentFormatPreserved);
 
@@ -190,7 +190,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     /**
      * @param mixed[] $nodes
      * @param mixed[] $origNodes
-     * @param int|null $fixup
      */
     protected function pArray(
         array $nodes,
@@ -199,7 +198,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         int $indentAdjustment,
         string $parentNodeType,
         string $subNodeName,
-        $fixup
+        ?int $fixup
     ): ?string {
         // reindex positions for printer
         $nodes = array_values($nodes);
