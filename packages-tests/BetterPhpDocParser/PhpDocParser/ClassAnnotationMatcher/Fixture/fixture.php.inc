@@ -4,6 +4,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\Fi
 
 use Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\Source\KnownClass;
 use My\Namespace\OtherUnknownClass;
+use My\Namespace\OtherUnknownClass as AliasedUnknownClass;
 
 class MyClass
 {
@@ -17,6 +18,8 @@ class MyClass
     private $unknownNamespacedClass;
     /** @var OtherUnknownClass */
     private $unknownUsedClass;
+    /** @var AliasedUnknownClass */
+    private $unknownAliasedUsedClass;
     /** @var \UnknownGlobalClass */
     private $unknownGlobalClass;
 }

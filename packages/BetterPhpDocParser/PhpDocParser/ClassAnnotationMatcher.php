@@ -107,7 +107,8 @@ final class ClassAnnotationMatcher
                 }
 
                 if ($useUse->alias->toString() === $tag) {
-                    return $prefix . $useUse->name->toString();
+                    $class = $prefix . $useUse->name->toString();
+                    return $this->reflectionProvider->hasClass($class) ? $class : null;
                 }
             }
         }
