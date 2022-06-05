@@ -21,7 +21,7 @@ class Bar
 
     private function foo(): string
     {
-        new Foo($this->storage);
+        new Foo();
     }
 }
 
