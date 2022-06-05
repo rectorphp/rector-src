@@ -55,7 +55,7 @@ final class RenamedClassesSourceLocator implements SourceLocator
         return [];
     }
 
-    private function createFakeReflectionClassFromClassName(string $oldClass): ?ReflectionClass
+    private function createFakeReflectionClassFromClassName(string $oldClass): ReflectionClass
     {
         $classBuilder = new ClassBuilder($oldClass);
         $class = $classBuilder->getNode();
