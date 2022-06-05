@@ -62,6 +62,12 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException();
         }
 
+        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($node, $phpParserNode);
+
+        if (! $staticType instanceof ObjectType) {
+            return null;
+        }
+
         $identifier = clone $node;
 
         $namespacedName = $this->resolveNamespacedName($phpParserNode, $identifier->name);
