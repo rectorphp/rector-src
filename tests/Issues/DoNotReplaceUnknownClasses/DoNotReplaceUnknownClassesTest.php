@@ -8,7 +8,7 @@ use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-class DoNotReplaceUnknownClassesTest extends AbstractRectorTestCase
+final class DoNotReplaceUnknownClassesTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

@@ -77,8 +77,7 @@ final class ClassAnnotationMatcher
         Node $node,
         string $tag,
         bool $returnNullOnUnknownClass
-    ): ?string
-    {
+    ): ?string {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
         if ($scope instanceof Scope) {
@@ -93,7 +92,7 @@ final class ClassAnnotationMatcher
                     return $this->resolveAsAliased($uses, $tag, $returnNullOnUnknownClass);
                 }
 
-                if (str_starts_with($tag, '\\') && $this->reflectionProvider->hasClass($tag)) {
+                if ($this->isPreslashedExistingClass($tag)) {
                     // Global or absolute Class
                     return $tag;
                 }
@@ -135,7 +134,17 @@ final class ClassAnnotationMatcher
         if ($class === null) {
             return null;
         }
+
         $resolvedClass = $this->reflectionProvider->hasClass($class) ? $class : null;
         return $returnNullOnUnknownClass ? $resolvedClass : $class;
+    }
+
+    private function isPreslashedExistingClass(string $tag): bool
+    {
+        if (! str_starts_with($tag, '\\')) {
+            return false;
+        }
+
+        return $this->reflectionProvider->hasClass($tag);
     }
 }
