@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use CompanyB\Storage;
 
-class DoNotRemoveDocblockInnerNamespace
+class DoNotRenameDocblockInnerNamespace
 {
     /**
      * @var Storage
@@ -34,7 +34,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 use Log;
 use CompanyB\Storage;
 
-class DoNotRemoveDocblockInnerNamespace
+class DoNotRenameDocblockInnerNamespace
 {
     /**
      * @var Storage
