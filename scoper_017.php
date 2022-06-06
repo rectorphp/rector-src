@@ -30,25 +30,37 @@ const UNPREFIX_CLASSES_BY_FILE = [
     'packages/Testing/PHPUnit/AbstractTestCase.php' => ['PHPUnit\Framework\TestCase'],
 ];
 
-/**
- * @see https://regex101.com/r/LMDq0p/1
- * @var string
- */
-const POLYFILL_FILE_NAME_REGEX = '#vendor\/symfony\/polyfill\-(.*)\/bootstrap(.*?)\.php#';
+///**
+// * @see https://regex101.com/r/LMDq0p/1
+// * @var string
+// */
+//const POLYFILL_FILE_NAME_REGEX = '#vendor\/symfony\/polyfill\-(.*)\/bootstrap(.*?)\.php#';
 
-/**
- * @see https://regex101.com/r/RBZ0bN/1
- * @var string
- */
-const POLYFILL_STUBS_NAME_REGEX = '#vendor\/symfony\/polyfill\-(.*)\/Resources\/stubs#';
+///**
+// * @see https://regex101.com/r/RBZ0bN/1
+// * @var string
+// */
+//const POLYFILL_STUBS_NAME_REGEX = '#vendor\/symfony\/polyfill\-(.*)\/Resources\/stubs#';
 
 // see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
     'prefix' => 'RectorPrefix' . $timestamp,
     // 'whitelist' => StaticEasyPrefixer::getExcludedNamespacesAndClasses(),
-    'exposed' => [],
-    'excluded' => [],
-
+    'expose-classes' => [
+        'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator',
+    ],
+    'exclude-classes' => [
+        'Symplify\SmartFileSystem\SmartFileInfo',
+        'PHPUnit\Framework\Constraint\IsEqual',
+    ],
+    'exclude-files' => [
+        'vendor/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
+        'vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'vendor/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'vendor/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'vendor/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+        'vendor/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+    ],
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {
             foreach (UNPREFIX_CLASSES_BY_FILE as $endFilePath => $unprefixClasses) {
@@ -83,32 +95,18 @@ return [
         },
 
         // unprefixed SmartFileInfo
-        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
-            $content,
-            '#' . $prefix . '\\\\Symplify\\\\SmartFileSystem\\\\SmartFileInfo#',
-            'Symplify\SmartFileSystem\SmartFileInfo'
-        ),
-
-        // unprefixed Statement
-        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
-            $content,
-            '#' . $prefix . '\\\\Helmich\\\\TypoScriptParser\\\\Parser\\\\AST\\\\Statement#',
-            'Helmich\TypoScriptParser\Parser\AST\Statement'
-        ),
-
-        // unprefixed Traverser
-        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
-            $content,
-            '#' . $prefix . '\\\\Helmich\\\\TypoScriptParser\\\\Parser\\\\Traverser\\\\Traverser#',
-            'Helmich\TypoScriptParser\Parser\Traverser\Traverser'
-        ),
+//        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+//            $content,
+//            '#' . $prefix . '\\\\Symplify\\\\SmartFileSystem\\\\SmartFileInfo#',
+//            'Symplify\SmartFileSystem\SmartFileInfo'
+//        ),
 
         // unprefixed PHPUnit IsEqual
-        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
-            $content,
-            '#' . $prefix . '\\\\PHPUnit\\\\Framework\\\\Constraint\\\\IsEqual#',
-            'PHPUnit\Framework\Constraint\IsEqual'
-        ),
+//        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+//            $content,
+//            '#' . $prefix . '\\\\PHPUnit\\\\Framework\\\\Constraint\\\\IsEqual#',
+//            'PHPUnit\Framework\Constraint\IsEqual'
+//        ),
 
         // fixes https://github.com/rectorphp/rector/issues/7017
         function (string $filePath, string $prefix, string $content): string {
@@ -141,15 +139,15 @@ return [
 //            );
 //        },
 
-        // get version for prefixed version
-        function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with($filePath, 'src/Configuration/Configuration.php')) {
-                return $content;
-            }
-
-            // @see https://regex101.com/r/gLefQk/1
-            return Strings::replace($content, '#\(\'rector\/rector-src\'\)#', "('rector/rector')");
-        },
+//        // get version for prefixed version
+//        function (string $filePath, string $prefix, string $content): string {
+//            if (! \str_ends_with($filePath, 'src/Configuration/Configuration.php')) {
+//                return $content;
+//            }
+//
+//            // @see https://regex101.com/r/gLefQk/1
+//            return Strings::replace($content, '#\(\'rector\/rector-src\'\)#', "('rector/rector')");
+//        },
 
         // un-prefix composer plugin
         function (string $filePath, string $prefix, string $content): string {
@@ -185,10 +183,7 @@ return [
         // unprefix string classes, as they're string on purpose - they have to be checked in original form, not prefixed
         function (string $filePath, string $prefix, string $content): string {
             // skip vendor, expect rector packages
-            if (\str_contains($filePath, 'vendor/') && ! \str_contains($filePath, 'vendor/rector') && ! \str_contains(
-                $filePath,
-                'vendor/ssch/typo3-rector'
-            )) {
+            if (\str_contains($filePath, 'vendor/') && ! \str_contains($filePath, 'vendor/rector')) {
                 return $content;
             }
 
@@ -212,35 +207,30 @@ return [
                 return $content;
             }
 
-            // skip "Ssch\\" namespace
-            if (\str_contains($content, '$services->load(\'Ssch')) {
-                return $content;
-            }
-
             return Strings::replace($content, '#services\->load\(\'#', "services->load('" . $prefix . '\\');
         },
+//
+//        // unprefix polyfill functions
+//        // @see https://github.com/humbug/php-scoper/issues/440#issuecomment-795160132
+//        function (string $filePath, string $prefix, string $content): string {
+//            if (! Strings::match($filePath, POLYFILL_FILE_NAME_REGEX)) {
+//                return $content;
+//            }
+//
+//            return Strings::replace($content, '#namespace ' . $prefix . ';#', '');
+//        },
 
-        // unprefix polyfill functions
-        // @see https://github.com/humbug/php-scoper/issues/440#issuecomment-795160132
-        function (string $filePath, string $prefix, string $content): string {
-            if (! Strings::match($filePath, POLYFILL_FILE_NAME_REGEX)) {
-                return $content;
-            }
-
-            return Strings::replace($content, '#namespace ' . $prefix . ';#', '');
-        },
-
-        // remove namespace from polyfill stubs
-        function (string $filePath, string $prefix, string $content): string {
-            if (! Strings::match($filePath, POLYFILL_STUBS_NAME_REGEX)) {
-                return $content;
-            }
-
-            // remove alias to class have origin PHP names - fix in
-            $content = Strings::replace($content, '#\\\\class_alias(.*?);#', '');
-
-            return Strings::replace($content, '#namespace ' . $prefix . ';#', '');
-        },
+//        // remove namespace from polyfill stubs
+//        function (string $filePath, string $prefix, string $content): string {
+//            if (! Strings::match($filePath, POLYFILL_STUBS_NAME_REGEX)) {
+//                return $content;
+//            }
+//
+//            // remove alias to class have origin PHP names - fix in
+//            $content = Strings::replace($content, '#\\\\class_alias(.*?);#', '');
+//
+//            return Strings::replace($content, '#namespace ' . $prefix . ';#', '');
+//        },
 
     ],
 ];

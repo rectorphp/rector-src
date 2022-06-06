@@ -70,14 +70,14 @@ jobs:
             # 3. prefix classes
             -   run: sh build/build-rector-scoped_scoper_017.sh rector-build rector-prefixed-downgraded
 
-            # 4. lint the code for PHP 7.2 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
-            -
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: 7.2
-                    coverage: none
-            -   run: composer global require php-parallel-lint/php-parallel-lint
-            -   run: /home/runner/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/ssch/typo3-rector/templates/maker --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/contracts/Cache --exclude rector-prefixed-downgraded/vendor/symfony/contracts/HttpClient/Test
+#            # 4. lint the code for PHP 7.2 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
+#            -
+#                uses: shivammathur/setup-php@v2
+#                with:
+#                    php-version: 7.2
+#                    coverage: none
+#            -   run: composer global require php-parallel-lint/php-parallel-lint
+#            -   run: /home/runner/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/ssch/typo3-rector/templates/maker --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/contracts/Cache --exclude rector-prefixed-downgraded/vendor/symfony/contracts/HttpClient/Test
 
             # 5. copy repository meta files
             -   run: |
@@ -90,7 +90,7 @@ jobs:
             -
                 uses: "actions/checkout@v3"
                 with:
-                    repository: rectorphp/rector
+                    repository: rectorphp/rector-scoper-017
                     path: remote-repository
                     token: ${{ secrets.ACCESS_TOKEN }}
 
