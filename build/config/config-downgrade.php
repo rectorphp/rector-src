@@ -33,9 +33,6 @@ final class DowngradeRectorConfig
         // symfony test are parts of package
         '*/Test/*',
 
-        // only for dev
-        'packages/Testing/PhpConfigPrinter/*',
-
         // Individual classes that can be excluded because
         // they are not used by Rector, and they use classes
         // loaded with "require-dev" so it'd throw an error
