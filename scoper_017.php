@@ -54,6 +54,7 @@ return [
         'Symplify\SmartFileSystem\SmartFileInfo',
         'PHPUnit\Framework\Constraint\IsEqual',
     ],
+    'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#'],
     'exclude-files' => [
         'vendor/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php',
