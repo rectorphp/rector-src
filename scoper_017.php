@@ -45,7 +45,10 @@ const POLYFILL_STUBS_NAME_REGEX = '#vendor\/symfony\/polyfill\-(.*)\/Resources\/
 // see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
     'prefix' => 'RectorPrefix' . $timestamp,
-    'whitelist' => StaticEasyPrefixer::getExcludedNamespacesAndClasses(),
+    // 'whitelist' => StaticEasyPrefixer::getExcludedNamespacesAndClasses(),
+    'exposed' => [],
+    'excluded' => [],
+
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {
             foreach (UNPREFIX_CLASSES_BY_FILE as $endFilePath => $unprefixClasses) {
@@ -86,6 +89,20 @@ return [
             'Symplify\SmartFileSystem\SmartFileInfo'
         ),
 
+        // unprefixed Statement
+        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+            $content,
+            '#' . $prefix . '\\\\Helmich\\\\TypoScriptParser\\\\Parser\\\\AST\\\\Statement#',
+            'Helmich\TypoScriptParser\Parser\AST\Statement'
+        ),
+
+        // unprefixed Traverser
+        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+            $content,
+            '#' . $prefix . '\\\\Helmich\\\\TypoScriptParser\\\\Parser\\\\Traverser\\\\Traverser#',
+            'Helmich\TypoScriptParser\Parser\Traverser\Traverser'
+        ),
+
         // unprefixed PHPUnit IsEqual
         fn (string $filePath, string $prefix, string $content): string => Strings::replace(
             $content,
@@ -107,22 +124,22 @@ return [
         },
 
         // unprefixed ContainerConfigurator
-        function (string $filePath, string $prefix, string $content): string {
-            // keep vendor prefixed the prefixed file loading; not part of public API
-            // except @see https://github.com/symfony/symfony/commit/460b46f7302ec7319b8334a43809523363bfef39#diff-1cd56b329433fc34d950d6eeab9600752aa84a76cbe0693d3fab57fed0f547d3R110
-            if (str_contains($filePath, 'vendor/symfony') && ! str_ends_with(
-                $filePath,
-                'vendor/symfony/dependency-injection/Loader/PhpFileLoader.php'
-            )) {
-                return $content;
-            }
-
-            return Strings::replace(
-                $content,
-                '#' . $prefix . '\\\\Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\Configurator\\\\ContainerConfigurator#',
-                'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'
-            );
-        },
+//        function (string $filePath, string $prefix, string $content): string {
+//            // keep vendor prefixed the prefixed file loading; not part of public API
+//            // except @see https://github.com/symfony/symfony/commit/460b46f7302ec7319b8334a43809523363bfef39#diff-1cd56b329433fc34d950d6eeab9600752aa84a76cbe0693d3fab57fed0f547d3R110
+//            if (str_contains($filePath, 'vendor/symfony') && ! str_ends_with(
+//                $filePath,
+//                'vendor/symfony/dependency-injection/Loader/PhpFileLoader.php'
+//            )) {
+//                return $content;
+//            }
+//
+//            return Strings::replace(
+//                $content,
+//                '#' . $prefix . '\\\\Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\Configurator\\\\ContainerConfigurator#',
+//                'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'
+//            );
+//        },
 
         // get version for prefixed version
         function (string $filePath, string $prefix, string $content): string {
@@ -144,7 +161,7 @@ return [
             return Strings::replace($content, '#' . $prefix . '\\\\Composer\\\\#', 'Composer\\');
         },
 
-        // fixes https://github.com/rectorphp/rector/issues/6007 - this is fixed in scoper 0.17.2+
+        // fixes https://github.com/rectorphp/rector/issues/6007
         function (string $filePath, string $prefix, string $content): string {
             if (! \str_contains($filePath, 'vendor/')) {
                 return $content;
@@ -168,7 +185,10 @@ return [
         // unprefix string classes, as they're string on purpose - they have to be checked in original form, not prefixed
         function (string $filePath, string $prefix, string $content): string {
             // skip vendor, expect rector packages
-            if (\str_contains($filePath, 'vendor/') && ! \str_contains($filePath, 'vendor/rector')) {
+            if (\str_contains($filePath, 'vendor/') && ! \str_contains($filePath, 'vendor/rector') && ! \str_contains(
+                $filePath,
+                'vendor/ssch/typo3-rector'
+            )) {
                 return $content;
             }
 
@@ -189,6 +209,11 @@ return [
 
             // skip "Rector\\" namespace
             if (\str_contains($content, '$services->load(\'Rector')) {
+                return $content;
+            }
+
+            // skip "Ssch\\" namespace
+            if (\str_contains($content, '$services->load(\'Ssch')) {
                 return $content;
             }
 
