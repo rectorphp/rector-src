@@ -77,10 +77,6 @@ final class FilesFinder
             ->in($directories)
             ->sortByName();
 
-        if ($this->hasFollowLinks()) {
-            $finder->followLinks();
-        }
-
         if ($suffixes !== []) {
             $suffixesPattern = $this->normalizeSuffixesToPattern($suffixes);
             $finder->name($suffixesPattern);
@@ -156,14 +152,5 @@ final class FilesFinder
         }
 
         return $path;
-    }
-
-    private function hasFollowLinks(): bool
-    {
-        if (! $this->parameterProvider->hasParameter(Option::FOLLOW_SYMLINKS)) {
-            return true;
-        }
-
-        return $this->parameterProvider->provideBoolParameter(Option::FOLLOW_SYMLINKS);
     }
 }
