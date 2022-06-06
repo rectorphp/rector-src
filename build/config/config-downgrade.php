@@ -50,6 +50,5 @@ final class DowngradeRectorConfig
         'vendor/myclabs/php-enum/src/PHPUnit/Comparator.php',
 
         'vendor/rector/rector-generator/templates',
-        'vendor/ssch/typo3-rector/config',
     ];
 }
