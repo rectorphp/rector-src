@@ -71,13 +71,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         array $options = []
     ) {
         parent::__construct($options);
-
-        // print return type double colon right after the bracket "function(): string"
-        $this->initializeInsertionMap();
-        $this->insertionMap['Stmt_ClassMethod->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Stmt_Function->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
     }
 
     /**
