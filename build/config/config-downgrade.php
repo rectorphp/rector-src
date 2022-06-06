@@ -46,8 +46,6 @@ final class DowngradeRectorConfig
         'vendor/cweagans/*',
         // Rector doesn't use it, so we simply skip downgrading this class
         'vendor/symfony/contracts/Cache/*',
-        // depends on PHPUnit, that is only in dev deps
-        'vendor/myclabs/php-enum/src/PHPUnit/Comparator.php',
 
         'vendor/rector/rector-generator/templates',
     ];
