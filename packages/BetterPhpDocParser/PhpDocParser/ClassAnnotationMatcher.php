@@ -72,7 +72,12 @@ final class ClassAnnotationMatcher
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag, bool $returnNullOnUnknownClass): ?string
+    private function resolveFullyQualifiedClass(
+        array $uses,
+        Node $node,
+        string $tag,
+        bool $returnNullOnUnknownClass
+    ): ?string
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
@@ -127,7 +132,7 @@ final class ClassAnnotationMatcher
 
     private function resolveClass(?string $class, bool $returnNullOnUnknownClass): ?string
     {
-        if (null === $class) {
+        if ($class === null) {
             return null;
         }
         $resolvedClass = $this->reflectionProvider->hasClass($class) ? $class : null;
