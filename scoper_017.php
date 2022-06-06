@@ -49,6 +49,7 @@ return [
     'expose-classes' => [
         'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator',
     ],
+    'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
     'exclude-classes' => [
         'Symplify\SmartFileSystem\SmartFileInfo',
         'PHPUnit\Framework\Constraint\IsEqual',
