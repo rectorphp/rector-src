@@ -42,10 +42,17 @@ const POLYFILL_FILE_NAME_REGEX = '#vendor\/symfony\/polyfill\-(.*)\/bootstrap(.*
  */
 const POLYFILL_STUBS_NAME_REGEX = '#vendor\/symfony\/polyfill\-(.*)\/Resources\/stubs#';
 
-// see https://github.com/humbug/php-scoper
+// see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
     'prefix' => 'RectorPrefix' . $timestamp,
+<<<<<<< HEAD
     'whitelist' => StaticEasyPrefixer::getExcludedNamespacesAndClasses(),
+=======
+    // 'whitelist' => StaticEasyPrefixer::getExcludedNamespacesAndClasses(),
+
+
+
+>>>>>>> remove ScoperOption, not helpful
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {
             foreach (UNPREFIX_CLASSES_BY_FILE as $endFilePath => $unprefixClasses) {
