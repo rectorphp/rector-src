@@ -48,15 +48,16 @@ return [
     // 'whitelist' => StaticEasyPrefixer::getExcludedNamespacesAndClasses(),
     'expose-classes' => [
         'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator',
+        'Normalizer',
     ],
     'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
     'exclude-classes' => [
         'Symplify\SmartFileSystem\SmartFileInfo',
         'PHPUnit\Framework\Constraint\IsEqual',
+
     ],
     'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#'],
     'exclude-files' => [
-        'vendor/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/Stringable.php',
