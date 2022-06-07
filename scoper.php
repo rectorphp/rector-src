@@ -22,8 +22,10 @@ return [
         'PHPUnit\Framework\Constraint\IsEqual',
         'PHPUnit\Framework\TestCase',
         'PHPUnit\Framework\ExpectationFailedException',
+        // namespce with slash does not handle it
+        'Symplify\RuleDocGenerator\ValueObject\RuleDefinition',
     ],
-    'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#', '#^Symplify\\RuleDocGenerator#'],
+    'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#', '#^Symplify\\\\RuleDocGenerator#'],
     'exclude-files' => [
         'vendor/symfony/deprecation-contracts/function.php',
         'vendor/symfony/polyfill-intl-normalizer/bootstrap.php',
