@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use CompanyB\Foo as Storage;
 
-class DoNotRenameDocblockInnerNamespace2
+class SkipRenameDocblockConflictAlias
 {
     /**
      * @var Storage
