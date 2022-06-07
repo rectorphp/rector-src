@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
-use Rector\Compiler\PhpScoper\StaticEasyPrefixer;
 use Rector\Compiler\Unprefixer;
 use Rector\Core\Application\VersionResolver;
 
@@ -13,22 +12,22 @@ require_once __DIR__ . '/vendor/autoload.php';
 // remove phpstan, because it is already prefixed in its own scope
 $dateTime = DateTime::from('now');
 $timestamp = $dateTime->format('Ymd');
-/**
- * @var array<string, string[]>
- */
-const UNPREFIX_CLASSES_BY_FILE = [
-    // make UT=1 in tests work
-    'packages/Testing/PHPUnit/AbstractRectorTestCase.php' => [
-        'PHPUnit\Framework\ExpectationFailedException',
-        'PHPUnit\Framework\TestCase',
-    ],
-
-    // unprefixed ComposerJson as part of public API in ComposerRectorInterface
-    'rules/Composer/Contract/Rector/ComposerRectorInterface.php' => [
-        'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson',
-    ],
-    'packages/Testing/PHPUnit/AbstractTestCase.php' => ['PHPUnit\Framework\TestCase'],
-];
+///**
+// * @var array<string, string[]>
+// */
+//const UNPREFIX_CLASSES_BY_FILE = [
+//    // make UT=1 in tests work
+//    'packages/Testing/PHPUnit/AbstractRectorTestCase.php' => [
+//        'PHPUnit\Framework\ExpectationFailedException',
+//        'PHPUnit\Framework\TestCase',
+//    ],
+//
+//    // unprefixed ComposerJson as part of public API in ComposerRectorInterface
+//    'rules/Composer/Contract/Rector/ComposerRectorInterface.php' => [
+//        'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson',
+//    ],
+//    'packages/Testing/PHPUnit/AbstractTestCase.php' => ['PHPUnit\Framework\TestCase'],
+//];
 
 ///**
 // * @see https://regex101.com/r/LMDq0p/1
@@ -45,18 +44,20 @@ const UNPREFIX_CLASSES_BY_FILE = [
 // see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
     'prefix' => 'RectorPrefix' . $timestamp,
-    // 'whitelist' => StaticEasyPrefixer::getExcludedNamespacesAndClasses(),
     'expose-classes' => [
-        'Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator',
         'Normalizer',
     ],
     'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
+
+    // exclude
     'exclude-classes' => [
         'Symplify\SmartFileSystem\SmartFileInfo',
         'PHPUnit\Framework\Constraint\IsEqual',
-
+        'PHPUnit\Framework\TestCase',
+        'PHPUnit\Framework\ExpectationFailedException',
+        'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson',
     ],
-    'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#'],
+    'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#', '#^Symplify\RuleDocGenerator#'],
     'exclude-files' => [
         'vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
@@ -65,20 +66,28 @@ return [
         'vendor/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
     ],
     'patchers' => [
+        // fix short import bug, @see https://github.com/rectorphp/rector-scoper-017/blob/23f3256a6f5a18483d6eb4659d69ba117501e2e3/vendor/nikic/php-parser/lib/PhpParser/Builder/Declaration.php#L6
         function (string $filePath, string $prefix, string $content): string {
-            foreach (UNPREFIX_CLASSES_BY_FILE as $endFilePath => $unprefixClasses) {
-                if (! \str_ends_with($filePath, $endFilePath)) {
-                    continue;
-                }
-
-                foreach ($unprefixClasses as $unprefixClass) {
-                    $doubleQuotedClass = preg_quote('\\' . $unprefixClass);
-                    $content = Strings::replace($content, '#' . $prefix . $doubleQuotedClass . '#', $unprefixClass);
-                }
-            }
-
-            return $content;
+            return str_replace(
+                sprintf('use %s\PhpParser;', $prefix),
+                'use PhpParser;',
+                $content
+            );
         },
+//        function (string $filePath, string $prefix, string $content): string {
+//            foreach (UNPREFIX_CLASSES_BY_FILE as $endFilePath => $unprefixClasses) {
+//                if (! \str_ends_with($filePath, $endFilePath)) {
+//                    continue;
+//                }
+//
+//                foreach ($unprefixClasses as $unprefixClass) {
+//                    $doubleQuotedClass = preg_quote('\\' . $unprefixClass);
+//                    $content = Strings::replace($content, '#' . $prefix . $doubleQuotedClass . '#', $unprefixClass);
+//                }
+//            }
+//
+//            return $content;
+//        },
 
 
         function (string $filePath, string $prefix, string $content): string {
@@ -163,25 +172,25 @@ return [
         },
 
         // fixes https://github.com/rectorphp/rector/issues/6007
-        function (string $filePath, string $prefix, string $content): string {
-            if (! \str_contains($filePath, 'vendor/')) {
-                return $content;
-            }
-
-            // @see https://regex101.com/r/lBV8IO/2
-            $fqcnReservedPattern = sprintf('#(\\\\)?%s\\\\(parent|self|static)#m', $prefix);
-            $matches = Strings::matchAll($content, $fqcnReservedPattern);
-
-            if ($matches === []) {
-                return $content;
-            }
-
-            foreach ($matches as $match) {
-                $content = str_replace($match[0], $match[2], $content);
-            }
-
-            return $content;
-        },
+//        function (string $filePath, string $prefix, string $content): string {
+//            if (! \str_contains($filePath, 'vendor/')) {
+//                return $content;
+//            }
+//
+//            // @see https://regex101.com/r/lBV8IO/2
+//            $fqcnReservedPattern = sprintf('#(\\\\)?%s\\\\(parent|self|static)#m', $prefix);
+//            $matches = Strings::matchAll($content, $fqcnReservedPattern);
+//
+//            if ($matches === []) {
+//                return $content;
+//            }
+//
+//            foreach ($matches as $match) {
+//                $content = str_replace($match[0], $match[2], $content);
+//            }
+//
+//            return $content;
+//        },
 
         // unprefix string classes, as they're string on purpose - they have to be checked in original form, not prefixed
         function (string $filePath, string $prefix, string $content): string {

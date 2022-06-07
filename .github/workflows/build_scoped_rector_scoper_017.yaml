@@ -65,7 +65,7 @@ jobs:
             -  run: rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests rector-build/bin/generate-changelog.php rector-build/bin/validate-phpstan-version.php rector-build/bin/clean-phpstan.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener rector-build/vendor/symfony/contracts/Cache/ItemInterface.php rector-build/vendor/symfony/dependency-injection/ExpressionLanguageProvider.php rector-build/vendor/symfony/dependency-injection/ExpressionLanguage.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session
 
             # 2. downgrade rector
-            -   run: php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/packages rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi
+            -   run: php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/packages rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi --no-diffs
 
             # 3. prefix classes
             -   run: sh build/build-rector-scoped_scoper_017.sh rector-build rector-prefixed-downgraded
@@ -76,7 +76,7 @@ jobs:
                 with:
                     php-version: 7.2
                     coverage: none
-            -   run: composer global require php-parallel-lint/php-parallel-lint
+            -   run: composer global require php-parallel-lint/php-parallel-lint --ansi
             -   run: /home/runner/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/ssch/typo3-rector/templates/maker --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/contracts/Cache --exclude rector-prefixed-downgraded/vendor/symfony/contracts/HttpClient/Test
 
             # 5. copy repository meta files
