@@ -28,7 +28,7 @@ final class ScalarStringToTypeMapper
      * @var array<class-string<Type>, string[]>
      */
     private const SCALAR_NAME_BY_TYPE = [
-        StringType::class => ['string'],
+        StringType::class => ['string', 'non-empty-string'],
         ClassStringType::class => ['class-string'],
         FloatType::class => ['float', 'real', 'double'],
         IntegerType::class => ['int', 'integer'],
