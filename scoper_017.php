@@ -44,19 +44,12 @@ $timestamp = $dateTime->format('Ymd');
 // see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
     'prefix' => 'RectorPrefix' . $timestamp,
-    'expose-classes' => [
-        'Normalizer',
-        'Symplify\SmartFileSystem\SmartFileInfo',
-    ],
-    'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
 
     // exclude
     'exclude-classes' => [
-        'Symplify\SmartFileSystem\SmartFileInfo',
         'PHPUnit\Framework\Constraint\IsEqual',
         'PHPUnit\Framework\TestCase',
         'PHPUnit\Framework\ExpectationFailedException',
-        'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson',
     ],
     'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#', '#^Symplify\RuleDocGenerator#'],
     'exclude-files' => [
@@ -66,7 +59,29 @@ return [
         'vendor/symfony/polyfill-php80/Resources/stubs/ValueError.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
     ],
+
+    // expose
+    'expose-classes' => [
+        'Normalizer',
+        // used by public API
+        'Symplify\SmartFileSystem\SmartFileInfo',
+        'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson',
+    ],
+    'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
+
     'patchers' => [
+//        // fix bug of extra namespace in an excluded class, @see https://github.com/rectorphp/rector-scoper-017/blob/d4ea44287301be168c02144f0be98615930933ba/vendor/symplify/smart-file-system/src/SmartFileSystem.php#L4
+//        function (string $filePath, string $prefix, string $content): string {
+//            if (! \str_ends_with($filePath, 'vendor/symplify/smart-file-system/src/SmartFileInfo.php')) {
+//                return $content;
+//            }
+//            return str_replace(
+//                sprintf('namespace %s\Symplify', $prefix),
+//                'namespace Symplify',
+//                $content
+//            );
+//        },
+
         // fix short import bug, @see https://github.com/rectorphp/rector-scoper-017/blob/23f3256a6f5a18483d6eb4659d69ba117501e2e3/vendor/nikic/php-parser/lib/PhpParser/Builder/Declaration.php#L6
         function (string $filePath, string $prefix, string $content): string {
             return str_replace(
