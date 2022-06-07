@@ -29,7 +29,6 @@ return static function (ECSConfig $ecsConfig): void {
         __DIR__ . '/ecs.php',
         __DIR__ . '/easy-ci.php',
         __DIR__ . '/rector.php',
-        __DIR__ . '/scoper.php',
     ]);
 
     $ecsConfig->ruleWithConfiguration(NoSuperfluousPhpdocTagsFixer::class, [

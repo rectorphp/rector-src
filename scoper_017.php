@@ -46,6 +46,7 @@ return [
     'prefix' => 'RectorPrefix' . $timestamp,
     'expose-classes' => [
         'Normalizer',
+        'Symplify\SmartFileSystem\SmartFileInfo',
     ],
     'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
 
