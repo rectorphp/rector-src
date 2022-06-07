@@ -1,6 +1,6 @@
 # builds the content of https://github.com/rectorphp/rector
 # inspiration from https://github.com/phpstan/phpstan-src/blob/master/.github/workflows/phar.yml
-name: Build Scoped Rector Scoper 0.17
+name: Build Scoped Rector
 
 on:
     # testing
@@ -16,7 +16,7 @@ env:
     COMPOSER_ROOT_VERSION: "dev-main"
 
 jobs:
-    build_scoped_rector_scoper_017:
+    build_scoped_rector:
         # Don't run on forks.
         if: github.repository == 'rectorphp/rector-src'
 
@@ -66,7 +66,7 @@ jobs:
             -   run: php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/packages rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi --no-diffs
 
             # 3. prefix classes
-            -   run: sh build/build-rector-scoped_scoper_017.sh rector-build rector-prefixed-downgraded
+            -   run: sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 
             # 4. lint the code for PHP 7.2 - this must happen here, as setup-php allows only one PHP version switch: https://github.com/shivammathur/setup-php/issues/434
             -

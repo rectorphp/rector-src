@@ -56,6 +56,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/tests',
         __DIR__ . '/utils',
         __DIR__ . '/config',
+        __DIR__ . '/scoper.php',
     ]);
 
     $rectorConfig->importNames();

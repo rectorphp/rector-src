@@ -5,10 +5,7 @@ export TERM=xterm-color
 
 # show errors
 set -e
-
-# script fails if trying to access to an undefined variable
 set -u
-
 
 # functions
 note()
@@ -37,10 +34,9 @@ note "Running scoper to $RESULT_DIRECTORY"
 wget https://github.com/humbug/php-scoper/releases/download/0.17.2/php-scoper.phar -N --no-verbose
 
 # Work around possible PHP memory limits
+php -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
 
-php -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper_017.php --force --ansi --working-dir "$BUILD_DIRECTORY";
-
-# note "Dumping Composer Autoload"
+note "Dumping Composer Autoload"
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --classmap-authoritative --no-dev
 
 rm -rf "$BUILD_DIRECTORY"
