@@ -46,7 +46,7 @@ final class PhpDocTypeChanger
     /**
      * @var string[]
      */
-    private const ALLOWED_IDENTIFIER_TYPENODE_TYPES = ['class-string'];
+    private const ALLOWED_IDENTIFIER_TYPENODE_TYPES = ['class-string', 'non-empty-string'];
 
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
