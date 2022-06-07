@@ -23,6 +23,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Symplify\Astral\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 
@@ -65,14 +66,14 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $namespacedName = $this->resolveNamespacedName($phpParserNode, $node->name);
-        if ($namespacedName === null) {
-            return null;
-        }
-
         $identifier = clone $node;
+        $namespacedName = $this->resolveNamespacedName($phpParserNode, $node->name);
         $identifier->name = $namespacedName;
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
+
+        if ($staticType instanceof AliasedObjectType) {
+            return null;
+        }
 
         // make sure to compare FQNs
         if ($staticType instanceof ShortenedObjectType) {
@@ -109,7 +110,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $this->oldToNewTypes = $oldToNewTypes;
     }
 
-    private function resolveNamespacedName(PhpParserNode $phpParserNode, string $name): ?string
+    private function resolveNamespacedName(PhpParserNode $phpParserNode, string $name): string
     {
         if (str_starts_with($name, '\\')) {
             return $name;
@@ -120,12 +121,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $uses = $this->useImportsResolver->resolveForNode($phpParserNode);
-
-        if ($this->isNameInAlias($uses, $name)) {
-            return null;
-        }
-
         $namespace = $this->betterNodeFinder->findParentType($phpParserNode, Namespace_::class);
+
         if (! $namespace instanceof Namespace_) {
             return $this->resolveNamefromUse($uses, $name);
         }
@@ -165,27 +162,5 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         return $name;
-    }
-
-    /**
-     * @param Use_[]|GroupUse[] $uses
-     */
-    private function isNameInAlias(array $uses, string $name): bool
-    {
-        foreach ($uses as $use) {
-            foreach ($use->uses as $useUse) {
-                if (! $useUse->alias instanceof Identifier) {
-                    continue;
-                }
-
-                $alias = $useUse->alias;
-
-                if ($alias->toString() === $name) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }
