@@ -25,6 +25,12 @@ return [
     ],
     'exclude-namespaces' => ['#^Rector#', '#^PhpParser#', '#^PHPStan#', '#^Symplify\RuleDocGenerator#'],
     'exclude-files' => [
+        'vendor/symfony/deprecation-contracts/function.php',
+        'vendor/symfony/polyfill-intl-normalizer/bootstrap.php',
+        'vendor/symfony/polyfill-intl-normalizer/bootstrap80.php',
+        'vendor/symfony/polyfill-mbstring/bootstrap.php',
+        'vendor/symfony/polyfill-mbstring/bootstrap80.php',
+        'vendor/symfony/polyfill-php80/bootstrap.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'vendor/symfony/polyfill-php80/Resources/stubs/Stringable.php',
