@@ -6,6 +6,7 @@ use Isolated\Symfony\Component\Finder\Finder;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 use Rector\Compiler\Unprefixer;
+use Rector\Core\Application\VersionResolver;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -14,8 +15,6 @@ $dateTime = DateTime::from('now');
 $timestamp = $dateTime->format('Ymd');
 
 // @see https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md
-use Rector\Core\Application\VersionResolver;
-
 $polyfillsBootstraps = array_map(
     static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
     iterator_to_array(
