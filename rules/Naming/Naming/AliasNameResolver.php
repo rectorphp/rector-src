@@ -6,7 +6,6 @@ namespace Rector\Naming\Naming;
 
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\GroupUse;
 
 final class AliasNameResolver
 {
