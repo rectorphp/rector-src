@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassConst;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -92,6 +96,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkipStringType($phpDocInfo, $node->consts[0]->value)) {
+            return null;
+        }
+
         if ($this->typeComparator->isSubtype($constType, $phpDocInfo->getVarType())) {
             return null;
         }
@@ -103,6 +111,24 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function shouldSkipStringType(PhpDocInfo $phpDocInfo, Expr $expr): bool
+    {
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+        if (! $varTagValueNode instanceof VarTagValueNode) {
+            return false;
+        }
+
+        if (! $expr instanceof String_) {
+            return false;
+        }
+
+        if (! $varTagValueNode->type instanceof IdentifierTypeNode) {
+            return false;
+        }
+
+        return $varTagValueNode->type->name === 'non-empty-string';
     }
 
     private function hasTwoAndMoreGenericClassStringTypes(ConstantArrayType $constantArrayType): bool
