@@ -64,9 +64,8 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         $uses = $this->useImportsResolver->resolveForNode($node);
 
         foreach ($uses as $use) {
-            $prefix = $use instanceof GroupUse
-                ? $use->prefix . '\\'
-                : '';
+            $prefix = $this->useImportsResolver->resolvePrefix($use);
+
             foreach ($use->uses as $useUse) {
                 if ($useUse->alias !== null) {
                     $objectTypes[] = new AliasedObjectType($useUse->alias->toString(), $prefix . $useUse->name);

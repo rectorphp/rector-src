@@ -421,9 +421,8 @@ final class ClassRenamer
         }
 
         foreach ($uses as $use) {
-            $prefix = $use instanceof GroupUse
-                ? $use->prefix . '\\'
-                : '';
+            $prefix = $this->useImportsResolver->resolvePrefix($use);
+
             foreach ($use->uses as $useUse) {
                 if ($prefix . $useUse->name->toString() === $newName) {
                     // name already exists
