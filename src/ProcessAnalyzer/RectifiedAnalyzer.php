@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -68,10 +66,6 @@ final class RectifiedAnalyzer
         }
 
         if ($originalNode instanceof Node) {
-            if ($node instanceof FullyQualified) {
-                return $originalNode::class === Name::class;
-            }
-
             return true;
         }
 
