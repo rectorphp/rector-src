@@ -68,7 +68,11 @@ final class RectifiedAnalyzer
         }
 
         if ($originalNode instanceof Node) {
-            return $originalNode::class === Name::class;
+            if ($node instanceof FullyQualified) {
+                return $originalNode::class === Name::class;
+            }
+
+            return true;
         }
 
         $startTokenPos = $node->getStartTokenPos();
