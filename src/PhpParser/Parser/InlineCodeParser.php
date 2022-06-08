@@ -91,7 +91,7 @@ final class InlineCodeParser
             return $this->stringify($expr->left) . $this->stringify($expr->right);
         }
 
-        if ($expr instanceof Variable || $expr instanceof PropertyFetch || $expr instanceof StaticPropertyFetch) {
+        if ($expr instanceof Expr) {
             return $this->nodePrinter->print($expr);
         }
 
