@@ -2,7 +2,7 @@
 
 namespace Foo;
 
-interface Foo extends FooBar
+class Foo extends FooBar
 {
     /**
      * @param \DateTime $foo
@@ -10,7 +10,7 @@ interface Foo extends FooBar
      * Storage here is Foo\Storage. Not \Storage.
      * @return Storage
      */
-    public function bar($foo);
+    public function bar($foo){}
 }
 
 ?>
@@ -20,7 +20,7 @@ interface Foo extends FooBar
 namespace Foo;
 
 use DateTime;
-interface Foo extends FooBar
+class Foo extends FooBar
 {
     /**
      * @param DateTime $foo
@@ -28,7 +28,7 @@ interface Foo extends FooBar
      * Storage here is Foo\Storage. Not \Storage.
      * @return Storage
      */
-    public function bar($foo);
+    public function bar($foo){}
 }
 
 ?>
