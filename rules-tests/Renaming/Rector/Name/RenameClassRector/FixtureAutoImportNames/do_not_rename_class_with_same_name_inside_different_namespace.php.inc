@@ -10,7 +10,7 @@ interface Foo extends FooBar
      * Storage here is Foo\Storage. Not \Storage.
      * @return Storage
      */
-    public function bar($foo): array;
+    public function bar($foo);
 }
 
 ?>
@@ -28,7 +28,7 @@ interface Foo extends FooBar
      * Storage here is Foo\Storage. Not \Storage.
      * @return Storage
      */
-    public function bar($foo): array;
+    public function bar($foo);
 }
 
 ?>
