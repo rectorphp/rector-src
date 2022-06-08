@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -66,7 +68,8 @@ final class RectifiedAnalyzer
         }
 
         if ($originalNode instanceof Node) {
-            return true;
+            $originalName = $originalNode->getAttribute(AttributeKey::ORIGINAL_NAME);
+            return ! ($originalNode instanceof FullyQualified && $originalName instanceof Name);
         }
 
         $startTokenPos = $node->getStartTokenPos();
