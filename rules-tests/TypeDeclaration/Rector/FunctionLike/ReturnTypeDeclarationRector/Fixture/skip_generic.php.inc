@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
+
 class SkipGeneric
 {
     private readonly UseCaseBusInterface $useCaseBus;
