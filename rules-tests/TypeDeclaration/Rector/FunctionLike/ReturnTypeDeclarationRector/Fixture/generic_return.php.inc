@@ -1,0 +1,18 @@
+<?php
+
+class AbstractController 
+{
+    private readonly UseCaseBusInterface $useCaseBus;
+
+    /**
+     * @template T
+     *
+     * @param UseCaseInterface<T> $useCase
+     *
+     * @return T
+     */
+    protected function execute(UseCaseInterface $useCase): mixed
+    {
+        return $this->useCaseBus->execute($useCase);
+    }
+}
