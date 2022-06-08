@@ -1,6 +1,6 @@
 <?php
 
-class AbstractController 
+class SkipGeneric
 {
     private readonly UseCaseBusInterface $useCaseBus;
 
