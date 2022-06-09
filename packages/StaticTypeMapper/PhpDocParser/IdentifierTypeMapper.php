@@ -83,6 +83,10 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
             return new IterableType(new MixedType(), new MixedType());
         }
 
+        if ($loweredName === 'non-empty-string') {
+            return new StringType();
+        }
+
         if (str_starts_with($typeNode->name, '\\')) {
             $typeWithoutPreslash = Strings::substring($typeNode->name, 1);
             $objectType = new FullyQualifiedObjectType($typeWithoutPreslash);
