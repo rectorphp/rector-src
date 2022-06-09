@@ -14,7 +14,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Privatization\NodeManipulator\VisibilityManipulatorTest
- */
+ * @see \Rector\Tests\Privatization\NodeManipulator\VisibilityManipulatorTest*/
 final class VisibilityManipulator
 {
     public function hasVisibility(Class_ | ClassMethod | Property | ClassConst | Param $node, int $visibility): bool

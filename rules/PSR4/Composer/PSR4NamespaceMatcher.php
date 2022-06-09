@@ -12,7 +12,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see \Rector\Tests\PSR4\Composer\PSR4NamespaceMatcherTest
- */
+ * @see \Rector\Tests\PSR4\Composer\PSR4NamespaceMatcherTest*/
 final class PSR4NamespaceMatcher implements PSR4AutoloadNamespaceMatcherInterface
 {
     public function __construct(

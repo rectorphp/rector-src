@@ -20,7 +20,7 @@ use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\TypeNormalizerTest
- */
+ * @see \Rector\Tests\TypeDeclaration\TypeNormalizerTest*/
 final class TypeNormalizer
 {
     /**

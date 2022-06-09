@@ -25,7 +25,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
  * @todo merge with very similar logic in
  * @see VariableNaming
  * @see \Rector\Tests\Naming\Naming\PropertyNamingTest
- */
+ * @see \Rector\Tests\Naming\Naming\PropertyNamingTest*/
 final class PropertyNaming
 {
     /**
@@ -123,11 +123,7 @@ final class PropertyNaming
         }
 
         $className = $this->resolveClassName($objectType);
-        if (str_contains($className, '\\')) {
-            $shortClassName = (string) Strings::after($className, '\\', -1);
-        } else {
-            $shortClassName = $className;
-        }
+        $shortClassName = str_contains($className, '\\') ? (string) Strings::after($className, '\\', -1) : $className;
 
         $variableName = $this->removeInterfaceSuffixPrefix($shortClassName, 'interface');
         $variableName = $this->removeInterfaceSuffixPrefix($variableName, 'abstract');
