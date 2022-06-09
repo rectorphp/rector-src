@@ -6,6 +6,7 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Expr\ConstFetch;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\NullType;
@@ -53,6 +54,6 @@ final class NullTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        return new Name('null');
+        return new ConstFetch(new Name('null'));
     }
 }
