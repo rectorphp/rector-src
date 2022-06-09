@@ -40,7 +40,7 @@ final class BetterPhpDocParser extends PhpDocParser
         private readonly array $phpDocNodeDecorators,
         private readonly PrivatesCaller $privatesCaller = new PrivatesCaller(),
     ) {
-        parent::__construct($typeParser, $constExprParser);
+        parent::__construct($typeParser, $constExprParser, true);
     }
 
     public function parse(TokenIterator $tokenIterator): PhpDocNode
