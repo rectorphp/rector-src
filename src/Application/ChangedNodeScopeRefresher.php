@@ -8,7 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\MutatingScope;
@@ -70,12 +74,32 @@ final class ChangedNodeScopeRefresher
             $node = new Property(0, [], [], null, [$attributeGroup]);
         }
 
+        $this->reIndexNodeAttributes($node);
+
+        $stmts = $this->resolveStmts($node);
+        $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
+    }
+
+    private function reIndexNodeAttributes(Node $node): void
+    {
         if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
             $node->stmts = array_values($node->stmts);
         }
 
-        $stmts = $this->resolveStmts($node);
-        $this->phpStanNodeScopeResolver->processNodes($stmts, $smartFileInfo, $mutatingScope);
+        if ($node instanceof ClassLike) {
+            $node->stmts = array_values($node->stmts);
+        }
+
+        if ($node instanceof FunctionLike) {
+            $node->params = array_values($node->params);
+            if ($node instanceof Closure) {
+                $node->uses = array_values($node->uses);
+            }
+        }
+
+        if ($node instanceof CallLike) {
+            $node->args = array_values($node->args);
+        }
     }
 
     /**
