@@ -85,6 +85,7 @@ final class InlineCodeParser
         if ($expr instanceof Concat) {
             return $this->stringify($expr->left) . $this->stringify($expr->right);
         }
+
         return $this->nodePrinter->print($expr);
     }
 }
