@@ -10,10 +10,17 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -82,18 +89,21 @@ final class ChangedNodeScopeRefresher
 
     private function reIndexNodeAttributes(Node $node): void
     {
-        if ($node instanceof ClassLike || ($node instanceof StmtsAwareInterface && $node->stmts !== null)) {
+        if (($node instanceof ClassLike || $node instanceof StmtsAwareInterface) && $node->stmts !== null) {
             $node->stmts = array_values($node->stmts);
         }
 
         if ($node instanceof FunctionLike) {
+            /** @var ClassMethod|Function_|Closure $node */
             $node->params = array_values($node->params);
+
             if ($node instanceof Closure) {
                 $node->uses = array_values($node->uses);
             }
         }
 
         if ($node instanceof CallLike) {
+            /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $node */
             $node->args = array_values($node->args);
         }
     }
