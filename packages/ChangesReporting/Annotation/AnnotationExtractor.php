@@ -10,7 +10,7 @@ use ReflectionClass;
 
 /**
  * @see \Rector\Tests\ChangesReporting\Annotation\AnnotationExtractorTest
- */
+ * @see \Rector\Tests\ChangesReporting\Annotation\AnnotationExtractorTest*/
 final class AnnotationExtractor
 {
     /**

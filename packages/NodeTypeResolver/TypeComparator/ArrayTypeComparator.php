@@ -14,7 +14,7 @@ use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\TypeComparator\ArrayTypeComparatorTest
- */
+ * @see \Rector\Tests\NodeTypeResolver\TypeComparator\ArrayTypeComparatorTest*/
 final class ArrayTypeComparator
 {
     public function __construct(

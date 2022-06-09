@@ -13,7 +13,7 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 
 /**
  * @see \Rector\Tests\StaticTypeMapper\PhpDoc\PhpDocTypeMapperTest
- */
+ * @see \Rector\Tests\StaticTypeMapper\PhpDoc\PhpDocTypeMapperTest*/
 final class PhpDocTypeMapper
 {
     /**

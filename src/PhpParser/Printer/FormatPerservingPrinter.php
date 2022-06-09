@@ -14,7 +14,7 @@ use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Printer\FormatPerservingPrinterTest
- */
+ * @see \Rector\Core\Tests\PhpParser\Printer\FormatPerservingPrinterTest*/
 final class FormatPerservingPrinter
 {
     public function __construct(

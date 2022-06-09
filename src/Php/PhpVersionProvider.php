@@ -15,7 +15,7 @@ use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 /**
  * @see \Rector\Core\Tests\Php\PhpVersionProviderTest
- */
+ * @see \Rector\Core\Tests\Php\PhpVersionProviderTest*/
 final class PhpVersionProvider
 {
     /**

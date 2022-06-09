@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\BinaryOp;
 
 /**
  * @see \Rector\Tests\NodeCollector\BinaryOpConditionsCollectorTest
- */
+ * @see \Rector\Tests\NodeCollector\BinaryOpConditionsCollectorTest*/
 final class BinaryOpConditionsCollector
 {
     /**

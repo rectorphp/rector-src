@@ -11,7 +11,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\NodeCollector\BinaryOpTreeRootLocatorTest
- */
+ * @see \Rector\Tests\NodeCollector\BinaryOpTreeRootLocatorTest*/
 final class BinaryOpTreeRootLocator
 {
     /**

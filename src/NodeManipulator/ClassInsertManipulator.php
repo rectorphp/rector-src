@@ -66,8 +66,7 @@ final class ClassInsertManipulator
     }
 
     /**
-     * @internal Use PropertyAdder service instead
-     */
+     * @internal Use PropertyAdder service instead*/
     public function addPropertyToClass(Class_ $class, string $name, ?Type $type): void
     {
         $existingProperty = $class->getProperty($name);

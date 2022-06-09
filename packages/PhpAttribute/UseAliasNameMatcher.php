@@ -12,7 +12,7 @@ use Rector\PhpAttribute\ValueObject\UseAliasMetadata;
 
 /**
  * @see \Rector\Tests\PhpAttribute\UseAliasNameMatcherTest
- */
+ * @see \Rector\Tests\PhpAttribute\UseAliasNameMatcherTest*/
 final class UseAliasNameMatcher
 {
     /**

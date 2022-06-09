@@ -11,8 +11,7 @@ final class RegexPatternDetector
     /**
      * @var string[]
      *
-     * This prevents miss matching like "aMethoda"
-     */
+     * This prevents miss matching like "aMethoda"*/
     private const POSSIBLE_DELIMITERS = ['#', '~', '/'];
 
     public function isRegexPattern(string $name): bool

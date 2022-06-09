@@ -19,7 +19,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Core\Tests\Exclusion\ExclusionManagerTest
- */
+ * @see \Rector\Core\Tests\Exclusion\ExclusionManagerTest*/
 final class ExclusionManager
 {
     /**

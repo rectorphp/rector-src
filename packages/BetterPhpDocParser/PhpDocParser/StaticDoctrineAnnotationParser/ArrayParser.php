@@ -10,7 +10,7 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParserTest
- */
+ * @see \Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParserTest*/
 final class ArrayParser
 {
     public function __construct(

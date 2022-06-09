@@ -9,7 +9,7 @@ use Webmozart\Assert\InvalidArgumentException;
 
 /**
  * @see \Rector\Core\Tests\Validation\RectorAssertTest
- */
+ * @see \Rector\Core\Tests\Validation\RectorAssertTest*/
 final class RectorAssert
 {
     /**

@@ -67,7 +67,7 @@ use Symplify\Astral\ValueObject\NodeBuilder\PropertyBuilder;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Node\NodeFactoryTest
- */
+ * @see \Rector\Core\Tests\PhpParser\Node\NodeFactoryTest*/
 final class NodeFactory
 {
     /**

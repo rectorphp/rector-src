@@ -28,7 +28,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Node\Value\ValueResolverTest
- */
+ * @see \Rector\Core\Tests\PhpParser\Node\Value\ValueResolverTest*/
 final class ValueResolver
 {
     private ?ConstExprEvaluator $constExprEvaluator = null;

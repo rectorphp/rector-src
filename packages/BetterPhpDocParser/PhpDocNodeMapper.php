@@ -14,7 +14,7 @@ use Symplify\Astral\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVis
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocNodeMapperTest
- */
+ * @see \Rector\Tests\BetterPhpDocParser\PhpDocNodeMapperTest*/
 final class PhpDocNodeMapper
 {
     /**

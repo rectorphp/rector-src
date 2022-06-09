@@ -13,7 +13,7 @@ use PHPStan\Type\Type;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\TypeComparator\ScalarTypeComparatorTest
- */
+ * @see \Rector\Tests\NodeTypeResolver\TypeComparator\ScalarTypeComparatorTest*/
 final class ScalarTypeComparator
 {
     public function areEqualScalar(Type $firstType, Type $secondType): bool
