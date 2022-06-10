@@ -117,6 +117,19 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $name;
         }
 
+        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+            $identifierTypeNode,
+            $phpParserNode
+        );
+
+        if (! $staticType instanceof ObjectType) {
+            return $name;
+        }
+
+        if ($staticType instanceof ShortenedObjectType) {
+            return $name;
+        }
+
         $uses = $this->useImportsResolver->resolveForNode($phpParserNode);
         $namespace = $this->betterNodeFinder->findParentType($phpParserNode, Namespace_::class);
 
@@ -128,19 +141,6 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $namespaceName = (string) $this->nodeNameResolver->getName($namespace);
 
         if ($originalNode instanceof Namespace_ && ! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
-            return $name;
-        }
-
-        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
-            $identifierTypeNode,
-            $phpParserNode
-        );
-
-        if (! $staticType instanceof ObjectType) {
-            return $name;
-        }
-
-        if ($staticType instanceof ShortenedObjectType) {
             return $name;
         }
 
