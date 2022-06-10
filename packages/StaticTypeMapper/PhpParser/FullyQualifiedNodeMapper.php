@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
