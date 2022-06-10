@@ -108,8 +108,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         IdentifierTypeNode $identifierTypeNode,
         PhpParserNode $phpParserNode,
         string $name
-    ): string
-    {
+    ): string {
         if (str_starts_with($name, '\\')) {
             return $name;
         }
