@@ -21,7 +21,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Type\StaticTypeAnalyzer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -37,7 +36,6 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly StaticTypeAnalyzer $staticTypeAnalyzer,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -106,7 +104,11 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $this->oldToNewTypes = $oldToNewTypes;
     }
 
-    private function resolveNamespacedName(IdentifierTypeNode $identifier, PhpParserNode $phpParserNode, string $name): string
+    private function resolveNamespacedName(
+        IdentifierTypeNode $identifierTypeNode,
+        PhpParserNode $phpParserNode,
+        string $name
+    ): string
     {
         if (str_starts_with($name, '\\')) {
             return $name;
@@ -137,7 +139,10 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $nameFromUse = $this->resolveNamefromUse($uses, $name);
 
         if ($nameFromUse === $name) {
-            $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
+            $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+                $identifierTypeNode,
+                $phpParserNode
+            );
             if (! $staticType instanceof ObjectType) {
                 return $nameFromUse;
             }
