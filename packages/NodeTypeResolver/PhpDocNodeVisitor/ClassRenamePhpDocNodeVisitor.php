@@ -21,6 +21,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Type\StaticTypeAnalyzer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -36,6 +37,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly StaticTypeAnalyzer $staticTypeAnalyzer,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -67,7 +69,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $identifier = clone $node;
-        $namespacedName = $this->resolveNamespacedName($phpParserNode, $node->name);
+        $namespacedName = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
         $identifier->name = $namespacedName;
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
 
@@ -104,7 +106,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $this->oldToNewTypes = $oldToNewTypes;
     }
 
-    private function resolveNamespacedName(PhpParserNode $phpParserNode, string $name): string
+    private function resolveNamespacedName(IdentifierTypeNode $identifier, PhpParserNode $phpParserNode, string $name): string
     {
         if (str_starts_with($name, '\\')) {
             return $name;
@@ -132,13 +134,24 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $namespaceName . '\\' . $name;
         }
 
-        return $this->resolveNamefromUse($uses, $name, $namespaceName . '\\');
+        $nameFromUse = $this->resolveNamefromUse($uses, $name);
+
+        if ($nameFromUse === $name) {
+            $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
+            if (! $staticType instanceof ObjectType) {
+                return $nameFromUse;
+            }
+
+            $nameFromUse = $namespaceName . '\\' . $nameFromUse;
+        }
+
+        return $nameFromUse;
     }
 
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveNamefromUse(array $uses, string $name, ?string $namespaceName = null): string
+    private function resolveNamefromUse(array $uses, string $name): string
     {
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
@@ -155,7 +168,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             }
         }
 
-        return $namespaceName . $name;
+        return $name;
     }
 
     private function expandShortenedObjectType(Type $type): ObjectType|Type
