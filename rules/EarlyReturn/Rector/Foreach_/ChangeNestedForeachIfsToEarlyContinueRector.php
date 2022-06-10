@@ -201,9 +201,7 @@ CODE_SAMPLE
     private function createIfContinue(Expr $expr): If_
     {
         return new If_($expr, [
-            'stmts' => [
-                new Continue_()
-            ]
+            'stmts' => [new Continue_()],
         ]);
     }
 }
