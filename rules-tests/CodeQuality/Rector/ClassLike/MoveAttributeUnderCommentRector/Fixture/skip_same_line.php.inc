@@ -3,7 +3,7 @@
 namespace Rector\Tests\CodeQuality\Rector\ClassLike\MoveAttributeUnderCommentRector\Fixture;
 
 /**
- * @property-read $name
+ * test
  */
 #[Attribute]class SkipSameLine
 {
