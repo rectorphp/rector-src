@@ -147,6 +147,10 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 return $nameFromUse;
             }
 
+            if ($staticType instanceof ShortenedObjectType) {
+                return $nameFromUse;
+            }
+
             $nameFromUse = $namespaceName . '\\' . $nameFromUse;
         }
 
