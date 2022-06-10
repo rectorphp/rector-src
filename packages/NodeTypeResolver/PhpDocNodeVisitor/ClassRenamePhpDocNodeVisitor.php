@@ -6,7 +6,6 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
@@ -25,7 +24,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Symplify\Astral\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 
@@ -68,19 +66,10 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $previousNode = $phpParserNode->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if ($previousNode instanceof FullyQualified) {
-            return null;
-        }
-
         $identifier = clone $node;
         $namespacedName = $this->resolveNamespacedName($phpParserNode, $node->name);
         $identifier->name = $namespacedName;
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
-
-        if ($staticType instanceof AliasedObjectType) {
-            return null;
-        }
 
         // make sure to compare FQNs
         $objectType = $this->expandShortenedObjectType($staticType);
@@ -143,13 +132,13 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $namespaceName . '\\' . $name;
         }
 
-        return $this->resolveNamefromUse($uses, $name);
+        return $this->resolveNamefromUse($uses, $name, $namespaceName . '\\');
     }
 
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveNamefromUse(array $uses, string $name): string
+    private function resolveNamefromUse(array $uses, string $name, ?string $namespaceName = null): string
     {
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
@@ -166,7 +155,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             }
         }
 
-        return $name;
+        return $namespaceName . $name;
     }
 
     private function expandShortenedObjectType(Type $type): ObjectType|Type
