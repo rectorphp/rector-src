@@ -74,12 +74,12 @@ final class PropertyFetchAnalyzer
         return $this->nodeNameResolver->isName($node->name, $desiredPropertyName);
     }
 
-    public function countLocalPropertyFetchName(ClassLike $class, string $propertyName): int
+    public function countLocalPropertyFetchName(ClassLike $classLike, string $propertyName): int
     {
         $total = 0;
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $subNode) use (
-            $class,
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $subNode) use (
+            $classLike,
             $propertyName,
             &$total
         ): void {
@@ -94,7 +94,7 @@ final class PropertyFetchAnalyzer
                 ++$total;
             }
 
-            if ($parentClassLike === $class) {
+            if ($parentClassLike === $classLike) {
                 ++$total;
             }
         });
