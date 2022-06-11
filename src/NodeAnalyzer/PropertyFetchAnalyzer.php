@@ -23,6 +23,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchAnalyzer
 {
@@ -34,7 +35,8 @@ final class PropertyFetchAnalyzer
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly AstResolver $astResolver
+        private readonly AstResolver $astResolver,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -70,6 +72,26 @@ final class PropertyFetchAnalyzer
 
         /** @var PropertyFetch|StaticPropertyFetch $node */
         return $this->nodeNameResolver->isName($node->name, $desiredPropertyName);
+    }
+
+    public function countLocalPropertyFetchName(ClassLike $class, string $propertyName): int
+    {
+        $total = 0;
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $subNode) use ($class, $propertyName, &$total): void {
+            if (! $this->isLocalPropertyFetchName($subNode, $propertyName)) {
+                return;
+            }
+
+            $parentClassLike = $this->betterNodeFinder->findParentType($subNode, ClassLike::class);
+            if ($parentClassLike !== $class) {
+                return;
+            }
+
+            ++$total;
+        });
+
+        return $total;
     }
 
     public function containsLocalPropertyFetchName(Node $node, string $propertyName): bool
