@@ -51,7 +51,7 @@ final class ComplexNodeRemover
             $removeAssignSideEffect,
             $propertyName,
             &$totalPropertyFetch
-        ):?Node {
+        ): ?Node {
             // here should be checked all expr like stmts that can hold assign, e.f. if, foreach etc. etc.
             if (! $node instanceof Expression) {
                 return null;
