@@ -94,7 +94,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $isRemoved = $this->complexNodeRemover->removePropertyAndUsages($node, $property, $this->removeAssignSideEffect);
+            $isRemoved = $this->complexNodeRemover->removePropertyAndUsages(
+                $node,
+                $property,
+                $this->removeAssignSideEffect
+            );
 
             if ($isRemoved) {
                 $hasChanged = true;
