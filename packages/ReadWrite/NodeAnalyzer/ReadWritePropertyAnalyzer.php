@@ -55,7 +55,7 @@ final class ReadWritePropertyAnalyzer
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
         if ($currentStmt instanceof Stmt) {
             $hasAssignOp = $this->betterNodeFinder->findFirstInstanceOf($currentStmt, AssignOp::class);
-            if ($hasAssignOp) {
+            if ($hasAssignOp !== null) {
                 return true;
             }
         }
