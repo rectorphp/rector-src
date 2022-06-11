@@ -84,11 +84,15 @@ final class PropertyFetchAnalyzer
             }
 
             $parentClassLike = $this->betterNodeFinder->findParentType($subNode, ClassLike::class);
-            if ($parentClassLike !== $class) {
-                return;
+
+            // property fetch in Trait cannot get parent ClassLike
+            if (! $parentClassLike instanceof ClassLike) {
+                ++$total;
             }
 
-            ++$total;
+            if ($parentClassLike === $class) {
+                ++$total;
+            }
         });
 
         return $total;
@@ -108,6 +112,12 @@ final class PropertyFetchAnalyzer
                 }
 
                 $parentClassLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+
+                // property fetch in Trait cannot get parent ClassLike
+                if (! $parentClassLike instanceof ClassLike) {
+                    return true;
+                }
+
                 return $parentClassLike === $classLike;
             }
         );
