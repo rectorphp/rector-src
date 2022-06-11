@@ -72,6 +72,10 @@ final class AssignManipulator
             return true;
         }
 
+        if ($parent instanceof AssignOp) {
+            return false;
+        }
+
         if ($parent !== null && $this->typeChecker->isInstanceOf($parent, self::MODIFYING_NODE_TYPES)) {
             return true;
         }

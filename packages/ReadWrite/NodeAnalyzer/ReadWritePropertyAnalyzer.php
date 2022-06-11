@@ -51,8 +51,7 @@ final class ReadWritePropertyAnalyzer
             }
         }
 
-        $parentAssignOp = $this->betterNodeFinder->findParentType($node, AssignOp::class);
-        if ($parentAssignOp instanceof AssignOp) {
+        if ($parent instanceof AssignOp) {
             return true;
         }
 
