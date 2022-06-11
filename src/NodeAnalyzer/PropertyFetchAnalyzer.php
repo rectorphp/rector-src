@@ -82,9 +82,9 @@ final class PropertyFetchAnalyzer
             $classLike,
             $propertyName,
             &$total
-        ): void {
+        ): ?Node {
             if (! $this->isLocalPropertyFetchName($subNode, $propertyName)) {
-                return;
+                return null;
             }
 
             $parentClassLike = $this->betterNodeFinder->findParentType($subNode, ClassLike::class);
@@ -97,6 +97,8 @@ final class PropertyFetchAnalyzer
             if ($parentClassLike === $classLike) {
                 ++$total;
             }
+
+            return $subNode;
         });
 
         return $total;
