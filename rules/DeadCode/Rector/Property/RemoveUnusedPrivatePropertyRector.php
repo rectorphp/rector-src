@@ -83,7 +83,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $hasChanged = false;
+        $hasRemoved = false;
 
         foreach ($node->getProperties() as $property) {
             if ($this->shouldSkipProperty($property)) {
@@ -101,11 +101,11 @@ CODE_SAMPLE
             );
 
             if ($isRemoved) {
-                $hasChanged = true;
+                $hasRemoved = true;
             }
         }
 
-        return $hasChanged ? $node : null;
+        return $hasRemoved ? $node : null;
     }
 
     private function shouldSkipProperty(Property $property): bool
