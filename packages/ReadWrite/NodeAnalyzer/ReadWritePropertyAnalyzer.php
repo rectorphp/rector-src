@@ -52,20 +52,21 @@ final class ReadWritePropertyAnalyzer
             }
         }
 
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        if ($currentStmt instanceof Stmt) {
-            $assignOp = $this->betterNodeFinder->findFirstInstanceOf($currentStmt, AssignOp::class);
-            if ($assignOp instanceof AssignOp) {
-                return true;
-            }
-        }
-
-        if ($parent instanceof ArrayDimFetch && $parent->dim === $node && $this->isNotInsideIssetUnset($parent)) {
-            return $this->isArrayDimFetchRead($parent);
+        if ($parent instanceof AssignOp) {
+            return true;
         }
 
         if (! $parent instanceof ArrayDimFetch) {
             return ! $this->assignManipulator->isLeftPartOfAssign($node);
+        }
+
+        if ($parent->dim === $node && $this->isNotInsideIssetUnset($parent)) {
+            return $this->isArrayDimFetchRead($parent);
+        }
+
+        $parentOfArrayDimFetch = $parent->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentOfArrayDimFetch instanceof AssignOp) {
+            return true;
         }
 
         if ($this->assignManipulator->isLeftPartOfAssign($parent)) {
