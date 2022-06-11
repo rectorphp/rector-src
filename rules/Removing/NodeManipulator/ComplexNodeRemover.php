@@ -51,7 +51,7 @@ final class ComplexNodeRemover
             $removeAssignSideEffect,
             $propertyName,
             &$totalPropertyFetch
-        ) {
+        ):?Node {
             // here should be checked all expr like stmts that can hold assign, e.f. if, foreach etc. etc.
             if (! $node instanceof Expression) {
                 return null;
@@ -81,15 +81,20 @@ final class ComplexNodeRemover
                 return null;
             }
 
+            $currentTotalPropertyFetch = $totalPropertyFetch;
             foreach ($propertyFetches as $propertyFetch) {
                 if ($this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
                     if (! $removeAssignSideEffect && $this->sideEffectNodeDetector->detect($assign->expr)) {
                         return null;
                     }
 
-                    $this->nodeRemover->removeNode($node);
                     --$totalPropertyFetch;
                 }
+            }
+
+            if ($totalPropertyFetch < $currentTotalPropertyFetch) {
+                $this->nodeRemover->removeNode($node);
+                return $node;
             }
 
             return null;
