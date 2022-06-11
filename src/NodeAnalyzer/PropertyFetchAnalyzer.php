@@ -68,8 +68,6 @@ final class PropertyFetchAnalyzer
             return false;
         }
 
-        $parentClassLike = $this->betterNodeFinder->findParentByTypes($node, [Trait_::class, Class_::class]);
-
         /** @var PropertyFetch|StaticPropertyFetch $node */
         return $this->nodeNameResolver->isName($node->name, $desiredPropertyName);
     }
