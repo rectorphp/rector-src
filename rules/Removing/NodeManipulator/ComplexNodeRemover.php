@@ -65,7 +65,6 @@ final class ComplexNodeRemover
 
             // remove direct assigns
             if (! $nodeExpr instanceof Assign) {
-                $isPartOfAnotherAssign = true;
                 return null;
             }
 
@@ -73,7 +72,7 @@ final class ComplexNodeRemover
 
             // skip double assigns
             if ($assign->expr instanceof Assign) {
-                $isContainsLocalPropertyFetchName = true;
+                $isPartOfAnotherAssign = true;
                 return null;
             }
 
