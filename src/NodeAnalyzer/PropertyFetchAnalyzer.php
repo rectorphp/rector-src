@@ -68,15 +68,28 @@ final class PropertyFetchAnalyzer
             return false;
         }
 
+        $parentClassLike = $this->betterNodeFinder->findParentByTypes($node, [Trait_::class, Class_::class]);
+
         /** @var PropertyFetch|StaticPropertyFetch $node */
         return $this->nodeNameResolver->isName($node->name, $desiredPropertyName);
     }
 
     public function containsLocalPropertyFetchName(Node $node, string $propertyName): bool
     {
+        $classLike = $node instanceof ClassLike
+            ? $node
+            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
+
         return (bool) $this->betterNodeFinder->findFirst(
             $node,
-            fn (Node $node): bool => $this->isLocalPropertyFetchName($node, $propertyName)
+            function (Node $node) use ($classLike, $propertyName): bool {
+                if (! $this->isLocalPropertyFetchName($node, $propertyName)) {
+                    return false;
+                }
+
+                $parentClassLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+                return $parentClassLike === $classLike;
+            }
         );
     }
 
