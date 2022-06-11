@@ -72,11 +72,6 @@ final class AssignManipulator
             return true;
         }
 
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        if (! $currentStmt instanceof Expression) {
-            return false;
-        }
-
         if ($parent !== null && $this->typeChecker->isInstanceOf($parent, self::MODIFYING_NODE_TYPES)) {
             return true;
         }

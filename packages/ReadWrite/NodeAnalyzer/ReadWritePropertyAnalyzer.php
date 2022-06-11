@@ -8,10 +8,13 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\AssignOp;
+use PhpParser\Node\Expr\AssignOp\Coalesce;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Unset_;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\AssignManipulator;
@@ -51,8 +54,12 @@ final class ReadWritePropertyAnalyzer
             }
         }
 
-        if ($parent instanceof AssignOp) {
-            return true;
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+        if ($currentStmt instanceof Stmt) {
+            $hasAssignOp = $this->betterNodeFinder->findFirstInstanceOf($currentStmt, AssignOp::class);
+            if ($hasAssignOp) {
+                return true;
+            }
         }
 
         if ($parent instanceof ArrayDimFetch && $parent->dim === $node && $this->isNotInsideIssetUnset($parent)) {
