@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\ClassLike;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -55,6 +56,23 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        return null;
+        $attrGroups = $node->attrGroups;
+
+        if ($attrGroups === []) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
+
+        if ($phpDocNode->children !== []) {
+            return null;
+        }
+
+        $comments = $node->getAttribute(AttributeKey::COMMENTS);
+        dump($comments); // comment got null
+
+        $node->attrGroups = []; // removin attrGroups remove the comment after it
+        return $node;
     }
 }
