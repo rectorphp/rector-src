@@ -40,7 +40,7 @@ final class ComplexNodeRemover
         Class_ $class,
         Property $property,
         bool $removeAssignSideEffect
-    ): void {
+    ): bool {
         $propertyName = $this->nodeNameResolver->getName($property);
 
         $hasSideEffect = false;
@@ -93,16 +93,18 @@ final class ComplexNodeRemover
 
         // do not remove anyhting in case of side-effect
         if ($hasSideEffect) {
-            return;
+            return false;
         }
 
         if ($isPartOfAnotherAssign) {
-            return;
+            return false;
         }
 
         $this->removeConstructorDependency($class, $propertyName);
 
         $this->nodeRemover->removeNode($property);
+
+        return true;
     }
 
     /**
