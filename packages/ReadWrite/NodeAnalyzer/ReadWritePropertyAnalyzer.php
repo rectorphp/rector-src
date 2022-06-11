@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Unset_;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\AssignManipulator;
