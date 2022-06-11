@@ -78,7 +78,11 @@ final class PropertyFetchAnalyzer
     {
         $total = 0;
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $subNode) use ($class, $propertyName, &$total): void {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $subNode) use (
+            $class,
+            $propertyName,
+            &$total
+        ): void {
             if (! $this->isLocalPropertyFetchName($subNode, $propertyName)) {
                 return;
             }
