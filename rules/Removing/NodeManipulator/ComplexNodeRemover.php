@@ -42,11 +42,18 @@ final class ComplexNodeRemover
         bool $removeAssignSideEffect
     ): bool {
         $propertyName = $this->nodeNameResolver->getName($property);
+        $hasSideEffect = false;
+        $isPartOfAnotherAssign = false;
+        $isContainsLocalPropertyFetchName = $this->propertyFetchAnalyzer->containsLocalPropertyFetchName(
+            $class,
+            $propertyName
+        );
 
-        $isContainsLocalPropertyFetchName = $this->propertyFetchAnalyzer->containsLocalPropertyFetchName($class, $propertyName);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $node) use (
             $removeAssignSideEffect,
             $propertyName,
+            &$hasSideEffect,
+            &$isPartOfAnotherAssign,
             &$isContainsLocalPropertyFetchName
         ) {
             // here should be checked all expr like stmts that can hold assign, e.f. if, foreach etc. etc.
@@ -58,6 +65,7 @@ final class ComplexNodeRemover
 
             // remove direct assigns
             if (! $nodeExpr instanceof Assign) {
+                $isPartOfAnotherAssign = true;
                 return null;
             }
 
@@ -65,6 +73,7 @@ final class ComplexNodeRemover
 
             // skip double assigns
             if ($assign->expr instanceof Assign) {
+                $isContainsLocalPropertyFetchName = true;
                 return null;
             }
 
@@ -76,6 +85,7 @@ final class ComplexNodeRemover
             foreach ($propertyFetches as $propertyFetch) {
                 if ($this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
                     if (! $removeAssignSideEffect && $this->sideEffectNodeDetector->detect($assign->expr)) {
+                        $hasSideEffect = true;
                         return null;
                     }
 
@@ -86,6 +96,15 @@ final class ComplexNodeRemover
 
             return null;
         });
+
+        // do not remove anyhting in case of side-effect
+        if ($hasSideEffect) {
+            return false;
+        }
+
+        if ($isPartOfAnotherAssign) {
+            return false;
+        }
 
         if ($isContainsLocalPropertyFetchName) {
             return false;
