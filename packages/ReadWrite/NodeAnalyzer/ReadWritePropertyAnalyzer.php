@@ -63,11 +63,6 @@ final class ReadWritePropertyAnalyzer
             return $this->isArrayDimFetchRead($parent);
         }
 
-        $parentOfArrayDimFetch = $parent->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentOfArrayDimFetch instanceof AssignOp) {
-            return true;
-        }
-
         if ($this->assignManipulator->isLeftPartOfAssign($parent)) {
             return false;
         }
