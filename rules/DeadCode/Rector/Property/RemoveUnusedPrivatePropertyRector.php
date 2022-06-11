@@ -94,6 +94,8 @@ CODE_SAMPLE
                 continue;
             }
 
+            // use different variable to avoid re-assign back $hasRemoved to false
+            // when already asssigned to true
             $isRemoved = $this->complexNodeRemover->removePropertyAndUsages(
                 $node,
                 $property,
