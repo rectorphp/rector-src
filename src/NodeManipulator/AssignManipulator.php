@@ -72,7 +72,8 @@ final class AssignManipulator
             return true;
         }
 
-        if ($parent instanceof AssignOp) {
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+        if (! $currentStmt instanceof Expression) {
             return false;
         }
 
