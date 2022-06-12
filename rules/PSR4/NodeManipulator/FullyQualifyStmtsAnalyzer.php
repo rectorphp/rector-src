@@ -56,13 +56,19 @@ final class FullyQualifyStmtsAnalyzer
                 return null;
             }
 
-            if ($migrateInnerClassReference && ! str_starts_with($name, '\\')) {
-                if (! $this->isNativeClass($name)) {
-                    return new FullyQualified($expectedNamespace . '\\' . $name);
-                }
+            if (! $migrateInnerClassReference) {
+                return new FullyQualified($name);
             }
 
-            return new FullyQualified($name);
+            if (str_starts_with($name, '\\')) {
+                return new FullyQualified($name);
+            }
+
+            if ($this->isNativeClass($name)) {
+                return new FullyQualified($name);
+            }
+
+            return new FullyQualified($expectedNamespace . '\\' . $name);
         });
     }
 
@@ -73,7 +79,7 @@ final class FullyQualifyStmtsAnalyzer
         }
 
         $class = $this->reflectionProvider->getClass($name);
-        return $class->isBuiltIn();
+        return $class->isBuiltin();
     }
 
     private function isNativeConstant(Name $name): bool
