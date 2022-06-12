@@ -1,0 +1,40 @@
+2 files with changes
+====================
+
+1) src/Foo/Foo.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+-namespace Test;
++namespace Test\Foo;
+
+ class Foo {
+-    public function test(): Bar {
+-        return new Bar;
++    public function test(): \Test\Bar\Bar {
++        return new \Test\Bar\Bar;
+     }
+ }
+    ----------- end diff -----------
+
+2) src/Bar/Bar.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+-namespace Test;
++namespace Test\Bar;
+
+ class Bar {
+-    public function test(): Foo {
+-        return new Foo;
++    public function test(): \Test\Foo\Foo {
++        return new \Test\Foo\Foo;
+     }
+ }
+    ----------- end diff -----------
+
+ [OK] 2 files would have changed (dry-run) by Rector⏎
