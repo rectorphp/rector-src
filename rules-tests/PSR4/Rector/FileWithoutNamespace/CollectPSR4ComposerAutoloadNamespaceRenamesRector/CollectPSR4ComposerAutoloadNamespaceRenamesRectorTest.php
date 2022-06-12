@@ -32,7 +32,7 @@ final class CollectPSR4ComposerAutoloadNamespaceRenamesRectorTest extends Abstra
         yield [
             __DIR__ . '/Fixture/case_insensitive.php.inc',
             [
-                'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\fixture\\Foo' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\Foo',
+                'Rector\\TestS\\PSR4\\RecTor\\fileWithoutNamespace\\NorMAliZeNamespaceByPSR4ComposerAutoloadRector\\fixture\\Foo' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\Foo',
             ],
         ];
 
