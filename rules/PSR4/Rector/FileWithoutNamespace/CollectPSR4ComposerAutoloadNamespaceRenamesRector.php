@@ -6,6 +6,7 @@ namespace Rector\PSR4\Rector\FileWithoutNamespace;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
@@ -14,6 +15,7 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PostRector\Rector\ClassRenamingPostRector;
 use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
+use Rector\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ComposerJsonAwareCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -33,7 +35,7 @@ final class CollectPSR4ComposerAutoloadNamespaceRenamesRector extends AbstractRe
         $description = sprintf(
             'Collect renames of classes in namespace-less files or files whose namespace do not match PSR-4 in `composer.json` autoload section. Run with combination with “%s” and then “%s” on the second run',
             ClassRenamingPostRector::class,
-            NormalizeNamespaceByPSR4ComposerAutoloadRectorTest::class
+            NormalizeNamespaceByPSR4ComposerAutoloadRector::class
         );
 
         return new RuleDefinition($description, [
@@ -98,21 +100,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof Namespace_) {
-            $oldNamespace = (string) $node->name;
-        } else {
-            $oldNamespace = '';
-        }
-
-        if ($oldNamespace !== '') {
-            $oldNamespace .= '\\';
-        }
+        $oldNamespace = $node instanceof Namespace_ ? (string) $node->name : '';
+        $oldNamespace = $oldNamespace !== '' ? $oldNamespace . '\\' : $oldNamespace;
 
         $renames = [];
 
-        foreach ($node->stmts as $key => $stmt) {
-            if (($stmt instanceof ClassLike && $stmt->name !== null) || $stmt instanceof Function_) {
-                $renames[$oldNamespace . $stmt->name] = $expectedNamespace . '\\' . $stmt->name;
+        foreach ($node->stmts as $stmt) {
+            $name = $this->getObjectName($stmt);
+            if ($name !== null) {
+                $renames[$oldNamespace . $name] = $expectedNamespace . '\\' . $name;
             }
         }
 
@@ -127,6 +123,21 @@ CODE_SAMPLE
             $namespace,
             fn (Node $node): bool => $node instanceof Namespace_
         );
+    }
+
+    private function getObjectName(Stmt $stmt): ?string
+    {
+        $name = null;
+
+        if ($stmt instanceof ClassLike || $stmt instanceof Function_) {
+            $name = $stmt->name;
+        }
+
+        if ($name !== null) {
+            return (string) $name;
+        }
+
+        return null;
     }
 
 }
