@@ -39,7 +39,10 @@ final class FullyQualifyStmtsAnalyzer
         }
 
         // FQNize all class names
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use ($expectedNamespace, $migrateInnerClassReference): ?FullyQualified {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
+            $expectedNamespace,
+            $migrateInnerClassReference
+        ): ?FullyQualified {
             if (! $node instanceof Name) {
                 return null;
             }

@@ -139,7 +139,11 @@ CODE_SAMPLE
         }
 
         $processNode->name = new Name($expectedNamespace);
-        $this->fullyQualifyStmtsAnalyzer->process($processNode->stmts, $expectedNamespace, $this->migrateInnerClassReference);
+        $this->fullyQualifyStmtsAnalyzer->process(
+            $processNode->stmts,
+            $expectedNamespace,
+            $this->migrateInnerClassReference
+        );
 
         return $processNode;
     }
