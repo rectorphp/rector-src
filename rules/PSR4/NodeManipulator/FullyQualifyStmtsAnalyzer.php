@@ -78,8 +78,8 @@ final class FullyQualifyStmtsAnalyzer
             return false;
         }
 
-        $class = $this->reflectionProvider->getClass($name);
-        return $class->isBuiltin();
+        $classReflection = $this->reflectionProvider->getClass($name);
+        return $classReflection->isBuiltin();
     }
 
     private function isNativeConstant(Name $name): bool
