@@ -31,7 +31,7 @@ final class FullyQualifyStmtsAnalyzer
     /**
      * @param Stmt[] $stmts
      */
-    public function process(array $stmts): void
+    public function process(array $stmts, string $expectedNamespace, bool $migrateInnerClassReference): void
     {
         // no need to
         if ($this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
@@ -39,7 +39,7 @@ final class FullyQualifyStmtsAnalyzer
         }
 
         // FQNize all class names
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node): ?FullyQualified {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use ($expectedNamespace, $migrateInnerClassReference): ?FullyQualified {
             if (! $node instanceof Name) {
                 return null;
             }
@@ -53,8 +53,24 @@ final class FullyQualifyStmtsAnalyzer
                 return null;
             }
 
+            if ($migrateInnerClassReference && ! str_starts_with($name, '\\')) {
+                if (! $this->isNativeClass($name)) {
+                    return new FullyQualified($expectedNamespace . '\\' . $name);
+                }
+            }
+
             return new FullyQualified($name);
         });
+    }
+
+    private function isNativeClass(string $name): bool
+    {
+        if (! $this->reflectionProvider->hasClass($name)) {
+            return false;
+        }
+
+        $class = $this->reflectionProvider->getClass($name);
+        return $class->isBuiltIn();
     }
 
     private function isNativeConstant(Name $name): bool

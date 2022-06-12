@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
@@ -20,13 +21,41 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector\NormalizeNamespaceByPSR4ComposerAutoloadRectorTest
  */
-final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRector
+final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const MIGRATE_INNER_CLASS_REFERENCE = 'remove_assign_side_effect';
+
+    /**
+     * Default to false, which keep inner class to point FQCN, eg:
+     *
+     *      Bar to \Bar
+     *
+     * Set to true will change
+     *
+     *      Bar to \NewNamespace\Bar
+     *
+     * with NewNamespace defined in the composer.json
+     */
+    private bool $migrateInnerClassReference = false;
+
     public function __construct(
         private readonly PSR4AutoloadNamespaceMatcherInterface $psr4AutoloadNamespaceMatcher,
         private readonly FullyQualifyStmtsAnalyzer $fullyQualifyStmtsAnalyzer,
         private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
     ) {
+    }
+
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $this->migrateInnerClassReference = $configuration[self::REMOVE_ASSIGN_SIDE_EFFECT] ?? (bool) current(
+            $configuration
+        );
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -110,7 +139,7 @@ CODE_SAMPLE
         }
 
         $processNode->name = new Name($expectedNamespace);
-        $this->fullyQualifyStmtsAnalyzer->process($processNode->stmts);
+        $this->fullyQualifyStmtsAnalyzer->process($processNode->stmts, $expectedNamespace, $this->migrateInnerClassReference);
 
         return $processNode;
     }
@@ -140,7 +169,7 @@ CODE_SAMPLE
         $namespace = new Namespace_(new Name($expectedNamespace), $nodes);
         $nodesWithStrictTypesThenNamespace[] = $namespace;
 
-        $this->fullyQualifyStmtsAnalyzer->process($nodes);
+        $this->fullyQualifyStmtsAnalyzer->process($nodes, $expectedNamespace, $this->migrateInnerClassReference);
 
         return $namespace;
     }
