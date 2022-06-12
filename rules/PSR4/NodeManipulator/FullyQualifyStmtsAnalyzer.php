@@ -68,6 +68,8 @@ final class FullyQualifyStmtsAnalyzer
              */
             $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
             if ($parent instanceof UseUse || $parent instanceof GroupUse) {
+                // re-print to avoid ; removed during displaying
+                $parent->setAttribute(AttributeKey::ORIGINAL_NODE, null);
                 return null;
             }
 
