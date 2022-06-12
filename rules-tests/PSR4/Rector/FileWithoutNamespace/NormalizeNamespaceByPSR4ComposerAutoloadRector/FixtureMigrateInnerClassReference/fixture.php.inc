@@ -26,9 +26,9 @@ class Fixture
         return new \Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector\Fixture\Bar();
     }
 
-    public function test2(): stdClass
+    public function test2(): \stdClass
     {
-        return new stdClass;
+        return new \stdClass;
     }
 }
 
