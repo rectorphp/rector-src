@@ -59,7 +59,7 @@ final class FullyQualifyStmtsAnalyzer
             }
 
             if (str_starts_with($name, '\\')) {
-                return new FullyQualified($name);
+                null;
             }
 
             //
