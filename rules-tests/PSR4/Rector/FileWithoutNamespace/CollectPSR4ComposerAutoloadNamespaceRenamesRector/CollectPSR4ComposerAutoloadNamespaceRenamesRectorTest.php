@@ -18,9 +18,6 @@ final class CollectPSR4ComposerAutoloadNamespaceRenamesRectorTest extends Abstra
      */
     public function test(string $fixturePath, array $expectedRenames): void
     {
-        // to invoke configure() method call
-        $this->getService(RenameClassRector::class);
-
         /** @var RenamedClassesDataCollector $renamedClassesDataCollector */
         $renamedClassesDataCollector = $this->getService(RenamedClassesDataCollector::class);
 
@@ -33,34 +30,34 @@ final class CollectPSR4ComposerAutoloadNamespaceRenamesRectorTest extends Abstra
     public function provideData(): Iterator
     {
         yield [
-            __DIR__ . '/fixtures/case_insensitive.php.inc',
+            __DIR__ . '/Fixture/case_insensitive.php.inc',
             [
                 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\fixture\\Foo' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\Foo',
             ],
         ];
 
         yield [
-            __DIR__ . '/fixtures/do_not_change_next_namespace.php.inc',
+            __DIR__ . '/Fixture/do_not_change_next_namespace.php.inc',
             [
                 'App\\execute' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\execute',
             ],
         ];
 
         yield [
-            __DIR__ . '/fixtures/namespace_less_class.php.inc',
+            __DIR__ . '/Fixture/namespace_less_class.php.inc',
             [
                 'NamespaceLessClass' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\NamespaceLessClass',
             ],
         ];
 
         yield [
-            __DIR__ . '/fixtures/skip_already_defined_namespace.php.inc',
+            __DIR__ . '/Fixture/skip_already_defined_namespace.php.inc',
             [
             ],
         ];
 
         yield [
-            __DIR__ . '/fixtures/wrong_namespace.php.inc',
+            __DIR__ . '/Fixture/wrong_namespace.php.inc',
             [
                 'ThisIsWrong\\WrongNamespace' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\WrongNamespace',
             ],
