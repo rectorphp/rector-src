@@ -32,21 +32,21 @@ final class CollectPSR4ComposerAutoloadNamespaceRenamesRectorTest extends Abstra
         yield [
             __DIR__ . '/Fixture/case_insensitive.php.inc',
             [
-                'Rector\\TestS\\PSR4\\RecTor\\fileWithoutNamespace\\NorMAliZeNamespaceByPSR4ComposerAutoloadRector\\fixture\\Foo' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\Foo',
+                'Rector\\TestS\\PSR4\\RecTor\\fileWithoutNamespace\\ColLEctPsR4composeRaUTOlOadnamesPacerenaMesrector\\fixture\\Foo' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\CollectPSR4ComposerAutoloadNamespaceRenamesRector\\Fixture\\Foo',
             ],
         ];
 
         yield [
             __DIR__ . '/Fixture/do_not_change_next_namespace.php.inc',
             [
-                'App\\execute' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\execute',
+                'App\\execute' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\CollectPSR4ComposerAutoloadNamespaceRenamesRector\\Fixture\\execute',
             ],
         ];
 
         yield [
             __DIR__ . '/Fixture/namespace_less_class.php.inc',
             [
-                'NamespaceLessClass' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\NamespaceLessClass',
+                'NamespaceLessClass' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\CollectPSR4ComposerAutoloadNamespaceRenamesRector\\Fixture\\NamespaceLessClass',
             ],
         ];
 
@@ -59,7 +59,7 @@ final class CollectPSR4ComposerAutoloadNamespaceRenamesRectorTest extends Abstra
         yield [
             __DIR__ . '/Fixture/wrong_namespace.php.inc',
             [
-                'ThisIsWrong\\WrongNamespace' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\NormalizeNamespaceByPSR4ComposerAutoloadRector\\Fixture\\WrongNamespace',
+                'ThisIsWrong\\WrongNamespace' => 'Rector\\Tests\\PSR4\\Rector\\FileWithoutNamespace\\CollectPSR4ComposerAutoloadNamespaceRenamesRector\\Fixture\\WrongNamespace',
             ],
         ];
     }

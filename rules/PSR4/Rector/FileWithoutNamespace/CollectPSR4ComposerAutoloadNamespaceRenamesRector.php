@@ -120,4 +120,13 @@ CODE_SAMPLE
 
         return null;
     }
+
+    private function hasNamespaceInPreviousNamespace(Namespace_ $namespace): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstPrevious(
+            $namespace,
+            fn (Node $node): bool => $node instanceof Namespace_
+        );
+    }
+
 }

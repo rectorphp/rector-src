@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector\Fixture {
+namespace Rector\Tests\PSR4\Rector\FileWithoutNamespace\CollectPSR4ComposerAutoloadNamespaceRenamesRector\Fixture {
     function execute()
     {
         echo 'execute from named namespace';
