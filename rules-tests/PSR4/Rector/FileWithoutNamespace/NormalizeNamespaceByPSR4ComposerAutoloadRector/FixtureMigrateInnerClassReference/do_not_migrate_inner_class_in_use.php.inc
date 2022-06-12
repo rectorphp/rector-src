@@ -2,6 +2,8 @@
 
 use A\B\Bar;
 use A\B\C as Baz;
+use A\B\Foo { X };
+use A\B\Bat { Y as Yz };
 
 class DoNotMigrateInnerClassInUse
 {
@@ -13,6 +15,16 @@ class DoNotMigrateInnerClassInUse
     public function test2(): Baz
     {
         return new Baz;
+    }
+
+    public function test3(): X
+    {
+        return new X;
+    }
+
+    public function test4(): Yz
+    {
+        return new Yz;
     }
 }
 
@@ -35,6 +47,16 @@ class DoNotMigrateInnerClassInUse
     public function test2(): Baz
     {
         return new Baz;
+    }
+
+    public function test3(): X
+    {
+        return new X;
+    }
+
+    public function test4(): Yz
+    {
+        return new Yz;
     }
 }
 
