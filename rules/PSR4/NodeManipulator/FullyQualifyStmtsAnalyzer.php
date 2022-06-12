@@ -10,11 +10,13 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Reflection\Constant\RuntimeConstantReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Enum\ObjectReference;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
@@ -26,7 +28,8 @@ final class FullyQualifyStmtsAnalyzer
         private readonly ParameterProvider $parameterProvider,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UseImportsResolver $useImportsResolver
     ) {
     }
 
@@ -82,6 +85,12 @@ final class FullyQualifyStmtsAnalyzer
             }
 
             if ($this->isNativeClass($name)) {
+                return new FullyQualified($name);
+            }
+
+            $useByName = $this->useImportsResolver->resolveFromName($node);
+
+            if ($useByName instanceof Use_ || $useByName instanceof GroupUse) {
                 return new FullyQualified($name);
             }
 

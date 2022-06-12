@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming\Naming;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
@@ -59,5 +60,25 @@ final class UseImportsResolver
         return $use instanceof GroupUse
             ? $use->prefix . '\\'
             : '';
+    }
+
+    public function resolveFromName(Name $name): null|Use_|GroupUse
+    {
+        $className = $name->toString();
+
+        $uses = $this->resolveForNode($name);
+
+        foreach ($uses as $use) {
+            $prefix = $this->resolvePrefix($use);
+
+            foreach ($use->uses as $useUse) {
+                $useClassName = $prefix . $useUse->name->toString();
+                if ($useClassName === $className) {
+                    return $use;
+                }
+            }
+        }
+
+        return null;
     }
 }
