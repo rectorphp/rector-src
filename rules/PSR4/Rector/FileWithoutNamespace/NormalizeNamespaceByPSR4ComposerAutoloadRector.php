@@ -53,7 +53,7 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRecto
      */
     public function configure(array $configuration): void
     {
-        $this->migrateInnerClassReference = $configuration[self::REMOVE_ASSIGN_SIDE_EFFECT] ?? (bool) current(
+        $this->migrateInnerClassReference = $configuration[self::MIGRATE_INNER_CLASS_REFERENCE] ?? (bool) current(
             $configuration
         );
     }
