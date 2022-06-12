@@ -26,7 +26,7 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRecto
     /**
      * @var string
      */
-    public const MIGRATE_INNER_CLASS_REFERENCE = 'remove_assign_side_effect';
+    public const MIGRATE_INNER_CLASS_REFERENCE = 'migrateInnerClassReference';
 
     /**
      * Default to false, which keep inner class to point FQCN, eg:
