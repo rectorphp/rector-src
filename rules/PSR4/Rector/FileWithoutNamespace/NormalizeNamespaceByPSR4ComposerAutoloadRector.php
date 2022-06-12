@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Rector\AbstractRector;
+use Rector\PostRector\Rector\AbstractPostRector;
 use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
 use Rector\PSR4\NodeManipulator\FullyQualifyStmtsAnalyzer;
 use Rector\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRector;
@@ -20,13 +20,19 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector\NormalizeNamespaceByPSR4ComposerAutoloadRectorTest
  */
-final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRector
+final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractPostRector
 {
     public function __construct(
         private readonly PSR4AutoloadNamespaceMatcherInterface $psr4AutoloadNamespaceMatcher,
         private readonly FullyQualifyStmtsAnalyzer $fullyQualifyStmtsAnalyzer,
         private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
     ) {
+    }
+
+    public function getPriority(): int
+    {
+        // must be run after class renaming, so references are updated
+        return 550;
     }
 
     public function getRuleDefinition(): RuleDefinition
