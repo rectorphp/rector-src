@@ -9,6 +9,8 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Reflection\Constant\RuntimeConstantReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
@@ -38,6 +40,8 @@ final class FullyQualifyStmtsAnalyzer
             return;
         }
 
+        return; null;
+
         // FQNize all class names
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             $expectedNamespace,
@@ -53,6 +57,19 @@ final class FullyQualifyStmtsAnalyzer
 
             $name = $this->nodeNameResolver->getName($node);
             if (in_array($name, [ObjectReference::STATIC, ObjectReference::PARENT, ObjectReference::SELF], true)) {
+                return null;
+            }
+
+            //
+            /**
+             * do not add \ on part of UseUse or GroupUse, eg, keep:
+             *
+             *      use A\B\Foo\ { X };
+             *
+             *  as is
+             */
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parent instanceof UseUse || $parent instanceof GroupUse) {
                 return null;
             }
 
