@@ -40,8 +40,6 @@ final class FullyQualifyStmtsAnalyzer
             return;
         }
 
-        return; null;
-
         // FQNize all class names
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             $expectedNamespace,
