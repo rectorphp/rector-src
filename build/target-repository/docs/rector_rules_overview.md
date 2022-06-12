@@ -6690,11 +6690,7 @@ Change multiple classes in one file to standalone PSR-4 classes.
 
 ### NormalizeNamespaceByPSR4ComposerAutoloadRector
 
-Adds namespace to namespace-less files or correct namespace to match PSR-4 in `composer.json` autoload section. Run with combination with "Rector\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRector"
-
-- class: [`Rector\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector`](../rules/PSR4/Rector/FileWithoutNamespace/NormalizeNamespaceByPSR4ComposerAutoloadRector.php)
-
-- with `composer.json`:
+Adds namespace to namespace-less files or correct namespace to match PSR-4 in `composer.json` autoload section. For example, you have the following `composer.json`:
 
 ```json
 {
@@ -6704,6 +6700,23 @@ Adds namespace to namespace-less files or correct namespace to match PSR-4 in `c
         }
     }
 }
+```
+
+Run with combination with "Rector\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRector".
+
+:wrench: **configure it!**
+
+- class: [`Rector\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector`](../rules/PSR4/Rector/FileWithoutNamespace/NormalizeNamespaceByPSR4ComposerAutoloadRector.php)
+
+```php
+use Rector\Config\RectorConfig;
+use Rector\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector;
+
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->ruleWithConfiguration(NormalizeNamespaceByPSR4ComposerAutoloadRector::class, [
+        NormalizeNamespaceByPSR4ComposerAutoloadRector::MIGRATE_INNER_CLASS_REFERENCE => false,
+    ]);
+};
 ```
 
 ↓

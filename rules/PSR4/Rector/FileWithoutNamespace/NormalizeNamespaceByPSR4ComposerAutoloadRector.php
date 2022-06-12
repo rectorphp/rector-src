@@ -15,7 +15,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
 use Rector\PSR4\NodeManipulator\FullyQualifyStmtsAnalyzer;
 use Rector\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ComposerJsonAwareCodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -60,13 +60,26 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRecto
 
     public function getRuleDefinition(): RuleDefinition
     {
-        $description = sprintf(
-            'Adds namespace to namespace-less files or correct namespace to match PSR-4 in `composer.json` autoload section. Run with combination with "%s"',
+        $description = sprintf(<<<'TEXT'
+            Adds namespace to namespace-less files or correct namespace to match PSR-4 in `composer.json` autoload section. For example, you have the following `composer.json`:
+
+            ```json
+            {
+                "autoload": {
+                    "psr-4": {
+                        "App\\CustomNamespace\\": "src"
+                    }
+                }
+            }
+            ```
+
+            Run with combination with "%s".
+            TEXT,
             MultipleClassFileToPsr4ClassesRector::class
         );
 
         return new RuleDefinition($description, [
-            new ComposerJsonAwareCodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 // src/SomeClass.php
 
@@ -85,15 +98,9 @@ class SomeClass
 }
 CODE_SAMPLE
                 ,
-                <<<'CODE_SAMPLE'
-{
-    "autoload": {
-        "psr-4": {
-            "App\\CustomNamespace\\": "src"
-        }
-    }
-}
-CODE_SAMPLE
+                [
+                    self::MIGRATE_INNER_CLASS_REFERENCE => false
+                ]
             ),
         ]);
     }
