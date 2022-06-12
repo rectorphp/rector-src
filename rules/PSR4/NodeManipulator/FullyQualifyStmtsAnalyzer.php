@@ -58,6 +58,10 @@ final class FullyQualifyStmtsAnalyzer
                 return null;
             }
 
+            if (str_starts_with($name, '\\')) {
+                return new FullyQualified($name);
+            }
+
             //
             /**
              * do not add \ on part of UseUse or GroupUse, eg, keep X in:
@@ -74,10 +78,6 @@ final class FullyQualifyStmtsAnalyzer
             }
 
             if (! $migrateInnerClassReference) {
-                return new FullyQualified($name);
-            }
-
-            if (str_starts_with($name, '\\')) {
                 return new FullyQualified($name);
             }
 
