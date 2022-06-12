@@ -47,12 +47,12 @@ final class FullyQualifyStmtsAnalyzer
                 return null;
             }
 
-            $name = $this->nodeNameResolver->getName($node);
-            if (in_array($name, [ObjectReference::STATIC, ObjectReference::PARENT, ObjectReference::SELF], true)) {
+            if ($this->isNativeConstant($node)) {
                 return null;
             }
 
-            if ($this->isNativeConstant($node)) {
+            $name = $this->nodeNameResolver->getName($node);
+            if (in_array($name, [ObjectReference::STATIC, ObjectReference::PARENT, ObjectReference::SELF], true)) {
                 return null;
             }
 
