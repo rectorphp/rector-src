@@ -40,38 +40,35 @@ class DoNotMigrateInnerClassInUse
 
 namespace Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector\Fixture;
 
-use A\B\Bar;
-use A\B\C as Baz;
-use A\B\Foo\ { X };
-use A\B\Bat\ { Y as Yz };
-use Doctrine\ORM\Mapping;
-
+use \A\B\Bar;
+use \A\B\C as Baz;
+use \A\B\Foo\ { X };
+use \A\B\Bat\ { Y as Yz };
+use \Doctrine\ORM\Mapping;
 class DoNotMigrateInnerClassInUse
 {
-    public function test(): Bar
+    public function test(): \A\B\Bar
     {
-        return new Bar();
+        return new \A\B\Bar();
     }
 
-    public function test2(): Baz
+    public function test2(): \A\B\C
     {
-        return new Baz;
+        return new \A\B\C;
     }
 
-    public function test3(): X
+    public function test3(): \A\B\Foo\X
     {
-        return new X;
+        return new \A\B\Foo\X;
     }
 
-    public function test4(): Yz
+    public function test4(): \A\B\Bat\Y
     {
-        return new Yz;
+        return new \A\B\Bat\Y;
     }
 
-    public function test5(): Mapping\Entity
+    public function test5(): \Doctrine\ORM\Mapping\Entity
     {
-        return new Mapping\Entity;
+        return new \Doctrine\ORM\Mapping\Entity;
     }
 }
-
-?>
