@@ -2,8 +2,9 @@
 
 use A\B\Bar;
 use A\B\C as Baz;
-use A\B\Foo { X };
-use A\B\Bat { Y as Yz };
+use A\B\Foo\ { X };
+use A\B\Bat\ { Y as Yz };
+use Doctrine\ORM\Mapping;
 
 class DoNotMigrateInnerClassInUse
 {
@@ -25,6 +26,11 @@ class DoNotMigrateInnerClassInUse
     public function test4(): Yz
     {
         return new Yz;
+    }
+
+    public function test5(): Mapping\Entity
+    {
+        return new Mapping\Entity;
     }
 }
 
@@ -36,6 +42,9 @@ namespace Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4
 
 use A\B\Bar;
 use A\B\C as Baz;
+use A\B\Foo\ { X };
+use A\B\Bat\ { Y as Yz };
+use Doctrine\ORM\Mapping;
 
 class DoNotMigrateInnerClassInUse
 {
@@ -57,6 +66,11 @@ class DoNotMigrateInnerClassInUse
     public function test4(): Yz
     {
         return new Yz;
+    }
+
+    public function test5(): Mapping\Entity
+    {
+        return new Mapping\Entity;
     }
 }
 
