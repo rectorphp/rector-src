@@ -62,7 +62,7 @@ final class FullyQualifyStmtsAnalyzer
 
             //
             /**
-             * do not add \ on part of UseUse or GroupUse, eg, keep:
+             * do not add \ on part of UseUse or GroupUse, eg, keep X in:
              *
              *      use A\B\Foo\ { X };
              *
