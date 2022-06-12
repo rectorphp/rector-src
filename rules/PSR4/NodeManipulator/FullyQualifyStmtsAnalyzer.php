@@ -80,17 +80,15 @@ final class FullyQualifyStmtsAnalyzer
                 return null;
             }
 
+            if (str_contains($name, '\\')) {
+                return new FullyQualified($name);
+            }
+
             if (! $migrateInnerClassReference) {
                 return new FullyQualified($name);
             }
 
             if ($this->isNativeClass($name)) {
-                return new FullyQualified($name);
-            }
-
-            $useByName = $this->useImportsResolver->resolveFromName($node);
-
-            if ($useByName instanceof Use_ || $useByName instanceof GroupUse) {
                 return new FullyQualified($name);
             }
 
