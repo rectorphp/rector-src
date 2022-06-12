@@ -60,7 +60,8 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRecto
 
     public function getRuleDefinition(): RuleDefinition
     {
-        $description = sprintf(<<<'TEXT'
+        $description = sprintf(
+            <<<'CODE_SAMPLE'
             Adds namespace to namespace-less files or correct namespace to match PSR-4 in `composer.json` autoload section. For example, you have the following `composer.json`:
 
             ```json
@@ -74,7 +75,8 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRecto
             ```
 
             Run with combination with "%s".
-            TEXT,
+            CODE_SAMPLE
+,
             MultipleClassFileToPsr4ClassesRector::class
         );
 
@@ -99,7 +101,7 @@ class SomeClass
 CODE_SAMPLE
                 ,
                 [
-                    self::MIGRATE_INNER_CLASS_REFERENCE => false
+                    self::MIGRATE_INNER_CLASS_REFERENCE => false,
                 ]
             ),
         ]);
