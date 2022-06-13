@@ -10,9 +10,11 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -22,7 +24,8 @@ final class NodeRemover
 {
     public function __construct(
         private readonly NodesToRemoveCollector $nodesToRemoveCollector,
-        private readonly RectorChangeCollector $rectorChangeCollector
+        private readonly RectorChangeCollector $rectorChangeCollector,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -33,6 +36,32 @@ final class NodeRemover
         $isJustAddedNode = ! (bool) $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         if ($isJustAddedNode) {
             return;
+        }
+
+        if ($node instanceof Stmt) {
+            /**
+             * Check single line comment,eg:
+             *
+             *      // @phpstan-ignore-next-line
+             */
+            $comments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
+
+            foreach ($comments as $comment) {
+                if ($comment->getText() === '// @phpstan-ignore-next-line') {
+                    return;
+                }
+            }
+
+            # Check multi lines comments, eg:
+            #
+            #  /**
+            #   * @phpstan-ignore-next-line
+            #   */
+            #
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+            if ($phpDocInfo->hasByName('phpstan-ignore-next-line')) {
+                return;
+            }
         }
 
         $this->nodesToRemoveCollector->addNodeToRemove($node);

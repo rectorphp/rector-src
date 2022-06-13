@@ -12,7 +12,7 @@ final class SkipUsePhpstanIgnoreNextLine
     /**
      * @phpstan-ignore-next-line
      */
-    public function run()
+    public function run2()
     {
     }
 }
