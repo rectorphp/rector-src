@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeRemoval;
 
+use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
@@ -48,15 +49,13 @@ final class NodeRemover
             $comments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
 
             foreach ($comments as $comment) {
-                if (! $comment instanceof Doc) {
+                if (! $comment instanceof Comment) {
                     continue;
                 }
 
-                if ($comment->getText() !== '// @phpstan-ignore-next-line') {
-                    continue;
+                if ($comment->getText() === '// @phpstan-ignore-next-line') {
+                    return;
                 }
-
-                return;
             }
 
             # Check multi lines comments, eg:
