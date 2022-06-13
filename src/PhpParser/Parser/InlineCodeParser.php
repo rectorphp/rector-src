@@ -43,7 +43,7 @@ final class InlineCodeParser
 
     /**
      * @var string
-     * @see https://regex101.com/r/ZBirfo/2
+     * @see https://regex101.com/r/8fDjnR/1
      */
     private const VARIABLE_IN_SINGLE_QUOTED_REGEX = '#\'(?<variable>\$.*)\'#U';
 
