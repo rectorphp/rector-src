@@ -18,7 +18,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
+use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 
@@ -27,7 +30,8 @@ final class NodeRemover
     public function __construct(
         private readonly NodesToRemoveCollector $nodesToRemoveCollector,
         private readonly RectorChangeCollector $rectorChangeCollector,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly CurrentRectorProvider $currentRectorProvider
     ) {
     }
 
@@ -40,7 +44,9 @@ final class NodeRemover
             return;
         }
 
-        if ($node instanceof Stmt) {
+        $currentRector = $this->currentRectorProvider->getCurrentRector();
+        if ($node instanceof Stmt && $currentRector instanceof PhpRectorInterface && ! str_contains($currentRector::class, 'Downgrade')) {
+
             /**
              * Check single line comment,eg:
              *
