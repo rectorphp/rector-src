@@ -48,9 +48,13 @@ final class NodeRemover
             $comments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
 
             foreach ($comments as $comment) {
-                if ($comment instanceof Doc && $comment->getText() === '// @phpstan-ignore-next-line') {
-                    return;
+                if (! $comment instanceof Doc) {
+                    continue;
                 }
+                if ($comment->getText() !== '// @phpstan-ignore-next-line') {
+                    continue;
+                }
+                return;
             }
 
             # Check multi lines comments, eg:
