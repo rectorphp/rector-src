@@ -45,7 +45,7 @@ final class NodeRemover
         }
 
         $currentRector = $this->currentRectorProvider->getCurrentRector();
-        if ($node instanceof Stmt && $currentRector instanceof PhpRectorInterface && ! str_contains($currentRector::class, 'Downgrade')) {
+        if ($node instanceof Stmt && $currentRector instanceof PhpRectorInterface && str_starts_with($currentRector::class, 'Rector\DeadCode')) {
 
             /**
              * Check single line comment,eg:
