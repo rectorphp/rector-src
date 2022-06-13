@@ -179,7 +179,10 @@ final class AnonymousFunctionFactory
         $anonymousFunction->params[] = new Param(new Variable('matches'));
 
         if ($variables !== []) {
-            $anonymousFunction->uses = array_map(fn (Variable $variable) => new ClosureUse($variable), $variables);
+            $anonymousFunction->uses = array_map(
+                fn (Variable $variable): ClosureUse => new ClosureUse($variable),
+                $variables
+            );
         }
 
         return $anonymousFunction;
