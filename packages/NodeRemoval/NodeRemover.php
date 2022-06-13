@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeRemoval;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -47,7 +48,7 @@ final class NodeRemover
             $comments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
 
             foreach ($comments as $comment) {
-                if ($comment->getText() === '// @phpstan-ignore-next-line') {
+                if ($comment instanceof Doc && $comment->getText() === '// @phpstan-ignore-next-line') {
                     return;
                 }
             }
