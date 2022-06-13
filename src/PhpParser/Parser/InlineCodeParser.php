@@ -7,11 +7,13 @@ namespace Rector\Core\PhpParser\Parser;
 use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\Util\StringUtils;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
@@ -40,6 +42,12 @@ final class InlineCodeParser
      * @see https://regex101.com/r/TUWwKw/1/
      */
     private const ENDING_SEMI_COLON_REGEX = '#;(\s+)?$#';
+
+    /**
+     * @var string
+     * @see https://regex101.com/r/ZBirfo/2
+     */
+    private const VARIABLE_IN_SINGLE_QUOTED_REGEX = '#\'(?<variable>\$.*)\'#U';
 
     public function __construct(
         private readonly NodePrinterInterface $nodePrinter,
@@ -83,7 +91,10 @@ final class InlineCodeParser
         }
 
         if ($expr instanceof Concat) {
-            return $this->stringify($expr->left) . $this->stringify($expr->right);
+            $string = $this->stringify($expr->left) . $this->stringify($expr->right);
+            return Strings::replace($string, self::VARIABLE_IN_SINGLE_QUOTED_REGEX, function (array $match) {
+                return $match['variable'];
+            });
         }
 
         return $this->nodePrinter->print($expr);
