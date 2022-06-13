@@ -146,9 +146,9 @@ final class AnonymousFunctionFactory
     public function createAnonymousFunctionFromString(Expr $expr): ?Closure
     {
         $variables = $this->betterNodeFinder->findInstanceOf($expr, Variable::class);
-        $expr = new String_($this->inlineCodeParser->stringify($expr));
+        $string = new String_($this->inlineCodeParser->stringify($expr));
 
-        $phpCode = '<?php ' . $expr->value . ';';
+        $phpCode = '<?php ' . $string->value . ';';
         $contentStmts = $this->simplePhpParser->parseString($phpCode);
 
         $anonymousFunction = new Closure();
