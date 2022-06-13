@@ -29,8 +29,8 @@ final class CommentRemover
         $nodes = $node instanceof Node
             ? [$node]
             : $node;
-        $copiedNodes = array_map(fn (Node $node): Node => clone $node, $nodes);
+        $clonedNodes = array_map(fn (Node $node): Node => clone $node, $nodes);
 
-        return $this->commentRemovingNodeTraverser->traverse($copiedNodes);
+        return $this->commentRemovingNodeTraverser->traverse($clonedNodes);
     }
 }
