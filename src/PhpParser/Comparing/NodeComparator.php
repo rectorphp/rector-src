@@ -22,9 +22,7 @@ final class NodeComparator
      */
     public function printWithoutComments(Node | array | null $node): string
     {
-        $nodeWithoutComment = $this->commentRemover->removeFromNode($node);
-        $content = $this->nodePrinter->print($nodeWithoutComment);
-
+        $content = $this->nodePrinter->print($this->commentRemover->removeFromNode($node));
         return trim($content);
     }
 
