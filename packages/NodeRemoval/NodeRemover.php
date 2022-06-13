@@ -51,9 +51,11 @@ final class NodeRemover
                 if (! $comment instanceof Doc) {
                     continue;
                 }
+
                 if ($comment->getText() !== '// @phpstan-ignore-next-line') {
                     continue;
                 }
+
                 return;
             }
 
