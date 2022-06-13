@@ -60,15 +60,15 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
             $lastFuncCallNode = $activeFuncCallNode;
         }
 
-        // nothing to improve
-        if ($this->nestingLevel < 2) {
-            return $activeFuncCallNode;
+        if ($this->nestingLevel >= 2) {
+            $node->args[0] = $lastFuncCallNode->args[0];
+            $node->args[1] = new Arg(new LNumber($this->nestingLevel));
+
+            return $node;
         }
 
-        $node->args[0] = $lastFuncCallNode->args[0];
-        $node->args[1] = new Arg(new LNumber($this->nestingLevel));
-
-        return $node;
+        // nothing to improve
+        return null;
     }
 
     public function provideMinPhpVersion(): int
