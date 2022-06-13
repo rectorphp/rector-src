@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeRemoval;
 
 use PhpParser\Comment;
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -21,7 +20,6 @@ use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Logging\CurrentRectorProvider;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 
@@ -44,9 +42,7 @@ final class NodeRemover
             return;
         }
 
-        $currentRector = $this->currentRectorProvider->getCurrentRector();
-        if ($node instanceof Stmt && $currentRector instanceof PhpRectorInterface && str_starts_with($currentRector::class, 'Rector\DeadCode')) {
-
+        if ($this->shouldCheckPHPStanIgnoreNextLine($node)) {
             /**
              * Check single line comment,eg:
              *
@@ -162,5 +158,14 @@ final class NodeRemover
         $this->rectorChangeCollector->notifyNodeFileInfo($class->implements[$key]);
 
         unset($class->implements[$key]);
+    }
+
+    private function shouldCheckPHPStanIgnoreNextLine(Node $node): bool
+    {
+        $currentRector = $this->currentRectorProvider->getCurrentRector();
+        return $node instanceof Stmt && $currentRector instanceof PhpRectorInterface && str_starts_with(
+            $currentRector::class,
+            'Rector\DeadCode'
+        );
     }
 }
