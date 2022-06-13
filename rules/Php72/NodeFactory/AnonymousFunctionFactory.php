@@ -143,7 +143,7 @@ final class AnonymousFunctionFactory
         return $anonymousFunction;
     }
 
-    public function createAnonymousFunctionFromString(Expr $expr): ?Closure
+    public function createAnonymousFunctionFromExpr(Expr $expr): ?Closure
     {
         $stringValue = $this->inlineCodeParser->stringify($expr);
 
