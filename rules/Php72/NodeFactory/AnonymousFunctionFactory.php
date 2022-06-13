@@ -180,12 +180,11 @@ final class AnonymousFunctionFactory
         $variables = $expr instanceof Variable
             ? []
             : $this->betterNodeFinder->findInstanceOf($expr, Variable::class);
-        if ($variables !== []) {
-            $anonymousFunction->uses = array_map(
-                fn (Variable $variable): ClosureUse => new ClosureUse($variable),
-                $variables
-            );
-        }
+
+        $anonymousFunction->uses = array_map(
+            fn (Variable $variable): ClosureUse => new ClosureUse($variable),
+            $variables
+        );
 
         return $anonymousFunction;
     }
