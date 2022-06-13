@@ -71,14 +71,14 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
         return $node;
     }
 
-    private function shouldSkip(): bool
-    {
-        return $this->nestingLevel < 2;
-    }
-
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::DIRNAME_LEVELS;
+    }
+
+    private function shouldSkip(): bool
+    {
+        return $this->nestingLevel < 2;
     }
 
     private function matchNestedDirnameFuncCall(FuncCall $funcCall): ?FuncCall
