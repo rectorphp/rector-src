@@ -27,13 +27,13 @@ use stdClass;
 function countables2()
 {
     $values = false;
-    $count = is_array($values) || $values instanceof \Countable ? count($values) : 0;
+    $count = is_array($values) || $values instanceof \Countable ? count($values) : (is_null($values) ? 0 : 1);
 
     $values = true;
-    $count = is_array($values) || $values instanceof \Countable ? count($values) : 0;
+    $count = is_array($values) || $values instanceof \Countable ? count($values) : (is_null($values) ? 0 : 1);
 
     $values = new stdClass();
-    $count = is_array($values) || $values instanceof \Countable ? count($values) : 0;
+    $count = is_array($values) || $values instanceof \Countable ? count($values) : (is_null($values) ? 0 : 1);
 }
 
 ?>

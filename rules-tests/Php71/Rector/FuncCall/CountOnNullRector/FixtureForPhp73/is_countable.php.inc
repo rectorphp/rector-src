@@ -20,7 +20,7 @@ class IsCountable
 {
     public function run($values)
     {
-        $valueCount = is_countable($values) ? count($values) : 0;
+        $valueCount = is_countable($values) ? count($values) : (is_null($values) ? 0 : 1);
     }
 }
 

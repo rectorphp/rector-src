@@ -30,7 +30,7 @@ final class TypeChangedOnIf
             $data = new \stdClass;
         }
 
-        $data[] = (is_array($data) || $data instanceof \Countable ? count($data) : 0) !== 0 ? 'a' : 'b';
+        $data[] = (is_array($data) || $data instanceof \Countable ? count($data) : (is_null($values) ? 0 : 1)) !== 0 ? 'a' : 'b';
     }
 }
 

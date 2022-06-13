@@ -32,7 +32,7 @@ final class LocalPropertyWithDoc
     public function getTitle()
     {
         $this->titles = null;
-        $titleCount = $this->titles === null ? 0 : count($this->titles);
+        $titleCount = is_array($this->titles) || $this->titles instanceof \Countable ? count($this->titles) : (is_null($this->titles) ? 0 : 1);
     }
 }
 

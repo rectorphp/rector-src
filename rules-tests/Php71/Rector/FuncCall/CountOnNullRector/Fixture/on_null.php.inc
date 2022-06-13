@@ -21,9 +21,9 @@ namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\Fixture;
 function countables($values)
 {
     $valueCount = is_array($values) || $values instanceof Countable ? count($values) : 0;
-    $valueCount = is_array($values) || $values instanceof \Countable ? count($values) : 0;
+    $valueCount = is_array($values) || $values instanceof \Countable ? count($values) : (is_null($values) ? 0 : 1);
 
-    if ((is_array($values) || $values instanceof \Countable ? count($values) : 0) >= 2) {
+    if ((is_array($values) || $values instanceof \Countable ? count($values) : (is_null($values) ? 0 : 1)) >= 2) {
         echo 'yes';
     }
 }
