@@ -145,10 +145,6 @@ final class AnonymousFunctionFactory
 
     public function createAnonymousFunctionFromString(Expr $expr): ?Closure
     {
-        $variables = $expr instanceof Variable
-            ? []
-            : $this->betterNodeFinder->findInstanceOf($expr, Variable::class);
-
         $stringValue = $this->inlineCodeParser->stringify($expr);
 
         $phpCode = '<?php ' . $stringValue . ';';
@@ -181,6 +177,9 @@ final class AnonymousFunctionFactory
         $anonymousFunction->stmts[] = new Return_($stmt);
         $anonymousFunction->params[] = new Param(new Variable('matches'));
 
+        $variables = $expr instanceof Variable
+            ? []
+            : $this->betterNodeFinder->findInstanceOf($expr, Variable::class);
         if ($variables !== []) {
             $anonymousFunction->uses = array_map(
                 fn (Variable $variable): ClosureUse => new ClosureUse($variable),
