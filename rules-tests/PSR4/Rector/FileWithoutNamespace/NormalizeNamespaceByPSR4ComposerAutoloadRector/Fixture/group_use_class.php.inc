@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Foo\Bar\{ SomeLongClass as SomeClass };
 use Foo\Bar\{ SomeLongClass2 };
-class AliasedUsed
+class GroupUseClass
 {
     public function someMethod()
     {
@@ -25,7 +25,7 @@ namespace Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4
 
 use Foo\Bar\{SomeLongClass as SomeClass};
 use Foo\Bar\{SomeLongClass2};
-class AliasedUsed
+class GroupUseClass
 {
     public function someMethod()
     {
