@@ -22,8 +22,8 @@ final class NodeComparator
      */
     public function printWithoutComments(Node | array | null $node): string
     {
-        $node = $this->commentRemover->removeFromNode($node);
-        $content = $this->nodePrinter->print($node);
+        $nodeWithCommentRemoved = $this->commentRemover->removeFromNode($node);
+        $content = $this->nodePrinter->print($nodeWithCommentRemoved);
 
         return trim($content);
     }
