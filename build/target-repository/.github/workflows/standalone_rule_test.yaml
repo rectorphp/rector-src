@@ -7,7 +7,7 @@ on:
             - main
 
 jobs:
-    end_to_end:
+    standalone_rule_test:
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
