@@ -24,16 +24,52 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            $nearestScope = null;
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
-            $errorMessage = sprintf(
-                'Scope not available on "%s" node with parent node of "%s", but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
-                $node::class,
-                $parent instanceof Node ? $parent::class : null,
-                static::class,
-            );
+            while (! $nearestScope instanceof Scope) {
+                if (! $parentNode instanceof Node) {
+                    break;
+                }
 
-            throw new ShouldNotHappenException($errorMessage);
+                $nearestScope = $parentNode->getAttribute(AttributeKey::SCOPE);
+                if ($nearestScope instanceof Scope) {
+                    $scope = $nearestScope;
+                    break;
+                }
+
+                $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+            }
+
+            if ($scope instanceof Scope) {
+                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+                while ($parentNode instanceof Node) {
+                    if (! $parentNode instanceof Node) {
+                        break;
+                    }
+
+                    $parentNodeScope = $parentNode->getAttribute(AttributeKey::SCOPE);
+                    if ($parentNodeScope instanceof Scope) {
+                        break;
+                    }
+
+                    $parentNode->setAttribute(AttributeKey::SCOPE, $scope);
+                    $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+                }
+            }
+
+            if (! $scope instanceof Scope) {
+                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+                $errorMessage = sprintf(
+                    'Scope not available on "%s" node with parent node of "%s", but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
+                    $node::class,
+                    $parent instanceof Node ? $parent::class : null,
+                    static::class,
+                );
+
+                throw new ShouldNotHappenException($errorMessage);
+            }
         }
 
         return $this->refactorWithScope($node, $scope);
