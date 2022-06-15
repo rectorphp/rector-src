@@ -56,7 +56,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         /** @var Scope|null $nearestScope */
         while (! $nearestScope instanceof Scope) {
             if (! $parentNode instanceof Node) {
-                break;
+                return null;
             }
 
             $nearestScope = $parentNode->getAttribute(AttributeKey::SCOPE);
