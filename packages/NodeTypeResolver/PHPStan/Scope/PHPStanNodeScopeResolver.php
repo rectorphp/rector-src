@@ -142,7 +142,6 @@ final class PHPStanNodeScopeResolver
             }
 
             // scope is missing on attributes
-            // @todo decorate parent nodes too
             if ($node instanceof Property) {
                 foreach ($node->attrGroups as $attrGroup) {
                     foreach ($attrGroup->attrs as $attribute) {
