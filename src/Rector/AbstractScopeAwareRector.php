@@ -45,6 +45,10 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
 
     private function isCurrentStmtBelowParentNode(Node $parentNode, ?Stmt $currentStmt): bool
     {
+        if ($parentNode === $currentStmt) {
+            return false;
+        }
+
         return (bool) $this->betterNodeFinder->findFirst(
             $parentNode,
             fn (Node $subNode): bool => $subNode === $currentStmt
@@ -53,6 +57,10 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
 
     private function resolveScopeFromNearestParentNode(Node $node, ?Scope $scope): ?Scope
     {
+        if ($node instanceof Stmt) {
+            return null;
+        }
+
         $nearestScope = null;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
@@ -63,7 +71,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
                 break;
             }
 
-            if ($parentNode !== $currentStmt && $this->isCurrentStmtBelowParentNode($parentNode, $currentStmt)) {
+            if ($this->isCurrentStmtBelowParentNode($parentNode, $currentStmt)) {
                 return null;
             }
 
