@@ -77,6 +77,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         }
 
+        $node->setAttribute(AttributeKey::SCOPE, $scope);
         return $scope;
     }
 }
