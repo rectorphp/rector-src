@@ -24,40 +24,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
-            $nearestScope = null;
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-            while (! $nearestScope instanceof Scope) {
-                if (! $parentNode instanceof Node) {
-                    break;
-                }
-
-                $nearestScope = $parentNode->getAttribute(AttributeKey::SCOPE);
-                if ($nearestScope instanceof Scope) {
-                    $scope = $nearestScope;
-                    break;
-                }
-
-                $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            }
-
-            if ($scope instanceof Scope) {
-                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-                while ($parentNode instanceof Node) {
-                    if (! $parentNode instanceof Node) {
-                        break;
-                    }
-
-                    $parentNodeScope = $parentNode->getAttribute(AttributeKey::SCOPE);
-                    if ($parentNodeScope instanceof Scope) {
-                        break;
-                    }
-
-                    $parentNode->setAttribute(AttributeKey::SCOPE, $scope);
-                    $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-                }
-            }
-
+            $scope = $this->resolveScopeFromNearestParentNode($node, $scope);
             if (! $scope instanceof Scope) {
                 $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
@@ -73,5 +40,43 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         }
 
         return $this->refactorWithScope($node, $scope);
+    }
+
+    private function resolveScopeFromNearestParentNode(Node $node, ?Scope $scope): ?Scope
+    {
+        $nearestScope = null;
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+        /** @var Scope|null $nearestScope */
+        while (! $nearestScope instanceof Scope) {
+            if (! $parentNode instanceof Node) {
+                break;
+            }
+
+            $nearestScope = $parentNode->getAttribute(AttributeKey::SCOPE);
+            if ($nearestScope instanceof Scope) {
+                $scope = $nearestScope;
+                break;
+            }
+
+            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        }
+
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        while ($parentNode instanceof Node) {
+            $parentNodeScope = $parentNode->getAttribute(AttributeKey::SCOPE);
+            if ($parentNodeScope instanceof Scope) {
+                break;
+            }
+
+            $parentNode->setAttribute(AttributeKey::SCOPE, $scope);
+            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        }
+
+        return $scope;
     }
 }
