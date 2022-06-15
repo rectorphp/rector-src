@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -42,15 +43,28 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         return $this->refactorWithScope($node, $scope);
     }
 
+    private function isCurrentStmtBelowParentNode(Node $parentNode, ?Stmt $currentStmt): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst(
+            $parentNode,
+            fn (Node $subNode): bool => $subNode === $currentStmt
+        );
+    }
+
     private function resolveScopeFromNearestParentNode(Node $node, ?Scope $scope): ?Scope
     {
         $nearestScope = null;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
 
         /** @var Scope|null $nearestScope */
         while (! $nearestScope instanceof Scope) {
             if (! $parentNode instanceof Node) {
                 break;
+            }
+
+            if ($parentNode !== $currentStmt && $this->isCurrentStmtBelowParentNode($parentNode, $currentStmt)) {
+                return null;
             }
 
             $nearestScope = $parentNode->getAttribute(AttributeKey::SCOPE);
