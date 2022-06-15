@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -215,6 +216,8 @@ CODE_SAMPLE;
 
         $this->printDebugCurrentFileAndRule();
 
+        $this->fillScope($node);
+
         $node = $this->refactor($node);
 
         // nothing to change → continue
@@ -349,6 +352,55 @@ CODE_SAMPLE;
     protected function removeNode(Node $node): void
     {
         $this->nodeRemover->removeNode($node);
+    }
+
+    private function fillScope(Node $node): void
+    {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+
+        if ($scope instanceof Scope || $node instanceof Stmt) {
+            return;
+        }
+
+        $nearestScope = null;
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+
+        /** @var Scope|null $nearestScope */
+        while (! $nearestScope instanceof Scope) {
+            if (! $parentNode instanceof Node) {
+                return;
+            }
+
+            $nearestScope = $parentNode->getAttribute(AttributeKey::SCOPE);
+            if ($nearestScope instanceof Scope) {
+                $scope = $nearestScope;
+                break;
+            }
+
+            if ($parentNode === $currentStmt) {
+                return;
+            }
+
+            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        }
+
+        if (! $scope instanceof Scope) {
+            return;
+        }
+
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        while ($parentNode instanceof Node) {
+            $parentNodeScope = $parentNode->getAttribute(AttributeKey::SCOPE);
+            if ($parentNodeScope instanceof Scope) {
+                break;
+            }
+
+            $parentNode->setAttribute(AttributeKey::SCOPE, $scope);
+            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        }
+
+        $node->setAttribute(AttributeKey::SCOPE, $scope);
     }
 
     /**
