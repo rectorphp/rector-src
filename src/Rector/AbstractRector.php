@@ -364,7 +364,6 @@ CODE_SAMPLE;
 
         $nearestScope = null;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
 
         /** @var Scope|null $nearestScope */
         while (! $nearestScope instanceof Scope) {
@@ -376,10 +375,6 @@ CODE_SAMPLE;
             if ($nearestScope instanceof Scope) {
                 $scope = $nearestScope;
                 break;
-            }
-
-            if ($parentNode === $currentStmt) {
-                return;
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
