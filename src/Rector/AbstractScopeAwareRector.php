@@ -51,7 +51,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
 
         $nearestScope = null;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
 
         /** @var Scope|null $nearestScope */
         while (! $nearestScope instanceof Scope) {
@@ -63,10 +62,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
             if ($nearestScope instanceof Scope) {
                 $scope = $nearestScope;
                 break;
-            }
-
-            if ($parentNode === $currentStmt) {
-                return null;
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
