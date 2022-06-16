@@ -306,7 +306,11 @@ final class PropertyManipulator
             return false;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
+        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
+            $node->getAttribute(AttributeKey::SCOPE),
+            $node->getArgs(),
+            $functionLikeReflection->getVariants()
+        );
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             if ($parameterReflection->passedByReference()->yes()) {
                 return true;
