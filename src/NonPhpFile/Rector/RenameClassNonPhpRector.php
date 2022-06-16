@@ -47,14 +47,14 @@ final class RenameClassNonPhpRector implements NonPhpRectorInterface, Configurab
             [
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
-services:
-    - SomeOldClass
-CODE_SAMPLE
+                        services:
+                            - SomeOldClass
+                        CODE_SAMPLE
                 ,
                     <<<'CODE_SAMPLE'
-services:
-    - SomeNewClass
-CODE_SAMPLE
+                        services:
+                            - SomeNewClass
+                        CODE_SAMPLE
                 ,
                     [
                         'SomeOldClass' => 'SomeNewClass',
