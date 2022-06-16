@@ -24,7 +24,7 @@ use function reset;
 use function spl_object_hash;
 use function uasort;
 
-class Collection implements \Countable, \IteratorAggregate, \ArrayAccess
+class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * {@inheritDoc}

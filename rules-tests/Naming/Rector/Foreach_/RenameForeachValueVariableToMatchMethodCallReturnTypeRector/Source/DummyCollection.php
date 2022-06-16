@@ -8,7 +8,7 @@ use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 
-final class DummyCollection implements Countable, IteratorAggregate, ArrayAccess
+final class DummyCollection implements ArrayAccess, Countable, IteratorAggregate
 {
     public function getIterator(): void
     {

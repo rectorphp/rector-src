@@ -11,7 +11,7 @@ if (class_exists('Symfony\Component\Form\Extension\Core\Type\TextType')) {
     return;
 }
 
-class TextType implements FormTypeInterface, FormBuilderInterface
+class TextType implements FormBuilderInterface, FormTypeInterface
 {
 
 }
