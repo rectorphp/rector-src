@@ -105,6 +105,30 @@ final class ParamAnalyzer
         return $param->default instanceof ConstFetch && $this->valueResolver->isNull($param->default);
     }
 
+    public function isParamReassign(Param $param): bool
+    {
+        $classMethod = $param->getAttribute(AttributeKey::PARENT_NODE);
+
+        if (! $classMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        $paramName = (string) $this->nodeNameResolver->getName($param->var);
+        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($classMethod, function (Node $node) use (
+            $paramName
+        ): bool {
+            if (! $node instanceof Assign) {
+                return false;
+            }
+
+            if (! $node->var instanceof Variable) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($node->var, $paramName);
+        });
+    }
+
     private function isVariableInClosureUses(Closure $closure, Variable $variable): bool
     {
         foreach ($closure->uses as $use) {
@@ -141,29 +165,5 @@ final class ParamAnalyzer
 
         $arguments = $this->funcCallManipulator->extractArgumentsFromCompactFuncCalls([$node]);
         return $this->nodeNameResolver->isNames($param, $arguments);
-    }
-
-    public function isParamReassign(Param $param): bool
-    {
-        $classMethod = $param->getAttribute(AttributeKey::PARENT_NODE);
-
-        if (! $classMethod instanceof ClassMethod) {
-            return false;
-        }
-
-        $paramName = (string) $this->nodeNameResolver->getName($param->var);
-        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($classMethod, function (Node $node) use (
-            $paramName
-        ): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            if (! $node->var instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node->var, $paramName);
-        });
     }
 }
