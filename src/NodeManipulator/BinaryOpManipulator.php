@@ -116,7 +116,7 @@ final class BinaryOpManipulator
      */
     private function validateCondition(callable|string $firstCondition): void
     {
-        if (is_callable($firstCondition)) {
+        if (\is_callable($firstCondition)) {
             return;
         }
 
@@ -133,7 +133,7 @@ final class BinaryOpManipulator
      */
     private function normalizeCondition(callable|string $condition): callable
     {
-        if (is_callable($condition)) {
+        if (\is_callable($condition)) {
             return $condition;
         }
 

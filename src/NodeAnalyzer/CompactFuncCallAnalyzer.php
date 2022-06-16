@@ -26,7 +26,7 @@ final class CompactFuncCallAnalyzer
             return false;
         }
 
-        if (! is_string($variable->name)) {
+        if (! \is_string($variable->name)) {
             return false;
         }
 

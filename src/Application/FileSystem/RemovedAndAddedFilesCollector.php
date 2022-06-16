@@ -96,17 +96,17 @@ final class RemovedAndAddedFilesCollector
 
     public function getAffectedFilesCount(): int
     {
-        return count($this->addedFiles) + count($this->removedFileInfos);
+        return \count($this->addedFiles) + \count($this->removedFileInfos);
     }
 
     public function getAddedFileCount(): int
     {
-        return count($this->addedFiles);
+        return \count($this->addedFiles);
     }
 
     public function getRemovedFilesCount(): int
     {
-        return count($this->removedFileInfos);
+        return \count($this->removedFileInfos);
     }
 
     /**

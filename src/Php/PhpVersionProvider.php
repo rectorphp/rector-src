@@ -73,11 +73,11 @@ final class PhpVersionProvider
         // get all constants
         $phpVersionReflectionClass = new ReflectionClass(PhpVersion::class);
         // @todo check
-        if (in_array($phpVersionFeatures, $phpVersionReflectionClass->getConstants(), true)) {
+        if (\in_array($phpVersionFeatures, $phpVersionReflectionClass->getConstants(), true)) {
             return;
         }
 
-        if (! is_int($phpVersionFeatures)) {
+        if (! \is_int($phpVersionFeatures)) {
             $this->throwInvalidTypeException($phpVersionFeatures);
         }
 

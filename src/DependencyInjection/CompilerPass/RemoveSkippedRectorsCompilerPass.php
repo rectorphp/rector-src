@@ -24,7 +24,7 @@ final class RemoveSkippedRectorsCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            if (! in_array($definition->getClass(), $skippedRectorClasses, true)) {
+            if (! \in_array($definition->getClass(), $skippedRectorClasses, true)) {
                 continue;
             }
 
@@ -47,7 +47,7 @@ final class RemoveSkippedRectorsCompilerPass implements CompilerPassInterface
      */
     private function isRectorClass($element): bool
     {
-        if (! is_string($element)) {
+        if (! \is_string($element)) {
             return false;
         }
 

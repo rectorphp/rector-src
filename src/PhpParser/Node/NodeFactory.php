@@ -243,7 +243,7 @@ final class NodeFactory
 
     public function createPropertyFetch(string | Expr $variableNameOrExpr, string $property): PropertyFetch
     {
-        $fetcherExpr = is_string($variableNameOrExpr) ? new Variable($variableNameOrExpr) : $variableNameOrExpr;
+        $fetcherExpr = \is_string($variableNameOrExpr) ? new Variable($variableNameOrExpr) : $variableNameOrExpr;
         return $this->builderFactory->propertyFetch($fetcherExpr, $property);
     }
 
@@ -337,7 +337,7 @@ final class NodeFactory
      */
     public function createConcat(array $exprs): ?Concat
     {
-        if (count($exprs) < 2) {
+        if (\count($exprs) < 2) {
             return null;
         }
 
@@ -477,7 +477,7 @@ final class NodeFactory
         $classConstFetch = $this->builderFactory->classConstFetch($className, $constantName);
 
         $classNameString = $className->toString();
-        if (in_array($classNameString, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
+        if (\in_array($classNameString, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
             $currentNode = $this->currentNodeProvider->getNode();
             if ($currentNode !== null) {
                 $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $className);
@@ -498,7 +498,7 @@ final class NodeFactory
             return null;
         }
 
-        if (count($newNodes) === 1) {
+        if (\count($newNodes) === 1) {
             return $newNodes[0];
         }
 
@@ -543,10 +543,10 @@ final class NodeFactory
         } elseif ($item instanceof Identifier) {
             $string = new String_($item->toString());
             $arrayItem = new ArrayItem($string);
-        } elseif (is_scalar($item) || $item instanceof Array_) {
+        } elseif (\is_scalar($item) || $item instanceof Array_) {
             $itemValue = BuilderHelpers::normalizeValue($item);
             $arrayItem = new ArrayItem($itemValue);
-        } elseif (is_array($item)) {
+        } elseif (\is_array($item)) {
             $arrayItem = new ArrayItem($this->createArray($item));
         }
 
@@ -564,7 +564,7 @@ final class NodeFactory
             return $arrayItem;
         }
 
-        $nodeClass = is_object($item) ? $item::class : $item;
+        $nodeClass = \is_object($item) ? $item::class : $item;
         throw new NotImplementedYetException(sprintf(
             'Not implemented yet. Go to "%s()" and add check for "%s" node.',
             __METHOD__,
@@ -622,7 +622,7 @@ final class NodeFactory
      */
     private function createName(string $className): Name|FullyQualified
     {
-        if (in_array($className, [ObjectReference::PARENT, ObjectReference::SELF, ObjectReference::STATIC], true)) {
+        if (\in_array($className, [ObjectReference::PARENT, ObjectReference::SELF, ObjectReference::STATIC], true)) {
             return new Name($className);
         }
 
@@ -632,7 +632,7 @@ final class NodeFactory
     private function createMethodCaller(
         Expr|string $exprOrVariableName
     ): PropertyFetch|Variable|MethodCall|StaticPropertyFetch|Expr {
-        if (is_string($exprOrVariableName)) {
+        if (\is_string($exprOrVariableName)) {
             return new Variable($exprOrVariableName);
         }
 

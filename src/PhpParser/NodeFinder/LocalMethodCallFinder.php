@@ -32,7 +32,7 @@ final class LocalMethodCallFinder
         }
 
         $className = $this->nodeNameResolver->getName($class);
-        if (! is_string($className)) {
+        if (! \is_string($className)) {
             return [];
         }
 

@@ -18,7 +18,7 @@ final class ValueObjectInliner
      */
     public static function inline(object | array $object): InlineServiceConfigurator | array
     {
-        if (is_object($object)) {
+        if (\is_object($object)) {
             return self::inlineSingle($object);
         }
 
@@ -47,7 +47,7 @@ final class ValueObjectInliner
             $resolvedValue = $propertyReflection->getValue($object);
             $resolvedValue = self::inlineNestedArrayObjects($resolvedValue);
 
-            $argumentValues[] = is_object($resolvedValue) ? self::inlineSingle($resolvedValue) : $resolvedValue;
+            $argumentValues[] = \is_object($resolvedValue) ? self::inlineSingle($resolvedValue) : $resolvedValue;
         }
 
         return $argumentValues;
@@ -89,9 +89,9 @@ final class ValueObjectInliner
      */
     private static function inlineNestedArrayObjects($resolvedValue)
     {
-        if (is_array($resolvedValue)) {
+        if (\is_array($resolvedValue)) {
             foreach ($resolvedValue as $key => $value) {
-                if (is_object($value)) {
+                if (\is_object($value)) {
                     $resolvedValue[$key] = self::inline($value);
                 }
             }

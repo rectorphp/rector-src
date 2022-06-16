@@ -122,7 +122,7 @@ final class ProcessCommand extends AbstractProcessCommand
 
         foreach ($processResult->getErrors() as $systemError) {
             $errorFile = $systemError->getFile();
-            if (! is_string($errorFile)) {
+            if (! \is_string($errorFile)) {
                 continue;
             }
 

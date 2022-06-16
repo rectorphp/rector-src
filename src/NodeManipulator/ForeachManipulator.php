@@ -15,7 +15,7 @@ final class ForeachManipulator
      */
     public function matchOnlyStmt(Foreach_ $foreach, callable $callable): ?Node
     {
-        if (count($foreach->stmts) !== 1) {
+        if (\count($foreach->stmts) !== 1) {
             return null;
         }
 

@@ -109,7 +109,7 @@ final class ArrayManipulator
             return true;
         }
 
-        return in_array($expr::class, [String_::class, LNumber::class], true);
+        return \in_array($expr::class, [String_::class, LNumber::class], true);
     }
 
     private function isAllowedArrayValue(Expr $expr): bool

@@ -113,7 +113,7 @@ CODE_SAMPLE
     {
         foreach ($classRenames as $oldClass => $newClass) {
             // to prevent no slash override
-            if (! \str_contains($oldClass, '\\')) {
+            if (! str_contains($oldClass, '\\')) {
                 continue;
             }
 
@@ -138,7 +138,7 @@ CODE_SAMPLE
 
     private function createOldClassRegex(string $oldClass): string
     {
-        if (! \str_contains($oldClass, '\\')) {
+        if (! str_contains($oldClass, '\\')) {
             return self::STANDALONE_CLASS_PREFIX_REGEX
                 . preg_quote($oldClass, '#')
                 . self::STANDALONE_CLASS_SUFFIX_REGEX;

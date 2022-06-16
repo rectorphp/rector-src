@@ -70,7 +70,7 @@ final class ConstantArrayTypeToCallReflectionResolver implements TypeToCallRefle
             return null;
         }
 
-        if (count($constantArrayType->getValueTypes()) !== 2) {
+        if (\count($constantArrayType->getValueTypes()) !== 2) {
             return null;
         }
 
@@ -109,7 +109,7 @@ final class ConstantArrayTypeToCallReflectionResolver implements TypeToCallRefle
     {
         $keyTypes = $constantArrayType->getKeyTypes();
 
-        if (count($keyTypes) !== 2) {
+        if (\count($keyTypes) !== 2) {
             return false;
         }
 

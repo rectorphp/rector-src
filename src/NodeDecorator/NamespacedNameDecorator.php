@@ -15,7 +15,7 @@ final class NamespacedNameDecorator
      */
     public function decorate(Node|array $node): void
     {
-        $nodes = is_array($node) ? $node : [$node];
+        $nodes = \is_array($node) ? $node : [$node];
 
         // traverse with node name resolver, to to comply with PHPStan default parser
         $nameResolver = new NameResolver(null, [

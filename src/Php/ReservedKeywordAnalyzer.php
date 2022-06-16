@@ -101,12 +101,12 @@ final class ReservedKeywordAnalyzer
 
     public function isNativeVariable(string $name): bool
     {
-        return in_array($name, self::NATIVE_VARIABLE_NAMES, true);
+        return \in_array($name, self::NATIVE_VARIABLE_NAMES, true);
     }
 
     public function isReserved(string $keyword): bool
     {
         $keyword = strtolower($keyword);
-        return in_array($keyword, self::RESERVED_KEYWORDS, true);
+        return \in_array($keyword, self::RESERVED_KEYWORDS, true);
     }
 }

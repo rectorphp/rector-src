@@ -54,7 +54,7 @@ final class ValueResolver
     public function getStringValue(Expr $expr): string
     {
         $resolvedValue = $this->getValue($expr);
-        if (! is_string($resolvedValue)) {
+        if (! \is_string($resolvedValue)) {
             throw new ShouldNotHappenException();
         }
 
@@ -73,7 +73,7 @@ final class ValueResolver
         if ($expr instanceof ClassConstFetch && $resolvedClassReference) {
             $class = $this->nodeNameResolver->getName($expr->class);
 
-            if (in_array($class, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
+            if (\in_array($class, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
                 // @todo scope is needed
                 $classLike = $this->betterNodeFinder->findParentType($expr, ClassLike::class);
                 if ($classLike instanceof ClassLike) {
@@ -288,8 +288,8 @@ final class ValueResolver
         }
 
         $classConstantReference = $class . '::' . $constant;
-        if (defined($classConstantReference)) {
-            return constant($classConstantReference);
+        if (\defined($classConstantReference)) {
+            return \constant($classConstantReference);
         }
 
         if ($this->reflectionProvider->hasClass($class)) {

@@ -171,7 +171,7 @@ final class ClassMethodAssignManipulator
             return false;
         }
 
-        return in_array($name, $this->alreadyAddedClassMethodNames[$classMethodHash], true);
+        return \in_array($name, $this->alreadyAddedClassMethodNames[$classMethodHash], true);
     }
 
     /**

@@ -6,7 +6,7 @@ use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
 use Tracy\Dumper;
 
-if (! function_exists('dump_with_depth')) {
+if (! \function_exists('dump_with_depth')) {
     /**
      * @param mixed $value
      */
@@ -18,7 +18,7 @@ if (! function_exists('dump_with_depth')) {
     }
 }
 
-if (! function_exists('dn')) {
+if (! \function_exists('dn')) {
     function dn(Node $node, int $depth = 2): void
     {
         dump_node($node, $depth);
@@ -26,13 +26,13 @@ if (! function_exists('dn')) {
 }
 
 
-if (! function_exists('dump_node')) {
+if (! \function_exists('dump_node')) {
     /**
      * @param Node|Node[] $node
      */
     function dump_node(Node | array $node, int $depth = 2): void
     {
-        $nodes = is_array($node) ? $node : [$node];
+        $nodes = \is_array($node) ? $node : [$node];
 
         foreach ($nodes as $node) {
             Dumper::dump($node, [
@@ -43,7 +43,7 @@ if (! function_exists('dump_node')) {
 }
 
 
-if (! function_exists('print_node')) {
+if (! \function_exists('print_node')) {
     /**
      * @param Node|Node[] $node
      */
@@ -51,7 +51,7 @@ if (! function_exists('print_node')) {
     {
         $standard = new Standard();
 
-        $nodes = is_array($node) ? $node : [$node];
+        $nodes = \is_array($node) ? $node : [$node];
 
         foreach ($nodes as $node) {
             $printedContent = $standard->prettyPrint([$node]);

@@ -108,7 +108,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
         // add new line in case of added stmts
-        if (count($stmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
+        if (\count($stmts) !== \count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
             $content .= $this->nl;
         }
 
@@ -124,7 +124,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $node = [];
         }
 
-        if (! is_array($node)) {
+        if (! \is_array($node)) {
             $node = [$node];
         }
 
@@ -190,11 +190,11 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     {
         if ($this->tabOrSpaceIndentCharacter === ' ') {
             // - 4 spaces
-            assert($this->indentLevel >= 4);
+            \assert($this->indentLevel >= 4);
             $this->indentLevel -= 4;
         } else {
             // - 1 tab
-            assert($this->indentLevel >= 1);
+            \assert($this->indentLevel >= 1);
             --$this->indentLevel;
         }
 
@@ -252,7 +252,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function pScalar_DNumber(DNumber $dNumber): string
     {
-        if (is_string($dNumber->value)) {
+        if (\is_string($dNumber->value)) {
             return $dNumber->value;
         }
 
@@ -505,7 +505,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     private function resolveNewStmts(array $stmts): array
     {
-        if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
+        if (\count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
             return $this->resolveNewStmts($stmts[0]->stmts);
         }
 

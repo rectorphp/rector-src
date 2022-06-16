@@ -89,7 +89,7 @@ final class ConfigurationFactory
     {
         // fixes bash edge-case that to merges string with space to one
         foreach ($commandLinePaths as $commandLinePath) {
-            if (\str_contains($commandLinePath, ' ')) {
+            if (str_contains($commandLinePath, ' ')) {
                 $commandLinePaths = explode(' ', $commandLinePath);
             }
         }

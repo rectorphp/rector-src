@@ -68,7 +68,7 @@ final class NonPhpFileProcessor implements FileProcessorInterface
         $pathname = $smartFileInfo->getPathname();
         // bug in path extension
         foreach ($this->getSupportedFileExtensions() as $fileExtension) {
-            if (\str_ends_with($pathname, '.' . $fileExtension)) {
+            if (str_ends_with($pathname, '.' . $fileExtension)) {
                 return true;
             }
         }

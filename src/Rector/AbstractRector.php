@@ -203,7 +203,7 @@ CODE_SAMPLE;
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
         $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
-        if (in_array(static::class, $createdByRule, true)) {
+        if (\in_array(static::class, $createdByRule, true)) {
             return null;
         }
 
@@ -235,7 +235,7 @@ CODE_SAMPLE;
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         /** @var Node $originalNode */
-        if (is_array($node)) {
+        if (\is_array($node)) {
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $node;
 
@@ -390,7 +390,7 @@ CODE_SAMPLE;
     private function mirrorAttributes(array $originalAttributes, Node $newNode): void
     {
         foreach ($originalAttributes as $attributeName => $oldAttributeValue) {
-            if (! in_array($attributeName, self::ATTRIBUTES_TO_MIRROR, true)) {
+            if (! \in_array($attributeName, self::ATTRIBUTES_TO_MIRROR, true)) {
                 continue;
             }
 

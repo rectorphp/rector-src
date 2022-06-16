@@ -112,7 +112,7 @@ final class ApplicationFileProcessor
     {
         $shouldShowProgressBar = $configuration->shouldShowProgressBar();
         if ($shouldShowProgressBar) {
-            $fileCount = count($files);
+            $fileCount = \count($files);
             $this->rectorOutputStyle->progressStart($fileCount);
         }
 
@@ -180,7 +180,7 @@ final class ApplicationFileProcessor
             }
 
             // not relevant for us
-            if (in_array($code, [E_DEPRECATED, E_WARNING], true)) {
+            if (\in_array($code, [E_DEPRECATED, E_WARNING], true)) {
                 return true;
             }
 
@@ -226,7 +226,7 @@ final class ApplicationFileProcessor
             }
 
             if (! $isProgressBarStarted) {
-                $fileCount = count($filePaths);
+                $fileCount = \count($filePaths);
                 $this->rectorOutputStyle->progressStart($fileCount);
                 $isProgressBarStarted = true;
             }
@@ -285,7 +285,7 @@ final class ApplicationFileProcessor
             $smartFileInfo = $file->getSmartFileInfo();
             $pathName = $smartFileInfo->getPathname();
 
-            if (\str_ends_with($pathName, '.php')) {
+            if (str_ends_with($pathName, '.php')) {
                 $filePaths[] = $pathName;
             }
         }

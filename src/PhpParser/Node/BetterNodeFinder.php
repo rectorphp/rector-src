@@ -418,7 +418,7 @@ final class BetterNodeFinder
         ClassMethod | Function_ | Closure $functionLike,
         string|array $types
     ): bool {
-        if (is_string($types)) {
+        if (\is_string($types)) {
             $types = [$types];
         }
 
@@ -448,7 +448,7 @@ final class BetterNodeFinder
         ClassMethod | Function_ | Closure $functionLike,
         string|array $types
     ): array {
-        if (is_string($types)) {
+        if (\is_string($types)) {
             $types = [$types];
         }
 

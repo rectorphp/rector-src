@@ -68,7 +68,7 @@ final class FormatPerservingPrinter
     {
         $newStmts = $file->getNewStmts();
 
-        if (count($newStmts) !== 1) {
+        if (\count($newStmts) !== 1) {
             return $newStmts;
         }
 

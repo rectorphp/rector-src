@@ -186,7 +186,7 @@ final class ReflectionResolver
         }
 
         $className = $this->nodeNameResolver->getName($classLike);
-        if (! is_string($className)) {
+        if (! \is_string($className)) {
             return null;
         }
 

@@ -26,6 +26,6 @@ final class CoalesceAnalyzer
     public function hasIssetableLeft(Coalesce $coalesce): bool
     {
         $leftClass = $coalesce->left::class;
-        return in_array($leftClass, self::ISSETABLE_EXPR, true);
+        return \in_array($leftClass, self::ISSETABLE_EXPR, true);
     }
 }

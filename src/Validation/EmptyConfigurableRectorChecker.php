@@ -44,7 +44,7 @@ final class EmptyConfigurableRectorChecker
     {
         $warningMessage = sprintf(
             'Your project contains %d configurable rector rules that are skipped as need to be configured to run.',
-            count($emptyConfigurableRectorClasses)
+            \count($emptyConfigurableRectorClasses)
         );
         $this->rectorOutputStyle->warning($warningMessage);
 

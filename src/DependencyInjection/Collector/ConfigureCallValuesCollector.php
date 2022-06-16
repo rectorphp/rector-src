@@ -60,10 +60,10 @@ final class ConfigureCallValuesCollector
     {
         foreach ($configureValues as $configureValue) {
             // is nested or unnested value?
-            if (is_array($configureValue) && count($configureValue) === 1) {
+            if (\is_array($configureValue) && \count($configureValue) === 1) {
                 $firstKey = array_key_first($configureValue);
 
-                if (is_string($firstKey) && is_array($configureValue[$firstKey])) {
+                if (\is_string($firstKey) && \is_array($configureValue[$firstKey])) {
                     // has class some public constants?
                     // fixes bug when 1 item is unwrapped and treated as constant key, without rule having public constant
                     $classReflection = new ReflectionClass($rectorClass);

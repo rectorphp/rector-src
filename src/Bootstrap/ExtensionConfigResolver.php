@@ -26,7 +26,7 @@ final class ExtensionConfigResolver
             return $configFileInfos;
         }
 
-        $generatedConfigDirectory = dirname($generatedConfigReflectionClass->getFileName());
+        $generatedConfigDirectory = \dirname($generatedConfigReflectionClass->getFileName());
         foreach (GeneratedConfig::EXTENSIONS as $extensionConfig) {
             /** @var string[] $includedFiles */
             $includedFiles = $extensionConfig['extra']['includes'] ?? [];

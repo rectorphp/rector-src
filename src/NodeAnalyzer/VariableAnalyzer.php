@@ -31,7 +31,7 @@ final class VariableAnalyzer
         return (bool) $this->betterNodeFinder->findFirstPrevious($variable, function (Node $node) use (
             $variable
         ): bool {
-            if (! in_array($node::class, [Static_::class, Global_::class], true)) {
+            if (! \in_array($node::class, [Static_::class, Global_::class], true)) {
                 return false;
             }
 
