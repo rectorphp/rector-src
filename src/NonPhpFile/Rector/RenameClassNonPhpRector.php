@@ -14,7 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
-final class RenameClassNonPhpRector implements NonPhpRectorInterface, ConfigurableRuleInterface, ConfigurableRectorInterface, ComplementaryRectorInterface
+final class RenameClassNonPhpRector implements ComplementaryRectorInterface, ConfigurableRectorInterface, ConfigurableRuleInterface, NonPhpRectorInterface
 {
     /**
      * @see https://regex101.com/r/HKUFJD/7
