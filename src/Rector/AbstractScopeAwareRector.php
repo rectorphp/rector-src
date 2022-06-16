@@ -7,6 +7,7 @@ namespace Rector\Core\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PHPStan\Analyser\Scope;
+use PHPStan\Node\UnreachableStatementNode;
 use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
@@ -26,25 +27,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
-            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-            $unreachableStmtAnalyzer = new UnreachableStmtAnalyzer();
-
-            /**
-             * when :
-             *     - current Stmt is instanceof UnreachableStatementNode
-             *          OR
-             *     - previous Stmt is instanceof UnreachableStatementNode
-             *
-             * then:
-             *     - fill Scope with parent of of the current Stmt
-             */
-            if ($currentStmt instanceof Stmt && $unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
-                $parentStmt = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-                if ($parentStmt instanceof Stmt) {
-                    $scope = $parentStmt->getAttribute(AttributeKey::SCOPE);
-                    $node->setAttribute(AttributeKey::SCOPE, $scope);
-                }
-            }
+            $scope = $this->resolveScopeFromUnreachableStatementNode($node);
         }
 
         if (! $scope instanceof Scope) {
@@ -61,5 +44,36 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         }
 
         return $this->refactorWithScope($node, $scope);
+    }
+
+    private function resolveScopeFromUnreachableStatementNode(Node $node): ?Scope
+    {
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+        $unreachableStmtAnalyzer = new UnreachableStmtAnalyzer();
+
+        /**
+         * when :
+         *     - current Stmt is instanceof UnreachableStatementNode
+         *          OR
+         *     - previous Stmt is instanceof UnreachableStatementNode
+         *
+         * then:
+         *     - fill Scope with parent of of the current Stmt
+         */
+        if ($currentStmt instanceof Stmt && $unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
+            $parentStmt = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+            while ($parentStmt instanceof Stmt) {
+                if (! $parentStmt instanceof UnreachableStatementNode) {
+                    $scope = $parentStmt->getAttribute(AttributeKey::SCOPE);
+                    $node->setAttribute(AttributeKey::SCOPE, $scope);
+
+                    return $scope;
+                }
+
+                $parentStmt = $parentStmt->getAttribute(AttributeKey::PARENT_NODE);
+            }
+        }
+
+        return null;
     }
 }
