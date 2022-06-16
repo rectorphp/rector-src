@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -23,6 +25,27 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     public function refactor(Node $node)
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+            $unreachableStmtAnalyzer = new UnreachableStmtAnalyzer();
+
+            /**
+             * when :
+             *     - current Stmt is instanceof UnreachableStatementNode
+             *     - previous Stmt is instanceof UnreachableStatementNode
+             *
+             * then:
+             *     - fill Scope with parent of of the current Stmt
+             */
+            if ($currentStmt instanceof Stmt && $unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
+                $parentStmt = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parentStmt instanceof Stmt) {
+                    $scope = $parentStmt->getAttribute(AttributeKey::SCOPE);
+                    $node->setAttribute(AttributeKey::SCOPE, $scope);
+                }
+            }
+        }
+
         if (! $scope instanceof Scope) {
             $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
