@@ -51,7 +51,7 @@ final class StmtsManipulator
                     unset($stmts[$key]);
                 }
 
-                return null;
+                return;
             }
         );
 

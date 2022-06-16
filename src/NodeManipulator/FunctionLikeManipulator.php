@@ -36,20 +36,20 @@ final class FunctionLikeManipulator
             &$returnedLocalPropertyNames
         ) {
             if (! $node instanceof Return_) {
-                return null;
+                return;
             }
 
             if ($node->expr === null) {
-                return null;
+                return;
             }
 
             if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($node->expr)) {
-                return null;
+                return;
             }
 
             $propertyName = $this->nodeNameResolver->getName($node->expr);
             if ($propertyName === null) {
-                return null;
+                return;
             }
 
             $returnedLocalPropertyNames[] = $propertyName;

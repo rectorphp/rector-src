@@ -33,6 +33,6 @@ final class TypeToCallReflectionResolverRegistry
             return $resolver->resolve($type, $scope);
         }
 
-        return null;
+        return;
     }
 }

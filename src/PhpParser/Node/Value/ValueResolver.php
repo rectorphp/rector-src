@@ -111,7 +111,7 @@ final class ValueResolver
             return $nodeStaticType->getValue();
         }
 
-        return null;
+        return;
     }
 
     /**

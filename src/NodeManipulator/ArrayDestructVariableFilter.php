@@ -33,11 +33,11 @@ final class ArrayDestructVariableFilter
             &$arrayDestructionCreatedVariables
         ) {
             if (! $node instanceof Assign) {
-                return null;
+                return;
             }
 
             if (! $node->var instanceof Array_ && ! $node->var instanceof List_) {
-                return null;
+                return;
             }
 
             foreach ($node->var->items as $arrayItem) {

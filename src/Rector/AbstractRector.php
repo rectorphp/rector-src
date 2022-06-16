@@ -192,11 +192,11 @@ CODE_SAMPLE;
     {
         $nodeClass = $node::class;
         if (! $this->isMatchingNodeType($nodeClass)) {
-            return null;
+            return;
         }
 
         if ($this->shouldSkipCurrentNode($node)) {
-            return null;
+            return;
         }
 
         /** @var Node $originalNode */
@@ -204,7 +204,7 @@ CODE_SAMPLE;
         $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
         if (in_array(static::class, $createdByRule, true)) {
-            return null;
+            return;
         }
 
         $this->currentRectorProvider->changeCurrentRector($this);
@@ -219,7 +219,7 @@ CODE_SAMPLE;
 
         // nothing to change → continue
         if ($node === null) {
-            return null;
+            return;
         }
 
         if ($node === []) {

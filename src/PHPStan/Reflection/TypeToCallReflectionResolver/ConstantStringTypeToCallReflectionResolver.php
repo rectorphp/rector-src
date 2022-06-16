@@ -67,19 +67,19 @@ final class ConstantStringTypeToCallReflectionResolver implements TypeToCallRefl
         // 'MyClass::myStaticFunction'
         $matches = Strings::match($value, self::STATIC_METHOD_REGEX);
         if ($matches === null) {
-            return null;
+            return;
         }
 
         $class = $matches[self::CLASS_KEY];
         if (! $this->reflectionProvider->hasClass($class)) {
-            return null;
+            return;
         }
 
         $classReflection = $this->reflectionProvider->getClass($class);
 
         $method = $matches[self::METHOD_KEY];
         if (! $classReflection->hasMethod($method)) {
-            return null;
+            return;
         }
 
         return $classReflection->getMethod($method, $scope);

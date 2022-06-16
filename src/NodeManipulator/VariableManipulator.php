@@ -56,27 +56,27 @@ final class VariableManipulator
             (array) $classMethod->getStmts(),
             function (Node $node) use (&$assignsOfArrayToVariable, $currentClass, $currentClassName) {
                 if (! $node instanceof Assign) {
-                    return null;
+                    return;
                 }
 
                 if (! $node->var instanceof Variable) {
-                    return null;
+                    return;
                 }
 
                 if ($this->exprAnalyzer->isDynamicExpr($node->expr)) {
-                    return null;
+                    return;
                 }
 
                 if ($this->hasEncapsedStringPart($node->expr)) {
-                    return null;
+                    return;
                 }
 
                 if ($this->isTestCaseExpectedVariable($node->var)) {
-                    return null;
+                    return;
                 }
 
                 if ($node->expr instanceof ConstFetch) {
-                    return null;
+                    return;
                 }
 
                 if ($node->expr instanceof ClassConstFetch && $this->isOutsideClass(
@@ -84,7 +84,7 @@ final class VariableManipulator
                     $currentClass,
                     $currentClassName
                 )) {
-                    return null;
+                    return;
                 }
 
                 $assignsOfArrayToVariable[] = $node;
