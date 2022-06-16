@@ -119,8 +119,7 @@ CODE_SAMPLE
         ClassMethod $classMethod,
         Type $newType,
         ObjectType $objectType
-    ): void
-    {
+    ): void {
         if ($newType instanceof MixedType) {
             $class = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
             if (! $class instanceof Class_) {
