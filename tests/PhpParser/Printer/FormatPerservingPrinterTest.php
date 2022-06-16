@@ -14,7 +14,7 @@ final class FormatPerservingPrinterTest extends AbstractTestCase
     /**
      * @var int
      */
-    private const EXPECTED_FILEMOD = 0755;
+    private const EXPECTED_FILEMOD = 0o755;
 
     private FormatPerservingPrinter $formatPerservingPrinter;
 
@@ -46,6 +46,6 @@ final class FormatPerservingPrinterTest extends AbstractTestCase
         $fileInfo = new SmartFileInfo(__DIR__ . '/Fixture/file.php');
         $this->formatPerservingPrinter->printToFile($fileInfo, [], [], []);
 
-        $this->assertSame(self::EXPECTED_FILEMOD, fileperms(__DIR__ . '/Fixture/file.php') & 0777);
+        $this->assertSame(self::EXPECTED_FILEMOD, fileperms(__DIR__ . '/Fixture/file.php') & 0o777);
     }
 }

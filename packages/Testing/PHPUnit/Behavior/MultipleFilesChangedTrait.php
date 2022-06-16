@@ -110,7 +110,7 @@ trait MultipleFilesChangedTrait
     {
         $dirName = dirname($fileName);
         if (! file_exists($dirName)) {
-            mkdir($dirName, 0777, true);
+            mkdir($dirName, 0o777, true);
         }
     }
 }
