@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -16,6 +17,7 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchAssignManipulator
@@ -26,6 +28,30 @@ final class PropertyFetchAssignManipulator
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
+    }
+
+    public function isParamReassign(Param $param): bool
+    {
+        $classMethod = $param->getAttribute(AttributeKey::PARENT_NODE);
+
+        if (! $classMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        $paramName = (string) $this->nodeNameResolver->getName($param->var);
+        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($classMethod, function (Node $node) use (
+            $paramName
+        ): bool {
+            if (! $node instanceof Assign) {
+                return false;
+            }
+
+            if (! $node->var instanceof Variable) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($node->var, $paramName);
+        });
     }
 
     public function isAssignedMultipleTimesInConstructor(Property $property): bool

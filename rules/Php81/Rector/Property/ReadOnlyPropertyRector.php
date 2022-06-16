@@ -156,6 +156,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->propertyFetchAssignManipulator->isParamReassign($param)) {
+            return null;
+        }
+
         $this->visibilityManipulator->makeReadonly($param);
         return $param;
     }
