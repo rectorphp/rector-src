@@ -7,6 +7,6 @@ class Foo
     public function __construct()
     {
         $bar = 'baz';
-        print $bar{2};
+        print $bar[2];
     }
 }
