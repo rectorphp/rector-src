@@ -15,7 +15,7 @@ class Router implements RouterInterface
     /**
      * {@inheritdoc}
      */
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
     {
         return $this->getGenerator()->generate($name, $parameters, $referenceType);
     }
