@@ -10,6 +10,6 @@ final class StaticFactory
 
     public static function now()
     {
-        return new static();
+        return new self();
     }
 }
