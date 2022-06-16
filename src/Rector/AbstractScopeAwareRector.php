@@ -32,6 +32,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
             /**
              * when :
              *     - current Stmt is instanceof UnreachableStatementNode
+             *          OR
              *     - previous Stmt is instanceof UnreachableStatementNode
              *
              * then:
