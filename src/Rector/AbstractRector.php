@@ -121,7 +121,7 @@ CODE_SAMPLE;
     private RectorOutputStyle $rectorOutputStyle;
 
     #[Required]
-    public function autowire(
+    final public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
         NodesToAddCollector $nodesToAddCollector,
         NodeRemover $nodeRemover,
@@ -170,7 +170,7 @@ CODE_SAMPLE;
     /**
      * @return Node[]|null
      */
-    public function beforeTraverse(array $nodes): ?array
+    final public function beforeTraverse(array $nodes): ?array
     {
         // workaround for file around refactor()
         $file = $this->currentFileProvider->getFile();
@@ -276,7 +276,7 @@ CODE_SAMPLE;
      * Replacing nodes in leaveNode() method avoids infinite recursion
      * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
      */
-    public function leaveNode(Node $node)
+    final public function leaveNode(Node $node)
     {
         $objectHash = spl_object_hash($node);
 
