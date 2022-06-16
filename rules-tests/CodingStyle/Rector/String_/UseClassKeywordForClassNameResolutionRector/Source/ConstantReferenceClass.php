@@ -6,5 +6,5 @@ namespace Rector\Tests\CodingStyle\Rector\String_\UseClassKeywordForClassNameRes
 
 final class ConstantReferenceClass
 {
-    const HI = true;
+    public const HI = true;
 }

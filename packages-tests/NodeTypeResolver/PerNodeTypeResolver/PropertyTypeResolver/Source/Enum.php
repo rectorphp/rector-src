@@ -6,9 +6,9 @@ namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver
 
 class Enum
 {
-    const MODE_ADD = 'add';
-    const MODE_EDIT = 'edit';
-    const MODE_CLONE = 'clone';
+    public const MODE_ADD = 'add';
+    public const MODE_EDIT = 'edit';
+    public const MODE_CLONE = 'clone';
 
     /**
      * @var self::*

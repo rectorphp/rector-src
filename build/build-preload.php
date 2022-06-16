@@ -65,7 +65,7 @@ PHP;
      *
      * @var string[]
      */
-    private  const HIGH_PRIORITY_FILES = [
+    private const HIGH_PRIORITY_FILES = [
         'Node.php',
         'NodeAbstract.php',
         'Expr.php',

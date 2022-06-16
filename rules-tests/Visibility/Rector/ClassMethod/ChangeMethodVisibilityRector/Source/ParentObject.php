@@ -10,7 +10,7 @@ class ParentObject
 
     }
 
-    static function toBePublicStaticMethod() {
+    public static function toBePublicStaticMethod() {
 
     }
 

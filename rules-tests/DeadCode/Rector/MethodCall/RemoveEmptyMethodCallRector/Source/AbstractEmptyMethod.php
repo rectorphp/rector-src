@@ -6,5 +6,5 @@ namespace Rector\Tests\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector\So
 
 abstract class AbstractEmptyMethod
 {
-    public abstract function veryEmpty();
+    abstract public function veryEmpty();
 }

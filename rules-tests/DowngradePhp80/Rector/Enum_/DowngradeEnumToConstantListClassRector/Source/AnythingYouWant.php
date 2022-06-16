@@ -6,7 +6,7 @@ namespace Rector\Tests\DowngradePhp80\Rector\Enum_\DowngradeEnumToConstantListCl
 
 enum AnythingYouWant
 {
-    const LEFT = 'left';
+    public const LEFT = 'left';
 
-    const TWO = 5;
+    public const TWO = 5;
 }

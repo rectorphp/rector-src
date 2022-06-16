@@ -6,5 +6,5 @@ namespace Rector\Tests\CodeQuality\Rector\Array_\ArrayThisCallToThisMethodCallRe
 
 final class SomeConstantInteger
 {
-    const VALUE = 10000;
+    public const VALUE = 10000;
 }

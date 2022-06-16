@@ -11,5 +11,5 @@ use MyCLabs\Enum\Enum;
  */
 final class SomeEnum extends Enum
 {
-    const VALUE = 'value';
+    public const VALUE = 'value';
 }
