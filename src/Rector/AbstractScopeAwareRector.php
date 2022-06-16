@@ -27,7 +27,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
-            $scope = $this->resolveScopeFromUnreachableStatementNode($node);
+            //$scope = $this->resolveScopeFromUnreachableStatementNode($node);
         }
 
         if (! $scope instanceof Scope) {
