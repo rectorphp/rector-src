@@ -15,7 +15,7 @@ final class ContainerBuilder
     /**
      * @return \Nette\DI\Definitions\ServiceDefinition
      */
-    public function addDefinition(?string $name, Definition $definition = null): Definition
+    public function addDefinition(?string $name, ?Definition $definition = null): Definition
     {
     }
 }

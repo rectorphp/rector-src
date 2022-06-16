@@ -46,7 +46,7 @@ final class SecondBundle implements BundleInterface
 
     }
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(?ContainerInterface $container = null)
     {
 
     }

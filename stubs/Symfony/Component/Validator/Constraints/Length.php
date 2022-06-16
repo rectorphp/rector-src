@@ -12,8 +12,8 @@ final class Length
 {
     public function __construct(
         int $min,
-        int $max = null,
-        string $maxMessage = null,
+        ?int $max = null,
+        ?string $maxMessage = null,
         bool $allowed
     ) {
     }

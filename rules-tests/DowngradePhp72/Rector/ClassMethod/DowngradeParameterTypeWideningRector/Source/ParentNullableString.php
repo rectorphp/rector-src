@@ -6,7 +6,7 @@ namespace Rector\Tests\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeW
 
 class ParentNullableString
 {
-    public function load(string $value = null)
+    public function load(?string $value = null)
     {
     }
 }
