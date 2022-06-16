@@ -6,7 +6,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallT
 
 abstract class ParentMethodWithUnion
 {
-    public function getById(int|string $id)
+    final public function getById(int|string $id)
     {
     }
 }

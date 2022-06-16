@@ -9,7 +9,7 @@ abstract class ParentController
     private $isExperiment = false;
 
 
-    public function response()
+    final public function response()
     {
         if ($this->isExperiment === true) {
             return $this->responseNew();

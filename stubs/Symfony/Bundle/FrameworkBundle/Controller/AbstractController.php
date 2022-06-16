@@ -14,15 +14,15 @@ if (class_exists('Symfony\Bundle\FrameworkBundle\Controller\AbstractController')
 
 abstract class AbstractController
 {
-    public function getDoctrine(): ManagerRegistry
+    final public function getDoctrine(): ManagerRegistry
     {
     }
 
-    public function render($templateName, $params = []): Response
+    final public function render($templateName, $params = []): Response
     {
     }
 
-    public function redirectToRoute($routeName): RedirectResponse
+    final public function redirectToRoute($routeName): RedirectResponse
     {
     }
 }

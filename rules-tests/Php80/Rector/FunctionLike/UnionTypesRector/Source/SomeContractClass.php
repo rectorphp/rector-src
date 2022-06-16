@@ -6,7 +6,7 @@ namespace Rector\Tests\Php80\Rector\FunctionLike\UnionTypesRector\Source;
 
 abstract class SomeContractClass
 {
-    public function run($param)
+    final public function run($param)
     {
     }
 }

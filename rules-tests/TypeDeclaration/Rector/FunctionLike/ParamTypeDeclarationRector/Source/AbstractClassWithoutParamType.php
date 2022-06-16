@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationR
 
 abstract class AbstractClassWithoutParamType
 {
-    public function getReferenceDate($entity): \DateTime
+    final public function getReferenceDate($entity): \DateTime
     {
     }
 }

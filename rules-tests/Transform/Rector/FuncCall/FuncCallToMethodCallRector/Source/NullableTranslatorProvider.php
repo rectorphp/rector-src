@@ -8,7 +8,7 @@ abstract class NullableTranslatorProvider
 {
     private $translator;
 
-    public function getTranslator(): ?SomeTranslator
+    final public function getTranslator(): ?SomeTranslator
     {
         return $this->translator;
     }

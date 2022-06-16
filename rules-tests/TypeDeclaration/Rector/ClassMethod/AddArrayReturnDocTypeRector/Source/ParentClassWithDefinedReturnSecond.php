@@ -9,7 +9,7 @@ abstract class ParentClassWithDefinedReturnSecond
     /**
      * @return mixed[]
      */
-    public function getData()
+    final public function getData()
     {
         return ['...'];
     }

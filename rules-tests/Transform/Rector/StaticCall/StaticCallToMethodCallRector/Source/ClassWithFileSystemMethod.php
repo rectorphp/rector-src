@@ -8,7 +8,7 @@ use Symplify\SmartFileSystem\SmartFileSystem;
 
 abstract class ClassWithFileSystemMethod
 {
-    public function getSmartFileSystem(): SmartFileSystem
+    final public function getSmartFileSystem(): SmartFileSystem
     {
         return new SmartFileSystem();
     }

@@ -39,7 +39,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         $this->originalValues = $values;
     }
 
-    public function removeValue(string $key): void
+    final public function removeValue(string $key): void
     {
         $quotedKey = '"' . $key . '"';
 
@@ -58,7 +58,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     /**
      * @return mixed[]
      */
-    public function getValues(): array
+    final public function getValues(): array
     {
         return $this->values;
     }
@@ -66,7 +66,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     /**
      * @return mixed|Node|null
      */
-    public function getValue(string | int $key)
+    final public function getValue(string | int $key)
     {
         // to allow false as default
         if (! array_key_exists($key, $this->values)) {
@@ -79,7 +79,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     /**
      * @param mixed $value
      */
-    public function changeValue(string $key, $value): void
+    final public function changeValue(string $key, $value): void
     {
         // is quoted?
         if (isset($this->values[$key]) && is_string($this->values[$key]) && StringUtils::isMatch(
@@ -98,7 +98,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     /**
      * @return mixed|null
      */
-    public function getValueWithoutQuotes(string | int $key)
+    final public function getValueWithoutQuotes(string | int $key)
     {
         $value = $this->getValue($key);
         if ($value === null) {
@@ -111,7 +111,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     /**
      * @param mixed $value
      */
-    public function changeSilentValue($value): void
+    final public function changeSilentValue($value): void
     {
         // is quoted?
         if (StringUtils::isMatch($this->values[0], self::UNQUOTED_VALUE_REGEX)) {
@@ -128,7 +128,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     /**
      * @return mixed|null
      */
-    public function getSilentValue()
+    final public function getSilentValue()
     {
         $value = $this->values[0] ?? null;
         if ($value === null) {
@@ -142,7 +142,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
      * Useful for attributes
      * @return array<int|string, mixed>
      */
-    public function getValuesWithExplicitSilentAndWithoutQuotes(): array
+    final public function getValuesWithExplicitSilentAndWithoutQuotes(): array
     {
         $explicitKeysValues = [];
 
@@ -158,7 +158,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         return $explicitKeysValues;
     }
 
-    public function markAsChanged(): void
+    final public function markAsChanged(): void
     {
         $this->hasChanged = true;
     }
@@ -166,7 +166,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     /**
      * @return mixed[]
      */
-    public function getOriginalValues(): array
+    final public function getOriginalValues(): array
     {
         return $this->originalValues;
     }

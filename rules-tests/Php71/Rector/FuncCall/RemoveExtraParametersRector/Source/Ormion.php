@@ -6,7 +6,7 @@ namespace Rector\Tests\Php71\Rector\FuncCall\RemoveExtraParametersRector\Source;
 
 abstract class Ormion
 {
-    public static function delete()
+    final public static function delete()
     {
     }
 }
