@@ -160,6 +160,6 @@ CODE_SAMPLE
      */
     private function cleanNop(array $stmts): array
     {
-        return array_filter($stmts, fn (Stmt $stmt): bool => ! $stmt instanceof Nop);
+        return array_filter($stmts, static fn (Stmt $stmt): bool => ! $stmt instanceof Nop);
     }
 }
