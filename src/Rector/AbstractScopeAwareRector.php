@@ -65,9 +65,10 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
             while ($parentStmt instanceof Stmt) {
                 if (! $parentStmt instanceof UnreachableStatementNode) {
                     $scope = $parentStmt->getAttribute(AttributeKey::SCOPE);
-                    $node->setAttribute(AttributeKey::SCOPE, $scope);
-
-                    return $scope;
+                    if ($scope instanceof Scope) {
+                        $node->setAttribute(AttributeKey::SCOPE, $scope);
+                        return $scope;
+                    }
                 }
 
                 $parentStmt = $parentStmt->getAttribute(AttributeKey::PARENT_NODE);
