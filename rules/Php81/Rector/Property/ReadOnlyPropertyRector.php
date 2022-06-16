@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
+use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\PropertyFetchAssignManipulator;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\Rector\AbstractRector;
@@ -29,6 +30,7 @@ final class ReadOnlyPropertyRector extends AbstractRector implements MinPhpVersi
     public function __construct(
         private readonly PropertyManipulator $propertyManipulator,
         private readonly PropertyFetchAssignManipulator $propertyFetchAssignManipulator,
+        private readonly ParamAnalyzer $paramAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
     ) {
     }
@@ -156,7 +158,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->propertyFetchAssignManipulator->isParamReassign($param)) {
+        if ($this->paramAnalyzer->isParamReassign($param)) {
             return null;
         }
 
