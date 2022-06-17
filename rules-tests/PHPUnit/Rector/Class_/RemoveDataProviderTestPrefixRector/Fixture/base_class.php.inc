@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\PHPUnit\Rector\Class_\RemoveDataProviderTestPrefixRector\Fixture;
 
-class BaseClass extends \PHPUnit\Framework\TestCase
+abstract class BaseClass extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider testProvideData()
@@ -13,8 +13,6 @@ class BaseClass extends \PHPUnit\Framework\TestCase
     }
 
 }
-
-namespace Rector\Tests\PHPUnit\Rector\Class_\RemoveDataProviderTestPrefixRector\Fixture;
 
 class ChildClass extends BaseClass
 {
@@ -32,7 +30,7 @@ class ChildClass extends BaseClass
 
 namespace Rector\Tests\PHPUnit\Rector\Class_\RemoveDataProviderTestPrefixRector\Fixture;
 
-class BaseClass extends \PHPUnit\Framework\TestCase
+abstract class BaseClass extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider provideData()
@@ -43,8 +41,6 @@ class BaseClass extends \PHPUnit\Framework\TestCase
     }
 
 }
-
-namespace Rector\Tests\PHPUnit\Rector\Class_\RemoveDataProviderTestPrefixRector\Fixture;
 
 class ChildClass extends BaseClass
 {
