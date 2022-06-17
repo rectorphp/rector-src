@@ -201,11 +201,7 @@ final class PHPStanNodeScopeResolver
                 $nearestParentUnreachableScope = $this->resolveNearestParentUnreachableScope($node, $mutatingScope);
                 $originalStmt->setAttribute(AttributeKey::SCOPE, $nearestParentUnreachableScope);
 
-                $this->processNodes(
-                    [$originalStmt],
-                    $smartFileInfo,
-                    $nearestParentUnreachableScope
-                );
+                $this->processNodes([$originalStmt], $smartFileInfo, $nearestParentUnreachableScope);
             } else {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
@@ -216,7 +212,10 @@ final class PHPStanNodeScopeResolver
         return $this->processNodesWithDependentFiles($smartFileInfo, $stmts, $scope, $nodeCallback);
     }
 
-    private function resolveNearestParentUnreachableScope(UnreachableStatementNode $unreachableStatementNode, MutatingScope $mutatingScope): MutatingScope
+    private function resolveNearestParentUnreachableScope(
+        UnreachableStatementNode $unreachableStatementNode,
+        MutatingScope $mutatingScope
+    ): MutatingScope
     {
         $parentNode = $unreachableStatementNode->getAttribute(AttributeKey::PARENT_NODE);
 
