@@ -130,6 +130,7 @@ CODE_SAMPLE
         if (! $callerType instanceof ThisType) {
             return;
         }
+
         $methodName = $arrayCallable->getMethod();
 
         $class = $this->betterNodeFinder->findParentType($array, Class_::class);

@@ -397,10 +397,10 @@ final class AnonymousFunctionFactory
      * @return Stmt[]
      */
     private function resolveStmts(
-        FunctionVariantWithPhpDocs $functionVariantWithPhpDoc,
+        FunctionVariantWithPhpDocs $functionVariantWithPhpDocs,
         StaticCall|MethodCall $innerMethodCall
     ): array {
-        if ($functionVariantWithPhpDoc->getReturnType() instanceof VoidType) {
+        if ($functionVariantWithPhpDocs->getReturnType() instanceof VoidType) {
             return [new Expression($innerMethodCall)];
         }
 
