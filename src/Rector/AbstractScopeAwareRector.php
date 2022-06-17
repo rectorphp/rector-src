@@ -49,11 +49,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     private function resolveScopeFromUnreachableStatementNode(Node $node): ?Scope
     {
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-
-        if (! $currentStmt instanceof Stmt) {
-            return null;
-        }
-
         $unreachableStmtAnalyzer = new UnreachableStmtAnalyzer();
 
         /**
@@ -65,7 +60,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
          * then:
          *     - fill Scope with parent of of the current Stmt
          */
-        if ($unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
+        if ($currentStmt instanceof Stmt && $unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
             $parentStmt = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
             while ($parentStmt instanceof Stmt) {
                 if ($parentStmt instanceof UnreachableStatementNode) {
