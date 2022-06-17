@@ -215,8 +215,7 @@ final class PHPStanNodeScopeResolver
     private function resolveNearestParentUnreachableScope(
         UnreachableStatementNode $unreachableStatementNode,
         MutatingScope $mutatingScope
-    ): MutatingScope
-    {
+    ): MutatingScope {
         $parentNode = $unreachableStatementNode->getAttribute(AttributeKey::PARENT_NODE);
 
         while ($parentNode instanceof Node) {
