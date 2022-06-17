@@ -14,7 +14,7 @@ final class Loop
         }
 
         register_shutdown_function(function () {
-            $error = error_get_last();
+            $test = array_is_list([]);
         });
     }
 }

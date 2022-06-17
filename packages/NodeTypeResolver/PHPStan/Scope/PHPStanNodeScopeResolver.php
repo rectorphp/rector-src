@@ -98,7 +98,8 @@ final class PHPStanNodeScopeResolver
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
-            $isScopeRefreshing
+            $isScopeRefreshing,
+            $smartFileInfo
         ): void {
             if ($node instanceof Arg) {
                 $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -198,6 +199,12 @@ final class PHPStanNodeScopeResolver
                 $originalStmt = $node->getOriginalStatement();
                 $originalStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
                 $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+                $this->processNodes(
+                    [$originalStmt],
+                    $smartFileInfo,
+                    $this->resolveNearestParentUnreachableScope($node)
+                );
             } else {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
@@ -206,6 +213,24 @@ final class PHPStanNodeScopeResolver
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
         return $this->processNodesWithDependentFiles($smartFileInfo, $stmts, $scope, $nodeCallback);
+    }
+
+    private function resolveNearestParentUnreachableScope(UnreachableStatementNode $unreachableStatementNode): ?MutatingScope
+    {
+        $parentNode = $unreachableStatementNode->getAttribute(AttributeKey::PARENT_NODE);
+
+        while ($parentNode instanceof Node) {
+            $scope = $parentNode->getAttribute(AttributeKey::SCOPE);
+
+            if (! $scope instanceof MutatingScope) {
+                $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+                continue;
+            }
+
+            return $scope;
+        }
+
+        return null;
     }
 
     /**
