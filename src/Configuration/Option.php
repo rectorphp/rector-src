@@ -59,6 +59,12 @@ final class Option
     public const AUTO_IMPORT_NAMES = 'auto_import_names';
 
     /**
+     * @deprecated Use @see \Rector\Config\RectorConfig::disableImportDocBlockNames() instead
+     * @var string
+     */
+    public const DISABLE_AUTO_IMPORT_DOC_BLOCK_NAMES = 'disable_auto_import_doc_block_names';
+
+    /**
      * @deprecated Use @see \Rector\Config\RectorConfig::importShortClasses() instead
      * @var string
      */
