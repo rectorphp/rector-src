@@ -97,18 +97,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $isPropertyFetchFromCurrentClass = $this->isPropertyFetchFromCurrentClass($node);
+        $isMethodCallCurrentClass = $this->isMethodCallCurrentClass($node);
         foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
-            if (! $node->var instanceof PropertyFetch && ! $isPropertyFetchFromCurrentClass) {
+            if (! $node->var instanceof PropertyFetch && ! $isMethodCallCurrentClass) {
                 continue;
             }
 
-            if (! $this->isMatch($node, $methodCallToMethodCall, $isPropertyFetchFromCurrentClass, $class)) {
+            if (! $this->isMatch($node, $methodCallToMethodCall, $isMethodCallCurrentClass, $class)) {
                 continue;
             }
 
             /** @var PropertyFetch $propertyFetch */
-            $propertyFetch = $isPropertyFetchFromCurrentClass ? $node : $node->var;
+            $propertyFetch = $isMethodCallCurrentClass ? $node : $node->var;
             $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
 
             $newPropertyName = $this->matchNewPropertyName($methodCallToMethodCall, $class);
@@ -140,7 +140,7 @@ CODE_SAMPLE
         $this->methodCallsToMethodsCalls = $configuration;
     }
 
-    private function isPropertyFetchFromCurrentClass(MethodCall $methodCall): bool
+    private function isMethodCallCurrentClass(MethodCall $methodCall): bool
     {
         return $methodCall->var instanceof Variable && $methodCall->var->name === 'this';
     }
@@ -148,12 +148,12 @@ CODE_SAMPLE
     private function isMatch(
         MethodCall $methodCall,
         MethodCallToMethodCall $methodCallToMethodCall,
-        bool $isPropertyFetchFromCurrentClass,
+        bool $isMethodCallCurrentClass,
         Class_ $class
     ): bool {
         $oldTypeObject = new ObjectType($methodCallToMethodCall->getOldType());
 
-        if ($isPropertyFetchFromCurrentClass) {
+        if ($isMethodCallCurrentClass) {
             $className = (string) $this->nodeNameResolver->getName($class);
             $objectType = new ObjectType($className);
 
