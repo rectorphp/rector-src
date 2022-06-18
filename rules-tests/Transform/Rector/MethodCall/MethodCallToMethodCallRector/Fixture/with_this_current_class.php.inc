@@ -2,8 +2,8 @@
 
 namespace Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\Fixture;
 
-class AClass {
-
+class AClass
+{
     public function run()
     {
         $this->methodFromAClass();
@@ -22,12 +22,9 @@ namespace Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\
 
 class AClass
 {
-    public function __construct(
-            private \Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\AnotherClass $anotherClass
-    )
+    public function __construct(private \Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\Fixture\AnotherClass $anotherClass)
     {
     }
-
     public function run()
     {
         $this->anotherClass->methodFromAnotherClass();

@@ -15,5 +15,4 @@ return static function (RectorConfig $rectorConfig): void {
             [new MethodCallToMethodCall(FirstDependency::class, 'go', SecondDependency::class, 'away'),
             new MethodCallToMethodCall('Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\Fixture\AClass', 'methodFromAClass', 'Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\Fixture\AnotherClass', 'methodFromAnotherClass')]
         );
-
 };

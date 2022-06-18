@@ -7,6 +7,7 @@ namespace Rector\Transform\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
@@ -86,27 +87,32 @@ CODE_SAMPLE
         return [MethodCall::class];
     }
 
+    private function isPropertyFetchFromCurrentClass(MethodCall $methodCall): bool
+    {
+        return $methodCall->var instanceof Variable && $methodCall->var->name === 'this';
+    }
+
     /**
      * @param MethodCall $node
      */
     public function refactor(Node $node): ?Node
     {
+        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+        if (! $class instanceof Class_) {
+            return null;
+        }
+
+        $isPropertyFetchFromCurrentClass = $this->isPropertyFetchFromCurrentClass($node);
         foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
-            if (! $node->var instanceof PropertyFetch) {
+            if (! $node->var instanceof PropertyFetch && ! $isPropertyFetchFromCurrentClass) {
                 continue;
             }
 
-            if (! $this->isMatch($node, $methodCallToMethodCall)) {
+            if (! $this->isMatch($node, $methodCallToMethodCall, $isPropertyFetchFromCurrentClass, $class)) {
                 continue;
             }
 
-            $propertyFetch = $node->var;
-
-            $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-            if (! $class instanceof Class_) {
-                continue;
-            }
-
+            $propertyFetch = ! $isPropertyFetchFromCurrentClass ? $node->var : $node;
             $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
 
             $newPropertyName = $this->matchNewPropertyName($methodCallToMethodCall, $class);
@@ -138,9 +144,22 @@ CODE_SAMPLE
         $this->methodCallsToMethodsCalls = $configuration;
     }
 
-    private function isMatch(MethodCall $methodCall, MethodCallToMethodCall $methodCallToMethodCall): bool
+    private function isMatch(MethodCall $methodCall, MethodCallToMethodCall $methodCallToMethodCall, bool $isPropertyFetchFromCurrentClass, Class_ $class): bool
     {
-        if (! $this->isObjectType($methodCall->var, new ObjectType($methodCallToMethodCall->getOldType()))) {
+        $oldTypeObject = new ObjectType($methodCallToMethodCall->getOldType());
+
+        if ($isPropertyFetchFromCurrentClass) {
+            $className = $this->nodeNameResolver->getName($class);
+            $objectType = new ObjectType($className);
+
+            if (! $objectType->equals($oldTypeObject)) {
+                return false;
+            }
+
+            return $this->isName($methodCall->name, $methodCallToMethodCall->getOldMethod());
+        }
+
+        if (! $this->isObjectType($methodCall->var, $oldTypeObject)) {
             return false;
         }
 
