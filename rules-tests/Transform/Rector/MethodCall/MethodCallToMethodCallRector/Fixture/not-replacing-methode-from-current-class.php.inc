@@ -23,7 +23,7 @@ namespace Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\
 class AClass
 {
     public function __construct(
-            private Charles\RectorIssueWithMethodCallToMethodCall\AnotherClass $anotherClass
+            private \Rector\Tests\Transform\Rector\MethodCall\MethodCallToMethodCallRector\AnotherClass $anotherClass
     )
     {
     }
