@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6496\Fixture;
+namespace Rector\Core\Tests\Issues\DisableAutoImportDocBlock\Fixture;
 
 use ScrumWorks\OpenApiSchema\Annotation as OA;
 
