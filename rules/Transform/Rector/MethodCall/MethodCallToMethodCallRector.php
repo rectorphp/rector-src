@@ -87,11 +87,6 @@ CODE_SAMPLE
         return [MethodCall::class];
     }
 
-    private function isPropertyFetchFromCurrentClass(MethodCall $methodCall): bool
-    {
-        return $methodCall->var instanceof Variable && $methodCall->var->name === 'this';
-    }
-
     /**
      * @param MethodCall $node
      */
@@ -112,7 +107,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyFetch = ! $isPropertyFetchFromCurrentClass ? $node->var : $node;
+            /** @var PropertyFetch $propertyFetch */
+            $propertyFetch = $isPropertyFetchFromCurrentClass ? $node : $node->var;
             $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
 
             $newPropertyName = $this->matchNewPropertyName($methodCallToMethodCall, $class);
@@ -144,12 +140,21 @@ CODE_SAMPLE
         $this->methodCallsToMethodsCalls = $configuration;
     }
 
-    private function isMatch(MethodCall $methodCall, MethodCallToMethodCall $methodCallToMethodCall, bool $isPropertyFetchFromCurrentClass, Class_ $class): bool
+    private function isPropertyFetchFromCurrentClass(MethodCall $methodCall): bool
     {
+        return $methodCall->var instanceof Variable && $methodCall->var->name === 'this';
+    }
+
+    private function isMatch(
+        MethodCall $methodCall,
+        MethodCallToMethodCall $methodCallToMethodCall,
+        bool $isPropertyFetchFromCurrentClass,
+        Class_ $class
+    ): bool {
         $oldTypeObject = new ObjectType($methodCallToMethodCall->getOldType());
 
         if ($isPropertyFetchFromCurrentClass) {
-            $className = $this->nodeNameResolver->getName($class);
+            $className = (string) $this->nodeNameResolver->getName($class);
             $objectType = new ObjectType($className);
 
             if (! $objectType->equals($oldTypeObject)) {
