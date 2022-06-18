@@ -15,6 +15,11 @@ return static function (RectorConfig $rectorConfig): void {
         ->ruleWithConfiguration(
             MethodCallToMethodCallRector::class,
             [new MethodCallToMethodCall(FirstDependency::class, 'go', SecondDependency::class, 'away'),
-            new MethodCallToMethodCall(AClass::class, 'methodFromAClass', AnotherClass::class, 'methodFromAnotherClass')]
+                new MethodCallToMethodCall(
+                    AClass::class,
+                    'methodFromAClass',
+                    AnotherClass::class,
+                    'methodFromAnotherClass'
+                ), ]
         );
 };
