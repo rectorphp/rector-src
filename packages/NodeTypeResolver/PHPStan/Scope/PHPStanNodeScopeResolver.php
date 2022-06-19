@@ -138,6 +138,7 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof TryCatch) {
                 foreach ($node->catches as $catch) {
+                    $mutatingScope = $mutatingScope->enterCatch($catch->types, $catch->var->name);
                     $this->processNodes($catch->stmts, $smartFileInfo, $mutatingScope);
                 }
 
