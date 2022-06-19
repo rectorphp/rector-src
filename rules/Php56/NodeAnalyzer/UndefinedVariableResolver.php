@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php56\NodeAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
@@ -71,10 +70,6 @@ final class UndefinedVariableResolver
 
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
             if (! $parentNode instanceof Node) {
-                return null;
-            }
-
-            if ($parentNode instanceof Arg) {
                 return null;
             }
 

@@ -13,4 +13,14 @@ class SkipMultipleCatchWithUseSameVariable
             var_dump($e);
         }
     }
+
+    public function run2()
+    {
+        try {
+        } catch (\Exception $e) {
+            $e;
+        } catch (\Throwable $e) {
+            $e;
+        }
+    }
 }
