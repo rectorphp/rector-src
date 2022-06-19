@@ -41,8 +41,10 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\Core\Util\StringUtils;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
+use Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture\readonly;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\SmartFileInfo;
 use Webmozart\Assert\Assert;
@@ -74,6 +76,7 @@ final class PHPStanNodeScopeResolver
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private readonly ParentAttributeSourceLocator $parentAttributeSourceLocator,
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -138,7 +141,10 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof TryCatch) {
                 foreach ($node->catches as $catch) {
-                    $mutatingScope = $mutatingScope->enterCatch($catch->types, $catch->var->name);
+                    $varName = $catch->var instanceof Expr\Variable
+                        ? $this->nodeNameResolver->getName($catch->var)
+                        : null;
+                    $mutatingScope = $mutatingScope->enterCatch($catch->types, $varName);
                     $this->processNodes($catch->stmts, $smartFileInfo, $mutatingScope);
                 }
 
