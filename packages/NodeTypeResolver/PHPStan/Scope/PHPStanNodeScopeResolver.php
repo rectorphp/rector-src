@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -140,7 +141,7 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof TryCatch) {
                 foreach ($node->catches as $catch) {
-                    $varName = $catch->var instanceof Expr\Variable
+                    $varName = $catch->var instanceof Variable
                         ? $this->nodeNameResolver->getName($catch->var)
                         : null;
                     $catchMutatingScope = $mutatingScope->enterCatch($catch->types, $varName);
