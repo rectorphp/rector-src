@@ -23,4 +23,14 @@ class SkipMultipleCatchWithUseSameVariable
             $e;
         }
     }
+
+    public function run2()
+    {
+        try {
+        } catch (\Exception $e) {
+            echo $e::class;
+        } catch (\Throwable $e) {
+            echo $e::class;
+        }
+    }
 }
