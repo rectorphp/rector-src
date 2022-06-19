@@ -24,7 +24,7 @@ class SkipMultipleCatchWithUseSameVariable
         }
     }
 
-    public function run2()
+    public function run3()
     {
         try {
         } catch (\Exception $e) {
