@@ -143,8 +143,8 @@ final class PHPStanNodeScopeResolver
                     $varName = $catch->var instanceof Expr\Variable
                         ? $this->nodeNameResolver->getName($catch->var)
                         : null;
-                    $mutatingScope = $mutatingScope->enterCatch($catch->types, $varName);
-                    $this->processNodes($catch->stmts, $smartFileInfo, $mutatingScope);
+                    $catchMutatingScope = $mutatingScope->enterCatch($catch->types, $varName);
+                    $this->processNodes($catch->stmts, $smartFileInfo, $catchMutatingScope);
                 }
 
                 if ($node->finally instanceof Finally_) {
