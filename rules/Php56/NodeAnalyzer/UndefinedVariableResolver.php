@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php56\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
@@ -19,6 +20,7 @@ use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
@@ -70,6 +72,10 @@ final class UndefinedVariableResolver
 
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
             if (! $parentNode instanceof Node) {
+                return null;
+            }
+
+            if ($parentNode instanceof Arg) {
                 return null;
             }
 
