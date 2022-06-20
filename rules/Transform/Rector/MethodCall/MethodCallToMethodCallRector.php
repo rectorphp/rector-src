@@ -98,10 +98,13 @@ CODE_SAMPLE
         }
 
         $isMethodCallCurrentClass = $this->isMethodCallCurrentClass($node);
+
+        if (! $node->var instanceof PropertyFetch && ! $isMethodCallCurrentClass) {
+            return null;
+        }
+
         foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
-            if (! $node->var instanceof PropertyFetch && ! $isMethodCallCurrentClass) {
-                continue;
-            }
+
 
             if (! $this->isMatch($node, $methodCallToMethodCall, $isMethodCallCurrentClass, $class)) {
                 continue;
