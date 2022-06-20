@@ -25,7 +25,7 @@ parameters:
     scanDirectories:
         - stubs
 
-    reportUnmatchedIgnoredErrors: false
+#    reportUnmatchedIgnoredErrors: false
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
@@ -34,7 +34,7 @@ parameters:
         - bin/detect-rules-not-used-in-any-set.php
 
         # temporary stinrgable migration from template type provider
-        - src/Console/Command/InitCommand.php
+#        - src/Console/Command/InitCommand.php
         - bin/generate-changelog.php
 
         - */config.php
@@ -779,3 +779,16 @@ parameters:
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
+
+services:
+    -
+        class: Symplify\PHPStanRules\Rules\PreferredClassRule
+        tags: [phpstan.rules.rule]
+        arguments:
+            oldToPreferredClasses:
+                PHPStan\Node\ClassMethod: 'PhpParser\Node\Stmt\ClassMethod'
+                DateTime: 'Nette\Utils\DateTime'
+                'PhpCsFixer\Finder': 'Symfony\Component\Finder\Finder'
+                # smart file system
+                'Symfony\Component\Finder\SplFileInfo': 'Symplify\SmartFileSystem\SmartFileInfo'
+                'Symfony\Component\Filesystem\Filesystem': 'Symplify\SmartFileSystem\SmartFileSystem'
