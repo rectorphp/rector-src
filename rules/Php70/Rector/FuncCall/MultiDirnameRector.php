@@ -61,7 +61,7 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
         }
 
         // nothing to improve
-        if ($this->nestingLevel < 2) {
+        if ($this->shouldSkip()) {
             return null;
         }
 
@@ -69,6 +69,11 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
         $node->args[1] = new Arg(new LNumber($this->nestingLevel));
 
         return $node;
+    }
+
+    private function shouldSkip(): bool
+    {
+        return $this->nestingLevel < 2;
     }
 
     public function provideMinPhpVersion(): int
