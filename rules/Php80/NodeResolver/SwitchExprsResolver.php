@@ -6,6 +6,9 @@ namespace Rector\Php80\NodeResolver;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
@@ -17,6 +20,11 @@ use Rector\Php80\ValueObject\CondAndExpr;
 
 final class SwitchExprsResolver
 {
+    /**
+     * @var array<class-string<Expr>>
+     */
+    private const ALLOWED_ASSIGN_VARS = [Variable::class, PropertyFetch::class, StaticPropertyFetch::class];
+
     /**
      * @return CondAndExpr[]
      */
@@ -75,6 +83,10 @@ final class SwitchExprsResolver
 
                 $condAndExpr[] = new CondAndExpr($condExprs, $returnedExpr, MatchKind::RETURN);
             } elseif ($expr instanceof Assign) {
+                if (! in_array($expr->var::class, self::ALLOWED_ASSIGN_VARS, true)) {
+                    return [];
+                }
+
                 $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::ASSIGN);
             } elseif ($expr instanceof Expr) {
                 $condAndExpr[] = new CondAndExpr($condExprs, $expr, MatchKind::NORMAL);
