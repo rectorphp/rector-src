@@ -97,21 +97,19 @@ CODE_SAMPLE
             return null;
         }
 
-        $isMethodCallCurrentClass = $this->isMethodCallCurrentClass($node);
-
-        if (! $node->var instanceof PropertyFetch && ! $isMethodCallCurrentClass) {
+        if (! $node->var instanceof PropertyFetch && !($this->isMethodCallCurrentClass($node))) {
             return null;
         }
 
         foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
 
 
-            if (! $this->isMatch($node, $methodCallToMethodCall, $isMethodCallCurrentClass, $class)) {
+            if (! $this->isMatch($node, $methodCallToMethodCall, $this->isMethodCallCurrentClass($node), $class)) {
                 continue;
             }
 
             /** @var PropertyFetch $propertyFetch */
-            $propertyFetch = $isMethodCallCurrentClass ? $node : $node->var;
+            $propertyFetch = $this->isMethodCallCurrentClass($node) ? $node : $node->var;
             $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
 
             $newPropertyName = $this->matchNewPropertyName($methodCallToMethodCall, $class);
