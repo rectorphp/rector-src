@@ -108,14 +108,14 @@ CODE_SAMPLE
                 continue;
             }
 
-            /** @var PropertyFetch $propertyFetch */
-            $propertyFetch = $this->isMethodCallCurrentClass($node) ? $node : $node->var;
-            $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
-
             $newPropertyName = $this->matchNewPropertyName($methodCallToMethodCall, $class);
             if ($newPropertyName === null) {
                 continue;
             }
+
+            /** @var PropertyFetch $propertyFetch */
+            $propertyFetch = $this->isMethodCallCurrentClass($node) ? $node : $node->var;
+            $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
 
             $propertyMetadata = new PropertyMetadata($newPropertyName, $newObjectType, Class_::MODIFIER_PRIVATE);
             $this->propertyToAddCollector->addPropertyToClass($class, $propertyMetadata);
