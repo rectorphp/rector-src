@@ -690,3 +690,11 @@ parameters:
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
+
+        -
+            message: '#Comparison operation "<" between 0 and 2 is always true#'
+            path: rules/Php70/Rector/FuncCall/MultiDirnameRector.php
+
+        -
+            message: '#Unreachable statement \- code above always terminates#'
+            path: rules/Php70/Rector/FuncCall/MultiDirnameRector.php
