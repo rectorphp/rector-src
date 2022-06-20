@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
-final class SkipAssignOnArrayDimFetchUsedNextReturn
+final class SkipAssignOnArrayDimFetchNotDirectUsedNextReturn
 {
     public const STATUS_A = 'a';
     public const STATUS_B = 'b';
