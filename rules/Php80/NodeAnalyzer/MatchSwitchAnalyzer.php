@@ -105,6 +105,17 @@ final class MatchSwitchAnalyzer
         return false;
     }
 
+    public function resolveDefaultValue(Match_ $match): ?Expr
+    {
+        foreach ($match->arms as $matchArm) {
+            if ($matchArm->conds === null) {
+                return $matchArm->body;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @param CondAndExpr[] $condAndExprs
      * @return array<MatchKind::*>

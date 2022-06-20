@@ -142,8 +142,17 @@ CODE_SAMPLE
         return new Return_($match);
     }
 
-    private function changeToAssign(Switch_ $switch, Match_ $match, Expr $assignExpr): Assign
+    private function changeToAssign(Switch_ $switch, Match_ $match, Expr $assignExpr): ?Assign
     {
+        $nextReturn = $switch->getAttribute(AttributeKey::NEXT_NODE);
+
+        if ($nextReturn instanceof Return_ && $nextReturn->expr instanceof Expr && ! $this->nodeComparator->areNodesEqual(
+            $assignExpr,
+            $nextReturn->expr
+        )) {
+            return null;
+        }
+
         $prevInitializedAssign = $this->betterNodeFinder->findFirstInlinedPrevious(
             $switch,
             fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
