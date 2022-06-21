@@ -31,6 +31,7 @@ final class EnumFactory
     {
         $shortClassName = $this->nodeNameResolver->getShortName($class);
         $enum = new Enum_($shortClassName);
+        $enum->namespacedName = $class->namespacedName;
 
         $constants = $class->getConstants();
 
