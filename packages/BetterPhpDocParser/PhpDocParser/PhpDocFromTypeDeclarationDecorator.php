@@ -15,16 +15,13 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
@@ -61,8 +58,7 @@ final class PhpDocFromTypeDeclarationDecorator
         private readonly TypeUnwrapper $typeUnwrapper,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
-        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly TypeComparator $typeComparator
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -74,10 +70,7 @@ final class PhpDocFromTypeDeclarationDecorator
 
         $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($functionLike->returnType);
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
-
-        if (! $this->shouldSkipChangeReturnDocType($type, $phpDocInfo, $functionLike->returnType)) {
-            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
-        }
+        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
 
         $functionLike->returnType = null;
 
@@ -155,26 +148,6 @@ final class PhpDocFromTypeDeclarationDecorator
 
         $this->decorate($functionLike);
         return true;
-    }
-
-    private function shouldSkipChangeReturnDocType(
-        Type $returnType,
-        PhpDocInfo $phpDocInfo,
-        Identifier|Name|ComplexType $node
-    ): bool {
-        $returnTagValueNode = $phpDocInfo->getReturnTagValue();
-
-        if (! $returnTagValueNode instanceof ReturnTagValueNode) {
-            return false;
-        }
-
-        $currentType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
-            $returnTagValueNode->type,
-            $node
-        );
-
-        // avoid overriding better type
-        return $this->typeComparator->isSubtype($currentType, $returnType);
     }
 
     private function isRequireReturnTypeWillChange(string $type, ClassLike $classLike, ClassMethod $classMethod): bool
