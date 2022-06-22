@@ -138,7 +138,11 @@ CODE_SAMPLE
         $nodesWithStrictTypesThenNamespace = [];
 
         foreach ($nodes as $key => $fileWithoutNamespace) {
-            if ($key === 0 && $fileWithoutNamespace instanceof Declare_) {
+            if ($key > 0) {
+                break;
+            }
+
+            if ($fileWithoutNamespace instanceof Declare_) {
                 $declare = $fileWithoutNamespace;
                 unset($nodes[$key]);
             }
