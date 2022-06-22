@@ -153,17 +153,6 @@ CODE_SAMPLE
     ): bool {
         $oldTypeObject = new ObjectType($methodCallToMethodCall->getOldType());
 
-//        if ($this->isMethodCallCurrentClass($methodCall)) {
-//            $className = (string) $this->nodeNameResolver->getName($class);
-//            $currentObjectType = new ObjectType($className);
-//
-//            if (! $currentObjectType->equals($oldTypeObject)) {
-//                return false;
-//            }
-//
-//            return $this->isName($methodCall->name, $methodCallToMethodCall->getOldMethod());
-//        }
-
         if (! $this->isObjectType($methodCall->var, $oldTypeObject)) {
             return false;
         }
