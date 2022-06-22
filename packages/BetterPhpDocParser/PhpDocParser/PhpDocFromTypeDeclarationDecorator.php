@@ -71,7 +71,6 @@ final class PhpDocFromTypeDeclarationDecorator
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
 
-
         $returnTagValueNode = $phpDocInfo->getReturnTagValue();
         $type = $returnTagValueNode instanceof ReturnTagValueNode
             ? $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($returnTagValueNode, $functionLike->returnType)
