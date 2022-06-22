@@ -30,6 +30,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -115,6 +116,10 @@ final class ChangedNodeScopeRefresher
 
         if ($node instanceof TryCatch) {
             $node->catches = array_values($node->catches);
+        }
+
+        if ($node instanceof FileWithoutNamespace) {
+            $node->stmts = array_values($node->stmts);
         }
     }
 
