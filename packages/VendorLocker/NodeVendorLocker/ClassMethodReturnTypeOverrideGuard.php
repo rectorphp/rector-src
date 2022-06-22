@@ -145,12 +145,12 @@ final class ClassMethodReturnTypeOverrideGuard
         return (bool) $this->betterNodeFinder->findFirst(
             (array) $classMethod->stmts,
             static function (Node $node): bool {
-            if (! $node instanceof Return_) {
-                return false;
-            }
+                if (! $node instanceof Return_) {
+                    return false;
+                }
 
-            return $node->expr instanceof Expr;
-        }
+                return $node->expr instanceof Expr;
+            }
         );
     }
 
