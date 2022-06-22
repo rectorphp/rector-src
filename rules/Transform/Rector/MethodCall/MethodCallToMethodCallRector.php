@@ -97,10 +97,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->var instanceof PropertyFetch && !($this->isMethodCallCurrentClass($node))) {
-            return null;
-        }
-
         foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
 
 
