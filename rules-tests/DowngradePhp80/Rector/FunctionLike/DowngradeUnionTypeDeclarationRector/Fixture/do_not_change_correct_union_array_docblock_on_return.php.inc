@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DowngradePhp80\Rector\FunctionLike\DowngradeUnionTypeDeclarationRector\Fixture;
 
-final class DoNotChangeCorrectUnionArrayDocblock
+final class DoNotChangeCorrectUnionArrayDocblockOnReturn
 {
     /**
      * @return int|string[]
@@ -23,7 +23,7 @@ final class DoNotChangeCorrectUnionArrayDocblock
 
 namespace Rector\Tests\DowngradePhp80\Rector\FunctionLike\DowngradeUnionTypeDeclarationRector\Fixture;
 
-final class DoNotChangeCorrectUnionArrayDocblock
+final class DoNotChangeCorrectUnionArrayDocblockOnReturn
 {
     /**
      * @return int|string[]
