@@ -2,6 +2,9 @@
 
 namespace Rector\Tests\DowngradePhp80\Rector\FunctionLike\DowngradeUnionTypeDeclarationRector\Fixture;
 
+use PhpParser\Node;
+use PhpParser\Node\Stmt;
+
 final class DoNotChangeCorrectUnionArrayDocblockOnReturn
 {
     /**
@@ -9,11 +12,13 @@ final class DoNotChangeCorrectUnionArrayDocblockOnReturn
      */
     public function run(): int|array
     {
-        if (mt_rand()) {
-            return 1;
-        }
+    }
 
-        return ['test'];
+    /**
+     * @return Node|null|Stmt[]
+     */
+    public function run2(): Node|null|array
+    {
     }
 }
 
@@ -23,6 +28,9 @@ final class DoNotChangeCorrectUnionArrayDocblockOnReturn
 
 namespace Rector\Tests\DowngradePhp80\Rector\FunctionLike\DowngradeUnionTypeDeclarationRector\Fixture;
 
+use PhpParser\Node;
+use PhpParser\Node\Stmt;
+
 final class DoNotChangeCorrectUnionArrayDocblockOnReturn
 {
     /**
@@ -30,11 +38,13 @@ final class DoNotChangeCorrectUnionArrayDocblockOnReturn
      */
     public function run()
     {
-        if (mt_rand()) {
-            return 1;
-        }
+    }
 
-        return ['test'];
+    /**
+     * @return Node|null|Stmt[]
+     */
+    public function run2()
+    {
     }
 }
 
