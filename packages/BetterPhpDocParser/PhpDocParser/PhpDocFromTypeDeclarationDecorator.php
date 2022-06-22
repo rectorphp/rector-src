@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
@@ -62,6 +63,21 @@ final class PhpDocFromTypeDeclarationDecorator
     ) {
     }
 
+    private function hasArrayType(Type $returnType): bool
+    {
+        $types = $returnType instanceof UnionType
+            ? $returnType->getTypes()
+            : [$returnType];
+
+        foreach ($types as $type){
+            if ($type instanceof ArrayType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function decorate(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): void
     {
         if ($functionLike->returnType === null) {
@@ -69,8 +85,10 @@ final class PhpDocFromTypeDeclarationDecorator
         }
 
         $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($functionLike->returnType);
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
+        if (! $this->hasArrayType($type)) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
+            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
+        }
 
         $functionLike->returnType = null;
 
