@@ -174,7 +174,7 @@ final class PhpDocFromTypeDeclarationDecorator
         );
 
         // avoid overriding better type
-        return ! $this->typeComparator->isSubtype($currentType, $returnType);
+        return $this->typeComparator->isSubtype($currentType, $returnType);
     }
 
     private function isRequireReturnTypeWillChange(string $type, ClassLike $classLike, ClassMethod $classMethod): bool
