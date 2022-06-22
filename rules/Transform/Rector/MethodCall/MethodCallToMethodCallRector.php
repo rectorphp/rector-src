@@ -104,7 +104,7 @@ CODE_SAMPLE
         foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
 
 
-            if (! $this->isMatch($node, $methodCallToMethodCall, $class)) {
+            if (! $this->isMatch($node, $methodCallToMethodCall)) {
                 continue;
             }
 
@@ -148,8 +148,7 @@ CODE_SAMPLE
 
     private function isMatch(
         MethodCall $methodCall,
-        MethodCallToMethodCall $methodCallToMethodCall,
-        Class_ $class
+        MethodCallToMethodCall $methodCallToMethodCall
     ): bool {
         $oldTypeObject = new ObjectType($methodCallToMethodCall->getOldType());
 
