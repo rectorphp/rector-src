@@ -15,10 +15,12 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -63,21 +65,6 @@ final class PhpDocFromTypeDeclarationDecorator
     ) {
     }
 
-    private function hasArrayType(Type $returnType): bool
-    {
-        $types = $returnType instanceof UnionType
-            ? $returnType->getTypes()
-            : [$returnType];
-
-        foreach ($types as $type){
-            if ($type instanceof ArrayType) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function decorate(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): void
     {
         if ($functionLike->returnType === null) {
@@ -85,8 +72,9 @@ final class PhpDocFromTypeDeclarationDecorator
         }
 
         $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($functionLike->returnType);
-        if (! $this->hasArrayType($type)) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
+
+        if (! $this->hasArrayType($type, $phpDocInfo)) {
             $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $type);
         }
 
@@ -166,6 +154,26 @@ final class PhpDocFromTypeDeclarationDecorator
 
         $this->decorate($functionLike);
         return true;
+    }
+
+    private function hasArrayType(Type $returnType, PhpDocInfo $phpDocInfo): bool
+    {
+        $types = $returnType instanceof UnionType
+            ? $returnType->getTypes()
+            : [$returnType];
+        $returnTagValueNode = $phpDocInfo->getReturnTagValue();
+
+        if (! $returnTagValueNode instanceof ReturnTagValueNode) {
+            return false;
+        }
+
+        foreach ($types as $type) {
+            if ($type instanceof ArrayType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isRequireReturnTypeWillChange(string $type, ClassLike $classLike, ClassMethod $classMethod): bool
