@@ -60,6 +60,8 @@ final class NodesToAddCollector implements NodeCollectorInterface
             $this->changedNodeScopeRefresher->refresh($addedNode, $smartFileInfo, $currentScope);
         }
 
+        $addedNode->setAttribute(AttributeKey::SCOPE, $positionNode->getAttribute(AttributeKey::SCOPE));
+
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddBefore[$position][] = $this->wrapToExpression($addedNode);
 
@@ -76,6 +78,8 @@ final class NodesToAddCollector implements NodeCollectorInterface
         foreach ($addedNodes as $addedNode) {
             // prevent fluent method weird indent
             $addedNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $addedNode->setAttribute(AttributeKey::SCOPE, $positionNode->getAttribute(AttributeKey::SCOPE));
+
             $this->nodesToAddAfter[$position][] = $this->wrapToExpression($addedNode);
         }
 
@@ -88,6 +92,8 @@ final class NodesToAddCollector implements NodeCollectorInterface
      */
     public function addNodeAfterNode(Node $addedNode, Node $positionNode): void
     {
+        $addedNode->setAttribute(AttributeKey::SCOPE, $positionNode->getAttribute(AttributeKey::SCOPE));
+
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddAfter[$position][] = $this->wrapToExpression($addedNode);
 
@@ -131,6 +137,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     public function addNodesBeforeNode(array $newNodes, Node $positionNode): void
     {
         foreach ($newNodes as $newNode) {
+            $newNode->setAttribute(AttributeKey::SCOPE, $positionNode->getAttribute(AttributeKey::SCOPE));
             $this->addNodeBeforeNode($newNode, $positionNode, null);
         }
 
