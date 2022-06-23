@@ -97,6 +97,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $isMethodCallCurrentClass = $this->isMethodCallCurrentClass($node);
+
         foreach ($this->methodCallsToMethodsCalls as $methodCallToMethodCall) {
 
 
@@ -110,7 +112,7 @@ CODE_SAMPLE
             }
 
             /** @var PropertyFetch $propertyFetch */
-            $propertyFetch = $this->isMethodCallCurrentClass($node) ? $node : $node->var;
+            $propertyFetch = $isMethodCallCurrentClass ? $node : $node->var;
             $newObjectType = new ObjectType($methodCallToMethodCall->getNewType());
 
             $propertyMetadata = new PropertyMetadata($newPropertyName, $newObjectType, Class_::MODIFIER_PRIVATE);
