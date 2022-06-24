@@ -74,15 +74,10 @@ final class NodesToAddCollector implements NodeCollectorInterface
      */
     public function addNodesAfterNode(array $addedNodes, Node $positionNode): void
     {
-        $position = $this->resolveNearestStmtPosition($positionNode);
-        $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
-
         foreach ($addedNodes as $addedNode) {
             // prevent fluent method weird indent
             $addedNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            $addedNode->setAttribute(AttributeKey::SCOPE, $currentScope);
-
-            $this->nodesToAddAfter[$position][] = $this->wrapToExpression($addedNode);
+            $this->addNodeAfterNode($addedNode, $positionNode);
         }
 
         $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);
