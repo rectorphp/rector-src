@@ -58,9 +58,9 @@ final class NodesToAddCollector implements NodeCollectorInterface
         if ($smartFileInfo instanceof SmartFileInfo) {
             $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
             $this->changedNodeScopeRefresher->refresh($addedNode, $smartFileInfo, $currentScope);
+        } else {
+            $addedNode->setAttribute(AttributeKey::SCOPE, $positionNode->getAttribute(AttributeKey::SCOPE));
         }
-
-        $addedNode->setAttribute(AttributeKey::SCOPE, $positionNode->getAttribute(AttributeKey::SCOPE));
 
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddBefore[$position][] = $this->wrapToExpression($addedNode);
