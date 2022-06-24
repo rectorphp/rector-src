@@ -159,7 +159,7 @@ CODE_SAMPLE
             $className = (string) $this->nodeNameResolver->getName($class);
             $objectType = new ObjectType($className);
 
-            if(! $objectType->equals($oldTypeObject)) {
+            if (! $objectType->equals($oldTypeObject)) {
                 return false;
             }
 
