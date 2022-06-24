@@ -155,11 +155,11 @@ CODE_SAMPLE
     ): bool {
         $oldTypeObject = new ObjectType($methodCallToMethodCall->getOldType());
 
-        if($isMethodCallCurrentClass) {
+        if ($isMethodCallCurrentClass) {
             $className = (string) $this->nodeNameResolver->getName($class);
-            $currentClassObjectType = new ObjectType($className);
+            $objectType = new ObjectType($className);
 
-            if(!$currentClassObjectType->equals($oldTypeObject)) {
+            if(!$objectType->equals($oldTypeObject)) {
                 return false;
             }
         }
