@@ -162,6 +162,8 @@ CODE_SAMPLE
             if(! $objectType->equals($oldTypeObject)) {
                 return false;
             }
+
+            return $this->isName($methodCall->name, $methodCallToMethodCall->getOldMethod());
         }
 
         if (! $this->isObjectType($methodCall->var, $oldTypeObject)) {
