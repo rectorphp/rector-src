@@ -49,7 +49,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     /**
      * @deprecated Return created nodes right in refactor() method to keep context instead.
      */
-    public function addNodeBeforeNode(Node $addedNode, Node $positionNode, ?SmartFileInfo $smartFileInfo = null): void
+    public function addNodeBeforeNode(Node $addedNode, Node $positionNode): void
     {
         if ($positionNode->getAttributes() === []) {
             $message = sprintf('Switch arguments in "%s()" method', __METHOD__);
@@ -130,7 +130,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     public function addNodesBeforeNode(array $newNodes, Node $positionNode): void
     {
         foreach ($newNodes as $newNode) {
-            $this->addNodeBeforeNode($newNode, $positionNode, null);
+            $this->addNodeBeforeNode($newNode, $positionNode);
         }
 
         $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);
