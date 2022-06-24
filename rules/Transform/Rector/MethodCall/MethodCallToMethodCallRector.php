@@ -99,7 +99,7 @@ CODE_SAMPLE
 
         $isMethodCallCurrentClass = $this->isMethodCallCurrentClass($node);
 
-        if(!$node->var instanceof PropertyFetch && !$node->var instanceof Variable) {
+        if(!$node->var instanceof PropertyFetch && !$isMethodCallCurrentClass) {
             return null;
         }
 
