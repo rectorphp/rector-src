@@ -85,6 +85,11 @@ final class NodesToAddCollector implements NodeCollectorInterface
      */
     public function addNodeAfterNode(Node $addedNode, Node $positionNode): void
     {
+        if ($positionNode->getAttributes() === []) {
+            $message = sprintf('Switch arguments in "%s()" method', __METHOD__);
+            throw new ShouldNotHappenException($message);
+        }
+
         $this->refreshScope($addedNode, $positionNode);
 
         $position = $this->resolveNearestStmtPosition($positionNode);
