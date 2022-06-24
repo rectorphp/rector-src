@@ -18,7 +18,6 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class NodesToAddCollector implements NodeCollectorInterface
 {
