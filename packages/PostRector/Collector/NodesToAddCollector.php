@@ -14,8 +14,6 @@ use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
 
@@ -35,8 +33,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly RectorChangeCollector $rectorChangeCollector,
         private readonly NodePrinterInterface $nodePrinter,
-        private readonly ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly ChangedNodeScopeRefresher $changedNodeScopeRefresher
     ) {
     }
 
@@ -55,7 +52,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
             throw new ShouldNotHappenException($message);
         }
 
-        $this->refreshScope($addedNode, $positionNode);
+        $this->changedNodeScopeRefresher->refresh($addedNode, $positionNode->getAttribute(AttributeKey::SCOPE));
 
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddBefore[$position][] = $this->wrapToExpression($addedNode);
@@ -89,7 +86,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
             throw new ShouldNotHappenException($message);
         }
 
-        $this->refreshScope($addedNode, $positionNode);
+        $this->changedNodeScopeRefresher->refresh($addedNode, $positionNode->getAttribute(AttributeKey::SCOPE));
 
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddAfter[$position][] = $this->wrapToExpression($addedNode);
@@ -138,16 +135,6 @@ final class NodesToAddCollector implements NodeCollectorInterface
         }
 
         $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);
-    }
-
-    private function refreshScope(Node $addedNode, Node $positionNode): void
-    {
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-        $smartFileInfo = $file->getSmartFileInfo();
-        $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
-
-        $this->changedNodeScopeRefresher->refresh($addedNode, $smartFileInfo, $currentScope);
     }
 
     private function resolveNearestStmtPosition(Node $node): string
