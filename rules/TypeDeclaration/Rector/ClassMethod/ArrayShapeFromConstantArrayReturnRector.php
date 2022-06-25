@@ -185,6 +185,7 @@ CODE_SAMPLE
         if (! $scope instanceof Scope) {
             return false;
         }
+
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return false;
