@@ -8,6 +8,7 @@ use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
+use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\ValueObject\Application\File;
@@ -34,6 +35,7 @@ final class WorkerRunner
         private readonly PhpFileProcessor $phpFileProcessor,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
+        private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle
     ) {
     }
 
@@ -99,6 +101,10 @@ final class WorkerRunner
                     $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
                     $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
                     $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
+
+                    if ($this->rectorConsoleOutputStyle->isDebug()) {
+                        $systemErrors[] = new SystemError($throwable->getTraceAsString(), $filePath, $throwable->getLine());
+                    }
                 }
             }
 
