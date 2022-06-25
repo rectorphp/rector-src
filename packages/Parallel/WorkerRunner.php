@@ -99,11 +99,12 @@ final class WorkerRunner
                     ++$systemErrorsCount;
 
                     $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
-                    $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
-                    $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
 
                     if ($this->rectorConsoleOutputStyle->isDebug()) {
-                        $systemErrors[] = new SystemError($throwable->getTraceAsString(), $filePath, $throwable->getLine());
+                        $systemErrors[] = new SystemError($errorMessage . PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString(), $filePath, $throwable->getLine());
+                    } else {
+                        $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
+                        $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
                     }
                 }
             }
