@@ -97,15 +97,7 @@ final class WorkerRunner
                     );
                 } catch (Throwable $throwable) {
                     ++$systemErrorsCount;
-
-                    $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
-
-                    if ($this->rectorConsoleOutputStyle->isDebug()) {
-                        $systemErrors[] = new SystemError($errorMessage . PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString(), $filePath, $throwable->getLine());
-                    } else {
-                        $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
-                        $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
-                    }
+                    $systemErrors = $this->collectSystemErrors($systemErrors, $throwable, $filePath);
                 }
             }
 
@@ -124,5 +116,28 @@ final class WorkerRunner
         });
 
         $decoder->on(ReactEvent::ERROR, $handleErrorCallback);
+    }
+
+    /**
+     * @param SystemError[] $systemErrors
+     * @return SystemError[]
+     */
+    private function collectSystemErrors(array $systemErrors, Throwable $throwable, string $filePath): array
+    {
+        $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
+
+        if ($this->rectorConsoleOutputStyle->isDebug()) {
+            $systemErrors[] = new SystemError(
+                $errorMessage . PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString(),
+                $filePath,
+                $throwable->getLine()
+            );
+            return $systemErrors;
+        }
+
+        $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
+        $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
+
+        return $systemErrors;
     }
 }
