@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
@@ -18,7 +17,7 @@ use PhpParser\Node\Expr\Empty_;
 final class AlwaysStrictBoolExprAnalyzer
 {
     /**
-     * @var array<class-string<Node>>
+     * @var array<class-string<Expr>>
      */
     private const BOOL_TYPE_NODES = [
         // detect strict type here :)
