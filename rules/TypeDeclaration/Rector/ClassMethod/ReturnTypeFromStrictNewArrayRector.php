@@ -155,6 +155,7 @@ CODE_SAMPLE
             if (! $stmt instanceof Expression) {
                 continue;
             }
+
             if (! $stmt->expr instanceof Assign) {
                 continue;
             }
