@@ -207,7 +207,7 @@ CODE_SAMPLE
         return $exprType instanceof ArrayType;
     }
 
-    private function narrowConstantArrayType(Type $type): \PHPStan\Type\Type
+    private function narrowConstantArrayType(Type $type): Type
     {
         if (! $type instanceof ConstantArrayType) {
             return $type;
