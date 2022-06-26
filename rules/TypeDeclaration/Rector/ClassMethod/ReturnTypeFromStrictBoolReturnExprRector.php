@@ -22,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictBoolReturnExprRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private StrictBoolReturnTypeAnalyzer $strictBoolReturnTypeAnalyzer,
+        private readonly StrictBoolReturnTypeAnalyzer $strictBoolReturnTypeAnalyzer,
     ) {
     }
 

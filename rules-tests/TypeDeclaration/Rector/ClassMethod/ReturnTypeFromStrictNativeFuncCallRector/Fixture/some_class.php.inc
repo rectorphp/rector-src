@@ -18,7 +18,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNa
 
 final class SomeClass
 {
-    public function run(): string
+    public function run(): int
     {
         return strlen('value');
     }

@@ -6,59 +6,57 @@ namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\TypeDeclaration\TypeAnalyzer\AlwaysStrictBoolExprAnalyzer;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnFilter\ExclusiveNativeFuncCallReturnMatcher;
 
-final class StrictBoolReturnTypeAnalyzer
+final class StrictNativeFunctionReturnTypeAnalyzer
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly AlwaysStrictBoolExprAnalyzer $alwaysStrictBoolExprAnalyzer,
+        private readonly ExclusiveNativeFuncCallReturnMatcher $exclusiveNativeFuncCallReturnMatcher
     ) {
     }
 
-    public function hasAlwaysStrictBoolReturn(ClassMethod|Closure|Function_ $functionLike): bool
+    /**
+     * @return FuncCall[]|null
+     */
+    public function matchAlwaysReturnNativeFuncCalls(ClassMethod|Closure|Function_ $functionLike): ?array
     {
         if ($functionLike->stmts === null) {
-            return false;
+            return null;
         }
 
         if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, [Yield_::class])) {
-            return false;
+            return null;
         }
 
         /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
         if ($returns === []) {
-            return false;
+            return null;
         }
 
         // is one statement depth 3?
         if (! $this->areExclusiveExprReturns($returns)) {
-            return false;
+            return null;
         }
 
         // has root return?
         if (! $this->hasClassMethodRootReturn($functionLike)) {
-            return false;
+            return null;
         }
 
-        foreach ($returns as $return) {
-            // we need exact expr return
-            if (! $return->expr instanceof Expr) {
-                return false;
-            }
-
-            if (! $this->alwaysStrictBoolExprAnalyzer->isStrictBoolExpr($return->expr)) {
-                return false;
-            }
+        $nativeFuncCalls = $this->exclusiveNativeFuncCallReturnMatcher->match($returns);
+        if ($nativeFuncCalls === null) {
+            return null;
         }
 
-        return true;
+        return $nativeFuncCalls;
     }
 
     /**
