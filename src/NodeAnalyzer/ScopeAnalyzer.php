@@ -9,8 +9,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Namespace_;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final class ScopeAnalyzer
 {
@@ -19,8 +17,6 @@ final class ScopeAnalyzer
      */
     private const NO_SCOPE_NODES = [
         Name::class,
-        Namespace_::class,
-        FileWithoutNamespace::class,
         Identifier::class,
         Param::class,
         Arg::class,
