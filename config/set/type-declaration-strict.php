@@ -29,4 +29,5 @@ return static function (RectorConfig $rectorConfig): void {
         ArrayShapeFromConstantArrayReturnRector::class,
         ReturnTypeFromStrictReturnExprRector::class,
     ]);
+    $rectorConfig->rule(\Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeFuncCallRector::class);
 };
