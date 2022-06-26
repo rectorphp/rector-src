@@ -9,6 +9,9 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use PHPStan\Analyser\MutatingScope;
 
 final class ScopeAnalyzer
 {
@@ -26,5 +29,14 @@ final class ScopeAnalyzer
         }
 
         return true;
+    }
+
+    public function isScopeResolvableFromFile(Node $node, ?MutatingScope $mutatingScope = null): bool
+    {
+        if ($mutatingScope instanceof MutatingScope) {
+            return false;
+        }
+
+        return in_array($node::class, [Namespace_::class, FileWithoutNamespace::class], true);
     }
 }
