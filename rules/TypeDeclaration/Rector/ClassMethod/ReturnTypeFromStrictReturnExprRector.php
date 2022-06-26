@@ -6,9 +6,11 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
@@ -60,11 +62,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -99,9 +101,9 @@ CODE_SAMPLE
         return true;
     }
 
-    private function hasClassMethodRootReturn(ClassMethod $classMethod): bool
+    private function hasClassMethodRootReturn(ClassMethod|Function_|Closure $functionLike): bool
     {
-        foreach ((array) $classMethod->stmts as $stmt) {
+        foreach ((array) $functionLike->stmts as $stmt) {
             if ($stmt instanceof Return_) {
                 return true;
             }
@@ -110,18 +112,18 @@ CODE_SAMPLE
         return false;
     }
 
-    private function hasSingleStrictReturn(ClassMethod $classMethod): bool
+    private function hasSingleStrictReturn(ClassMethod|Closure|Function_ $functionLike): bool
     {
-        if ($classMethod->stmts === null) {
+        if ($functionLike->stmts === null) {
             return false;
         }
 
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($classMethod, [Yield_::class])) {
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, [Yield_::class])) {
             return false;
         }
 
         /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($classMethod, Return_::class);
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
         if ($returns === []) {
             return false;
         }
@@ -132,7 +134,7 @@ CODE_SAMPLE
         }
 
         // has root return?
-        if (! $this->hasClassMethodRootReturn($classMethod)) {
+        if (! $this->hasClassMethodRootReturn($functionLike)) {
             return false;
         }
 
