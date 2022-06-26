@@ -10,8 +10,8 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Namespace_;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use PHPStan\Analyser\MutatingScope;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final class ScopeAnalyzer
 {
