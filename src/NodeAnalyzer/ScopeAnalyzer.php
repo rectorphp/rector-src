@@ -15,12 +15,7 @@ final class ScopeAnalyzer
     /**
      * @var array<class-string<Node>>
      */
-    private const NO_SCOPE_NODES = [
-        Name::class,
-        Identifier::class,
-        Param::class,
-        Arg::class,
-    ];
+    private const NO_SCOPE_NODES = [Name::class, Identifier::class, Param::class, Arg::class];
 
     public function hasScope(Node $node): bool
     {
