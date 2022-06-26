@@ -31,7 +31,7 @@ final class ScopeAnalyzer
         return true;
     }
 
-    public function isScopeResolvableFromFile(Node $node, ?MutatingScope $mutatingScope = null): bool
+    public function isScopeResolvableFromFile(Node $node, ?MutatingScope $mutatingScope): bool
     {
         if ($mutatingScope instanceof MutatingScope) {
             return false;
