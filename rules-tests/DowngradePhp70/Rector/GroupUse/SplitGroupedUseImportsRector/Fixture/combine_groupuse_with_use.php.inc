@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace Rector\Tests\DowngradePhp70\Rector\GroupUse\SplitGroupedUseImportsRector\Fixture;
 
 use App\Entity\Order;
 use Symfony\Component\Console\{Command\Command, Style\SymfonyStyle, Input\InputInterface, Output\OutputInterface};
@@ -13,7 +13,7 @@ class CombineGroupUseWithUse
 -----
 <?php
 
-namespace App\Command;
+namespace Rector\Tests\DowngradePhp70\Rector\GroupUse\SplitGroupedUseImportsRector\Fixture;
 
 use App\Entity\Order;
 use Symfony\Component\Console\Command\Command;
