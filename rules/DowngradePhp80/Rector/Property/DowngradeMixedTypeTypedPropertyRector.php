@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DowngradePhp80\Rector\Property;
 
 use PhpParser\Node;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;
 use Rector\CodeQuality\NodeFactory\PropertyTypeDecorator;
