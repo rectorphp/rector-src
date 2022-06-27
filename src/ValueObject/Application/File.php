@@ -144,6 +144,14 @@ final class File
     }
 
     /**
+     * @param mixed[] $oldTokens
+     */
+    public function setOldTokens(array $oldTokens): void
+    {
+        $this->oldTokens = $oldTokens;
+    }
+
+    /**
      * @param Stmt[] $newStmts
      */
     public function changeNewStmts(array $newStmts): void
