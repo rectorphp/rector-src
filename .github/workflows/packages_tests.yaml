@@ -49,7 +49,7 @@ jobs:
             # test with current commit in a pull-request
             -
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
-                if: ${{ github.event_name == 'pull_request' }}
+                if: ${{ github.event_name == 'pull_request' && matrix.repository_name != 'rectorphp/rector-downgrade-php' }}
 
             -
                 run: composer require rector/rector-downgrade-php:dev-main --no-update
