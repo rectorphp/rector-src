@@ -31,4 +31,11 @@ spl_autoload_register(function (string $class): void {
             require $filePath;
         }
     }
+
+    if ($class === 'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson') {
+        $filePath = __DIR__ . '/vendor/symplify/composer-json-manipulator/src/ValueObject/ComposerJson.php';
+        if (file_exists($filePath)) {
+            require $filePath;
+        }
+    }
 });
