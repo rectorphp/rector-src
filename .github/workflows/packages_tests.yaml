@@ -45,7 +45,6 @@ jobs:
                     coverage: none
 
             -   run: composer config minimum-stability dev
-            -   run: composer remove rector/rector-src
 
             # test with current commit in a pull-request
             -
