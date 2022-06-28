@@ -26,6 +26,7 @@
         "rector/extension-installer": "^0.11.2",
         "rector/rector-cakephp": "dev-main",
         "rector/rector-doctrine": "dev-main",
+        "rector/rector-downgrade-php": "dev-main",
         "rector/rector-generator": "dev-main",
         "rector/rector-laravel": "dev-main",
         "rector/rector-nette": "dev-main",
@@ -182,5 +183,11 @@
             "rector/extension-installer": true,
             "cweagans/composer-patches": true
         }
-    }
+    },
+    "repositories" : [
+        {
+            "type" : "vcs",
+            "url" : "https://github.com/rectorphp/rector-downgrade-php"
+        }
+    ]
 }
