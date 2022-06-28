@@ -53,7 +53,7 @@ jobs:
 
             -
                 run: composer require rector/rector-downgrade-php:dev-main --no-update
-                if: github.repository != 'rectorphp/rector-downgrade-php'
+                if: ${{ matrix.repository_name != 'rectorphp/rector-downgrade-php' }}
 
             -   run: composer install --ansi
 
