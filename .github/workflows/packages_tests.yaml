@@ -46,11 +46,11 @@ jobs:
 
             -   run: composer config minimum-stability dev
 
+            -   run: composer install --ansi
+
             # test with current commit in a pull-request
             -
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
                 if: ${{ github.event_name == 'pull_request' }}
-
-            -   run: composer install --ansi
 
             -   run: vendor/bin/phpunit
