@@ -183,11 +183,5 @@
             "rector/extension-installer": true,
             "cweagans/composer-patches": true
         }
-    },
-    "repositories" : [
-        {
-            "type" : "vcs",
-            "url" : "https://github.com/rectorphp/rector-downgrade-php"
-        }
-    ]
+    }
 }
