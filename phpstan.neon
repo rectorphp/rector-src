@@ -234,7 +234,7 @@ parameters:
         # resolve later
         - '#Method "(.*?)\(\)" only calling another method call and has no added value\. Use the inlined call instead#'
         - '#Method "processRenameVariable\(\)" returns bool type, so the name should start with is/has/was#'
-        - '#Method "refactorParamType\(\)" returns bool type, so the name should start with is/has/was#'
+
         - '#Method "decorateReturnWithSpecificType\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "resolveObjectType\(\)" returns bool type, so the name should start with is/has/was#'
 
@@ -468,7 +468,7 @@ parameters:
         - '#Add explicit array type to assigned "(.*?)->(args|params|items|parts|stmts)" expression#'
         # false positive on string type
         - '#Add explicit array type to assigned "\$unusedParameters" expression#'
-        - '#Add explicit array type to assigned "\$unnamedArgs" expression#'
+
         - '#Add explicit array type to assigned "\$innerPattern" expression#'
         # known doc
         - '#Add explicit array type to assigned "\$spreadParams" expression#'
@@ -600,9 +600,6 @@ parameters:
             message: '#Class cognitive complexity is 55, keep it under 50#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php #41
 
-        # list() function accepts null arguments
-        - '#Parameter \#2 \$args of class PhpParser\\Node\\Expr\\FuncCall constructor expects array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder>, array<int, PhpParser\\Node\\Arg\|null> given#'
-
         # validate class-string input
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
@@ -616,7 +613,7 @@ parameters:
         # optional rule for PHP 8.1
         - '#Register "Rector\\Php81\\Rector\\Class_\\ConstantListClassToEnumRector" service to "php81\.php" config set#'
         - '#Rule Rector\\Php81\\Rector\\Class_\\ConstantListClassToEnumRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
-        - '#Register "Rector\\DowngradePhp80\\Rector\\Enum_\\DowngradeEnumToConstantListClassRector" service to "downgrade\-php80\.php" config set#'
+
         -
             message: '#Method "refactor(Params|Return)\(\)" returns bool type, so the name should start with is/has/was#'
             path: rules/Php81/Rector/Class_/ConstantListClassToEnumRector.php
