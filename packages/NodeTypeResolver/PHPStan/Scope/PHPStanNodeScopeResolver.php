@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -36,15 +35,12 @@ use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\BetterReflection\Reflector\MemoizingReflector;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\StaticReflection\SourceLocator\ParentAttributeSourceLocator;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\Core\Util\StringUtils;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -77,8 +73,7 @@ final class PHPStanNodeScopeResolver
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly RenamedClassesSourceLocator $renamedClassesSourceLocator,
-        private readonly ParentAttributeSourceLocator $parentAttributeSourceLocator,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly ParentAttributeSourceLocator $parentAttributeSourceLocator
     ) {
     }
 
@@ -141,24 +136,8 @@ final class PHPStanNodeScopeResolver
                 }
             }
 
-            if ($node instanceof TryCatch) {
-                foreach ($node->catches as $catch) {
-                    $varName = $catch->var instanceof Variable
-                        ? $this->nodeNameResolver->getName($catch->var)
-                        : null;
-                    $type = TypeCombinator::union(
-                        ...array_map(
-                            static fn (Name $class): ObjectType => new ObjectType((string) $class),
-                            $catch->types
-                        )
-                    );
-                    $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-                    $this->processNodes($catch->stmts, $smartFileInfo, $catchMutatingScope);
-                }
-
-                if ($node->finally instanceof Finally_) {
-                    $node->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
+            if ($node instanceof TryCatch && $node->finally instanceof Finally_) {
+                $node->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Assign) {
