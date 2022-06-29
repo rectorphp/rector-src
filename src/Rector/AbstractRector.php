@@ -98,6 +98,8 @@ CODE_SAMPLE;
 
     protected ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
+    protected ScopeFactory $scopeFactory;
+
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
     private ExclusionManager $exclusionManager;
@@ -120,8 +122,6 @@ CODE_SAMPLE;
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
     private RectorOutputStyle $rectorOutputStyle;
-
-    protected ScopeFactory $scopeFactory;
 
     #[Required]
     public function autowire(
