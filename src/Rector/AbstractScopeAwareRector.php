@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeAwarePhpRectorInterface
@@ -19,6 +20,16 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     public function refactor(Node $node)
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
+
+        if (! $scope instanceof Scope) {
+            $scopeAnalyzer = new ScopeAnalyzer();
+            if ($scopeAnalyzer->isScopeResolvableFromFile($node, $scope)) {
+                $smartFileInfo = $this->file->getSmartFileInfo();
+                $scope = $this->scopeFactory->createFromFile($smartFileInfo);
+                $this->changedNodeScopeRefresher->refresh($node, $scope, $smartFileInfo);
+            }
+        }
+
         if (! $scope instanceof Scope) {
             $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 

@@ -37,6 +37,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -120,6 +121,8 @@ CODE_SAMPLE;
 
     private RectorOutputStyle $rectorOutputStyle;
 
+    protected ScopeFactory $scopeFactory;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -142,7 +145,8 @@ CODE_SAMPLE;
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        RectorOutputStyle $rectorOutputStyle
+        RectorOutputStyle $rectorOutputStyle,
+        ScopeFactory $scopeFactory
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -165,6 +169,7 @@ CODE_SAMPLE;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
+        $this->scopeFactory = $scopeFactory;
     }
 
     /**
