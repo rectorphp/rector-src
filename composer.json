@@ -86,7 +86,7 @@
                 "rules"
             ],
             "Rector\\Core\\": "src",
-            "Rector\\Compiler\\": "utils/compiler/src"
+            "Rector\\Utils\\": "utils"
         },
         "files": [
             "src/functions/node_helper.php",
@@ -100,7 +100,7 @@
                 "rules-tests"
             ],
             "Rector\\Core\\Tests\\": "tests",
-            "Rector\\RuleDocGenerator\\": "utils/rule-doc-generator/src",
+            "Rector\\RuleDocGenerator\\": "utils/RuleDocGenerator/src",
             "E2e\\Parallel\\Reflection\\Resolver\\": [
                 "e2e/parallel-reflection-resolver/src/",
                 "e2e/no-parallel-reflection-resolver/src"

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\RuleDocGenerator\Category;
+namespace Rector\Utils\RuleDocGenerator\Category;
 
 use Nette\Utils\Strings;
 use Rector\Core\Exception\ShouldNotHappenException;
