@@ -24,6 +24,7 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -98,6 +99,8 @@ CODE_SAMPLE;
 
     protected ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
+    protected ScopeAnalyzer $scopeAnalyzer;
+
     protected ScopeFactory $scopeFactory;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
@@ -146,6 +149,7 @@ CODE_SAMPLE;
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
+        ScopeAnalyzer $scopeAnalyzer,
         ScopeFactory $scopeFactory
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
@@ -169,6 +173,7 @@ CODE_SAMPLE;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
+        $this->scopeAnalyzer = $scopeAnalyzer;
         $this->scopeFactory = $scopeFactory;
     }
 
