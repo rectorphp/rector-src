@@ -9,6 +9,7 @@ use Clue\React\NDJson\Encoder;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
+use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\ValueObject\Application\File;
@@ -29,13 +30,16 @@ final class WorkerRunner
      */
     private const RESULT = 'result';
 
+    /**
+     * @param FileProcessorInterface[] $fileProcessors
+     */
     public function __construct(
         private readonly ParametersMerger $parametersMerger,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly PhpFileProcessor $phpFileProcessor,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle
+        private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
+        private readonly array $fileProcessors = []
     ) {
     }
 
@@ -85,16 +89,18 @@ final class WorkerRunner
                     $file = new File($smartFileInfo, $smartFileInfo->getContents());
                     $this->currentFileProvider->setFile($file);
 
-                    if (! $this->phpFileProcessor->supports($file, $configuration)) {
-                        continue;
+                    foreach ($this->fileProcessors as $fileProcessor) {
+                        if (! $fileProcessor->supports($file, $configuration)) {
+                            continue;
+                        }
+
+                        $currentErrorsAndFileDiffs = $fileProcessor->process($file, $configuration);
+
+                        $errorAndFileDiffs = $this->parametersMerger->merge(
+                            $errorAndFileDiffs,
+                            $currentErrorsAndFileDiffs
+                        );
                     }
-
-                    $currentErrorsAndFileDiffs = $this->phpFileProcessor->process($file, $configuration);
-
-                    $errorAndFileDiffs = $this->parametersMerger->merge(
-                        $errorAndFileDiffs,
-                        $currentErrorsAndFileDiffs
-                    );
                 } catch (Throwable $throwable) {
                     ++$systemErrorsCount;
                     $systemErrors = $this->collectSystemErrors($systemErrors, $throwable, $filePath);

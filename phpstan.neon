@@ -330,6 +330,9 @@ parameters:
         # parallel complexity
         - '#Cognitive complexity for "Rector\\Parallel\\Application\\ParallelFileProcessor\:\:process\(\)" is \d+, keep it under 10#'
 
+        # workrunner complexity
+        - '#Cognitive complexity for "Rector\\Parallel\\WorkerRunner\:\:run\(\)" is 11, keep it under 10#'
+
         # strict rules
         - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
 
