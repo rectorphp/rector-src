@@ -171,12 +171,6 @@ final class Option
     public const TEMPLATE_TYPE = 'template-type';
 
     /**
-     * @deprecated
-     * @var string
-     */
-    public const ENABLE_EDITORCONFIG = 'enable_editorconfig';
-
-    /**
      * @var string
      */
     public const AUTOLOAD_FILE_SHORT = 'a';
