@@ -7,9 +7,12 @@ namespace Rector\DeadCode\Rector\StmtsAwareInterface;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\While_;
@@ -146,7 +149,7 @@ CODE_SAMPLE
     {
         return count($followingStmts) > 0
             && $followingStmts[0] instanceof Expression
-            && $followingStmts[0]->expr instanceof Node\Expr\Closure
+            && $followingStmts[0]->expr instanceof Closure
             && $followingStmts[0]->expr->static;
     }
 
@@ -164,7 +167,7 @@ CODE_SAMPLE
 
         // avoid crash in \PHPStan\Analyser\MutatingScope::enterAnonymousFunctionWithoutReflection
         $variableCompatibleFetch = clone $propertyFetch;
-        if (! $variableCompatibleFetch->name instanceof Node\Identifier && ! is_string($variableCompatibleFetch->name)) {
+        if (! $variableCompatibleFetch->name instanceof Identifier && ! is_string($variableCompatibleFetch->name)) {
             return null;
         }
         $variableCompatibleFetch->name = (string) $variableCompatibleFetch->name;
@@ -177,7 +180,7 @@ CODE_SAMPLE
                 }
 
                 $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-                if ($parentNode instanceof Node\Expr\ClosureUse) {
+                if ($parentNode instanceof ClosureUse) {
                     // remove closure use which will be replaced by a property fetch
                     $this->nodesToRemoveCollector->addNodeToRemove($parentNode);
 
