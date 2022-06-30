@@ -666,8 +666,3 @@ parameters:
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
-
-        -
-            message: "#^Property PhpParser\\\\Node\\\\Expr\\\\PropertyFetch\\:\\:\\$name \\(PhpParser\\\\Node\\\\Expr\\|PhpParser\\\\Node\\\\Identifier\\) does not accept string\\.$#"
-            count: 1
-            path: rules/DeadCode/Rector/StmtsAwareInterface/RemoveJustPropertyFetchRector.php
