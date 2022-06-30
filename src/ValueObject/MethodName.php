@@ -42,12 +42,6 @@ final class MethodName
     public const SET_UP = 'setUp';
 
     /**
-     * Mostly used in unit tests
-     * @var string
-     */
-    public const TEAR_DOWN = 'tearDown';
-
-    /**
      * @var string
      */
     public const SET_STATE = '__set_state';
