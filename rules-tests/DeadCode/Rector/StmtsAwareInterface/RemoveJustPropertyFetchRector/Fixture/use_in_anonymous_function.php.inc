@@ -29,7 +29,7 @@ final class SkipUseInStaticFunction
     public function run()
     {
         function () {
-            $this->id();
+            ($this->id)();
         };
     }
 }
