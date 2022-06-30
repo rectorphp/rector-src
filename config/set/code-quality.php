@@ -168,7 +168,6 @@ return static function (RectorConfig $rectorConfig): void {
         VarToPublicPropertyRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
         NewStaticToNewSelfRector::class,
-        DateTimeToDateTimeInterfaceRector::class,
         UnwrapSprintfOneArgumentRector::class,
         SwitchNegatedTernaryRector::class,
         SingularSwitchToIfRector::class,
