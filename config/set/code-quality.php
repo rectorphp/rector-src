@@ -10,7 +10,6 @@ use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
-use Rector\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfaceRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
