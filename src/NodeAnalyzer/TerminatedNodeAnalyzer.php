@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
@@ -78,13 +79,18 @@ final class TerminatedNodeAnalyzer
             return false;
         }
 
+        $hasDefault = false;
         foreach ($switch->cases as $case) {
+            if (! $case->cond instanceof Expr) {
+                $hasDefault = true;
+            }
+
             if (! $this->isTerminatedInLastStmts($case->stmts, $node)) {
                 return false;
             }
         }
 
-        return true;
+        return $hasDefault;
     }
 
     private function isTerminatedInLastStmtsTryCatch(TryCatch $tryCatch, Node $node): bool
