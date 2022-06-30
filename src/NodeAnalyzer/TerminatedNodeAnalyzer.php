@@ -15,7 +15,9 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Goto_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Label;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
@@ -38,8 +40,17 @@ final class TerminatedNodeAnalyzer
      */
     private const TERMINABLE_NODES_BY_ITS_STMTS = [TryCatch::class, If_::class, Switch_::class];
 
+    /**
+     * @var array<class-string<Node>>
+     */
+    private const ALLOWED_CONTINUE_CURRENT_STMTS = [InlineHTML::class, Nop::class];
+
     public function isAlwaysTerminated(TryCatch|If_|Switch_|Node $node, Node $currentStmt): bool
     {
+        if (in_array($currentStmt::class, self::ALLOWED_CONTINUE_CURRENT_STMTS, true)) {
+            return false;
+        }
+
         if (! in_array($node::class, self::TERMINABLE_NODES_BY_ITS_STMTS, true)) {
             return $this->isTerminatedNode($node, $currentStmt);
         }

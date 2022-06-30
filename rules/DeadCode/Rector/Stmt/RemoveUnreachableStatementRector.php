@@ -6,8 +6,6 @@ namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\InlineHTML;
-use PhpParser\Node\Stmt\Nop;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -91,29 +89,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($stmt instanceof Nop) {
-                continue;
-            }
-
             $previousStmt = $stmts[$key - 1];
 
             // unset...
 
-            if ($this->shouldRemove($previousStmt, $stmt)) {
+            if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($previousStmt, $stmt)) {
                 array_splice($stmts, $key);
                 return $stmts;
             }
         }
 
         return $stmts;
-    }
-
-    private function shouldRemove(Stmt $previousStmt, Stmt $currentStmt): bool
-    {
-        if ($currentStmt instanceof InlineHTML) {
-            return false;
-        }
-
-        return $this->terminatedNodeAnalyzer->isAlwaysTerminated($previousStmt, $currentStmt);
     }
 }
