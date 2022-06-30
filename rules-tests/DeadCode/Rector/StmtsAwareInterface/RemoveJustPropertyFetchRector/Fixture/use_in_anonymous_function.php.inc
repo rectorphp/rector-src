@@ -13,6 +13,7 @@ final class SkipUseInStaticFunction
         function () use ($id) {
             $id();
         };
+        fn () => $id();
     }
 }
 
@@ -31,6 +32,7 @@ final class SkipUseInStaticFunction
         function () {
             ($this->id)();
         };
+        fn () => ($this->id)();
     }
 }
 
