@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\While_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\ValueObject\PropertyFetchToVariableAssign;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -146,22 +145,20 @@ CODE_SAMPLE
 
     /**
      * @param Variable[] $variableUsages
-     *
-     * @throws ShouldNotHappenException
      */
     private function replaceVariablesWithPropertyFetch(
         StmtsAwareInterface $stmtsAware,
         int $currentStmtsKey,
         array $variableUsages,
         PropertyFetch $propertyFetch
-    ): StmtsAwareInterface {
+    ): ?StmtsAwareInterface {
         // remove assign node
         unset($stmtsAware->stmts[$currentStmtsKey]);
 
         // avoid crash in \PHPStan\Analyser\MutatingScope::enterAnonymousFunctionWithoutReflection
         $variableCompatibleFetch = clone $propertyFetch;
         if (!$variableCompatibleFetch->name instanceof Node\Identifier && !is_string($variableCompatibleFetch->name)) {
-            throw new ShouldNotHappenException();
+            return null;
         }
         $variableCompatibleFetch->name = (string) $variableCompatibleFetch->name;
 
