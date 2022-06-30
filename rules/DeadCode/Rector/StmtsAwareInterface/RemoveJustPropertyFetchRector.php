@@ -104,11 +104,7 @@ CODE_SAMPLE
             }
 
             $followingStmts = array_slice($stmts, $key + 1);
-            if (count($followingStmts) > 0
-                && $followingStmts[0] instanceof Expression
-                && $followingStmts[0]->expr instanceof Node\Expr\Closure
-                && $followingStmts[0]->expr->static
-            ) {
+            if ($this->isFollowingStatementStaticClosure($followingStmts)) {
                 // can not replace usages in anonymous static functions
                 continue;
             }
@@ -144,6 +140,17 @@ CODE_SAMPLE
     }
 
     /**
+     * @param Stmt[] $followingStmts
+     */
+    public function isFollowingStatementStaticClosure(array $followingStmts): bool
+    {
+        return count($followingStmts) > 0
+            && $followingStmts[0] instanceof Expression
+            && $followingStmts[0]->expr instanceof Node\Expr\Closure
+            && $followingStmts[0]->expr->static;
+    }
+
+    /**
      * @param Variable[] $variableUsages
      */
     private function replaceVariablesWithPropertyFetch(
@@ -157,7 +164,7 @@ CODE_SAMPLE
 
         // avoid crash in \PHPStan\Analyser\MutatingScope::enterAnonymousFunctionWithoutReflection
         $variableCompatibleFetch = clone $propertyFetch;
-        if (!$variableCompatibleFetch->name instanceof Node\Identifier && !is_string($variableCompatibleFetch->name)) {
+        if (! $variableCompatibleFetch->name instanceof Node\Identifier && ! is_string($variableCompatibleFetch->name)) {
             return null;
         }
         $variableCompatibleFetch->name = (string) $variableCompatibleFetch->name;
