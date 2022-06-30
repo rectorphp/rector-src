@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Parallel\ValueObject;
 
 /**
+ * @api
  * Helpers constant for passing constant names around
  */
 final class Name
@@ -43,4 +44,9 @@ final class Name
      * @var string
      */
     public const RECTOR_CLASS = 'rector_class';
+
+    /**
+     * @var string
+     */
+    public const RECTORS_WITH_LINE_CHANGES = 'rectors_with_line_changes';
 }
