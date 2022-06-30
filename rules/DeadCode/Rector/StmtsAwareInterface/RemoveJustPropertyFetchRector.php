@@ -161,20 +161,13 @@ CODE_SAMPLE
         int $currentStmtsKey,
         array $variableUsages,
         PropertyFetch $propertyFetch
-    ): ?StmtsAwareInterface {
+    ): StmtsAwareInterface {
         // remove assign node
         unset($stmtsAware->stmts[$currentStmtsKey]);
 
-        // avoid crash in \PHPStan\Analyser\MutatingScope::enterAnonymousFunctionWithoutReflection
-        $variableCompatibleFetch = clone $propertyFetch;
-        if (! $variableCompatibleFetch->name instanceof Identifier && ! is_string($variableCompatibleFetch->name)) {
-            return null;
-        }
-        $variableCompatibleFetch->name = (string) $variableCompatibleFetch->name;
-
         $this->traverseNodesWithCallable(
             $stmtsAware,
-            function (Node $node) use ($variableUsages, $variableCompatibleFetch): ?PropertyFetch {
+            function (Node $node) use ($variableUsages, $propertyFetch): ?PropertyFetch {
                 if (! in_array($node, $variableUsages, true)) {
                     return null;
                 }
@@ -187,7 +180,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                return $variableCompatibleFetch;
+                return $propertyFetch;
             }
         );
 
