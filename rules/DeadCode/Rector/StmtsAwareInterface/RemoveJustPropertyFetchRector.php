@@ -113,6 +113,7 @@ CODE_SAMPLE
                 // can not replace usages in anonymous static functions
                 continue;
             }
+
             $variableUsages = $this->nodeUsageFinder->findVariableUsages(
                 $followingStmts,
                 $variableToPropertyAssign->getVariable()
@@ -120,7 +121,6 @@ CODE_SAMPLE
 
             $currentStmtKey = $key;
 
-            // @todo validate the variable is not used in some place where property fetch cannot be used
             break;
         }
 
@@ -167,8 +167,16 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable(
             $stmtsAware,
-            static function (Node $node) use ($variableUsages, $variableCompatibleFetch): ?PropertyFetch {
+            function (Node $node) use ($variableUsages, $variableCompatibleFetch): ?PropertyFetch {
                 if (! in_array($node, $variableUsages, true)) {
+                    return null;
+                }
+
+                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parentNode instanceof Node\Expr\ClosureUse) {
+                    // remove closure use which will be replaced by a property fetch
+                    $this->nodesToRemoveCollector->addNodeToRemove($parentNode);
+
                     return null;
                 }
 
