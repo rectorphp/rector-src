@@ -13,5 +13,6 @@ final class SkipUseInStaticFunction
         static function () use ($id) {
             $id();
         };
+        static fn () => $id();
     }
 }
