@@ -105,6 +105,14 @@ CODE_SAMPLE
             }
 
             $followingStmts = array_slice($stmts, $key + 1);
+            if (count($followingStmts) > 0
+                && $followingStmts[0] instanceof Expression
+                && $followingStmts[0]->expr instanceof Node\Expr\Closure
+                && $followingStmts[0]->expr->static
+            ) {
+                // can not replace usages in anonymous static functions
+                continue;
+            }
             $variableUsages = $this->nodeUsageFinder->findVariableUsages(
                 $followingStmts,
                 $variableToPropertyAssign->getVariable()
