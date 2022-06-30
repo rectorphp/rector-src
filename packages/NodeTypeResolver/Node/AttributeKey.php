@@ -79,21 +79,6 @@ final class AttributeKey
     public const NEXT_NODE = 'next';
 
     /**
-     * @deprecated Instead of tree climbing without context, hook into parent node that contains the stmts directly.
-     * E.g. FunctionLike, If_, While_ etc.
-     * @var string
-     */
-    public const PREVIOUS_STATEMENT = 'previousExpression';
-
-    /**
-     * @deprecated Instead of tree climbing without context, hook into parent node that contains the stmts directly.
-     * E.g. FunctionLike, If_, While_ etc.
-     * Use @see \Rector\Core\PhpParser\Node\BetterNodeFinder::resolveCurrentStatement() instead if actually needed
-     * @var string
-     */
-    public const CURRENT_STATEMENT = 'currentExpression';
-
-    /**
      * Internal php-parser name.
      * Do not change this even if you want!
      *
@@ -102,6 +87,8 @@ final class AttributeKey
     public const NAMESPACED_NAME = 'namespacedName';
 
     /**
+     * @api
+     *
      * Internal php-parser name.
      * Do not change this even if you want!
      *
@@ -149,14 +136,6 @@ final class AttributeKey
      * @var string
      */
     public const FUNC_ARGS_TRAILING_COMMA = 'trailing_comma';
-
-    /**
-     * Contains current file object
-     * @see \Rector\Core\ValueObject\Application\File
-     *
-     * @var string
-     */
-    public const FILE = 'file';
 
     /**
      * Helps with infinite loop detection

@@ -21,11 +21,6 @@ final class VersionResolver
     public const PACKAGE_VERSION = '@package_version@';
 
     /**
-     * @var string
-     */
-    public const RELEASE_DATE = '@release_date@';
-
-    /**
      * @var int
      */
     private const SUCCESS_CODE = 0;

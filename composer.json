@@ -70,7 +70,7 @@
         "symplify/easy-coding-standard": "^11.0",
         "symplify/monorepo-builder": "^11.0",
         "symplify/phpstan-extensions": "^11.0",
-        "symplify/phpstan-rules": "^11.0",
+        "symplify/phpstan-rules": "dev-main",
         "symplify/rule-doc-generator": "^11.0",
         "symplify/vendor-patches": "^11.0"
     },
@@ -183,5 +183,7 @@
             "rector/extension-installer": true,
             "cweagans/composer-patches": true
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
