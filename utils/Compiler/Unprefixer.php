@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Compiler;
+namespace Rector\Utils\Compiler;
 
 use Nette\Utils\Strings;
 
