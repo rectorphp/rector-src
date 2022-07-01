@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
+
 use Rector\Config\RectorConfig;
 
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
@@ -34,4 +36,5 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
     $rectorConfig->rule(ReturnTypeFromStrictNativeFuncCallRector::class);
     $rectorConfig->rule(ReturnTypeFromStrictNewArrayRector::class);
+    $rectorConfig->rule(ReturnTypeFromStrictScalarReturnExprRector::class);
 };
