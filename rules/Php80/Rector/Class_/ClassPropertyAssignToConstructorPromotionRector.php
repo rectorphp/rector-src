@@ -18,6 +18,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
+use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -43,7 +44,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly VarTagRemover $varTagRemover,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly PropertyAnalyzer $propertyAnalyzer
+        private readonly PropertyAnalyzer $propertyAnalyzer,
+        private readonly PropertyFetchFinder $propertyFetchFinder,
     ) {
     }
 
@@ -116,17 +118,21 @@ CODE_SAMPLE
                 continue;
             }
 
+            $props = $property->props[0];
+            $propertyName = $this->getName($props);
             $this->removeNode($property);
             $this->removeNode($promotionCandidate->getAssign());
 
-            $property = $promotionCandidate->getProperty();
+            /** @var string $paramName */
             $paramName = $this->getName($param);
 
-            // rename also following calls
-            $propertyName = $this->getName($property->props[0]);
-            /** @var string $oldName */
-            $oldName = $this->getName($param->var);
-            $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldName, $propertyName, null);
+            $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $propertyName, $paramName, null);
+
+            $propertyFetches = $this->propertyFetchFinder->findLocalPropertyFetchesByName($node, $propertyName);
+            $newName = new Identifier($paramName);
+            foreach ($propertyFetches as $propertyFetch) {
+                $propertyFetch->name = $newName;
+            }
 
             $paramTagValueNode = $classMethodPhpDocInfo->getParamTagValueNodeByName($paramName);
 
@@ -137,9 +143,8 @@ CODE_SAMPLE
                 $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
             }
 
-            // property name has higher priority
-            $propertyName = $this->getName($property);
-            $param->var->name = $propertyName;
+            // param name has higher priority
+            $props->name->name = $paramName;
             $param->flags = $property->flags;
             // Copy over attributes of the "old" property
             $param->attrGroups = $property->attrGroups;
