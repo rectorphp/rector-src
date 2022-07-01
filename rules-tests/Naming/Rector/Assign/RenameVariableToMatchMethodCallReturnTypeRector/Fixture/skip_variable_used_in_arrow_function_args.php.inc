@@ -4,7 +4,7 @@ namespace Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallRetur
 
 use Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector\Source\FastRunner;
 
-class SkipVariableUsedInArrowFunctionParam
+class SkipVariableUsedInArrowFunctionArgs
 {
     public function run()
     {
