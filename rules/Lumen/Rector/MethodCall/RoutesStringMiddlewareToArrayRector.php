@@ -63,7 +63,7 @@ CODE_SAMPLE)]
             return null;
         }
 
-        $middleware = $this->findItemInArrayByKeyAndUnset($attributes, 'middleware');
+        $middleware = $this->findItemInArrayByKey($attributes, 'middleware');
         if ($middleware === null) {
             return null;
         }
@@ -112,7 +112,7 @@ CODE_SAMPLE)]
         return $attributes;
     }
 
-    private function findItemInArrayByKeyAndUnset(Array_ $array, string $keyName): ?ArrayItem
+    private function findItemInArrayByKey(Array_ $array, string $keyName): ?ArrayItem
     {
         foreach ($array->items as $i => $item) {
             if ($item === null) {
@@ -121,8 +121,8 @@ CODE_SAMPLE)]
             if (! $this->arrayManipulator->hasKeyName($item, $keyName)) {
                 continue;
             }
-            $removedArrayItem = $array->items[$i];
-            if (! $removedArrayItem instanceof ArrayItem) {
+            $foundArrayItem = $array->items[$i];
+            if (! $foundArrayItem instanceof ArrayItem) {
                 continue;
             }
             return $item;
