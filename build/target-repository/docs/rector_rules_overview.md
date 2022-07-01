@@ -22,6 +22,8 @@
 
 - [EarlyReturn](#earlyreturn) (11)
 
+- [Lumen](#lumen) (1)
+
 - [MysqlToMysqli](#mysqltomysqli) (4)
 
 - [Naming](#naming) (6)
@@ -4172,6 +4174,23 @@ Changes Single return of || to early returns
 +        return (bool) $this->somethingElse();
      }
  }
+```
+
+<br>
+
+## Lumen
+
+### RoutesStringMiddlewareToArrayRector
+
+Changes middlewares from rule definitions from string to array notation.
+
+- class: [`Rector\Lumen\Rector\MethodCall\RoutesStringMiddlewareToArrayRector`](../rules/Lumen/Rector/MethodCall/RoutesStringMiddlewareToArrayRector.php)
+
+```diff
+-$router->get('/user', ['middleware => 'test']);
+-$router->post('/user', ['middleware => 'test|authentication']);
++$router->get('/user', ['middleware => ['test']]);
++$router->post('/user', ['middleware => ['test', 'authentication']]);
 ```
 
 <br>
