@@ -45,13 +45,13 @@ final class VariableAndCallAssignMatcher
             return null;
         }
 
-        $isVariableFoundInCall = (bool) $this->betterNodeFinder->findFirst(
+        $isVariableFoundInCallArgs = (bool) $this->betterNodeFinder->findFirst(
             $call->getArgs(),
             fn (Node $subNode): bool =>
                 $subNode instanceof Variable && $this->nodeNameResolver->isName($subNode, $variableName)
         );
 
-        if ($isVariableFoundInCall) {
+        if ($isVariableFoundInCallArgs) {
             return null;
         }
 
