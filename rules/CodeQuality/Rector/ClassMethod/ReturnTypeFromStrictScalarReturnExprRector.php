@@ -5,18 +5,14 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
->>>>>>> 6ae4aba26d... fixup! [ci-review] Rector Rectify
-=======
-use PhpParser\Node\Stmt\ClassMethod;
->>>>>>> a5357dfa76... [ci-review] Rector Rectify
+use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictScalarReturnTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,6 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly StrictScalarReturnTypeAnalyzer $strictScalarReturnTypeAnalyzer
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change return type based on strict scalar returns - string, int, float or bool', [
@@ -67,37 +68,26 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return [\PhpParser\Node\Stmt\ClassMethod::class];
-    }
-
-    /**
-     * @param \PhpParser\Node\Stmt\ClassMethod $node
-=======
         return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
      * @param ClassMethod|Function_|Closure $node
->>>>>>> 6ae4aba26d... fixup! [ci-review] Rector Rectify
-=======
-        return [ClassMethod::class];
-    }
-
-    /**
-     * @param ClassMethod $node
->>>>>>> a5357dfa76... [ci-review] Rector Rectify
      */
-    public function refactor(Node $node): ClassMethod
+    public function refactor(Node $node): ?Node
     {
         if ($node->returnType !== null) {
             return null;
         }
 
-        dump(111);
-        die;
+        $scalarReturnType = $this->strictScalarReturnTypeAnalyzer->matchAlwaysScalarReturnType($node);
+        if (! $scalarReturnType instanceof Type) {
+            return null;
+        }
 
+        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($scalarReturnType, TypeKind::RETURN);
+
+        $node->returnType = $returnTypeNode;
         return $node;
     }
 
