@@ -103,7 +103,11 @@ final class AlwaysStrictScalarExprAnalyzer
         if (count($variants) > 1) {
             $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
             if ($scope instanceof Scope) {
-                $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs($scope, $funcCall->getArgs(), $variants);
+                $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
+                    $scope,
+                    $funcCall->getArgs(),
+                    $variants
+                );
             } else {
                 return null;
             }
