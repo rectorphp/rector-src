@@ -30,8 +30,6 @@ use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
-use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -48,8 +46,6 @@ final class ChangedNodeScopeRefresher
     public function __construct(
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private readonly ScopeAnalyzer $scopeAnalyzer,
-        private readonly UnreachableStmtAnalyzer $unreachableStmtAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly ScopeFactory $scopeFactory
     ) {
@@ -73,23 +69,14 @@ final class ChangedNodeScopeRefresher
         }
 
         if (! $mutatingScope instanceof MutatingScope) {
-            /**
-             * Node does not has Scope, while:
-             *
-             * 1. Node is Scope aware
-             * 2. Its current Stmt is Reachable
-             */
-            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-            if (! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
-                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-                $errorMessage = sprintf(
-                    'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                    $node::class,
-                    $parent instanceof Node ? $parent::class : null
-                );
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            $errorMessage = sprintf(
+                'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+                $node::class,
+                $parent::class
+            );
 
-                throw new ShouldNotHappenException($errorMessage);
-            }
+            throw new ShouldNotHappenException($errorMessage);
         }
 
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
