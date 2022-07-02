@@ -20,8 +20,7 @@ final class ParametersAcceptorSelectorVariantsWrapper
         FunctionReflection|MethodReflection $reflection,
         array $args,
         Scope $scope
-    ): ParametersAcceptor
-    {
+    ): ParametersAcceptor {
         $variants = $reflection->getVariants();
 
         return count($variants) > 1
