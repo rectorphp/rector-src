@@ -469,6 +469,11 @@ CODE_SAMPLE
             return [];
         }
 
+        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return [];
+        }
+
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
             $functionReflection,
             $funcCall->getArgs(),

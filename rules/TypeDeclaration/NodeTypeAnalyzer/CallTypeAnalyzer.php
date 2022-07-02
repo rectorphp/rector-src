@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\NodeTypeAnalyzer;
 
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Type\Type;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -26,6 +27,11 @@ final class CallTypeAnalyzer
     {
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($call);
         if ($methodReflection === null) {
+            return [];
+        }
+
+        $scope = $call->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
             return [];
         }
 
