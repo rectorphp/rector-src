@@ -14,9 +14,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\MagicConst\Line;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
@@ -25,6 +23,7 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class AlwaysStrictScalarExprAnalyzer
 {
@@ -100,20 +99,12 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         $variants = $functionReflection->getVariants();
-        if (count($variants) > 1) {
-            $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
-            if ($scope instanceof Scope) {
-                $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
-                    $scope,
-                    $funcCall->getArgs(),
-                    $variants
-                );
-            } else {
-                return null;
-            }
-        } else {
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($variants);
-        }
+        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+            $variants,
+            $funcCall->getArgs(),
+            $scope
+        );
 
         return $parametersAcceptor->getReturnType();
     }
