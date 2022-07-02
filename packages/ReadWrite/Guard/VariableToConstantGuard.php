@@ -10,11 +10,11 @@ use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class VariableToConstantGuard
 {
@@ -84,10 +84,10 @@ final class VariableToConstantGuard
 
         $referencePositions = [];
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
-            $scope,
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+            $functionReflection,
             $args,
-            $functionReflection->getVariants()
+            $scope
         );
         foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
             /** @var ParameterReflection $parameterReflection */

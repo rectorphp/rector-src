@@ -6,10 +6,12 @@ namespace Rector\TypeDeclaration\NodeTypeAnalyzer;
 
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\Type;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class CallTypeAnalyzer
 {
@@ -28,7 +30,16 @@ final class CallTypeAnalyzer
             return [];
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        $scope = $call->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return [];
+        }
+
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+            $methodReflection,
+            $call->getArgs(),
+            $scope
+        );
 
         $parameterTypes = [];
 
