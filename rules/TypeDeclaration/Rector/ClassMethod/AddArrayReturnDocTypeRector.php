@@ -128,7 +128,8 @@ CODE_SAMPLE
 
         if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethodOldTypeWithNewType(
             $currentReturnType,
-            $inferredReturnType
+            $inferredReturnType,
+            $node
         )) {
             return null;
         }
