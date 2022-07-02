@@ -24,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnEarlyIfVariableRector extends AbstractRector
 {
     public function __construct(
-        private VariableAnalyzer $variableAnalyzer
+        private readonly VariableAnalyzer $variableAnalyzer
     ) {
     }
 
@@ -140,7 +140,7 @@ CODE_SAMPLE
         $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
 
         // last item → stop
-        if ($nextStmt === null) {
+        if (! $nextStmt instanceof Stmt) {
             return null;
         }
 
