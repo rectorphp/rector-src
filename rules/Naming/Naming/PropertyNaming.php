@@ -170,7 +170,7 @@ final class PropertyNaming
 
         // is AbstractClass
         if (\str_starts_with($shortClassName, 'Abstract')) {
-            $shortClassName = Strings::substring($shortClassName, strlen('Abstract'));
+            return Strings::substring($shortClassName, strlen('Abstract'));
         }
 
         return $shortClassName;

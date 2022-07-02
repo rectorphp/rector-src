@@ -82,7 +82,7 @@ final class ResourceReturnToObject
         //      - in the right position of BooleanOr, it be NeverType
         //      - the object changed after init
         if (! $argValueType instanceof FullyQualifiedObjectType) {
-            $argValueType = $this->resolveArgValueTypeFromPreviousAssign(
+            return $this->resolveArgValueTypeFromPreviousAssign(
                 $funcCall,
                 $argResourceValue,
                 $collectionFunctionToReturnObject
