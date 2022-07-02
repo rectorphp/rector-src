@@ -15,7 +15,6 @@ use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
@@ -138,9 +137,6 @@ CODE_SAMPLE
 
             if (! $paramTagValueNode instanceof ParamTagValueNode) {
                 $this->decorateParamWithPropertyPhpDocInfo($constructClassMethod, $property, $param, $paramName);
-            } elseif ($paramTagValueNode->parameterName !== '$' . $propertyName) {
-                $paramTagValueNode->parameterName = '$' . $propertyName;
-                $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
             }
 
             // param name has higher priority
