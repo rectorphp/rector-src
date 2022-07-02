@@ -14,6 +14,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\MagicConst\Line;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
@@ -99,6 +100,10 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
             $functionReflection,
             $funcCall->getArgs(),
