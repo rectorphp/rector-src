@@ -98,10 +98,9 @@ final class AlwaysStrictScalarExprAnalyzer
             return null;
         }
 
-        $variants = $functionReflection->getVariants();
         $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $variants,
+            $functionReflection,
             $funcCall->getArgs(),
             $scope
         );

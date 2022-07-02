@@ -6,21 +6,26 @@ namespace Rector\NodeTypeResolver\PHPStan;
 
 use PhpParser\Node\Arg;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\FunctionReflection;
+use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 
 final class ParametersAcceptorSelectorVariantsWrapper
 {
     /**
-     * @param ParametersAcceptor[] $variants
      * @param Arg[] $args
      */
-    public static function select(array $variants, array $args, Scope $scope): ParametersAcceptor
+    public static function select(
+        FunctionReflection|MethodReflection $reflection,
+        array $args,
+        Scope $scope
+    ): ParametersAcceptor
     {
-        if (count($variants) > 1) {
-            return ParametersAcceptorSelector::selectFromArgs($scope, $args, $variants);
-        }
+        $variants = $reflection->getVariants();
 
-        return ParametersAcceptorSelector::selectSingle($variants);
+        return count($variants) > 1
+            ? ParametersAcceptorSelector::selectFromArgs($scope, $args, $variants)
+            : ParametersAcceptorSelector::selectSingle($variants);
     }
 }
