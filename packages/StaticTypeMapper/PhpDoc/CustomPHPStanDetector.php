@@ -9,24 +9,18 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\TypeAliasImportTagValueNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 
 final class CustomPHPStanDetector
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly TypeComparator $typeComparator
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
-    public function isCustomType(Type $definedType, Type $targetType, Node $node): bool
+    public function isCustomType(Type $definedType, Node $node): bool
     {
         if (! $definedType instanceof NonExistingObjectType) {
-            return false;
-        }
-
-        if ($this->typeComparator->areTypesEqual($definedType, $targetType)) {
             return false;
         }
 
