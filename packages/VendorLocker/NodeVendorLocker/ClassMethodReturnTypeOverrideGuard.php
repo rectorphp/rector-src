@@ -21,6 +21,7 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\StaticTypeMapper\PhpDoc\CustomPHPStanDetector;
 
 final class ClassMethodReturnTypeOverrideGuard
 {
@@ -37,7 +38,8 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly CustomPHPStanDetector $customPHPStanDetector
     ) {
     }
 
@@ -74,8 +76,12 @@ final class ClassMethodReturnTypeOverrideGuard
         return $this->hasClassMethodExprReturn($classMethod);
     }
 
-    public function shouldSkipClassMethodOldTypeWithNewType(Type $oldType, Type $newType): bool
+    public function shouldSkipClassMethodOldTypeWithNewType(Type $oldType, Type $newType, Node $node): bool
     {
+        if ($this->customPHPStanDetector->isCustomType($oldType, $newType, $node)) {
+            return true;
+        }
+
         if ($oldType instanceof MixedType) {
             return false;
         }
