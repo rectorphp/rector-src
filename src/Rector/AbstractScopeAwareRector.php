@@ -28,7 +28,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         }
 
         if (! $scope instanceof Scope) {
-            /** @var Node $parent */
             $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
 
             $errorMessage = sprintf(
