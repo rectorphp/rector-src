@@ -67,8 +67,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $identifier = clone $node;
-        $namespacedName = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
-        $identifier->name = $namespacedName;
+        $identifier->name = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
 
         // make sure to compare FQNs

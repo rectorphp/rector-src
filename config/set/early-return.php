@@ -31,6 +31,6 @@ return static function (RectorConfig $rectorConfig): void {
         PreparedValueToEarlyReturnRector::class,
         ReturnBinaryOrToEarlyReturnRector::class,
         ReturnEarlyIfVariableRector::class,
-        // RemoveJustVariableAssignRector::class,
+        RemoveJustVariableAssignRector::class,
     ]);
 };
