@@ -16,6 +16,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Interface_;
@@ -109,6 +110,10 @@ final class PHPStanNodeScopeResolver
             $isScopeRefreshing,
             $smartFileInfo
         ): void {
+            if ($node instanceof Expression) {
+                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+
             if ($node instanceof Ternary) {
                 $this->processTernary($node, $mutatingScope);
             }
