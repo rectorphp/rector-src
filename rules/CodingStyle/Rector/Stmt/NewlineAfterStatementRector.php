@@ -147,9 +147,12 @@ CODE_SAMPLE
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         // @todo refactor to direct return of array
 >>>>>>> remove stmts directly
+=======
+>>>>>>> [CodeQuality] Fix CompactToVariablesRector to resolve values when the compact() is called
         return [$node, new Nop()];
     }
 

@@ -16,6 +16,12 @@ namespace Rector\Core\Tests\Issues\IssueVarConstantNewline\Fixture;
 
 class Fixture
 {
+<<<<<<< HEAD
+=======
+    /**
+     * @var string
+     */
+>>>>>>> [CodeQuality] Fix CompactToVariablesRector to resolve values when the compact() is called
     public const B = 'b';
 
     /**
