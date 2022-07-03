@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php54\Rector\Array_\ArrayToShortArrayRector;
+namespace Rector\Tests\Php54\Rector\Array_\LongArrayToShortArrayRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class ArrayToShortArrayRectorTest extends AbstractRectorTestCase
+final class LongArrayToShortArrayRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
