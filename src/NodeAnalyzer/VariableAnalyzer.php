@@ -60,7 +60,7 @@ final class VariableAnalyzer
         return (bool) $this->betterNodeFinder->findFirstPrevious($variable, function (Node $subNode) use (
             $variable
         ): bool {
-            if ($this->isParamRefrenced($subNode, $variable)) {
+            if ($this->isParamReferenced($subNode, $variable)) {
                 return true;
             }
 
@@ -101,7 +101,7 @@ final class VariableAnalyzer
         return $parentParentNode instanceof Static_;
     }
 
-    private function isParamRefrenced(Node $node, Variable $variable): bool
+    private function isParamReferenced(Node $node, Variable $variable): bool
     {
         if (! $node instanceof Param) {
             return false;
