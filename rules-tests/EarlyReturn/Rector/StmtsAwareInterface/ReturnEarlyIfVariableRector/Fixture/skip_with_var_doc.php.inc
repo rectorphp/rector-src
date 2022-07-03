@@ -7,7 +7,7 @@ final class SkipWithVarDoc
     public function run(int $value): int|string
     {
         if ($value === 50) {
-            /** @var string */
+            /** @var string $value */
             $value = execute();
         }
 
