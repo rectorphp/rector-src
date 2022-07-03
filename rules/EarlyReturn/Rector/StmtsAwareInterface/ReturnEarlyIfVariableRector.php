@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -108,6 +109,14 @@ CODE_SAMPLE
         return null;
     }
 
+    private function hasVarTag(Expression $expression): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+
+        return $varTagValueNode instanceof VarTagValueNode;
+    }
+
     private function matchOnlyIfStmtReturnExpr(Stmt $onlyIfStmt, Variable $returnVariable): Expr|null
     {
         if (! $onlyIfStmt instanceof Expression) {
@@ -115,6 +124,10 @@ CODE_SAMPLE
         }
 
         if (! $onlyIfStmt->expr instanceof Assign) {
+            return null;
+        }
+
+        if ($this->hasVarTag($onlyIfStmt)) {
             return null;
         }
 
