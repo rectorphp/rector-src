@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
@@ -21,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveJustVariableAssignRector extends AbstractRector
 {
     public function __construct(
-        private VariableAnalyzer $variableAnalyzer
+        private readonly VariableAnalyzer $variableAnalyzer
     ) {
     }
 
@@ -88,10 +90,6 @@ CODE_SAMPLE
 
             $currentAssign = $stmt->expr;
 
-            // too complex to shorten
-            if ($currentAssign->expr instanceof Ternary) {
-                continue;
-            }
 
             if (! $nextStmt instanceof Expression) {
                 continue;
@@ -102,6 +100,10 @@ CODE_SAMPLE
             }
 
             $nextAssign = $nextStmt->expr;
+
+            if ($this->areTooComplexAssignsToShorten($currentAssign, $nextAssign)) {
+                continue;
+            }
 
             if (! $this->areTwoVariablesCrossAssign($currentAssign, $nextAssign)) {
                 continue;
@@ -147,5 +149,21 @@ CODE_SAMPLE
         }
 
         return ! $this->variableAnalyzer->isUsedByReference($nextAssign->expr);
+    }
+
+    /**
+     * Shortening should not make code less readable.
+     */
+    private function areTooComplexAssignsToShorten(Assign $currentAssign, Assign $nextAssign): bool
+    {
+        if ($currentAssign->expr instanceof Ternary) {
+            return true;
+        }
+
+        if ($currentAssign->expr instanceof Concat) {
+            return true;
+        }
+
+        return $nextAssign->var instanceof ArrayDimFetch;
     }
 }
