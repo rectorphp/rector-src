@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
@@ -79,33 +80,25 @@ CODE_SAMPLE
 
         foreach ($stmts as $key => $stmt) {
             $nextStmt = $stmts[$key + 1] ?? null;
-
-            if (! $stmt instanceof Expression) {
+            if (! $nextStmt instanceof Stmt) {
                 continue;
             }
 
-            if (! $stmt->expr instanceof Assign) {
+            $currentAssign = $this->matchExpressionAssign($stmt);
+            if (! $currentAssign instanceof Assign) {
                 continue;
             }
 
-            $currentAssign = $stmt->expr;
-
-
-            if (! $nextStmt instanceof Expression) {
+            $nextAssign = $this->matchExpressionAssign($nextStmt);
+            if (! $nextAssign instanceof Assign) {
                 continue;
             }
-
-            if (! $nextStmt->expr instanceof Assign) {
-                continue;
-            }
-
-            $nextAssign = $nextStmt->expr;
 
             if ($this->areTooComplexAssignsToShorten($currentAssign, $nextAssign)) {
                 continue;
             }
 
-            if (! $this->areTwoVariablesCrossAssign($currentAssign, $nextAssign)) {
+            if (! $this->areTwoVariablesCrossAssign($currentAssign, $nextAssign, $node)) {
                 continue;
             }
 
@@ -128,9 +121,14 @@ CODE_SAMPLE
      *
      * $<some> = 1000;
      * $this->value = $<some>;
+     *
+     * + not used $<some> bellow, so removal will not break it
      */
-    private function areTwoVariablesCrossAssign(Assign $currentAssign, Assign $nextAssign): bool
-    {
+    private function areTwoVariablesCrossAssign(
+        Assign $currentAssign,
+        Assign $nextAssign,
+        StmtsAwareInterface $stmtsAware
+    ): bool {
         // is just re-assign to variable
         if (! $currentAssign->var instanceof Variable) {
             return false;
@@ -148,7 +146,31 @@ CODE_SAMPLE
             return false;
         }
 
-        return ! $this->variableAnalyzer->isUsedByReference($nextAssign->expr);
+        if ($this->variableAnalyzer->isUsedByReference($nextAssign->expr)) {
+            return false;
+        }
+
+        $currentVariable = $currentAssign->var;
+        $nextVariable = $nextAssign->expr;
+
+        // is variable used later?
+        $nextUsedVariable = $this->betterNodeFinder->findFirst($stmtsAware, function (\PhpParser\Node $node) use (
+            $currentVariable,
+            $nextVariable
+        ) {
+            if (in_array($node, [$currentVariable, $nextVariable], true)) {
+                return false;
+            }
+
+            if (! $node instanceof Variable) {
+                return false;
+            }
+
+            // is variable name?
+            return $this->nodeNameResolver->areNamesEqual($node, $currentVariable);
+        });
+
+        return ! $nextUsedVariable instanceof Variable;
     }
 
     /**
@@ -165,5 +187,18 @@ CODE_SAMPLE
         }
 
         return $nextAssign->var instanceof ArrayDimFetch;
+    }
+
+    private function matchExpressionAssign(Stmt $stmt): ?Assign
+    {
+        if (! $stmt instanceof Expression) {
+            return null;
+        }
+
+        if (! $stmt->expr instanceof Assign) {
+            return null;
+        }
+
+        return $stmt->expr;
     }
 }
