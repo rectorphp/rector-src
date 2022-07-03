@@ -136,7 +136,8 @@ CODE_SAMPLE
      *
      * + not used $<some> bellow, so removal will not break it
      */
-    private function areTwoVariablesCrossAssign(Assign $currentAssign, Assign $nextAssign): bool {
+    private function areTwoVariablesCrossAssign(Assign $currentAssign, Assign $nextAssign): bool
+    {
         // is just re-assign to variable
         if (! $currentAssign->var instanceof Variable) {
             return false;
