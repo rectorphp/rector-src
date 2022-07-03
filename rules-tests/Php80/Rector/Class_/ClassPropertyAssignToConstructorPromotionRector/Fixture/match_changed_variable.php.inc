@@ -13,6 +13,11 @@ class MatchChangedVariable
     {
         $this->x = $a;
     }
+
+    public function useProperty()
+    {
+        return $this->x;
+    }
 }
 
 ?>
@@ -23,8 +28,13 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 class MatchChangedVariable
 {
-    public function __construct(public float $x = 0.0)
+    public function __construct(public float $a = 0.0)
     {
+    }
+
+    public function useProperty()
+    {
+        return $this->a;
     }
 }
 
