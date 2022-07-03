@@ -8,10 +8,24 @@ use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeAwarePhpRectorInterface
 {
+    private ScopeAnalyzer $scopeAnalyzer;
+
+    private ScopeFactory $scopeFactory;
+
+    #[Required]
+    public function autowireAbstractScopeAwareRector(ScopeAnalyzer $scopeAnalyzer, ScopeFactory $scopeFactory): void
+    {
+        $this->scopeAnalyzer = $scopeAnalyzer;
+        $this->scopeFactory = $scopeFactory;
+    }
+
     /**
      * Process Node of matched type with its PHPStan scope
      * @return Node|Node[]|null

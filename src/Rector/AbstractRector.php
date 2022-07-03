@@ -24,7 +24,6 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
 use Rector\Core\Logging\CurrentRectorProvider;
-use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -38,7 +37,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -93,13 +91,12 @@ CODE_SAMPLE;
 
     protected File $file;
 
+    /**
+     * @deprecated Return stmts directly instead
+     */
     protected NodesToAddCollector $nodesToAddCollector;
 
     protected ChangedNodeScopeRefresher $changedNodeScopeRefresher;
-
-    protected ScopeAnalyzer $scopeAnalyzer;
-
-    protected ScopeFactory $scopeFactory;
 
     private NodesToRemoveCollector $nodesToRemoveCollector;
 
@@ -148,9 +145,7 @@ CODE_SAMPLE;
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        RectorOutputStyle $rectorOutputStyle,
-        ScopeAnalyzer $scopeAnalyzer,
-        ScopeFactory $scopeFactory
+        RectorOutputStyle $rectorOutputStyle
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodesToAddCollector = $nodesToAddCollector;
@@ -173,8 +168,6 @@ CODE_SAMPLE;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
-        $this->scopeAnalyzer = $scopeAnalyzer;
-        $this->scopeFactory = $scopeFactory;
     }
 
     /**
