@@ -15,6 +15,7 @@ use Rector\Core\NodeManipulator\AssignManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,7 +28,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ListEachRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly AssignManipulator $assignManipulator
+        private readonly AssignManipulator $assignManipulator,
+        private readonly NodesToAddCollector $nodesToAddCollector,
     ) {
     }
 

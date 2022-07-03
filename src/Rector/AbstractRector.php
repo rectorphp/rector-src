@@ -37,7 +37,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -91,11 +90,6 @@ CODE_SAMPLE;
 
     protected File $file;
 
-    /**
-     * @deprecated Return stmts directly instead
-     */
-    protected NodesToAddCollector $nodesToAddCollector;
-
     protected ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
     private NodesToRemoveCollector $nodesToRemoveCollector;
@@ -126,7 +120,6 @@ CODE_SAMPLE;
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
-        NodesToAddCollector $nodesToAddCollector,
         NodeRemover $nodeRemover,
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
@@ -148,7 +141,6 @@ CODE_SAMPLE;
         RectorOutputStyle $rectorOutputStyle
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
-        $this->nodesToAddCollector = $nodesToAddCollector;
         $this->nodeRemover = $nodeRemover;
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
