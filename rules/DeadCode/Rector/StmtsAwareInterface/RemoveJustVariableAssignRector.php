@@ -154,10 +154,10 @@ CODE_SAMPLE
         $nextVariable = $nextAssign->expr;
 
         // is variable used later?
-        $nextUsedVariable = $this->betterNodeFinder->findFirst($stmtsAware, function (\PhpParser\Node $node) use (
+        $nextUsedVariable = $this->betterNodeFinder->findFirst($stmtsAware, function (Node $node) use (
             $currentVariable,
             $nextVariable
-        ) {
+        ): bool {
             if (in_array($node, [$currentVariable, $nextVariable], true)) {
                 return false;
             }
