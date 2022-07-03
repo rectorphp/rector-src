@@ -53,3 +53,9 @@
 * https://github.com/rectorphp/rector-phpoffice
 * ![](https://github.com/rectorphp/rector-phpoffice/actions/workflows/tests.yaml/badge.svg)
 * ![](https://github.com/rectorphp/rector-phpoffice/actions/workflows/code_analysis.yaml/badge.svg)
+
+## Downgrade PHP
+
+* https://github.com/rectorphp/rector-downgrade-php
+* ![](https://github.com/rectorphp/rector-downgrade-php/actions/workflows/tests.yaml/badge.svg)
+* ![](https://github.com/rectorphp/rector-downgrade-php/actions/workflows/code_analysis.yaml/badge.svg)
