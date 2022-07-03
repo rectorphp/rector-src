@@ -52,6 +52,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const SHORT_ARRAY = PhpVersion::PHP_54;
+
+    /**
+     * @var int
+     */
     public const DATE_TIME_INTERFACE = PhpVersion::PHP_55;
 
     /**
