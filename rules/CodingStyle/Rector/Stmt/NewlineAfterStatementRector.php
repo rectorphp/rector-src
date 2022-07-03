@@ -146,6 +146,10 @@ CODE_SAMPLE
             }
         }
 
+<<<<<<< HEAD
+=======
+        // @todo refactor to direct return of array
+>>>>>>> remove stmts directly
         return [$node, new Nop()];
     }
 
