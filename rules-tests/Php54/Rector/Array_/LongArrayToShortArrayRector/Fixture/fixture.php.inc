@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php54\Rector\Array_\ArrayToShortArrayTest\Fixture;
+namespace Rector\Tests\Php54\Rector\Array_\LongArrayToShortArrayTest\Fixture;
 
 function emptyArray()
 {
@@ -21,7 +21,7 @@ function manyElementArray()
 -----
 <?php
 
-namespace Rector\Tests\Php54\Rector\Array_\ArrayToShortArrayTest\Fixture;
+namespace Rector\Tests\Php54\Rector\Array_\LongArrayToShortArrayTest\Fixture;
 
 function emptyArray()
 {
