@@ -22,9 +22,9 @@ final class ArrayListParams
 {
     public function run($one, $two)
     {
-        $names = ['one' => $one, 'two' => $two];
+        $names = ['one', 'two'];
 
-        return $names;
+        return ['one' => $one, 'two' => $two];
     }
 }
 

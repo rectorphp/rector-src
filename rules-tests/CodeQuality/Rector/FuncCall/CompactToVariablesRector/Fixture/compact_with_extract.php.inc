@@ -24,10 +24,11 @@ final class CompactWithExtract
 {
     public function run()
     {
-        $result = 1000;
-        $values = ['result' => $result];
+        $values = ['result'];
 
-        return $values;
+        $result = 1000;
+
+        return ['result' => $result];
     }
 }
 

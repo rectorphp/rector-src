@@ -28,9 +28,9 @@ final class ArrayListBased
         $one = 1000;
         $two = 'hey';
 
-        $names = ['one' => $one, 'two' => $two];
+        $names = ['one', 'two'];
 
-        return $names;
+        return ['one' => $one, 'two' => $two];
     }
 }
 
