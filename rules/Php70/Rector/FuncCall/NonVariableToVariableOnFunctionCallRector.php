@@ -35,6 +35,7 @@ use Rector\Naming\Naming\VariableNaming;
 use Rector\NodeNestingScope\ParentScopeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php70\ValueObject\VariableAssignPair;
+use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -50,7 +51,8 @@ final class NonVariableToVariableOnFunctionCallRector extends AbstractRector imp
         private readonly VariableNaming $variableNaming,
         private readonly ParentScopeFinder $parentScopeFinder,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly NodesToAddCollector $nodesToAddCollector,
     ) {
     }
 
