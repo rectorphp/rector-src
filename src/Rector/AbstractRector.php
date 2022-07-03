@@ -91,8 +91,6 @@ CODE_SAMPLE;
 
     protected NodeComparator $nodeComparator;
 
-    protected NodesToRemoveCollector $nodesToRemoveCollector;
-
     protected File $file;
 
     protected NodesToAddCollector $nodesToAddCollector;
@@ -102,6 +100,8 @@ CODE_SAMPLE;
     protected ScopeAnalyzer $scopeAnalyzer;
 
     protected ScopeFactory $scopeFactory;
+
+    private NodesToRemoveCollector $nodesToRemoveCollector;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
