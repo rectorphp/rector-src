@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -27,7 +28,8 @@ final class RemoveJustVariableAssignRector extends AbstractRector
 {
     public function __construct(
         private readonly VariableAnalyzer $variableAnalyzer,
-        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer
+        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer,
+        private readonly CommentsMerger $commentsMerger
     ) {
     }
 
@@ -112,6 +114,8 @@ CODE_SAMPLE
 
             // ...
             $currentAssign->var = $nextAssign->var;
+            $this->commentsMerger->keepComments($stmt, [$stmts[$key + 1]]);
+
             unset($stmts[$key + 1]);
         }
 
