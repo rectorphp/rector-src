@@ -44,9 +44,7 @@ final class CallTypesResolver
                     continue;
                 }
 
-                $argValueType = $this->resolveStrictArgValueType($arg);
-
-                $staticTypesByArgumentPosition[$position][] = $argValueType;
+                $staticTypesByArgumentPosition[$position][] = $this->resolveStrictArgValueType($arg);
             }
         }
 
@@ -82,9 +80,10 @@ final class CallTypesResolver
             $unionedType = $this->typeFactory->createMixedPassedOrUnionType($staticTypes);
 
             // narrow parents to most child type
-            $unionedType = $this->narrowParentObjectTreeToSingleObjectChildType($unionedType);
 
-            $staticTypeByArgumentPosition[$position] = $unionedType;
+            $staticTypeByArgumentPosition[$position] = $this->narrowParentObjectTreeToSingleObjectChildType(
+                $unionedType
+            );
         }
 
         if (count($staticTypeByArgumentPosition) !== 1) {

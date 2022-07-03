@@ -73,8 +73,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstExpr = array_shift($livingCode);
-        $node->expr = $firstExpr;
+        $node->expr = array_shift($livingCode);
 
         $newNodes = [];
         foreach ($livingCode as $singleLivingCode) {

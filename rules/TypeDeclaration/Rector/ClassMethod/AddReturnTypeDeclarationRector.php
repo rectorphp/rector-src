@@ -146,8 +146,7 @@ CODE_SAMPLE
             return;
         }
 
-        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newType, TypeKind::RETURN);
-        $classMethod->returnType = $returnTypeNode;
+        $classMethod->returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newType, TypeKind::RETURN);
 
         $this->hasChanged = true;
     }

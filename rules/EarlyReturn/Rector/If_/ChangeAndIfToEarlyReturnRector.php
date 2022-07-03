@@ -128,11 +128,11 @@ CODE_SAMPLE
             if (! $nextStmt instanceof Return_) {
                 $afterStmts[] = $stmt->stmts[0];
 
-                $newStmts = array_merge(
+                $node->stmts = array_merge(
                     $newStmts,
                     $this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts)
                 );
-                $node->stmts = $newStmts;
+
                 return $node;
             }
 
@@ -150,10 +150,9 @@ CODE_SAMPLE
             }
 
             $changedStmts = $this->processReplaceIfs($stmt, $booleanAndConditions, $ifNextReturnClone, $afterStmts);
-            $changedStmts = array_merge($newStmts, $changedStmts);
 
             // update stmts
-            $node->stmts = $changedStmts;
+            $node->stmts = array_merge($newStmts, $changedStmts);
 
             return $node;
         }

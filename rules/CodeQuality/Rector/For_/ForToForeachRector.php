@@ -147,6 +147,7 @@ CODE_SAMPLE
     {
         $originalVariableSingle = $this->inflector->singularize($iteratedVariable);
         $iteratedVariableSingle = $originalVariableSingle;
+
         if ($iteratedVariableSingle === $iteratedVariable) {
             $iteratedVariableSingle = 'single' . ucfirst($iteratedVariableSingle);
         }
