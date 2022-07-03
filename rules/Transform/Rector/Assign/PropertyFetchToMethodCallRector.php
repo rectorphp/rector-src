@@ -122,8 +122,7 @@ CODE_SAMPLE
             );
 
             if ($propertyToMethodCall->getNewGetArguments() !== []) {
-                $args = $this->nodeFactory->createArgs($propertyToMethodCall->getNewGetArguments());
-                $methodCall->args = $args;
+                $methodCall->args = $this->nodeFactory->createArgs($propertyToMethodCall->getNewGetArguments());
             }
 
             return $methodCall;
