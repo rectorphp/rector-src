@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustVariableAssignRector;
 use Rector\EarlyReturn\Rector\Foreach_\ChangeNestedForeachIfsToEarlyContinueRector;
 use Rector\EarlyReturn\Rector\Foreach_\ReturnAfterToEarlyOnBreakRector;
 use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
@@ -31,6 +30,5 @@ return static function (RectorConfig $rectorConfig): void {
         PreparedValueToEarlyReturnRector::class,
         ReturnBinaryOrToEarlyReturnRector::class,
         ReturnEarlyIfVariableRector::class,
-        RemoveJustVariableAssignRector::class,
     ]);
 };

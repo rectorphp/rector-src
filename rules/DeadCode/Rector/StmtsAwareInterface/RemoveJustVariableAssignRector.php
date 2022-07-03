@@ -12,9 +12,12 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,7 +27,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveJustVariableAssignRector extends AbstractRector
 {
     public function __construct(
-        private readonly VariableAnalyzer $variableAnalyzer
+        private readonly VariableAnalyzer $variableAnalyzer,
+        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer,
+        private readonly CommentsMerger $commentsMerger
     ) {
     }
 
@@ -89,6 +94,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($stmt);
+            if ($phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
+                continue;
+            }
+
             $nextAssign = $this->matchExpressionAssign($nextStmt);
             if (! $nextAssign instanceof Assign) {
                 continue;
@@ -98,12 +108,14 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->areTwoVariablesCrossAssign($currentAssign, $nextAssign, $node)) {
+            if (! $this->areTwoVariablesCrossAssign($currentAssign, $nextAssign)) {
                 continue;
             }
 
             // ...
             $currentAssign->var = $nextAssign->var;
+            $this->commentsMerger->keepComments($stmt, [$stmts[$key + 1]]);
+
             unset($stmts[$key + 1]);
         }
 
@@ -124,11 +136,8 @@ CODE_SAMPLE
      *
      * + not used $<some> bellow, so removal will not break it
      */
-    private function areTwoVariablesCrossAssign(
-        Assign $currentAssign,
-        Assign $nextAssign,
-        StmtsAwareInterface $stmtsAware
-    ): bool {
+    private function areTwoVariablesCrossAssign(Assign $currentAssign, Assign $nextAssign): bool
+    {
         // is just re-assign to variable
         if (! $currentAssign->var instanceof Variable) {
             return false;
@@ -150,27 +159,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $currentVariable = $currentAssign->var;
-        $nextVariable = $nextAssign->expr;
-
-        // is variable used later?
-        $nextUsedVariable = $this->betterNodeFinder->findFirst($stmtsAware, function (Node $node) use (
-            $currentVariable,
-            $nextVariable
-        ): bool {
-            if (in_array($node, [$currentVariable, $nextVariable], true)) {
-                return false;
-            }
-
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            // is variable name?
-            return $this->nodeNameResolver->areNamesEqual($node, $currentVariable);
-        });
-
-        return ! $nextUsedVariable instanceof Variable;
+        return ! $this->exprUsedInNextNodeAnalyzer->isUsed($nextAssign->expr);
     }
 
     /**
