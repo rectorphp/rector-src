@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -88,6 +89,11 @@ CODE_SAMPLE
 
             $currentAssign = $this->matchExpressionAssign($stmt);
             if (! $currentAssign instanceof Assign) {
+                continue;
+            }
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($stmt);
+            if ($phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
                 continue;
             }
 
