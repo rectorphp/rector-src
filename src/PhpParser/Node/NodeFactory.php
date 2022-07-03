@@ -598,8 +598,7 @@ final class NodeFactory
     {
         $param = new Param($variable);
 
-        $phpParserTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
-        $param->type = $phpParserTypeNode;
+        $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
 
         return $param;
     }
