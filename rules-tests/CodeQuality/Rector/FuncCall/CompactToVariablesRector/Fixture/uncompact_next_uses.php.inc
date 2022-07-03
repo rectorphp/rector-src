@@ -30,11 +30,11 @@ final class UncompactNextUses
         $one = 1000;
         $two = 'hey';
 
-        $names = ['one' => $one, 'two' => $two];
+        $names = ['one', 'two'];
 
-        $misc = $names;
+        $misc = ['one' => $one, 'two' => $two];
 
-        return $names + $misc;
+        return ['one' => $one, 'two' => $two] + $misc;
     }
 }
 
