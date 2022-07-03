@@ -67,8 +67,7 @@ final class PropertyFetchByMethodAnalyzer
                     continue;
                 }
 
-                $classMethodName = $this->nodeNameResolver->getName($classMethod);
-                $propertyUsageByMethods[$propertyName][] = $classMethodName;
+                $propertyUsageByMethods[$propertyName][] = $this->nodeNameResolver->getName($classMethod);
             }
         }
 

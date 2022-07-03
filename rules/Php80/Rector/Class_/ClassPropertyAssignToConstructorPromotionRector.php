@@ -138,8 +138,8 @@ CODE_SAMPLE
             }
 
             // property name has higher priority
-            $propertyName = $this->getName($property);
-            $param->var->name = $propertyName;
+            $param->var->name = $this->getName($property);
+
             $param->flags = $property->flags;
             // Copy over attributes of the "old" property
             $param->attrGroups = $property->attrGroups;

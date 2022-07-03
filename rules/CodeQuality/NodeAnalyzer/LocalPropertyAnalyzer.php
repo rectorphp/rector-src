@@ -85,8 +85,7 @@ final class LocalPropertyAnalyzer
                 return null;
             }
 
-            $propertyFetchType = $this->resolvePropertyFetchType($node);
-            $fetchedLocalPropertyNameToTypes[$propertyName][] = $propertyFetchType;
+            $fetchedLocalPropertyNameToTypes[$propertyName][] = $this->resolvePropertyFetchType($node);
 
             return null;
         });

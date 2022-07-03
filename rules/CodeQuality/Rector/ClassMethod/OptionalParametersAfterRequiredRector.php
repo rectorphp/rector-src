@@ -99,12 +99,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $newParams = $this->argumentSorter->sortArgsByExpectedParamOrder(
+        $classMethod->params = $this->argumentSorter->sortArgsByExpectedParamOrder(
             $classMethod->params,
             $expectedArgOrParamOrder
         );
-
-        $classMethod->params = $newParams;
 
         return $classMethod;
     }
