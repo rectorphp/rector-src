@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -86,6 +87,11 @@ CODE_SAMPLE
             }
 
             $currentAssign = $stmt->expr;
+
+            // too complex to shorten
+            if ($currentAssign->expr instanceof Ternary) {
+                continue;
+            }
 
             if (! $nextStmt instanceof Expression) {
                 continue;
