@@ -109,14 +109,6 @@ CODE_SAMPLE
         return null;
     }
 
-    private function hasVarTag(Expression $expression): bool
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
-        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-
-        return $varTagValueNode instanceof VarTagValueNode;
-    }
-
     private function matchOnlyIfStmtReturnExpr(Stmt $onlyIfStmt, Variable $returnVariable): Expr|null
     {
         if (! $onlyIfStmt instanceof Expression) {
@@ -127,7 +119,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasVarTag($onlyIfStmt)) {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($onlyIfStmt);
+        if ($phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
             return null;
         }
 
