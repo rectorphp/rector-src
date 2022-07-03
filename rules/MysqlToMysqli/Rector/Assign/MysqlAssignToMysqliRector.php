@@ -16,6 +16,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -38,6 +39,11 @@ final class MysqlAssignToMysqliRector extends AbstractRector
      * @var string
      */
     private const MYSQLI_DATA_SEEK = 'mysqli_data_seek';
+
+    public function __construct(
+        private readonly NodesToAddCollector $nodesToAddCollector
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
