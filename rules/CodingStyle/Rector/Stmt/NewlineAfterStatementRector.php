@@ -108,7 +108,6 @@ CODE_SAMPLE
 
     /**
      * @param Stmt $node
-     * @return ?Stmt
      */
     public function refactor(Node $node): ?Stmt
     {
