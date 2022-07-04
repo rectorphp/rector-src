@@ -29,6 +29,7 @@ use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -57,6 +58,10 @@ final class NewlineAfterStatementRector extends AbstractRector
         Interface_::class,
         Switch_::class,
     ];
+
+    public function __construct(private readonly NodesToAddCollector $nodesToAddCollector)
+    {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -103,9 +108,9 @@ CODE_SAMPLE
 
     /**
      * @param Stmt $node
-     * @return Stmt[]|null
+     * @return ?Stmt
      */
-    public function refactor(Node $node): ?array
+    public function refactor(Node $node): ?Stmt
     {
         if (! in_array($node::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
             return null;
@@ -146,7 +151,8 @@ CODE_SAMPLE
             }
         }
 
-        return [$node, new Nop()];
+        $this->nodesToAddCollector->addNodeAfterNode(new Nop(), $node);
+        return $node;
     }
 
     /**
