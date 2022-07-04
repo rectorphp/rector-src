@@ -46,6 +46,10 @@ final class ParamAnalyzer
             &$isParamUsed,
             $param
         ): ?int {
+            if ($isParamUsed) {
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
             if ($this->isUsedAsArg($node, $param)) {
                 $isParamUsed = true;
             }
