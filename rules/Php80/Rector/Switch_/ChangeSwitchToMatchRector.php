@@ -125,10 +125,6 @@ CODE_SAMPLE
             return $this->changeToAssign($node, $match, $assignVar);
         }
 
-        if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
-            return null;
-        }
-
         return $match;
     }
 
