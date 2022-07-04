@@ -125,6 +125,10 @@ CODE_SAMPLE
             return $this->changeToAssign($node, $match, $assignVar);
         }
 
+        if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
+            return null;
+        }
+
         return $match;
     }
 
@@ -163,7 +167,7 @@ CODE_SAMPLE
 
         $assign = new Assign($expr, $match);
         if (! $prevInitializedAssign instanceof Assign) {
-            return $assign;
+            return $this->resolveCurrentAssign($match, $assign);
         }
 
         if ($this->matchSwitchAnalyzer->hasDefaultValue($match)) {
@@ -181,6 +185,13 @@ CODE_SAMPLE
         }
 
         return $assign;
+    }
+
+    private function resolveCurrentAssign(Match_ $match, Assign $assign): ?Assign
+    {
+        return $this->matchSwitchAnalyzer->hasDefaultValue($match)
+            ? $assign
+            : null;
     }
 
     /**
