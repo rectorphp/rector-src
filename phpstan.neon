@@ -668,3 +668,5 @@ parameters:
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
 
         - '#Class has a static method must so must contains "Static" in its name#'
+
+        - '#Class method ".+\(\)" is never used#'
