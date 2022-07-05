@@ -146,6 +146,10 @@ CODE_SAMPLE
                 return false;
             }
 
+            if ($subNode->isFirstClassCallable()) {
+                return false;
+            }
+
             if (! $subNode->var instanceof Variable) {
                 return false;
             }
