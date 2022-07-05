@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
@@ -22,11 +21,7 @@ final class ParametersAcceptorSelectorVariantsWrapper
         $variants = $reflection->getVariants();
 
         return count($variants) > 1
-            ? ParametersAcceptorSelector::selectFromArgs(
-                $scope,
-                $callLike->getArgs(),
-                $variants
-            )
+            ? ParametersAcceptorSelector::selectFromArgs($scope, $callLike->getArgs(), $variants)
             : ParametersAcceptorSelector::selectSingle($variants);
     }
 }

@@ -35,11 +35,7 @@ final class CallTypeAnalyzer
             return [];
         }
 
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $methodReflection,
-            $call,
-            $scope
-        );
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($methodReflection, $call, $scope);
 
         $parameterTypes = [];
 
