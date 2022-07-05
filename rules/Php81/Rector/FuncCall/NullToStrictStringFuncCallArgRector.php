@@ -476,7 +476,7 @@ CODE_SAMPLE
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
             $functionReflection,
-            $funcCall->getArgs(),
+            $funcCall,
             $scope
         );
         $functionName = $this->nodeNameResolver->getName($funcCall);

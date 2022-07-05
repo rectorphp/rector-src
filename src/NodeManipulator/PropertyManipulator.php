@@ -314,7 +314,7 @@ final class PropertyManipulator
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
             $functionLikeReflection,
-            $node->getArgs(),
+            $node,
             $scope
         );
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
