@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\ReadWrite\Guard;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
@@ -55,9 +56,14 @@ final class VariableToConstantGuard
             return true;
         }
 
+        $parentArg = $arg->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentArg instanceof CallLike) {
+            return true;
+        }
+
         $referenceParametersPositions = $this->resolveFunctionReferencePositions(
             $functionReflection,
-            [$arg],
+            $parentArg,
             $argScope
         );
         if ($referenceParametersPositions === []) {
@@ -70,12 +76,11 @@ final class VariableToConstantGuard
     }
 
     /**
-     * @param Arg[] $args
      * @return int[]
      */
     private function resolveFunctionReferencePositions(
         FunctionReflection $functionReflection,
-        array $args,
+        CallLike $callLike,
         Scope $scope
     ): array {
         if (isset($this->referencePositionsByFunctionName[$functionReflection->getName()])) {
@@ -86,7 +91,7 @@ final class VariableToConstantGuard
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
             $functionReflection,
-            $args,
+            $callLike,
             $scope
         );
         foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
