@@ -12,9 +12,8 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
+use PHPStan\Type\TypeCombinator;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -126,16 +125,19 @@ CODE_SAMPLE
             return null;
         }
 
-        $varType = $this->varDocPropertyTypeInferer->inferProperty($node);
-        if ($varType instanceof MixedType) {
+        $resolvedPropertyType = $this->varDocPropertyTypeInferer->inferProperty($node);
+        if ($resolvedPropertyType instanceof MixedType) {
             return null;
         }
 
-        if ($this->objectTypeAnalyzer->isSpecial($varType)) {
+        if ($this->objectTypeAnalyzer->isSpecial($resolvedPropertyType)) {
             return null;
         }
 
-        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($varType, TypeKind::PROPERTY);
+        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+            $resolvedPropertyType,
+            TypeKind::PROPERTY
+        );
 
         if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node)) {
             return null;
@@ -143,17 +145,17 @@ CODE_SAMPLE
 
         $propertyType = $this->familyRelationsAnalyzer->getPossibleUnionPropertyType(
             $node,
-            $varType,
+            $resolvedPropertyType,
             $scope,
             $propertyTypeNode
         );
 
-        $varType = $propertyType->getVarType();
+        $varDocType = $propertyType->getVarType();
         $propertyTypeNode = $propertyType->getPropertyTypeNode();
 
-        $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varType);
-        $this->removeDefaultValueForDoctrineCollection($node, $varType);
-        $this->addDefaultValueNullForNullableType($node, $varType);
+        $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varDocType);
+        $this->removeDefaultValueForDoctrineCollection($node, $varDocType);
+        $this->addDefaultValueNullForNullableType($node, $varDocType);
 
         $node->type = $propertyTypeNode;
 
@@ -201,11 +203,7 @@ CODE_SAMPLE
 
     private function addDefaultValueNullForNullableType(Property $property, Type $propertyType): void
     {
-        if (! $propertyType instanceof UnionType) {
-            return;
-        }
-
-        if (! $propertyType->isSuperTypeOf(new NullType())->yes()) {
+        if (! TypeCombinator::containsNull($propertyType)) {
             return;
         }
 
