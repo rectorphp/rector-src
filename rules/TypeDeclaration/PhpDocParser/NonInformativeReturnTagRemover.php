@@ -20,6 +20,7 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -180,14 +181,11 @@ final class NonInformativeReturnTagRemover
 
     private function matchNullabledType(Type $returnType): ?Type
     {
-        if (! $returnType instanceof UnionType) {
+        if (! TypeCombinator::containsNull($returnType)) {
             return null;
         }
 
-        if (! $returnType->isSuperTypeOf(new NullType())->yes()) {
-            return null;
-        }
-
+        /** @var UnionType $returnType */
         if (count($returnType->getTypes()) !== 2) {
             return null;
         }

@@ -12,9 +12,8 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
+use PHPStan\Type\TypeCombinator;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -201,11 +200,7 @@ CODE_SAMPLE
 
     private function addDefaultValueNullForNullableType(Property $property, Type $propertyType): void
     {
-        if (! $propertyType instanceof UnionType) {
-            return;
-        }
-
-        if (! $propertyType->isSuperTypeOf(new NullType())->yes()) {
+        if (! TypeCombinator::containsNull($propertyType)) {
             return;
         }
 
