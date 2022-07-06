@@ -134,7 +134,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($resolvedPropertyType, TypeKind::PROPERTY);
+        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+            $resolvedPropertyType,
+            TypeKind::PROPERTY
+        );
 
         if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node)) {
             return null;
