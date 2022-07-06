@@ -133,13 +133,7 @@ CODE_SAMPLE
         $exprType = $this->getType($onlyReturn->expr);
 
         if ($this->shouldAddReturnArrayDocType($exprType)) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-            $exprType = $this->narrowConstantArrayType($exprType);
-
-            if (! $this->typeComparator->isSubtype($phpDocInfo->getReturnType(), $exprType)) {
-                $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
-            }
+            $this->changeReturnType($node, $exprType);
         }
 
         return $node;
@@ -148,6 +142,17 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    private function changeReturnType(Node $node, Type $exprType): void
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        $exprType = $this->narrowConstantArrayType($exprType);
+
+        if (! $this->typeComparator->isSubtype($phpDocInfo->getReturnType(), $exprType)) {
+            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
+        }
     }
 
     private function isVariableOverriddenWithNonArray(
