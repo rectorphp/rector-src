@@ -21,7 +21,6 @@ use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\Php74\TypeAnalyzer\ObjectTypeAnalyzer;
-use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\VarDocPropertyTypeInferer;
@@ -34,8 +33,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
  *
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\TypedPropertyRectorTest
- * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\ClassLikeTypesOnlyTest
- * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\DoctrineTypedPropertyRectorTest
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\ImportedTest
  */
 final class TypedPropertyRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
@@ -59,7 +56,6 @@ final class TypedPropertyRector extends AbstractScopeAwareRector implements Allo
     public function __construct(
         private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private readonly VendorLockResolver $vendorLockResolver,
-        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly VarTagRemover $varTagRemover,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly ObjectTypeAnalyzer $objectTypeAnalyzer,
@@ -154,7 +150,6 @@ CODE_SAMPLE
         $propertyTypeNode = $propertyType->getPropertyTypeNode();
 
         $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varDocType);
-        $this->removeDefaultValueForDoctrineCollection($node, $varDocType);
         $this->addDefaultValueNullForNullableType($node, $varDocType);
 
         $node->type = $propertyTypeNode;
@@ -189,16 +184,6 @@ CODE_SAMPLE
         }
 
         return $this->vendorLockResolver->isPropertyTypeChangeVendorLockedIn($property);
-    }
-
-    private function removeDefaultValueForDoctrineCollection(Property $property, Type $propertyType): void
-    {
-        if (! $this->doctrineTypeAnalyzer->isDoctrineCollectionWithIterableUnionType($propertyType)) {
-            return;
-        }
-
-        $onlyProperty = $property->props[0];
-        $onlyProperty->default = null;
     }
 
     private function addDefaultValueNullForNullableType(Property $property, Type $propertyType): void
