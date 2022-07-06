@@ -245,9 +245,9 @@ CODE_SAMPLE;
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
 
-        if ($originalNode instanceof Stmt && $refactoredNode instanceof Expr) {
-            $refactoredNode = new Expression($refactoredNode);
-        }
+        $refactoredNode = $originalNode instanceof Stmt && $refactoredNode instanceof Expr
+            ? new Expression($refactoredNode)
+            : $refactoredNode;
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
