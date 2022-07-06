@@ -17,6 +17,7 @@ use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Param\ParamTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
@@ -34,5 +35,6 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeFromStrictNativeFuncCallRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
         ReturnTypeFromStrictScalarReturnExprRector::class,
+        TypedPropertyFromStrictSetUpRector::class,
     ]);
 };
