@@ -214,11 +214,9 @@ CODE_SAMPLE;
         /** @var Node[]|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
-        /** @var Node $originalNode */
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        /** @var Node $originalNode */
         if (is_array($refactoredNode)) {
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
