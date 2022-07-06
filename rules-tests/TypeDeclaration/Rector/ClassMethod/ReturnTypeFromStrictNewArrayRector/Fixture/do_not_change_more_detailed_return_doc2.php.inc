@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Fixture;
 
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Source\Resource;
+
 final class DoNotChangeMoreDetailedReturnDoc2
 {
  	/**
@@ -11,7 +13,7 @@ final class DoNotChangeMoreDetailedReturnDoc2
      */
     public function getCsvHeaderArray() {
         $HeaderArray = [];
-        $HeaderArray[] = i::_('Mwst');
+        $HeaderArray[] = Resource::_('Mwst');
 
         return $HeaderArray;
     }
@@ -25,6 +27,8 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Fixture;
 
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Source\Resource;
+
 final class DoNotChangeMoreDetailedReturnDoc2
 {
  	/**
@@ -32,7 +36,7 @@ final class DoNotChangeMoreDetailedReturnDoc2
      */
     public function getCsvHeaderArray(): array {
         $HeaderArray = [];
-        $HeaderArray[] = i::_('Mwst');
+        $HeaderArray[] = Resource::_('Mwst');
 
         return $HeaderArray;
     }
