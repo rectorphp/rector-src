@@ -228,9 +228,11 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
-        // update parents relations - must run before connectParentNodes()
-        $refactoredNode->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
-        $this->connectParentNodes($refactoredNode);
+        if ($node->hasAttribute(AttributeKey::PARENT_NODE)) {
+            // update parents relations - must run before connectParentNodes()
+            $refactoredNode->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
+            $this->connectParentNodes($refactoredNode);
+        }
 
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
         $this->changedNodeScopeRefresher->refresh($refactoredNode, $currentScope, $this->file->getSmartFileInfo());
