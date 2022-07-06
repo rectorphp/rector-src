@@ -46,15 +46,6 @@ use Symplify\Skipper\Skipper\Skipper;
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
     /**
-     * @var string[]
-     */
-    private const ATTRIBUTES_TO_MIRROR = [
-        AttributeKey::SCOPE,
-        AttributeKey::RESOLVED_NAME,
-        AttributeKey::PARENT_NODE,
-    ];
-
-    /**
      * @var string
      */
     private const EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
@@ -206,65 +197,61 @@ CODE_SAMPLE;
         // for PHP doc info factory and change notifier
         $this->currentNodeProvider->setNode($node);
 
-        $originalAttributes = $node->getAttributes();
-
         $this->printDebugCurrentFileAndRule();
 
-        $node = $this->refactor($node);
+        $refactoredNode = $this->refactor($node);
 
         // nothing to change → continue
-        if ($node === null) {
+        if ($refactoredNode === null) {
             return null;
         }
 
-        if ($node === []) {
+        if ($refactoredNode === []) {
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        /** @var Node[]|Node $node */
-        $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
+        /** @var Node[]|Node $refactoredNode */
+        $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
-        /** @var Node $originalNode */
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        /** @var Node $originalNode */
-        if (is_array($node)) {
+        if (is_array($refactoredNode)) {
             $originalNodeHash = spl_object_hash($originalNode);
-            $this->nodesToReturn[$originalNodeHash] = $node;
+            $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
-            $firstNodeKey = array_key_first($node);
-            $this->mirrorComments($node[$firstNodeKey], $originalNode);
+            $firstNodeKey = array_key_first($refactoredNode);
+            $this->mirrorComments($refactoredNode[$firstNodeKey], $originalNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
 
-        // update parents relations - must run before connectParentNodes()
-        /** @var Node $node */
-        $this->mirrorAttributes($originalAttributes, $node);
+        if ($node->hasAttribute(AttributeKey::PARENT_NODE)) {
+            // update parents relations - must run before connectParentNodes()
+            $refactoredNode->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
+            $this->connectParentNodes($refactoredNode);
+        }
 
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
-        $this->changedNodeScopeRefresher->refresh($node, $currentScope, $this->file->getSmartFileInfo());
-
-        $this->connectParentNodes($node);
+        $this->changedNodeScopeRefresher->refresh($refactoredNode, $currentScope, $this->file->getSmartFileInfo());
 
         // is equals node type? return node early
-        if ($originalNode::class === $node::class) {
-            return $node;
+        if ($originalNode::class === $refactoredNode::class) {
+            return $refactoredNode;
         }
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
 
-        if ($originalNode instanceof Stmt && $node instanceof Expr) {
-            $node = new Expression($node);
-        }
+        $refactoredNode = $originalNode instanceof Stmt && $refactoredNode instanceof Expr
+            ? new Expression($refactoredNode)
+            : $refactoredNode;
 
-        $this->nodesToReturn[$originalNodeHash] = $node;
+        $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
-        return $node;
+        return $refactoredNode;
     }
 
     /**
@@ -381,20 +368,6 @@ CODE_SAMPLE;
 
         $rectifiedNode = $this->rectifiedAnalyzer->verify($this, $node, $this->file);
         return $rectifiedNode instanceof RectifiedNode;
-    }
-
-    /**
-     * @param array<string, mixed> $originalAttributes
-     */
-    private function mirrorAttributes(array $originalAttributes, Node $newNode): void
-    {
-        foreach ($originalAttributes as $attributeName => $oldAttributeValue) {
-            if (! in_array($attributeName, self::ATTRIBUTES_TO_MIRROR, true)) {
-                continue;
-            }
-
-            $newNode->setAttribute($attributeName, $oldAttributeValue);
-        }
     }
 
     private function connectParentNodes(Node $node): void
