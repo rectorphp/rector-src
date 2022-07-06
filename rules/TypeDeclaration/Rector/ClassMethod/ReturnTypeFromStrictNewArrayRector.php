@@ -26,6 +26,7 @@ use PHPStan\Type\VerbosityLevel;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,7 +37,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictNewArrayRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly TypeComparator $typeComparator
     ) {
     }
 
@@ -135,7 +137,9 @@ CODE_SAMPLE
 
             $exprType = $this->narrowConstantArrayType($exprType);
 
-            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
+            if (! $this->typeComparator->isSubtype($phpDocInfo->getReturnType(), $exprType)) {
+                $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
+            }
         }
 
         return $node;

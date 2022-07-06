@@ -100,14 +100,8 @@ final class PhpDocTypeChanger
             return false;
         }
 
-        $returnType = $phpDocInfo->getReturnType();
-
         // make sure the tags are not identical, e.g imported class vs FQN class
-        if ($this->typeComparator->areTypesEqual($returnType, $newType)) {
-            return false;
-        }
-
-        if ($this->typeComparator->isSubtype($returnType, $newType)) {
+        if ($this->typeComparator->areTypesEqual($phpDocInfo->getReturnType(), $newType)) {
             return false;
         }
 
