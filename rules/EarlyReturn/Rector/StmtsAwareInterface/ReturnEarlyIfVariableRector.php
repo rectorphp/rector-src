@@ -131,6 +131,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->variableAnalyzer->isStaticOrGlobal($assign->var)) {
+            return null;
+        }
+
         if ($this->variableAnalyzer->isUsedByReference($assign->var)) {
             return null;
         }
