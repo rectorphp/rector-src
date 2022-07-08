@@ -11,6 +11,3 @@ function run()
 
     $temporaryValue = $result;
 }
-
-run();
-echo $result;
