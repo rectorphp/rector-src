@@ -6,12 +6,12 @@ class SkipStaticVar
 {
     private $property;
 
-    function init()
+    function init($value)
     {
         static $result = null;
 
         if (! isset($result)) {
-            $result = 1;
+            $result = $value;
             $this->property = $result;
         }
     }
