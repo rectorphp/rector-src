@@ -2,7 +2,6 @@
 
 namespace Rector\Tests\DeadCode\Rector\StmtsAwareInterface\RemoveJustVariableAssignRector\Fixture;
 
-global $result;
 $result = 1;
 
 function run()
