@@ -2,12 +2,17 @@
 
 namespace Rector\Tests\DeadCode\Rector\StmtsAwareInterface\RemoveJustVariableAssignRector\Fixture;
 
-function run()
+class SkipStaticVar
 {
-    static $result = null;
+    private $property;
 
-    if (! isset($result)) {
-        $result = 1;
-        $temporaryValue = $result;
+    function init()
+    {
+        static $result = null;
+
+        if (! isset($result)) {
+            $result = 1;
+            $this->property = $result;
+        }
     }
 }
