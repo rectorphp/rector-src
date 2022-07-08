@@ -159,6 +159,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if ($this->variableAnalyzer->isStaticOrGlobal($currentAssign->var)) {
+            return false;
+        }
+
         return ! $this->exprUsedInNextNodeAnalyzer->isUsed($nextAssign->expr);
     }
 
