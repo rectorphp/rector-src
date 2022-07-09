@@ -29,6 +29,7 @@ jobs:
                     - 'e2e/parallel-custom-config'
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/plain-views'
+                    - 'e2e/psr-4'
                     - 'e2e/template-extends'
                     - 'e2e/use-rector-configurator'
                     - 'e2e/applied-rule-removed-node'
