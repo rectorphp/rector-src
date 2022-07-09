@@ -1,0 +1,48 @@
+2 files with changes
+====================
+
+1) src/Foo/FooClass.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+-namespace Test;
++namespace Test\Foo;
+
+ class FooClass {
+-    public function test(): BarClass {
+-        return new BarClass;
++    public function test(): \Test\Bar\BarClass {
++        return new \Test\Bar\BarClass;
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * NormalizeNamespaceByPSR4ComposerAutoloadRector
+
+
+2) src/Bar/BarClass.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+-namespace Test;
++namespace Test\Bar;
+
+ class BarClass {
+-    public function test(): FooClass {
+-        return new FooClass;
++    public function test(): \Test\Foo\FooClass {
++        return new \Test\Foo\FooClass;
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * NormalizeNamespaceByPSR4ComposerAutoloadRector
+
+
+ [OK] 2 files would have changed (dry-run) by Rector

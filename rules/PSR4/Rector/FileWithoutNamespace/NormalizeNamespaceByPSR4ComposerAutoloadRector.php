@@ -7,8 +7,10 @@ namespace Rector\PSR4\Rector\FileWithoutNamespace;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
@@ -17,6 +19,7 @@ use Rector\PSR4\NodeManipulator\FullyQualifyStmtsAnalyzer;
 use Rector\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ComposerJsonAwareCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4ComposerAutoloadRector\NormalizeNamespaceByPSR4ComposerAutoloadRectorTest
@@ -26,7 +29,8 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRecto
     public function __construct(
         private readonly PSR4AutoloadNamespaceMatcherInterface $psr4AutoloadNamespaceMatcher,
         private readonly FullyQualifyStmtsAnalyzer $fullyQualifyStmtsAnalyzer,
-        private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
+        private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
     ) {
     }
 
@@ -105,6 +109,9 @@ CODE_SAMPLE
             return null;
         }
 
+        $renames = $this->getClassLikeRenames($processNode, $expectedNamespace);
+        $this->renamedClassesDataCollector->addOldToNewClasses($renames);
+
         // to put declare_strict types on correct place
         if ($node instanceof FileWithoutNamespace) {
             return $this->refactorFileWithoutNamespace($node, $expectedNamespace);
@@ -157,5 +164,32 @@ CODE_SAMPLE
         }
 
         return $namespace;
+    }
+
+    /**
+     * @param FileWithoutNamespace|Namespace_ $node
+     * @return array<string,string>
+     */
+    private function getClassLikeRenames(Node $node, string $expectedNamespace): array
+    {
+        $originalNamespace = $this->nodeNameResolver->getName($node) ?? '';
+        $classLikes = $this->betterNodeFinder->findNonAnonymousClassLikes($node);
+        $classLikesNames = array_map(
+            static function (ClassLike $class): string {
+                Assert::notNull($class->name);
+                return $class->name->toString();
+            },
+            $classLikes
+        );
+        $oldClassLikeNames = array_map(
+            static fn (string $name): string => $originalNamespace . '\\' . $name,
+            $classLikesNames
+        );
+        $newClassLikeNames = array_map(
+            static fn (string $name): string => $expectedNamespace . '\\' . $name,
+            $classLikesNames
+        );
+        $renames = array_combine($oldClassLikeNames, $newClassLikeNames);
+        return $renames;
     }
 }
