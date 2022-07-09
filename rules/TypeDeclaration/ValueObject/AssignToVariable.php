@@ -10,9 +10,9 @@ use PhpParser\Node\Expr\Variable;
 final class AssignToVariable
 {
     public function __construct(
-        private Variable $variable,
-        private string $variableName,
-        private Expr $assignedExpr
+        private readonly Variable $variable,
+        private readonly string $variableName,
+        private readonly Expr $assignedExpr
     ) {
     }
 
