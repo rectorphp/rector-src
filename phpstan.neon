@@ -282,7 +282,6 @@ parameters:
             message: '#Class has a static method must so must contains "Static" in its name#'
             paths:
                 - src/Application/VersionResolver.php #16
-                - utils/compiler/src/Unprefixer.php #9
                 - src/Configuration/ValueObjectInliner.php
 
         # waits for phpstan upgrade to php-parser 4.13
@@ -386,7 +385,6 @@ parameters:
                 - src/*/*Processor.php
                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
                 - src/Contract/Processor/FileProcessorInterface.php
-                - packages/Parallel/Application/ParallelFileProcessor.php
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'
@@ -646,10 +644,6 @@ parameters:
             message: '#New objects with "\$node" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: src/Application/ChangedNodeScopeRefresher.php
 
-        -
-            message: '#New objects with "\$node" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: src/Rector/AbstractRector.php
-
         # mixed type correction
         -
             message: '#New objects with "\$(first|second)KeyType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
@@ -658,10 +652,6 @@ parameters:
         -
             message: '#New objects with "\$staticType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
-
-        -
-            message: '#New objects with "\$replaceIntoType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: rules/CodeQuality/NodeManipulator/ClassMethodReturnTypeManipulator.php
 
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
