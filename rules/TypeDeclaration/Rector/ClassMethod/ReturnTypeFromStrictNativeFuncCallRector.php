@@ -74,17 +74,17 @@ CODE_SAMPLE
             return null;
         }
 
-        $nativeFuncCalls = $this->strictNativeFunctionReturnTypeAnalyzer->matchAlwaysReturnNativeFuncCalls($node);
-        if ($nativeFuncCalls === null) {
+        $nativeCallLikes = $this->strictNativeFunctionReturnTypeAnalyzer->matchAlwaysReturnNativeCallLikes($node);
+        if ($nativeCallLikes === null) {
             return null;
         }
 
-        $funcCallTypes = [];
-        foreach ($nativeFuncCalls as $nativeFuncCall) {
-            $funcCallTypes[] = $this->getType($nativeFuncCall);
+        $callLikeTypes = [];
+        foreach ($nativeCallLikes as $nativeCallLike) {
+            $callLikeTypes[] = $this->getType($nativeCallLike);
         }
 
-        $returnType = $this->typeFactory->createMixedPassedOrUnionType($funcCallTypes);
+        $returnType = $this->typeFactory->createMixedPassedOrUnionType($callLikeTypes);
         if ($returnType instanceof MixedType) {
             return null;
         }
