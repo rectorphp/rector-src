@@ -17,6 +17,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
+use PHPStan\Type\Type;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -150,7 +151,7 @@ CODE_SAMPLE
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
 
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
-        if (! $returnTypeNode instanceof \PhpParser\Node) {
+        if (! $returnTypeNode instanceof Node) {
             return null;
         }
 
@@ -161,7 +162,7 @@ CODE_SAMPLE
 
     /**
      * @param Return_[] $returns
-     * @return \PHPStan\Type\Type[]|null
+     * @return Type[]|null
      */
     private function resolveReturnNewType(array $returns): ?array
     {
