@@ -5,27 +5,27 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnFilter\ExclusiveNativeFuncCallReturnMatcher;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnFilter\ExclusiveNativeCallLikeReturnMatcher;
 
 final class StrictNativeFunctionReturnTypeAnalyzer
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ExclusiveNativeFuncCallReturnMatcher $exclusiveNativeFuncCallReturnMatcher
+        private readonly ExclusiveNativeCallLikeReturnMatcher $exclusiveNativeCallLikeReturnMatcher
     ) {
     }
 
     /**
-     * @return FuncCall[]|null
+     * @return CallLike[]|null
      */
-    public function matchAlwaysReturnNativeFuncCalls(ClassMethod|Closure|Function_ $functionLike): ?array
+    public function matchAlwaysReturnNativeCallLikes(ClassMethod|Closure|Function_ $functionLike): ?array
     {
         if ($functionLike->stmts === null) {
             return null;
@@ -51,12 +51,12 @@ final class StrictNativeFunctionReturnTypeAnalyzer
             return null;
         }
 
-        $nativeFuncCalls = $this->exclusiveNativeFuncCallReturnMatcher->match($returns);
-        if ($nativeFuncCalls === null) {
+        $nativeCalls = $this->exclusiveNativeCallLikeReturnMatcher->match($returns);
+        if ($nativeCalls === null) {
             return null;
         }
 
-        return $nativeFuncCalls;
+        return $nativeCalls;
     }
 
     /**

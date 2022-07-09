@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeFuncCallRector;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final class ReturnTypeFromStrictNativeFuncCallRectorTest extends AbstractRectorTestCase
+final class ReturnTypeFromStrictNativeCallRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

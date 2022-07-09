@@ -165,7 +165,7 @@ final class ReflectionResolver
     }
 
     public function resolveFunctionLikeReflectionFromCall(
-        MethodCall | StaticCall | FuncCall $call
+        MethodCall|FuncCall|StaticCall $call
     ): MethodReflection | FunctionReflection | null {
         if ($call instanceof MethodCall) {
             return $this->resolveMethodReflectionFromMethodCall($call);
