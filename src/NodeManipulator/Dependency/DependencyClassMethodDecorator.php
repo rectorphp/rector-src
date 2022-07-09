@@ -11,11 +11,13 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\Type;
 use Rector\Core\NodeAnalyzer\PromotedPropertyParamCleaner;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class DependencyClassMethodDecorator
@@ -26,7 +28,8 @@ final class DependencyClassMethodDecorator
         private readonly ReflectionProvider $reflectionProvider,
         private readonly AstResolver $astResolver,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -79,10 +82,11 @@ final class DependencyClassMethodDecorator
         }
 
         $cleanParams = $this->cleanParamsFromVisibilityAndAttributes($paramsWithoutDefaultValue);
+        $cleanParamsToAdd = $this->removeAlreadyPresentParams($cleanParams, $classMethod->params);
 
         // replicate parent parameters
-        if ($cleanParams !== []) {
-            $classMethod->params = array_merge($cleanParams, $classMethod->params);
+        if ($cleanParamsToAdd !== []) {
+            $classMethod->params = array_merge($cleanParamsToAdd, $classMethod->params);
         }
 
         $staticCall = $this->nodeFactory->createParentConstructWithParams($cleanParams);
@@ -104,5 +108,58 @@ final class DependencyClassMethodDecorator
         });
 
         return $cleanParams;
+    }
+
+    /**
+     * @param Param[] $params
+     * @param Param[] $originalParams
+     * @return Param[]
+     */
+    private function removeAlreadyPresentParams(array $params, array $originalParams): array
+    {
+        return array_filter(
+            $params,
+            function(Param $param) use ($originalParams): bool {
+                $type = $param->type === null ? null : $this->nodeTypeResolver->getType($param->type);
+
+                foreach ($originalParams as $originalParam) {
+                    if (!$this->nodeNameResolver->areNamesEqual($originalParam, $param)) {
+                        continue;
+                    }
+
+                    $originalType = $originalParam->type === null ? null : $this->nodeTypeResolver->getType($originalParam->type);
+                    if (!$this->areMaybeTypesEqual($type, $originalType)) {
+                        return true;
+                    }
+
+                    if ($originalParam->byRef !== $param->byRef) {
+                        return true;
+                    }
+
+                    if ($originalParam->variadic !== $param->variadic) {
+                        return true;
+                    }
+
+                    // All important characteristics of the type are the same, do not re-add.
+                    return false;
+                }
+
+                return true;
+            }
+        );
+    }
+
+    private function areMaybeTypesEqual(?Type $type1, ?Type $type2): bool
+    {
+        if ($type1 === null) {
+            return $type2 === null;
+        }
+
+        if ($type2 === null) {
+            // Type 1 is already not null
+            return false;
+        }
+
+        return $type1->equals($type2);
     }
 }
