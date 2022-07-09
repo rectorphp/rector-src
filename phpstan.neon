@@ -29,6 +29,9 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
+        # @todo remove after phsptan gets to php-parser 5
+        - src/PhpParser/Printer
+        - tests/PhpParser/Printer
         # too modern code for PHPStan 0.12.2
         - bin/validate-phpstan-version.php
         - bin/detect-rules-not-used-in-any-set.php
@@ -657,7 +660,9 @@ parameters:
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
-
         - '#Class has a static method must so must contains "Static" in its name#'
 
-        - '#Class method ".+\(\)" is never used#'
+        # update after phpstan uses php-parser 5-dev
+        -
+            message: '#Removing parent param type is forbidden#'
+            path: src/PhpParser/Printer/BetterStandardPrinter.php

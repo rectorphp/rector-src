@@ -6,7 +6,7 @@ use Exception;
 
 final class SpecialClassNameWithAnonymousClass
 {
-    public function weird() : void
+    public function weird(): void
     {
         $exception = new class() extends Exception {
             public static function create() : self
@@ -30,7 +30,7 @@ use Exception;
 
 final class SpecialClassNameWithAnonymousClass
 {
-    public function weird() : void
+    public function weird(): void
     {
         $exception = new class() extends Exception {
             public static function create() : self

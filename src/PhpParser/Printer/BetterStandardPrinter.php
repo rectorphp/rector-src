@@ -11,7 +11,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Name;
@@ -20,7 +19,6 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\TraitUse;
@@ -48,12 +46,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
     /**
      * @var string
-     * @see https://regex101.com/r/F5x783/1
-     */
-    private const USE_REGEX = '#( use)\(#';
-
-    /**
-     * @var string
      * @see https://regex101.com/r/DrsMY4/1
      */
     private const QUOTED_SLASH_REGEX = "#'|\\\\(?=[\\\\']|$)#";
@@ -64,12 +56,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      * @var string
      */
     private const EXTRA_SPACE_BEFORE_NOP_REGEX = '#^[ \t]+$#m';
-
-    /**
-     * @see https://regex101.com/r/qZiqGo/13
-     * @var string
-     */
-    private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
     /**
      * Use space by default
@@ -85,13 +71,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         array $options = []
     ) {
         parent::__construct($options);
-
-        // print return type double colon right after the bracket "function(): string"
-        $this->initializeInsertionMap();
-        $this->insertionMap['Stmt_ClassMethod->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Stmt_Function->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
     }
 
     /**
@@ -149,7 +128,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return ltrim($content);
     }
 
-    protected function p(Node $node, $parentFormatPreserved = false): string
+    protected function p(Node $node, bool $parentFormatPreserved = false): string
     {
         $content = parent::p($node, $parentFormatPreserved);
 
@@ -204,7 +183,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     /**
      * @param mixed[] $nodes
      * @param mixed[] $origNodes
-     * @param int|null $fixup
      */
     protected function pArray(
         array $nodes,
@@ -213,7 +191,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         int $indentAdjustment,
         string $parentNodeType,
         string $subNodeName,
-        $fixup
+        ?int $fixup
     ): ?string {
         // reindex positions for printer
         $nodes = array_values($nodes);
@@ -257,23 +235,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         return parent::pScalar_DNumber($dNumber);
-    }
-
-    /**
-     * Add space:
-     * "use("
-     * ↓
-     * "use ("
-     */
-    protected function pExpr_Closure(Closure $closure): string
-    {
-        $closureContent = parent::pExpr_Closure($closure);
-
-        if ($closure->uses === []) {
-            return $closureContent;
-        }
-
-        return Strings::replace($closureContent, self::USE_REGEX, '$1 (');
     }
 
     /**
@@ -342,23 +303,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
 
         return parent::pStmts($nodes, $indent);
-    }
-
-    /**
-     * "...$params) : ReturnType"
-     * ↓
-     * "...$params): ReturnType"
-     */
-    protected function pStmt_ClassMethod(ClassMethod $classMethod): string
-    {
-        $content = parent::pStmt_ClassMethod($classMethod);
-
-        if (! $classMethod->returnType instanceof Node) {
-            return $content;
-        }
-
-        // this approach is chosen, to keep changes in parent pStmt_ClassMethod() updated
-        return Strings::replace($content, self::REPLACE_COLON_WITH_SPACE_REGEX, '$1: ');
     }
 
     /**
@@ -444,29 +388,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         return $result;
-    }
-
-    /**
-     * Override parent pModifiers to set position of final and abstract modifier early, so instead of
-     *
-     *      public final const MY_CONSTANT = "Hello world!";
-     *
-     * it should be
-     *
-     *      final public const MY_CONSTANT = "Hello world!";
-     *
-     * @see https://github.com/rectorphp/rector/issues/6963
-     * @see https://github.com/nikic/PHP-Parser/pull/826
-     */
-    protected function pModifiers(int $modifiers): string
-    {
-        return (($modifiers & Class_::MODIFIER_FINAL) !== 0 ? 'final ' : '')
-            . (($modifiers & Class_::MODIFIER_ABSTRACT) !== 0 ? 'abstract ' : '')
-            . (($modifiers & Class_::MODIFIER_PUBLIC) !== 0 ? 'public ' : '')
-            . (($modifiers & Class_::MODIFIER_PROTECTED) !== 0 ? 'protected ' : '')
-            . (($modifiers & Class_::MODIFIER_PRIVATE) !== 0 ? 'private ' : '')
-            . (($modifiers & Class_::MODIFIER_STATIC) !== 0 ? 'static ' : '')
-            . (($modifiers & Class_::MODIFIER_READONLY) !== 0 ? 'readonly ' : '');
     }
 
     private function resolveContentOnExpr(Expr $expr, string $content): string

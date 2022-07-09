@@ -34,7 +34,7 @@ final class DoNotAddBackslashStatic
 
     public function run2()
     {
-        $this->run(function () : void {
+        $this->run(function (): void {
             static::test();
         });
     }

@@ -11,7 +11,7 @@ interface A
     /**
      * @param Set<stdClass>|Set<Reflection> $list
      */
-    public function execute(Set $list) : void;
+    public function execute(Set $list): void;
 }
 
 ?>

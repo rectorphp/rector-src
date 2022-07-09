@@ -3,7 +3,7 @@
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture;
 
 class ReturnSelfNullable {
-    public static function fromEvent() : ?self
+    public static function fromEvent(): ?self
     {
         if (rand(0, 1)) {
             new self;
@@ -31,7 +31,7 @@ final class UseReturnSelfNullable
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture;
 
 class ReturnSelfNullable {
-    public static function fromEvent() : ?self
+    public static function fromEvent(): ?self
     {
         if (rand(0, 1)) {
             new self;

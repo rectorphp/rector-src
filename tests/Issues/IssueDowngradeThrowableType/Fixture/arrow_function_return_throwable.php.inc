@@ -8,7 +8,7 @@ final class ArrowFunctionReturnThrowable
 {
     public function run()
     {
-        $value = fn () : ?Throwable => new \Exception('Yikes!');
+        $value = fn (): ?Throwable => new \Exception('Yikes!');
     }
 }
 

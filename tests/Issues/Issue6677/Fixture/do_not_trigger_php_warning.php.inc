@@ -4,12 +4,12 @@ namespace Rector\Core\Tests\Issues\Issue6677\Fixture;
 
 final class DoNotTriggerPhpWarning
 {
-    public function testListStyle() : void
+    public function testListStyle(): void
     {
         list(, $b) = $this->value();
     }
 
-    public function testBracketStyle() : void
+    public function testBracketStyle(): void
     {
         [, $b] = $this->value();
     }
@@ -27,12 +27,12 @@ namespace Rector\Core\Tests\Issues\Issue6677\Fixture;
 
 final class DoNotTriggerPhpWarning
 {
-    public function testListStyle() : void
+    public function testListStyle(): void
     {
         list(, $b) = $this->value();
     }
 
-    public function testBracketStyle() : void
+    public function testBracketStyle(): void
     {
         list(, $b) = $this->value();
     }
