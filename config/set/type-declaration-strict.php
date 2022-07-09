@@ -10,7 +10,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnR
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeFuncCallRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
@@ -33,7 +33,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddMethodCallBasedStrictParamTypeRector::class,
         ArrayShapeFromConstantArrayReturnRector::class,
         ReturnTypeFromStrictBoolReturnExprRector::class,
-        ReturnTypeFromStrictNativeFuncCallRector::class,
+        ReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
         ReturnTypeFromStrictScalarReturnExprRector::class,
         TypedPropertyFromStrictSetUpRector::class,

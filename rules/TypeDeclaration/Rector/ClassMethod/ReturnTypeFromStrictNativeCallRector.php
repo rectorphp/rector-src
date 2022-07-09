@@ -19,9 +19,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeFuncCallRector\ReturnTypeFromStrictNativeFuncCallRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector\ReturnTypeFromStrictNativeCallRectorTest
  */
-final class ReturnTypeFromStrictNativeFuncCallRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnTypeFromStrictNativeCallRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly StrictNativeFunctionReturnTypeAnalyzer $strictNativeFunctionReturnTypeAnalyzer,
@@ -31,7 +31,7 @@ final class ReturnTypeFromStrictNativeFuncCallRector extends AbstractRector impl
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add strict return type based native function return', [
+        return new RuleDefinition('Add strict return type based native function or class method return', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
