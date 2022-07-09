@@ -110,7 +110,13 @@ CODE_SAMPLE
         }
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
-        $node->returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
+
+        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
+        if (! $returnTypeNode instanceof \PhpParser\Node) {
+            return null;
+        }
+
+        $node->returnType = $returnTypeNode;
 
         return $node;
     }
