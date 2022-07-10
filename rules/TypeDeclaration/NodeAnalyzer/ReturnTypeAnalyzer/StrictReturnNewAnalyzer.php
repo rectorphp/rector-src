@@ -103,7 +103,7 @@ final class StrictReturnNewAnalyzer
         $createdVariablesToTypes = [];
 
         // what new is assigned to it?
-        foreach ((array) $functionLike->stmts as $stmt) {
+        foreach ((array) $functionLike->stmts as $key => $stmt) {
             $assignToVariable = $this->matchAssignToVariable($stmt);
             if (! $assignToVariable instanceof AssignToVariable) {
                 continue;
@@ -123,6 +123,10 @@ final class StrictReturnNewAnalyzer
 
             $className = $this->nodeNameResolver->getName($assignedExpr->class);
             if (! is_string($className)) {
+                continue;
+            }
+
+            if (isset($functionLike->stmts[$key + 1]) && ! $functionLike->stmts[$key + 1] instanceof Return_) {
                 continue;
             }
 
