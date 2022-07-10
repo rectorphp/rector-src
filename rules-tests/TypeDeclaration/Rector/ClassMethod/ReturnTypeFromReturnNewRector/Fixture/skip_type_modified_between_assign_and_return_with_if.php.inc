@@ -13,7 +13,7 @@ final class SkipTypeModifiedBetweenAssignAndReturnWithIf
         $response = new SomeResponse();
 
         if (is_cli()) {
-            $someResponse = new CLIResponse();
+            $response = new CLIResponse();
         }
 
         return $response;
