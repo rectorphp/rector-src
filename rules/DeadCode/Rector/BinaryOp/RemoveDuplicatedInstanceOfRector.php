@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\BinaryOp;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Instanceof_;
 use Rector\Core\Rector\AbstractRector;
@@ -86,6 +87,11 @@ CODE_SAMPLE
 
         $uniqueInstanceOfKeys = [];
         foreach ($instanceOfs as $instanceOf) {
+            $isInArg = (bool) $this->betterNodeFinder->findParentType($instanceOf, Arg::class);
+            if ($isInArg) {
+                continue;
+            }
+
             $uniqueKey = $this->instanceOfUniqueKeyResolver->resolve($instanceOf);
             if ($uniqueKey === null) {
                 continue;
