@@ -6,21 +6,16 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNe
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Source\SomeResponse;
 
-final class SkipTypeModifiedBetweenAssignAndReturn
+final class SkipTypeModifiedBetweenAssignAndReturnWithIf
 {
     public function action()
     {
         $response = new SomeResponse();
 
-        $this->verify($response);
-
-        return $response;
-    }
-
-    private function verify(SomeResponse &$someResponse): void
-    {
         if (is_cli()) {
             $someResponse = new CLIResponse();
         }
+
+        return $response;
     }
 }
