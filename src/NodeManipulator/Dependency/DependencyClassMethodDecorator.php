@@ -137,6 +137,7 @@ final class DependencyClassMethodDecorator
                     if ($originalParam->byRef !== $param->byRef) {
                         return true;
                     }
+
                     // All important characteristics of the type are the same, do not re-add.
                     return $originalParam->variadic !== $param->variadic;
                 }
