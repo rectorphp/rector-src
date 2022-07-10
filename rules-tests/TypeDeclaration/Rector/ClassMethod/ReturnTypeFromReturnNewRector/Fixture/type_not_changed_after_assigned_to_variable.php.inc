@@ -6,7 +6,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNe
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Source\SomeResponse;
 
-final class AssignedToVariableTypeNotChanged
+final class TypeNotChangedAfterAssignedToVariable
 {
     public function action()
     {
@@ -27,7 +27,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNe
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Source\SomeResponse;
 
-final class AssignedToVariableTypeNotChanged
+final class TypeNotChangedAfterAssignedToVariable
 {
     public function action(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Source\SomeResponse
     {
