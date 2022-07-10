@@ -6,5 +6,8 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNe
 
 final class SomeResponse implements SomeResponseInterface
 {
-
+    public function setBody(string $body)
+    {
+        $this->body = $body;
+    }
 }
