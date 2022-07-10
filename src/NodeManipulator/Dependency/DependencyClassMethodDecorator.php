@@ -119,16 +119,18 @@ final class DependencyClassMethodDecorator
     {
         return array_filter(
             $params,
-            function(Param $param) use ($originalParams): bool {
+            function (Param $param) use ($originalParams): bool {
                 $type = $param->type === null ? null : $this->nodeTypeResolver->getType($param->type);
 
                 foreach ($originalParams as $originalParam) {
-                    if (!$this->nodeNameResolver->areNamesEqual($originalParam, $param)) {
+                    if (! $this->nodeNameResolver->areNamesEqual($originalParam, $param)) {
                         continue;
                     }
 
-                    $originalType = $originalParam->type === null ? null : $this->nodeTypeResolver->getType($originalParam->type);
-                    if (!$this->areMaybeTypesEqual($type, $originalType)) {
+                    $originalType = $originalParam->type === null ? null : $this->nodeTypeResolver->getType(
+                        $originalParam->type
+                    );
+                    if (! $this->areMaybeTypesEqual($type, $originalType)) {
                         return true;
                     }
 
