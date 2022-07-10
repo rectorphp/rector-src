@@ -83,16 +83,17 @@ CODE_SAMPLE
         $duplicatedInstanceOfs = [];
 
         /** @var Instanceof_[] $instanceOfs */
-        $instanceOfs = $this->betterNodeFinder->findInstanceOf($binaryOp, Instanceof_::class);
+        $instanceOfs = $this->betterNodeFinder->find($binaryOp, static function (Node $subNode): bool {
+            if (! $subNode instanceof Instanceof_) {
+                return false;
+            }
+
+            $parentNode = $subNode->getAttribute(AttributeKey::PARENT_NODE);
+            return $parentNode instanceof BinaryOp;
+        });
 
         $uniqueInstanceOfKeys = [];
         foreach ($instanceOfs as $instanceOf) {
-            $instanceOfParentNode = $instanceOf->getAttribute(AttributeKey::PARENT_NODE);
-
-            if (! $instanceOfParentNode instanceof BinaryOp) {
-                continue;
-            }
-
             $uniqueKey = $this->instanceOfUniqueKeyResolver->resolve($instanceOf);
             if ($uniqueKey === null) {
                 continue;
