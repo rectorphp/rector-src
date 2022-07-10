@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\BinaryOp\RemoveDuplicatedInstanceOfRector\Fixture;
 
-class SkipInArg
+class SkipIndirectParentBinaryOp
 {
     public function run($a)
     {

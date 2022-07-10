@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Instanceof_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeAnalyzer\InstanceOfUniqueKeyResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -87,8 +88,9 @@ CODE_SAMPLE
 
         $uniqueInstanceOfKeys = [];
         foreach ($instanceOfs as $instanceOf) {
-            $isInArg = (bool) $this->betterNodeFinder->findParentType($instanceOf, Arg::class);
-            if ($isInArg) {
+            $instanceOfParentNode = $instanceOf->getAttribute(AttributeKey::PARENT_NODE);
+
+            if (! $instanceOfParentNode instanceof BinaryOp) {
                 continue;
             }
 
