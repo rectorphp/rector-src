@@ -15,8 +15,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Type\ObjectType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\TypeDeclaration\ValueObject\AssignToVariable;
 
 final class StrictReturnNewAnalyzer
@@ -24,6 +26,7 @@ final class StrictReturnNewAnalyzer
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -63,11 +66,26 @@ final class StrictReturnNewAnalyzer
             return null;
         }
 
+        $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
+
+        if (! $returnType instanceof ObjectType) {
+            return null;
+        }
+
         $createdVariablesToTypes = $this->resolveCreatedVariablesToTypes($functionLike);
 
         $returnedVariableName = $this->nodeNameResolver->getName($onlyReturn->expr);
 
-        return $createdVariablesToTypes[$returnedVariableName] ?? null;
+        $className = $createdVariablesToTypes[$returnedVariableName] ?? null;
+        if (! is_string($className)) {
+            return $className;
+        }
+
+        if ($returnType->getClassName() === $className) {
+            return $className;
+        }
+
+        return null;
     }
 
     /**
@@ -103,7 +121,7 @@ final class StrictReturnNewAnalyzer
         $createdVariablesToTypes = [];
 
         // what new is assigned to it?
-        foreach ((array) $functionLike->stmts as $key => $stmt) {
+        foreach ((array) $functionLike->stmts as $stmt) {
             $assignToVariable = $this->matchAssignToVariable($stmt);
             if (! $assignToVariable instanceof AssignToVariable) {
                 continue;
@@ -123,10 +141,6 @@ final class StrictReturnNewAnalyzer
 
             $className = $this->nodeNameResolver->getName($assignedExpr->class);
             if (! is_string($className)) {
-                continue;
-            }
-
-            if (isset($functionLike->stmts[$key + 1]) && ! $functionLike->stmts[$key + 1] instanceof Return_) {
                 continue;
             }
 
