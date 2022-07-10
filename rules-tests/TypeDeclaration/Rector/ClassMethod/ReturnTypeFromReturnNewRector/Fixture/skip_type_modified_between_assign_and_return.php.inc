@@ -6,7 +6,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNe
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Source\SomeResponse;
 
-final class SkipHasAnotherStmtBetweenAssignAndReturn
+final class SkipTypeModifiedBetweenAssignAndReturn
 {
     public function action()
     {
