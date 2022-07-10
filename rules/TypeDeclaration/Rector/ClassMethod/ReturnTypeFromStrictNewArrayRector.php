@@ -122,6 +122,12 @@ CODE_SAMPLE
             return null;
         }
 
+        $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
+
+        if (! $returnType instanceof ArrayType) {
+            return null;
+        }
+
         if (! $this->nodeNameResolver->areNamesEqual($onlyReturn->expr, $variable)) {
             return null;
         }
