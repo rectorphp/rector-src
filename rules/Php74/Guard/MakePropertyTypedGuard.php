@@ -62,7 +62,7 @@ final class MakePropertyTypedGuard
             return ! $this->propertyAnalyzer->hasForbiddenType($property);
         }
 
-        return $this->isSafeProtectedProperty($property, $classReflection);
+        return $this->isSafeProtectedProperty($property);
     }
 
     private function isSafeProtectedProperty(Property $property): bool
