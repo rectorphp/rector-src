@@ -27,6 +27,8 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
+        // add new config on purpose
+        // to ensure configs are merged
         new MethodCallRename(Foo2::class, 'old', 'new'),
     ]);
 };
