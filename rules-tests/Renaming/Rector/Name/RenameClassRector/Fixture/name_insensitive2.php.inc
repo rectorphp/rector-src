@@ -4,11 +4,11 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClassWithTypo2;
 
-class NameInsensitive2 extends OldClassWithTypo2
+class NameInsensitive2 extends OldClassWithTypO2
 {
-    public function run(): OldClassWithTypo2
+    public function run(): OLDClassWithTYPO2
     {
-        $oldClassWithTypo = new OldClassWithTypo2;
+        $oldClassWithTypo = new OldClassWithTYPO2;
     }
 }
 
