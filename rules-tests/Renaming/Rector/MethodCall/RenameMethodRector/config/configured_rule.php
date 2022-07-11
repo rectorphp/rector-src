@@ -10,6 +10,7 @@ use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\AbstractTy
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\DifferentInterface;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Foo;
+use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\Foo2;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\NewInterface;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\SomeSubscriber;
 
