@@ -13,8 +13,10 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\Contract\SecondIn
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\Contract\ThirdInterface;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClassWithoutTypo;
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClassWithoutTypo2;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClassWithTypo;
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClassWithTypo2;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeFinalClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeNonFinalClass;
 
@@ -50,7 +52,8 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig
         ->ruleWithConfiguration(RenameClassRector::class, [
-            // empty on purpose to ensure verify that
-            // config is merged instead of replaced
+            // add new config on purpose
+            // to ensure configs are merged
+            OldClassWithTypo2::class => NewClassWithoutTypo2::class,
         ]);
 };
