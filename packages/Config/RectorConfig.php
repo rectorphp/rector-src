@@ -21,6 +21,11 @@ use Webmozart\Assert\Assert;
 final class RectorConfig extends ContainerConfigurator
 {
     /**
+     * @var array<string, mixed>
+     */
+    private array $configuration = [];
+
+    /**
      * @param string[] $paths
      */
     public function paths(array $paths): void
@@ -133,8 +138,12 @@ final class RectorConfig extends ContainerConfigurator
             return $value;
         });
 
+        $mergedConfiguration = array_merge($this->configuration[$rectorClass] ?? [], $configuration);
+
         $services->set($rectorClass)
-            ->call('configure', [$configuration]);
+            ->call('configure', [$mergedConfiguration]);
+
+        $this->configuration[$rectorClass] = $mergedConfiguration;
     }
 
     /**

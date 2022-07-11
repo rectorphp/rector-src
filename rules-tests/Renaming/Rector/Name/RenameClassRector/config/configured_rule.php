@@ -47,4 +47,10 @@ return static function (RectorConfig $rectorConfig): void {
             'Doctrine\DBAL\DBALException' => 'Doctrine\DBAL\Exception',
             'Bar' => 'BarInterface',
         ]);
+
+    $rectorConfig
+        ->ruleWithConfiguration(RenameClassRector::class, [
+            // empty on purpose to ensure verify that
+            // config is merged instead of replaced
+        ]);
 };
