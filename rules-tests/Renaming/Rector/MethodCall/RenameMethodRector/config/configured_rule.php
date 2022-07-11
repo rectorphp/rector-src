@@ -25,4 +25,8 @@ return static function (RectorConfig $rectorConfig): void {
         // with array key
         new MethodCallRenameWithArrayKey('Nette\Utils\Html', 'addToArray', 'addToHtmlArray', 'hey'),
     ]);
+
+    $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
+        new MethodCallRename(Foo2::class, 'old', 'new'),
+    ]);
 };
