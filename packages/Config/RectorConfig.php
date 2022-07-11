@@ -11,6 +11,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\PhpVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Loader\Configurator\InlineServiceConfigurator;
 use Webmozart\Assert\Assert;
 
 /**
@@ -138,9 +139,20 @@ final class RectorConfig extends ContainerConfigurator
             return $value;
         });
 
-        $configuration = isset($this->configuration[$rectorClass])
-            ? array_merge($this->configuration[$rectorClass], $configuration)
-            : $configuration;
+        if (isset($this->configuration[$rectorClass])) {
+            $existingConfiguration = array_filter(
+                $this->configuration[$rectorClass],
+                static function ($subConfiguration): bool {
+                    if ($subConfiguration instanceof InlineServiceConfigurator) {
+                        return $subConfiguration->definition !== null;
+                    }
+
+                    return true;
+                }
+            );
+
+            $configuration = array_merge($existingConfiguration, $configuration);
+        }
 
         $services->set($rectorClass)
             ->call('configure', [$configuration]);
