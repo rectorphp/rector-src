@@ -9,6 +9,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\ValueObjectInliner;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\Exception\Configuration\InvalidConfigurationException;
 use Rector\Core\ValueObject\PhpVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Webmozart\Assert\Assert;
@@ -20,6 +21,11 @@ use Webmozart\Assert\Assert;
  */
 final class RectorConfig extends ContainerConfigurator
 {
+    /**
+     * @var string[]
+     */
+    private $rulesWithConfiguration = [];
+
     /**
      * @param string[] $paths
      */
@@ -121,6 +127,13 @@ final class RectorConfig extends ContainerConfigurator
         Assert::classExists($rectorClass);
         Assert::isAOf($rectorClass, RectorInterface::class);
         Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
+
+        if (in_array($rectorClass, $this->rulesWithConfiguration, true)) {
+            throw new InvalidConfigurationException(
+                "Rule with configuration ${rectorClass} is added more than once. Configuration would be overwritten."
+            );
+        }
+        $this->rulesWithConfiguration[] = $rectorClass;
 
         $services = $this->services();
 
