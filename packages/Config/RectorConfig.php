@@ -139,7 +139,7 @@ final class RectorConfig extends ContainerConfigurator
             return $value;
         });
 
-        if (isset($this->configuration[$rectorClass])) {
+        if (isset($this->configuration[$rectorClass]) && is_array($this->configuration[$rectorClass])) {
             $existingConfiguration = array_filter(
                 $this->configuration[$rectorClass],
                 static function ($subConfiguration): bool {
