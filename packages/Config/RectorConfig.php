@@ -138,12 +138,14 @@ final class RectorConfig extends ContainerConfigurator
             return $value;
         });
 
-        $mergedConfiguration = array_merge($this->configuration[$rectorClass] ?? [], $configuration);
+        $configuration = isset($this->configuration[$rectorClass])
+            ? array_merge($this->configuration[$rectorClass], $configuration)
+            : $configuration;
 
         $services->set($rectorClass)
-            ->call('configure', [$mergedConfiguration]);
+            ->call('configure', [$configuration]);
 
-        $this->configuration[$rectorClass] = $mergedConfiguration;
+        $this->configuration[$rectorClass] = $configuration;
     }
 
     /**
