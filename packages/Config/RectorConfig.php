@@ -130,6 +130,10 @@ final class RectorConfig extends ContainerConfigurator
 
         $services = $this->services();
 
+        if (isset($this->configuration[$rectorClass]) && is_array($this->configuration[$rectorClass])) {
+            $configuration = array_merge($this->configuration[$rectorClass], $configuration);
+        }
+
         // decorate with value object inliner so Symfony understands, see https://getrector.org/blog/2020/09/07/how-to-inline-value-object-in-symfony-php-config
         array_walk_recursive($configuration, static function (&$value) {
             if (is_object($value)) {
@@ -138,21 +142,6 @@ final class RectorConfig extends ContainerConfigurator
 
             return $value;
         });
-
-        if (isset($this->configuration[$rectorClass]) && is_array($this->configuration[$rectorClass])) {
-            $existingConfiguration = array_filter(
-                $this->configuration[$rectorClass],
-                static function ($subConfiguration): bool {
-                    if ($subConfiguration instanceof InlineServiceConfigurator) {
-                        return $subConfiguration->definition !== null;
-                    }
-
-                    return true;
-                }
-            );
-
-            $configuration = array_merge($existingConfiguration, $configuration);
-        }
 
         $services->set($rectorClass)
             ->call('configure', [$configuration]);
