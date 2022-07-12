@@ -128,9 +128,11 @@ final class RectorConfig extends ContainerConfigurator
         Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
 
         $services = $this->services();
+        $originalConfiguration = $configuration;
 
         if (isset($this->configuration[$rectorClass]) && is_array($this->configuration[$rectorClass])) {
-            $configuration = array_merge($this->configuration[$rectorClass], $configuration);
+            $configuration = array_merge($this->configuration[$rectorClass], $originalConfiguration);
+            $originalConfiguration = $configuration;
         }
 
         // decorate with value object inliner so Symfony understands, see https://getrector.org/blog/2020/09/07/how-to-inline-value-object-in-symfony-php-config
@@ -145,7 +147,7 @@ final class RectorConfig extends ContainerConfigurator
         $services->set($rectorClass)
             ->call('configure', [$configuration]);
 
-        $this->configuration[$rectorClass] = $configuration;
+        $this->configuration[$rectorClass] = $originalConfiguration;
     }
 
     /**
