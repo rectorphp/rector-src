@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Assign\PHPStormVarAnnotationRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
@@ -67,5 +68,6 @@ return static function (RectorConfig $rectorConfig): void {
         MakeInheritedMethodVisibilitySameAsParentRector::class,
         CallUserFuncArrayToVariadicRector::class,
         VersionCompareFuncCallToConstantRector::class,
+        StaticArrowFunctionRector::class,
     ]);
 };
