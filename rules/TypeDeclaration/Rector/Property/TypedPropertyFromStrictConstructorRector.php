@@ -16,6 +16,7 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\TrustedClassMethodPropertyTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -33,6 +34,7 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard
     ) {
     }
 
@@ -96,6 +98,10 @@ CODE_SAMPLE
 
         $classLike = $this->betterNodeFinder->findParentType($node, Class_::class);
         if (! $classLike instanceof Class_) {
+            return null;
+        }
+
+        if (! $this->parentPropertyLookupGuard->isLegal($node)) {
             return null;
         }
 
