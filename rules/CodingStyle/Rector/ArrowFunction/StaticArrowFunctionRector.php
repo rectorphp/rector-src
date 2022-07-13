@@ -47,20 +47,23 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->static) {
-            return null;
-        }
-
-        $hasThisCall = (bool) $this->betterNodeFinder->findFirst(
-            $node->expr,
-            static fn (Node $subNode): bool => $subNode instanceof Variable && $subNode->name === 'this'
-        );
-
-        if ($hasThisCall) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
         $node->static = true;
         return $node;
+    }
+
+    private function shouldSkip(ArrowFunction $arrowFunction): bool
+    {
+        if ($arrowFunction->static) {
+            return true;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst(
+            $arrowFunction->expr,
+            static fn (Node $subNode): bool => $subNode instanceof Variable && $subNode->name === 'this'
+        );
     }
 }
