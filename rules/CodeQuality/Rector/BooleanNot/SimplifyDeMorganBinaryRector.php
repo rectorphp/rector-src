@@ -63,6 +63,6 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->binaryOpManipulator->inverseBinaryOp($node->expr);
+        return $this->binaryOpManipulator->inverseBooleanOr($node->expr);
     }
 }

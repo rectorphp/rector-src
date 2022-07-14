@@ -661,3 +661,5 @@ parameters:
         - '#Class has a static method must so must contains "Static" in its name#'
 
         - '#Class method ".+\(\)" is never used#'
+
+        - '#Parameters should use "(.*?)" types as the only types passed to this method#'

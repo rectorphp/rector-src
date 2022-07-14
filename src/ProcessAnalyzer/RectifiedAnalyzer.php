@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
-use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\RectifiedNode;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -27,7 +27,7 @@ final class RectifiedAnalyzer
     {
     }
 
-    public function verify(RectorInterface $rector, Node $node, File $currentFile): ?RectifiedNode
+    public function verify(AbstractRector $rector, Node $node, File $currentFile): ?RectifiedNode
     {
         $smartFileInfo = $currentFile->getSmartFileInfo();
         $realPath = $smartFileInfo->getRealPath();
@@ -48,7 +48,7 @@ final class RectifiedAnalyzer
         return $rectifiedNode;
     }
 
-    private function shouldContinue(RectifiedNode $rectifiedNode, RectorInterface $rector, Node $node): bool
+    private function shouldContinue(RectifiedNode $rectifiedNode, AbstractRector $rector, Node $node): bool
     {
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         if ($rectifiedNode->getRectorClass() === $rector::class && $rectifiedNode->getNode() === $node) {
