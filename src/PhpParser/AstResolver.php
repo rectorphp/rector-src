@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Function_;
@@ -105,14 +106,15 @@ final class AstResolver
             return null;
         }
 
-        $class = $this->betterNodeFinder->findFirstInstanceOf($nodes, Class_::class);
-        if (! $class instanceof Class_) {
+        $classLike = $this->betterNodeFinder->findFirstInstanceOf($nodes, ClassLike::class);
+
+        if (! $classLike instanceof ClassLike) {
             // avoids looking for a class in a file where is not present
             $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodReflection->getName()] = null;
             return null;
         }
 
-        $classMethod = $class->getMethod($methodReflection->getName());
+        $classMethod = $classLike->getMethod($methodReflection->getName());
         $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodReflection->getName()] = $classMethod;
 
         return $classMethod;
