@@ -112,12 +112,12 @@ final class ClassMethodReturnTypeOverrideGuard
                 continue;
             }
 
-            if ($method->returnType === null) {
-                return false;
+            if ($method->returnType instanceof Node) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     private function shouldSkipChaoticClassMethods(ClassMethod $classMethod): bool
