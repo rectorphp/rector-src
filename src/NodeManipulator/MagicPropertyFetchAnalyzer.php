@@ -11,7 +11,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -31,10 +31,9 @@ final class MagicPropertyFetchAnalyzer
     ) {
     }
 
-    public function isMagicOnType(PropertyFetch | StaticPropertyFetch $expr, Type $type): bool
+    public function isMagicOnType(PropertyFetch $propertyFetch, ObjectType $objectType): bool
     {
-        $varNodeType = $this->nodeTypeResolver->getType($expr);
-
+        $varNodeType = $this->nodeTypeResolver->getType($propertyFetch);
         if ($varNodeType instanceof ErrorType) {
             return true;
         }
@@ -43,16 +42,16 @@ final class MagicPropertyFetchAnalyzer
             return false;
         }
 
-        if ($varNodeType->isSuperTypeOf($type)->yes()) {
+        if ($varNodeType->isSuperTypeOf($objectType)->yes()) {
             return false;
         }
 
-        $nodeName = $this->nodeNameResolver->getName($expr->name);
+        $nodeName = $this->nodeNameResolver->getName($propertyFetch->name);
         if ($nodeName === null) {
             return false;
         }
 
-        return ! $this->hasPublicProperty($expr, $nodeName);
+        return ! $this->hasPublicProperty($propertyFetch, $nodeName);
     }
 
     private function hasPublicProperty(PropertyFetch | StaticPropertyFetch $expr, string $propertyName): bool

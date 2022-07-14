@@ -38,6 +38,7 @@ final class NodeComparator
     }
 
     /**
+     * @api
      * @param Node[] $availableNodes
      */
     public function isNodeEqual(Node $singleNode, array $availableNodes): bool

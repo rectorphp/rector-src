@@ -133,9 +133,9 @@ final class BetterNodeFinder
 
     /**
      * @param class-string<Node> $type
-     * @param Node|Node[] $nodes
+     * @param Node[] $nodes
      */
-    public function hasInstanceOfName(Node | array $nodes, string $type, string $name): bool
+    public function hasInstanceOfName(array $nodes, string $type, string $name): bool
     {
         Assert::isAOf($type, Node::class);
         return (bool) $this->findInstanceOfName($nodes, $type, $name);
@@ -180,11 +180,13 @@ final class BetterNodeFinder
 
     /**
      * @template T of Node
+     *
+     * @param Stmt[] $nodes
      * @param class-string<T> $type
-     * @param Node|Node[] $nodes
      */
-    public function findLastInstanceOf(Node | array $nodes, string $type): ?Node
+    public function findLastInstanceOf(array $nodes, string $type): ?Node
     {
+        Assert::allIsAOf($nodes, Stmt::class);
         Assert::isAOf($type, Node::class);
 
         $foundInstances = $this->nodeFinder->findInstanceOf($nodes, $type);
@@ -271,6 +273,7 @@ final class BetterNodeFinder
 
     /**
      * Only search in previous Node/Stmt
+     * @api
      *
      * @param callable(Node $node): bool $filter
      */
@@ -364,6 +367,7 @@ final class BetterNodeFinder
     }
 
     /**
+     * @api
      * @return Expr[]
      */
     public function findSameNamedExprs(Expr | Variable | Property | PropertyFetch | StaticPropertyFetch $expr): array
