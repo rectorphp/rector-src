@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
@@ -42,7 +41,7 @@ final class TypeProvidingExprFromClassResolver
      */
     public function resolveTypeProvidingExprFromClass(
         Class_ $class,
-        ClassMethod | Function_ $functionLike,
+        ClassMethod $classMethod,
         ObjectType $objectType
     ): ?Expr {
         $className = (string) $this->nodeNameResolver->getName($class);
@@ -66,7 +65,7 @@ final class TypeProvidingExprFromClassResolver
         }
 
         // C. param in constructor?
-        return $this->resolveConstructorParamProvidingType($functionLike, $objectType);
+        return $this->resolveConstructorParamProvidingType($classMethod, $objectType);
     }
 
     private function resolveMethodCallProvidingType(
@@ -113,14 +112,10 @@ final class TypeProvidingExprFromClassResolver
     }
 
     private function resolveConstructorParamProvidingType(
-        ClassMethod|Function_ $functionLike,
+        ClassMethod $classMethod,
         ObjectType $objectType
     ): ?Variable {
-        if (! $functionLike instanceof ClassMethod) {
-            return null;
-        }
-
-        if (! $this->nodeNameResolver->isName($functionLike, MethodName::CONSTRUCT)) {
+        if (! $this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
             return null;
         }
 

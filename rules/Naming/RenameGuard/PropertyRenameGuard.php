@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Naming\RenameGuard;
 
 use Rector\Naming\Contract\Guard\ConflictingNameGuardInterface;
-use Rector\Naming\Contract\RenameValueObjectInterface;
 use Rector\Naming\ValueObject\PropertyRename;
 
 final class PropertyRenameGuard

@@ -77,6 +77,9 @@ final class VariableNaming
         return $valueName;
     }
 
+    /**
+     * @api
+     */
     public function resolveFromFuncCallFirstArgumentWithSuffix(
         FuncCall $funcCall,
         string $suffix,

@@ -662,4 +662,4 @@ parameters:
 
         - '#Class method ".+\(\)" is never used#'
 
-#        - '#Parameters should use "(.*?)" types as the only types passed to this method#'
+        - '#Parameters should use "(.*?)" types as the only types passed to this method#'
