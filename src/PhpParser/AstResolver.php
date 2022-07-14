@@ -106,18 +106,28 @@ final class AstResolver
             return null;
         }
 
-        $classLike = $this->betterNodeFinder->findFirstInstanceOf($nodes, ClassLike::class);
+        /** @var ClassLike[] $classLikes */
+        $classLikes = $this->betterNodeFinder->findInstanceOf($nodes, ClassLike::class);
+        $classLikeName = $classReflection->getName();
+        $methodReflectionName = $methodReflection->getName();
 
-        if (! $classLike instanceof ClassLike) {
-            // avoids looking for a class in a file where is not present
-            $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodReflection->getName()] = null;
-            return null;
+        foreach ($classLikes as $classLike) {
+            if (! $this->nodeNameResolver->isName($classLike, $classLikeName)) {
+                continue;
+            }
+
+            $classMethod = $classLike->getMethod($methodReflectionName);
+            if (! $classMethod instanceof ClassMethod) {
+                continue;
+            }
+
+            $this->classMethodsByClassAndMethod[$classLikeName][$methodReflectionName] = $classMethod;
+            return $classMethod;
         }
 
-        $classMethod = $classLike->getMethod($methodReflection->getName());
-        $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodReflection->getName()] = $classMethod;
-
-        return $classMethod;
+        // avoids looking for a class in a file where is not present
+        $this->classMethodsByClassAndMethod[$classLikeName][$methodReflectionName] = null;
+        return null;
     }
 
     public function resolveClassMethodOrFunctionFromCall(
