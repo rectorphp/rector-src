@@ -9,7 +9,7 @@ use My\Namespace\UsedUnknownClass;
 final class SkipUnknownTargetEntity
 {
     /**
-     * @ORM\ManyToOne(targetEntity=\My\Namespace\UsedUnknownClass::class)
+     * @ORM\ManyToOne(targetEntity=UsedUnknownClass)
      */
     private readonly ?Collection $items;
 }
