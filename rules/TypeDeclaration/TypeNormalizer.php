@@ -59,6 +59,8 @@ final class TypeNormalizer
     }
 
     /**
+     * @api
+     *
      * Turn nested array union types to unique ones:
      * e.g. int[]|string[][]|bool[][]|string[][]
      * ↓

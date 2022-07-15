@@ -22,6 +22,9 @@ final class VisibilityManipulator
         return (bool) ($node->flags & $visibility);
     }
 
+    /**
+     * @api
+     */
     public function makeStatic(ClassMethod | Property | ClassConst $node): void
     {
         $this->addVisibilityFlag($node, Visibility::STATIC);
@@ -132,6 +135,9 @@ final class VisibilityManipulator
         $this->removeVisibilityFlag($node, Visibility::READONLY);
     }
 
+    /**
+     * @api
+     */
     private function addVisibilityFlag(
         Class_ | ClassMethod | Property | ClassConst | Param $node,
         int $visibility

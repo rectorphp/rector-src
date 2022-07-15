@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Naming\Guard\PropertyConflictingNameGuard;
 
 use PhpParser\Node\Stmt\ClassLike;
-use Rector\Naming\Contract\RenameValueObjectInterface;
 use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
 use Rector\Naming\PhpArray\ArrayFilter;
 use Rector\Naming\ValueObject\PropertyRename;
@@ -20,13 +19,10 @@ final class MatchPropertyTypeConflictingNameGuard
     ) {
     }
 
-    /**
-     * @param PropertyRename $renameValueObject
-     */
-    public function isConflicting(RenameValueObjectInterface $renameValueObject): bool
+    public function isConflicting(PropertyRename $propertyRename): bool
     {
-        $conflictingPropertyNames = $this->resolve($renameValueObject->getClassLike());
-        return in_array($renameValueObject->getExpectedName(), $conflictingPropertyNames, true);
+        $conflictingPropertyNames = $this->resolve($propertyRename->getClassLike());
+        return in_array($propertyRename->getExpectedName(), $conflictingPropertyNames, true);
     }
 
     /**

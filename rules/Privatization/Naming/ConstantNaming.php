@@ -16,7 +16,7 @@ final class ConstantNaming
     ) {
     }
 
-    public function createFromProperty(PropertyProperty|Variable $propertyProperty): string
+    public function createFromProperty(PropertyProperty $propertyProperty): string
     {
         /** @var string $propertyName */
         $propertyName = $this->nodeNameResolver->getName($propertyProperty);

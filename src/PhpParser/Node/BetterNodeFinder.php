@@ -142,9 +142,9 @@ final class BetterNodeFinder
     }
 
     /**
-     * @param Node|Node[] $nodes
+     * @param Node[] $nodes
      */
-    public function hasVariableOfName(Node | array $nodes, string $name): bool
+    public function hasVariableOfName(array $nodes, string $name): bool
     {
         return $this->findVariableOfName($nodes, $name) instanceof Node;
     }
