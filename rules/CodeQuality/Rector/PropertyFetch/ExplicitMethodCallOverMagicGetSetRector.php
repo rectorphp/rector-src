@@ -112,7 +112,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->refactorPropertyFetch($node);
+        return $this->refactorPropertyFetch($node, $scope);
     }
 
     /**
@@ -133,7 +133,7 @@ CODE_SAMPLE
         return $parent->var === $propertyFetch;
     }
 
-    private function refactorPropertyFetch(PropertyFetch $propertyFetch): MethodCall|null
+    private function refactorPropertyFetch(PropertyFetch $propertyFetch, Scope $scope): MethodCall|null
     {
         $callerType = $this->getType($propertyFetch->var);
         if (! $callerType instanceof ObjectType) {
@@ -150,10 +150,21 @@ CODE_SAMPLE
             return null;
         }
 
+        $property = $callerType->getProperty($propertyName, $scope);
+        $propertyType = $property->getReadableType();
+
         $possibleGetterMethodNames = $this->resolvePossibleGetMethodNames($propertyName);
 
         foreach ($possibleGetterMethodNames as $possibleGetterMethodName) {
             if (! $callerType->hasMethod($possibleGetterMethodName)->yes()) {
+                continue;
+            }
+            $methodReflection = $callerType->getMethod($possibleGetterMethodName, $scope);
+
+            $variant = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+            $returnType = $variant->getReturnType();
+
+            if (! $propertyType->isSuperTypeOf($returnType)->yes()) {
                 continue;
             }
 
