@@ -61,7 +61,10 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->autoloadPaths([]);
     $rectorConfig->bootstrapFiles([]);
-    $rectorConfig->parallel(seconds: 120, maxNumberOfProcess: 16, jobSize: 20);
+
+    if (PHP_OS_FAMILY !== 'Windows') {
+        $rectorConfig->parallel(seconds: 120, maxNumberOfProcess: 16, jobSize: 20);
+    }
 
     $rectorConfig->disableImportNames();
     $rectorConfig->importShortClasses();
