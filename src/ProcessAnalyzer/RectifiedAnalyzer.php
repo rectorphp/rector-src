@@ -69,8 +69,7 @@ final class RectifiedAnalyzer
         string $rectorClass,
         Node $node,
         ?Node $originalNode
-    ): bool
-    {
+    ): bool {
         if ($rectifiedNode->getRectorClass() === $rectorClass && $rectifiedNode->getNode() === $node) {
             /**
              * allow to revisit the Node with same Rector rule if Node is changed by other rule
