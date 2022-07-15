@@ -185,14 +185,6 @@ CODE_SAMPLE;
             return null;
         }
 
-        /** @var Node $originalNode */
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? clone $node;
-        $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-
-        if (in_array(static::class, $createdByRule, true)) {
-            return null;
-        }
-
         $this->currentRectorProvider->changeCurrentRector($this);
         // for PHP doc info factory and change notifier
         $this->currentNodeProvider->setNode($node);
@@ -210,6 +202,9 @@ CODE_SAMPLE;
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
         }
+
+        /** @var Node $originalNode */
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
 
         /** @var Node[]|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
