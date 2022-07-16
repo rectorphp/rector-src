@@ -13,9 +13,9 @@ final class RequireOptionalParamResolver
     /**
      * @return ParameterReflection[]
      */
-    public function resolveFromReflection(MethodReflection $functionLikeReflection): array
+    public function resolveFromReflection(MethodReflection $methodReflection): array
     {
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
 
         $optionalParams = [];
         $requireParams = [];
