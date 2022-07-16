@@ -231,9 +231,9 @@ final class NodeTypeResolver
         return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
     }
 
-    public function isNumberType(Expr $node): bool
+    public function isNumberType(Expr $expr): bool
     {
-        $nodeType = $this->getType($node);
+        $nodeType = $this->getType($expr);
         if ($nodeType instanceof IntegerType) {
             return true;
         }

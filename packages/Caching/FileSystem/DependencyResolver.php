@@ -22,14 +22,14 @@ final class DependencyResolver
     /**
      * @return string[]
      */
-    public function resolveDependencies(Stmt $node, MutatingScope $mutatingScope): array
+    public function resolveDependencies(Stmt $stmt, MutatingScope $mutatingScope): array
     {
         $analysedFileAbsolutesPaths = $this->privatesAccessor->getPrivateProperty(
             $this->nodeScopeResolver,
             'analysedFiles'
         );
 
-        $nodeDependencies = $this->phpStanDependencyResolver->resolveDependencies($node, $mutatingScope);
+        $nodeDependencies = $this->phpStanDependencyResolver->resolveDependencies($stmt, $mutatingScope);
         return $nodeDependencies->getFileDependencies($mutatingScope->getFile(), $analysedFileAbsolutesPaths);
     }
 }

@@ -34,9 +34,9 @@ final class PregMatchTypeCorrector
      * Special case for "preg_match(), preg_match_all()" - with 3rd argument
      * @see https://github.com/rectorphp/rector/issues/786
      */
-    public function correct(Expr $node, Type $originalType): Type
+    public function correct(Expr $expr, Type $originalType): Type
     {
-        if (! $node instanceof Variable) {
+        if (! $expr instanceof Variable) {
             return $originalType;
         }
 
@@ -44,7 +44,7 @@ final class PregMatchTypeCorrector
             return $originalType;
         }
 
-        $variableUsages = $this->getVariableUsages($node);
+        $variableUsages = $this->getVariableUsages($expr);
         foreach ($variableUsages as $variableUsage) {
             $possiblyArg = $variableUsage->getAttribute(AttributeKey::PARENT_NODE);
             if (! $possiblyArg instanceof Arg) {
@@ -69,7 +69,7 @@ final class PregMatchTypeCorrector
             $thirdArg = $funcCallNode->args[2];
 
             // are the same variables
-            if (! $this->nodeComparator->areNodesEqual($thirdArg->value, $node)) {
+            if (! $this->nodeComparator->areNodesEqual($thirdArg->value, $expr)) {
                 continue;
             }
 

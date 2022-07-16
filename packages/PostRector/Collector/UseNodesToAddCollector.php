@@ -78,9 +78,9 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         return $objectTypes;
     }
 
-    public function hasImport(File $file, Name $node, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
+    public function hasImport(File $file, Name $name, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
-        $useImports = $this->getUseImportTypesByNode($file, $node);
+        $useImports = $this->getUseImportTypesByNode($file, $name);
 
         foreach ($useImports as $useImport) {
             if ($useImport->equals($fullyQualifiedObjectType)) {
