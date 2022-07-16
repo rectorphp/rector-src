@@ -38,12 +38,12 @@ final class ContainerConfiguratorCallAnalyzer
         return is_a($serviceClass, RectorInterface::class, true);
     }
 
-    public function isMethodCallNamed(MethodCall $expr, string $variableName, string $methodName): bool
+    public function isMethodCallNamed(MethodCall $methodCall, string $variableName, string $methodName): bool
     {
-        if (! $this->nodeNameResolver->isName($expr->var, $variableName)) {
+        if (! $this->nodeNameResolver->isName($methodCall->var, $variableName)) {
             return false;
         }
 
-        return $this->nodeNameResolver->isName($expr->name, $methodName);
+        return $this->nodeNameResolver->isName($methodCall->name, $methodName);
     }
 }
