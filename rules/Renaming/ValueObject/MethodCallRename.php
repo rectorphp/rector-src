@@ -16,6 +16,8 @@ final class MethodCallRename implements MethodCallRenameInterface
         private readonly string $newMethod
     ) {
         RectorAssert::className($class);
+        RectorAssert::methodName($oldMethod);
+        RectorAssert::methodName($newMethod);
     }
 
     public function getClass(): string

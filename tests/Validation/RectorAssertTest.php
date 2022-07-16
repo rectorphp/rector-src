@@ -49,4 +49,42 @@ final class RectorAssertTest extends TestCase
         yield ['App\\\\Some'];
         yield ['3AppSome'];
     }
+
+    /**
+     * @doesNotPerformAssertions
+     * @dataProvider provideDataValidFunctionNames()
+     */
+    public function testValidFunctionName(string $functionName): void
+    {
+        RectorAssert::functionName($functionName);
+    }
+
+    /**
+     * @return \Iterator<string[]>
+     */
+    public function provideDataValidFunctionNames(): Iterator
+    {
+        yield ['some_function'];
+        yield ['Namespace\\some_function'];
+        yield ['Namespace\\so3me_f6n'];
+    }
+
+    /**
+     * @doesNotPerformAssertions
+     * @dataProvider provideDataValidMehtodNames()
+     */
+    public function testValidMethodName(string $methodName): void
+    {
+        RectorAssert::methodName($methodName);
+    }
+
+    /**
+     * @return \Iterator<string[]>
+     */
+    public function provideDataValidMehtodNames(): Iterator
+    {
+        yield ['some_method'];
+        yield ['__method_magic'];
+        yield ['__M3th0d'];
+    }
 }
