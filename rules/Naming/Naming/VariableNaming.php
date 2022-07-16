@@ -183,7 +183,7 @@ final class VariableNaming
     }
 
     private function resolveBareFuncCallArgumentName(
-        \FuncCall $funcCall,
+        FuncCall $funcCall,
         string $fallbackName,
         string $suffix
     ): string {
