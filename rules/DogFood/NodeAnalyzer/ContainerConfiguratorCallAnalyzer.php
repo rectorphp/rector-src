@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DogFood\NodeAnalyzer;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
