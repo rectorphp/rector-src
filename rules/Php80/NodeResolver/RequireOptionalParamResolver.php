@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeResolver;
 
-use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -14,7 +13,7 @@ final class RequireOptionalParamResolver
     /**
      * @return ParameterReflection[]
      */
-    public function resolveFromReflection(MethodReflection | FunctionReflection $functionLikeReflection): array
+    public function resolveFromReflection(MethodReflection $functionLikeReflection): array
     {
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionLikeReflection->getVariants());
 

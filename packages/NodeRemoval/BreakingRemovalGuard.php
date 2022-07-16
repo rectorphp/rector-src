@@ -34,6 +34,9 @@ final class BreakingRemovalGuard
         ));
     }
 
+    /**
+     * @api
+     */
     public function isLegalNodeRemoval(Node $node): bool
     {
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);

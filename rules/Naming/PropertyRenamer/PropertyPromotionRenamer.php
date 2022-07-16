@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\Naming\PropertyRenamer;
 
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Interface_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -34,7 +36,7 @@ final class PropertyPromotionRenamer
     ) {
     }
 
-    public function renamePropertyPromotion(ClassLike $classLike): void
+    public function renamePropertyPromotion(Class_|Interface_ $classLike): void
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PROPERTY_PROMOTION)) {
             return;

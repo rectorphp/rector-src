@@ -39,7 +39,7 @@ final class VariableNaming
 
     public function resolveFromNodeWithScopeCountAndFallbackName(
         Expr $expr,
-        ?Scope $scope,
+        \PHPStan\Analyser\MutatingScope $scope,
         string $fallbackName
     ): string {
         $name = $this->resolveFromNode($expr);

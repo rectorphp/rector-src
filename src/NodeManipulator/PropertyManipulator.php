@@ -209,7 +209,7 @@ final class PropertyManipulator
         return false;
     }
 
-    public function resolveExistingClassPropertyNameByType(Class_ $class, Type $type): ?string
+    public function resolveExistingClassPropertyNameByType(Class_ $class, \PHPStan\Type\ObjectType $type): ?string
     {
         foreach ($class->getProperties() as $property) {
             $propertyType = $this->nodeTypeResolver->getType($property);

@@ -74,7 +74,7 @@ final class PropertyFetchAnalyzer
         return $this->nodeNameResolver->isName($node->name, $desiredPropertyName);
     }
 
-    public function countLocalPropertyFetchName(ClassLike $classLike, string $propertyName): int
+    public function countLocalPropertyFetchName(Class_ $classLike, string $propertyName): int
     {
         $total = 0;
 

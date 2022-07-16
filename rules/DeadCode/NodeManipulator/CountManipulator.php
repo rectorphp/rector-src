@@ -24,7 +24,7 @@ final class CountManipulator
     ) {
     }
 
-    public function isCounterHigherThanOne(Node $node, Expr $expr): bool
+    public function isCounterHigherThanOne(Expr $node, Expr $expr): bool
     {
         // e.g. count($values) > 0
         if ($node instanceof Greater) {

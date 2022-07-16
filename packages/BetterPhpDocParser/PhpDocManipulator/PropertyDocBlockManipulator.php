@@ -17,10 +17,7 @@ final class PropertyDocBlockManipulator
     ) {
     }
 
-    /**
-     * @param ParamRename $renameValueObject
-     */
-    public function renameParameterNameInDocBlock(RenameValueObjectInterface $renameValueObject): void
+    public function renameParameterNameInDocBlock(ParamRename $renameValueObject): void
     {
         $functionLike = $renameValueObject->getFunctionLike();
 

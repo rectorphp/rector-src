@@ -361,7 +361,7 @@ CODE_SAMPLE;
             return true;
         }
 
-        $rectifiedNode = $this->rectifiedAnalyzer->verify($this, $node, $this->file);
+        $rectifiedNode = $this->rectifiedAnalyzer->verify(static::class, $node, $smartFileInfo);
         return $rectifiedNode instanceof RectifiedNode;
     }
 
