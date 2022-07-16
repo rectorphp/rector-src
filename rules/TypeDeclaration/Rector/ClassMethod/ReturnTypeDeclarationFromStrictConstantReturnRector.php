@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Type\Type;
 use Rector\Attribute\Enterprise;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
@@ -22,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeDeclarationFromStrictConstantReturnRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private StrictReturnClassConstReturnTypeAnalyzer $strictReturnClassConstReturnTypeAnalyzer
+        private readonly StrictReturnClassConstReturnTypeAnalyzer $strictReturnClassConstReturnTypeAnalyzer
     ) {
     }
 
@@ -76,12 +77,12 @@ CODE_SAMPLE
         }
 
         $matchedType = $this->strictReturnClassConstReturnTypeAnalyzer->matchAlwaysReturnConstFetch($node);
-        if (! $matchedType instanceof \PHPStan\Type\Type) {
+        if (! $matchedType instanceof Type) {
             return null;
         }
 
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($matchedType, TypeKind::RETURN);
-        if (! $returnTypeNode instanceof \PhpParser\Node) {
+        if (! $returnTypeNode instanceof Node) {
             return null;
         }
 

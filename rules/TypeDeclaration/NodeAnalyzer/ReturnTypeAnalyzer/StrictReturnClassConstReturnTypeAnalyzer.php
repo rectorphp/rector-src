@@ -8,18 +8,20 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 
 final class StrictReturnClassConstReturnTypeAnalyzer
 {
     public function __construct(
         private readonly AlwaysStrictReturnAnalyzer $alwaysStrictReturnAnalyzer,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly \Rector\NodeTypeResolver\PHPStan\Type\TypeFactory $typeFactory
+        private readonly TypeFactory $typeFactory
     ) {
     }
 
-    public function matchAlwaysReturnConstFetch(ClassMethod|Closure|Function_ $functionLike): ?\PHPStan\Type\Type
+    public function matchAlwaysReturnConstFetch(ClassMethod|Closure|Function_ $functionLike): ?Type
     {
         $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($functionLike);
         if ($returns === null) {
