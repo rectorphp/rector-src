@@ -52,6 +52,9 @@ final class VisibilityManipulator
         $this->addVisibilityFlag($node, Visibility::FINAL);
     }
 
+    /**
+     * @api
+     */
     public function makeNonFinal(Class_ | ClassMethod $node): void
     {
         if (! $node->isFinal()) {

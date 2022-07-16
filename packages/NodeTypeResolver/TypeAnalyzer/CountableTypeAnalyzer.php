@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\NodeTypeCorrector\PregMatchTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -28,7 +29,7 @@ final class CountableTypeAnalyzer
         ];
     }
 
-    public function isCountableType(Node $node): bool
+    public function isCountableType(Expr $node): bool
     {
         $nodeType = $this->nodeTypeResolver->getType($node);
         $nodeType = $this->pregMatchTypeCorrector->correct($node, $nodeType);

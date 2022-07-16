@@ -29,6 +29,9 @@ final class ClassInsertManipulator
     ) {
     }
 
+    /**
+     * @api
+     */
     public function addAsFirstMethod(Class_ $class, Property | ClassConst | ClassMethod $stmt): void
     {
         if ($this->isSuccessToInsertBeforeFirstMethod($class, $stmt)) {

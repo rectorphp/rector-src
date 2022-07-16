@@ -45,7 +45,7 @@ final class TerminatedNodeAnalyzer
      */
     private const ALLOWED_CONTINUE_CURRENT_STMTS = [InlineHTML::class, Nop::class];
 
-    public function isAlwaysTerminated(TryCatch|If_|Switch_|Node $node, Node $currentStmt): bool
+    public function isAlwaysTerminated(Stmt $node, Stmt $currentStmt): bool
     {
         if (in_array($currentStmt::class, self::ALLOWED_CONTINUE_CURRENT_STMTS, true)) {
             return false;
@@ -84,7 +84,7 @@ final class TerminatedNodeAnalyzer
         return false;
     }
 
-    private function isTerminatedInLastStmtsSwitch(Switch_ $switch, Node $node): bool
+    private function isTerminatedInLastStmtsSwitch(Switch_ $switch, Stmt $node): bool
     {
         if ($switch->cases === []) {
             return false;
@@ -108,7 +108,7 @@ final class TerminatedNodeAnalyzer
         return $hasDefault;
     }
 
-    private function isTerminatedInLastStmtsTryCatch(TryCatch $tryCatch, Node $node): bool
+    private function isTerminatedInLastStmtsTryCatch(TryCatch $tryCatch, Stmt $node): bool
     {
         if ($tryCatch->finally instanceof Finally_ && $this->isTerminatedInLastStmts(
             $tryCatch->finally->stmts,
@@ -126,7 +126,7 @@ final class TerminatedNodeAnalyzer
         return $this->isTerminatedInLastStmts($tryCatch->stmts, $node);
     }
 
-    private function isTerminatedInLastStmtsIf(If_ $if, Node $node): bool
+    private function isTerminatedInLastStmtsIf(If_ $if, Stmt $node): bool
     {
         // Without ElseIf_[] and Else_, after If_ is possibly executable
         if ($if->elseifs === [] && ! $if->else instanceof Else_) {

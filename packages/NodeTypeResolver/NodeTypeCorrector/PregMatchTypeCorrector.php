@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\NodeTypeCorrector;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ArrayType;
@@ -33,7 +34,7 @@ final class PregMatchTypeCorrector
      * Special case for "preg_match(), preg_match_all()" - with 3rd argument
      * @see https://github.com/rectorphp/rector/issues/786
      */
-    public function correct(Node $node, Type $originalType): Type
+    public function correct(Expr $node, Type $originalType): Type
     {
         if (! $node instanceof Variable) {
             return $originalType;

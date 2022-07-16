@@ -75,7 +75,7 @@ final class PropertyFetchAssignManipulator
     /**
      * @return string[]
      */
-    public function getPropertyNamesOfAssignOfVariable(Node $node, string $paramName): array
+    public function getPropertyNamesOfAssignOfVariable(ClassMethod $node, string $paramName): array
     {
         $propertyNames = [];
 

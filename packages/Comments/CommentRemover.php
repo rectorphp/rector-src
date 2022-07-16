@@ -18,6 +18,7 @@ final class CommentRemover
     }
 
     /**
+     * @param Node[]|Node|null $node
      * @return Node[]|null
      */
     public function removeFromNode(array | Node | null $node): array | null

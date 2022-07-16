@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -39,7 +40,7 @@ final class ArrayTypeAnalyzer
     ) {
     }
 
-    public function isArrayType(Node $node): bool
+    public function isArrayType(Expr $node): bool
     {
         $nodeType = $this->nodeTypeResolver->getType($node);
 
@@ -97,7 +98,7 @@ final class ArrayTypeAnalyzer
         return true;
     }
 
-    private function isPropertyFetchWithArrayDocblockWithoutDefault(Node $node): bool
+    private function isPropertyFetchWithArrayDocblockWithoutDefault(Expr $node): bool
     {
         if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
             return false;
@@ -135,7 +136,7 @@ final class ArrayTypeAnalyzer
     /**
      * phpstan bug workaround - https://phpstan.org/r/0443f283-244c-42b8-8373-85e7deb3504c
      */
-    private function isPropertyFetchWithArrayDefault(Node $node): bool
+    private function isPropertyFetchWithArrayDefault(Expr $node): bool
     {
         if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
             return false;
