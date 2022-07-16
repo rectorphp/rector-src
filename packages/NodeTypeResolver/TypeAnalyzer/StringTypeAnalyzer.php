@@ -16,9 +16,9 @@ final class StringTypeAnalyzer
     ) {
     }
 
-    public function isStringOrUnionStringOnlyType(Expr $node): bool
+    public function isStringOrUnionStringOnlyType(Expr $expr): bool
     {
-        $nodeType = $this->nodeTypeResolver->getType($node);
+        $nodeType = $this->nodeTypeResolver->getType($expr);
         if ($nodeType instanceof StringType) {
             return true;
         }

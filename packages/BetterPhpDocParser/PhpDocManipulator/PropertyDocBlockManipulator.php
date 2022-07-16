@@ -16,17 +16,17 @@ final class PropertyDocBlockManipulator
     ) {
     }
 
-    public function renameParameterNameInDocBlock(ParamRename $renameValueObject): void
+    public function renameParameterNameInDocBlock(ParamRename $paramRename): void
     {
-        $functionLike = $renameValueObject->getFunctionLike();
+        $functionLike = $paramRename->getFunctionLike();
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
-        $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($renameValueObject->getCurrentName());
+        $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($paramRename->getCurrentName());
         if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return;
         }
 
-        $paramTagValueNode->parameterName = '$' . $renameValueObject->getExpectedName();
+        $paramTagValueNode->parameterName = '$' . $paramRename->getExpectedName();
         $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
     }
 }

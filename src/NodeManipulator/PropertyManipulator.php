@@ -27,6 +27,7 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\Unset_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -209,11 +210,11 @@ final class PropertyManipulator
         return false;
     }
 
-    public function resolveExistingClassPropertyNameByType(Class_ $class, \PHPStan\Type\ObjectType $type): ?string
+    public function resolveExistingClassPropertyNameByType(Class_ $class, ObjectType $objectType): ?string
     {
         foreach ($class->getProperties() as $property) {
             $propertyType = $this->nodeTypeResolver->getType($property);
-            if (! $propertyType->equals($type)) {
+            if (! $propertyType->equals($objectType)) {
                 continue;
             }
 
@@ -223,7 +224,7 @@ final class PropertyManipulator
         $promotedPropertyParams = $this->promotedPropertyResolver->resolveFromClass($class);
         foreach ($promotedPropertyParams as $promotedPropertyParam) {
             $paramType = $this->nodeTypeResolver->getType($promotedPropertyParam);
-            if (! $paramType->equals($type)) {
+            if (! $paramType->equals($objectType)) {
                 continue;
             }
 
