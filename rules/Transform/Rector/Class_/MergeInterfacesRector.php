@@ -103,9 +103,7 @@ CODE_SAMPLE
     private function makeImplementsUnique(Class_ $class): void
     {
         $alreadyAddedNames = [];
-        /**
-         * @var array<int, Interface_> $implements
-         */
+        /** @var array<int, Interface_> $implements */
         $implements = $class->implements;
 
         foreach ($implements as $key => $name) {
