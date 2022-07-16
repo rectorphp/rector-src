@@ -15,6 +15,9 @@ final class StaticCallToFuncCall
         private readonly string $function
     ) {
         RectorAssert::className($class);
+        RectorAssert::methodName($method);
+
+        RectorAssert::functionName($function);
     }
 
     public function getObjectType(): ObjectType

@@ -20,6 +20,12 @@ final class PropertyFetchToMethodCall
         private readonly array $newGetArguments = []
     ) {
         RectorAssert::className($oldType);
+        RectorAssert::propertyName($oldProperty);
+
+        RectorAssert::methodName($newGetMethod);
+        if (is_string($newSetMethod)) {
+            RectorAssert::methodName($newSetMethod);
+        }
     }
 
     public function getOldObjectType(): ObjectType

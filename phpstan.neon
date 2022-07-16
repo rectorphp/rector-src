@@ -663,3 +663,8 @@ parameters:
         - '#Class method ".+\(\)" is never used#'
 
         - '#Parameters should use "(.*?)" types as the only types passed to this method#'
+
+        # regex re-validation
+        -
+            message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
+            path: rules/Transform/ValueObject/ParentClassToTraits.php

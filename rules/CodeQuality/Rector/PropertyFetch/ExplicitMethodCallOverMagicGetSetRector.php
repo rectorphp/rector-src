@@ -159,6 +159,7 @@ CODE_SAMPLE
             if (! $callerType->hasMethod($possibleGetterMethodName)->yes()) {
                 continue;
             }
+
             $methodReflection = $callerType->getMethod($possibleGetterMethodName, $scope);
 
             $variant = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());

@@ -24,7 +24,7 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $binaryOpConditionsCollector->findConditions($abcPlus, Plus::class);
 
-        $this->assertEquals([
+        $this->assertSame([
             2 => $a,
             1 => $b,
             0 => $c,
@@ -44,7 +44,7 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $binaryOpConditionsCollector->findConditions($abcPlus, Plus::class);
 
-        $this->assertEquals([
+        $this->assertSame([
             1 => $a,
             0 => $bcPlus,
         ], $result);
@@ -62,7 +62,7 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $binaryOpConditionsCollector->findConditions($abcMinus, Plus::class);
 
-        $this->assertEquals([
+        $this->assertSame([
             0 => $abcMinus,
         ], $result);
     }
@@ -75,7 +75,7 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $binaryOpConditionsCollector->findConditions($variable, Plus::class);
 
-        $this->assertEquals([
+        $this->assertSame([
             0 => $variable,
         ], $result);
     }
@@ -93,7 +93,7 @@ final class BinaryOpConditionsCollectorTest extends TestCase
 
         $result = $binaryOpConditionsCollector->findConditions($abcPlus, Plus::class);
 
-        $this->assertEquals([
+        $this->assertSame([
             1 => $abMinus,
             0 => $c,
         ], $result);

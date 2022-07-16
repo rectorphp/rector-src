@@ -15,6 +15,8 @@ final class ReplaceParentCallByPropertyCall
         private readonly string $property
     ) {
         RectorAssert::className($class);
+        RectorAssert::methodName($method);
+        RectorAssert::propertyName($property);
     }
 
     public function getObjectType(): ObjectType

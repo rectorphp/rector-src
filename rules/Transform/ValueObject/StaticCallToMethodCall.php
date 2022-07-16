@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
+use Rector\Core\Validation\RectorAssert;
 
 final class StaticCallToMethodCall
 {
@@ -17,6 +18,18 @@ final class StaticCallToMethodCall
         private readonly string $classType,
         private readonly string $methodName
     ) {
+        RectorAssert::className($staticClass);
+
+        // special char to match all method names
+        if ($staticMethod !== '*') {
+            RectorAssert::methodName($staticMethod);
+        }
+
+        RectorAssert::className($classType);
+
+        if ($methodName !== '*') {
+            RectorAssert::methodName($methodName);
+        }
     }
 
     public function getClassObjectType(): ObjectType

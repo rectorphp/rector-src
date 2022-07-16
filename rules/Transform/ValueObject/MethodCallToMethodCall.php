@@ -19,7 +19,10 @@ final class MethodCallToMethodCall
         private readonly string $newMethod,
     ) {
         RectorAssert::className($oldType);
+        RectorAssert::methodName($oldMethod);
+
         RectorAssert::className($newType);
+        RectorAssert::methodName($newMethod);
     }
 
     public function getOldType(): string
