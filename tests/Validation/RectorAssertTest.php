@@ -59,6 +59,9 @@ final class RectorAssertTest extends TestCase
         RectorAssert::functionName($functionName);
     }
 
+    /**
+     * @return \Iterator<string[]>
+     */
     public function provideDataValidFunctionNames(): Iterator
     {
         yield ['some_function'];
@@ -75,6 +78,9 @@ final class RectorAssertTest extends TestCase
         RectorAssert::methodName($methodName);
     }
 
+    /**
+     * @return \Iterator<string[]>
+     */
     public function provideDataValidMehtodNames(): Iterator
     {
         yield ['some_method'];
