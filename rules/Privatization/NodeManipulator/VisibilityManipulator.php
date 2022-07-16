@@ -35,6 +35,9 @@ final class VisibilityManipulator
         $this->addVisibilityFlag($node, Visibility::ABSTRACT);
     }
 
+    /**
+     * @api
+     */
     public function makeNonStatic(ClassMethod | Property $node): void
     {
         if (! $node->isStatic()) {
@@ -100,6 +103,9 @@ final class VisibilityManipulator
         $this->replaceVisibilityFlag($node, Visibility::PUBLIC);
     }
 
+    /**
+     * @api
+     */
     public function makeProtected(ClassMethod | Property | ClassConst $node): void
     {
         $this->replaceVisibilityFlag($node, Visibility::PROTECTED);

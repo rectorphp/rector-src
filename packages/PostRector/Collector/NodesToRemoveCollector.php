@@ -84,7 +84,7 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
     }
 
     /**
-     * @return Node[]
+     * @return array<int, Node>
      */
     public function getNodesToRemove(): array
     {

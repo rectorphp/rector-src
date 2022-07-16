@@ -16,6 +16,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
@@ -39,7 +40,7 @@ final class VariableNaming
 
     public function resolveFromNodeWithScopeCountAndFallbackName(
         Expr $expr,
-        ?Scope $scope,
+        MutatingScope $mutatingScope,
         string $fallbackName
     ): string {
         $name = $this->resolveFromNode($expr);
@@ -51,7 +52,7 @@ final class VariableNaming
             $name = (string) Strings::after($name, '\\', -1);
         }
 
-        $countedValueName = $this->createCountedValueName($name, $scope);
+        $countedValueName = $this->createCountedValueName($name, $mutatingScope);
         return lcfirst($countedValueName);
     }
 
