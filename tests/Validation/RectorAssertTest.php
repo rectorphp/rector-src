@@ -81,5 +81,4 @@ final class RectorAssertTest extends TestCase
         yield ['__method_magic'];
         yield ['__M3th0d'];
     }
-
 }
