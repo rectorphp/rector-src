@@ -16,6 +16,7 @@ final class ArgumentFuncCallToMethodCall implements ArgumentFuncCallToMethodCall
         private readonly ?string $methodIfNoArgs = null
     ) {
         RectorAssert::className($class);
+        RectorAssert::functionName($function);
     }
 
     public function getFunction(): string

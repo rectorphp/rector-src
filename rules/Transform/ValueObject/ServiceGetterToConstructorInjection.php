@@ -15,6 +15,8 @@ final class ServiceGetterToConstructorInjection
         private readonly string $serviceType
     ) {
         RectorAssert::className($oldType);
+        RectorAssert::methodName($oldMethod);
+
         RectorAssert::className($serviceType);
     }
 

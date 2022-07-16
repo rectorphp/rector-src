@@ -11,7 +11,6 @@ use Rector\Transform\ValueObject\PropertyFetchToMethodCall;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(PropertyFetchToMethodCallRector::class, [
-
             new PropertyFetchToMethodCall(Translator::class, 'locale', 'getLocale', 'setLocale'),
             new PropertyFetchToMethodCall(Generator::class, 'word', 'word'),
             new PropertyFetchToMethodCall(

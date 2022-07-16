@@ -15,6 +15,8 @@ final class MethodCallToPropertyFetch
         private readonly string $newProperty,
     ) {
         RectorAssert::className($oldType);
+        RectorAssert::methodName($oldMethod);
+        RectorAssert::propertyName($newProperty);
     }
 
     public function getOldObjectType(): ObjectType

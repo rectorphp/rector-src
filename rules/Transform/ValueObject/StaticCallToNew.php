@@ -13,6 +13,7 @@ final class StaticCallToNew
         private readonly string $method
     ) {
         RectorAssert::className($class);
+        RectorAssert::methodName($method);
     }
 
     public function getClass(): string

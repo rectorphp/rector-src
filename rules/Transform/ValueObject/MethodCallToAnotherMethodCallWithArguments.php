@@ -19,6 +19,8 @@ final class MethodCallToAnotherMethodCallWithArguments
         private readonly array $newArguments
     ) {
         RectorAssert::className($type);
+        RectorAssert::methodName($oldMethod);
+        RectorAssert::methodName($newMethod);
     }
 
     public function getObjectType(): ObjectType

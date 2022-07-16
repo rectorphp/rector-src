@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Transform\ValueObject;
 
 use PHPStan\Type\ObjectType;
+use Rector\Core\Validation\RectorAssert;
 
 final class FuncCallToMethodCall
 {
@@ -13,6 +14,10 @@ final class FuncCallToMethodCall
         private readonly string $newClassName,
         private readonly string $newMethodName
     ) {
+        RectorAssert::functionName($oldFuncName);
+
+        RectorAssert::className($newClassName);
+        RectorAssert::methodName($newMethodName);
     }
 
     public function getOldFuncName(): string
