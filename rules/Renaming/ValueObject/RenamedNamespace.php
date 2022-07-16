@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\ValueObject;
 
+use Rector\Core\Validation\RectorAssert;
+
 final class RenamedNamespace
 {
     public function __construct(
@@ -11,6 +13,9 @@ final class RenamedNamespace
         private readonly string $oldNamespace,
         private readonly string $newNamespace
     ) {
+        RectorAssert::namespaceName($currentName);
+        RectorAssert::namespaceName($oldNamespace);
+        RectorAssert::namespaceName($newNamespace);
     }
 
     public function getNameInNewNamespace(): string
