@@ -43,28 +43,12 @@ final class ValueResolver
     ) {
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function isValue(Expr $expr, $value): bool
+    public function isValue(Expr $expr, mixed $value): bool
     {
         return $this->getValue($expr) === $value;
     }
 
-    public function getStringValue(Expr $expr): string
-    {
-        $resolvedValue = $this->getValue($expr);
-        if (! is_string($resolvedValue)) {
-            throw new ShouldNotHappenException();
-        }
-
-        return $resolvedValue;
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getValue(Expr $expr, bool $resolvedClassReference = false)
+    public function getValue(Expr $expr, bool $resolvedClassReference = false): mixed
     {
         if ($expr instanceof Concat) {
             return $this->processConcat($expr, $resolvedClassReference);

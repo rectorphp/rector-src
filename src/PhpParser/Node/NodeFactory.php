@@ -163,10 +163,7 @@ final class NodeFactory
         return new Assign($propertyFetch, $expr);
     }
 
-    /**
-     * @param mixed $argument
-     */
-    public function createArg($argument): Arg
+    public function createArg(mixed $argument): Arg
     {
         return new Arg(BuilderHelpers::normalizeValue($argument));
     }
@@ -511,10 +508,7 @@ final class NodeFactory
         return $classConst;
     }
 
-    /**
-     * @param mixed $item
-     */
-    private function createArrayItem($item, string | int | null $key = null): ArrayItem
+    private function createArrayItem(mixed $item, string | int | null $key = null): ArrayItem
     {
         $arrayItem = null;
 
@@ -560,10 +554,9 @@ final class NodeFactory
     }
 
     /**
-     * @param mixed $value
      * @return mixed|Error|Variable
      */
-    private function normalizeArgValue($value)
+    private function normalizeArgValue(mixed $value)
     {
         if ($value instanceof Param) {
             return $value->var;

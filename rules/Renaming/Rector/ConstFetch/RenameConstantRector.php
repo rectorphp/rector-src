@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Validation\RectorAssert;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -87,6 +88,11 @@ CODE_SAMPLE
     {
         Assert::allString(array_keys($configuration));
         Assert::allString($configuration);
+
+        foreach ($configuration as $oldConstant => $newConstant) {
+            RectorAssert::constantName($oldConstant);
+            RectorAssert::constantName($newConstant);
+        }
 
         /** @var array<string, string> $configuration */
         $this->oldToNewConstants = $configuration;

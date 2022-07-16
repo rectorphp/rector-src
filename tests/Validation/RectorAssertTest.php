@@ -60,7 +60,7 @@ final class RectorAssertTest extends TestCase
     }
 
     /**
-     * @return \Iterator<string[]>
+     * @return Iterator<string[]>
      */
     public function provideDataValidFunctionNames(): Iterator
     {
@@ -79,12 +79,48 @@ final class RectorAssertTest extends TestCase
     }
 
     /**
-     * @return \Iterator<string[]>
+     * @return Iterator<string[]>
      */
     public function provideDataValidMehtodNames(): Iterator
     {
         yield ['some_method'];
         yield ['__method_magic'];
         yield ['__M3th0d'];
+    }
+
+    /**
+     * @dataProvider provideDataInvalidFunctionNames()
+     */
+    public function testInvalidFunctionName(string $functionName): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        RectorAssert::functionName($functionName);
+    }
+
+    public function provideDataInvalidFunctionNames(): Iterator
+    {
+        yield ['35'];
+        yield ['/function'];
+        yield ['$function'];
+        yield ['-key_name'];
+    }
+
+    /**
+     * @dataProvider provideDataInvalidNamespaceNames()
+     */
+    public function testNamespaceName(string $namespaceName): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        RectorAssert::namespaceName($namespaceName);
+    }
+
+    /**
+     * @return Iterator<string[]>
+     */
+    public function provideDataInvalidNamespaceNames(): Iterator
+    {
+        yield ['321Namespace'];
+        yield ['$__Namespace'];
+        yield ['Name*space'];
     }
 }

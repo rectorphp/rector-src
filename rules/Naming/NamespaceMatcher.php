@@ -17,7 +17,11 @@ final class NamespaceMatcher
 
         /** @var string $oldNamespace */
         foreach ($oldToNewNamespace as $oldNamespace => $newNamespace) {
-            if (str_starts_with($name, $oldNamespace)) {
+            if ($name === $oldNamespace) {
+                return new RenamedNamespace($name, $oldNamespace, $newNamespace);
+            }
+
+            if (str_starts_with($name, $oldNamespace . '\\')) {
                 return new RenamedNamespace($name, $oldNamespace, $newNamespace);
             }
         }

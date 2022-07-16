@@ -17,7 +17,10 @@ final class RenameClassAndConstFetch implements RenameClassConstFetchInterface
         private readonly string $newConstant
     ) {
         RectorAssert::className($oldClass);
+        RectorAssert::constantName($oldConstant);
+
         RectorAssert::className($newClass);
+        RectorAssert::constantName($newConstant);
     }
 
     public function getOldObjectType(): ObjectType
