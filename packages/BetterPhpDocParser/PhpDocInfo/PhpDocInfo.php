@@ -71,7 +71,10 @@ final class PhpDocInfo
         }
     }
 
-    public function addPhpDocTagNode(PhpDocTagNode $phpDocChildNode): void
+    /**
+     * @api
+     */
+    public function addPhpDocTagNode(PhpDocChildNode $phpDocChildNode): void
     {
         $this->phpDocNode->children[] = $phpDocChildNode;
         // to give node more space
