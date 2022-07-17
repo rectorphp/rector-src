@@ -672,3 +672,5 @@ parameters:
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
             path: rules/Transform/ValueObject/ParentClassToTraits.php
+
+        - '#Relative file path ".+" is not allowed, use absolute one with __DIR__#'
