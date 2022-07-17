@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker;
 
-use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
@@ -20,7 +20,7 @@ final class VendorLockResolver
     ) {
     }
 
-    public function isClassMethodParamLockedIn(Node $node): bool
+    public function isClassMethodParamLockedIn(ClassMethod|Function_ $node): bool
     {
         if (! $node instanceof ClassMethod) {
             return false;

@@ -45,7 +45,7 @@ final class TerminatedNodeAnalyzer
      */
     private const ALLOWED_CONTINUE_CURRENT_STMTS = [InlineHTML::class, Nop::class];
 
-    public function isAlwaysTerminated(TryCatch|If_|Switch_|Node $node, Node $currentStmt): bool
+    public function isAlwaysTerminated(Stmt $node, Stmt $currentStmt): bool
     {
         if (in_array($currentStmt::class, self::ALLOWED_CONTINUE_CURRENT_STMTS, true)) {
             return false;
@@ -84,7 +84,7 @@ final class TerminatedNodeAnalyzer
         return false;
     }
 
-    private function isTerminatedInLastStmtsSwitch(Switch_ $switch, Node $node): bool
+    private function isTerminatedInLastStmtsSwitch(Switch_ $switch, Stmt $stmt): bool
     {
         if ($switch->cases === []) {
             return false;
@@ -100,7 +100,7 @@ final class TerminatedNodeAnalyzer
                 continue;
             }
 
-            if (! $this->isTerminatedInLastStmts($case->stmts, $node)) {
+            if (! $this->isTerminatedInLastStmts($case->stmts, $stmt)) {
                 return false;
             }
         }
@@ -108,25 +108,25 @@ final class TerminatedNodeAnalyzer
         return $hasDefault;
     }
 
-    private function isTerminatedInLastStmtsTryCatch(TryCatch $tryCatch, Node $node): bool
+    private function isTerminatedInLastStmtsTryCatch(TryCatch $tryCatch, Stmt $stmt): bool
     {
         if ($tryCatch->finally instanceof Finally_ && $this->isTerminatedInLastStmts(
             $tryCatch->finally->stmts,
-            $node
+            $stmt
         )) {
             return true;
         }
 
         foreach ($tryCatch->catches as $catch) {
-            if (! $this->isTerminatedInLastStmts($catch->stmts, $node)) {
+            if (! $this->isTerminatedInLastStmts($catch->stmts, $stmt)) {
                 return false;
             }
         }
 
-        return $this->isTerminatedInLastStmts($tryCatch->stmts, $node);
+        return $this->isTerminatedInLastStmts($tryCatch->stmts, $stmt);
     }
 
-    private function isTerminatedInLastStmtsIf(If_ $if, Node $node): bool
+    private function isTerminatedInLastStmtsIf(If_ $if, Stmt $stmt): bool
     {
         // Without ElseIf_[] and Else_, after If_ is possibly executable
         if ($if->elseifs === [] && ! $if->else instanceof Else_) {
@@ -134,12 +134,12 @@ final class TerminatedNodeAnalyzer
         }
 
         foreach ($if->elseifs as $elseIf) {
-            if (! $this->isTerminatedInLastStmts($elseIf->stmts, $node)) {
+            if (! $this->isTerminatedInLastStmts($elseIf->stmts, $stmt)) {
                 return false;
             }
         }
 
-        if (! $this->isTerminatedInLastStmts($if->stmts, $node)) {
+        if (! $this->isTerminatedInLastStmts($if->stmts, $stmt)) {
             return false;
         }
 
@@ -147,7 +147,7 @@ final class TerminatedNodeAnalyzer
             return false;
         }
 
-        return $this->isTerminatedInLastStmts($if->else->stmts, $node);
+        return $this->isTerminatedInLastStmts($if->else->stmts, $stmt);
     }
 
     /**

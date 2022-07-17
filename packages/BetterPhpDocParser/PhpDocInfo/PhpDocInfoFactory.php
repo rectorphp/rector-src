@@ -89,6 +89,9 @@ final class PhpDocInfoFactory
         return $phpDocInfo;
     }
 
+    /**
+     * @api
+     */
     public function createEmpty(Node $node): PhpDocInfo
     {
         /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
