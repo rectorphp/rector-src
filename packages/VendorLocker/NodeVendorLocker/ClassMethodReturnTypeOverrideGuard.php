@@ -79,8 +79,7 @@ final class ClassMethodReturnTypeOverrideGuard
         Type $oldType,
         Type $newType,
         ClassMethod $classMethod
-    ): bool
-    {
+    ): bool {
         if ($this->customPHPStanDetector->isCustomType($oldType, $classMethod)) {
             return true;
         }
