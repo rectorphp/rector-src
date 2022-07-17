@@ -352,7 +352,7 @@ CODE_SAMPLE;
             return true;
         }
 
-        if ($this->exclusionManager->isNodeSkippedByRector($node, $this)) {
+        if ($this->exclusionManager->isNodeSkippedByRector($node, static::class)) {
             return true;
         }
 

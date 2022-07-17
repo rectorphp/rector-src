@@ -43,6 +43,9 @@ final class VarAnnotationManipulator
         $phpDocInfo->makeSingleLined();
     }
 
+    /**
+     * @api
+     */
     public function decorateNodeWithType(Node $node, Type $staticType): void
     {
         if ($staticType instanceof MixedType) {
