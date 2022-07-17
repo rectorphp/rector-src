@@ -75,9 +75,12 @@ final class ClassMethodReturnTypeOverrideGuard
         return $this->hasClassMethodExprReturn($classMethod);
     }
 
-    public function shouldSkipClassMethodOldTypeWithNewType(Type $oldType, Type $newType, Node $node): bool
-    {
-        if ($this->customPHPStanDetector->isCustomType($oldType, $node)) {
+    public function shouldSkipClassMethodOldTypeWithNewType(
+        Type $oldType,
+        Type $newType,
+        ClassMethod $classMethod
+    ): bool {
+        if ($this->customPHPStanDetector->isCustomType($oldType, $classMethod)) {
             return true;
         }
 

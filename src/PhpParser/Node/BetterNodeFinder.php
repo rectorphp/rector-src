@@ -150,6 +150,7 @@ final class BetterNodeFinder
     }
 
     /**
+     * @api
      * @param Node|Node[] $nodes
      * @return Variable|null
      */
@@ -321,6 +322,7 @@ final class BetterNodeFinder
     }
 
     /**
+     * @api
      * @template T of Node
      * @param array<class-string<T>> $types
      */

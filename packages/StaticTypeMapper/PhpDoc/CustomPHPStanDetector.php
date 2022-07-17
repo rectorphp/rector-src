@@ -20,6 +20,9 @@ final class CustomPHPStanDetector
     ) {
     }
 
+    /**
+     * @api
+     */
     public function isCustomType(Type $definedType, Node $node): bool
     {
         if (! $definedType instanceof NonExistingObjectType) {

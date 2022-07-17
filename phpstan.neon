@@ -662,7 +662,11 @@ parameters:
 
         - '#Class method ".+\(\)" is never used#'
 
-        - '#Parameters should use "(.*?)" types as the only types passed to this method#'
+        -
+            message: '#Parameters should use "(.*?)" types as the only types passed to this method#'
+            paths:
+                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
+                - src/NodeManipulator/PropertyManipulator.php
 
         # regex re-validation
         -
