@@ -9,9 +9,9 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 
 final class GenericTypeNodeAnalyzer
 {
-    public function hasGenericType(BracketsAwareUnionTypeNode $unionTypeNode): bool
+    public function hasGenericType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
     {
-        $types = $unionTypeNode->types;
+        $types = $bracketsAwareUnionTypeNode->types;
 
         foreach ($types as $type) {
             if ($type instanceof GenericTypeNode) {
