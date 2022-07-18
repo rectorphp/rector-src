@@ -155,7 +155,6 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof Assign) {
                 // decorate value as well
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
