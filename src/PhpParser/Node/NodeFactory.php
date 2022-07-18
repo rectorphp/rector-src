@@ -343,21 +343,6 @@ final class NodeFactory
         return $previousConcat;
     }
 
-    public function createClosureFromClassMethod(ClassMethod $classMethod): Closure
-    {
-        $classMethodName = $this->nodeNameResolver->getName($classMethod);
-        $args = $this->createArgs($classMethod->params);
-
-        $methodCall = new MethodCall(new Variable(self::THIS), $classMethodName, $args);
-        $return = new Return_($methodCall);
-
-        return new Closure([
-            'params' => $classMethod->params,
-            'stmts' => [$return],
-            'returnType' => $classMethod->returnType,
-        ]);
-    }
-
     /**
      * @param string[] $names
      * @return Use_[]
