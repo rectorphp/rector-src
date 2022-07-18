@@ -141,10 +141,6 @@ final class NodeFactory
      */
     public function createArgs(array $values): array
     {
-        foreach ($values as $value) {
-            $this->normalizeArgValue($value);
-        }
-
         return $this->builderFactory->args($values);
     }
 
@@ -494,9 +490,9 @@ final class NodeFactory
      */
     public function createClassConstant(string $name, Expr $expr, int $modifier): ClassConst
     {
-        $expr = BuilderHelpers::normalizeValue($expr);
+        $normalizedExpr = BuilderHelpers::normalizeValue($expr);
 
-        $const = new Const_($name, $expr);
+        $const = new Const_($name, $normalizedExpr);
         $classConst = new ClassConst([$const]);
         $classConst->flags |= $modifier;
 
