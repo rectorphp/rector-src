@@ -131,7 +131,7 @@ final class BetterTokenIterator extends TokenIterator
     }
 
     /**
-     * @return mixed[]
+     * @return array<int, mixed>
      */
     public function getTokens(): array
     {
@@ -144,18 +144,19 @@ final class BetterTokenIterator extends TokenIterator
     }
 
     /**
-     * @return mixed[]
+     * @return array<array{0: int, 1: mixed}>
      */
     public function partialTokens(int $start, int $end): array
     {
-        $tokens = $this->getTokens();
-
-        $chunkTokens = [];
-        for ($i = $start; $i <= $end; ++$i) {
-            $chunkTokens[$i] = $tokens[$i];
-        }
-
-        return $chunkTokens;
+        return array_slice($this->getTokens(), $start, $end);
+//        $tokens = $this->getTokens();
+//
+//        $chunkTokens = [];
+//        for ($i = $start; $i <= $end; ++$i) {
+//            $chunkTokens[$i] = $tokens[$i];
+//        }
+//
+//        return $chunkTokens;
     }
 
     public function containsTokenType(int $type): bool
