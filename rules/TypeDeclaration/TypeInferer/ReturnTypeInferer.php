@@ -40,6 +40,10 @@ use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeNormalizer;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
+/**
+ * @deprecated
+ * @todo Split into many narrow-focused rules
+ */
 final class ReturnTypeInferer
 {
     /**

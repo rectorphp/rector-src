@@ -192,14 +192,14 @@ final class AnonymousFunctionFactory
     }
 
     /**
-     * @param Param[] $paramNodes
+     * @param Param[] $params
      * @return string[]
      */
-    private function collectParamNames(array $paramNodes): array
+    private function collectParamNames(array $params): array
     {
         $paramNames = [];
-        foreach ($paramNodes as $paramNode) {
-            $paramNames[] = $this->nodeNameResolver->getName($paramNode);
+        foreach ($params as $param) {
+            $paramNames[] = $this->nodeNameResolver->getName($param);
         }
 
         return $paramNames;
@@ -207,12 +207,12 @@ final class AnonymousFunctionFactory
 
     /**
      * @param Node[] $nodes
-     * @param Param[] $paramNodes
+     * @param Param[] $params
      * @return array<string, Variable>
      */
-    private function createUseVariablesFromParams(array $nodes, array $paramNodes): array
+    private function createUseVariablesFromParams(array $nodes, array $params): array
     {
-        $paramNames = $this->collectParamNames($paramNodes);
+        $paramNames = $this->collectParamNames($params);
 
         /** @var Variable[] $variables */
         $variables = $this->betterNodeFinder->findInstanceOf($nodes, Variable::class);
