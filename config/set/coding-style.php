@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
-use Rector\CodingStyle\Rector\Assign\PHPStormVarAnnotationRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
@@ -48,7 +47,6 @@ return static function (RectorConfig $rectorConfig): void {
         UnSpreadOperatorRector::class,
         NewlineAfterStatementRector::class,
         RemoveFinalFromConstRector::class,
-        PHPStormVarAnnotationRector::class,
         NullableCompareToNullRector::class,
         BinarySwitchToIfElseRector::class,
         ConsistentImplodeRector::class,
