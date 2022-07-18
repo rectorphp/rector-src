@@ -19,17 +19,16 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 
 final class TypeProvidingExprFromClassResolver
 {
     public function __construct(
-        private readonly TypeUnwrapper $typeUnwrapper,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyNaming $propertyNaming,
@@ -129,7 +128,7 @@ final class TypeProvidingExprFromClassResolver
             return false;
         }
 
-        $readableType = $this->typeUnwrapper->unwrapNullableType($readableType);
+        $readableType = TypeCombinator::removeNull($readableType);
 
         if (! $readableType instanceof TypeWithClassName) {
             return false;

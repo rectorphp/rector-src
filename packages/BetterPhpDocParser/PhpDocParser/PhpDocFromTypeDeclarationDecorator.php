@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
@@ -25,7 +26,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use ReturnTypeWillChange;
 
@@ -56,7 +56,6 @@ final class PhpDocFromTypeDeclarationDecorator
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly TypeUnwrapper $typeUnwrapper,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
@@ -192,7 +191,7 @@ final class PhpDocFromTypeDeclarationDecorator
 
         // cover nullable union types
         if ($returnType instanceof UnionType) {
-            $returnType = $this->typeUnwrapper->unwrapNullableType($returnType);
+            $returnType = TypeCombinator::removeNull($returnType);
         }
 
         if ($returnType instanceof ObjectType) {

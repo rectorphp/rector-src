@@ -10,9 +10,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Matcher\VariableAndCallAssignMatcher;
 use Rector\Naming\Naming\ExpectedNameResolver;
@@ -21,7 +19,6 @@ use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\Naming\ValueObject\VariableAndCallAssign;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -43,9 +40,6 @@ final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRect
         private readonly VarTagValueNodeRenamer $varTagValueNodeRenamer,
         private readonly VariableAndCallAssignMatcher $variableAndCallAssignMatcher,
         private readonly VariableRenamer $variableRenamer,
-//        private readonly TypeUnwrapper $typeUnwrapper,
-//        private readonly ReflectionProvider $reflectionProvider,
-//        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
 
