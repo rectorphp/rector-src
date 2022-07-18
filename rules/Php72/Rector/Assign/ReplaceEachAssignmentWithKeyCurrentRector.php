@@ -144,8 +144,8 @@ CODE_SAMPLE
         string | int $dimValue,
         string $functionName
     ): Assign {
-        $dim = BuilderHelpers::normalizeValue($dimValue);
-        $arrayDimFetch = new ArrayDimFetch($assignVariable, $dim);
+        $dimExpr = BuilderHelpers::normalizeValue($dimValue);
+        $arrayDimFetch = new ArrayDimFetch($assignVariable, $dimExpr);
 
         return new Assign($arrayDimFetch, $this->nodeFactory->createFuncCall(
             $functionName,

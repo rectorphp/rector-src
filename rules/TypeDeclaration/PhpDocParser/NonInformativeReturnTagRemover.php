@@ -126,8 +126,8 @@ final class NonInformativeReturnTagRemover
             return;
         }
 
-        $nullabledReturnTagValueNode = $this->matchNullabledReturnTagValueNode($returnTagValueNode);
-        if (! $nullabledReturnTagValueNode instanceof TypeNode) {
+        $nullableTypeNode = $this->matchNullabledReturnTagValueNode($returnTagValueNode);
+        if (! $nullableTypeNode instanceof TypeNode) {
             return;
         }
 
@@ -135,11 +135,11 @@ final class NonInformativeReturnTagRemover
             return;
         }
 
-        if (! $nullabledReturnTagValueNode instanceof IdentifierTypeNode) {
+        if (! $nullableTypeNode instanceof IdentifierTypeNode) {
             return;
         }
 
-        if (! \str_ends_with($nullabledReturnType->getClassName(), $nullabledReturnTagValueNode->name)) {
+        if (! \str_ends_with($nullabledReturnType->getClassName(), $nullableTypeNode->name)) {
             return;
         }
 

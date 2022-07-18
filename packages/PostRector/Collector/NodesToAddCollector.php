@@ -155,15 +155,15 @@ final class NodesToAddCollector implements NodeCollectorInterface
             return spl_object_hash($parent);
         }
 
-        $foundNode = $this->betterNodeFinder->findParentType($node, Stmt::class);
+        $foundStmt = $this->betterNodeFinder->findParentType($node, Stmt::class);
 
-        if (! $foundNode instanceof Stmt) {
+        if (! $foundStmt instanceof Stmt) {
             $printedNode = $this->nodePrinter->print($node);
             $errorMessage = sprintf('Could not find parent Stmt of "%s" node', $printedNode);
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        return spl_object_hash($foundNode);
+        return spl_object_hash($foundStmt);
     }
 
     private function wrapToExpression(Expr | Stmt $node): Stmt

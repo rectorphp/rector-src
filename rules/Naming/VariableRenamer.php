@@ -115,9 +115,9 @@ final class VariableRenamer
      */
     private function resolvePhpDocInfo(Variable $variable): PhpDocInfo
     {
-        $expression = $this->betterNodeFinder->resolveCurrentStatement($variable);
-        if ($expression instanceof Node) {
-            return $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($variable);
+        if ($currentStmt instanceof Node) {
+            return $this->phpDocInfoFactory->createFromNodeOrEmpty($currentStmt);
         }
 
         return $this->phpDocInfoFactory->createFromNodeOrEmpty($variable);

@@ -124,7 +124,6 @@ final class ExpectedNameResolver
         }
 
         $expectedName = $this->propertyNaming->getExpectedNameFromType($returnedType);
-
         if ($expectedName !== null) {
             return $expectedName->getName();
         }

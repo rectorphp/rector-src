@@ -150,8 +150,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $property = $callerType->getProperty($propertyName, $scope);
-        $propertyType = $property->getReadableType();
+        $propertyReflection = $callerType->getProperty($propertyName, $scope);
+        $propertyType = $propertyReflection->getReadableType();
 
         $possibleGetterMethodNames = $this->resolvePossibleGetMethodNames($propertyName);
 

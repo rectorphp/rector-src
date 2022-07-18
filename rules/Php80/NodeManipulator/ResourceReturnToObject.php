@@ -121,7 +121,8 @@ final class ResourceReturnToObject
         array $collectionFunctionToReturnObject
     ): ?FullyQualifiedObjectType {
         $objectInstanceCheck = null;
-        $assign = $this->betterNodeFinder->findFirstPrevious($funcCall, function (Node $subNode) use (
+
+        $foundNode = $this->betterNodeFinder->findFirstPrevious($funcCall, function (Node $subNode) use (
             &$objectInstanceCheck,
             $expr,
             $collectionFunctionToReturnObject
@@ -145,7 +146,7 @@ final class ResourceReturnToObject
             return false;
         });
 
-        if (! $assign instanceof Assign) {
+        if (! $foundNode instanceof Assign) {
             return null;
         }
 

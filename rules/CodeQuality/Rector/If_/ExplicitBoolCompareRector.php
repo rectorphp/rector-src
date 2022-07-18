@@ -117,18 +117,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $newConditionNode = $this->resolveNewConditionNode($conditionNode, $isNegated);
-        if (! $newConditionNode instanceof BinaryOp) {
+        $binaryOp = $this->resolveNewConditionNode($conditionNode, $isNegated);
+        if (! $binaryOp instanceof BinaryOp) {
             return null;
         }
 
         $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
         // avoid duplicated ifs when combined with ChangeOrIfReturnToEarlyReturnRector
-        if ($this->shouldSkip($conditionStaticType, $newConditionNode, $nextNode)) {
+        if ($this->shouldSkip($conditionStaticType, $binaryOp, $nextNode)) {
             return null;
         }
 
-        $node->cond = $newConditionNode;
+        $node->cond = $binaryOp;
 
         return $node;
     }
