@@ -42,6 +42,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Configuration\CurrentNodeProvider;
@@ -245,16 +246,6 @@ final class NodeFactory
         );
     }
 
-    public function createProperty(string $name): Property
-    {
-        $propertyBuilder = new PropertyBuilder($name);
-
-        $property = $propertyBuilder->getNode();
-        $this->phpDocInfoFactory->createFromNode($property);
-
-        return $property;
-    }
-
     public function createPrivateProperty(string $name): Property
     {
         $propertyBuilder = new PropertyBuilder($name);
@@ -262,7 +253,10 @@ final class NodeFactory
 
         $property = $propertyBuilder->getNode();
 
-        $this->phpDocInfoFactory->createFromNode($property);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+        if ($phpDocInfo instanceof PhpDocInfo) {
+            $property->setAttribute(AttributeKey::PHP_DOC_INFO, $property);
+        }
 
         return $property;
     }

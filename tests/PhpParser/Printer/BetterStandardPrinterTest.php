@@ -11,11 +11,11 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\Astral\ValueObject\NodeBuilder\MethodBuilder;
 
 final class BetterStandardPrinterTest extends AbstractTestCase
 {
@@ -35,10 +35,8 @@ final class BetterStandardPrinterTest extends AbstractTestCase
         $methodCallExpression = new Expression($methodCall);
         $methodCallExpression->setAttribute(AttributeKey::COMMENTS, [new Comment('// todo: fix')]);
 
-        $methodBuilder = new MethodBuilder('run');
-        $methodBuilder->addStmt($methodCallExpression);
-
-        $classMethod = $methodBuilder->getNode();
+        $classMethod = new ClassMethod('run');
+        $classMethod->stmts = [$methodCallExpression];
 
         $printed = $this->betterStandardPrinter->print($classMethod) . PHP_EOL;
         $this->assertStringEqualsFile(

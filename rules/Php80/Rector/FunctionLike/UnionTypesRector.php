@@ -91,7 +91,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod | Function_ | Closure | ArrowFunction $node
+     * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -106,10 +106,13 @@ CODE_SAMPLE
         $this->refactorParamTypes($node, $phpDocInfo);
         $this->refactorReturnType($node, $phpDocInfo);
 
-        $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
-        $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
+        $hasParamChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
+        if ($hasParamChanged) {
+            $this->hasChanged = true;
+        }
 
-        if ($phpDocInfo->hasChanged()) {
+        $hasReturnChanged = $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
+        if ($hasReturnChanged) {
             $this->hasChanged = true;
         }
 
