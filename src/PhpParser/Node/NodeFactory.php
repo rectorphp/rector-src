@@ -253,21 +253,6 @@ final class NodeFactory
 
         $property = $propertyBuilder->getNode();
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-        if ($phpDocInfo instanceof PhpDocInfo) {
-            $property->setAttribute(AttributeKey::PHP_DOC_INFO, $property);
-        }
-
-        return $property;
-    }
-
-    public function createPublicProperty(string $name): Property
-    {
-        $propertyBuilder = new PropertyBuilder($name);
-        $propertyBuilder->makePublic();
-
-        $property = $propertyBuilder->getNode();
-
         $this->phpDocInfoFactory->createFromNode($property);
 
         return $property;
