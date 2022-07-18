@@ -16,6 +16,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
@@ -110,7 +111,12 @@ final class PHPStanNodeScopeResolver
             $isScopeRefreshing,
             $smartFileInfo
         ): void {
-            if (($node instanceof Expression || $node instanceof Return_) && $node->expr instanceof Expr) {
+            if ((
+                $node instanceof Expression ||
+                $node instanceof Return_ ||
+                $node instanceof Assign ||
+                $node instanceof EnumCase
+            ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
