@@ -18,9 +18,7 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\Error;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -54,7 +52,6 @@ use Rector\Core\NodeDecorator\PropertyTypeDecorator;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
@@ -78,7 +75,6 @@ final class NodeFactory
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
@@ -537,23 +533,13 @@ final class NodeFactory
         ));
     }
 
-    /**
-     * @return mixed|Error|Variable
-     */
-    private function normalizeArgValue(mixed $value)
-    {
-        if ($value instanceof Param) {
-            return $value->var;
-        }
-
-        return $value;
-    }
-
     private function decorateArrayItemWithKey(int | string | null $key, ArrayItem $arrayItem): void
     {
-        if ($key !== null) {
-            $arrayItem->key = BuilderHelpers::normalizeValue($key);
+        if ($key === null) {
+            return;
         }
+
+        $arrayItem->key = BuilderHelpers::normalizeValue($key);
     }
 
     /**
