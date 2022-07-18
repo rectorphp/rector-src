@@ -120,12 +120,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $updatedPhpDocType);
-
-        if (! $phpDocInfo->hasChanged()) {
-            return null;
+        $hasReturnTypeChanged = $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $updatedPhpDocType);
+        if ($hasReturnTypeChanged) {
+            return $node;
         }
 
-        return $node;
+        return null;
     }
 }

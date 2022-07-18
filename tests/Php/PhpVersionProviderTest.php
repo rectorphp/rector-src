@@ -11,7 +11,6 @@ use Rector\Testing\PHPUnit\AbstractTestCase;
 final class PhpVersionProviderTest extends AbstractTestCase
 {
     /**
-     * @doesNotPerformAssertions
      * @dataProvider provideValidConfigData()
      */
     public function testValidInput(string $invalidFilePath): void
@@ -19,7 +18,9 @@ final class PhpVersionProviderTest extends AbstractTestCase
         $this->bootFromConfigFiles([$invalidFilePath]);
 
         $phpVersionProvider = $this->getService(PhpVersionProvider::class);
-        $phpVersionProvider->provide();
+        $phpVersion = $phpVersionProvider->provide();
+
+        $this->assertIsInt($phpVersion);
     }
 
     /**

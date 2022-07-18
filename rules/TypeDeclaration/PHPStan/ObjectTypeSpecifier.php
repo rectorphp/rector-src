@@ -36,8 +36,7 @@ final class ObjectTypeSpecifier
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly array $typeWithClassTypeSpecifiers,
-        private readonly NameScopeFactory $nameScopeFactory
+        private readonly array $typeWithClassTypeSpecifiers
     ) {
     }
 
@@ -46,7 +45,7 @@ final class ObjectTypeSpecifier
         ObjectType $objectType,
         Scope|null $scope
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
-        $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
+//        $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
         // @todo reuse name scope
 
         if ($scope instanceof Scope) {

@@ -693,3 +693,28 @@ parameters:
         # union booleans
         - '#Method Rector\\Strict\\NodeFactory\\ExactCompareFactory\:\:createTruthyFromUnionType\(\) should return PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\BooleanNot\|PhpParser\\Node\\Expr\\Instanceof_\|null but returns PhpParser\\Node\\Expr\\BinaryOp\\BooleanAnd\|PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\Instanceof_\|null#'
         - '#Parameter \#1 \$compareExprs of method Rector\\Strict\\NodeFactory\\ExactCompareFactory\:\:resolveTruthyExpr\(\) expects array<PhpParser\\Node\\Expr\\BinaryOp\\BooleanAnd\|PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\Instanceof_\|null>, array<PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\BooleanNot\|PhpParser\\Node\\Expr\\Instanceof_\|null> given#'
+
+        # part of tests
+        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000 will always evaluate to true#'
+
+        -
+            message: '#Method call return value that should be used, but is not#'
+            paths:
+                - src/Console/Output/RectorOutputStyle.php
+                - src/Application/ChangedNodeScopeRefresher.php
+                - rules/TypeDeclaration/Rector/FunctionLike/ParamTypeDeclarationRector.php
+                - rules/TypeDeclaration/TypeNormalizer.php
+                - rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNewArrayRector.php
+                - rules/Composer/Guard/VersionGuard.php
+                - rules/Removing/NodeManipulator/ComplexNodeRemover.php
+                - rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php
+                - rules/Compatibility/NodeFactory/ConstructorClassMethodFactory.php
+                - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+                - rules/TypeDeclaration/Rector/ClassMethod/AddArrayParamDocTypeRector.php
+                - packages/BetterPhpDocParser/PhpDocParser/PhpDocFromTypeDeclarationDecorator.php
+
+        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) and Rector\\Renaming\\Rector\\Name\\RenameClassRector will always evaluate to true#'
+        -
+            message: '#Method call return value that should be used, but is not#'
+            path: src/PhpParser/Node/NodeFactory.php
+            count: 1

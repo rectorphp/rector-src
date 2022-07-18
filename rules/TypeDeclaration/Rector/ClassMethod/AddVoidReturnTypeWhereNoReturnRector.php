@@ -105,9 +105,12 @@ CODE_SAMPLE
         }
 
         if ($this->usePhpdoc) {
-            $this->changePhpDocToVoidIfNotNever($node);
+            $hasChanged = $this->changePhpDocToVoidIfNotNever($node);
+            if ($hasChanged) {
+                return $node;
+            }
 
-            return $node;
+            return null;
         }
 
         if ($node instanceof ClassMethod && $this->classMethodReturnVendorLockResolver->isVendorLocked($node)) {
@@ -134,15 +137,15 @@ CODE_SAMPLE
         $this->usePhpdoc = $usePhpdoc;
     }
 
-    private function changePhpDocToVoidIfNotNever(ClassMethod|Function_|Closure|Node $node): void
+    private function changePhpDocToVoidIfNotNever(ClassMethod|Function_|Closure|Node $node): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         if ($phpDocInfo->getReturnType() instanceof NeverType) {
-            return;
+            return false;
         }
 
-        $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new VoidType());
+        return $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new VoidType());
     }
 
     private function shouldSkipClassMethod(ClassMethod|Function_|Closure $functionLike): bool
