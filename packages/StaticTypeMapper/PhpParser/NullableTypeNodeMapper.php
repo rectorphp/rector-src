@@ -41,10 +41,7 @@ final class NullableTypeNodeMapper implements PhpParserNodeMapperInterface
      */
     public function mapToPHPStan(Node $node): Type
     {
-        $types = [
-            $this->phpParserNodeMapper->mapToPHPStanType($node->type),
-            new NullType(),
-        ];
+        $types = [$this->phpParserNodeMapper->mapToPHPStanType($node->type), new NullType()];
 
         return $this->typeFactory->createMixedPassedOrUnionType($types);
     }

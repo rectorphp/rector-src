@@ -683,5 +683,15 @@ parameters:
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
 =======
         # @todo resolve later
+<<<<<<< HEAD
         -  '#Relative file path "(.*?)" is not allowed, use absolute one with __DIR__#'
 >>>>>>> cleanup
+=======
+        - '#Relative file path "(.*?)" is not allowed, use absolute one with __DIR__#'
+        -
+            message: '#Parameters should use "PhpParser\\Node\\Expr\\BinaryOp\|string" types as the only types passed to this method#'
+            path: packages/NodeCollector/BinaryOpTreeRootLocator.php
+        -
+            message: '#Parameters should use "string\|PhpParser\\Node\\Expr\\Variable" types as the only types passed to this method#'
+            path: src/PhpParser/Node/NodeFactory.php
+>>>>>>> skip false postives in phpsta
