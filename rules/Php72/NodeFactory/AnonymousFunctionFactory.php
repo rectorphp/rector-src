@@ -111,10 +111,10 @@ final class AnonymousFunctionFactory
 
     public function createFromPhpMethodReflection(PhpMethodReflection $phpMethodReflection, Expr $expr): ?Closure
     {
-        /** @var FunctionVariantWithPhpDocs $functionVariantWithPhpDoc */
-        $functionVariantWithPhpDoc = ParametersAcceptorSelector::selectSingle($phpMethodReflection->getVariants());
+        /** @var FunctionVariantWithPhpDocs $parametersAcceptorWithPhpDocs */
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle($phpMethodReflection->getVariants());
 
-        $newParams = $this->createParams($phpMethodReflection, $functionVariantWithPhpDoc->getParameters());
+        $newParams = $this->createParams($phpMethodReflection, $parametersAcceptorWithPhpDocs->getParameters());
 
         $innerMethodCall = $this->createInnerMethodCall($phpMethodReflection, $expr, $newParams);
         if ($innerMethodCall === null) {
@@ -122,9 +122,9 @@ final class AnonymousFunctionFactory
         }
 
         $returnTypeNode = null;
-        if (! $functionVariantWithPhpDoc->getReturnType() instanceof MixedType) {
+        if (! $parametersAcceptorWithPhpDocs->getReturnType() instanceof MixedType) {
             $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                $functionVariantWithPhpDoc->getReturnType(),
+                $parametersAcceptorWithPhpDocs->getReturnType(),
                 TypeKind::RETURN
             );
         }
@@ -135,7 +135,7 @@ final class AnonymousFunctionFactory
         }
 
         // does method return something?
-        $stmts = $this->resolveStmts($functionVariantWithPhpDoc, $innerMethodCall);
+        $stmts = $this->resolveStmts($parametersAcceptorWithPhpDocs, $innerMethodCall);
 
         return new Closure([
             'params' => $newParams,

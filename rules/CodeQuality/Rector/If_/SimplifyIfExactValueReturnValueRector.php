@@ -66,12 +66,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $comparedNode = $this->ifManipulator->matchIfValueReturnValue($node);
-        if (! $comparedNode instanceof Expr) {
+        $expr = $this->ifManipulator->matchIfValueReturnValue($node);
+        if (! $expr instanceof Expr) {
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($comparedNode, $nextNode->expr)) {
+        if (! $this->nodeComparator->areNodesEqual($expr, $nextNode->expr)) {
             return null;
         }
 

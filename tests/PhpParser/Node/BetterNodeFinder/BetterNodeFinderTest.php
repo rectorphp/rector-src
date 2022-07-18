@@ -37,9 +37,6 @@ final class BetterNodeFinderTest extends AbstractTestCase
         $variable = $this->betterNodeFinder->findFirstInstanceOf($this->nodes, Variable::class);
         $class = $this->betterNodeFinder->findFirstInstanceOf($this->nodes, Class_::class);
 
-        $this->assertNotNull($variable);
-        $this->assertNotNull($class);
-
         $this->assertInstanceOf(Variable::class, $variable);
         $this->assertInstanceOf(Class_::class, $class);
 

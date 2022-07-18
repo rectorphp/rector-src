@@ -87,16 +87,16 @@ CODE_SAMPLE
 
         $exprType = $scope->getType($node->cond);
 
-        $falsyIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
+        $expr = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
             $exprType,
             $node->cond,
             $this->treatAsNonEmpty
         );
-        if (! $falsyIdentical instanceof Expr) {
+        if (! $expr instanceof Expr) {
             return null;
         }
 
-        $node->cond = $falsyIdentical;
+        $node->cond = $expr;
 
         return $node;
     }

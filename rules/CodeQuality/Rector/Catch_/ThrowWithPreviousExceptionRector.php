@@ -182,8 +182,8 @@ CODE_SAMPLE
             return self::DEFAULT_EXCEPTION_ARGUMENT_POSITION;
         }
 
-        $methodReflection = $classReflection->getConstructor();
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        $extendedMethodReflection = $classReflection->getConstructor();
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($extendedMethodReflection->getVariants());
 
         foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
             $parameterType = $parameterReflection->getType();

@@ -58,16 +58,16 @@ final class UselessIfCondBeforeForeachDetector
             return false;
         }
 
-        $previousParam = $this->fromPreviousParam($foreachExpr);
-        if (! $previousParam instanceof Param) {
+        $node = $this->fromPreviousParam($foreachExpr);
+        if (! $node instanceof Param) {
             return true;
         }
 
-        if ($this->paramAnalyzer->isNullable($previousParam)) {
+        if ($this->paramAnalyzer->isNullable($node)) {
             return false;
         }
 
-        return ! $this->paramAnalyzer->hasDefaultNull($previousParam);
+        return ! $this->paramAnalyzer->hasDefaultNull($node);
     }
 
     /**

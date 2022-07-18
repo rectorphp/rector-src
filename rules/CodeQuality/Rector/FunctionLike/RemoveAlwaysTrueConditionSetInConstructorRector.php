@@ -157,10 +157,9 @@ CODE_SAMPLE
         }
 
         // set in constructor + changed in class
-        $propertyTypeFromConstructor = $this->resolvePropertyTypeAfterConstructor($classLike, $propertyName);
+        $propertyType = $this->resolvePropertyTypeAfterConstructor($classLike, $propertyName);
 
-        $resolvedTypes = [];
-        $resolvedTypes[] = $propertyTypeFromConstructor;
+        $resolvedTypes = [$propertyType];
 
         $defaultValue = $property->props[0]->default;
         if ($defaultValue !== null) {

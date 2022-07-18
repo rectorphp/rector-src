@@ -74,14 +74,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $expression = $this->betterNodeFinder->resolveCurrentStatement($node);
+        $stmt = $this->betterNodeFinder->resolveCurrentStatement($node);
 
         // unable to analyze
-        if (! $expression instanceof Expression) {
+        if (! $stmt instanceof Expression) {
             return null;
         }
 
-        $nextNode = $expression->getAttribute(AttributeKey::NEXT_NODE);
+        $nextNode = $stmt->getAttribute(AttributeKey::NEXT_NODE);
         if (! $nextNode instanceof Node) {
             return null;
         }
@@ -106,13 +106,13 @@ CODE_SAMPLE
         }
 
         // switch docs
-        $expression->setDocComment($this->createDocComment($nextNode));
+        $stmt->setDocComment($this->createDocComment($nextNode));
 
-        $expressionPhpDocInfo = $this->phpDocInfoFactory->createFromNode($expression);
-        $expression->setAttribute(AttributeKey::PHP_DOC_INFO, $expressionPhpDocInfo);
+        $expressionPhpDocInfo = $this->phpDocInfoFactory->createFromNode($stmt);
+        $stmt->setAttribute(AttributeKey::PHP_DOC_INFO, $expressionPhpDocInfo);
 
         // invoke override
-        $expression->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        $stmt->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
         // remove otherwise empty node
         if ($nextNode instanceof Nop) {

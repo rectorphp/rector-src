@@ -90,12 +90,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $comparedNode = $twoNodeMatch->getSecondExpr();
+        $comparedExpr = $twoNodeMatch->getSecondExpr();
         if (! $this->isIfBodyABoolReturnNode($firstNodeInsideForeach)) {
             return null;
         }
 
-        $funcCall = $this->createInArrayFunction($comparedNode, $ifCondition, $node);
+        $funcCall = $this->createInArrayFunction($comparedExpr, $ifCondition, $node);
 
         /** @var Return_ $returnToRemove */
         $returnToRemove = $node->getAttribute(AttributeKey::NEXT_NODE);

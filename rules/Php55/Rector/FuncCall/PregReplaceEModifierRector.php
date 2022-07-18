@@ -94,8 +94,8 @@ CODE_SAMPLE
         /** @var Arg $firstArgument */
         $firstArgument = $node->args[0];
         $firstArgumentValue = $firstArgument->value;
-        $patternWithoutE = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);
-        if (! $patternWithoutE instanceof Expr) {
+        $expr = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);
+        if (! $expr instanceof Expr) {
             return null;
         }
 
@@ -108,7 +108,7 @@ CODE_SAMPLE
         }
 
         $node->name = new Name('preg_replace_callback');
-        $firstArgument->value = $patternWithoutE;
+        $firstArgument->value = $expr;
         $secondArgument->value = $anonymousFunction;
 
         return $node;
