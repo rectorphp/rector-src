@@ -142,20 +142,20 @@ CODE_SAMPLE
      */
     private function createStandaloneIfsWithReturn(If_ $nestedIfWithOnlyReturn, Return_ $return): array
     {
-        $expr = $this->conditionInverter->createInvertedCondition($nestedIfWithOnlyReturn->cond);
+        $invertedCondExpr = $this->conditionInverter->createInvertedCondition($nestedIfWithOnlyReturn->cond);
 
         // special case
-        if ($expr instanceof BooleanNot && $expr->expr instanceof BooleanAnd) {
-            $booleanNotPartIf = new If_(new BooleanNot($expr->expr->left));
+        if ($invertedCondExpr instanceof BooleanNot && $invertedCondExpr->expr instanceof BooleanAnd) {
+            $booleanNotPartIf = new If_(new BooleanNot($invertedCondExpr->expr->left));
             $booleanNotPartIf->stmts = [clone $return];
 
-            $secondBooleanNotPartIf = new If_(new BooleanNot($expr->expr->right));
+            $secondBooleanNotPartIf = new If_(new BooleanNot($invertedCondExpr->expr->right));
             $secondBooleanNotPartIf->stmts = [clone $return];
 
             return [$booleanNotPartIf, $secondBooleanNotPartIf];
         }
 
-        $nestedIfWithOnlyReturn->cond = $expr;
+        $nestedIfWithOnlyReturn->cond = $invertedCondExpr;
         $nestedIfWithOnlyReturn->stmts = [$return];
 
         return [$nestedIfWithOnlyReturn];

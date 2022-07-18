@@ -58,16 +58,16 @@ final class UselessIfCondBeforeForeachDetector
             return false;
         }
 
-        $node = $this->fromPreviousParam($foreachExpr);
-        if (! $node instanceof Param) {
+        $previousParam = $this->fromPreviousParam($foreachExpr);
+        if (! $previousParam instanceof Param) {
             return true;
         }
 
-        if ($this->paramAnalyzer->isNullable($node)) {
+        if ($this->paramAnalyzer->isNullable($previousParam)) {
             return false;
         }
 
-        return ! $this->paramAnalyzer->hasDefaultNull($node);
+        return ! $this->paramAnalyzer->hasDefaultNull($previousParam);
     }
 
     /**
@@ -89,7 +89,7 @@ final class UselessIfCondBeforeForeachDetector
         return $this->isMatchingNotBinaryOp($notIdentical, $foreachExpr);
     }
 
-    private function fromPreviousParam(Expr $expr): ?Node
+    private function fromPreviousParam(Expr $expr): ?Param
     {
         return $this->betterNodeFinder->findFirstPrevious($expr, function (Node $node) use ($expr): bool {
             if (! $node instanceof Param) {

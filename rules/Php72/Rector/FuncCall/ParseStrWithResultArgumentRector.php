@@ -72,12 +72,12 @@ CODE_SAMPLE
         $resultVariable = new Variable('result');
         $node->args[1] = new Arg($resultVariable);
 
-        $stmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-        if (! $stmt instanceof Stmt) {
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
+        if (! $currentStmt instanceof Stmt) {
             return null;
         }
 
-        $nextExpression = $stmt->getAttribute(AttributeKey::NEXT_NODE);
+        $nextExpression = $currentStmt->getAttribute(AttributeKey::NEXT_NODE);
         if ($nextExpression === null) {
             return null;
         }

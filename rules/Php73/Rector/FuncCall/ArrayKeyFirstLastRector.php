@@ -149,15 +149,15 @@ CODE_SAMPLE
 
     private function getNextExpression(FuncCall $funcCall): ?Node
     {
-        $stmt = $this->betterNodeFinder->resolveCurrentStatement($funcCall);
-        if (! $stmt instanceof Expression) {
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($funcCall);
+        if (! $currentStmt instanceof Expression) {
             return null;
         }
 
-        if ($stmt->expr !== $funcCall) {
+        if ($currentStmt->expr !== $funcCall) {
             return null;
         }
 
-        return $stmt->getAttribute(AttributeKey::NEXT_NODE);
+        return $currentStmt->getAttribute(AttributeKey::NEXT_NODE);
     }
 }
