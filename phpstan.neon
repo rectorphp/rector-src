@@ -673,4 +673,10 @@ parameters:
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
             path: rules/Transform/ValueObject/ParentClassToTraits.php
 
-        - '#Relative file path ".+" is not allowed, use absolute one with __DIR__#'
+        -
+            message: '#Relative file path ".+" is not allowed, use absolute one with __DIR__#'
+            paths:
+                - bin/rector.php
+                - src/Bootstrap/RectorConfigsResolver.php
+                - src/ValueObject/StaticNonPhpFileSuffixes.php
+                - tests/FileSystem/FilesFinder/FilesFinderTest.php
