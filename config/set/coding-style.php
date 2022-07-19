@@ -9,6 +9,7 @@ use Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
 use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
 use Rector\CodingStyle\Rector\ClassConst\SplitGroupedConstantsAndPropertiesRector;
 use Rector\CodingStyle\Rector\ClassConst\VarConstantCommentRector;
+use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\ClassMethod\RemoveDoubleUnderscoreInMethodNameRector;
@@ -21,6 +22,7 @@ use Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector;
 use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
 use Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector;
 use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
+use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
@@ -73,5 +75,7 @@ return static function (RectorConfig $rectorConfig): void {
         StaticClosureRector::class,
         CountArrayToEmptyArrayComparisonRector::class,
         CallUserFuncToMethodCallRector::class,
+        FuncGetArgsToVariadicParamRector::class,
+        StrictArraySearchRector::class,
     ]);
 };

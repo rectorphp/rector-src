@@ -22,6 +22,7 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../config/set/coding-style.php' => __DIR__ . '/../../rules/CodingStyle/Rector',
         __DIR__ . '/../../config/set/dead-code.php' => __DIR__ . '/../../rules/DeadCode/Rector',
         __DIR__ . '/../../config/set/early-return.php' => __DIR__ . '/../../rules/EarlyReturn/Rector',
+        __DIR__ . '/../../config/set/naming.php' => __DIR__ . '/../../rules/Naming/Rector',
     ];
 
     /**
@@ -54,10 +55,13 @@ final class MissingInSetCommand extends Command
                 continue;
             }
 
-            $title = sprintf('In "%s" config we could not find', $setFile);
+            $setRealpath = (string) realpath($setFile);
+            $relativeFilePath = Strings::after($setRealpath, getcwd() . '/');
+
+            $title = sprintf('In "%s" config we could not find', $relativeFilePath);
             $this->symfonyStyle->title($title);
             $this->symfonyStyle->listing($shortRectorClassesNotInSetConfig);
-            $this->symfonyStyle->newLine(2);
+            $this->symfonyStyle->newLine(1);
         }
 
         return self::SUCCESS;

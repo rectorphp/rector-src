@@ -51,12 +51,7 @@ final class StrictNativeFunctionReturnTypeAnalyzer
             return null;
         }
 
-        $nativeCalls = $this->exclusiveNativeCallLikeReturnMatcher->match($returns);
-        if ($nativeCalls === null) {
-            return null;
-        }
-
-        return $nativeCalls;
+        return $this->exclusiveNativeCallLikeReturnMatcher->match($returns);
     }
 
     /**
