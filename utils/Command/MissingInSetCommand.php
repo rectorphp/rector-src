@@ -23,6 +23,7 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../config/set/dead-code.php' => __DIR__ . '/../../rules/DeadCode/Rector',
         __DIR__ . '/../../config/set/early-return.php' => __DIR__ . '/../../rules/EarlyReturn/Rector',
         __DIR__ . '/../../config/set/naming.php' => __DIR__ . '/../../rules/Naming/Rector',
+        __DIR__ . '/../../config/set/type-declaration.php' => __DIR__ . '/../../rules/TypeDeclaration/Rector',
     ];
 
     /**
@@ -55,18 +56,8 @@ final class MissingInSetCommand extends Command
                 continue;
             }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
             $setRealpath = (string) realpath($setFile);
             $relativeFilePath = Strings::after($setRealpath, getcwd() . '/');
-=======
-            $setRealpath = realpath($setFile);
-            $relativeFilePath= Strings::after($setRealpath, getcwd() . '/');
->>>>>>> extend dead-code set
-=======
-            $setRealpath = (string) realpath($setFile);
-            $relativeFilePath = Strings::after($setRealpath, getcwd() . '/');
->>>>>>> extend coding style set
 
             $title = sprintf('In "%s" config we could not find', $relativeFilePath);
             $this->symfonyStyle->title($title);
