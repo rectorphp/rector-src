@@ -217,9 +217,6 @@ parameters:
             message: '#Function "dump_node\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
-        # union false positive
-
-
         # class-string miss match
         - '#Parameter \#1 \$classes of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<PHPStan\\PhpDocParser\\Ast\\Node\>\:\:getByAnnotationClasses\(\) expects array<class\-string\>, array<int, string\> given#'
         - '#Parameter \#1 \$classes of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>\:\:getByAnnotationClasses\(\) expects array<class\-string\>, array<string\> given#'
