@@ -55,8 +55,13 @@ final class MissingInSetCommand extends Command
                 continue;
             }
 
+<<<<<<< HEAD
             $setRealpath = (string) realpath($setFile);
             $relativeFilePath = Strings::after($setRealpath, getcwd() . '/');
+=======
+            $setRealpath = realpath($setFile);
+            $relativeFilePath= Strings::after($setRealpath, getcwd() . '/');
+>>>>>>> extend dead-code set
 
             $title = sprintf('In "%s" config we could not find', $relativeFilePath);
             $this->symfonyStyle->title($title);
