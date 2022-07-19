@@ -54,7 +54,10 @@ final class MissingInSetCommand extends Command
                 continue;
             }
 
-            $title = sprintf('In "%s" config we could not find', $setFile);
+            $setRealpath = realpath($setFile);
+            $relativeFilePath= Strings::after($setRealpath, getcwd() . '/');
+
+            $title = sprintf('In "%s" config we could not find', $relativeFilePath);
             $this->symfonyStyle->title($title);
             $this->symfonyStyle->listing($shortRectorClassesNotInSetConfig);
             $this->symfonyStyle->newLine(2);
