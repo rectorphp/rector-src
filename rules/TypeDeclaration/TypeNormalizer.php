@@ -68,6 +68,9 @@ final class TypeNormalizer
      */
     public function normalizeArrayOfUnionToUnionArray(Type $type, int $arrayNesting = 1): Type
     {
+        dump($type);
+        die;
+
         if (! $type instanceof ArrayType) {
             return $type;
         }
