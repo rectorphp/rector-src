@@ -10,7 +10,6 @@ use Rector\Config\RectorConfig;
 use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 
@@ -58,10 +57,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         StringClassNameToClassConstantRector::class,
-
-        FinalizeClassesWithoutChildrenRector::class => [
-            __DIR__ . '/rules/DowngradePhp74/Rector/Array_/DowngradeArraySpreadRector.php',
-        ],
 
         // tests
         '**/Fixture*',
