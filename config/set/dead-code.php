@@ -41,6 +41,7 @@ use Rector\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
+use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector;
 use Rector\DeadCode\Rector\Return_\RemoveDeadConditionAboveReturnRector;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
@@ -97,6 +98,8 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveUselessParamTagRector::class,
         RemoveUselessReturnTagRector::class,
         RemoveNonExistingVarAnnotationRector::class,
+        RemoveUselessVarTagRector::class,
+
         RemoveUnusedPromotedPropertyRector::class,
         RemoveLastReturnRector::class,
         RemoveJustPropertyFetchForAssignRector::class,

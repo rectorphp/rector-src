@@ -56,6 +56,7 @@ use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQue
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
+use Rector\CodeQuality\Rector\If_\SimplifyIfExactValueReturnValueRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfIssetToNullCoalescingRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector;
@@ -184,5 +185,6 @@ return static function (RectorConfig $rectorConfig): void {
         InlineIsAInstanceOfRector::class,
         TernaryFalseExpressionToIfRector::class,
         InlineConstructorDefaultToPropertyRector::class,
+        SimplifyIfExactValueReturnValueRector::class,
     ]);
 };
