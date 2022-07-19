@@ -28,12 +28,12 @@ final class PhpFilesFinder
 
         // filter out non-PHP files
         foreach ($phpFileInfos as $key => $phpFileInfo) {
-            $pathName = $phpFileInfo->getPathname();
+            $pathname = $phpFileInfo->getPathname();
 
             /**
              *  check .blade.php early so next .php check in next if can be skipped
              */
-            if (str_ends_with($pathName, '.blade.php')) {
+            if (str_ends_with($pathname, '.blade.php')) {
                 unset($phpFileInfos[$key]);
                 continue;
             }
@@ -41,14 +41,14 @@ final class PhpFilesFinder
             /**
              * obvious
              */
-            if (str_ends_with($pathName, '.php')) {
+            if (str_ends_with($pathname, '.php')) {
                 continue;
             }
 
             /**
              * only check with regex when needed
              */
-            if (StringUtils::isMatch($pathName, $suffixRegexPattern)) {
+            if (StringUtils::isMatch($pathname, $suffixRegexPattern)) {
                 unset($phpFileInfos[$key]);
             }
         }

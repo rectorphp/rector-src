@@ -14,8 +14,8 @@ class SkipReferenceInSerivceConfigurator
         $containerBuilder = $this->createContainerBuilder();
         $phpFileLoader = $this->createPhpFileLoader($containerBuilder);
 
-        $instanceOf = [];
-        return new ServicesConfigurator($containerBuilder, $phpFileLoader, $instanceOf);
+        $instanceof = [];
+        return new ServicesConfigurator($containerBuilder, $phpFileLoader, $instanceof);
     }
 
     private function createPhpFileLoader(ContainerBuilder $containerBuilder): PhpFileLoader
