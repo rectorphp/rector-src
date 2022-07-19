@@ -34,16 +34,6 @@ final class SetList implements SetListInterface
     /**
      * @var string
      */
-    public const FRAMEWORK_EXTRA_BUNDLE_40 = __DIR__ . '/../../../config/set/framework-extra-bundle-40.php';
-
-    /**
-     * @var string
-     */
-    public const FRAMEWORK_EXTRA_BUNDLE_50 = __DIR__ . '/../../../config/set/framework-extra-bundle-50.php';
-
-    /**
-     * @var string
-     */
     public const GMAGICK_TO_IMAGICK = __DIR__ . '/../../../config/set/gmagick_to_imagick.php';
 
     /**
