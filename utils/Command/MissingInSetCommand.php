@@ -23,6 +23,7 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../config/set/dead-code.php' => __DIR__ . '/../../rules/DeadCode/Rector',
         __DIR__ . '/../../config/set/early-return.php' => __DIR__ . '/../../rules/EarlyReturn/Rector',
         __DIR__ . '/../../config/set/naming.php' => __DIR__ . '/../../rules/Naming/Rector',
+        __DIR__ . '/../../config/set/type-declaration.php' => __DIR__ . '/../../rules/TypeDeclaration/Rector',
     ];
 
     /**
