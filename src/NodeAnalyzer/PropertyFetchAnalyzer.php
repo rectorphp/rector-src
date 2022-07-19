@@ -104,28 +104,11 @@ final class PropertyFetchAnalyzer
         return $total;
     }
 
-    public function containsLocalPropertyFetchName(Node $node, string $propertyName): bool
+    public function containsLocalPropertyFetchName(Trait_ $trait, string $propertyName): bool
     {
-        $classLike = $node instanceof ClassLike
-            ? $node
-            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
         return (bool) $this->betterNodeFinder->findFirst(
-            $node,
-            function (Node $node) use ($classLike, $propertyName): bool {
-                if (! $this->isLocalPropertyFetchName($node, $propertyName)) {
-                    return false;
-                }
-
-                $parentClassLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
-                // property fetch in Trait cannot get parent ClassLike
-                if (! $parentClassLike instanceof ClassLike) {
-                    return true;
-                }
-
-                return $parentClassLike === $classLike;
-            }
+            $trait,
+            fn (Node $node): bool => $this->isLocalPropertyFetchName($node, $propertyName)
         );
     }
 

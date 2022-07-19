@@ -38,13 +38,13 @@ final class RenameForeachValueVariableToMatchExprVariableRector extends Abstract
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-public function run()
-{
-    $array = [];
-    foreach ($variables as $property) {
-        $array[] = $property;
+    public function run()
+    {
+        $array = [];
+        foreach ($variables as $property) {
+            $array[] = $property;
+        }
     }
-}
 }
 CODE_SAMPLE
 
@@ -52,13 +52,13 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-public function run()
-{
-    $array = [];
-    foreach ($variables as $variable) {
-        $array[] = $variable;
+    public function run()
+    {
+        $array = [];
+        foreach ($variables as $variable) {
+            $array[] = $variable;
+        }
     }
-}
 }
 CODE_SAMPLE
             ),
