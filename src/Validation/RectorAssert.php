@@ -43,6 +43,7 @@ final class RectorAssert
     /**
      * @see https://regex101.com/r/uh5B0S/2
      * @see https://www.php.net/manual/en/functions.user-defined.php
+     * @see https://www.php.net/manual/en/language.constants.php
      *
      * @var string
      */
