@@ -108,9 +108,7 @@ final class PropertyFetchAnalyzer
     {
         return (bool) $this->betterNodeFinder->findFirst(
             $trait,
-            function (Node $node) use ($propertyName): bool {
-                return $this->isLocalPropertyFetchName($node, $propertyName);
-            }
+            fn (Node $node): bool => $this->isLocalPropertyFetchName($node, $propertyName)
         );
     }
 
