@@ -35,7 +35,6 @@ use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 use Rector\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector;
 use Rector\DeadCode\Rector\If_\SimplifyIfElseWithSameContentRector;
-use Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfFunctionExistsRector;
 use Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector;
 use Rector\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
@@ -55,7 +54,6 @@ use Rector\PHPUnit\Rector\ClassMethod\RemoveEmptyTestMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-        UnwrapFutureCompatibleIfFunctionExistsRector::class,
         UnwrapFutureCompatibleIfPhpVersionRector::class,
         RecastingRemovalRector::class,
         RemoveDeadStmtRector::class,
