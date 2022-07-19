@@ -217,9 +217,6 @@ parameters:
             message: '#Function "dump_node\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
-        # union false positive
-        - '#Method Rector\\Comments\\CommentRemover\:\:removeFromNode\(\) has parameter \$node with no value type specified in iterable type array#'
-
         # class-string miss match
         - '#Parameter \#1 \$classes of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<PHPStan\\PhpDocParser\\Ast\\Node\>\:\:getByAnnotationClasses\(\) expects array<class\-string\>, array<int, string\> given#'
         - '#Parameter \#1 \$classes of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>\:\:getByAnnotationClasses\(\) expects array<class\-string\>, array<string\> given#'
@@ -386,8 +383,6 @@ parameters:
                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
                 - src/Contract/Processor/FileProcessorInterface.php
                 - packages/Parallel/Application/ParallelFileProcessor.php
-                # tokens
-                - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'
@@ -663,12 +658,6 @@ parameters:
         - '#Class has a static method must so must contains "Static" in its name#'
 
         - '#Class method ".+\(\)" is never used#'
-
-        -
-            message: '#Parameters should use "(.*?)" types as the only types passed to this method#'
-            paths:
-                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
-                - src/NodeManipulator/PropertyManipulator.php
 
         # regex re-validation
         -
