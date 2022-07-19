@@ -45,6 +45,9 @@ final class DateTimeAtNamingConventionGuard implements ConflictingNameGuardInter
             return false;
         }
 
-        return StringUtils::isMatch($propertyRename->getCurrentName(), BreakingVariableRenameGuard::AT_NAMING_REGEX . '');
+        return StringUtils::isMatch(
+            $propertyRename->getCurrentName(),
+            BreakingVariableRenameGuard::AT_NAMING_REGEX . ''
+        );
     }
 }
