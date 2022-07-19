@@ -383,6 +383,7 @@ parameters:
                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
                 - src/Contract/Processor/FileProcessorInterface.php
                 - packages/Parallel/Application/ParallelFileProcessor.php
+                - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'
@@ -707,3 +708,7 @@ parameters:
             message: '#Method call return value that should be used, but is not#'
             path: src/PhpParser/Node/NodeFactory.php
             count: 1
+
+        # @todo resolve later
+        - '#Lowered variable "(.*?)" is used in various\-cased names\: "(.*?)", unite it to one#'
+        - '#The "(.*?)" constant contains duplicated regex "(.*?)"\. Instead of duplicated regexes, extract domain regexes together to save maintenance#'
