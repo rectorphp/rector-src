@@ -12,7 +12,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Param\ParamTypeFromStrictTypedPropertyRector;
@@ -26,7 +25,6 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeFromStrictTypedPropertyRector::class,
         TypedPropertyFromStrictConstructorRector::class,
         ParamTypeFromStrictTypedPropertyRector::class,
-        ReturnTypeFromStrictTypedCallRector::class,
         AddVoidReturnTypeWhereNoReturnRector::class,
         ReturnTypeFromReturnNewRector::class,
         TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
