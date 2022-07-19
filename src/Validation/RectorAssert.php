@@ -41,12 +41,12 @@ final class RectorAssert
     private const PROPERTY_NAME_REGEX = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#';
 
     /**
-     * @see https://regex101.com/r/uh5B0S/1
+     * @see https://regex101.com/r/uh5B0S/2
      * @see https://www.php.net/manual/en/functions.user-defined.php
      *
      * @var string
      */
-    private const METHOD_NAME_REGEX = '#^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$#';
+    private const METHOD_OR_CONSTANT_NAME_REGEX = '#^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$#';
 
     /**
      * @see https://regex101.com/r/uh5B0S/1
@@ -56,14 +56,6 @@ final class RectorAssert
      */
     private const FUNCTION_NAME_REGEX = '#^(' . self::NAKED_NAMESPACE_REGEX . '\\\\)?([a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)$#';
 
-    /**
-     * @see https://www.php.net/manual/en/language.constants.php
-     * @see https://regex101.com/r/Fu6WHQ/1
-     *
-     * @var string
-     */
-    private const CONSTANT_REGEX = '#^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$#';
-
     public static function namespaceName(string $name): void
     {
         self::elementName($name, self::NAMESPACE_REGEX, 'namespace');
@@ -71,7 +63,7 @@ final class RectorAssert
 
     public static function constantName(string $name): void
     {
-        self::elementName($name, self::CONSTANT_REGEX, 'constant');
+        self::elementName($name, self::METHOD_OR_CONSTANT_NAME_REGEX, 'constant');
     }
 
     public static function className(string $name): void
@@ -86,7 +78,7 @@ final class RectorAssert
 
     public static function methodName(string $name): void
     {
-        self::elementName($name, self::METHOD_NAME_REGEX, 'method');
+        self::elementName($name, self::METHOD_OR_CONSTANT_NAME_REGEX, 'method');
     }
 
     public static function functionName(string $name): void

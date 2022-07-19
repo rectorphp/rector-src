@@ -18,12 +18,6 @@ use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
  */
 final class DateTimeAtNamingConventionGuard implements ConflictingNameGuardInterface
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/1pKLgf/1/
-     */
-    private const AT_NAMING_REGEX = '#[\w+]At$#';
-
     public function __construct(
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly TypeUnwrapper $typeUnwrapper
@@ -51,6 +45,6 @@ final class DateTimeAtNamingConventionGuard implements ConflictingNameGuardInter
             return false;
         }
 
-        return StringUtils::isMatch($propertyRename->getCurrentName(), self::AT_NAMING_REGEX . '');
+        return StringUtils::isMatch($propertyRename->getCurrentName(), BreakingVariableRenameGuard::AT_NAMING_REGEX . '');
     }
 }
