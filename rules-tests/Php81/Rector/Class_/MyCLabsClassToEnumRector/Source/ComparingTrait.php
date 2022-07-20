@@ -1,10 +1,12 @@
 <?php
 
-namespace Rector\Tests\Php81\Rector\Class_\MyCLabsClassToEnumRector\Fixture;
+declare(strict_types=1);
+
+namespace Rector\Tests\Php81\Rector\Class_\MyCLabsClassToEnumRector\Source;
 
 use MyCLabs\Enum\Enum;
 
-trait SkipTrait
+trait ComparingTrait
 {
     /**
      * @param Enum
