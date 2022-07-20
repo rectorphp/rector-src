@@ -6,8 +6,11 @@ namespace Rector\Core\DependencyInjection\CompilerPass;
 
 use Rector\Core\Configuration\Option;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\Exception\Configuration\InvalidConfigurationException;
+use Rector\Core\Validation\RectorAssert;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Webmozart\Assert\InvalidArgumentException;
 
 /**
  * This compiler pass removed Rectors skipped in `SKIP` parameters.
@@ -48,6 +51,19 @@ final class RemoveSkippedRectorsCompilerPass implements CompilerPassInterface
             return false;
         }
 
-        return is_a($element, RectorInterface::class, true);
+        try {
+            RectorAssert::className($element);
+        } catch (InvalidArgumentException) {
+            // not a class name ~> it is a path
+            return false;
+        }
+
+        if (is_a($element, RectorInterface::class, true)) {
+            return true;
+        }
+
+        throw new InvalidConfigurationException(
+            sprintf('Rector rule "%s" is not exists or already removed', $element)
+        );
     }
 }
