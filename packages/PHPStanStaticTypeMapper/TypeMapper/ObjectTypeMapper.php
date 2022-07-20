@@ -137,8 +137,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
                 continue;
             }
 
-            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType, $typeKind);
-            $genericTypeNodes[] = $typeNode;
+            $genericTypeNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType, $typeKind);
         }
 
         if ($genericTypeNodes === []) {

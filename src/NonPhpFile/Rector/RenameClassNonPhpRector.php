@@ -118,9 +118,7 @@ CODE_SAMPLE
             }
 
             $doubleSlashOldClass = str_replace('\\', '\\\\', $oldClass);
-            $doubleSlashNewClass = str_replace('\\', '\\\\', $newClass);
-
-            $classRenames[$doubleSlashOldClass] = $doubleSlashNewClass;
+            $classRenames[$doubleSlashOldClass] = str_replace('\\', '\\\\', $newClass);
         }
 
         return $classRenames;

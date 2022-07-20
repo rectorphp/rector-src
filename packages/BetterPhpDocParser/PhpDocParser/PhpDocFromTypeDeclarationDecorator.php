@@ -92,10 +92,9 @@ final class PhpDocFromTypeDeclarationDecorator
             return;
         }
 
-        $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
+        $functionLike->attrGroups[] = $this->phpAttributeGroupFactory->createFromClass(
             self::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
         );
-        $functionLike->attrGroups[] = $attributeGroup;
     }
 
     /**

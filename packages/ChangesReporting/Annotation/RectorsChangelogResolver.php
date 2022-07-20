@@ -31,8 +31,10 @@ final class RectorsChangelogResolver
     {
         $rectorClassesToChangelogUrls = [];
         foreach ($rectorClasses as $rectorClass) {
-            $changelogUrl = $this->annotationExtractor->extractAnnotationFromClass($rectorClass, '@changelog');
-            $rectorClassesToChangelogUrls[$rectorClass] = $changelogUrl;
+            $rectorClassesToChangelogUrls[$rectorClass] = $this->annotationExtractor->extractAnnotationFromClass(
+                $rectorClass,
+                '@changelog'
+            );
         }
 
         return $rectorClassesToChangelogUrls;

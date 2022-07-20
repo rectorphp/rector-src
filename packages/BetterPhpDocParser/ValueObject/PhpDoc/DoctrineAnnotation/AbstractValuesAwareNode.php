@@ -202,8 +202,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         $unquotedArray = [];
         foreach ($values as $key => $value) {
             $unquotedKey = $this->removeQuotes($key);
-            $unquotedValue = $this->removeQuotes($value);
-            $unquotedArray[$unquotedKey] = $unquotedValue;
+            $unquotedArray[$unquotedKey] = $this->removeQuotes($value);
         }
 
         return $unquotedArray;

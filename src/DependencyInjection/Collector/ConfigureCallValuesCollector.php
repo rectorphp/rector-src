@@ -98,12 +98,10 @@ final class ConfigureCallValuesCollector
             if (! isset($this->configureCallValuesByRectorClass[$rectorClass])) {
                 $this->configureCallValuesByRectorClass[$rectorClass] = $configureValue;
             } else {
-                $mergedParameters = $this->parametersMerger->merge(
+                $this->configureCallValuesByRectorClass[$rectorClass] = $this->parametersMerger->merge(
                     $this->configureCallValuesByRectorClass[$rectorClass],
                     $configureValue
                 );
-
-                $this->configureCallValuesByRectorClass[$rectorClass] = $mergedParameters;
             }
         }
     }
