@@ -35,6 +35,8 @@ final class EnumFactory
 
         $constants = $class->getConstants();
 
+        $enum->stmts = $class->getTraitUses();
+
         if ($constants !== []) {
             $value = $this->valueResolver->getValue($constants[0]->consts[0]->value);
             $enum->scalarType = is_string($value)
