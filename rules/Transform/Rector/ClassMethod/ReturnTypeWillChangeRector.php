@@ -109,10 +109,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(
+            $node->attrGroups[] = $this->phpAttributeGroupFactory->createFromClass(
                 PhpDocFromTypeDeclarationDecorator::RETURN_TYPE_WILL_CHANGE_ATTRIBUTE
             );
-            $node->attrGroups[] = $attributeGroup;
             $hasChanged = true;
 
             break;
