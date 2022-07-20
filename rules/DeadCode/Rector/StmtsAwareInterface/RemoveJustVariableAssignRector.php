@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Ternary;
@@ -178,7 +180,18 @@ CODE_SAMPLE
             return true;
         }
 
-        return false;
+        if (! $nextAssign->var instanceof ArrayDimFetch) {
+            return false;
+        }
+
+        if (! $nextAssign->var->dim instanceof Expr) {
+            return false;
+        }
+
+        return (bool) $this->betterNodeFinder->findFirst(
+            $nextAssign->var->dim,
+            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($currentAssign->var, $subNode)
+        );
     }
 
     private function matchExpressionAssign(Stmt $stmt): ?Assign
