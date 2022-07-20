@@ -711,4 +711,3 @@ parameters:
 
         # @todo resolve later
         - '#Lowered variable "(.*?)" is used in various\-cased names\: "(.*?)", unite it to one#'
-        - '#The "(.*?)" constant contains duplicated regex "(.*?)"\. Instead of duplicated regexes, extract domain regexes together to save maintenance#'
