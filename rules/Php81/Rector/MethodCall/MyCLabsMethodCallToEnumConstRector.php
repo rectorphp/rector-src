@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
@@ -43,27 +45,39 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class];
+        return [MethodCall::class, StaticCall::class];
     }
 
     /**
-     * @param MethodCall $node
+     * @param MethodCall|StaticCall $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isObjectType($node->var, new ObjectType('MyCLabs\Enum\Enum'))) {
+        if ($node instanceof MethodCall) {
+            return $this->refactorMethodCall($node);
+        }
+
+        if (! $this->isObjectType($node->class, new ObjectType('MyCLabs\Enum\Enum'))) {
             return null;
         }
 
-        if (! $this->isName($node->name, 'getKey')) {
+        $className = $this->getName($node->class);
+
+        return $this->nodeFactory->createClassConstFetch($className, $node->name->toString());
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ENUM;
+    }
+
+    private function refactorGetKeyMethodCall(MethodCall $methodCall): ?ClassConstFetch
+    {
+        if (! $methodCall->var instanceof StaticCall) {
             return null;
         }
 
-        if (! $node->var instanceof StaticCall) {
-            return null;
-        }
-
-        $staticCall = $node->var;
+        $staticCall = $methodCall->var;
         $className = $this->getName($staticCall->class);
         if ($className === null) {
             return null;
@@ -77,8 +91,42 @@ CODE_SAMPLE
         return $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
     }
 
-    public function provideMinPhpVersion(): int
+    private function refactorGetValueMethodCall(MethodCall $methodCall): ?PropertyFetch
     {
-        return PhpVersionFeature::ENUM;
+        if (! $methodCall->var instanceof StaticCall) {
+            return null;
+        }
+
+        $staticCall = $methodCall->var;
+        $className = $this->getName($staticCall->class);
+        if ($className === null) {
+            return null;
+        }
+
+        $enumCaseName = $this->getName($staticCall->name);
+        if ($enumCaseName === null) {
+            return null;
+        }
+
+        $enumConstFetch = $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
+
+        return new PropertyFetch($enumConstFetch, 'value');
+    }
+
+    private function refactorMethodCall(MethodCall $methodCall): null|ClassConstFetch|PropertyFetch
+    {
+        if (! $this->isObjectType($methodCall->var, new ObjectType('MyCLabs\Enum\Enum'))) {
+            return null;
+        }
+
+        if ($this->isName($methodCall->name, 'getKey')) {
+            return $this->refactorGetKeyMethodCall($methodCall);
+        }
+
+        if ($this->isName($methodCall->name, 'getValue')) {
+            return $this->refactorGetValueMethodCall($methodCall);
+        }
+
+        return null;
     }
 }
