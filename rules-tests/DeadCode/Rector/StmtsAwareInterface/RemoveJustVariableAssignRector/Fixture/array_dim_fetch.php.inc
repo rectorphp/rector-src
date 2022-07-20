@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\StmtsAwareInterface\RemoveJustVariableAss
 
 final class SomeArrayDimFetch
 {
-    private int $temporaryValue;
+    private array $temporaryValue;
 
     public function run()
     {
@@ -22,7 +22,7 @@ namespace Rector\Tests\DeadCode\Rector\StmtsAwareInterface\RemoveJustVariableAss
 
 final class SomeArrayDimFetch
 {
-    private int $temporaryValue;
+    private array $temporaryValue;
 
     public function run()
     {
