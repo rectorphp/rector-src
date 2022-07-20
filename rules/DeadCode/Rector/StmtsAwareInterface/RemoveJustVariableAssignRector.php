@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\StmtsAwareInterface;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Ternary;
@@ -179,7 +178,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $nextAssign->var instanceof ArrayDimFetch;
+        return false;
     }
 
     private function matchExpressionAssign(Stmt $stmt): ?Assign
