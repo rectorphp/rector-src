@@ -133,8 +133,8 @@ final class TerminatedNodeAnalyzer
             return false;
         }
 
-        foreach ($if->elseifs as $elseIf) {
-            if (! $this->isTerminatedInLastStmts($elseIf->stmts, $stmt)) {
+        foreach ($if->elseifs as $elseif) {
+            if (! $this->isTerminatedInLastStmts($elseif->stmts, $stmt)) {
                 return false;
             }
         }

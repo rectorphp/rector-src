@@ -710,4 +710,3 @@ parameters:
             count: 1
 
         # @todo resolve later
-        - '#Lowered variable "(.*?)" is used in various\-cased names\: "(.*?)", unite it to one#'
