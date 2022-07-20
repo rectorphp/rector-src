@@ -13,4 +13,3 @@ final class SkipUsedInNextArrayDimFetchKey
         $this->temporaryValue[(string) $result] = $result;
     }
 }
-
