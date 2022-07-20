@@ -105,11 +105,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->areTooComplexAssignsToShorten($currentAssign, $nextAssign)) {
+            if (! $this->areTwoVariablesCrossAssign($currentAssign, $nextAssign)) {
                 continue;
             }
 
-            if (! $this->areTwoVariablesCrossAssign($currentAssign, $nextAssign)) {
+            if ($this->areTooComplexAssignsToShorten($currentAssign)) {
                 continue;
             }
 
@@ -164,33 +164,42 @@ CODE_SAMPLE
             return false;
         }
 
-        return ! $this->exprUsedInNextNodeAnalyzer->isUsed($nextAssign->expr);
+        if (! $nextAssign->var instanceof ArrayDimFetch) {
+            return ! $this->exprUsedInNextNodeAnalyzer->isUsed($nextAssign->expr);
+        }
+
+        if (! $this->shouldSkipArrayDimFetch($nextAssign->var, $currentAssign->var)) {
+            return ! $this->exprUsedInNextNodeAnalyzer->isUsed($nextAssign->expr);
+        }
+
+        return false;
     }
 
     /**
      * Shortening should not make code less readable.
      */
-    private function areTooComplexAssignsToShorten(Assign $currentAssign, Assign $nextAssign): bool
+    private function areTooComplexAssignsToShorten(Assign $currentAssign): bool
     {
         if ($currentAssign->expr instanceof Ternary) {
             return true;
         }
 
-        if ($currentAssign->expr instanceof Concat) {
-            return true;
+        return $currentAssign->expr instanceof Concat;
+    }
+
+    private function shouldSkipArrayDimFetch(ArrayDimFetch $arrayDimFetch, Variable $variable): bool
+    {
+        if ($arrayDimFetch->var instanceof ArrayDimFetch) {
+            return $this->shouldSkipArrayDimFetch($arrayDimFetch->var, $variable);
         }
 
-        if (! $nextAssign->var instanceof ArrayDimFetch) {
-            return false;
-        }
-
-        if (! $nextAssign->var->dim instanceof Expr) {
+        if (! $arrayDimFetch->dim instanceof Expr) {
             return false;
         }
 
         return (bool) $this->betterNodeFinder->findFirst(
-            $nextAssign->var->dim,
-            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($currentAssign->var, $subNode)
+            $arrayDimFetch->dim,
+            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($variable, $subNode)
         );
     }
 
