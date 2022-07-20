@@ -7,9 +7,9 @@ namespace Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRecto
 use MyCLabs\Enum\Enum;
 
 /**
- * @method SomeEnum VALUE()
+ * @method SomeEnum USED_TO_BE_CONST()
  */
 final class SomeEnum extends Enum
 {
-    const VALUE = 'value';
+    const USED_TO_BE_CONST = 'value';
 }

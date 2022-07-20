@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -53,8 +54,17 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->name instanceof Expr) {
+            return null;
+        }
+
+        $enumCaseName = $this->getName($node->name);
+        if ($enumCaseName === null) {
+            return null;
+        }
+
         if ($node instanceof MethodCall) {
-            return $this->refactorMethodCall($node);
+            return $this->refactorMethodCall($node, $enumCaseName);
         }
 
         if (! $this->isObjectType($node->class, new ObjectType('MyCLabs\Enum\Enum'))) {
@@ -62,8 +72,11 @@ CODE_SAMPLE
         }
 
         $className = $this->getName($node->class);
+        if (! is_string($className)) {
+            return null;
+        }
 
-        return $this->nodeFactory->createClassConstFetch($className, $node->name->toString());
+        return $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
     }
 
     public function provideMinPhpVersion(): int
@@ -113,17 +126,17 @@ CODE_SAMPLE
         return new PropertyFetch($enumConstFetch, 'value');
     }
 
-    private function refactorMethodCall(MethodCall $methodCall): null|ClassConstFetch|PropertyFetch
+    private function refactorMethodCall(MethodCall $methodCall, string $methodName): null|ClassConstFetch|PropertyFetch
     {
         if (! $this->isObjectType($methodCall->var, new ObjectType('MyCLabs\Enum\Enum'))) {
             return null;
         }
 
-        if ($this->isName($methodCall->name, 'getKey')) {
+        if ($methodName === 'getKey') {
             return $this->refactorGetKeyMethodCall($methodCall);
         }
 
-        if ($this->isName($methodCall->name, 'getValue')) {
+        if ($methodName === 'getValue') {
             return $this->refactorGetValueMethodCall($methodCall);
         }
 
