@@ -23,7 +23,9 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\F
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Table(indexes: [new ORM\Index(name: 'search_idx', columns: ['name', 'c'])], uniqueConstraints: [new ORM\UniqueConstraint(name: 'name_idx', columns: ['name'])])]
+#[ORM\Table]
+#[ORM\Index(name: 'search_idx', columns: ['name', 'c'])]
+#[ORM\UniqueConstraint(name: 'name_idx', columns: ['name'])]
 class TableAndNestedIndex
 {
 }

@@ -250,6 +250,14 @@ CODE_SAMPLE
                 $shouldInlinedNested = true;
             }
 
+            // Inline nested annotations when they can/need to be unwrapped (doctrine @Table(index: [@Index(...)])
+            if ($nestedDoctrineAnnotationTagValueNodes !== []
+                && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS)
+                && $this->unwrapableAnnotationAnalyzer->areUnwrappable($nestedDoctrineAnnotationTagValueNodes)
+            ) {
+                    $shouldInlinedNested = true;
+            }
+
             if (! $this->removableAnnotationAnalyzer->isRemovable($doctrineTagValueNode)) {
                 $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                     $doctrineTagValueNode,

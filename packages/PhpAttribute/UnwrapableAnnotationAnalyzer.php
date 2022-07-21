@@ -29,11 +29,6 @@ final class UnwrapableAnnotationAnalyzer
      */
     private array $annotationsToAttributes = [];
 
-    public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
-    ) {
-    }
-
     /**
      * @param AnnotationToAttribute[] $annotationsToAttributes
      */
@@ -47,11 +42,6 @@ final class UnwrapableAnnotationAnalyzer
      */
     public function areUnwrappable(array $doctrineAnnotationTagValueNodes): bool
     {
-        // the new in initilazers is handled directly
-        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS)) {
-            return false;
-        }
-
         foreach ($doctrineAnnotationTagValueNodes as $doctrineAnnotationTagValueNode) {
             $annotationClassName = $doctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
                 PhpDocAttributeKey::RESOLVED_CLASS
