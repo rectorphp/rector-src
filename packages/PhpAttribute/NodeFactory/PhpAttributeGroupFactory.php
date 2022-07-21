@@ -26,7 +26,7 @@ final class PhpAttributeGroupFactory
     /**
      * @var array<string, string[]>>
      */
-    private array $unwrappedAnnotations = [
+    private const UNWRAPPED_ANNOTATIONS = [
         'Doctrine\ORM\Mapping\Table' => ['indexes', 'uniqueConstraints'],
         'Doctrine\ORM\Mapping\Entity' => ['uniqueConstraints'],
     ];
@@ -110,7 +110,7 @@ final class PhpAttributeGroupFactory
     private function removeUnwrappedItems(string $attributeClass, array $items): array
     {
         // unshift annotations that can be extracted
-        $unwrappeColumns = $this->unwrappedAnnotations[$attributeClass] ?? [];
+        $unwrappeColumns = self::UNWRAPPED_ANNOTATIONS[$attributeClass] ?? [];
         if ($unwrappeColumns === []) {
             return $items;
         }
