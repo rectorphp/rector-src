@@ -149,6 +149,9 @@ final class NodeFactory
         return $this->createPropertyAssignmentWithExpr($propertyName, $variable);
     }
 
+    /**
+     * @api
+     */
     public function createPropertyAssignmentWithExpr(string $propertyName, Expr $expr): Assign
     {
         $propertyFetch = $this->createPropertyFetch(self::THIS, $propertyName);
