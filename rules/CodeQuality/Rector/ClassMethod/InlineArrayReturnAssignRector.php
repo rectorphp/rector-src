@@ -118,6 +118,7 @@ CODE_SAMPLE
         }
 
         $assign = $stmt->expr;
+
         if (! $this->valueResolver->isValue($assign->expr, [])) {
             return null;
         }

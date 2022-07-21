@@ -255,7 +255,7 @@ CODE_SAMPLE
                 && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS)
                 && $this->unwrapableAnnotationAnalyzer->areUnwrappable($nestedDoctrineAnnotationTagValueNodes)
             ) {
-                    $shouldInlinedNested = true;
+                $shouldInlinedNested = true;
             }
 
             if (! $this->removableAnnotationAnalyzer->isRemovable($doctrineTagValueNode)) {
