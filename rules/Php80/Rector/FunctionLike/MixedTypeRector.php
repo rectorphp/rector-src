@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\FunctionLike;
 
-use PHPStan\Type\MixedType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -87,6 +86,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::MIXED_TYPE;
+    }
+
     private function refactorParamTypes(
         ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
         PhpDocInfo $phpDocInfo
@@ -106,10 +110,5 @@ CODE_SAMPLE
             $this->hasChanged = true;
             $param->type = new Name('mixed');
         }
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::MIXED_TYPE;
     }
 }
