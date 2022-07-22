@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
@@ -105,6 +106,12 @@ CODE_SAMPLE
             }
 
             $paramName = (string) $this->getName($param->var);
+            $paramTagValue = $phpDocInfo->getParamTagValueByName($paramName);
+
+            if (! $paramTagValue instanceof ParamTagValueNode) {
+                continue;
+            }
+
             $paramType = $phpDocInfo->getParamType($paramName);
 
             if (! $paramType instanceof MixedType) {
