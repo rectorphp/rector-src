@@ -68,10 +68,7 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
         return new Array_($arrayItems);
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function isRemoveArrayPlaceholder($value): bool
+    private function isRemoveArrayPlaceholder(mixed $value): bool
     {
         if (! is_array($value)) {
             return false;
