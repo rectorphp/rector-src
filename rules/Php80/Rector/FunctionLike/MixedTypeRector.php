@@ -108,7 +108,7 @@ CODE_SAMPLE
             }
 
             $this->hasChanged = true;
-            $param->type = new Name('mixed');
+            $param->type = new Identifier('mixed');
         }
     }
 }
