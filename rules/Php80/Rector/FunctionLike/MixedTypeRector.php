@@ -78,11 +78,15 @@ CODE_SAMPLE
 
         $this->refactorParamTypes($node, $phpDocInfo);
 
+        $hasParamChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
+        if ($hasParamChanged) {
+            $this->hasChanged = $hasParamChanged;
+        }
+
         if (! $this->hasChanged) {
             return null;
         }
 
-        $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
         return $node;
     }
 
@@ -100,7 +104,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramName = $this->getName($param->var);
+            $paramName = (string) $this->getName($param->var);
             $paramType = $phpDocInfo->getParamType($paramName);
 
             if (! $paramType instanceof MixedType) {
