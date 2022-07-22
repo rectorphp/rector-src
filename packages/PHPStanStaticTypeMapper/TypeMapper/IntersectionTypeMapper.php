@@ -94,7 +94,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             }
 
             if (in_array($resolvedTypeName, [self::STRING, 'object'], true)) {
-                return $resolvedType;
+                return null;
             }
 
             $intersectionedTypeNodes[] = $resolvedType;
