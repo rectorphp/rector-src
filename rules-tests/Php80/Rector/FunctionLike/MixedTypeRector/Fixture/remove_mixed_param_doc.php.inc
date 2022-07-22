@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\Php80\Rector\FunctionLike\MixedTypeRector\Fixture;
 
-class Fixture
+class RemoveMixedParamDoc
 {
     /**
      * @param mixed $param
      */
-    public function run($param)
+    public function run(mixed $param)
     {
     }
 }
@@ -18,7 +18,7 @@ class Fixture
 
 namespace Rector\Tests\Php80\Rector\FunctionLike\MixedTypeRector\Fixture;
 
-class Fixture
+class RemoveMixedParamDoc
 {
     public function run(mixed $param)
     {
