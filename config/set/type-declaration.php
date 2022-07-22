@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector;
@@ -28,5 +29,6 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnAnnotationIncorrectNullableRector::class,
         VarAnnotationIncorrectNullableRector::class,
         ParamAnnotationIncorrectNullableRector::class,
+        AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
     ]);
 };
