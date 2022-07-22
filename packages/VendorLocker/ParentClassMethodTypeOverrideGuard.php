@@ -15,6 +15,8 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
 use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
 
@@ -25,7 +27,9 @@ final class ParentClassMethodTypeOverrideGuard
         private readonly PathNormalizer $pathNormalizer,
         private readonly AstResolver $astResolver,
         private readonly ParamTypeInferer $paramTypeInferer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly TypeComparator $typeComparator,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -137,5 +141,20 @@ final class ParentClassMethodTypeOverrideGuard
         }
 
         return null;
+    }
+
+    public function shouldSkipReturnTypeChange(ClassMethod $classMethod, Type $parentType): bool
+    {
+        if ($classMethod->returnType === null) {
+            return false;
+        }
+
+        $currentReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($classMethod->returnType);
+
+        if ($this->typeComparator->isSubtype($currentReturnType, $parentType)) {
+            return true;
+        }
+
+        return $this->typeComparator->areTypesEqual($currentReturnType, $parentType);
     }
 }
