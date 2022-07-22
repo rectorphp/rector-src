@@ -45,10 +45,7 @@ final class ArgumentDefaultValueReplacer
         return $this->processArgs($node, $replaceArgumentDefaultValue);
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function isDefaultValueMatched(?Expr $expr, $value): bool
+    public function isDefaultValueMatched(?Expr $expr, mixed $value): bool
     {
         // allow any values before, also allow param without default value
         if ($value === ReplaceArgumentDefaultValue::ANY_VALUE_BEFORE) {
@@ -110,18 +107,12 @@ final class ArgumentDefaultValueReplacer
         return $expr;
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function normalizeValueToArgument($value): Arg
+    private function normalizeValueToArgument(mixed $value): Arg
     {
         return new Arg($this->normalizeValue($value));
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function normalizeValue($value): ClassConstFetch|Expr
+    private function normalizeValue(mixed $value): ClassConstFetch|Expr
     {
         // class constants → turn string to composite
         if (is_string($value) && \str_contains($value, '::')) {
