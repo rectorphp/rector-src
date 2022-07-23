@@ -104,7 +104,7 @@ final class PropertyPromotionRenamer
         string $paramVarName,
         string $desiredPropertyName
     ): void {
-        $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($paramVarName);
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramVarName);
         if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return;
         }
