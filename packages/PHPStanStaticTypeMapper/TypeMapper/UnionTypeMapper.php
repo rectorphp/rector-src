@@ -7,6 +7,7 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType as PHPParserNodeIntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
@@ -279,7 +280,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         foreach ($unionType->getTypes() as $unionedType) {
             // void,mixed, and intersection type are not allowed in union
-            if (in_array($unionedType::class, [MixedType::class, VoidType::class, IntersectionType::class], true)) {
+            if (in_array($unionedType::class, [MixedType::class, VoidType::class], true)) {
                 return null;
             }
 
@@ -287,7 +288,7 @@ final class UnionTypeMapper implements TypeMapperInterface
              * NullType inside UnionType is allowed
              * make it on TypeKind property as changing other type, eg: return type may conflict with parent child implementation
              *
-             * @var Identifier|Name|null $phpParserNode
+             * @var Identifier|Name|null|PHPParserNodeIntersectionType $phpParserNode
              */
             $phpParserNode = $unionedType instanceof NullType && $typeKind === TypeKind::PROPERTY
                 ? new Name('null')
@@ -297,9 +298,16 @@ final class UnionTypeMapper implements TypeMapperInterface
                 return null;
             }
 
+            if ($phpParserNode instanceof PHPParserNodeIntersectionType && $unionedType instanceof IntersectionType) {
+                return null;
+            }
+
             $phpParserUnionedTypes[] = $phpParserNode;
         }
 
+        /**
+         * @var Identifier[]|Name[] $phpParserUnionedTypes
+         */
         $phpParserUnionedTypes = array_unique($phpParserUnionedTypes);
 
         if (count($phpParserUnionedTypes) < 2) {
