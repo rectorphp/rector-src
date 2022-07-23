@@ -277,8 +277,8 @@ final class UnionTypeMapper implements TypeMapperInterface
         $phpParserUnionedTypes = [];
 
         foreach ($unionType->getTypes() as $unionedType) {
-            // void type and mixed type are not allowed in union
-            if (in_array($unionedType::class, [MixedType::class, VoidType::class], true)) {
+            // void,mixed, and intersection type are not allowed in union
+            if (in_array($unionedType::class, [MixedType::class, VoidType::class, \PHPStan\Type\IntersectionType::class], true)) {
                 return null;
             }
 
