@@ -10,12 +10,12 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
+use Rector\Php80\Guard\MakeClassMethodParamMixedTypedGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,8 +27,10 @@ final class MixedTypeRector extends AbstractRector implements MinPhpVersionInter
 {
     private bool $hasChanged = false;
 
-    public function __construct(private readonly ParamTagRemover $paramTagRemover)
-    {
+    public function __construct(
+        private readonly ParamTagRemover $paramTagRemover,
+        private readonly MakeClassMethodParamMixedTypedGuard $makeClassMethodParamMixedTypedGuard
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -100,18 +102,19 @@ CODE_SAMPLE
         ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
         PhpDocInfo $phpDocInfo
     ): void {
-        foreach ($functionLike->params as $param) {
+        foreach ($functionLike->params as $keyParam => $param) {
             if ($param->type instanceof Node) {
                 continue;
             }
 
-            $paramName = (string) $this->getName($param->var);
-            $paramTagValue = $phpDocInfo->getParamTagValueByName($paramName);
-
-            if (! $paramTagValue instanceof ParamTagValueNode) {
+            if ($functionLike instanceof ClassMethod && ! $this->makeClassMethodParamMixedTypedGuard->isLegal(
+                $functionLike,
+                $keyParam
+            )) {
                 continue;
             }
 
+            $paramName = (string) $this->getName($param->var);
             $paramType = $phpDocInfo->getParamType($paramName);
 
             if (! $paramType instanceof MixedType) {
