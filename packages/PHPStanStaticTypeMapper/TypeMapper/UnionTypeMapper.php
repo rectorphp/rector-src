@@ -305,9 +305,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             $phpParserUnionedTypes[] = $phpParserNode;
         }
 
-        /**
-         * @var Identifier[]|Name[] $phpParserUnionedTypes
-         */
+        /** @var Identifier[]|Name[] $phpParserUnionedTypes */
         $phpParserUnionedTypes = array_unique($phpParserUnionedTypes);
 
         if (count($phpParserUnionedTypes) < 2) {
