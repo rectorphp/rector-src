@@ -16,6 +16,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\Generic\GenericClassStringType;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -278,11 +279,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         foreach ($unionType->getTypes() as $unionedType) {
             // void,mixed, and intersection type are not allowed in union
-            if (in_array(
-                $unionedType::class,
-                [MixedType::class, VoidType::class, \PHPStan\Type\IntersectionType::class],
-                true
-            )) {
+            if (in_array($unionedType::class, [MixedType::class, VoidType::class, IntersectionType::class], true)) {
                 return null;
             }
 
