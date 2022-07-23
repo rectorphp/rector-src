@@ -197,7 +197,7 @@ final class ParallelFileProcessor
                 $handleErrorCallable,
 
                 // 3. callable on exit
-                function (mixed $exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
+                function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
                     $this->processPool->tryQuitProcess($processIdentifier);
                     if ($exitCode === Command::SUCCESS) {
                         return;

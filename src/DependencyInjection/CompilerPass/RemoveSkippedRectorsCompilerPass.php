@@ -39,7 +39,7 @@ final class RemoveSkippedRectorsCompilerPass implements CompilerPassInterface
     {
         $skipParameters = (array) $containerBuilder->getParameter(Option::SKIP);
 
-        return array_filter($skipParameters, fn (mixed $element): bool => $this->isRectorClass($element));
+        return array_filter($skipParameters, fn ($element): bool => $this->isRectorClass($element));
     }
 
     private function isRectorClass(mixed $element): bool
