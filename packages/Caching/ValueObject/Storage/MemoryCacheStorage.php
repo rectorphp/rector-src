@@ -34,7 +34,7 @@ final class MemoryCacheStorage implements CacheStorageInterface
         return $item->getData();
     }
 
-    public function save(string $key, string $variableKey, $data): void
+    public function save(string $key, string $variableKey, mixed $data): void
     {
         $this->storage[$key] = new CacheItem($variableKey, $data);
     }
