@@ -30,7 +30,7 @@ final class GenericClassStringTypeNormalizer
 
     public function normalize(Type $type): ArrayType | UnionType | Type
     {
-        $type = TypeTraverser::map($type, function (Type $type, $callback): Type {
+        $type = TypeTraverser::map($type, function (Type $type, mixed $callback): Type {
             if (! $type instanceof ConstantStringType) {
                 return $callback($type);
             }
