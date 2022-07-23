@@ -10,9 +10,9 @@ abstract class SkipIntersectionInUnion
             'request' => $this->getRequestName(),
         ]);
 
-        $parameters = $this->removeEmptyValues($parameters);
+        $this->removeEmptyValues($parameters);
 
-        return array_map(static fn ($parameter) => 'test', $parameters);
+        return [];
     }
 
     private function removeEmptyValues($input): array
@@ -25,6 +25,6 @@ abstract class SkipIntersectionInUnion
             $value = $this->removeEmptyValues($value);
         }
 
-        return array_filter($input, static fn ($val) => true);
+        return [];
     }
 }
