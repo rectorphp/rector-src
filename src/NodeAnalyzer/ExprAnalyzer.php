@@ -57,7 +57,7 @@ final class ExprAnalyzer
                 continue;
             }
 
-            $paramTag = $phpDocInfo->getParamTagValueByName($paramName);
+            $paramTag = $phpDocInfo->getParamTagValueNodeByName($paramName);
 
             return $paramTag instanceof ParamTagValueNode && $param->type === null;
         }

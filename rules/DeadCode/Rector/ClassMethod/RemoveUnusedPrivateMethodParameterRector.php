@@ -188,7 +188,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramTagValueNode = $phpDocInfo->getParamTagValueByName($parameterName);
+            $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($parameterName);
             if (! $paramTagValueNode instanceof ParamTagValueNode) {
                 continue;
             }

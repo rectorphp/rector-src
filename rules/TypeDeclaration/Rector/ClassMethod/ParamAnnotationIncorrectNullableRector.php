@@ -134,7 +134,7 @@ CODE_SAMPLE
         }
 
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType, TypeKind::PARAM);
-        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
+        $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($paramName);
         // override existing type
         if ($paramTagValueNode !== null) {
             // already set

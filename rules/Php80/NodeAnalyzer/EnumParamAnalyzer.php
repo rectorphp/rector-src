@@ -31,7 +31,7 @@ final class EnumParamAnalyzer
         ParameterReflection $parameterReflection,
         PhpDocInfo $phpDocInfo
     ): ?ClassNameAndTagValueNode {
-        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($parameterReflection->getName());
+        $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($parameterReflection->getName());
         if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return null;
         }

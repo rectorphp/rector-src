@@ -133,7 +133,7 @@ final class PhpDocInfo
 
     public function getParamType(string $name): Type
     {
-        $paramTagValueNodes = $this->getParamTagValueByName($name);
+        $paramTagValueNodes = $this->getParamTagValueNodeByName($name);
         return $this->getTypeOrMixed($paramTagValueNodes);
     }
 
@@ -143,19 +143,6 @@ final class PhpDocInfo
     public function getParamTagValueNodes(): array
     {
         return $this->phpDocNode->getParamTagValues();
-    }
-
-    public function getParamTagValueNodeByName(string $parameterName): ?ParamTagValueNode
-    {
-        foreach ($this->phpDocNode->getParamTagValues() as $paramTagValueNode) {
-            if ($paramTagValueNode->parameterName !== '$' . $parameterName) {
-                continue;
-            }
-
-            return $paramTagValueNode;
-        }
-
-        return null;
     }
 
     public function getVarType(string $tagName = '@var'): Type
@@ -421,7 +408,7 @@ final class PhpDocInfo
         return $returnTagValueNodes[0] ?? null;
     }
 
-    public function getParamTagValueByName(string $name): ?ParamTagValueNode
+    public function getParamTagValueNodeByName(string $name): ?ParamTagValueNode
     {
         $desiredParamNameWithDollar = '$' . ltrim($name, '$');
 
