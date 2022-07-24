@@ -4,12 +4,12 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeR
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector\Source\ExternalList;
 
-final class ForeachNumeric
+final class ForeachNonEmpty
 {
     public function run(): array
     {
         $map = [];
-        foreach (ExternalList::getArrayOfNumericStrings() as $externalValue) {
+        foreach (ExternalList::getArrayOfNonEmptyStrings() as $externalValue) {
             $map[$externalValue] = 100;
         }
         return $map;
@@ -22,15 +22,15 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeR
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector\Source\ExternalList;
 
-final class ForeachNumeric
+final class ForeachNonEmpty
 {
     /**
-     * @return array<numeric-string, int>
+     * @return array<non-empty-string, int>
      */
     public function run(): array
     {
         $map = [];
-        foreach (ExternalList::getArrayOfNumericStrings() as $externalValue) {
+        foreach (ExternalList::getArrayOfNonEmptyStrings() as $externalValue) {
             $map[$externalValue] = 100;
         }
         return $map;

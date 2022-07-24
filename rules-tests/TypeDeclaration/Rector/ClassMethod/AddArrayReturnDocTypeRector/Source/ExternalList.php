@@ -11,4 +11,24 @@ final class ExternalList
     public const SECOND = 'second';
 
     public const VALUES = [self::FIRST, self::SECOND];
+
+    /**
+     * @var non-empty-string[]
+     */
+    static public function getArrayOfNonEmptyStrings() {
+        $a = [];
+        $a[] = self::FIRST;
+        $a[] = self::SECOND;
+        return $a;
+    }
+
+    /**
+     * @var numeric-string[]
+     */
+    static public function getArrayOfNumericStrings() {
+        $a = [];
+        $a[] = 1;
+        $a[] = 2;
+        return $a;
+    }
 }
