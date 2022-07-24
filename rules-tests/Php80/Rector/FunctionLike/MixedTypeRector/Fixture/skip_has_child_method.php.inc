@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\FunctionLike\MixedTypeRector\Fixture;
 
-class SkipHasPublicChildMethod
+class SkipHasChildMethod
 {
     /**
      * @param mixed $param
