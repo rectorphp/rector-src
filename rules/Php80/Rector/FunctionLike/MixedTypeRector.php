@@ -11,11 +11,14 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\ParamTagRemover;
+use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -28,6 +31,8 @@ final class MixedTypeRector extends AbstractRector implements MinPhpVersionInter
     private bool $hasChanged = false;
 
     public function __construct(
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ClassChildAnalyzer $classChildAnalyzer,
         private readonly ParamTagRemover $paramTagRemover
     ) {
     }
@@ -76,6 +81,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node instanceof ClassMethod && $this->shouldSkipClassMethod($node)) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $this->refactorParamTypes($node, $phpDocInfo);
@@ -91,6 +100,21 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::MIXED_TYPE;
+    }
+
+    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        $methodName = $this->nodeNameResolver->getName($classMethod);
+        if ($this->classChildAnalyzer->hasChildClassMethod($classReflection, $methodName)) {
+            return true;
+        }
+
+        return $this->classChildAnalyzer->hasParentClassMethod($classReflection, $methodName);
     }
 
     private function refactorParamTypes(
