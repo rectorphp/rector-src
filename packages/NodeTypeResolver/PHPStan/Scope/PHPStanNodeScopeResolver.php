@@ -155,11 +155,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof ArrayItem) {
-                if ($node->key instanceof Expr) {
-                    $node->key->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-
-                $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $this->processArrayItem($node, $mutatingScope);
             }
 
             if ($node instanceof Assign) {
@@ -221,6 +217,15 @@ final class PHPStanNodeScopeResolver
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
         return $this->processNodesWithDependentFiles($smartFileInfo, $stmts, $scope, $nodeCallback);
+    }
+
+    private function processArrayItem(ArrayItem $arrayItem, MutatingScope $mutatingScope): void
+    {
+        if ($arrayItem->key instanceof Expr) {
+            $arrayItem->key->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
     private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
