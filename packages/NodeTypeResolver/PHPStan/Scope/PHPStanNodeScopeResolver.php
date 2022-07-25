@@ -117,17 +117,14 @@ final class PHPStanNodeScopeResolver
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
                 $node instanceof Assign ||
-                $node instanceof EnumCase
+                $node instanceof EnumCase ||
+                $node instanceof AssignOp
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Ternary) {
                 $this->processTernary($node, $mutatingScope);
-            }
-
-            if ($node instanceof AssignOp) {
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof BinaryOp) {
