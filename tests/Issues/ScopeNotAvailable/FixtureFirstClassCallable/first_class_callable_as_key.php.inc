@@ -2,12 +2,12 @@
 
 namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureFirstClassCallable;
 
-final class Fixture
+final class FirstClassCallableAsKey
 {
     public function getCallables(): array
     {
         return [
-            $this->opposite(...),
+            $this->opposite(...) => 'test',
         ];
     }
 }
@@ -18,12 +18,12 @@ final class Fixture
 
 namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureFirstClassCallable;
 
-final class Fixture
+final class FirstClassCallableAsKey
 {
     public function getCallables(): array
     {
         return [
-            \Closure::fromCallable([$this, 'opposite']),
+            \Closure::fromCallable([$this, 'opposite']) => 'test',
         ];
     }
 }

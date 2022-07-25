@@ -155,6 +155,10 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof ArrayItem) {
+                if ($node->key instanceof Expr) {
+                    $node->key->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+
                 $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
