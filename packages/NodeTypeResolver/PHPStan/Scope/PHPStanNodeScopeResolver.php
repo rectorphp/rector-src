@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
@@ -151,6 +152,10 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof TryCatch) {
                 $this->processTryCatch($node, $smartFileInfo, $mutatingScope);
+            }
+
+            if ($node instanceof ArrayItem) {
+                $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Assign) {
