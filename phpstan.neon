@@ -702,8 +702,3 @@ parameters:
             message: '#Method call return value that should be used, but is not#'
             path: src/PhpParser/Node/NodeFactory.php
             count: 1
-
-        -
-            message: '#Parameters should use "array\|Symplify\\SmartFileSystem\\SmartFileInfo\|PHPStan\\Analyser\\MutatingScope" types as the only types passed to this method#'
-            paths:
-                - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
