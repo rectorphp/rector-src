@@ -69,7 +69,7 @@ final class ChangedNodeScopeRefresher
         }
 
         $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($node instanceof Expr && ! $mutatingScope instanceof MutatingScope && $parent instanceof Node) {
+        if (! $mutatingScope instanceof MutatingScope && $node instanceof Expr && $parent instanceof Node) {
             $mutatingScope = $parent->getAttribute(AttributeKey::SCOPE);
         }
 
