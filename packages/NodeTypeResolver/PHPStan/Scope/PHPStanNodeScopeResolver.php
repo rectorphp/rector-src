@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
@@ -156,6 +157,10 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof ArrayItem) {
                 $this->processArrayItem($node, $mutatingScope);
+            }
+
+            if ($node instanceof FuncCall && $node->name instanceof Expr) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Assign) {
