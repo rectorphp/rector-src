@@ -19,6 +19,7 @@ final class StaticArrowFunctionRector extends AbstractRector
     public function __construct(private readonly StaticGuard $staticGuard)
     {
     }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
