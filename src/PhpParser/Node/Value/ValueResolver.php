@@ -262,7 +262,7 @@ final class ValueResolver
             $classLike = $this->betterNodeFinder->findParentType($classConstFetch, ClassLike::class);
             if (! $classLike instanceof ClassLike) {
                 throw new ShouldNotHappenException(
-                    'Complete class parent node for to class const fetch, so "self" references is resolvable to a class name'
+                    'Complete class parent node for to class const fetch, so "self" or "static" references is resolvable to a class name'
                 );
             }
 
