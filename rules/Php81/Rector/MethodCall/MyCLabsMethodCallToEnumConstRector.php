@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -74,10 +75,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $className = $node->class->getAttribute(AttributeKey::ORIGINAL_NAME)->toCodeString();
-        if (! is_string($className)) {
+        $originalName = $node->class->getAttribute(AttributeKey::ORIGINAL_NAME);
+        if (! $originalName instanceof Name) {
             return null;
         }
+
+        $className = $originalName->toCodeString();
 
         return $this->nodeFactory->createShortClassConstFetch($className, $enumCaseName);
     }
@@ -94,10 +97,13 @@ CODE_SAMPLE
         }
 
         $staticCall = $methodCall->var;
-        $className = $staticCall->class->getAttribute(AttributeKey::ORIGINAL_NAME)->toCodeString();
-        if ($className === null) {
+
+        $originalName = $staticCall->class->getAttribute(AttributeKey::ORIGINAL_NAME);
+        if (! $originalName instanceof Name) {
             return null;
         }
+
+        $className = $originalName->toCodeString();
 
         $enumCaseName = $this->getName($staticCall->name);
         if ($enumCaseName === null) {
@@ -114,10 +120,12 @@ CODE_SAMPLE
         }
 
         $staticCall = $methodCall->var;
-        $className = $staticCall->class->getAttribute(AttributeKey::ORIGINAL_NAME)->toCodeString();
-        if ($className === null) {
+        $originalName = $staticCall->class->getAttribute(AttributeKey::ORIGINAL_NAME);
+        if (! $originalName instanceof Name) {
             return null;
         }
+
+        $className = $originalName->toCodeString();
 
         $enumCaseName = $this->getName($staticCall->name);
         if ($enumCaseName === null) {
