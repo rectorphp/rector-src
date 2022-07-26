@@ -3,7 +3,7 @@
 namespace Rector\Tests\CodingStyle\Rector\Closure\StaticClosureRector\Fixture;
 
 /**
- * @see https://3v4l.org/rQfZd
+ * @see https://3v4l.org/SJSoj
  */
 class SkipHasStaticCallCallNonStatic
 {
