@@ -6,7 +6,7 @@ final class SkipNegationClassConstFetch
 {
     protected const CSRF_HASH_BYTES      = 16;
 
-    protected function derandomize(string $token): int
+    protected function run()
     {
         echo -static::CSRF_HASH_BYTES * 2;
     }

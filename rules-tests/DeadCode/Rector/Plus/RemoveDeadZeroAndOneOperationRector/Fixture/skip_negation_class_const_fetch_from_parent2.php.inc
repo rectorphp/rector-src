@@ -4,10 +4,10 @@ namespace Rector\Tests\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector\
 
 use Rector\Tests\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector\Source\SomeParentClass;
 
-final class SkipNegationClassConstFetchFromParent extends SomeParentClass
+final class SkipNegationClassConstFetchFromParent2 extends SomeParentClass
 {
     protected function run()
     {
-        echo -static::CSRF_HASH_BYTES * 2;
+        echo -parent::CSRF_HASH_BYTES * 2;
     }
 }
