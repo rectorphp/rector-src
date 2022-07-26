@@ -8,6 +8,8 @@ final class StaticEnumStaticMethodCall
 {
     public function run($value)
     {
+        SomeEnum::from($value)->getKey();
+        SomeEnum::from($value)->getValue();
         $compare = SomeEnum::from($value);
         $compare = SomeEnum::values();
         $compare = SomeEnum::keys();

@@ -63,7 +63,7 @@ CODE_SAMPLE
         }
 
         $enumCaseName = $this->getName($node->name);
-        if ($enumCaseName === null || in_array($enumCaseName, self::ENUM_METHODS, true)) {
+        if ($enumCaseName === null || $this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
 
@@ -106,7 +106,7 @@ CODE_SAMPLE
         $className = $originalName->toCodeString();
 
         $enumCaseName = $this->getName($staticCall->name);
-        if ($enumCaseName === null) {
+        if ($enumCaseName === null || $this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
 
@@ -128,7 +128,7 @@ CODE_SAMPLE
         $className = $originalName->toCodeString();
 
         $enumCaseName = $this->getName($staticCall->name);
-        if ($enumCaseName === null) {
+        if ($enumCaseName === null || $this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
 
@@ -152,5 +152,10 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function shouldOmitEnumCase(string $enumCaseName): bool
+    {
+        return in_array($enumCaseName, self::ENUM_METHODS, true);
     }
 }
