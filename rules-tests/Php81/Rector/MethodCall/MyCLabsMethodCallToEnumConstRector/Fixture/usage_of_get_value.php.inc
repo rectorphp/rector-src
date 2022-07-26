@@ -4,11 +4,11 @@ namespace Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRecto
 
 use Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum;
 
-final class UsageOfConstantValue
+final class UsageOfGetValue
 {
     public function run($value)
     {
-        $compare = SomeEnum::VALUE()->getValue();
+        $enum = SomeEnum::USED_TO_BE_CONST()->getValue();
     }
 }
 
@@ -20,11 +20,11 @@ namespace Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRecto
 
 use Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum;
 
-final class UsageOfConstantValue
+final class UsageOfGetValue
 {
     public function run($value)
     {
-        $compare = SomeEnum::VALUE->getValue();
+        $enum = SomeEnum::USED_TO_BE_CONST->value;
     }
 }
 
