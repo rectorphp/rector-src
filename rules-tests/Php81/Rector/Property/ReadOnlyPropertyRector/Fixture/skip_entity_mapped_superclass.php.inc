@@ -5,7 +5,7 @@ namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\MappedSuperclass]
-abstract class Oi
+abstract class SkipEntityMappedSuperClass
 {
     #[ORM\Column(type: 'string')]
     #[ORM\Id]
