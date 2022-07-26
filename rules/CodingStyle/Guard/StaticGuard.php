@@ -31,20 +31,11 @@ final class StaticGuard
             ? $node->stmts
             : [$node->expr];
 
-        $hasThisVariable = (bool) $this->betterNodeFinder->findFirst(
-            $nodes,
-            static fn (Node $subNode): bool => $subNode instanceof Variable && $subNode->name === 'this'
-        );
-
-        if ($hasThisVariable) {
-            return false;
-        }
-
         return ! (bool) $this->betterNodeFinder->findFirst(
             $nodes,
             function (Node $subNode): bool {
                 if (! $subNode instanceof StaticCall) {
-                    return false;
+                    return $subNode instanceof Variable && $subNode->name === 'this';
                 }
 
                 $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromStaticCall($subNode);
