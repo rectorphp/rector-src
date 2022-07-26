@@ -30,13 +30,7 @@ final class StaticGuard
             $nodes,
             static fn (Node $subNode): bool => $subNode instanceof Variable && $subNode->name === 'this'
         );
-
-        if ($hasThisVariale) {
-            return false;
-        }
-
         // verify has static call call non static method
-
-        return true;
+        return ! $hasThisVariale;
     }
 }
