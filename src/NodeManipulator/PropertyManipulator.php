@@ -60,6 +60,7 @@ final class PropertyManipulator
     private const ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES = [
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Table',
+        'Doctrine\ORM\Mapping\MappedSuperclass',
     ];
 
     /**
