@@ -258,7 +258,7 @@ final class ValueResolver
             throw new ShouldNotHappenException();
         }
 
-        if ($class === ObjectReference::SELF) {
+        if ($class === ObjectReference::SELF || $class === ObjectReference::STATIC) {
             $classLike = $this->betterNodeFinder->findParentType($classConstFetch, ClassLike::class);
             if (! $classLike instanceof ClassLike) {
                 throw new ShouldNotHappenException(
