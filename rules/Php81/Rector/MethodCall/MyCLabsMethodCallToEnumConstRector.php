@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,6 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MyCLabsMethodCallToEnumConstRector extends AbstractRector implements MinPhpVersionInterface
 {
+    private const ENUM_METHODS = ['from', 'values', 'keys', 'isValid', 'search', 'toArray', 'assertValidValue'];
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Refactor MyCLabs enum fetch to Enum const', [
@@ -59,7 +62,7 @@ CODE_SAMPLE
         }
 
         $enumCaseName = $this->getName($node->name);
-        if ($enumCaseName === null) {
+        if ($enumCaseName === null || in_array($enumCaseName, self::ENUM_METHODS, true)) {
             return null;
         }
 
@@ -71,12 +74,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $className = $this->getName($node->class);
+        $className = $node->class->getAttribute(AttributeKey::ORIGINAL_NAME)->toCodeString();
         if (! is_string($className)) {
             return null;
         }
 
-        return $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
+        return $this->nodeFactory->createShortClassConstFetch($className, $enumCaseName);
     }
 
     public function provideMinPhpVersion(): int
@@ -91,7 +94,7 @@ CODE_SAMPLE
         }
 
         $staticCall = $methodCall->var;
-        $className = $this->getName($staticCall->class);
+        $className = $staticCall->class->getAttribute(AttributeKey::ORIGINAL_NAME)->toCodeString();
         if ($className === null) {
             return null;
         }
@@ -101,7 +104,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
+        return $this->nodeFactory->createShortClassConstFetch($className, $enumCaseName);
     }
 
     private function refactorGetValueMethodCall(MethodCall $methodCall): ?PropertyFetch
@@ -111,7 +114,7 @@ CODE_SAMPLE
         }
 
         $staticCall = $methodCall->var;
-        $className = $this->getName($staticCall->class);
+        $className = $staticCall->class->getAttribute(AttributeKey::ORIGINAL_NAME)->toCodeString();
         if ($className === null) {
             return null;
         }
@@ -121,7 +124,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $enumConstFetch = $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
+        $enumConstFetch = $this->nodeFactory->createShortClassConstFetch($className, $enumCaseName);
 
         return new PropertyFetch($enumConstFetch, 'value');
     }
