@@ -260,7 +260,7 @@ final class ValueResolver
             throw new ShouldNotHappenException();
         }
 
-        if ($class === ObjectReference::SELF || $class === ObjectReference::STATIC || $class === ObjectReference::PARENT) {
+        if (in_array($class, [ObjectReference::SELF, ObjectReference::STATIC, ObjectReference::PARENT], true)) {
             $class = $this->resolveClassFromSelfStaticParent($classConstFetch, $class);
         }
 
