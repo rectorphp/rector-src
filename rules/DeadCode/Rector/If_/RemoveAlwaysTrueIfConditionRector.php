@@ -78,16 +78,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipPropertyFetch($node->cond)) {
-            return null;
-        }
-
         $conditionStaticType = $this->getType($node->cond);
         if (! $conditionStaticType instanceof ConstantBooleanType) {
             return null;
         }
 
         if (! $conditionStaticType->getValue()) {
+            return null;
+        }
+
+        if ($this->shouldSkipPropertyFetch($node->cond)) {
             return null;
         }
 
