@@ -84,9 +84,27 @@ final class ReflectionResolver
         return $scope->getClassReflection();
     }
 
-    public function resolveClassReflectionSourceObject(MethodCall|StaticCall $call): ?ClassReflection
-    {
-        $classMethod = $this->astResolver->resolveClassMethodFromCall($call);
+    public function resolveClassReflectionSourceObject(
+        MethodCall|StaticCall|PropertyFetch|StaticPropertyFetch $node
+    ): ?ClassReflection {
+        if ($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch) {
+            $objectType = $node instanceof PropertyFetch
+                ? $this->nodeTypeResolver->getType($node->var)
+                : $this->nodeTypeResolver->getType($node->class);
+
+            if (! $objectType instanceof TypeWithClassName) {
+                return null;
+            }
+
+            $className = $objectType->getClassName();
+            if (! $this->reflectionProvider->hasClass($className)) {
+                return null;
+            }
+
+            return $this->reflectionProvider->getClass($className);
+        }
+
+        $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
         return $this->resolveClassReflection($classMethod);
     }
 
