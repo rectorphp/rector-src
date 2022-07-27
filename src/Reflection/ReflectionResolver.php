@@ -22,7 +22,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeUtils;
-use PHPStan\Type\TypeWithClassName;
+use PHPStan\Type\ThisType;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -93,11 +93,11 @@ final class ReflectionResolver
                 ? $this->nodeTypeResolver->getType($node->var)
                 : $this->nodeTypeResolver->getType($node->class);
 
-            if (! in_array($objectType::class, [TypeWithClassName::class, FullyQualifiedObjectType::class], true)) {
+            if (! in_array($objectType::class, [ThisType::class, FullyQualifiedObjectType::class], true)) {
                 return null;
             }
 
-            /** @var TypeWithClassName|FullyQualifiedObjectType $objectType */
+            /** @var ThisType|FullyQualifiedObjectType $objectType */
             $className = $objectType->getClassName();
             if (! $this->reflectionProvider->hasClass($className)) {
                 return null;
