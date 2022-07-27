@@ -119,8 +119,12 @@ CODE_SAMPLE
             }
 
             $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
-            $nativeProperty = $classReflection->getNativeProperty($propertyName);
 
+            if (! $classReflection->hasNativeProperty($propertyName)) {
+                continue;
+            }
+
+            $nativeProperty = $classReflection->getNativeProperty($propertyName);
             if (! $nativeProperty->hasNativeType()) {
                 return true;
             }
