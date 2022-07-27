@@ -112,7 +112,7 @@ CODE_SAMPLE
         );
 
         foreach ($propertyFetches as $propertyFetch) {
-            $classReflection = $this->reflectionResolver->resolveClassReflection($propertyFetch);
+            $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($propertyFetch);
 
             if (! $classReflection instanceof ClassReflection) {
                 continue;

@@ -31,6 +31,7 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symfony\Contracts\Service\Attribute\Required;
 
 final class ReflectionResolver
@@ -84,9 +85,28 @@ final class ReflectionResolver
         return $scope->getClassReflection();
     }
 
-    public function resolveClassReflectionSourceObject(MethodCall|StaticCall $call): ?ClassReflection
-    {
-        $classMethod = $this->astResolver->resolveClassMethodFromCall($call);
+    public function resolveClassReflectionSourceObject(
+        MethodCall|StaticCall|PropertyFetch|StaticPropertyFetch $node
+    ): ?ClassReflection {
+        if ($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch) {
+            $objectType = $node instanceof PropertyFetch
+                ? $this->nodeTypeResolver->getType($node->var)
+                : $this->nodeTypeResolver->getType($node->class);
+
+            if (! in_array($objectType::class, [TypeWithClassName::class, FullyQualifiedObjectType::class], true)) {
+                return null;
+            }
+
+            /** @var TypeWithClassName|FullyQualifiedObjectType $objectType */
+            $className = $objectType->getClassName();
+            if (! $this->reflectionProvider->hasClass($className)) {
+                return null;
+            }
+
+            return $this->reflectionProvider->getClass($className);
+        }
+
+        $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
         return $this->resolveClassReflection($classMethod);
     }
 
