@@ -13,6 +13,8 @@ use Symfony\Component\Process\Process;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+error_reporting(~E_DEPRECATED);
+
 /**
  * Inspired from @see https://github.com/phpstan/phpstan-src/blob/master/bin/generate-changelog.php
  *
@@ -130,9 +132,9 @@ final class GenerateChangelogCommand extends Command
                         'https://github.com/' . self::DEVELOPMENT_REPOSITORY_NAME . '/pull/' . $item->number
                     );
                     $thanks = $item->user->login;
-                } else {
-                    $issuesToReference[] = sprintf('#%d', $item->number);
+                    break;
                 }
+                $issuesToReference[] = sprintf('#%d', $item->number);
             }
 
             // clean commit from duplicating issue number
