@@ -7,6 +7,7 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType as PHPParserNodeIntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
@@ -16,6 +17,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\Generic\GenericClassStringType;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -286,7 +288,7 @@ final class UnionTypeMapper implements TypeMapperInterface
              * NullType inside UnionType is allowed
              * make it on TypeKind property as changing other type, eg: return type may conflict with parent child implementation
              *
-             * @var Identifier|Name|null $phpParserNode
+             * @var Identifier|Name|null|PHPParserNodeIntersectionType $phpParserNode
              */
             $phpParserNode = $unionedType instanceof NullType && $typeKind === TypeKind::PROPERTY
                 ? new Name('null')
@@ -296,9 +298,14 @@ final class UnionTypeMapper implements TypeMapperInterface
                 return null;
             }
 
+            if ($phpParserNode instanceof PHPParserNodeIntersectionType && $unionedType instanceof IntersectionType) {
+                return null;
+            }
+
             $phpParserUnionedTypes[] = $phpParserNode;
         }
 
+        /** @var Identifier[]|Name[] $phpParserUnionedTypes */
         $phpParserUnionedTypes = array_unique($phpParserUnionedTypes);
 
         if (count($phpParserUnionedTypes) < 2) {
