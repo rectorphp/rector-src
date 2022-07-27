@@ -4,19 +4,19 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector\Fix
 
 class SkipPropertyByVarDoc
 {
-    /** @var \Memcached */
+    /** @var \DateTime */
     private $property;
 
     public function __construct()
     {
-        if (class_exists(\Memcached::class)) {
-            $this->property = new \Memcached();
+        if (rand(0, 1)) {
+            $this->property = new \DateTime('now');
         }
     }
 
     public function verify()
     {
-        if ($this->property instanceof \Memcached) {
+        if ($this->property instanceof \DateTime) {
             return true;
         }
 
