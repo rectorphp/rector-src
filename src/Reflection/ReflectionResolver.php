@@ -22,6 +22,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeUtils;
+use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\ThisType;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
