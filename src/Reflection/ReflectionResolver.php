@@ -23,7 +23,6 @@ use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeUtils;
 use PHPStan\Type\TypeWithClassName;
-use PHPStan\Type\ThisType;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -32,7 +31,6 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symfony\Contracts\Service\Attribute\Required;
 
 final class ReflectionResolver
@@ -94,11 +92,10 @@ final class ReflectionResolver
                 ? $this->nodeTypeResolver->getType($node->var)
                 : $this->nodeTypeResolver->getType($node->class);
 
-            if (! in_array($objectType::class, [ThisType::class, FullyQualifiedObjectType::class], true)) {
+            if (! $objectType instanceof TypeWithClassName) {
                 return null;
             }
 
-            /** @var ThisType|FullyQualifiedObjectType $objectType */
             $className = $objectType->getClassName();
             if (! $this->reflectionProvider->hasClass($className)) {
                 return null;
