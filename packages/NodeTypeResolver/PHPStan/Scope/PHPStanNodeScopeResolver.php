@@ -7,9 +7,11 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
@@ -115,17 +117,14 @@ final class PHPStanNodeScopeResolver
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
                 $node instanceof Assign ||
-                $node instanceof EnumCase
+                $node instanceof EnumCase ||
+                $node instanceof AssignOp
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Ternary) {
                 $this->processTernary($node, $mutatingScope);
-            }
-
-            if ($node instanceof AssignOp) {
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof BinaryOp) {
@@ -151,6 +150,14 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof TryCatch) {
                 $this->processTryCatch($node, $smartFileInfo, $mutatingScope);
+            }
+
+            if ($node instanceof ArrayItem) {
+                $this->processArrayItem($node, $mutatingScope);
+            }
+
+            if ($node instanceof FuncCall && $node->name instanceof Expr) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Assign) {
@@ -212,6 +219,15 @@ final class PHPStanNodeScopeResolver
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
         return $this->processNodesWithDependentFiles($smartFileInfo, $stmts, $scope, $nodeCallback);
+    }
+
+    private function processArrayItem(ArrayItem $arrayItem, MutatingScope $mutatingScope): void
+    {
+        if ($arrayItem->key instanceof Expr) {
+            $arrayItem->key->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
     private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void

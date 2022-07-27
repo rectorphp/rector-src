@@ -68,8 +68,12 @@ final class ChangedNodeScopeRefresher
             $mutatingScope = $this->scopeFactory->createFromFile($smartFileInfo);
         }
 
+        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $mutatingScope instanceof MutatingScope && $node instanceof Expr && $parent instanceof Node) {
+            $mutatingScope = $parent->getAttribute(AttributeKey::SCOPE);
+        }
+
         if (! $mutatingScope instanceof MutatingScope) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
             $errorMessage = sprintf(
                 'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
                 $node::class,
