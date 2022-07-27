@@ -106,8 +106,8 @@ CODE_SAMPLE
         $this->refactorParamTypes($node, $phpDocInfo);
         $this->refactorReturnType($node, $phpDocInfo);
 
-        $hasParamChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
-        if ($hasParamChanged) {
+        $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
+        if ($phpDocInfo->hasChanged()) {
             $this->hasChanged = true;
         }
 

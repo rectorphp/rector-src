@@ -19,6 +19,7 @@ use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
 use Rector\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector;
 use Rector\Php80\Rector\FuncCall\TokenGetAllToObjectRector;
+use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Php80\Rector\FunctionLike\UnionTypesRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
@@ -105,4 +106,5 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->rule(Php8ResourceReturnToObjectRector::class);
     $rectorConfig->rule(AddParamBasedOnParentClassMethodRector::class);
+    $rectorConfig->rule(MixedTypeRector::class);
 };

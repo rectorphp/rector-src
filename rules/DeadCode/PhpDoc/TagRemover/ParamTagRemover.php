@@ -19,15 +19,12 @@ final class ParamTagRemover
     ) {
     }
 
-    public function removeParamTagsIfUseless(PhpDocInfo $phpDocInfo, FunctionLike $functionLike): bool
+    public function removeParamTagsIfUseless(PhpDocInfo $phpDocInfo, FunctionLike $functionLike): void
     {
-        $hasChanged = false;
-
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (Node $docNode) use (
             $functionLike,
-            $phpDocInfo,
-            &$hasChanged
+            $phpDocInfo
         ): ?int {
             if (! $docNode instanceof PhpDocTagNode) {
                 return null;
@@ -47,10 +44,7 @@ final class ParamTagRemover
             }
 
             $phpDocInfo->markAsChanged();
-            $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
-
-        return $hasChanged;
     }
 }

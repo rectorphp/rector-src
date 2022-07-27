@@ -10,12 +10,9 @@ namespace Rector\Caching\ValueObject;
  */
 final class CacheItem
 {
-    /**
-     * @param mixed $data
-     */
     public function __construct(
         private readonly string $variableKey,
-        private $data
+        private readonly mixed $data
     ) {
     }
 

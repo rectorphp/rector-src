@@ -8,15 +8,11 @@ use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 
 final class ReplaceFuncCallArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
 {
-    /**
-     * @param mixed $valueBefore
-     * @param mixed $valueAfter
-     */
     public function __construct(
         private readonly string $function,
         private readonly int $position,
-        private $valueBefore,
-        private $valueAfter
+        private readonly mixed $valueBefore,
+        private readonly mixed $valueAfter
     ) {
     }
 

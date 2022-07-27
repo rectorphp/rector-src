@@ -13,10 +13,7 @@ final class CurlyListNode extends AbstractValuesAwareNode implements Stringable
         return $this->implode($this->values);
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function stringifyValue($value): string
+    private function stringifyValue(mixed $value): string
     {
         if ($value === false) {
             return 'false';

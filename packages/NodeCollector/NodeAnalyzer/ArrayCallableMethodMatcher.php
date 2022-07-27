@@ -117,10 +117,7 @@ final class ArrayCallableMethodMatcher
         return $array->items[1] === null;
     }
 
-    /**
-     * @param mixed $values
-     */
-    private function shouldSkipAssociativeArray($values): bool
+    private function shouldSkipAssociativeArray(mixed $values): bool
     {
         if (! is_array($values)) {
             return false;
