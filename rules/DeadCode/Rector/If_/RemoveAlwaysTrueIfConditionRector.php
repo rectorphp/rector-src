@@ -9,11 +9,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Property;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -22,6 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
 {
+    public function __construct(private readonly ReflectionResolver $reflectionResolver)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove if condition that is always true', [
@@ -106,27 +110,18 @@ CODE_SAMPLE
             $expr,
             [PropertyFetch::class, StaticPropertyFetch::class]
         );
-        $classLike = $this->betterNodeFinder->findParentType($expr, ClassLike::class);
-
-        if (! $classLike instanceof ClassLike) {
-            return false;
-        }
 
         foreach ($propertyFetches as $propertyFetch) {
-            $propertyFetchClassLike = $this->betterNodeFinder->findParentType($propertyFetch, ClassLike::class);
+            $classReflection = $this->reflectionResolver->resolveClassReflection($propertyFetch);
 
-            if ($propertyFetchClassLike !== $classLike) {
+            if (! $classReflection instanceof ClassReflection) {
                 continue;
             }
 
             $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
-            $property = $classLike->getProperty($propertyName);
+            $nativeProperty = $classReflection->getNativeProperty($propertyName);
 
-            if (! $property instanceof Property) {
-                continue;
-            }
-
-            if (! $property->type instanceof Node) {
+            if (! $nativeProperty->hasNativeType()) {
                 return true;
             }
         }
