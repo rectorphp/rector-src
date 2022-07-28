@@ -150,6 +150,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $callerType->hasProperty($propertyName)->yes()) {
+            return null;
+        }
+
         $propertyReflection = $callerType->getProperty($propertyName, $scope);
         $propertyType = $propertyReflection->getReadableType();
 
