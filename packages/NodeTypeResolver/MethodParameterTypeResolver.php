@@ -55,8 +55,7 @@ final class MethodParameterTypeResolver
     private function provideParameterTypesFromMethodReflection(
         MethodReflection $methodReflection,
         ClassMethod|StaticCall $node
-    ): array
-    {
+    ): array {
         if ($methodReflection instanceof NativeMethodReflection) {
             // method "getParameters()" does not exist there
             return [];

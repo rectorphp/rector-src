@@ -89,8 +89,7 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
         StaticCall|MethodCall $node,
         string $methodName,
         Scope $scope
-    ): Type
-    {
+    ): Type {
         if (! $this->reflectionProvider->hasClass($referencedClass)) {
             return new MixedType();
         }

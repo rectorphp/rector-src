@@ -163,8 +163,7 @@ CODE_SAMPLE
     private function resolveExpectedArgParamOrderIfDifferent(
         MethodReflection $methodReflection,
         New_|MethodCall|null $node = null
-    ): ?array
-    {
+    ): ?array {
         if ($this->vendorLocationDetector->detectMethodReflection($methodReflection)) {
             return null;
         }
