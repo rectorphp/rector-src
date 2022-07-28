@@ -83,6 +83,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($property->isReadonly()) {
+                continue;
+            }
+
             $propertyProperty = $property->props[0];
             $propertyProperty->default = $defaultPropertyExprAssign->getDefaultExpr();
 
