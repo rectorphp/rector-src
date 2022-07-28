@@ -63,7 +63,7 @@ final class MethodParameterTypeResolver
 
         $parameterTypes = [];
 
-        if (! $node instanceof CallLike) {
+        if (! $node instanceof StaticCall) {
             $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
         } else {
             $scope = $node->getAttribute(AttributeKey::SCOPE);
