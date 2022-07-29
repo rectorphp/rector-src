@@ -120,7 +120,7 @@ CODE_SAMPLE
             $variablesInitiation[] = $expresssion;
         }
 
-        $node->stmts = array_merge($variablesInitiation, (array) $node->stmts);
+        $node->stmts = array_merge($variablesInitiation, $node->stmts);
 
         return $node;
     }
