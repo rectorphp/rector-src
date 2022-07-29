@@ -102,16 +102,30 @@ CODE_SAMPLE
             return null;
         }
 
+        $variablesInitiation = $this->collectVariablesInitiation($undefinedVariableNames, $node->stmts);
+        $node->stmts = array_merge($variablesInitiation, $node->stmts);
+
+        return $node;
+    }
+
+    /**
+     * @param string[] $undefinedVariableNames
+     * @param Stmt[] $stmts
+     * @return Expression[]
+     */
+    private function collectVariablesInitiation(array $undefinedVariableNames, array $stmts): array
+    {
         $variablesInitiation = [];
+
         foreach ($undefinedVariableNames as $undefinedVariableName) {
-            $value = $this->isArray($undefinedVariableName, $node->stmts)
+            $value = $this->isArray($undefinedVariableName, $stmts)
                 ? new Array_([])
                 : $this->nodeFactory->createNull();
 
             $assign = new Assign(new Variable($undefinedVariableName), $value);
             $expresssion = new Expression($assign);
 
-            foreach ($node->stmts as $stmt) {
+            foreach ($stmts as $stmt) {
                 if ($this->nodeComparator->areNodesEqual($expresssion, $stmt)) {
                     continue 2;
                 }
@@ -120,9 +134,7 @@ CODE_SAMPLE
             $variablesInitiation[] = $expresssion;
         }
 
-        $node->stmts = array_merge($variablesInitiation, $node->stmts);
-
-        return $node;
+        return $variablesInitiation;
     }
 
     /**
