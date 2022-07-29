@@ -2,7 +2,7 @@
 
 You may get some parallel errors and ask how you can identify if there is something in your code or a real parallel issue than can be fixed by configuration. They may be displayed as:
 
-```
+```bash
 $ ./vendor/bin/rector process
 ...
 [ERROR] Could not process "/app/vendor/rector/rector/vendor/symplify/easy-parallel/src/ValueObject/ParallelProcess.php" file, due to:  "Child process timed out after 120 seconds". On line: 103
@@ -18,7 +18,7 @@ $rectorConfig->disableParallel();
 After that, if rector processing works fine, that is an indication that you might need to adjust your parallel process to some balanced load, depending on the resources you have to process rector.
 
 
-[parallel() function has some defaults](https://github.com/rectorphp/rector-src/blob/main/packages/Config/RectorConfig.php#L53)
+If we check [parallel() method defaults](https://github.com/rectorphp/rector-src/blob/main/packages/Config/RectorConfig.php#L53):
 ```php
 public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 20) : void
 ```
