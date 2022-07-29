@@ -43,7 +43,7 @@ final class SomeEmptyArray
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 final class SomeEmptyArray
 {

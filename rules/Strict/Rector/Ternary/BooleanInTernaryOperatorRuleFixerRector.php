@@ -44,7 +44,7 @@ final class ArrayCompare
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 final class ArrayCompare
 {
@@ -54,7 +54,7 @@ final class ArrayCompare
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 [
                     self::TREAT_AS_NON_EMPTY => false,
                 ]

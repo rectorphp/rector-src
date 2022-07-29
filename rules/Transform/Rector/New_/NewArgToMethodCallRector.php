@@ -40,7 +40,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -51,7 +51,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 [new NewArgToMethodCall('Dotenv', true, 'usePutenv')]
             ),
         ]);

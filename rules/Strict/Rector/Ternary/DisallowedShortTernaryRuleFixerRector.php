@@ -45,7 +45,7 @@ final class ShortTernaryArray
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 final class ShortTernaryArray
 {

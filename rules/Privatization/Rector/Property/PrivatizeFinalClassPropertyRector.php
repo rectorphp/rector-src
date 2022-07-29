@@ -34,7 +34,7 @@ final class SomeClass
     protected $value;
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {

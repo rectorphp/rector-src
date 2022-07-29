@@ -37,8 +37,8 @@ final class MethodTypeAnalyzer
     private function isMethodName(MethodCall $methodCall, string $expectedName): bool
     {
         if (
-        $methodCall->name instanceof Identifier
-        && $this->areMethodNamesEqual($methodCall->name->toString(), $expectedName)
+            $methodCall->name instanceof Identifier
+            && $this->areMethodNamesEqual($methodCall->name->toString(), $expectedName)
         ) {
             return true;
         }

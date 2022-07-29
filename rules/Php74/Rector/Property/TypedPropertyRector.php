@@ -95,7 +95,7 @@ final class SomeClass
     private bool $isDone = false;
 }
 CODE_SAMPLE
-                ,
+                    ,
                     [
                         self::INLINE_PUBLIC => false,
                     ]

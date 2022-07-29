@@ -62,7 +62,7 @@ final class SomeClass
     private ?array $dateTimes;
 }
 CODE_SAMPLE
-,
+                    ,
                     ['var', 'phpstan-var'],
                 ),
             ]

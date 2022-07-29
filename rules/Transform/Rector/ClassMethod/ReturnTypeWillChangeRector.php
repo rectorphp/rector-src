@@ -48,7 +48,7 @@ class SomeClass implements ArrayAccess
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass implements ArrayAccess
 {
@@ -58,7 +58,7 @@ class SomeClass implements ArrayAccess
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 [
                     'ArrayAccess' => ['offsetGet'],
                 ]

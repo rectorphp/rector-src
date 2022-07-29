@@ -44,7 +44,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 version_compare(PHP_VERSION, '5.6', 'ge');
 CODE_SAMPLE
-            ,
+                ,
                 [new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge',)]
             ),
         ]);

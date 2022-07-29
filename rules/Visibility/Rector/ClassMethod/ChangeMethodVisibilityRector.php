@@ -54,7 +54,7 @@ class MyClass extends FrameworkClass
     }
 }
 CODE_SAMPLE
-                                ,
+                    ,
                     <<<'CODE_SAMPLE'
 class FrameworkClass
 {

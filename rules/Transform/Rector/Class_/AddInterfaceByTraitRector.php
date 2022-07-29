@@ -39,14 +39,14 @@ class SomeClass
     use SomeTrait;
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass implements SomeInterface
 {
     use SomeTrait;
 }
 CODE_SAMPLE
-            ,
+                ,
                 [
                     'SomeTrait' => 'SomeInterface',
                 ]

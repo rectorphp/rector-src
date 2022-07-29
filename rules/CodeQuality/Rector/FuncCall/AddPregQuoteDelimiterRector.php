@@ -33,7 +33,7 @@ final class AddPregQuoteDelimiterRector extends AbstractRector
                 <<<'CODE_SAMPLE'
 '#' . preg_quote('name') . '#';
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 '#' . preg_quote('name', '#') . '#';
 CODE_SAMPLE
