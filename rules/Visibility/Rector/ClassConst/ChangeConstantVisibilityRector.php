@@ -47,7 +47,7 @@ class MyClass extends FrameworkClass
     public const SOME_CONSTANT = 1;
 }
 CODE_SAMPLE
-                                ,
+                    ,
                     <<<'CODE_SAMPLE'
 class FrameworkClass
 {
@@ -59,7 +59,7 @@ class MyClass extends FrameworkClass
     protected const SOME_CONSTANT = 1;
 }
 CODE_SAMPLE
-                                ,
+                    ,
                     [new ChangeConstantVisibility('ParentObject', 'SOME_CONSTANT', Visibility::PROTECTED)]
                 ),
             ]

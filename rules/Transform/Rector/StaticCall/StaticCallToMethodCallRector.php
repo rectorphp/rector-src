@@ -50,7 +50,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 use Symplify\SmartFileSystem\SmartFileSystem;
 
@@ -72,7 +72,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 [
                     new StaticCallToMethodCall(
                         'Nette\Utils\FileSystem',

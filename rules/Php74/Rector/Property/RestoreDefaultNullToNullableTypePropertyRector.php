@@ -35,7 +35,7 @@ class SomeClass
     public ?string $name;
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 class SomeClass
 {

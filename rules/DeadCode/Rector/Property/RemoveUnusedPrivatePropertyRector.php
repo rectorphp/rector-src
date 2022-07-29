@@ -63,7 +63,7 @@ class SomeClass
 {
 }
 CODE_SAMPLE
-,
+                ,
                 [
                     self::REMOVE_ASSIGN_SIDE_EFFECT => true,
                 ]

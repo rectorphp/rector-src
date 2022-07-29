@@ -37,7 +37,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -47,7 +47,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 [
                     'ROLE_PREVIOUS_ADMIN' => 'IS_IMPERSONATOR',
                 ]

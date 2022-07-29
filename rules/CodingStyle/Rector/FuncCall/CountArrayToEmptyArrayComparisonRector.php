@@ -39,7 +39,7 @@ count($array) === 0;
 count($array) > 0;
 ! count($array);
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 $array === [];
 $array !== [];

@@ -227,7 +227,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 $composedTokenIterator->isCurrentTokenType(
                     Lexer::TOKEN_CLOSE_CURLY_BRACKET,
                     Lexer::TOKEN_CLOSE_PARENTHESES
-                // sometimes it gets mixed int    ")
+                    // sometimes it gets mixed int    ")
                 ) || \str_contains($composedTokenIterator->currentTokenValue(), ')')) {
                 ++$closeBracketCount;
             }

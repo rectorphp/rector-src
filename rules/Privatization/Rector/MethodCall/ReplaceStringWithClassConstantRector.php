@@ -44,7 +44,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -54,7 +54,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 [new ReplaceStringWithClassConstant('SomeClass', 'call', 0, 'Placeholder')]
             ),
         ]);

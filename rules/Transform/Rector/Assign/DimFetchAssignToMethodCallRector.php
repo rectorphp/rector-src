@@ -46,7 +46,7 @@ class RouterFactory
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 use Nette\Application\Routers\RouteList;
 
@@ -59,7 +59,7 @@ class RouterFactory
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     [
                         new DimFetchAssignToMethodCall(
                             'Nette\Application\Routers\RouteList',

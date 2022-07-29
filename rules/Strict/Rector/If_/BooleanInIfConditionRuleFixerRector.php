@@ -49,7 +49,7 @@ final class NegatedString
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 final class NegatedString
 {

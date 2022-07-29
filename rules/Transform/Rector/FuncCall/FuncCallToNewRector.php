@@ -47,7 +47,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 [
                     'collection' => ['Collection'],
                 ]

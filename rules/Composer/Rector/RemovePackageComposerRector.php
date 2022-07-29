@@ -38,12 +38,12 @@ final class RemovePackageComposerRector implements ComposerRectorInterface
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 {
 }
 CODE_SAMPLE
-            ,
+                ,
                 ['symfony/console']
             ),
         ]);

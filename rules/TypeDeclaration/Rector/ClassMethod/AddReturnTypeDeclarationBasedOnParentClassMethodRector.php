@@ -59,7 +59,7 @@ class B extends A{
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class A
 {

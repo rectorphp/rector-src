@@ -42,7 +42,7 @@ class SomeClass
 {
 }
 CODE_SAMPLE
-,
+                ,
                 ['TraitNameToRemove']
             ),
         ]);

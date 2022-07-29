@@ -73,7 +73,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 ['ClassName', 'AnotherClassName'],
             ),
         ]);

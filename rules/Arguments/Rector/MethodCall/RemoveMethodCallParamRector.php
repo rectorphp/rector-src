@@ -37,7 +37,7 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
@@ -47,7 +47,7 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 [new RemoveMethodCallParam('Caller', 'process', 1)]
             ),
         ]);

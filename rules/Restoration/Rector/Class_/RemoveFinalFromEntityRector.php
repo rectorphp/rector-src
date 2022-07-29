@@ -35,7 +35,7 @@ final class SomeClass
 {
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 use Doctrine\ORM\Mapping as ORM;
 

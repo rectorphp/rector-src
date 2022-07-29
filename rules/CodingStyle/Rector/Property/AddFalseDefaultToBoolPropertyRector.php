@@ -39,7 +39,7 @@ class SomeClass
     private $isDisabled;
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 class SomeClass
 {

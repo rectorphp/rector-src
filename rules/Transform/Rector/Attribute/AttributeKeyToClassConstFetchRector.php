@@ -39,7 +39,7 @@ class SomeClass
     public $name;
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\DBAL\Types\Types;
@@ -50,7 +50,7 @@ class SomeClass
     public $name;
 }
 CODE_SAMPLE
-,
+                ,
                 [
                     new AttributeKeyToClassConstFetch('Doctrine\ORM\Mapping\Column', 'type', 'Doctrine\DBAL\Types\Types', [
                         'string' => 'STRING',

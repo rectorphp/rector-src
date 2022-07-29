@@ -30,7 +30,7 @@ class SomeClass
     use SomeTrait, AnotherTrait;
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 use A;
 use B;

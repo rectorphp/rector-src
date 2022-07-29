@@ -61,7 +61,7 @@ public function getRunner(): Runner
 }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
