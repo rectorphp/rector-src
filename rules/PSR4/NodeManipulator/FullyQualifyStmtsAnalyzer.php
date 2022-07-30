@@ -65,7 +65,7 @@ final class FullyQualifyStmtsAnalyzer
                 return null;
             }
 
-            return new FullyQualified($name);
+            return new FullyQualified($name, $node->getAttributes());
         });
     }
 
