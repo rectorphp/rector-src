@@ -8,6 +8,9 @@ use Rector\DeadCode\Contract\ConditionInterface;
 
 final class BinaryToVersionCompareCondition implements ConditionInterface
 {
+    /**
+     * @param class-string $binaryClass
+     */
     public function __construct(
         private readonly VersionCompareCondition $versionCompareCondition,
         private readonly string $binaryClass,

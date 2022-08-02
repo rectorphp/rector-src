@@ -9,6 +9,10 @@ use Rector\Core\Validation\RectorAssert;
 
 final class DimFetchAssignToMethodCall
 {
+    /**
+     * @param class-string $listClass
+     * @param class-string $itemClass
+     */
     public function __construct(
         private readonly string $listClass,
         private readonly string $itemClass,
