@@ -10,6 +10,7 @@ use Rector\Core\Validation\RectorAssert;
 final class ReplaceStringWithClassConstant
 {
     /**
+     * @param class-string $class
      * @param class-string $classWithConstants
      */
     public function __construct(

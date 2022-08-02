@@ -11,6 +11,7 @@ use Rector\Core\Validation\RectorAssert;
 final class ArgumentAdder
 {
     /**
+     * @param class-string $class
      * @param mixed|null $argumentDefaultValue
      */
     public function __construct(
