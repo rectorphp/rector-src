@@ -131,6 +131,10 @@ CODE_SAMPLE
             $expresssion = new Expression($assign);
 
             foreach ($stmts as $stmt) {
+                if (! $stmt instanceof Expression) {
+                    break;
+                }
+
                 if ($this->nodeComparator->areNodesEqual($expresssion, $stmt)) {
                     continue 2;
                 }
