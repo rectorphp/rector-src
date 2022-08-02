@@ -366,6 +366,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const DEPRECATE_MONEY_FORMAT = PhpVersion::PHP_74;
+
+    /**
+     * @var int
+     */
     public const ARRAY_KEY_EXISTS_TO_PROPERTY_EXISTS = PhpVersion::PHP_74;
 
     /**
