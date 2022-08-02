@@ -117,7 +117,7 @@ CODE_SAMPLE
      * @param Stmt[] $stmts
      * @return Expression[]
      */
-    private function collectExpressionStmts(array $stmts): array
+    private function collectEarlyExpressionStmts(array $stmts): array
     {
         $expressionStmts = [];
 
@@ -140,7 +140,7 @@ CODE_SAMPLE
     private function collectVariablesInitiation(array $undefinedVariableNames, array $stmts): array
     {
         $variablesInitiation = [];
-        $expressionStmts = $this->collectExpressionStmts($stmts);
+        $expressionStmts = $this->collectEarlyExpressionStmts($stmts);
 
         foreach ($undefinedVariableNames as $undefinedVariableName) {
             $value = $this->isArray($undefinedVariableName, $stmts)
