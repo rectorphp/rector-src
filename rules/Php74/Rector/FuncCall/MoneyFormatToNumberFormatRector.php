@@ -32,13 +32,13 @@ final class MoneyFormatToNumberFormatRector extends AbstractRector implements Mi
                 new CodeSample(
                     <<<'CODE_SAMPLE'
 $value = money_format('%i', $value);
-CODE_SAMPLE,
-<<<'CODE_SAMPLE'
+CODE_SAMPLE
+,
+                    <<<'CODE_SAMPLE'
 $roundedValue = round($value, 2, PHP_ROUND_HALF_ODD);
 $value = number_format($roundedValue, 2, '.', '');
 CODE_SAMPLE
-
-                )
+                ),
             ]
         );
     }
