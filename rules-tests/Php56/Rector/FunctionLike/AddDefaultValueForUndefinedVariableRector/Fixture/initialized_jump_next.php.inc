@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector\Fixture;
 
-class InitializedNext
+class InitializedJumpNext
 {
     public function run()
     {
@@ -28,7 +28,7 @@ class InitializedNext
 
 namespace Rector\Tests\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector\Fixture;
 
-class InitializedNext
+class InitializedJumpNext
 {
     public function run()
     {
