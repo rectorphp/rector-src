@@ -101,6 +101,11 @@ final class SwitchExprsResolver
                 return;
             }
 
+            // current default has no stmt? keep as is as rely to next case
+            if ($case->stmts === []) {
+                return;
+            }
+
             for ($loop = $key - 1; $loop >= 0; --$loop) {
                 if ($switch->cases[$loop]->stmts !== []) {
                     break;
