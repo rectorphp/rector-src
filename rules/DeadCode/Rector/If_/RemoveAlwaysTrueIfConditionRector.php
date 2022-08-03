@@ -115,7 +115,8 @@ CODE_SAMPLE
             $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($propertyFetch);
 
             if (! $classReflection instanceof ClassReflection) {
-                continue;
+                // cannot get parent Trait_ from Property Fetch
+                return true;
             }
 
             $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
