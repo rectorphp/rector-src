@@ -22,12 +22,14 @@ final class SwitchExprsResolver
      */
     public function resolve(Switch_ $switch): array
     {
+        $newSwitch = clone $switch;
+
         $condAndExpr = [];
         $collectionEmptyCasesCond = [];
 
-        $this->moveDefaultCaseToLast($switch);
+        $this->moveDefaultCaseToLast($newSwitch);
 
-        foreach ($switch->cases as $key => $case) {
+        foreach ($newSwitch->cases as $key => $case) {
             assert(is_int($key));
 
             if (! $this->isValidCase($case)) {
@@ -39,7 +41,7 @@ final class SwitchExprsResolver
             }
         }
 
-        foreach ($switch->cases as $key => $case) {
+        foreach ($newSwitch->cases as $key => $case) {
             if ($case->stmts === []) {
                 continue;
             }
