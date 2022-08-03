@@ -10,6 +10,9 @@ use Rector\Core\Validation\RectorAssert;
 
 final class AddReturnTypeDeclaration
 {
+    /**
+     * @param class-string $class
+     */
     public function __construct(
         private readonly string $class,
         private readonly string $method,

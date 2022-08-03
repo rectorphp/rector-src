@@ -10,6 +10,10 @@ use Rector\Renaming\Contract\RenameClassConstFetchInterface;
 
 final class RenameClassAndConstFetch implements RenameClassConstFetchInterface
 {
+    /**
+     * @param class-string $oldClass
+     * @param class-string $newClass
+     */
     public function __construct(
         private readonly string $oldClass,
         private readonly string $oldConstant,

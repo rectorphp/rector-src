@@ -9,6 +9,9 @@ use Rector\Core\Validation\RectorAssert;
 
 final class AddPropertyTypeDeclaration
 {
+    /**
+     * @param class-string $class
+     */
     public function __construct(
         private readonly string $class,
         private readonly string $propertyName,

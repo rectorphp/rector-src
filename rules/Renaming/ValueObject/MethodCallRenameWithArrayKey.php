@@ -10,6 +10,9 @@ use Rector\Renaming\Contract\MethodCallRenameInterface;
 
 final class MethodCallRenameWithArrayKey implements MethodCallRenameInterface
 {
+    /**
+     * @param class-string $class
+     */
     public function __construct(
         private readonly string $class,
         private readonly string $oldMethod,

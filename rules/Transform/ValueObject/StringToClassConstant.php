@@ -8,6 +8,9 @@ use Rector\Core\Validation\RectorAssert;
 
 final class StringToClassConstant
 {
+    /**
+     * @param class-string $class
+     */
     public function __construct(
         private readonly string $string,
         private readonly string $class,
