@@ -59,6 +59,10 @@ final class NormalizeTypeToRespectArrayScalarType
                 continue;
             }
 
+            if ($itemTypeType instanceof ArrayType) {
+                continue;
+            }
+
             unset($types[$key]);
         }
 
