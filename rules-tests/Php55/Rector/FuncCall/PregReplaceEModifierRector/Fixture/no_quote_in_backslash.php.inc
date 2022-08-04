@@ -6,7 +6,10 @@ class NoQuoteInBackslash
 {
     public function run($str)
     {
-        $str = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $str);
+        $str = '-159';
+
+        echo preg_replace('~(-159)~e', 'chr(\\1)', $str);
+        echo preg_replace('~(-159)~e', "chr(\\1)", $str);
     }
 }
 
@@ -20,7 +23,12 @@ class NoQuoteInBackslash
 {
     public function run($str)
     {
-        $str = preg_replace_callback('~&#([0-9]+);~', function ($matches) {
+        $str = '-159';
+
+        echo preg_replace_callback('~(-159)~', function ($matches) {
+            return chr($matches[1]);
+        }, $str);
+        echo preg_replace_callback('~(-159)~', function ($matches) {
             return chr($matches[1]);
         }, $str);
     }
