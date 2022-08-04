@@ -41,7 +41,6 @@ parameters:
         # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
         - packages/BetterPhpDocParser/ValueObject/PhpDocNode/AbstractTagValueNode.php
         - packages/Testing/PHPUnit/*.php
-        - rules/DowngradePhp70/Rector/FunctionLike/AbstractDowngradeParamDeclarationRector.php
 
         # demo rule
         - tests/Issues/AliasedImportDouble/Rector/ClassMethod/AddAliasImportRector.php
