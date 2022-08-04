@@ -47,6 +47,12 @@ final class InlineCodeParser
      */
     private const VARIABLE_IN_SINGLE_QUOTED_REGEX = '#\'(?<variable>\$.*)\'#U';
 
+    /**
+     * @var string
+     * @see https://regex101.com/r/1lzQZv/1
+     */
+    private const BACKREFERENCE_NO_QUOTE_REGEX = '#(?<!")(?<backreference>\\\\\d+)(?!")#';
+
     public function __construct(
         private readonly NodePrinterInterface $nodePrinter,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
@@ -76,7 +82,15 @@ final class InlineCodeParser
     public function stringify(Expr $expr): string
     {
         if ($expr instanceof String_) {
-            return $expr->value;
+            if (! StringUtils::isMatch($expr->value, self::BACKREFERENCE_NO_QUOTE_REGEX)) {
+                return $expr->value;
+            }
+
+            return Strings::replace(
+                $expr->value,
+                self::BACKREFERENCE_NO_QUOTE_REGEX,
+                static fn (array $match): string => '"\\' . $match['backreference'] . '"'
+            );
         }
 
         if ($expr instanceof Encapsed) {
