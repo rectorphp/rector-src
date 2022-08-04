@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\TypeManipulator;
 
-use PHPStan\Reflection\ClassReflection;
 use PhpParser\Node;
-use PHPStan\Type\Accessory\NonEmptyArrayType;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
