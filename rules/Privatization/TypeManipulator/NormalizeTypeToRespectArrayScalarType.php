@@ -46,7 +46,7 @@ final class NormalizeTypeToRespectArrayScalarType
         return $type;
     }
 
-    private function resolveArrayType(ArrayType $arrayType): ArrayType|MixedType
+    private function resolveArrayType(ArrayType $arrayType): ArrayType
     {
         $itemType = $arrayType->getItemType();
         if (! $itemType instanceof IntersectionType) {
@@ -63,10 +63,11 @@ final class NormalizeTypeToRespectArrayScalarType
         }
 
         if ($types === []) {
-            return new MixedType();
+            $arrayItemType = new MixedType();
+        } else {
+            $arrayItemType = count($types) === 1 ? array_pop($types) : new IntersectionType($types);
         }
 
-        $arrayItemType = count($types) === 1 ? array_pop($types) : new IntersectionType($types);
         return new ArrayType($arrayType->getKeyType(), $arrayItemType);
     }
 
