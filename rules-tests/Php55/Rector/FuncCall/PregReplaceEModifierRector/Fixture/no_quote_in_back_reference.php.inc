@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php55\Rector\FuncCall\PregReplaceEModifierRector\Fixture;
 
-class NoQuoteInBackslash
+class NoQuoteInBackReference
 {
     public function run($str)
     {
@@ -19,7 +19,7 @@ class NoQuoteInBackslash
 
 namespace Rector\Tests\Php55\Rector\FuncCall\PregReplaceEModifierRector\Fixture;
 
-class NoQuoteInBackslash
+class NoQuoteInBackReference
 {
     public function run($str)
     {
