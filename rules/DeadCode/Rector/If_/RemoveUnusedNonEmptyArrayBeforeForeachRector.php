@@ -91,15 +91,15 @@ CODE_SAMPLE
         /** @var Foreach_ $stmt */
         $stmt = $node->stmts[0];
 
+        if ($node->cond instanceof Assign && $this->nodeComparator->areNodesEqual($node->cond->var, $stmt->expr)) {
+            return [new Expression($node->cond), $stmt];
+        }
+
         $ifComments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
         $stmtComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
 
         $comments = array_merge($ifComments, $stmtComments);
         $stmt->setAttribute(AttributeKey::COMMENTS, $comments);
-
-        if ($node->cond instanceof Assign && $this->nodeComparator->areNodesEqual($node->cond->var, $stmt->expr)) {
-            return [new Expression($node->cond), $stmt];
-        }
 
         return $stmt;
     }
