@@ -7,6 +7,7 @@ namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Scalar\LNumber;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
@@ -41,7 +42,10 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
     public function map($value): Array_
     {
         $arrayItems = [];
-        foreach ($value->getValuesWithExplicitSilentAndWithoutQuotes() as $key => $singleValue) {
+        $valuesWithExplicitSilent = $value->getValuesWithExplicitSilentAndWithoutQuotes();
+        $loop = -1;
+
+        foreach ($valuesWithExplicitSilent as $key => $singleValue) {
             $valueExpr = $this->annotationToAttributeMapper->map($singleValue);
 
             // remove node
@@ -51,10 +55,15 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
 
             Assert::isInstanceOf($valueExpr, Expr::class);
 
-            $keyExpr = null;
             if (! is_int($key)) {
                 $keyExpr = $this->annotationToAttributeMapper->map($key);
                 Assert::isInstanceOf($keyExpr, Expr::class);
+            } else {
+                ++$loop;
+
+                $keyExpr = $loop !== $key
+                    ? new LNumber($key)
+                    : null;
             }
 
             $arrayItems[] = new ArrayItem($valueExpr, $keyExpr);
