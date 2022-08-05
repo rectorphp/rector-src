@@ -36,6 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute('Doctrine\ORM\Mapping\UniqueConstraint'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumns'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumn'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
 
             // validation
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\All'),
