@@ -86,7 +86,7 @@ final class NewTypeResolver implements NodeTypeResolverInterface
             $directParentTypes[] = new FullyQualifiedObjectType($parentClass);
         }
 
-        if (count($directParentTypes) !== 0) {
+        if ($directParentTypes !== []) {
             return new ObjectWithoutClassTypeWithParentTypes($directParentTypes);
         }
 
