@@ -96,7 +96,7 @@ final class NodeRemover
 
     public function removeArg(FuncCall | MethodCall | StaticCall $node, int $key): void
     {
-        if ($node->args === null) {
+        if ($node->getArgs() === []) {
             throw new ShouldNotHappenException();
         }
 
@@ -109,17 +109,5 @@ final class NodeRemover
         $this->rectorChangeCollector->notifyNodeFileInfo($node->args[$key]);
 
         unset($node->args[$key]);
-    }
-
-    public function removeImplements(Class_ $class, int $key): void
-    {
-        if ($class->implements === null) {
-            throw new ShouldNotHappenException();
-        }
-
-        // notify about remove node
-        $this->rectorChangeCollector->notifyNodeFileInfo($class->implements[$key]);
-
-        unset($class->implements[$key]);
     }
 }
