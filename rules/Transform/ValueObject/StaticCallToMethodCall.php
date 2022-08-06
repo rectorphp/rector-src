@@ -12,9 +12,6 @@ use Rector\Core\Validation\RectorAssert;
 
 final class StaticCallToMethodCall
 {
-    /**
-     * @param class-string $staticClass
-     */
     public function __construct(
         private readonly string $staticClass,
         private readonly string $staticMethod,

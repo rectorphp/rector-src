@@ -9,10 +9,6 @@ use Rector\Core\Validation\RectorAssert;
 
 final class RenameStaticMethod
 {
-    /**
-     * @param class-string $oldClass
-     * @param class-string $newClass
-     */
     public function __construct(
         private readonly string $oldClass,
         private readonly string $oldMethod,

@@ -9,9 +9,6 @@ use Rector\Core\Validation\RectorAssert;
 
 final class NewToStaticCall
 {
-    /**
-     * @param class-string $staticCallClass
-     */
     public function __construct(
         private readonly string $type,
         private readonly string $staticCallClass,

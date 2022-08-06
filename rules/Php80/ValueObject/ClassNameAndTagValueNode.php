@@ -10,9 +10,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 
 final class ClassNameAndTagValueNode
 {
-    /**
-     * @param class-string $enumClass
-     */
     public function __construct(
         private readonly string $enumClass,
         private readonly ParamTagValueNode|ReturnTagValueNode|VarTagValueNode $tagValueNode
