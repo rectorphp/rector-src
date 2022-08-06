@@ -96,7 +96,7 @@ final class NodeRemover
 
     public function removeArg(FuncCall | MethodCall | StaticCall $node, int $key): void
     {
-        if ($node->args === null) {
+        if ($node->getArgs() === []) {
             throw new ShouldNotHappenException();
         }
 
