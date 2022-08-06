@@ -28,9 +28,9 @@ final class PHPUnitDataProviderResolver
     private array $dataProviderMethodsNamesByClassName = [];
 
     public function __construct(
-        private NodeNameResolver $nodeNameResolver,
-        private ReflectionProvider $reflectionProvider,
-        private PhpDocInfoFactory $phpDocInfoFactory
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
