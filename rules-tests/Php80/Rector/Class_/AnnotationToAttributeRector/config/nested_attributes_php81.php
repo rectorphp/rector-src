@@ -22,8 +22,15 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute(NotNull::class),
             new AnnotationToAttribute(NotNumber::class),
             new AnnotationToAttribute(GenericAnnotation::class),
+
+            // doctrine
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\ManyToMany'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Table'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Index'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\UniqueConstraint'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumns'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinTable'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumn'),
         ]);
 };

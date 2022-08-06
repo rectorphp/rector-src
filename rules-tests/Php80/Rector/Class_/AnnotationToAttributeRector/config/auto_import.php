@@ -15,11 +15,17 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->phpVersion(PhpVersionFeature::NEW_INITIALIZERS - 1);
 
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
-        new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
-        new AnnotationToAttribute('Doctrine\ORM\Mapping\Id'),
-        new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
         new AnnotationToAttribute('Symfony\Component\Validator\Constraints\NotBlank'),
         new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
         new AnnotationToAttribute(Apple::class, AppleAttribute::class),
+
+        // doctrine
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\Id'),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\ManyToMany'),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumns'),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinTable'),
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumn'),
     ]);
 };
