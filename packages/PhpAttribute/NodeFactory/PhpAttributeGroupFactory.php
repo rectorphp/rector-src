@@ -29,6 +29,7 @@ final class PhpAttributeGroupFactory
     private const UNWRAPPED_ANNOTATIONS = [
         'Doctrine\ORM\Mapping\Table' => ['indexes', 'uniqueConstraints'],
         'Doctrine\ORM\Mapping\Entity' => ['uniqueConstraints'],
+        'Doctrine\ORM\Mapping\JoinTable' => ['joinColumns', 'inverseJoinColumns'],
     ];
 
     public function __construct(
