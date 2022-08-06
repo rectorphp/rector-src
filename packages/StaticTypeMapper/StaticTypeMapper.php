@@ -65,7 +65,6 @@ final class StaticTypeMapper
     public function mapPHPStanTypeToPhpParserNode(Type $phpStanType, string $typeKind): ?Node
     {
         $node = $this->phpStanStaticTypeMapper->mapToPhpParserNode($phpStanType, $typeKind);
-
         if (! $node instanceof Node) {
             return null;
         }
