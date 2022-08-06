@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture\AnonymousClass;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -20,7 +20,7 @@ final class AddAnonymousClassImplementsType
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture\AnonymousClass;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 
