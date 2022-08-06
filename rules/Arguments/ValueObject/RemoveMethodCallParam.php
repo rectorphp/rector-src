@@ -8,9 +8,6 @@ use PHPStan\Type\ObjectType;
 
 final class RemoveMethodCallParam
 {
-    /**
-     * @param class-string $class
-     */
     public function __construct(
         private readonly string $class,
         private readonly string $methodName,

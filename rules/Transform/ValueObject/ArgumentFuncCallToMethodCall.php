@@ -9,9 +9,6 @@ use Rector\Transform\Contract\ValueObject\ArgumentFuncCallToMethodCallInterface;
 
 final class ArgumentFuncCallToMethodCall implements ArgumentFuncCallToMethodCallInterface
 {
-    /**
-     * @param class-string $class
-     */
     public function __construct(
         private readonly string $function,
         private readonly string $class,

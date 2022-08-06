@@ -16,7 +16,6 @@ final class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueIn
     public const ANY_VALUE_BEFORE = '*ANY_VALUE_BEFORE*';
 
     /**
-     * @param class-string $class
      * @param int<0, max> $position
      */
     public function __construct(
