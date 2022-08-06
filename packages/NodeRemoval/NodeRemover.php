@@ -110,16 +110,4 @@ final class NodeRemover
 
         unset($node->args[$key]);
     }
-
-    public function removeImplements(Class_ $class, int $key): void
-    {
-        if ($class->implements === null) {
-            throw new ShouldNotHappenException();
-        }
-
-        // notify about remove node
-        $this->rectorChangeCollector->notifyNodeFileInfo($class->implements[$key]);
-
-        unset($class->implements[$key]);
-    }
 }
