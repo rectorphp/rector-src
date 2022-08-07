@@ -23,7 +23,7 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::TYPE_DECLARATION,
         SetList::EARLY_RETURN,
         SetList::TYPE_DECLARATION_STRICT,
-        NetteSetList::NETTE_UTILS_CODE_QUALITY,
+        NetteSetList::NETTE_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         SetList::CODING_STYLE,
     ]);

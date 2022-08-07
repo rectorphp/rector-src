@@ -9,13 +9,12 @@ use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
-use Symplify\Astral\Naming\SimpleNameResolver;
 
 final class ControllerRenderMethodAnalyzer
 {
     public function __construct(
-        private readonly SimpleNameResolver $simpleNameResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReflectionResolver $reflectionResolver
@@ -47,7 +46,14 @@ final class ControllerRenderMethodAnalyzer
             return false;
         }
 
-        return $this->simpleNameResolver->isNames($classMethod->name, ['render*', 'handle*', 'action*']);
+        $classMethodName = $classMethod->name->toString();
+        foreach (['render', 'handle', 'action'] as $methodPrefix) {
+            if (str_starts_with($classMethodName, $methodPrefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isSymfonyRenderMethod(ClassReflection $classReflection, ClassMethod $classMethod): bool
@@ -62,7 +68,12 @@ final class ControllerRenderMethodAnalyzer
             return false;
         }
 
-        if ($this->simpleNameResolver->isNames($classMethod->name, ['__invoke', '*action'])) {
+        $classMethodName = $classMethod->name->toString();
+        if ($classMethodName === MethodName::INVOKE) {
+            return true;
+        }
+
+        if (str_ends_with($classMethodName, 'action')) {
             return true;
         }
 
