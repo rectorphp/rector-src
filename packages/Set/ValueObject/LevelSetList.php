@@ -7,6 +7,8 @@ namespace Rector\Set\ValueObject;
 use Rector\Set\Contract\SetListInterface;
 
 /**
+ * @deprecated use SetList constants instead.
+ *
  * @api
  */
 final class LevelSetList implements SetListInterface
