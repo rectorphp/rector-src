@@ -108,8 +108,8 @@ CODE_SAMPLE
 
     private function refactorTokensVariable(FuncCall $funcCall): void
     {
-        $assign = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $assign instanceof Assign) {
+        $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Assign) {
             return;
         }
 
@@ -123,7 +123,7 @@ CODE_SAMPLE
         }
 
         // dummy approach, improve when needed
-        $this->replaceGetNameOrGetValue($classMethodOrFunction, $assign->var);
+        $this->replaceGetNameOrGetValue($classMethodOrFunction, $parentNode->var);
     }
 
     private function replaceGetNameOrGetValue(ClassMethod | Function_ $functionLike, Expr $assignedExpr): void

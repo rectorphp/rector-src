@@ -197,10 +197,10 @@ final class PhpDocTypeChanger
             return;
         }
 
-        $functionLike = $param->getAttribute(AttributeKey::PARENT_NODE);
+        $parentNode = $param->getAttribute(AttributeKey::PARENT_NODE);
         $paramVarName = $this->nodeNameResolver->getName($param->var);
 
-        if (! $functionLike instanceof ClassMethod) {
+        if (! $parentNode instanceof ClassMethod) {
             return;
         }
 
@@ -215,7 +215,7 @@ final class PhpDocTypeChanger
         $phpDocInfo->removeByType(VarTagValueNode::class);
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
 
-        $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
+        $phpDocInfo = $parentNode->getAttribute(AttributeKey::PHP_DOC_INFO);
         $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTag, $property);
 
         $this->changeParamType($phpDocInfo, $paramType, $param, $paramVarName);

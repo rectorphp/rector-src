@@ -26,12 +26,12 @@ final class JustReadExprAnalyzer
         }
 
         if ($parentNode instanceof ArrayDimFetch) {
-            $parentParent = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentParent instanceof Assign) {
+            $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentParentNode instanceof Assign) {
                 return true;
             }
 
-            return $parentParent->var !== $parentNode;
+            return $parentParentNode->var !== $parentNode;
         }
 
         // assume it's used by default
