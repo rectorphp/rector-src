@@ -36,7 +36,7 @@ final class ScopeAnalyzer
             return false;
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        return ! $parent instanceof Node;
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        return ! $parentNode instanceof Node;
     }
 }

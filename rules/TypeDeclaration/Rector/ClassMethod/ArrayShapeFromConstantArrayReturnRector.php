@@ -17,7 +17,7 @@ use PHPStan\Type\NeverType;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -28,7 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector\ArrayShapeFromConstantArrayReturnRectorTest
  */
-final class ArrayShapeFromConstantArrayReturnRector extends AbstractRector
+final class ArrayShapeFromConstantArrayReturnRector extends AbstractScopeAwareRector
 {
     /**
      * @see https://regex101.com/r/WvUD0m/2
@@ -83,7 +83,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($this->isInTestCase($node)) {
             return null;
@@ -110,7 +110,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->classMethodReturnTypeResolver->resolve($node, $node->getAttribute(AttributeKey::SCOPE));
+        $returnType = $this->classMethodReturnTypeResolver->resolve($node, $scope);
         if ($returnType instanceof ConstantArrayType) {
             return null;
         }

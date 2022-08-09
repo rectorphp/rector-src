@@ -246,10 +246,10 @@ CODE_SAMPLE
 
     private function resolveVarType(PropertyProperty $propertyProperty): Type
     {
-        /** @var Property $property */
-        $property = $propertyProperty->getAttribute(AttributeKey::PARENT_NODE);
+        /** @var Property $propertyNode */
+        $propertyNode = $propertyProperty->getAttribute(AttributeKey::PARENT_NODE);
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyNode);
         return $phpDocInfo->getVarType();
     }
 

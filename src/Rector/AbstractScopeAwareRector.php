@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
+use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -32,6 +33,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
      */
     public function refactor(Node $node)
     {
+        /** @var MutatingScope|null $scope */
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
         if ($this->scopeAnalyzer->isScopeResolvableFromFile($node, $scope)) {
@@ -42,12 +44,12 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         }
 
         if (! $scope instanceof Scope) {
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
             $errorMessage = sprintf(
                 'Scope not available on "%s" node with parent node of "%s", but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
                 $node::class,
-                $parent::class,
+                $parentNode instanceof \PhpParser\Node ? $parentNode::class : 'unknown node',
                 static::class,
             );
 

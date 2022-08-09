@@ -122,9 +122,9 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Return_ $next */
-        $next = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if ($this->isNextReturnIncorrect($cond, $variable, $next)) {
+        /** @var Return_ $nextNode */
+        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+        if ($this->isNextReturnIncorrect($cond, $variable, $nextNode)) {
             return null;
         }
 
@@ -140,7 +140,7 @@ CODE_SAMPLE
             $variableType,
             $types,
             $className,
-            $next,
+            $nextNode,
             $previous,
             $previousAssign->expr
         );
@@ -236,8 +236,8 @@ CODE_SAMPLE
             return true;
         }
 
-        $next = $if->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $next instanceof Return_) {
+        $nextNode = $if->getAttribute(AttributeKey::NEXT_NODE);
+        if (! $nextNode instanceof Return_) {
             return true;
         }
 

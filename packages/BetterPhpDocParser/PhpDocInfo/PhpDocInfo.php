@@ -211,7 +211,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @param class-string[] $classes
+     * @param string[] $classes
      */
     public function getByAnnotationClasses(array $classes): ?DoctrineAnnotationTagValueNode
     {
@@ -223,9 +223,6 @@ final class PhpDocInfo
         return $doctrineAnnotationTagValueNodes[0] ?? null;
     }
 
-    /**
-     * @param class-string $class
-     */
     public function getByAnnotationClass(string $class): ?DoctrineAnnotationTagValueNode
     {
         $doctrineAnnotationTagValueNodes = $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass(
@@ -235,9 +232,6 @@ final class PhpDocInfo
         return $doctrineAnnotationTagValueNodes[0] ?? null;
     }
 
-    /**
-     * @param class-string $class
-     */
     public function hasByAnnotationClass(string $class): bool
     {
         return $this->findByAnnotationClass($class) !== [];
@@ -268,9 +262,6 @@ final class PhpDocInfo
         return null;
     }
 
-    /**
-     * @param class-string $desiredClass
-     */
     public function findOneByAnnotationClass(string $desiredClass): ?DoctrineAnnotationTagValueNode
     {
         $foundTagValueNodes = $this->findByAnnotationClass($desiredClass);

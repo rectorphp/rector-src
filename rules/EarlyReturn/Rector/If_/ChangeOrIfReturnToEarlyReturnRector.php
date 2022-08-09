@@ -96,8 +96,8 @@ CODE_SAMPLE
         $return = $node->stmts[0];
 
         // same return? skip
-        $next = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if ($next instanceof Return_ && $this->nodeComparator->areNodesEqual($return, $next)) {
+        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+        if ($nextNode instanceof Return_ && $this->nodeComparator->areNodesEqual($return, $nextNode)) {
             return null;
         }
 

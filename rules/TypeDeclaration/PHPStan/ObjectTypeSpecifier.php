@@ -99,7 +99,7 @@ final class ObjectTypeSpecifier
         }
 
         $className = $objectType->getClassName();
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
@@ -116,7 +116,7 @@ final class ObjectTypeSpecifier
                     $alias,
                     $className,
                     $useName,
-                    $parent,
+                    $parentNode,
                     $fullyQualifiedName
                 );
 

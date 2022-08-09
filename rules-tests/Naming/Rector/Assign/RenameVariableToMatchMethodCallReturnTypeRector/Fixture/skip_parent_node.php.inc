@@ -9,6 +9,6 @@ class SkipParentNode
 {
     public function run(Array_ $array)
     {
-        $parent = $array->getAttribute(AttributeKey::PARENT_NODE);
+        $parentNode = $array->getAttribute(AttributeKey::PARENT_NODE);
     }
 }

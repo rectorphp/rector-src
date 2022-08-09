@@ -87,22 +87,22 @@ CODE_SAMPLE
             return null;
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
             return null;
         }
 
-        $processIdentical = $this->processIdenticalOrNotIdentical($parent, $node, $expr);
+        $processIdentical = $this->processIdenticalOrNotIdentical($parentNode, $node, $expr);
         if ($processIdentical !== null) {
             return $processIdentical;
         }
 
-        $processGreaterOrSmaller = $this->processGreaterOrSmaller($parent, $node, $expr);
+        $processGreaterOrSmaller = $this->processGreaterOrSmaller($parentNode, $node, $expr);
         if ($processGreaterOrSmaller !== null) {
             return $processGreaterOrSmaller;
         }
 
-        return $this->processMarkTruthy($parent, $node, $expr);
+        return $this->processMarkTruthy($parentNode, $node, $expr);
     }
 
     private function processMarkTruthyNegation(BooleanNot $booleanNot): ?Identical

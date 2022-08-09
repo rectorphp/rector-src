@@ -283,12 +283,12 @@ final class PHPStanNodeScopeResolver
 
         $this->processNodes([$originalStmt], $smartFileInfo, $mutatingScope);
 
-        $next = $originalStmt->getAttribute(AttributeKey::NEXT_NODE);
-        while ($next instanceof Stmt) {
-            $next->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+        $nextNode = $originalStmt->getAttribute(AttributeKey::NEXT_NODE);
+        while ($nextNode instanceof Stmt) {
+            $nextNode->setAttribute(AttributeKey::IS_UNREACHABLE, true);
 
-            $this->processNodes([$next], $smartFileInfo, $mutatingScope);
-            $next = $next->getAttribute(AttributeKey::NEXT_NODE);
+            $this->processNodes([$nextNode], $smartFileInfo, $mutatingScope);
+            $nextNode = $nextNode->getAttribute(AttributeKey::NEXT_NODE);
         }
     }
 
