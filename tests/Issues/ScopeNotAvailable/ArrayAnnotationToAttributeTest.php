@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ArrayAnnotationToAttribute;
+namespace Rector\Core\Tests\Issues\ScopeNotAvailable;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
