@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ArrayAnnotationToAttributeTest;
+namespace Rector\Core\Tests\Issues\ArrayAnnotationToAttribute;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
