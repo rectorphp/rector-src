@@ -113,8 +113,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $parent = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
-        if ($parent instanceof TemplateTagValueNode) {
+        $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if ($parentNode instanceof TemplateTagValueNode) {
             // might break
             return null;
         }

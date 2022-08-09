@@ -81,17 +81,17 @@ final class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        $parent = $paramTagValueNode->getAttribute(PhpDocAttributeKey::PARENT);
-        if (! $parent instanceof PhpDocTagNode) {
+        $parentNode = $paramTagValueNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if (! $parentNode instanceof PhpDocTagNode) {
             return true;
         }
 
-        $parent = $parent->getAttribute(PhpDocAttributeKey::PARENT);
-        if (! $parent instanceof PhpDocNode) {
+        $parentNode = $parentNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if (! $parentNode instanceof PhpDocNode) {
             return true;
         }
 
-        $children = $parent->children;
+        $children = $parentNode->children;
 
         foreach ($children as $key => $child) {
             if ($child instanceof PhpDocTagNode && $node instanceof FullyQualified) {

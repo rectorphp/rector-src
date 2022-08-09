@@ -125,12 +125,12 @@ CODE_SAMPLE
 
     private function shouldSkipPropertyFetch(PropertyFetch $propertyFetch): bool
     {
-        $parent = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Assign) {
+        $parentNode = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Assign) {
             return false;
         }
 
-        return $parent->var === $propertyFetch;
+        return $parentNode->var === $propertyFetch;
     }
 
     private function refactorPropertyFetch(PropertyFetch $propertyFetch, Scope $scope): MethodCall|null

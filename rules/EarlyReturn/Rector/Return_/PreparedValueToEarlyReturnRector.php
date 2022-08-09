@@ -212,21 +212,21 @@ CODE_SAMPLE
      */
     private function getIfsBefore(Return_ $return): array
     {
-        $parent = $return->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof FunctionLike && ! $parent instanceof If_) {
+        $parentNode = $return->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof FunctionLike && ! $parentNode instanceof If_) {
             return [];
         }
 
-        if ($parent->stmts === []) {
+        if ($parentNode->stmts === []) {
             return [];
         }
 
-        $firstItemPosition = array_key_last($parent->stmts);
-        if ($parent->stmts[$firstItemPosition] !== $return) {
+        $firstItemPosition = array_key_last($parentNode->stmts);
+        if ($parentNode->stmts[$firstItemPosition] !== $return) {
             return [];
         }
 
-        return $this->collectIfs($parent->stmts, $return);
+        return $this->collectIfs($parentNode->stmts, $return);
     }
 
     /**

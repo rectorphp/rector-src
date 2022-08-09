@@ -77,18 +77,18 @@ final class BetterNodeFinder
     {
         Assert::isAOf($type, Node::class);
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
             return null;
         }
 
         do {
-            if (is_a($parent, $type, true)) {
-                return $parent;
+            if (is_a($parentNode, $type, true)) {
+                return $parentNode;
             }
 
-            $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
-        } while ($parent instanceof Node);
+            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        } while ($parentNode instanceof Node);
 
         return null;
     }
@@ -312,13 +312,13 @@ final class BetterNodeFinder
             return $foundNode;
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof FunctionLike) {
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof FunctionLike) {
             return null;
         }
 
-        if ($parent instanceof Node) {
-            return $this->findFirstPrevious($parent, $filter);
+        if ($parentNode instanceof Node) {
+            return $this->findFirstPrevious($parentNode, $filter);
         }
 
         return null;
@@ -342,30 +342,30 @@ final class BetterNodeFinder
      */
     public function findFirstNext(Node $node, callable $filter): ?Node
     {
-        $next = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if ($next instanceof Node) {
-            if ($next instanceof Return_ && $next->expr === null) {
-                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-                if (! $parent instanceof Case_) {
+        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+        if ($nextNode instanceof Node) {
+            if ($nextNode instanceof Return_ && $nextNode->expr === null) {
+                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+                if (! $parentNode instanceof Case_) {
                     return null;
                 }
             }
 
-            $found = $this->findFirst($next, $filter);
+            $found = $this->findFirst($nextNode, $filter);
             if ($found instanceof Node) {
                 return $found;
             }
 
-            return $this->findFirstNext($next, $filter);
+            return $this->findFirstNext($nextNode, $filter);
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Return_ || $parent instanceof FunctionLike) {
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof Return_ || $parentNode instanceof FunctionLike) {
             return null;
         }
 
-        if ($parent instanceof Node) {
-            return $this->findFirstNext($parent, $filter);
+        if ($parentNode instanceof Node) {
+            return $this->findFirstNext($parentNode, $filter);
         }
 
         return null;

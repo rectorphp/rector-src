@@ -112,8 +112,9 @@ CODE_SAMPLE
         Assign $assign,
         string $variableName
     ): ClassMethod | Function_ | Closure | null {
-        $parent = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Expression) {
+        $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
+
+        if ($parentNode instanceof Expression) {
             $this->removeNode($assign);
             return $this->applyVariadicParams($node, $variableName);
         }
@@ -121,7 +122,7 @@ CODE_SAMPLE
         $variable = $assign->var;
 
         /** @var ClassMethod|Function_|Closure $functionLike */
-        $functionLike = $this->betterNodeFinder->findParentType($parent, FunctionLike::class);
+        $functionLike = $this->betterNodeFinder->findParentType($parentNode, FunctionLike::class);
 
         /** @var Stmt[] $stmts */
         $stmts = $functionLike->getStmts();

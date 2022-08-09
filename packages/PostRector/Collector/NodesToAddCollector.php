@@ -156,9 +156,9 @@ final class NodesToAddCollector implements NodeCollectorInterface
             return spl_object_hash($currentStmt);
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Return_) {
-            return spl_object_hash($parent);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof Return_) {
+            return spl_object_hash($parentNode);
         }
 
         $foundStmt = $this->betterNodeFinder->findParentType($node, Stmt::class);
