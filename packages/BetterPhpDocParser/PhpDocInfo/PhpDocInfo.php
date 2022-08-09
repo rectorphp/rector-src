@@ -33,7 +33,6 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 
 /**
- * @template TNode as \PHPStan\PhpDocParser\Ast\Node
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfo\PhpDocInfoTest
  */
 final class PhpDocInfo
@@ -156,6 +155,7 @@ final class PhpDocInfo
     }
 
     /**
+     * @template TNode as \PHPStan\PhpDocParser\Ast\Node
      * @param class-string<TNode> $type
      * @return TNode[]
      */
@@ -165,7 +165,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @param class-string<TNode> $type
+     * @param class-string<\PHPStan\PhpDocParser\Ast\Node> $type
      */
     public function hasByType(string $type): bool
     {
@@ -173,7 +173,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @param array<class-string<TNode>> $types
+     * @param array<class-string<\PHPStan\PhpDocParser\Ast\Node>> $types
      */
     public function hasByTypes(array $types): bool
     {
