@@ -9,4 +9,6 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src',
     ]);
     $rectorConfig->parallel();
+
+    $rectorConfig->sets([\Rector\Set\ValueObject\SetList::CODE_QUALITY]);
 };
