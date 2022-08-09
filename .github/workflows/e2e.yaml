@@ -57,6 +57,11 @@ jobs:
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
 
+            # this tests "-c", that was not working on parallel before, see https://github.com/rectorphp/rector-src/pull/1620
+            -   run: php ../e2eTestRunner.php -c custom/config/rector.php
+                working-directory: ${{ matrix.directory }}
+                if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
+
             -   run: php ../e2eTestRunner.php
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory != 'e2e/parallel-custom-config' }}
