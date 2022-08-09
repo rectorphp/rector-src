@@ -70,9 +70,7 @@ final class ChangedNodeScopeRefresher
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $mutatingScope instanceof MutatingScope && $node instanceof Expr && $parentNode instanceof Node) {
-            $mutatingScope = $this->scopeAnalyzer->hasScope($parentNode)
-                ? $parentNode->getAttribute(AttributeKey::SCOPE)
-                : $this->scopeFactory->createFromFile($smartFileInfo);
+            $mutatingScope = $parentNode->getAttribute(AttributeKey::SCOPE);
         }
 
         if (! $mutatingScope instanceof MutatingScope) {

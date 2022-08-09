@@ -37,6 +37,10 @@ final class ScopeAnalyzer
         }
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        return ! $parentNode instanceof Node;
+        if (! $parentNode instanceof Node) {
+            return true;
+        }
+
+        return ! $this->hasScope($parentNode);
     }
 }
