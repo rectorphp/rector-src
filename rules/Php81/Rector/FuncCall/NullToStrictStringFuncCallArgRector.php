@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
@@ -405,6 +406,10 @@ CODE_SAMPLE
         }
 
         if (! $type instanceof MixedType) {
+            return null;
+        }
+
+        if ($argValue instanceof Encapsed) {
             return null;
         }
 
