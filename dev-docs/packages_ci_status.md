@@ -12,12 +12,6 @@
 * ![](https://github.com/rectorphp/phpstan-rules/actions/workflows/tests.yaml/badge.svg)
 * ![](https://github.com/rectorphp/phpstan-rules/actions/workflows/code_analysis.yaml/badge.svg)
 
-## Nette
-
-* https://github.com/rectorphp/rector-nette
-* ![](https://github.com/rectorphp/rector-nette/actions/workflows/tests.yaml/badge.svg)
-* ![](https://github.com/rectorphp/rector-nette/actions/workflows/code_analysis.yaml/badge.svg)
-
 ## Symfony
 
 * https://github.com/rectorphp/rector-symfony

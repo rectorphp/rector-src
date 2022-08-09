@@ -29,7 +29,6 @@
         "rector/rector-downgrade-php": "dev-main",
         "rector/rector-generator": "dev-main",
         "rector/rector-laravel": "dev-main",
-        "rector/rector-nette": "dev-main",
         "rector/rector-phpoffice": "dev-main",
         "rector/rector-phpunit": "dev-main",
         "rector/rector-symfony": "dev-main",
