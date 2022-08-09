@@ -53,10 +53,6 @@ jobs:
                 working-directory: ${{ matrix.directory }}
 
             # run e2e test
-            -   run: php ../e2eTestRunner.php -c custom/config/rector.php
-                working-directory: ${{ matrix.directory }}
-                if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
-
             -   run: php ../e2eTestRunner.php --config custom/config/rector.php
                 working-directory: ${{ matrix.directory }}
                 if: ${{ matrix.directory == 'e2e/parallel-custom-config' }}
