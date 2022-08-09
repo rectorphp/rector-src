@@ -100,7 +100,7 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
         }
 
         $propertyFetchScope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
-        if ($propertyFetchScope === null) {
+        if (! $propertyFetchScope instanceof Scope) {
             return new MixedType();
         }
 

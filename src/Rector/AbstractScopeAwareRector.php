@@ -49,7 +49,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
             $errorMessage = sprintf(
                 'Scope not available on "%s" node with parent node of "%s", but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
                 $node::class,
-                $parentNode instanceof \PhpParser\Node ? $parentNode::class : 'unknown node',
+                $parentNode instanceof Node ? $parentNode::class : 'unknown node',
                 static::class,
             );
 

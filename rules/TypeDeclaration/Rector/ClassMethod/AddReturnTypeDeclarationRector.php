@@ -121,12 +121,12 @@ CODE_SAMPLE
         ObjectType $objectType
     ): void {
         if ($newType instanceof MixedType) {
-            $class = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $class instanceof Class_) {
+            $parentNode = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof Class_) {
                 return;
             }
 
-            $className = (string) $this->nodeNameResolver->getName($class);
+            $className = (string) $this->nodeNameResolver->getName($parentNode);
             $currentObjectType = new ObjectType($className);
             if (! $objectType->equals($currentObjectType) && $classMethod->returnType !== null) {
                 return;
