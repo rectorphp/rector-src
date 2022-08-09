@@ -77,7 +77,7 @@ final class ChangedNodeScopeRefresher
             $errorMessage = sprintf(
                 'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
                 $node::class,
-                $parent::class
+                $parent instanceof \PhpParser\Node ? $parent::class : 'unknown parent'
             );
 
             throw new ShouldNotHappenException($errorMessage);

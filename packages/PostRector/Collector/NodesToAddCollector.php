@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\MutatingScope;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
@@ -52,7 +53,9 @@ final class NodesToAddCollector implements NodeCollectorInterface
             throw new ShouldNotHappenException($message);
         }
 
-        $this->changedNodeScopeRefresher->refresh($addedNode, $positionNode->getAttribute(AttributeKey::SCOPE));
+        /** @var MutatingScope|null $currentScope */
+        $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
+        $this->changedNodeScopeRefresher->refresh($addedNode, $currentScope);
 
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddBefore[$position][] = $this->wrapToExpression($addedNode);
@@ -87,7 +90,10 @@ final class NodesToAddCollector implements NodeCollectorInterface
             throw new ShouldNotHappenException($message);
         }
 
-        $this->changedNodeScopeRefresher->refresh($addedNode, $positionNode->getAttribute(AttributeKey::SCOPE));
+        /** @var MutatingScope|null $currentScope */
+        $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
+
+        $this->changedNodeScopeRefresher->refresh($addedNode, $currentScope);
 
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddAfter[$position][] = $this->wrapToExpression($addedNode);

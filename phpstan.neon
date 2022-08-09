@@ -701,3 +701,8 @@ parameters:
             message: '#Method call return value that should be used, but is not#'
             path: src/PhpParser/Node/NodeFactory.php
             count: 1
+
+        # false positives
+        -
+            message: '#This call has duplicate argument#'
+            path: rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php

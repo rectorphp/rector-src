@@ -44,15 +44,16 @@ final class BetterNodeFinder
     }
 
     /**
-     * @template T of \PhpParser\Node
-     * @param array<class-string<T>> $types
-     * @return T|null
+     * @template TNode of \PhpParser\Node
+     * @param array<class-string<TNode>> $types
+     * @return TNode|null
      */
     public function findParentByTypes(Node $currentNode, array $types): ?Node
     {
         Assert::allIsAOf($types, Node::class);
 
         while ($currentNode = $currentNode->getAttribute(AttributeKey::PARENT_NODE)) {
+            /** @var \PhpParser\Node|null $currentNode */
             if (! $currentNode instanceof Node) {
                 return null;
             }
@@ -528,6 +529,7 @@ final class BetterNodeFinder
                 return $currentStmt;
             }
 
+            /** @var Node|null $currentStmt */
             if (! $currentStmt instanceof Node) {
                 return null;
             }
