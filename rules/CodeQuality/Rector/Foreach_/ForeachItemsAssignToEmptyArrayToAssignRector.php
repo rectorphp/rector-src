@@ -9,8 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\ThisType;
+use PHPStan\Type\ArrayType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
@@ -117,18 +116,7 @@ CODE_SAMPLE
         }
 
         $type = $scope->getType($foreach->expr);
-
-        if ($type instanceof ObjectType) {
-            return $type->isIterable()
-                ->yes();
-        }
-
-        if ($type instanceof ThisType) {
-            return $type->isIterable()
-                ->yes();
-        }
-
-        return false;
+        return ! $type instanceof ArrayType;
     }
 
     private function shouldSkipAsPartOfOtherLoop(Foreach_ $foreach): bool
