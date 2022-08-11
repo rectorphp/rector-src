@@ -9,13 +9,14 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
-use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
+use Rector\Transform\ValueObject\ClassMethodReference;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,15 +28,17 @@ use Webmozart\Assert\Assert;
 final class ReturnTypeWillChangeRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
-     * @var string[]
+     * @var ClassMethodReference[]
      */
-    private array $returnTypeChangedClasses;
+    private array $returnTypeChangedClassMethodReferences = [];
 
     public function __construct(
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory
+        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
-        $this->returnTypeChangedClasses[] = 'ArrayAccess';
+        $this->returnTypeChangedClassMethodReferences[] = new ClassMethodReference('ArrayAccess', 'getIterator');
+        $this->returnTypeChangedClassMethodReferences[] = new ClassMethodReference('ArrayAccess', 'offsetGet');
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -43,8 +46,8 @@ final class ReturnTypeWillChangeRector extends AbstractRector implements AllowEm
         return new RuleDefinition(
             'Add #[\ReturnTypeWillChange] attribute to configured instanceof class with methods',
             [
-            new ConfiguredCodeSample(
-                <<<'CODE_SAMPLE'
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
 class SomeClass implements ArrayAccess
 {
     public function offsetGet($offset)
@@ -52,8 +55,8 @@ class SomeClass implements ArrayAccess
     }
 }
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 class SomeClass implements ArrayAccess
 {
     #[\ReturnTypeWillChange]
@@ -62,11 +65,12 @@ class SomeClass implements ArrayAccess
     }
 }
 CODE_SAMPLE
-                ,
-                ['ArrayAccess']
-            ),
-        
-        ]);
+                    ,
+                    [new ClassMethodReference('ArrayAccess', 'offsetGet')]
+                ),
+
+            ]
+        );
     }
 
     /**
@@ -96,15 +100,17 @@ CODE_SAMPLE
             return null;
         }
 
-        $className = (string) $this->nodeNameResolver->getName($classLike);
-        $objectType = new ObjectType($className);
+        $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($classLike);
         $methodName = $node->name->toString();
 
         $hasChanged = false;
 
-        foreach ($this->returnTypeChangedClasses as $returnTypeChangedClass) {
-            $configuredClassObjectType = new ObjectType($returnTypeChangedClass);
-            if (! $configuredClassObjectType->isSuperTypeOf($objectType)->yes()) {
+        foreach ($this->returnTypeChangedClassMethodReferences as $returnTypeChangedClassMethodReference) {
+            if (! $classReflection->isSubclassOf($returnTypeChangedClassMethodReference->getClass())) {
+                continue;
+            }
+
+            if ($returnTypeChangedClassMethodReference->getMethod() !== $methodName) {
                 continue;
             }
 
@@ -125,12 +131,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @param string[] $configuration
+     * @param mixed[] $configuration
      */
     public function configure(array $configuration): void
     {
-        Assert::allString($configuration);
-        $this->returnTypeChangedClasses = array_merge($this->returnTypeChangedClasses, $configuration);
+        Assert::allIsInstanceOf($configuration, ClassMethodReference::class);
+        $this->returnTypeChangedClassMethodReferences = array_merge(
+            $this->returnTypeChangedClassMethodReferences,
+            $configuration
+        );
     }
 
     public function provideMinPhpVersion(): int
