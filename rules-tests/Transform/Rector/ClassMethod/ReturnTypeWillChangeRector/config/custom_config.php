@@ -6,8 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig
-        ->ruleWithConfiguration(ReturnTypeWillChangeRector::class, [
-            'ArrayAccess' => ['offsetExists'],
-        ]);
+    $rectorConfig->ruleWithConfiguration(ReturnTypeWillChangeRector::class, ['ArrayAccess']);
 };

@@ -8699,7 +8699,7 @@ use Rector\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(ReturnTypeWillChangeRector::class, [
-        ArrayAccess::class => ['offsetGet'],
+        ArrayAccess::class,
     ]);
 };
 ```
