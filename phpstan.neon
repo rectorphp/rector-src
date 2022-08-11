@@ -696,7 +696,10 @@ parameters:
                 - rules/TypeDeclaration/Rector/ClassMethod/AddArrayParamDocTypeRector.php
                 - packages/BetterPhpDocParser/PhpDocParser/PhpDocFromTypeDeclarationDecorator.php
 
-        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) and Rector\\Renaming\\Rector\\Name\\RenameClassRector will always evaluate to true#'
+        -
+            message: '#Call to method PHPUnit\\Framework\\Assert\:\:(.*?)\(\) with (.*?) and (.*?) will always evaluate to (.*?)#'
+            path: *Rector.php
+
         -
             message: '#Method call return value that should be used, but is not#'
             path: src/PhpParser/Node/NodeFactory.php
@@ -706,3 +709,6 @@ parameters:
         -
             message: '#This call has duplicate argument#'
             path: rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
+
+        # tests
+        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) and Rector\\Renaming\\Rector\\Name\\RenameClassRector will always evaluate to true#'

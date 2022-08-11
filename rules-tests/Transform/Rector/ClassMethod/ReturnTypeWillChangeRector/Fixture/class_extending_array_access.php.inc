@@ -4,7 +4,7 @@ namespace Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\F
 
 use Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Source\Options;
 
-class SomeClass extends Options
+final class ClassExtendingArrayAccess extends Options
 {
     public function offsetGet($offset)
     {
@@ -19,7 +19,7 @@ namespace Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\F
 
 use Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Source\Options;
 
-class SomeClass extends Options
+final class ClassExtendingArrayAccess extends Options
 {
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)

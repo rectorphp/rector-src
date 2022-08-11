@@ -8,7 +8,7 @@ final class MyTestCase3 extends ParentTestCase
 {
     public function dataProvider(): array
     {
-        return [[__DIR__ . '/Fixture/fixture.php.inc', __DIR__ . '/Correct/correct.php.inc']];
+        return [[__DIR__ . '/Fixture/class_extending_array_access.php.inc', __DIR__ . '/Correct/correct.php.inc']];
     }
 }
 
@@ -24,7 +24,7 @@ final class MyTestCase3 extends ParentTestCase
 {
     public function dataProvider(): \Iterator
     {
-        yield [__DIR__ . '/Fixture/fixture.php.inc', __DIR__ . '/Correct/correct.php.inc'];
+        yield [__DIR__ . '/Fixture/class_extending_array_access.php.inc', __DIR__ . '/Correct/correct.php.inc'];
     }
 }
 

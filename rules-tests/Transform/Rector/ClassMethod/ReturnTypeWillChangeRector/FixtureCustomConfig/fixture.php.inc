@@ -2,15 +2,11 @@
 
 namespace Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\FixtureCustomConfig;
 
-use Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Source\Options;
+use Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Source\ClassThatWillChangeReturnType;
 
-class SomeClass extends Options
+final class SomeClass extends ClassThatWillChangeReturnType
 {
-    public function offsetGet($offset)
-    {
-    }
-
-    public function offsetExists($offset)
+    public function changeMyReturn()
     {
     }
 }
@@ -21,17 +17,12 @@ class SomeClass extends Options
 
 namespace Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\FixtureCustomConfig;
 
-use Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Source\Options;
+use Rector\Tests\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector\Source\ClassThatWillChangeReturnType;
 
-class SomeClass extends Options
+final class SomeClass extends ClassThatWillChangeReturnType
 {
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
-    {
-    }
-
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function changeMyReturn()
     {
     }
 }
