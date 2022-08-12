@@ -141,7 +141,13 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->nodeFactory->createStaticCall(ObjectReference::SELF, $name, $node->args);
+        $staticCall = $this->nodeFactory->createStaticCall(ObjectReference::SELF, $name, $node->args);
+
+        if ($this->nodeComparator->areNodesEqual($staticCall, $node)) {
+            return null;
+        }
+
+        return $staticCall;
     }
 
     private function processToThis(MethodCall | StaticCall $node): ?MethodCall
@@ -161,14 +167,15 @@ CODE_SAMPLE
 
         // avoid adding dynamic method call to static method
         $classMethod = $this->betterNodeFinder->findParentByTypes($node, [ClassMethod::class]);
-        if (! $classMethod instanceof ClassMethod) {
-            return $this->nodeFactory->createMethodCall(new Variable(self::THIS), $name, $node->args);
+        if ($classMethod instanceof ClassMethod && $classMethod->isStatic()) {
+            return null;
         }
 
-        if (! $classMethod->isStatic()) {
-            return $this->nodeFactory->createMethodCall(new Variable(self::THIS), $name, $node->args);
+        $methodCall = $this->nodeFactory->createMethodCall(new Variable(self::THIS), $name, $node->args);
+        if ($this->nodeComparator->areNodesEqual($methodCall, $node)) {
+            return null;
         }
 
-        return null;
+        return $methodCall;
     }
 }
