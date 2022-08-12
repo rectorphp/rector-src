@@ -134,7 +134,7 @@ final class ChangedNodeScopeRefresher
     }
 
     /**
-     * @return Stmt[]|Expression[]
+     * @return Stmt[]
      */
     private function resolveStmts(Node $node): array
     {
