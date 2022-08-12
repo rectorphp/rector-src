@@ -35,7 +35,6 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
@@ -46,8 +45,7 @@ final class ChangedNodeScopeRefresher
     public function __construct(
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private readonly ScopeAnalyzer $scopeAnalyzer,
-        private readonly CurrentFileProvider $currentFileProvider,
-        private readonly ScopeFactory $scopeFactory
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -64,20 +62,24 @@ final class ChangedNodeScopeRefresher
             $smartFileInfo = $file->getSmartFileInfo();
         }
 
-        if ($this->scopeAnalyzer->isScopeResolvableFromFile($node, $mutatingScope)) {
-            $mutatingScope = $this->scopeFactory->createFromFile($smartFileInfo);
-        }
-
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $mutatingScope instanceof MutatingScope && $node instanceof Expr && $parentNode instanceof Node) {
-            $mutatingScope = $parentNode->getAttribute(AttributeKey::SCOPE);
-        }
+        $mutatingScope = $this->scopeAnalyzer->resolveScope($node, $smartFileInfo, $mutatingScope);
 
         if (! $mutatingScope instanceof MutatingScope) {
+            /**
+             * @var Node $parentNode
+             *
+             * $parentNode is always a Node when $mutatingScope is null, as checked in previous
+             *
+             *      $this->scopeAnalyzer->resolveScope()
+             *
+             *  which verify if no parent and no scope, it resolve Scope from File
+             */
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
             $errorMessage = sprintf(
                 'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
                 $node::class,
-                $parentNode instanceof Node ? $parentNode::class : 'unknown parent'
+                $parentNode::class
             );
 
             throw new ShouldNotHappenException($errorMessage);
@@ -132,7 +134,7 @@ final class ChangedNodeScopeRefresher
     }
 
     /**
-     * @return Stmt[]
+     * @return Stmt[]|Expression[]
      */
     private function resolveStmts(Node $node): array
     {
