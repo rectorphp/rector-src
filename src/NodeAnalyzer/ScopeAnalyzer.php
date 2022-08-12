@@ -40,8 +40,7 @@ final class ScopeAnalyzer
         Node $node,
         SmartFileInfo $smartFileInfo,
         ?MutatingScope $mutatingScope = null
-    ): ?MutatingScope
-    {
+    ): ?MutatingScope {
         if ($mutatingScope instanceof MutatingScope) {
             return $mutatingScope;
         }
