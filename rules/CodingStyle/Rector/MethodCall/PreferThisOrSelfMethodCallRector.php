@@ -120,10 +120,8 @@ CODE_SAMPLE
 
     private function processToSelf(MethodCall | StaticCall $node): ?StaticCall
     {
-        if ($node instanceof StaticCall && ! $this->isNames(
-            $node->class,
-            [ObjectReference::SELF, ObjectReference::STATIC]
-        )) {
+        // class is already "self", let's skip it
+        if ($node instanceof StaticCall && $this->isName($node->class, ObjectReference::SELF)) {
             return null;
         }
 
