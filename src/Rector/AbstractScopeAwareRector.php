@@ -11,20 +11,16 @@ use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeAwarePhpRectorInterface
 {
     private ScopeAnalyzer $scopeAnalyzer;
 
-    private ScopeFactory $scopeFactory;
-
     #[Required]
-    public function autowireAbstractScopeAwareRector(ScopeAnalyzer $scopeAnalyzer, ScopeFactory $scopeFactory): void
+    public function autowireAbstractScopeAwareRector(ScopeAnalyzer $scopeAnalyzer): void
     {
         $this->scopeAnalyzer = $scopeAnalyzer;
-        $this->scopeFactory = $scopeFactory;
     }
 
     /**
@@ -36,20 +32,31 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         /** @var MutatingScope|null $scope */
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
-        if ($this->scopeAnalyzer->isScopeResolvableFromFile($node, $scope)) {
+        if (! $scope instanceof MutatingScope) {
             $smartFileInfo = $this->file->getSmartFileInfo();
-            $scope = $this->scopeFactory->createFromFile($smartFileInfo);
+            $scope = $this->scopeAnalyzer->resolveScope($node, $smartFileInfo);
 
-            $this->changedNodeScopeRefresher->refresh($node, $scope, $smartFileInfo);
+            if ($scope instanceof MutatingScope) {
+                $this->changedNodeScopeRefresher->refresh($node, $scope, $smartFileInfo);
+            }
         }
 
         if (! $scope instanceof Scope) {
+            /**
+             * @var Node $parentNode
+             *
+             * $parentNode is always a Node when $mutatingScope is null, as checked in previous
+             *
+             *      $this->scopeAnalyzer->resolveScope()
+             *
+             *  which verify if no parent and no scope, it resolve Scope from File
+             */
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
             $errorMessage = sprintf(
                 'Scope not available on "%s" node with parent node of "%s", but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
                 $node::class,
-                $parentNode instanceof Node ? $parentNode::class : 'unknown node',
+                $parentNode::class,
                 static::class,
             );
 
