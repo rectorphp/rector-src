@@ -35,11 +35,6 @@ final class InflectorSingularResolver
     /**
      * @var string
      */
-    private const SINGLE = 'single';
-
-    /**
-     * @var string
-     */
     private const CAMELCASE = 'camelcase';
 
     public function __construct(
@@ -59,21 +54,10 @@ final class InflectorSingularResolver
             return $resolvedValue;
         }
 
-        if (str_starts_with($currentName, self::SINGLE)) {
-            return $currentName;
-        }
-
         $singularValueVarName = $this->singularizeCamelParts($currentName);
 
         if (in_array($singularValueVarName, ['', '_'], true)) {
             return $currentName;
-        }
-
-        $singularValueVarName = $singularValueVarName === $currentName
-            ? self::SINGLE . ucfirst($singularValueVarName)
-            : $singularValueVarName;
-        if (! str_starts_with($singularValueVarName, self::SINGLE)) {
-            return $singularValueVarName;
         }
 
         $length = strlen($singularValueVarName);
