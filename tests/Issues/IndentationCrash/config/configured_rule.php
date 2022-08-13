@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\Config\RectorConfig;
+use Rector\Php71\Rector\FuncCall\CountOnNullRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
-use Rector\Set\ValueObject\LevelSetList;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
@@ -13,6 +14,6 @@ return static function (RectorConfig $rectorConfig): void {
             'sizeof' => 'count',
         ]);
     $rectorConfig->rule(ForRepeatedCountToOwnVariableRector::class);
-
-    $rectorConfig->sets([LevelSetList::UP_TO_PHP_81]);
+    $rectorConfig->rule(CountOnNullRector::class);
+    $rectorConfig->rule(NullToStrictStringFuncCallArgRector::class);
 };
