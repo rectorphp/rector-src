@@ -88,6 +88,10 @@ final class RectifiedAnalyzer
         }
 
         if ($originalNode instanceof Node) {
+            if (! $node->hasAttribute(AttributeKey::PHPSTAN_CACHE_PRINTER)) {
+                return true;
+            }
+
             if (! $originalNode->hasAttribute(AttributeKey::PHPSTAN_CACHE_PRINTER)) {
                 return true;
             }
