@@ -67,7 +67,7 @@ CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
 $values = null;
-$count = count((array) $values);
+count = $values === null ? 0 : count($values);
 CODE_SAMPLE
             )]
         );
