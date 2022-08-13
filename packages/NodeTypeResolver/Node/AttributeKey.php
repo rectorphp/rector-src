@@ -98,11 +98,6 @@ final class AttributeKey
 
     /**
      * @var string
-     */
-    public const PHPSTAN_CACHE_PRINTER = 'phpstan_cache_printer';
-
-    /**
-     * @var string
      * Use often in php-parser
      */
     public const KIND = 'kind';
