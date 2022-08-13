@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use Rector\Core\NodeManipulator\BinaryOpManipulator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -64,22 +63,12 @@ final class IsArrayAndDualCheckToAble
             return null;
         }
 
-        // both use same var
-        if (! $funcCallExpr->args[0]->value instanceof Expr) {
+        $firstExprNode = $funcCallExpr->args[0]->value;
+        if (! $this->nodeComparator->areNodesEqual($instanceofExpr->expr, $firstExprNode)) {
             return null;
         }
 
-        /** @var Variable $firstVarNode */
-        $firstVarNode = $funcCallExpr->args[0]->value;
-
-        if (! $instanceofExpr->expr instanceof Expr) {
-            return null;
-        }
-
-        if (! $this->nodeComparator->areNodesEqual($instanceofExpr->expr, $firstVarNode)) {
-            return null;
-        }
-
-        return new FuncCall(new Name($newMethodName), [new Arg($firstVarNode)]);
+        // both use same Expr
+        return new FuncCall(new Name($newMethodName), [new Arg($firstExprNode)]);
     }
 }
