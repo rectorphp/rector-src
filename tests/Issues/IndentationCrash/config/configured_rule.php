@@ -10,8 +10,8 @@ use Rector\Set\ValueObject\LevelSetList;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(RenameFunctionRector::class, [
-                'sizeof' => 'count',
-            ]);
+            'sizeof' => 'count',
+        ]);
     $rectorConfig->rule(ForRepeatedCountToOwnVariableRector::class);
 
     $rectorConfig->sets([LevelSetList::UP_TO_PHP_81]);
