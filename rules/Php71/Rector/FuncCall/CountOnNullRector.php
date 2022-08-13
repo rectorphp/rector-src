@@ -190,7 +190,8 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $scope->hasVariableType($this->getName($funcCall->args[0]->value))->yes()) {
+        $variableName = (string) $this->getName($funcCall->args[0]->value);
+        if (! $scope->hasVariableType($variableName)->yes()) {
             return true;
         }
 
