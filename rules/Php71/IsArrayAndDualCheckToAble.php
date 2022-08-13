@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use Rector\Core\NodeManipulator\BinaryOpManipulator;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 
@@ -19,7 +20,8 @@ final class IsArrayAndDualCheckToAble
 {
     public function __construct(
         private readonly BinaryOpManipulator $binaryOpManipulator,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -63,22 +65,18 @@ final class IsArrayAndDualCheckToAble
         }
 
         // both use same var
-        if (! $funcCallExpr->args[0]->value instanceof Variable) {
+        if (! $funcCallExpr->args[0]->value instanceof Expr) {
             return null;
         }
 
         /** @var Variable $firstVarNode */
         $firstVarNode = $funcCallExpr->args[0]->value;
 
-        if (! $instanceofExpr->expr instanceof Variable) {
+        if (! $instanceofExpr->expr instanceof Expr) {
             return null;
         }
 
-        /** @var Variable $secondVarNode */
-        $secondVarNode = $instanceofExpr->expr;
-
-        // are they same variables
-        if ($firstVarNode->name !== $secondVarNode->name) {
+        if (! $this->nodeComparator->areNodesEqual($instanceofExpr->expr, $firstVarNode)) {
             return null;
         }
 
