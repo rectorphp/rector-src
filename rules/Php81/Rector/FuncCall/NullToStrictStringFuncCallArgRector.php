@@ -409,11 +409,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $type instanceof MixedType) {
-            return null;
-        }
-
-        if ($argValue instanceof Encapsed) {
+        if (! $type instanceof MixedType || $argValue instanceof Encapsed) {
             return null;
         }
 
