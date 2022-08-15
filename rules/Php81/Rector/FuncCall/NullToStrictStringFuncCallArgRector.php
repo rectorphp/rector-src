@@ -337,10 +337,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($positions) > count($args)) {
-            return null;
-        }
-
         $isChanged = false;
         foreach ($positions as $position) {
             $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position);
@@ -395,6 +391,10 @@ CODE_SAMPLE
         array $args,
         int|string $position
     ): ?FuncCall {
+        if (! isset($args[$position])) {
+            return null;
+        }
+
         $argValue = $args[$position]->value;
 
         if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
