@@ -116,6 +116,11 @@ final class DeadParamTagValueNodeAnalyzer
             return true;
         }
 
+        $parent = $phpDocChildNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if ($parent instanceof PhpDocNode) {
+            return false;
+        }
+
         return (string) $phpDocChildNode === '';
     }
 
