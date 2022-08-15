@@ -337,6 +337,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (count($positions) > count($args)) {
+            return null;
+        }
+
         $isChanged = false;
         foreach ($positions as $position) {
             $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position);
