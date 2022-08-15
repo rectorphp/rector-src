@@ -391,6 +391,10 @@ CODE_SAMPLE
         array $args,
         int|string $position
     ): ?FuncCall {
+        if (! isset($args[$position])) {
+            return null;
+        }
+
         $argValue = $args[$position]->value;
 
         if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
@@ -405,11 +409,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $type instanceof MixedType) {
-            return null;
-        }
-
-        if ($argValue instanceof Encapsed) {
+        if (! $type instanceof MixedType || $argValue instanceof Encapsed) {
             return null;
         }
 
