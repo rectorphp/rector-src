@@ -17,6 +17,8 @@ final class DoNotRemoveDifferentTypeDoc
 -----
 <?php
 
+namespace Rector\Tests\Php80\Rector\FunctionLike\MixedTypeRector\Fixture;
+
 final class DoNotRemoveDifferentTypeDoc
 {
    /**
