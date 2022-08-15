@@ -103,7 +103,7 @@ final class StaticDoctrineAnnotationParser
                 $values = array_merge($values, $nestedValues);
             } else {
                 if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_END)) {
-                    continue;
+                    break;
                 }
 
                 $values[] = $nestedValues;
