@@ -140,7 +140,7 @@ CODE_SAMPLE
         $hasChanged = false;
         $class = $node;
 
-        $this->traverseNodesWithCallable($classStmts, function (\PhpParser\Node $node) use ($class, &$hasChanged) {
+        $this->traverseNodesWithCallable($classStmts, function (Node $node) use ($class, &$hasChanged): ?PropertyFetch {
             if (! $node instanceof MethodCall) {
                 return null;
             }
