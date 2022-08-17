@@ -7,6 +7,8 @@ namespace Rector\Core\Tests\PhpParser\Node;
 use Iterator;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\PhpParser\Node\NodeFactory;
@@ -35,20 +37,51 @@ final class NodeFactoryTest extends AbstractTestCase
     }
 
     /**
-     * @return Iterator<int[][]|array<string, int>|Array_[]>
+     * @return Iterator<mixed>
      */
     public function provideDataForArray(): Iterator
     {
+        $numberNode = new LNumber(1);
+        $stringNode = new String_('a');
+        $trueNode = new ConstFetch(new Name('true'));
+        $falseNode = new ConstFetch(new Name('false'));
+        $nullNode = new ConstFetch(new Name('null'));
+
         $array = new Array_();
-        $array->items[] = new ArrayItem(new LNumber(1));
+        $array->items[] = new ArrayItem($numberNode);
 
         yield [[1], $array];
 
         $array = new Array_();
-        $array->items[] = new ArrayItem(new LNumber(1), new String_('a'));
+        $array->items[] = new ArrayItem($numberNode, $stringNode);
 
         yield [[
             'a' => 1,
         ], $array];
+
+        $array = new Array_();
+        $array->items[] = new ArrayItem($numberNode);
+
+        yield [[$numberNode], $array];
+
+        $array = new Array_();
+        $array->items[] = new ArrayItem($stringNode);
+
+        yield [[$stringNode], $array];
+
+        $array = new Array_();
+        $array->items[] = new ArrayItem($trueNode);
+
+        yield [[$trueNode], $array];
+
+        $array = new Array_();
+        $array->items[] = new ArrayItem($falseNode);
+
+        yield [[$falseNode], $array];
+
+        $array = new Array_();
+        $array->items[] = new ArrayItem($nullNode);
+
+        yield [[$nullNode], $array];
     }
 }
