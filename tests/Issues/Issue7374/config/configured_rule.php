@@ -9,6 +9,6 @@ use Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         RemoveUnusedPrivateMethodParameterRector::class,
-        RenameVariableToMatchNewTypeRector::class
+        RenameVariableToMatchNewTypeRector::class,
     ]);
 };
