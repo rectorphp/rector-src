@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\7374\Fixture;
+namespace Rector\Core\Tests\Issues7374\Fixture;
 
 class R extends Reports {
     
