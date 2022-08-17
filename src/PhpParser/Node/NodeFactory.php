@@ -480,6 +480,7 @@ final class NodeFactory
             || $item instanceof Concat
             || $item instanceof Scalar
             || $item instanceof Cast
+            || $item instanceof ConstFetch
         ) {
             $arrayItem = new ArrayItem($item);
         } elseif ($item instanceof Identifier) {
