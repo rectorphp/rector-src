@@ -84,6 +84,7 @@ final class PHPStanNodeScopeResolver
         private readonly ParentAttributeSourceLocator $parentAttributeSourceLocator,
         private readonly NodeNameResolver $nodeNameResolver
     ) {
+        $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
     }
 
     /**
@@ -215,8 +216,6 @@ final class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
         };
-
-        $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
 
         return $this->processNodesWithDependentFiles($smartFileInfo, $stmts, $scope, $nodeCallback);
     }
