@@ -86,7 +86,7 @@ CODE_SAMPLE
             }
 
             $unusedParameterPositions = array_keys($unusedParameters);
-            foreach ($classMethod->params as $key => $param) {
+            foreach (array_keys($classMethod->params) as $key) {
                 if (! in_array($key, $unusedParameterPositions, true)) {
                     continue;
                 }
