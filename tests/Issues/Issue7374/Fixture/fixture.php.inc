@@ -19,3 +19,22 @@ final class ClassWithTwoMethods
         ));
     }
 }
+-----
+<?php
+
+namespace Rector\Core\Tests\Issues\Issue7374\Fixture;
+
+final class ClassWithTwoMethods
+{
+    private function displayTree($data)
+    {
+        if (empty($data)) return false;
+    }
+
+    public function action($params, $server)
+    {
+        $busibooksBusinesses = new BusibooksBusinesses();
+
+        $this->displayTree($equity);
+    }
+}

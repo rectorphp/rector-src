@@ -76,7 +76,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
-            if ($this->shouldSkip($classMethod)) {
+            if ($this->shouldSkipClassMethod($classMethod)) {
                 continue;
             }
 
@@ -148,7 +148,8 @@ CODE_SAMPLE
             }
         }
 
-        $methodCall->args = $args;
+        // reset arg keys
+        $methodCall->args = array_values($args);
     }
 
     /**
@@ -177,7 +178,7 @@ CODE_SAMPLE
         });
     }
 
-    private function shouldSkip(ClassMethod $classMethod): bool
+    private function shouldSkipClassMethod(ClassMethod $classMethod): bool
     {
         if (! $classMethod->isPrivate()) {
             return true;
