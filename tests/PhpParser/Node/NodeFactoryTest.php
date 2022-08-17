@@ -37,7 +37,7 @@ final class NodeFactoryTest extends AbstractTestCase
     }
 
     /**
-     * @return Iterator<int[][]|array<string, int>|Array_[]>
+     * @return Iterator<mixed>
      */
     public function provideDataForArray(): Iterator
     {
