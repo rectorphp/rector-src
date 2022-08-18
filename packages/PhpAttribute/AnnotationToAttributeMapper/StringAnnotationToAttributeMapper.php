@@ -50,6 +50,10 @@ final class StringAnnotationToAttributeMapper implements AnnotationToAttributeMa
             $kind = String_::KIND_SINGLE_QUOTED;
         }
 
+        if (str_starts_with($value, '"') && str_ends_with($value, '"')) {
+            $value = trim($value, '"');
+        }
+
         return new String_($value, [
             AttributeKey::KIND => $kind,
         ]);

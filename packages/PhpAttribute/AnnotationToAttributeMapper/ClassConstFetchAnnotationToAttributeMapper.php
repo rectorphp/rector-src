@@ -19,7 +19,12 @@ final class ClassConstFetchAnnotationToAttributeMapper implements AnnotationToAt
             return false;
         }
 
-        return str_contains($value, '::');
+        if (! str_contains($value, '::')) {
+            return false;
+        }
+
+        // is quoted? skip it
+        return ! str_starts_with($value, '"');
     }
 
     /**
