@@ -14,6 +14,11 @@ return static function (RectorConfig $rectorConfig): void {
             'inverseJoinColumns' => 'Doctrine\ORM\Mapping\InverseJoinColumn',
         ]),
 
+        new NestedAnnotationToAttribute('Doctrine\ORM\Mapping\Table', [
+            'indexes' => 'Doctrine\ORM\Mapping\Index',
+            'uniqueConstraints' => 'Doctrine\ORM\Mapping\UniqueConstraint',
+        ]),
+
         /** @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html#joincolumns */
         new NestedAnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumns', [
             'Doctrine\ORM\Mapping\JoinColumn',
