@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Rector\Php80\ValueObject;
 
 use Rector\Core\Validation\RectorAssert;
+use Rector\Php80\Contract\ValueObject\AnnotationToAttributeInterface;
 
-final class AnnotationToAttribute
+final class AnnotationToAttribute implements AnnotationToAttributeInterface
 {
     public function __construct(
         private readonly string $tag,

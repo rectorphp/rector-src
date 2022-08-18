@@ -4,12 +4,14 @@ namespace Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\F
 
 use Doctrine\ORM\Mapping as ORM;
 
-final class SomeEntity
+final class MultipleInversedJoinColumns
 {
     /**
      * @ORM\JoinTable(name="join_table_name",
-     *     joinColumns={@ORM\JoinColumn(name="origin_id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="target_id")}
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="target_id"),
+     *          @ORM\JoinColumn(name="another_id")
+     *     }
      * )
      */
     private $collection;
@@ -23,11 +25,11 @@ namespace Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\F
 
 use Doctrine\ORM\Mapping as ORM;
 
-final class SomeEntity
+final class MultipleInversedJoinColumns
 {
     #[ORM\JoinTable(name: 'join_table_name')]
-    #[ORM\JoinColumn(name: 'origin_id')]
     #[ORM\InverseJoinColumn(name: 'target_id')]
+    #[ORM\InverseJoinColumn(name: 'another_id')]
     private $collection;
 }
 
