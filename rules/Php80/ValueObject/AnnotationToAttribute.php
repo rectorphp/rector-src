@@ -4,29 +4,26 @@ declare(strict_types=1);
 
 namespace Rector\Php80\ValueObject;
 
+use Rector\Core\Validation\RectorAssert;
+
 final class AnnotationToAttribute
 {
-    /**
-     * @param class-string|string $tag
-     * @param class-string|null $attributeClass
-     */
     public function __construct(
         private readonly string $tag,
         private readonly ?string $attributeClass = null
     ) {
+        RectorAssert::className($tag);
+
+        if (is_string($attributeClass)) {
+            RectorAssert::className($attributeClass);
+        }
     }
 
-    /**
-     * @return class-string|string
-     */
     public function getTag(): string
     {
         return $this->tag;
     }
 
-    /**
-     * @return class-string
-     */
     public function getAttributeClass(): string
     {
         if ($this->attributeClass === null) {

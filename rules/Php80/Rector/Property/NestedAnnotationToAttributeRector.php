@@ -11,15 +11,14 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
-
  * @see \Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\NestedAnnotationToAttributeRectorTest
  */
 final class NestedAnnotationToAttributeRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
- * @var mixed[]
- */
-private $nestedAnnotationsToAttributes = [];
+     * @var mixed[]
+     */
+    private $nestedAnnotationsToAttributes = [];
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -40,7 +39,7 @@ class SomeEntity
     private $collection;
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 use Doctrine\ORM\Mapping as ORM;
 
@@ -53,9 +52,11 @@ class SomeEntity
     private $collection;
 }
 CODE_SAMPLE
-,
-                [['old_value' => 'newValue']]
-            )
+                ,
+                [[
+                    'old_value' => 'newValue',
+                ]]
+            ),
         ]);
     }
 
@@ -78,10 +79,10 @@ CODE_SAMPLE
     }
 
     /**
- * @param mixed[] $configuration
- */
-public function configure(array $configuration) : void
-{
-    $this->nestedAnnotationsToAttributes = $configuration;
-}
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $this->nestedAnnotationsToAttributes = $configuration;
+    }
 }
