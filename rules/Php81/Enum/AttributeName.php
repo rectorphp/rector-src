@@ -7,11 +7,6 @@ namespace Rector\Php81\Enum;
 final class AttributeName
 {
     /**
-     * @var string
-     */
-    public const ATTRIBUTE = 'Attribute';
-
-    /**
      * Available since PHP 8.1
      * @see https://php.watch/versions/8.1/ReturnTypeWillChange
      * @var string

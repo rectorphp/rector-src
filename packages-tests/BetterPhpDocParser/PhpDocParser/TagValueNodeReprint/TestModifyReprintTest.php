@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use PhpParser\Node;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -59,7 +61,10 @@ final class TestModifyReprintTest extends AbstractTestCase
             'Symfony\Component\Routing\Annotation\Route'
         );
         // this will extended tokens of first node
-        $doctrineAnnotationTagValueNode->changeValue('methods', new CurlyListNode(['"GET"', '"HEAD"']));
+        $doctrineAnnotationTagValueNode->changeValue('methods', new CurlyListNode([
+            new ArrayItemNode('GET', null, String_::KIND_DOUBLE_QUOTED),
+            new ArrayItemNode('HEAD', null, String_::KIND_DOUBLE_QUOTED),
+        ]));
 
         $expectedDocContent = trim((string) $inputFileInfoAndExpected->getExpected());
 

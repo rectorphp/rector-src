@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
+use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 
 /**
@@ -20,7 +22,8 @@ final class ArrayParser
 
     /**
      * Mimics https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L1305-L1352
-     * @return mixed[]
+     *
+     * @return ArrayItemNode[]
      */
     public function parseCurlyArray(BetterTokenIterator $tokenIterator): array
     {
@@ -130,11 +133,11 @@ final class ArrayParser
 
     /**
      * @param mixed[] $values
-     * @return mixed[]
+     * @return ArrayItemNode[]
      */
     private function createArrayFromValues(array $values): array
     {
-        $array = [];
+        $arrayItemNodes = [];
 
         foreach ($values as $value) {
             [$key, $val] = $value;
@@ -143,13 +146,41 @@ final class ArrayParser
                 $key = $key->value;
             }
 
+            $valueQuoteKind = $this->resolveQuoteKind($val);
+            if (is_string($val) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
+                // give raw value
+                $val = trim($val, '"');
+            }
+
+            $keyQuoteKind = $this->resolveQuoteKind($key);
+            if (is_string($key) && $keyQuoteKind === String_::KIND_DOUBLE_QUOTED) {
+                // give raw value
+                $key = trim($key, '"');
+            }
+
             if ($key !== null) {
-                $array[$key] = $val;
+                $arrayItemNodes[] = new ArrayItemNode($val, $key, $valueQuoteKind, $keyQuoteKind);
             } else {
-                $array[] = $val;
+                $arrayItemNodes[] = new ArrayItemNode($val, null, $valueQuoteKind, $keyQuoteKind);
             }
         }
 
-        return $array;
+        return $arrayItemNodes;
+    }
+
+    /**
+     * @return String_::KIND_SINGLE_QUOTED|String_::KIND_DOUBLE_QUOTED|null
+     */
+    private function resolveQuoteKind(mixed $val): ?int
+    {
+        if (is_string($val) && str_starts_with($val, '"') && str_ends_with($val, '"')) {
+            return String_::KIND_DOUBLE_QUOTED;
+        }
+
+        if (is_string($val) && str_starts_with($val, "'") && str_ends_with($val, "'")) {
+            return String_::KIND_SINGLE_QUOTED;
+        }
+
+        return null;
     }
 }

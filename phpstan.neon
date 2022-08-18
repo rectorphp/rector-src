@@ -699,3 +699,5 @@ parameters:
         -
             message: '#Cognitive complexity#i'
             path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
+
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<Rector\\BetterPhpDocParser\\PhpDoc\\ArrayItemNode> and (.*?) will always evaluate to true#'
