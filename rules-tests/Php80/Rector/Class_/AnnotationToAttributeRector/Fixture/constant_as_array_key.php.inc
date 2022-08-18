@@ -6,16 +6,15 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericA
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\ConstantReference;
 
 /**
- * @GenericAnnotation(
- *     itemOperations={
- *         "get" = {
-               ConstantReference::FIRST_NAME = true
- *         }
- *     }
- * )
+ * @GenericAnnotation({
+ *     ConstantReference::FIRST_NAME = true,
+ *     "some::string" = "some-value"
+ * })
  */
-final class DemoClass {
+final class ConstantAsArrayKey
+{
 }
+
 ?>
 -----
 <?php
@@ -25,8 +24,9 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\ConstantReference;
 
-#[GenericAnnotation(itemOperations: ['get' => [ConstantReference::FIRST_NAME => true]])]
-final class DemoClass
+#[GenericAnnotation([ConstantReference::FIRST_NAME => true, 'some::string' => 'some-value'])]
+final class ConstantAsArrayKey
 {
 }
+
 ?>
