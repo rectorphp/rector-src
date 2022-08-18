@@ -14,7 +14,6 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
-use Rector\PhpAttribute\Exception\InvalidNestedAttributeException;
 use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -47,7 +46,11 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
             return false;
         }
 
-        return ! $this->unwrapableAnnotationAnalyzer->areUnwrappable([$value]);
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -55,11 +58,6 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
      */
     public function map($value): New_
     {
-        // if PHP 8.0- throw exception
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS)) {
-            throw new InvalidNestedAttributeException();
-        }
-
         $annotationShortName = $this->resolveAnnotationName($value);
 
         $values = $value->getValues();
