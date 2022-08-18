@@ -20,6 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedPrivatePropertyRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
     /**
+     * @api
      * @var string
      */
     public const REMOVE_ASSIGN_SIDE_EFFECT = 'remove_assign_side_effect';
@@ -62,7 +63,7 @@ class SomeClass
 {
 }
 CODE_SAMPLE
-,
+                ,
                 [
                     self::REMOVE_ASSIGN_SIDE_EFFECT => true,
                 ]

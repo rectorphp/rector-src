@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -17,6 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
 {
+    public function __construct(private readonly ReflectionResolver $reflectionResolver)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove if condition that is always true', [
@@ -82,11 +91,46 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkipPropertyFetch($node->cond)) {
+            return null;
+        }
+
         if ($node->stmts === []) {
             $this->removeNode($node);
             return null;
         }
 
         return $node->stmts;
+    }
+
+    private function shouldSkipPropertyFetch(Expr $expr): bool
+    {
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+        $propertyFetches = $this->betterNodeFinder->findInstancesOf(
+            $expr,
+            [PropertyFetch::class, StaticPropertyFetch::class]
+        );
+
+        foreach ($propertyFetches as $propertyFetch) {
+            $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($propertyFetch);
+
+            if (! $classReflection instanceof ClassReflection) {
+                // cannot get parent Trait_ from Property Fetch
+                return true;
+            }
+
+            $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
+
+            if (! $classReflection->hasNativeProperty($propertyName)) {
+                continue;
+            }
+
+            $nativeProperty = $classReflection->getNativeProperty($propertyName);
+            if (! $nativeProperty->hasNativeType()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

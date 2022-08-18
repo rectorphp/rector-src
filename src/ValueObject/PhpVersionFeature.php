@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObject;
 
+/**
+ * @api
+ */
 final class PhpVersionFeature
 {
     /**
@@ -45,6 +48,11 @@ final class PhpVersionFeature
      * @var int
      */
     public const NO_REFERENCE_IN_ARG = PhpVersion::PHP_54;
+
+    /**
+     * @var int
+     */
+    public const SHORT_ARRAY = PhpVersion::PHP_54;
 
     /**
      * @var int

@@ -24,6 +24,9 @@ final class VariadicFunctionLikeDetector
     ) {
     }
 
+    /**
+     * @api
+     */
     public function isVariadic(FunctionLike $functionLike): bool
     {
         $isVariadic = false;

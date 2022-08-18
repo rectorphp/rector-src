@@ -22,7 +22,7 @@ final class AssignVariableTypeResolver
         $exprType = $this->nodeTypeResolver->getType($assign->expr);
 
         if ($exprType instanceof UnionType) {
-            $variableType = $exprType;
+            return $exprType;
         }
 
         return $variableType;

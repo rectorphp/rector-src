@@ -15,6 +15,8 @@ final class RenameProperty
         private readonly string $newProperty
     ) {
         RectorAssert::className($type);
+        RectorAssert::propertyName($oldProperty);
+        RectorAssert::propertyName($newProperty);
     }
 
     public function getObjectType(): ObjectType

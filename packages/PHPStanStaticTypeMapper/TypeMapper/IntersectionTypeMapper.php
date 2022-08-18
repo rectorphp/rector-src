@@ -6,9 +6,11 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -78,7 +80,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::INTERSECTION_TYPES)) {
-            return null;
+            return $this->matchMockObjectType($type);
         }
 
         $intersectionedTypeNodes = [];
@@ -101,5 +103,21 @@ final class IntersectionTypeMapper implements TypeMapperInterface
         }
 
         return new Node\IntersectionType($intersectionedTypeNodes);
+    }
+
+    private function matchMockObjectType(IntersectionType $intersectionType): ?FullyQualified
+    {
+        // return mock object as the strict one
+        foreach ($intersectionType->getTypes() as $intersectionedType) {
+            if (! $intersectionedType instanceof ObjectType) {
+                continue;
+            }
+
+            if ($intersectionedType->getClassName() === 'PHPUnit\Framework\MockObject\MockObject') {
+                return new FullyQualified($intersectionedType->getClassName());
+            }
+        }
+
+        return null;
     }
 }

@@ -8,7 +8,7 @@ Rector instantly upgrades and refactors the PHP code of your application.  It ca
 
 ### 1. Instant Upgrades
 
-Rector now supports upgrades from PHP 5.3 to 8.1 and major open-source projects like [Symfony](https://github.com/rectorphp/rector-symfony), [PHPUnit](https://github.com/rectorphp/rector-phpunit), [Nette](https://github.com/rectorphp/rector-nette), [Laravel](https://github.com/rectorphp/rector-laravel), [CakePHP](https://github.com/rectorphp/rector-cakephp) and [Doctrine](https://github.com/rectorphp/rector-doctrine). Do you want to **be constantly on the latest PHP and Framework without effort**?
+Rector now supports upgrades from PHP 5.3 to 8.1 and major open-source projects like [Symfony](https://github.com/rectorphp/rector-symfony), [PHPUnit](https://github.com/rectorphp/rector-phpunit), [Laravel](https://github.com/rectorphp/rector-laravel), [CakePHP](https://github.com/rectorphp/rector-cakephp) and [Doctrine](https://github.com/rectorphp/rector-doctrine). Do you want to **be constantly on the latest PHP and Framework without effort**?
 
 Use Rector to handle **instant upgrades** for you.
 
@@ -34,11 +34,12 @@ By [buying a book](https://leanpub.com/rector-the-power-of-automated-refactoring
 
 ## Documentation
 
-- [Explore 500+ Rector Rules](/docs/rector_rules_overview.md)
+- [Explore 400+ Rector Rules](/docs/rector_rules_overview.md)
 - [How to Ignore Rule or Paths](/docs/how_to_ignore_rule_or_paths.md)
 - [Static Reflection and Autoload](/docs/static_reflection_and_autoload.md)
 - [How to Configure Rule](/docs/how_to_configure_rules.md)
 - [Auto Import Names](/docs/auto_import_names.md)
+- [How to Troubleshoot Parallel Issues](/docs/how_to_troubleshoot_parallel_issues.md)
 
 ### For Rule Developers and Contributors
 
@@ -131,7 +132,25 @@ return static function (RectorConfig $rectorConfig): void {
 
 <br>
 
-## Support
+## Empowered by Rector Community :heart:
+
+The Rector community is powerful thanks to active maintainers who take care of Rector sets for particular projects.
+
+Among there projects belong:
+
+* [palantirnet/drupal-rector](https://github.com/palantirnet/drupal-rector)
+* [craftcms/rector](https://github.com/craftcms/rector)
+* [FriendsOfShopware/shopware-rector](https://github.com/FriendsOfShopware/shopware-rector)
+* [sabbelasichon/typo3-rector](https://github.com/sabbelasichon/typo3-rector)
+* [sulu/sulu-rector](https://github.com/sulu/sulu-rector)
+* [efabrica-team/rector-nette](https://github.com/efabrica-team/rector-nette)
+* [Sylius/SyliusRector](https://github.com/Sylius/SyliusRector)
+* [CoditoNet/rector-money](https://github.com/CoditoNet/rector-money)
+* [laminas/laminas-servicemanager-migration](https://github.com/laminas/laminas-servicemanager-migration)
+
+<br>
+
+## Hire us to get Job Done :muscle:
 
 Rector is a tool that [we develop](https://getrector.org/) and share for free, so anyone can automate their refactoring. But not everyone has dozens of hours to understand complexity of abstract-syntax-tree in their own time. **That's why we provide commercial support - to save your time**.
 
@@ -142,16 +161,6 @@ Would you like to apply Rector on your code base but don't have time for the str
 ## How to Contribute
 
 See [the contribution guide](/CONTRIBUTING.md) or go to development repository [rector/rector-src](https://github.com/rectorphp/rector-src).
-
-<br>
-
-## Projects using Rector
-
-- [`codito/rector-money`](https://packagist.org/packages/codito/rector-money): set of rules related to `moneyphp/money`
-  library. It can help you with upgrading to v4.0 or make your codebase compatible for future upgrade.
-
-- [`laminas/laminas-servicemanager-migration`](https://packagist.org/packages/laminas/laminas-servicemanager-migration): set of rules related to `laminas-servicemanager`
-  library. It can help migrate your code to laminas-servicemanager 4.x compatibility.
 
 <br>
 

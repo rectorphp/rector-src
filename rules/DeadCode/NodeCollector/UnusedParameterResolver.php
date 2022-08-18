@@ -16,7 +16,7 @@ final class UnusedParameterResolver
     }
 
     /**
-     * @return Param[]
+     * @return array<int, Param>
      */
     public function resolve(ClassMethod $classMethod): array
     {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Isolated\Symfony\Component\Finder\Finder;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
-use Rector\Compiler\Unprefixer;
 use Rector\Core\Application\VersionResolver;
+use Rector\Utils\Compiler\Unprefixer;
 
 require_once __DIR__ . '/vendor/autoload.php';
 

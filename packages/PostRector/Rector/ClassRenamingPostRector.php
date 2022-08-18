@@ -43,7 +43,7 @@ function (OriginalClass $someClass)
 {
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 function (RenamedClass $someClass)
 {

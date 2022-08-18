@@ -12,12 +12,6 @@
 * ![](https://github.com/rectorphp/phpstan-rules/actions/workflows/tests.yaml/badge.svg)
 * ![](https://github.com/rectorphp/phpstan-rules/actions/workflows/code_analysis.yaml/badge.svg)
 
-## Nette
-
-* https://github.com/rectorphp/rector-nette
-* ![](https://github.com/rectorphp/rector-nette/actions/workflows/tests.yaml/badge.svg)
-* ![](https://github.com/rectorphp/rector-nette/actions/workflows/code_analysis.yaml/badge.svg)
-
 ## Symfony
 
 * https://github.com/rectorphp/rector-symfony
@@ -53,3 +47,9 @@
 * https://github.com/rectorphp/rector-phpoffice
 * ![](https://github.com/rectorphp/rector-phpoffice/actions/workflows/tests.yaml/badge.svg)
 * ![](https://github.com/rectorphp/rector-phpoffice/actions/workflows/code_analysis.yaml/badge.svg)
+
+## Downgrade PHP
+
+* https://github.com/rectorphp/rector-downgrade-php
+* ![](https://github.com/rectorphp/rector-downgrade-php/actions/workflows/tests.yaml/badge.svg)
+* ![](https://github.com/rectorphp/rector-downgrade-php/actions/workflows/code_analysis.yaml/badge.svg)

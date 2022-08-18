@@ -9,14 +9,11 @@ use Rector\Core\Validation\RectorAssert;
 
 final class ArgumentRemover
 {
-    /**
-     * @param mixed $value
-     */
     public function __construct(
         private readonly string $class,
         private readonly string $method,
         private readonly int $position,
-        private $value
+        private readonly mixed $value
     ) {
         RectorAssert::className($class);
     }

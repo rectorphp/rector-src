@@ -5,19 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Stmt;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Break_;
-use PhpParser\Node\Stmt\Continue_;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Goto_;
-use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\InlineHTML;
-use PhpParser\Node\Stmt\Label;
-use PhpParser\Node\Stmt\Nop;
-use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
-use PhpParser\Node\Stmt\TryCatch;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\TerminatedNodeAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -25,8 +13,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://github.com/phpstan/phpstan/blob/83078fe308a383c618b8c1caec299e5765d9ac82/src/Node/UnreachableStatementNode.php
- *
  * @see \Rector\Tests\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector\RemoveUnreachableStatementRectorTest
  */
 final class RemoveUnreachableStatementRector extends AbstractRector
@@ -103,53 +89,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($stmt instanceof Nop) {
-                continue;
-            }
-
             $previousStmt = $stmts[$key - 1];
 
             // unset...
 
-            if ($this->shouldRemove($previousStmt, $stmt)) {
+            if ($this->terminatedNodeAnalyzer->isAlwaysTerminated($previousStmt, $stmt)) {
                 array_splice($stmts, $key);
                 return $stmts;
             }
         }
 
         return $stmts;
-    }
-
-    private function shouldRemove(Stmt $previousStmt, Stmt $currentStmt): bool
-    {
-        if ($currentStmt instanceof InlineHTML) {
-            return false;
-        }
-
-        if ($previousStmt instanceof Throw_) {
-            return true;
-        }
-
-        if ($previousStmt instanceof Expression && $previousStmt->expr instanceof Exit_) {
-            return true;
-        }
-
-        if ($previousStmt instanceof Goto_ && $currentStmt instanceof Label) {
-            return false;
-        }
-
-        if (in_array($previousStmt::class, [Return_::class, Break_::class, Continue_::class, Goto_::class], true)) {
-            return true;
-        }
-
-        if ($previousStmt instanceof TryCatch) {
-            return $this->terminatedNodeAnalyzer->isAlwaysTerminated($previousStmt);
-        }
-
-        if ($previousStmt instanceof If_) {
-            return $this->terminatedNodeAnalyzer->isAlwaysTerminated($previousStmt);
-        }
-
-        return false;
     }
 }

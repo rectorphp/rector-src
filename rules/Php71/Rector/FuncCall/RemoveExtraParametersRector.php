@@ -84,6 +84,10 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
 
         $maximumAllowedParameterCount = $this->resolveMaximumAllowedParameterCount($functionLikeReflection);
 //
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $numberOfArguments = count($node->getRawArgs());
         if ($numberOfArguments <= $maximumAllowedParameterCount) {
             return null;

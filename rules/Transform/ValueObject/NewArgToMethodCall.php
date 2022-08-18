@@ -9,15 +9,13 @@ use Rector\Core\Validation\RectorAssert;
 
 final class NewArgToMethodCall
 {
-    /**
-     * @param mixed $value
-     */
     public function __construct(
         private readonly string $type,
-        private $value,
+        private readonly mixed $value,
         private readonly string $methodCall
     ) {
         RectorAssert::className($type);
+        RectorAssert::className($methodCall);
     }
 
     public function getObjectType(): ObjectType

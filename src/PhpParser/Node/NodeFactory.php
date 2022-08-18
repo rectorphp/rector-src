@@ -18,9 +18,7 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\Error;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -54,7 +52,6 @@ use Rector\Core\NodeDecorator\PropertyTypeDecorator;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
@@ -78,7 +75,6 @@ final class NodeFactory
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
@@ -141,10 +137,6 @@ final class NodeFactory
      */
     public function createArgs(array $values): array
     {
-        foreach ($values as $value) {
-            $this->normalizeArgValue($value);
-        }
-
         return $this->builderFactory->args($values);
     }
 
@@ -157,16 +149,16 @@ final class NodeFactory
         return $this->createPropertyAssignmentWithExpr($propertyName, $variable);
     }
 
+    /**
+     * @api
+     */
     public function createPropertyAssignmentWithExpr(string $propertyName, Expr $expr): Assign
     {
         $propertyFetch = $this->createPropertyFetch(self::THIS, $propertyName);
         return new Assign($propertyFetch, $expr);
     }
 
-    /**
-     * @param mixed $argument
-     */
-    public function createArg($argument): Arg
+    public function createArg(mixed $argument): Arg
     {
         return new Arg(BuilderHelpers::normalizeValue($argument));
     }
@@ -256,32 +248,10 @@ final class NodeFactory
         );
     }
 
-    public function createProperty(string $name): Property
-    {
-        $propertyBuilder = new PropertyBuilder($name);
-
-        $property = $propertyBuilder->getNode();
-        $this->phpDocInfoFactory->createFromNode($property);
-
-        return $property;
-    }
-
     public function createPrivateProperty(string $name): Property
     {
         $propertyBuilder = new PropertyBuilder($name);
         $propertyBuilder->makePrivate();
-
-        $property = $propertyBuilder->getNode();
-
-        $this->phpDocInfoFactory->createFromNode($property);
-
-        return $property;
-    }
-
-    public function createPublicProperty(string $name): Property
-    {
-        $propertyBuilder = new PropertyBuilder($name);
-        $propertyBuilder->makePublic();
 
         $property = $propertyBuilder->getNode();
 
@@ -348,21 +318,6 @@ final class NodeFactory
         }
 
         return $previousConcat;
-    }
-
-    public function createClosureFromClassMethod(ClassMethod $classMethod): Closure
-    {
-        $classMethodName = $this->nodeNameResolver->getName($classMethod);
-        $args = $this->createArgs($classMethod->params);
-
-        $methodCall = new MethodCall(new Variable(self::THIS), $classMethodName, $args);
-        $return = new Return_($methodCall);
-
-        return new Closure([
-            'params' => $classMethod->params,
-            'stmts' => [$return],
-            'returnType' => $classMethod->returnType,
-        ]);
     }
 
     /**
@@ -492,11 +447,14 @@ final class NodeFactory
         return $this->createBooleanAndFromNodes($newNodes);
     }
 
+    /**
+     * @api
+     */
     public function createClassConstant(string $name, Expr $expr, int $modifier): ClassConst
     {
-        $expr = BuilderHelpers::normalizeValue($expr);
+        $normalizedExpr = BuilderHelpers::normalizeValue($expr);
 
-        $const = new Const_($name, $expr);
+        $const = new Const_($name, $normalizedExpr);
         $classConst = new ClassConst([$const]);
         $classConst->flags |= $modifier;
 
@@ -511,10 +469,7 @@ final class NodeFactory
         return $classConst;
     }
 
-    /**
-     * @param mixed $item
-     */
-    private function createArrayItem($item, string | int | null $key = null): ArrayItem
+    private function createArrayItem(mixed $item, string | int | null $key = null): ArrayItem
     {
         $arrayItem = null;
 
@@ -525,6 +480,7 @@ final class NodeFactory
             || $item instanceof Concat
             || $item instanceof Scalar
             || $item instanceof Cast
+            || $item instanceof ConstFetch
         ) {
             $arrayItem = new ArrayItem($item);
         } elseif ($item instanceof Identifier) {
@@ -559,24 +515,13 @@ final class NodeFactory
         ));
     }
 
-    /**
-     * @param mixed $value
-     * @return mixed|Error|Variable
-     */
-    private function normalizeArgValue($value)
-    {
-        if ($value instanceof Param) {
-            return $value->var;
-        }
-
-        return $value;
-    }
-
     private function decorateArrayItemWithKey(int | string | null $key, ArrayItem $arrayItem): void
     {
-        if ($key !== null) {
-            $arrayItem->key = BuilderHelpers::normalizeValue($key);
+        if ($key === null) {
+            return;
         }
+
+        $arrayItem->key = BuilderHelpers::normalizeValue($key);
     }
 
     /**
@@ -598,8 +543,7 @@ final class NodeFactory
     {
         $param = new Param($variable);
 
-        $phpParserTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
-        $param->type = $phpParserTypeNode;
+        $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
 
         return $param;
     }

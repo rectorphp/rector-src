@@ -20,6 +20,7 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -125,8 +126,8 @@ final class NonInformativeReturnTagRemover
             return;
         }
 
-        $nullabledReturnTagValueNode = $this->matchNullabledReturnTagValueNode($returnTagValueNode);
-        if (! $nullabledReturnTagValueNode instanceof TypeNode) {
+        $nullableTypeNode = $this->matchNullabledReturnTagValueNode($returnTagValueNode);
+        if (! $nullableTypeNode instanceof TypeNode) {
             return;
         }
 
@@ -134,11 +135,11 @@ final class NonInformativeReturnTagRemover
             return;
         }
 
-        if (! $nullabledReturnTagValueNode instanceof IdentifierTypeNode) {
+        if (! $nullableTypeNode instanceof IdentifierTypeNode) {
             return;
         }
 
-        if (! \str_ends_with($nullabledReturnType->getClassName(), $nullabledReturnTagValueNode->name)) {
+        if (! \str_ends_with($nullabledReturnType->getClassName(), $nullableTypeNode->name)) {
             return;
         }
 
@@ -180,14 +181,11 @@ final class NonInformativeReturnTagRemover
 
     private function matchNullabledType(Type $returnType): ?Type
     {
-        if (! $returnType instanceof UnionType) {
+        if (! TypeCombinator::containsNull($returnType)) {
             return null;
         }
 
-        if (! $returnType->isSuperTypeOf(new NullType())->yes()) {
-            return null;
-        }
-
+        /** @var UnionType $returnType */
         if (count($returnType->getTypes()) !== 2) {
             return null;
         }

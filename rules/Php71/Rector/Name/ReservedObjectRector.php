@@ -45,13 +45,13 @@ class Object
 {
 }
 CODE_SAMPLE
-                                ,
+                    ,
                     <<<'CODE_SAMPLE'
 class SmartObject
 {
 }
 CODE_SAMPLE
-                            ,
+                    ,
                     [
                         'ReservedObject' => 'SmartObject',
                         'Object' => 'AnotherSmartObject',

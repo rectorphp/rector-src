@@ -116,16 +116,20 @@ CODE_SAMPLE
 
         $match = $this->processImplicitThrowsAfterSwitch($node, $match, $condAndExprs);
 
-        if ($isReturn) {
-            return $this->processReturn($match);
-        }
-
         $assignVar = $this->resolveAssignVar($condAndExprs);
+        $hasDefaultValue = $this->matchSwitchAnalyzer->hasDefaultValue($match);
+
         if ($assignVar instanceof Expr) {
-            return $this->changeToAssign($node, $match, $assignVar);
+            return $this->changeToAssign($node, $match, $assignVar, $hasDefaultValue);
         }
 
-        return $match;
+        if (! $hasDefaultValue) {
+            return null;
+        }
+
+        return $isReturn
+            ? new Return_($match)
+            : $match;
     }
 
     public function provideMinPhpVersion(): int
@@ -133,16 +137,7 @@ CODE_SAMPLE
         return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
-    private function processReturn(Match_ $match): ?Return_
-    {
-        if (! $this->matchSwitchAnalyzer->hasDefaultValue($match)) {
-            return null;
-        }
-
-        return new Return_($match);
-    }
-
-    private function changeToAssign(Switch_ $switch, Match_ $match, Expr $expr): ?Assign
+    private function changeToAssign(Switch_ $switch, Match_ $match, Expr $expr, bool $hasDefaultValue): ?Assign
     {
         $nextReturn = $switch->getAttribute(AttributeKey::NEXT_NODE);
 
@@ -163,10 +158,10 @@ CODE_SAMPLE
 
         $assign = new Assign($expr, $match);
         if (! $prevInitializedAssign instanceof Assign) {
-            return $assign;
+            return $this->resolveCurrentAssign($hasDefaultValue, $assign);
         }
 
-        if ($this->matchSwitchAnalyzer->hasDefaultValue($match)) {
+        if ($hasDefaultValue) {
             $default = $match->arms[count($match->arms) - 1]->body;
             if ($this->nodeComparator->areNodesEqual($default, $prevInitializedAssign->var)) {
                 return $assign;
@@ -181,6 +176,13 @@ CODE_SAMPLE
         }
 
         return $assign;
+    }
+
+    private function resolveCurrentAssign(bool $hasDefaultValue, Assign $assign): ?Assign
+    {
+        return $hasDefaultValue
+            ? $assign
+            : null;
     }
 
     /**

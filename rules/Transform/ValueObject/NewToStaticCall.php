@@ -15,7 +15,9 @@ final class NewToStaticCall
         private readonly string $staticCallMethod
     ) {
         RectorAssert::className($type);
+
         RectorAssert::className($staticCallClass);
+        RectorAssert::methodName($staticCallMethod);
     }
 
     public function getObjectType(): ObjectType

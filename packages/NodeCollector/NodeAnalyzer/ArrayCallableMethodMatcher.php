@@ -117,10 +117,7 @@ final class ArrayCallableMethodMatcher
         return $array->items[1] === null;
     }
 
-    /**
-     * @param mixed $values
-     */
-    private function shouldSkipAssociativeArray($values): bool
+    private function shouldSkipAssociativeArray(mixed $values): bool
     {
         if (! is_array($values)) {
             return false;
@@ -182,8 +179,8 @@ final class ArrayCallableMethodMatcher
             return new ObjectType($classConstantReference, null, $classReflection);
         }
 
-        $methodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        $extendedMethodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($extendedMethodReflection->getVariants());
 
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             if ($parameterReflection->getDefaultValue() === null) {

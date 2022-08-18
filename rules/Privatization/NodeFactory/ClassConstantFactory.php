@@ -34,10 +34,13 @@ final class ClassConstantFactory
         $classConst = new ClassConst([$const]);
         $classConst->flags = $property->flags & ~Class_::MODIFIER_STATIC;
 
+        $const->setAttribute(AttributeKey::PARENT_NODE, $classConst);
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
         $phpDocInfo->markAsChanged();
 
         $classConst->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
+        $classConst->setAttribute(AttributeKey::PARENT_NODE, $property->getAttribute(AttributeKey::PARENT_NODE));
 
         return $classConst;
     }

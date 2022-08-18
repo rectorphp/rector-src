@@ -37,15 +37,18 @@ final class CommentsMerger
         $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, null);
     }
 
+    /**
+     * @api
+     */
     public function keepParent(Node $newNode, Node $oldNode): void
     {
-        $parent = $oldNode->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        $parentNode = $oldNode->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
             return;
         }
 
-        $phpDocInfo = $parent->getAttribute(AttributeKey::PHP_DOC_INFO);
-        $comments = $parent->getComments();
+        $phpDocInfo = $parentNode->getAttribute(AttributeKey::PHP_DOC_INFO);
+        $comments = $parentNode->getComments();
 
         if ($phpDocInfo === null && $comments === []) {
             return;
@@ -55,6 +58,9 @@ final class CommentsMerger
         $newNode->setAttribute(AttributeKey::COMMENTS, $comments);
     }
 
+    /**
+     * @api
+     */
     public function keepChildren(Node $newNode, Node $oldNode): void
     {
         $childrenComments = $this->collectChildrenComments($oldNode);

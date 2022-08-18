@@ -128,11 +128,11 @@ CODE_SAMPLE
             if (! $nextStmt instanceof Return_) {
                 $afterStmts[] = $stmt->stmts[0];
 
-                $newStmts = array_merge(
+                $node->stmts = array_merge(
                     $newStmts,
                     $this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts)
                 );
-                $node->stmts = $newStmts;
+
                 return $node;
             }
 
@@ -150,10 +150,9 @@ CODE_SAMPLE
             }
 
             $changedStmts = $this->processReplaceIfs($stmt, $booleanAndConditions, $ifNextReturnClone, $afterStmts);
-            $changedStmts = array_merge($newStmts, $changedStmts);
 
             // update stmts
-            $node->stmts = $changedStmts;
+            $node->stmts = array_merge($newStmts, $changedStmts);
 
             return $node;
         }
@@ -255,8 +254,8 @@ CODE_SAMPLE
             return false;
         }
 
-        $nextParent = $stmtsAware->getAttribute(AttributeKey::NEXT_NODE);
-        return $nextParent instanceof Node;
+        $nextNode = $stmtsAware->getAttribute(AttributeKey::NEXT_NODE);
+        return $nextNode instanceof Node;
     }
 
     private function isNestedIfInLoop(If_ $if, StmtsAwareInterface $stmtsAware): bool
@@ -274,15 +273,15 @@ CODE_SAMPLE
             return $nextStmt instanceof Return_;
         }
 
-        $parent = $if->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        $parentNode = $if->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
             return false;
         }
 
-        if ($parent instanceof If_) {
-            return $this->isLastIfOrBeforeLastReturn($parent, $nextStmt);
+        if ($parentNode instanceof If_) {
+            return $this->isLastIfOrBeforeLastReturn($parentNode, $nextStmt);
         }
 
-        return ! $this->contextAnalyzer->isHasAssignWithIndirectReturn($parent, $if);
+        return ! $this->contextAnalyzer->hasAssignWithIndirectReturn($parentNode, $if);
     }
 }

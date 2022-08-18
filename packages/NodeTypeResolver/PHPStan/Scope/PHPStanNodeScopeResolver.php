@@ -7,15 +7,19 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Interface_;
@@ -80,6 +84,7 @@ final class PHPStanNodeScopeResolver
         private readonly ParentAttributeSourceLocator $parentAttributeSourceLocator,
         private readonly NodeNameResolver $nodeNameResolver
     ) {
+        $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
     }
 
     /**
@@ -109,12 +114,18 @@ final class PHPStanNodeScopeResolver
             $isScopeRefreshing,
             $smartFileInfo
         ): void {
-            if ($node instanceof Ternary) {
-                $this->processTernary($node, $mutatingScope);
+            if ((
+                $node instanceof Expression ||
+                $node instanceof Return_ ||
+                $node instanceof Assign ||
+                $node instanceof EnumCase ||
+                $node instanceof AssignOp
+            ) && $node->expr instanceof Expr) {
+                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof AssignOp) {
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            if ($node instanceof Ternary) {
+                $this->processTernary($node, $mutatingScope);
             }
 
             if ($node instanceof BinaryOp) {
@@ -135,41 +146,24 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Switch_) {
-                // decorate value as well
-                foreach ($node->cases as $case) {
-                    $case->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
+                $this->processSwitch($node, $mutatingScope);
             }
 
             if ($node instanceof TryCatch) {
-                foreach ($node->catches as $catch) {
-                    $varName = $catch->var instanceof Variable
-                        ? $this->nodeNameResolver->getName($catch->var)
-                        : null;
-                    $type = TypeCombinator::union(
-                        ...array_map(
-                            static fn (Name $class): ObjectType => new ObjectType((string) $class),
-                            $catch->types
-                        )
-                    );
-                    $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-                    $this->processNodes($catch->stmts, $smartFileInfo, $catchMutatingScope);
-                }
+                $this->processTryCatch($node, $smartFileInfo, $mutatingScope);
+            }
 
-                if ($node->finally instanceof Finally_) {
-                    $node->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
+            if ($node instanceof ArrayItem) {
+                $this->processArrayItem($node, $mutatingScope);
+            }
+
+            if ($node instanceof FuncCall && $node->name instanceof Expr) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Assign) {
                 // decorate value as well
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
-            // decorate value as well
-            if ($node instanceof Return_ && $node->expr instanceof Expr) {
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Trait_) {
@@ -202,8 +196,9 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-
                 $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+                $this->decorateTraitAttrGroups($node, $traitScope);
+
                 return;
             }
 
@@ -222,9 +217,58 @@ final class PHPStanNodeScopeResolver
             }
         };
 
-        $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
-
         return $this->processNodesWithDependentFiles($smartFileInfo, $stmts, $scope, $nodeCallback);
+    }
+
+    private function processArrayItem(ArrayItem $arrayItem, MutatingScope $mutatingScope): void
+    {
+        if ($arrayItem->key instanceof Expr) {
+            $arrayItem->key->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+    }
+
+    private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
+    {
+        foreach ($trait->attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attr) {
+                foreach ($attr->args as $arg) {
+                    $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
+        }
+    }
+
+    private function processSwitch(Switch_ $switch, MutatingScope $mutatingScope): void
+    {
+        // decorate value as well
+        foreach ($switch->cases as $case) {
+            $case->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+    }
+
+    private function processTryCatch(
+        TryCatch $tryCatch,
+        SmartFileInfo $smartFileInfo,
+        MutatingScope $mutatingScope
+    ): void {
+        foreach ($tryCatch->catches as $catch) {
+            $varName = $catch->var instanceof Variable
+                ? $this->nodeNameResolver->getName($catch->var)
+                : null;
+
+            $type = TypeCombinator::union(
+                ...array_map(static fn (Name $class): ObjectType => new ObjectType((string) $class), $catch->types)
+            );
+
+            $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
+            $this->processNodes($catch->stmts, $smartFileInfo, $catchMutatingScope);
+        }
+
+        if ($tryCatch->finally instanceof Finally_) {
+            $tryCatch->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
     }
 
     private function processUnreachableStatementNode(
@@ -238,12 +282,12 @@ final class PHPStanNodeScopeResolver
 
         $this->processNodes([$originalStmt], $smartFileInfo, $mutatingScope);
 
-        $next = $originalStmt->getAttribute(AttributeKey::NEXT_NODE);
-        while ($next instanceof Stmt) {
-            $next->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+        $nextNode = $originalStmt->getAttribute(AttributeKey::NEXT_NODE);
+        while ($nextNode instanceof Stmt) {
+            $nextNode->setAttribute(AttributeKey::IS_UNREACHABLE, true);
 
-            $this->processNodes([$next], $smartFileInfo, $mutatingScope);
-            $next = $next->getAttribute(AttributeKey::NEXT_NODE);
+            $this->processNodes([$nextNode], $smartFileInfo, $mutatingScope);
+            $nextNode = $nextNode->getAttribute(AttributeKey::NEXT_NODE);
         }
     }
 

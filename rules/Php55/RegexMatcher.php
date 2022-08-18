@@ -29,7 +29,7 @@ final class RegexMatcher
     ) {
     }
 
-    public function resolvePatternExpressionWithoutEIfFound(Expr $expr): ?Expr
+    public function resolvePatternExpressionWithoutEIfFound(Expr $expr): Concat|String_|null
     {
         if ($expr instanceof String_) {
             $pattern = $this->valueResolver->getValue($expr);
@@ -64,7 +64,7 @@ final class RegexMatcher
         return Strings::before($pattern, $delimiter, -1) . $delimiter . $modifiersWithoutE;
     }
 
-    private function matchConcat(Concat $concat): ?Expr
+    private function matchConcat(Concat $concat): ?Concat
     {
         $lastItem = $concat->right;
         if (! $lastItem instanceof String_) {

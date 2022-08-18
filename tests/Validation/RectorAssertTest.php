@@ -49,4 +49,78 @@ final class RectorAssertTest extends TestCase
         yield ['App\\\\Some'];
         yield ['3AppSome'];
     }
+
+    /**
+     * @doesNotPerformAssertions
+     * @dataProvider provideDataValidFunctionNames()
+     */
+    public function testValidFunctionName(string $functionName): void
+    {
+        RectorAssert::functionName($functionName);
+    }
+
+    /**
+     * @return Iterator<string[]>
+     */
+    public function provideDataValidFunctionNames(): Iterator
+    {
+        yield ['some_function'];
+        yield ['Namespace\\some_function'];
+        yield ['Namespace\\so3me_f6n'];
+    }
+
+    /**
+     * @doesNotPerformAssertions
+     * @dataProvider provideDataValidMehtodNames()
+     */
+    public function testValidMethodName(string $methodName): void
+    {
+        RectorAssert::methodName($methodName);
+    }
+
+    /**
+     * @return Iterator<string[]>
+     */
+    public function provideDataValidMehtodNames(): Iterator
+    {
+        yield ['some_method'];
+        yield ['__method_magic'];
+        yield ['__M3th0d'];
+    }
+
+    /**
+     * @dataProvider provideDataInvalidFunctionNames()
+     */
+    public function testInvalidFunctionName(string $functionName): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        RectorAssert::functionName($functionName);
+    }
+
+    public function provideDataInvalidFunctionNames(): Iterator
+    {
+        yield ['35'];
+        yield ['/function'];
+        yield ['$function'];
+        yield ['-key_name'];
+    }
+
+    /**
+     * @dataProvider provideDataInvalidNamespaceNames()
+     */
+    public function testNamespaceName(string $namespaceName): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        RectorAssert::namespaceName($namespaceName);
+    }
+
+    /**
+     * @return Iterator<string[]>
+     */
+    public function provideDataInvalidNamespaceNames(): Iterator
+    {
+        yield ['321Namespace'];
+        yield ['$__Namespace'];
+        yield ['Name*space'];
+    }
 }

@@ -7,6 +7,8 @@ namespace Rector\DeadCode\Rector\StmtsAwareInterface;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
@@ -104,6 +106,11 @@ CODE_SAMPLE
             }
 
             $followingStmts = array_slice($stmts, $key + 1);
+            if ($this->isFollowingStatementStaticClosure($followingStmts)) {
+                // can not replace usages in anonymous static functions
+                continue;
+            }
+
             $variableUsages = $this->nodeUsageFinder->findVariableUsages(
                 $followingStmts,
                 $variableToPropertyAssign->getVariable()
@@ -111,7 +118,6 @@ CODE_SAMPLE
 
             $currentStmtKey = $key;
 
-            // @todo validate the variable is not used in some place where property fetch cannot be used
             break;
         }
 
@@ -136,6 +142,20 @@ CODE_SAMPLE
     }
 
     /**
+     * @param Stmt[] $followingStmts
+     */
+    private function isFollowingStatementStaticClosure(array $followingStmts): bool
+    {
+        if ($followingStmts === []) {
+            return false;
+        }
+
+        return $followingStmts[0] instanceof Expression
+            && $followingStmts[0]->expr instanceof Closure
+            && $followingStmts[0]->expr->static;
+    }
+
+    /**
      * @param Variable[] $variableUsages
      */
     private function replaceVariablesWithPropertyFetch(
@@ -149,8 +169,16 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable(
             $stmtsAware,
-            static function (Node $node) use ($variableUsages, $propertyFetch): ?PropertyFetch {
+            function (Node $node) use ($variableUsages, $propertyFetch): ?PropertyFetch {
                 if (! in_array($node, $variableUsages, true)) {
+                    return null;
+                }
+
+                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parentNode instanceof ClosureUse) {
+                    // remove closure use which will be replaced by a property fetch
+                    $this->removeNode($parentNode);
+
                     return null;
                 }
 

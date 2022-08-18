@@ -75,8 +75,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
-        if ($hasChanged) {
+        $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
+
+        if ($phpDocInfo->hasChanged()) {
             return $node;
         }
 

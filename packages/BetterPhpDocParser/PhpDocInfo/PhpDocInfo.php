@@ -33,7 +33,6 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 
 /**
- * @template TNode as \PHPStan\PhpDocParser\Ast\Node
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfo\PhpDocInfoTest
  */
 final class PhpDocInfo
@@ -72,6 +71,9 @@ final class PhpDocInfo
         }
     }
 
+    /**
+     * @api
+     */
     public function addPhpDocTagNode(PhpDocChildNode $phpDocChildNode): void
     {
         $this->phpDocNode->children[] = $phpDocChildNode;
@@ -142,19 +144,6 @@ final class PhpDocInfo
         return $this->phpDocNode->getParamTagValues();
     }
 
-    public function getParamTagValueNodeByName(string $parameterName): ?ParamTagValueNode
-    {
-        foreach ($this->phpDocNode->getParamTagValues() as $paramTagValueNode) {
-            if ($paramTagValueNode->parameterName !== '$' . $parameterName) {
-                continue;
-            }
-
-            return $paramTagValueNode;
-        }
-
-        return null;
-    }
-
     public function getVarType(string $tagName = '@var'): Type
     {
         return $this->getTypeOrMixed($this->getVarTagValueNode($tagName));
@@ -166,6 +155,7 @@ final class PhpDocInfo
     }
 
     /**
+     * @template TNode as \PHPStan\PhpDocParser\Ast\Node
      * @param class-string<TNode> $type
      * @return TNode[]
      */
@@ -175,7 +165,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @param class-string<TNode> $type
+     * @param class-string<Node> $type
      */
     public function hasByType(string $type): bool
     {
@@ -183,7 +173,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @param array<class-string<TNode>> $types
+     * @param array<class-string<Node>> $types
      */
     public function hasByTypes(array $types): bool
     {
@@ -221,7 +211,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @param class-string[] $classes
+     * @param string[] $classes
      */
     public function getByAnnotationClasses(array $classes): ?DoctrineAnnotationTagValueNode
     {
@@ -233,9 +223,6 @@ final class PhpDocInfo
         return $doctrineAnnotationTagValueNodes[0] ?? null;
     }
 
-    /**
-     * @param class-string $class
-     */
     public function getByAnnotationClass(string $class): ?DoctrineAnnotationTagValueNode
     {
         $doctrineAnnotationTagValueNodes = $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass(
@@ -245,9 +232,6 @@ final class PhpDocInfo
         return $doctrineAnnotationTagValueNodes[0] ?? null;
     }
 
-    /**
-     * @param class-string $class
-     */
     public function hasByAnnotationClass(string $class): bool
     {
         return $this->findByAnnotationClass($class) !== [];
@@ -278,9 +262,6 @@ final class PhpDocInfo
         return null;
     }
 
-    /**
-     * @param class-string $desiredClass
-     */
     public function findOneByAnnotationClass(string $desiredClass): ?DoctrineAnnotationTagValueNode
     {
         $foundTagValueNodes = $this->findByAnnotationClass($desiredClass);

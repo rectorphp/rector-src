@@ -52,7 +52,7 @@ class SomeClass extends ParentClass
     public string $name;
 }
 CODE_SAMPLE
-,
+                ,
                 $configuration
             ),
         ]);

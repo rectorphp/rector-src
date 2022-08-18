@@ -81,15 +81,15 @@ final class SimplifyConditionsRector extends AbstractRector
             return $twoNodeMatch;
         }
 
-        /** @var Identical|NotIdentical $subBinaryOp */
-        $subBinaryOp = $twoNodeMatch->getFirstExpr();
+        /** @var Identical|NotIdentical $firstExpr */
+        $firstExpr = $twoNodeMatch->getFirstExpr();
 
-        $otherNode = $twoNodeMatch->getSecondExpr();
-        if ($this->valueResolver->isFalse($otherNode)) {
-            return $this->createInversedBooleanOp($subBinaryOp);
+        $otherExpr = $twoNodeMatch->getSecondExpr();
+        if ($this->valueResolver->isFalse($otherExpr)) {
+            return $this->createInversedBooleanOp($firstExpr);
         }
 
-        return $subBinaryOp;
+        return $firstExpr;
     }
 
     /**

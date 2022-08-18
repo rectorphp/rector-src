@@ -66,14 +66,10 @@ final class FamilyRelationsAnalyzer
     public function getPossibleUnionPropertyType(
         Property $property,
         Type $varType,
-        ?Scope $scope,
+        Scope $scope,
         Name | ComplexType | null $propertyTypeNode
     ): PropertyType {
         if ($varType instanceof UnionType) {
-            return new PropertyType($varType, $propertyTypeNode);
-        }
-
-        if (! $scope instanceof Scope) {
             return new PropertyType($varType, $propertyTypeNode);
         }
 
@@ -116,6 +112,7 @@ final class FamilyRelationsAnalyzer
     }
 
     /**
+     * @api
      * @return string[]
      */
     public function getClassLikeAncestorNames(Class_ | Interface_ | Name $classOrName): array

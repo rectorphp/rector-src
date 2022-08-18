@@ -22,6 +22,9 @@ final class ArrayFuncCallToMethodCall implements ArgumentFuncCallToMethodCallInt
         private readonly string $nonArrayMethod
     ) {
         RectorAssert::className($class);
+        RectorAssert::functionName($function);
+        RectorAssert::methodName($arrayMethod);
+        RectorAssert::methodName($nonArrayMethod);
     }
 
     public function getFunction(): string

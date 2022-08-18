@@ -24,7 +24,7 @@ final class PhpDocNodeByTypeFinder
 
         $foundNodes = [];
 
-        $phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', static function ($node) use (
+        $phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', static function (Node $node) use (
             &$foundNodes,
             $desiredType
         ): Node {
@@ -41,7 +41,7 @@ final class PhpDocNodeByTypeFinder
     }
 
     /**
-     * @param class-string[] $classes
+     * @param string[] $classes
      * @return DoctrineAnnotationTagValueNode[]
      */
     public function findDoctrineAnnotationsByClasses(PhpDocNode $phpDocNode, array $classes): array

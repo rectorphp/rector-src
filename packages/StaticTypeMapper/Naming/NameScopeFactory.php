@@ -131,8 +131,10 @@ final class NameScopeFactory
         $templateTypes = [];
 
         foreach ($phpDocInfo->getTemplateTagValueNodes() as $templateTagValueNode) {
-            $phpstanType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($templateTagValueNode, $node);
-            $templateTypes[$templateTagValueNode->name] = $phpstanType;
+            $templateTypes[$templateTagValueNode->name] = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType(
+                $templateTagValueNode,
+                $node
+            );
         }
 
         return $templateTypes;

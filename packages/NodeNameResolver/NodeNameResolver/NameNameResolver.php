@@ -32,9 +32,9 @@ final class NameNameResolver implements NodeNameResolverInterface
     public function resolve(Node $node): ?string
     {
         // possible function parent
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof FuncCall) {
-            return $this->funcCallNameResolver->resolve($parent);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof FuncCall) {
+            return $this->funcCallNameResolver->resolve($parentNode);
         }
 
         $resolvedName = $node->getAttribute(AttributeKey::RESOLVED_NAME);

@@ -44,7 +44,7 @@ final class ArrayCompare
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 <<<'CODE_SAMPLE'
 final class ArrayCompare
 {
@@ -54,7 +54,7 @@ final class ArrayCompare
     }
 }
 CODE_SAMPLE
-            ,
+                ,
                 [
                     self::TREAT_AS_NON_EMPTY => false,
                 ]
@@ -87,16 +87,16 @@ CODE_SAMPLE
 
         $exprType = $scope->getType($node->cond);
 
-        $falsyIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
+        $expr = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
             $exprType,
             $node->cond,
             $this->treatAsNonEmpty
         );
-        if (! $falsyIdentical instanceof Expr) {
+        if (! $expr instanceof Expr) {
             return null;
         }
 
-        $node->cond = $falsyIdentical;
+        $node->cond = $expr;
 
         return $node;
     }

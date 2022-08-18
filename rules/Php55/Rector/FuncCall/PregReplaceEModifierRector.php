@@ -6,7 +6,6 @@ namespace Rector\Php55\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -94,8 +93,9 @@ CODE_SAMPLE
         /** @var Arg $firstArgument */
         $firstArgument = $node->args[0];
         $firstArgumentValue = $firstArgument->value;
-        $patternWithoutE = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);
-        if (! $patternWithoutE instanceof Expr) {
+
+        $patternWithoutEExpr = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);
+        if ($patternWithoutEExpr === null) {
             return null;
         }
 
@@ -108,7 +108,7 @@ CODE_SAMPLE
         }
 
         $node->name = new Name('preg_replace_callback');
-        $firstArgument->value = $patternWithoutE;
+        $firstArgument->value = $patternWithoutEExpr;
         $secondArgument->value = $anonymousFunction;
 
         return $node;

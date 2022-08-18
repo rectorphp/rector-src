@@ -10,13 +10,14 @@ use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
-use Rector\CodeQuality\Rector\ClassMethod\DateTimeToDateTimeInterfaceRector;
+use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
 use Rector\CodeQuality\Rector\Do_\DoWhileBreakFalseToIfElseRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
 use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
+use Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\For_\ForToForeachRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector;
@@ -55,6 +56,7 @@ use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQue
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
+use Rector\CodeQuality\Rector\If_\SimplifyIfExactValueReturnValueRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfIssetToNullCoalescingRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector;
@@ -167,7 +169,6 @@ return static function (RectorConfig $rectorConfig): void {
         VarToPublicPropertyRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
         NewStaticToNewSelfRector::class,
-        DateTimeToDateTimeInterfaceRector::class,
         UnwrapSprintfOneArgumentRector::class,
         SwitchNegatedTernaryRector::class,
         SingularSwitchToIfRector::class,
@@ -182,5 +183,8 @@ return static function (RectorConfig $rectorConfig): void {
         DoWhileBreakFalseToIfElseRector::class,
         InlineArrayReturnAssignRector::class,
         InlineIsAInstanceOfRector::class,
+        TernaryFalseExpressionToIfRector::class,
+        InlineConstructorDefaultToPropertyRector::class,
+        SimplifyIfExactValueReturnValueRector::class,
     ]);
 };

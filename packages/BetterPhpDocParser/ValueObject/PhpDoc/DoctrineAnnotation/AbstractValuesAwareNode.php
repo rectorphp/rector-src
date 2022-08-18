@@ -76,10 +76,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         return $this->values[$key];
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function changeValue(string $key, $value): void
+    public function changeValue(string $key, mixed $value): void
     {
         // is quoted?
         if (isset($this->values[$key]) && is_string($this->values[$key]) && StringUtils::isMatch(
@@ -108,10 +105,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         return $this->removeQuotes($value);
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function changeSilentValue($value): void
+    public function changeSilentValue(mixed $value): void
     {
         // is quoted?
         if (StringUtils::isMatch($this->values[0], self::UNQUOTED_VALUE_REGEX)) {
@@ -232,10 +226,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         return $itemContents;
     }
 
-    /**
-     * @param mixed $value
-     */
-    private function stringifyValue($value): string
+    private function stringifyValue(mixed $value): string
     {
         // @todo resolve original casing
         if ($value === false) {

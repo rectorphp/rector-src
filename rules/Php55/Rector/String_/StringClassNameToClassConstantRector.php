@@ -73,7 +73,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 ['ClassName', 'AnotherClassName'],
             ),
         ]);
@@ -125,17 +125,17 @@ CODE_SAMPLE
 
     private function isPartOfIsAFuncCall(String_ $string): bool
     {
-        $parent = $string->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Arg) {
+        $parentNode = $string->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Arg) {
             return false;
         }
 
-        $parentParent = $parent->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentParent instanceof FuncCall) {
+        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentParentNode instanceof FuncCall) {
             return false;
         }
 
-        return $this->nodeNameResolver->isName($parentParent, 'is_a');
+        return $this->nodeNameResolver->isName($parentParentNode, 'is_a');
     }
 
     private function shouldSkip(string $classLikeName, String_ $string): bool

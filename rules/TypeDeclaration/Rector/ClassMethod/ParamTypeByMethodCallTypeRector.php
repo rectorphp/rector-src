@@ -66,7 +66,7 @@ final class UseDependency
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeTypedService
 {

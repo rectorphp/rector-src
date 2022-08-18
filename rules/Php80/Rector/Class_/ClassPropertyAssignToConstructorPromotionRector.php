@@ -65,12 +65,12 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
     public function __construct(
-        private float $someVariable = 0.0
+        public float $someVariable = 0.0
     ) {
     }
 }
@@ -128,7 +128,7 @@ CODE_SAMPLE
             $oldName = $this->getName($param->var);
             $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldName, $propertyName, null);
 
-            $paramTagValueNode = $classMethodPhpDocInfo->getParamTagValueNodeByName($paramName);
+            $paramTagValueNode = $classMethodPhpDocInfo->getParamTagValueByName($paramName);
 
             if (! $paramTagValueNode instanceof ParamTagValueNode) {
                 $this->decorateParamWithPropertyPhpDocInfo($constructClassMethod, $property, $param, $paramName);
@@ -138,8 +138,8 @@ CODE_SAMPLE
             }
 
             // property name has higher priority
-            $propertyName = $this->getName($property);
-            $param->var->name = $propertyName;
+            $param->var->name = $this->getName($property);
+
             $param->flags = $property->flags;
             // Copy over attributes of the "old" property
             $param->attrGroups = $property->attrGroups;

@@ -74,12 +74,12 @@ final class PropertyFetchAnalyzer
         return $this->nodeNameResolver->isName($node->name, $desiredPropertyName);
     }
 
-    public function countLocalPropertyFetchName(ClassLike $classLike, string $propertyName): int
+    public function countLocalPropertyFetchName(Class_ $class, string $propertyName): int
     {
         $total = 0;
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $subNode) use (
-            $classLike,
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $subNode) use (
+            $class,
             $propertyName,
             &$total
         ): ?Node {
@@ -94,7 +94,7 @@ final class PropertyFetchAnalyzer
                 ++$total;
             }
 
-            if ($parentClassLike === $classLike) {
+            if ($parentClassLike === $class) {
                 ++$total;
             }
 
@@ -104,51 +104,27 @@ final class PropertyFetchAnalyzer
         return $total;
     }
 
-    public function containsLocalPropertyFetchName(Node $node, string $propertyName): bool
+    public function containsLocalPropertyFetchName(Trait_ $trait, string $propertyName): bool
     {
-        $classLike = $node instanceof ClassLike
-            ? $node
-            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
         return (bool) $this->betterNodeFinder->findFirst(
-            $node,
-            function (Node $node) use ($classLike, $propertyName): bool {
-                if (! $this->isLocalPropertyFetchName($node, $propertyName)) {
-                    return false;
-                }
-
-                $parentClassLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
-                // property fetch in Trait cannot get parent ClassLike
-                if (! $parentClassLike instanceof ClassLike) {
-                    return true;
-                }
-
-                return $parentClassLike === $classLike;
-            }
+            $trait,
+            fn (Node $node): bool => $this->isLocalPropertyFetchName($node, $propertyName)
         );
     }
 
-    public function isPropertyToSelf(PropertyFetch | StaticPropertyFetch $expr): bool
+    public function isPropertyToSelf(PropertyFetch $propertyFetch): bool
     {
-        if ($expr instanceof PropertyFetch && ! $this->nodeNameResolver->isName($expr->var, self::THIS)) {
+        if (! $this->nodeNameResolver->isName($propertyFetch->var, self::THIS)) {
             return false;
         }
 
-        if ($expr instanceof StaticPropertyFetch && ! $this->nodeNameResolver->isName(
-            $expr->class,
-            ObjectReference::SELF
-        )) {
-            return false;
-        }
-
-        $class = $this->betterNodeFinder->findParentType($expr, Class_::class);
+        $class = $this->betterNodeFinder->findParentType($propertyFetch, Class_::class);
         if (! $class instanceof Class_) {
             return false;
         }
 
         foreach ($class->getProperties() as $property) {
-            if (! $this->nodeNameResolver->areNamesEqual($property->props[0], $expr)) {
+            if (! $this->nodeNameResolver->areNamesEqual($property->props[0], $propertyFetch)) {
                 continue;
             }
 
@@ -171,21 +147,17 @@ final class PropertyFetchAnalyzer
      * Matches:
      * "$this->someValue = $<variableName>;"
      */
-    public function isVariableAssignToThisPropertyFetch(Node $node, string $variableName): bool
+    public function isVariableAssignToThisPropertyFetch(Assign $assign, string $variableName): bool
     {
-        if (! $node instanceof Assign) {
+        if (! $assign->expr instanceof Variable) {
             return false;
         }
 
-        if (! $node->expr instanceof Variable) {
+        if (! $this->nodeNameResolver->isName($assign->expr, $variableName)) {
             return false;
         }
 
-        if (! $this->nodeNameResolver->isName($node->expr, $variableName)) {
-            return false;
-        }
-
-        return $this->isLocalPropertyFetch($node->var);
+        return $this->isLocalPropertyFetch($assign->var);
     }
 
     public function isFilledViaMethodCallInConstructStmts(ClassLike $classLike, string $propertyName): bool

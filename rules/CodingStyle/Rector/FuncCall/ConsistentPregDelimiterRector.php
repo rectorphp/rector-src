@@ -117,7 +117,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 [
                     self::DELIMITER => '#',
                 ]

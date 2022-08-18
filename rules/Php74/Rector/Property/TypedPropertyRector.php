@@ -12,9 +12,8 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
+use PHPStan\Type\TypeCombinator;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -22,7 +21,6 @@ use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\Php74\TypeAnalyzer\ObjectTypeAnalyzer;
-use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\VarDocPropertyTypeInferer;
@@ -35,13 +33,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @changelog https://wiki.php.net/rfc/typed_properties_v2#proposal
  *
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\TypedPropertyRectorTest
- * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\ClassLikeTypesOnlyTest
- * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\DoctrineTypedPropertyRectorTest
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\ImportedTest
  */
 final class TypedPropertyRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
+     * @api
      * @var string
      */
     public const INLINE_PUBLIC = 'inline_public';
@@ -59,7 +56,6 @@ final class TypedPropertyRector extends AbstractScopeAwareRector implements Allo
     public function __construct(
         private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
         private readonly VendorLockResolver $vendorLockResolver,
-        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly VarTagRemover $varTagRemover,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly ObjectTypeAnalyzer $objectTypeAnalyzer,
@@ -99,7 +95,7 @@ final class SomeClass
     private bool $isDone = false;
 }
 CODE_SAMPLE
-                ,
+                    ,
                     [
                         self::INLINE_PUBLIC => false,
                     ]
@@ -125,16 +121,19 @@ CODE_SAMPLE
             return null;
         }
 
-        $varType = $this->varDocPropertyTypeInferer->inferProperty($node);
-        if ($varType instanceof MixedType) {
+        $resolvedPropertyType = $this->varDocPropertyTypeInferer->inferProperty($node);
+        if ($resolvedPropertyType instanceof MixedType) {
             return null;
         }
 
-        if ($this->objectTypeAnalyzer->isSpecial($varType)) {
+        if ($this->objectTypeAnalyzer->isSpecial($resolvedPropertyType)) {
             return null;
         }
 
-        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($varType, TypeKind::PROPERTY);
+        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+            $resolvedPropertyType,
+            TypeKind::PROPERTY
+        );
 
         if ($this->isNullOrNonClassLikeTypeOrMixedOrVendorLockedIn($propertyTypeNode, $node)) {
             return null;
@@ -142,17 +141,16 @@ CODE_SAMPLE
 
         $propertyType = $this->familyRelationsAnalyzer->getPossibleUnionPropertyType(
             $node,
-            $varType,
+            $resolvedPropertyType,
             $scope,
             $propertyTypeNode
         );
 
-        $varType = $propertyType->getVarType();
+        $varDocType = $propertyType->getVarType();
         $propertyTypeNode = $propertyType->getPropertyTypeNode();
 
-        $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varType);
-        $this->removeDefaultValueForDoctrineCollection($node, $varType);
-        $this->addDefaultValueNullForNullableType($node, $varType);
+        $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($node, $varDocType);
+        $this->addDefaultValueNullForNullableType($node, $varDocType);
 
         $node->type = $propertyTypeNode;
 
@@ -188,23 +186,9 @@ CODE_SAMPLE
         return $this->vendorLockResolver->isPropertyTypeChangeVendorLockedIn($property);
     }
 
-    private function removeDefaultValueForDoctrineCollection(Property $property, Type $propertyType): void
-    {
-        if (! $this->doctrineTypeAnalyzer->isDoctrineCollectionWithIterableUnionType($propertyType)) {
-            return;
-        }
-
-        $onlyProperty = $property->props[0];
-        $onlyProperty->default = null;
-    }
-
     private function addDefaultValueNullForNullableType(Property $property, Type $propertyType): void
     {
-        if (! $propertyType instanceof UnionType) {
-            return;
-        }
-
-        if (! $propertyType->isSuperTypeOf(new NullType())->yes()) {
+        if (! TypeCombinator::containsNull($propertyType)) {
             return;
         }
 

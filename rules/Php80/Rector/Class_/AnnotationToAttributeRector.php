@@ -20,18 +20,15 @@ use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
-use Rector\Php80\PhpDoc\PhpDocNodeFinder;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-use Rector\PhpAttribute\RemovableAnnotationAnalyzer;
-use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
+//use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -54,11 +51,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly AttrGroupsFactory $attrGroupsFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly PhpDocNodeFinder $phpDocNodeFinder,
-        private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer,
-        private readonly RemovableAnnotationAnalyzer $removableAnnotationAnalyzer,
         private readonly AttributeGroupNamedArgumentManipulator $attributeGroupNamedArgumentManipulator,
-        private readonly PhpVersionProvider $phpVersionProvider,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
@@ -150,9 +143,6 @@ CODE_SAMPLE
     {
         Assert::allIsAOf($configuration, AnnotationToAttribute::class);
         $this->annotationsToAttributes = $configuration;
-
-        $this->unwrapableAnnotationAnalyzer->configure($configuration);
-        $this->removableAnnotationAnalyzer->configure($configuration);
     }
 
     public function provideMinPhpVersion(): int
@@ -232,42 +222,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            $nestedDoctrineAnnotationTagValueNodes = $this->phpDocNodeFinder->findByType(
+            $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                 $doctrineTagValueNode,
-                DoctrineAnnotationTagValueNode::class
+                $annotationToAttribute,
             );
-
-            $shouldInlinedNested = false;
-
-            // depends on PHP 8.1+ - nested values, skip for now
-            if ($nestedDoctrineAnnotationTagValueNodes !== [] && ! $this->phpVersionProvider->isAtLeastPhpVersion(
-                PhpVersionFeature::NEW_INITIALIZERS
-            )) {
-                if (! $this->unwrapableAnnotationAnalyzer->areUnwrappable($nestedDoctrineAnnotationTagValueNodes)) {
-                    continue;
-                }
-
-                $shouldInlinedNested = true;
-            }
-
-            if (! $this->removableAnnotationAnalyzer->isRemovable($doctrineTagValueNode)) {
-                $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                    $doctrineTagValueNode,
-                    $annotationToAttribute,
-                );
-            } else {
-                $shouldInlinedNested = true;
-            }
-
-            if ($shouldInlinedNested) {
-                // inline nested
-                foreach ($nestedDoctrineAnnotationTagValueNodes as $nestedDoctrineAnnotationTagValueNode) {
-                    $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                        $nestedDoctrineAnnotationTagValueNode,
-                        $annotationToAttribute,
-                    );
-                }
-            }
 
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineTagValueNode);
         }

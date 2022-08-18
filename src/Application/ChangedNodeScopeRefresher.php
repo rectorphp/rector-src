@@ -24,13 +24,12 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
-use Rector\Core\NodeAnalyzer\UnreachableStmtAnalyzer;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -46,8 +45,6 @@ final class ChangedNodeScopeRefresher
     public function __construct(
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private readonly ScopeAnalyzer $scopeAnalyzer,
-        private readonly UnreachableStmtAnalyzer $unreachableStmtAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
@@ -59,30 +56,33 @@ final class ChangedNodeScopeRefresher
             return;
         }
 
-        if (! $mutatingScope instanceof MutatingScope) {
-            /**
-             * Node does not has Scope, while:
-             *
-             * 1. Node is Scope aware
-             * 2. Its current Stmt is Reachable
-             */
-            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);
-            if (! $this->unreachableStmtAnalyzer->isStmtPHPStanUnreachable($currentStmt)) {
-                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-                $errorMessage = sprintf(
-                    'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                    $node::class,
-                    $parent instanceof Node ? $parent::class : null
-                );
-
-                throw new ShouldNotHappenException($errorMessage);
-            }
-        }
-
         if (! $smartFileInfo instanceof SmartFileInfo) {
             /** @var File $file */
             $file = $this->currentFileProvider->getFile();
             $smartFileInfo = $file->getSmartFileInfo();
+        }
+
+        $mutatingScope = $this->scopeAnalyzer->resolveScope($node, $smartFileInfo, $mutatingScope);
+
+        if (! $mutatingScope instanceof MutatingScope) {
+            /**
+             * @var Node $parentNode
+             *
+             * $parentNode is always a Node when $mutatingScope is null, as checked in previous
+             *
+             *      $this->scopeAnalyzer->resolveScope()
+             *
+             *  which verify if no parent and no scope, it resolve Scope from File
+             */
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+            $errorMessage = sprintf(
+                'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
+                $node::class,
+                $parentNode::class
+            );
+
+            throw new ShouldNotHappenException($errorMessage);
         }
 
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
@@ -126,6 +126,10 @@ final class ChangedNodeScopeRefresher
 
         if ($node instanceof TryCatch) {
             $node->catches = array_values($node->catches);
+        }
+
+        if ($node instanceof Switch_) {
+            $node->cases = array_values($node->cases);
         }
     }
 

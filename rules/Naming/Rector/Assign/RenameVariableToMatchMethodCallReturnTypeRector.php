@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Rector\Assign;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt\ClassLike;
-use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Matcher\VariableAndCallAssignMatcher;
 use Rector\Naming\Naming\ExpectedNameResolver;
@@ -22,7 +19,6 @@ use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\Naming\ValueObject\VariableAndCallAssign;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -31,6 +27,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRector
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/JG5w9j/1
+     */
+    private const OR_BETWEEN_WORDS_REGEX = '#[a-z]Or[A-Z]#';
+
     public function __construct(
         private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,
         private readonly ExpectedNameResolver $expectedNameResolver,
@@ -38,9 +40,6 @@ final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRect
         private readonly VarTagValueNodeRenamer $varTagValueNodeRenamer,
         private readonly VariableAndCallAssignMatcher $variableAndCallAssignMatcher,
         private readonly VariableRenamer $variableRenamer,
-        private readonly TypeUnwrapper $typeUnwrapper,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
 
@@ -62,7 +61,7 @@ public function getRunner(): Runner
 }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -183,7 +182,8 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->isClassTypeWithChildren($variableAndCallAssign->getCall())) {
+        $isUnionName = Strings::match($variableAndCallAssign->getVariableName(), self::OR_BETWEEN_WORDS_REGEX);
+        if ($isUnionName !== null) {
             return true;
         }
 
@@ -212,28 +212,5 @@ CODE_SAMPLE
             $expectedName,
             $variableAndCallAssign->getAssign()
         );
-    }
-
-    private function isClassTypeWithChildren(StaticCall | MethodCall | FuncCall $expr): bool
-    {
-        $callStaticType = $this->getType($expr);
-        $callStaticType = $this->typeUnwrapper->unwrapNullableType($callStaticType);
-
-        if (! $callStaticType instanceof ObjectType) {
-            return false;
-        }
-
-        if (is_a($callStaticType->getClassName(), ClassLike::class, true)) {
-            return false;
-        }
-
-        if (! $this->reflectionProvider->hasClass($callStaticType->getClassName())) {
-            return false;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($callStaticType->getClassName());
-        $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
-
-        return $childrenClassReflections !== [];
     }
 }

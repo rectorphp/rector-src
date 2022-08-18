@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Transform\ValueObject;
 
 use PHPStan\Type\ObjectType;
+use Rector\Core\Validation\RectorAssert;
 
 final class NewToMethodCall
 {
@@ -13,6 +14,9 @@ final class NewToMethodCall
         private readonly string $serviceType,
         private readonly string $serviceMethod
     ) {
+        RectorAssert::className($newType);
+        RectorAssert::className($serviceType);
+        RectorAssert::methodName($serviceMethod);
     }
 
     public function getNewObjectType(): ObjectType

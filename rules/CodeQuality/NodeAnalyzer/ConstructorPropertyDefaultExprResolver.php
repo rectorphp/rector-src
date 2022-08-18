@@ -34,7 +34,7 @@ final class ConstructorPropertyDefaultExprResolver
 
         foreach ($stmts as $stmt) {
             if (! $stmt instanceof Expression) {
-                continue;
+                break;
             }
 
             $nestedStmt = $stmt->expr;

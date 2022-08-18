@@ -27,7 +27,7 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\Unset_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -40,6 +40,7 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
@@ -59,6 +60,7 @@ final class PropertyManipulator
     private const ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES = [
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Table',
+        'Doctrine\ORM\Mapping\MappedSuperclass',
     ];
 
     /**
@@ -209,11 +211,11 @@ final class PropertyManipulator
         return false;
     }
 
-    public function resolveExistingClassPropertyNameByType(Class_ $class, Type $type): ?string
+    public function resolveExistingClassPropertyNameByType(Class_ $class, ObjectType $objectType): ?string
     {
         foreach ($class->getProperties() as $property) {
             $propertyType = $this->nodeTypeResolver->getType($property);
-            if (! $propertyType->equals($type)) {
+            if (! $propertyType->equals($objectType)) {
                 continue;
             }
 
@@ -223,7 +225,7 @@ final class PropertyManipulator
         $promotedPropertyParams = $this->promotedPropertyResolver->resolveFromClass($class);
         foreach ($promotedPropertyParams as $promotedPropertyParam) {
             $paramType = $this->nodeTypeResolver->getType($promotedPropertyParam);
-            if (! $paramType->equals($type)) {
+            if (! $paramType->equals($objectType)) {
                 continue;
             }
 
@@ -268,32 +270,35 @@ final class PropertyManipulator
 
     private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
     {
-        $parent = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        $parentNode = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
             return false;
         }
 
-        if ($this->typeChecker->isInstanceOf($parent, [PreInc::class, PreDec::class, PostInc::class, PostDec::class])) {
-            $parent = $parent->getAttribute(AttributeKey::PARENT_NODE);
+        if ($this->typeChecker->isInstanceOf(
+            $parentNode,
+            [PreInc::class, PreDec::class, PostInc::class, PostDec::class]
+        )) {
+            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         }
 
-        if (! $parent instanceof Node) {
+        if (! $parentNode instanceof Node) {
             return false;
         }
 
-        if ($parent instanceof Arg) {
-            $readArg = $this->variableToConstantGuard->isReadArg($parent);
+        if ($parentNode instanceof Arg) {
+            $readArg = $this->variableToConstantGuard->isReadArg($parentNode);
             if (! $readArg) {
                 return true;
             }
 
-            $caller = $parent->getAttribute(AttributeKey::PARENT_NODE);
+            $caller = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
             if ($caller instanceof MethodCall || $caller instanceof StaticCall) {
                 return $this->isFoundByRefParam($caller);
             }
         }
 
-        if ($parent instanceof ArrayDimFetch) {
+        if ($parentNode instanceof ArrayDimFetch) {
             return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch);
         }
 
@@ -312,10 +317,10 @@ final class PropertyManipulator
             return false;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
-            $scope,
-            $node->getArgs(),
-            $functionLikeReflection->getVariants()
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+            $functionLikeReflection,
+            $node,
+            $scope
         );
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             if ($parameterReflection->passedByReference()->yes()) {

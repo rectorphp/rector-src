@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\MutatingScope;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
@@ -52,7 +53,9 @@ final class NodesToAddCollector implements NodeCollectorInterface
             throw new ShouldNotHappenException($message);
         }
 
-        $this->changedNodeScopeRefresher->refresh($addedNode, $positionNode->getAttribute(AttributeKey::SCOPE));
+        /** @var MutatingScope|null $currentScope */
+        $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
+        $this->changedNodeScopeRefresher->refresh($addedNode, $currentScope);
 
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddBefore[$position][] = $this->wrapToExpression($addedNode);
@@ -61,6 +64,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @api
      * @param Node[] $addedNodes
      * @deprecated Return created nodes right in refactor() method to keep context instead.
      */
@@ -86,7 +90,10 @@ final class NodesToAddCollector implements NodeCollectorInterface
             throw new ShouldNotHappenException($message);
         }
 
-        $this->changedNodeScopeRefresher->refresh($addedNode, $positionNode->getAttribute(AttributeKey::SCOPE));
+        /** @var MutatingScope|null $currentScope */
+        $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
+
+        $this->changedNodeScopeRefresher->refresh($addedNode, $currentScope);
 
         $position = $this->resolveNearestStmtPosition($positionNode);
         $this->nodesToAddAfter[$position][] = $this->wrapToExpression($addedNode);
@@ -149,20 +156,20 @@ final class NodesToAddCollector implements NodeCollectorInterface
             return spl_object_hash($currentStmt);
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Return_) {
-            return spl_object_hash($parent);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof Return_) {
+            return spl_object_hash($parentNode);
         }
 
-        $foundNode = $this->betterNodeFinder->findParentType($node, Stmt::class);
+        $foundStmt = $this->betterNodeFinder->findParentType($node, Stmt::class);
 
-        if (! $foundNode instanceof Stmt) {
+        if (! $foundStmt instanceof Stmt) {
             $printedNode = $this->nodePrinter->print($node);
             $errorMessage = sprintf('Could not find parent Stmt of "%s" node', $printedNode);
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        return spl_object_hash($foundNode);
+        return spl_object_hash($foundStmt);
     }
 
     private function wrapToExpression(Expr | Stmt $node): Stmt

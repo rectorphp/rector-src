@@ -53,7 +53,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -133,14 +133,14 @@ CODE_SAMPLE
 
     private function addInvertedIfStmtWithContinue(If_ $nestedIfWithOnlyReturn, Foreach_ $foreach): void
     {
-        $invertedCondition = $this->conditionInverter->createInvertedCondition($nestedIfWithOnlyReturn->cond);
+        $invertedCondExpr = $this->conditionInverter->createInvertedCondition($nestedIfWithOnlyReturn->cond);
 
         // special case
-        if ($invertedCondition instanceof BooleanNot && $invertedCondition->expr instanceof BooleanAnd) {
-            $leftExpr = $this->negateOrDeNegate($invertedCondition->expr->left);
+        if ($invertedCondExpr instanceof BooleanNot && $invertedCondExpr->expr instanceof BooleanAnd) {
+            $leftExpr = $this->negateOrDeNegate($invertedCondExpr->expr->left);
             $foreach->stmts[] = $this->createIfContinue($leftExpr);
 
-            $rightExpr = $this->negateOrDeNegate($invertedCondition->expr->right);
+            $rightExpr = $this->negateOrDeNegate($invertedCondExpr->expr->right);
             $foreach->stmts[] = $this->createIfContinue($rightExpr);
 
             return;
@@ -155,7 +155,7 @@ CODE_SAMPLE
 
         $nestedIfWithOnlyReturn->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
-        $nestedIfWithOnlyReturn->cond = $invertedCondition;
+        $nestedIfWithOnlyReturn->cond = $invertedCondExpr;
         $nestedIfWithOnlyReturn->stmts = [new Continue_()];
 
         $foreach->stmts[] = $nestedIfWithOnlyReturn;

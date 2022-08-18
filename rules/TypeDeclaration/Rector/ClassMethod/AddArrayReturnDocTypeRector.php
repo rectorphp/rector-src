@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
@@ -22,6 +23,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
 use Rector\Privatization\TypeManipulator\NormalizeTypeToRespectArrayScalarType;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
+use Rector\TypeDeclaration\NodeAnalyzer\PHPUnitDataProviderResolver;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
 use Rector\TypeDeclaration\TypeAnalyzer\AdvancedArrayAnalyzer;
 use Rector\TypeDeclaration\TypeAnalyzer\IterableTypeAnalyzer;
@@ -46,6 +48,7 @@ final class AddArrayReturnDocTypeRector extends AbstractRector
         private readonly DetailedTypeAnalyzer $detailedTypeAnalyzer,
         private readonly TypeNormalizer $typeNormalizer,
         private readonly IterableTypeAnalyzer $iterableTypeAnalyzer,
+        private readonly PHPUnitDataProviderResolver $phpUnitDataProviderResolver
     ) {
     }
 
@@ -105,8 +108,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        if ($this->isDataProviderClassMethod($node)) {
+            return null;
+        }
 
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         if ($this->shouldSkip($node, $phpDocInfo)) {
             return null;
         }
@@ -128,7 +134,8 @@ CODE_SAMPLE
 
         if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethodOldTypeWithNewType(
             $currentReturnType,
-            $inferredReturnType
+            $inferredReturnType,
+            $node
         )) {
             return null;
         }
@@ -268,5 +275,19 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function isDataProviderClassMethod(ClassMethod $classMethod): bool
+    {
+        // should skip data provider, because complex structures
+        $class = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
+        if (! $class instanceof Class_) {
+            return false;
+        }
+
+        $dataProviderMethodNames = $this->phpUnitDataProviderResolver->resolveDataProviderMethodNames($class);
+
+        $classMethodName = $classMethod->name->toString();
+        return in_array($classMethodName, $dataProviderMethodNames, true);
     }
 }

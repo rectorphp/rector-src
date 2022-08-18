@@ -18,6 +18,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeManipulator\TokenManipulator;
+use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -31,6 +32,7 @@ final class TokenGetAllToObjectRector extends AbstractRector implements MinPhpVe
 {
     public function __construct(
         private readonly TokenManipulator $tokenManipulator,
+        private readonly NodesToAddCollector $nodesToAddCollector,
     ) {
     }
 
@@ -63,7 +65,7 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 final class SomeClass
 {
@@ -106,8 +108,8 @@ CODE_SAMPLE
 
     private function refactorTokensVariable(FuncCall $funcCall): void
     {
-        $assign = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $assign instanceof Assign) {
+        $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Assign) {
             return;
         }
 
@@ -121,7 +123,7 @@ CODE_SAMPLE
         }
 
         // dummy approach, improve when needed
-        $this->replaceGetNameOrGetValue($classMethodOrFunction, $assign->var);
+        $this->replaceGetNameOrGetValue($classMethodOrFunction, $parentNode->var);
     }
 
     private function replaceGetNameOrGetValue(ClassMethod | Function_ $functionLike, Expr $assignedExpr): void

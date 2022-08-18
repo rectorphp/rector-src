@@ -24,7 +24,7 @@ final class UsageOfConstant
 {
     public function run($value)
     {
-        $compare = \Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum::VALUE;
+        $compare = \Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum::VALUE->getKey();
     }
 }
 

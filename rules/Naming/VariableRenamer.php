@@ -55,8 +55,8 @@ final class VariableRenamer
                 }
 
                 // skip param names
-                $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-                if ($parent instanceof Param) {
+                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parentNode instanceof Param) {
                     return null;
                 }
 
@@ -115,9 +115,9 @@ final class VariableRenamer
      */
     private function resolvePhpDocInfo(Variable $variable): PhpDocInfo
     {
-        $expression = $this->betterNodeFinder->resolveCurrentStatement($variable);
-        if ($expression instanceof Node) {
-            return $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($variable);
+        if ($currentStmt instanceof Node) {
+            return $this->phpDocInfoFactory->createFromNodeOrEmpty($currentStmt);
         }
 
         return $this->phpDocInfoFactory->createFromNodeOrEmpty($variable);

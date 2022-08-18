@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Matcher;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -41,6 +42,16 @@ final class VariableAndCallAssignMatcher
 
         $functionLike = $this->getFunctionLike($assign);
         if (! $functionLike instanceof FunctionLike) {
+            return null;
+        }
+
+        $isVariableFoundInCallArgs = (bool) $this->betterNodeFinder->findFirst(
+            $call->getArgs(),
+            fn (Node $subNode): bool =>
+                $subNode instanceof Variable && $this->nodeNameResolver->isName($subNode, $variableName)
+        );
+
+        if ($isVariableFoundInCallArgs) {
             return null;
         }
 

@@ -55,13 +55,13 @@ final class FullyQualifyStmtsAnalyzer
                 return null;
             }
 
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parent instanceof GroupUse) {
-                $parent->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentNode instanceof GroupUse) {
+                $parentNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
                 return null;
             }
 
-            if ($parent instanceof UseUse) {
+            if ($parentNode instanceof UseUse) {
                 return null;
             }
 
@@ -71,8 +71,8 @@ final class FullyQualifyStmtsAnalyzer
 
     private function isNativeConstant(Name $name): bool
     {
-        $parent = $name->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof ConstFetch) {
+        $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof ConstFetch) {
             return false;
         }
 
@@ -81,7 +81,7 @@ final class FullyQualifyStmtsAnalyzer
             return false;
         }
 
-        $constantReflection = $this->reflectionProvider->getConstant($name, $scope);
-        return $constantReflection instanceof RuntimeConstantReflection;
+        $globalConstantReflection = $this->reflectionProvider->getConstant($name, $scope);
+        return $globalConstantReflection instanceof RuntimeConstantReflection;
     }
 }

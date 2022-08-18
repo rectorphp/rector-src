@@ -45,7 +45,7 @@ final class CountOnNullRector extends AbstractRector implements MinPhpVersionInt
         private readonly CountableTypeAnalyzer $countableTypeAnalyzer,
         private readonly CountableAnalyzer $countableAnalyzer,
         private readonly VariableAnalyzer $variableAnalyzer,
-        private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly PhpVersionProvider $phpVersionProvider
     ) {
     }
 
@@ -66,7 +66,7 @@ CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
 $values = null;
-$count = count((array) $values);
+$count = $values === null ? 0 : count($values);
 CODE_SAMPLE
             )]
         );
@@ -187,6 +187,15 @@ CODE_SAMPLE
 
         if (! $funcCall->args[0]->value instanceof Variable) {
             return false;
+        }
+
+        $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof Node) {
+            $originalParentNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
+
+            if (! $this->nodeComparator->areNodesEqual($parentNode, $originalParentNode)) {
+                return true;
+            }
         }
 
         return $this->variableAnalyzer->isStaticOrGlobal($funcCall->args[0]->value);

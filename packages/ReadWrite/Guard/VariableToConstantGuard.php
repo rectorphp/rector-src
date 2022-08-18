@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Rector\ReadWrite\Guard;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class VariableToConstantGuard
 {
@@ -55,9 +56,14 @@ final class VariableToConstantGuard
             return true;
         }
 
+        $parentArg = $arg->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentArg instanceof CallLike) {
+            return true;
+        }
+
         $referenceParametersPositions = $this->resolveFunctionReferencePositions(
             $functionReflection,
-            [$arg],
+            $parentArg,
             $argScope
         );
         if ($referenceParametersPositions === []) {
@@ -70,12 +76,11 @@ final class VariableToConstantGuard
     }
 
     /**
-     * @param Arg[] $args
      * @return int[]
      */
     private function resolveFunctionReferencePositions(
         FunctionReflection $functionReflection,
-        array $args,
+        CallLike $callLike,
         Scope $scope
     ): array {
         if (isset($this->referencePositionsByFunctionName[$functionReflection->getName()])) {
@@ -84,10 +89,10 @@ final class VariableToConstantGuard
 
         $referencePositions = [];
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
-            $scope,
-            $args,
-            $functionReflection->getVariants()
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+            $functionReflection,
+            $callLike,
+            $scope
         );
         foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
             /** @var ParameterReflection $parameterReflection */

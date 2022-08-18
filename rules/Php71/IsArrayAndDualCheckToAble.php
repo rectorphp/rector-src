@@ -9,9 +9,9 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use Rector\Core\NodeManipulator\BinaryOpManipulator;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 
@@ -19,7 +19,8 @@ final class IsArrayAndDualCheckToAble
 {
     public function __construct(
         private readonly BinaryOpManipulator $binaryOpManipulator,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -35,13 +36,13 @@ final class IsArrayAndDualCheckToAble
             return null;
         }
 
-        /** @var Instanceof_ $instanceOf */
-        $instanceOf = $twoNodeMatch->getFirstExpr();
+        /** @var Instanceof_ $instanceofExpr */
+        $instanceofExpr = $twoNodeMatch->getFirstExpr();
 
-        /** @var FuncCall $funcCall */
-        $funcCall = $twoNodeMatch->getSecondExpr();
+        /** @var FuncCall $funcCallExpr */
+        $funcCallExpr = $twoNodeMatch->getSecondExpr();
 
-        $instanceOfClass = $instanceOf->class;
+        $instanceOfClass = $instanceofExpr->class;
         if ($instanceOfClass instanceof Expr) {
             return null;
         }
@@ -50,38 +51,24 @@ final class IsArrayAndDualCheckToAble
             return null;
         }
 
-        if (! $this->nodeNameResolver->isName($funcCall, 'is_array')) {
+        if (! $this->nodeNameResolver->isName($funcCallExpr, 'is_array')) {
             return null;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCallExpr->args[0])) {
             return null;
         }
 
-        if (! $funcCall->args[0] instanceof Arg) {
+        if (! $funcCallExpr->args[0] instanceof Arg) {
             return null;
         }
 
-        // both use same var
-        if (! $funcCall->args[0]->value instanceof Variable) {
+        $firstExprNode = $funcCallExpr->args[0]->value;
+        if (! $this->nodeComparator->areNodesEqual($instanceofExpr->expr, $firstExprNode)) {
             return null;
         }
 
-        /** @var Variable $firstVarNode */
-        $firstVarNode = $funcCall->args[0]->value;
-
-        if (! $instanceOf->expr instanceof Variable) {
-            return null;
-        }
-
-        /** @var Variable $secondVarNode */
-        $secondVarNode = $instanceOf->expr;
-
-        // are they same variables
-        if ($firstVarNode->name !== $secondVarNode->name) {
-            return null;
-        }
-
-        return new FuncCall(new Name($newMethodName), [new Arg($firstVarNode)]);
+        // both use same Expr
+        return new FuncCall(new Name($newMethodName), [new Arg($firstExprNode)]);
     }
 }

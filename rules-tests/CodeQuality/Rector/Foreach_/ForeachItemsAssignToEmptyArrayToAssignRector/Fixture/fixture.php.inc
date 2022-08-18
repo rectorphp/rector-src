@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArra
 
 class Fixture
 {
-    public function run($items)
+    public function run(array $items)
     {
         $items2 = [];
         foreach ($items as $item) {
@@ -21,7 +21,7 @@ namespace Rector\Tests\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArra
 
 class Fixture
 {
-    public function run($items)
+    public function run(array $items)
     {
         $items2 = [];
         $items2 = $items;

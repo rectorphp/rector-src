@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Instanceof_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeAnalyzer\InstanceOfUniqueKeyResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -82,18 +83,25 @@ CODE_SAMPLE
         $duplicatedInstanceOfs = [];
 
         /** @var Instanceof_[] $instanceOfs */
-        $instanceOfs = $this->betterNodeFinder->findInstanceOf($binaryOp, Instanceof_::class);
+        $instanceOfs = $this->betterNodeFinder->find($binaryOp, static function (Node $subNode): bool {
+            if (! $subNode instanceof Instanceof_) {
+                return false;
+            }
+
+            $parentNode = $subNode->getAttribute(AttributeKey::PARENT_NODE);
+            return $parentNode instanceof BinaryOp;
+        });
 
         $uniqueInstanceOfKeys = [];
-        foreach ($instanceOfs as $instanceOf) {
-            $uniqueKey = $this->instanceOfUniqueKeyResolver->resolve($instanceOf);
+        foreach ($instanceOfs as $instanceof) {
+            $uniqueKey = $this->instanceOfUniqueKeyResolver->resolve($instanceof);
             if ($uniqueKey === null) {
                 continue;
             }
 
             // already present before → duplicated
             if (in_array($uniqueKey, $uniqueInstanceOfKeys, true)) {
-                $duplicatedInstanceOfs[] = $instanceOf;
+                $duplicatedInstanceOfs[] = $instanceof;
             }
 
             $uniqueInstanceOfKeys[] = $uniqueKey;

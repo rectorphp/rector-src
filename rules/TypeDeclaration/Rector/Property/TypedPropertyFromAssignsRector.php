@@ -30,6 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class TypedPropertyFromAssignsRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
 {
     /**
+     * @api
      * @var string
      */
     public const INLINE_PUBLIC = 'inline_public';
@@ -87,7 +88,7 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                ,
                 [
                     self::INLINE_PUBLIC => false,
                 ]

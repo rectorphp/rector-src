@@ -283,10 +283,10 @@ final class ApplicationFileProcessor
 
         foreach ($files as $file) {
             $smartFileInfo = $file->getSmartFileInfo();
-            $pathName = $smartFileInfo->getPathname();
+            $pathname = $smartFileInfo->getPathname();
 
-            if (\str_ends_with($pathName, '.php')) {
-                $filePaths[] = $pathName;
+            if (\str_ends_with($pathname, '.php')) {
+                $filePaths[] = $pathname;
             }
         }
 

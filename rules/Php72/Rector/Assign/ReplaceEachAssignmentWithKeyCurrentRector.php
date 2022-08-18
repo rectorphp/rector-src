@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\While_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,6 +30,11 @@ final class ReplaceEachAssignmentWithKeyCurrentRector extends AbstractRector imp
      * @var string
      */
     private const KEY = 'key';
+
+    public function __construct(
+        private readonly NodesToAddCollector $nodesToAddCollector
+    ) {
+    }
 
     public function provideMinPhpVersion(): int
     {
@@ -138,8 +144,8 @@ CODE_SAMPLE
         string | int $dimValue,
         string $functionName
     ): Assign {
-        $dim = BuilderHelpers::normalizeValue($dimValue);
-        $arrayDimFetch = new ArrayDimFetch($assignVariable, $dim);
+        $dimExpr = BuilderHelpers::normalizeValue($dimValue);
+        $arrayDimFetch = new ArrayDimFetch($assignVariable, $dimExpr);
 
         return new Assign($arrayDimFetch, $this->nodeFactory->createFuncCall(
             $functionName,

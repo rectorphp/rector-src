@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Rector\Transform\ValueObject;
 
 use PHPStan\Type\ObjectType;
+use Rector\Core\Validation\RectorAssert;
 
 final class GetAndSetToMethodCall
 {
-    /**
-     * @param class-string $classType
-     */
     public function __construct(
         private readonly string $classType,
         private readonly string $getMethod,
         private readonly string $setMethod
     ) {
+        RectorAssert::className($classType);
+        RectorAssert::methodName($getMethod);
+        RectorAssert::methodName($setMethod);
     }
 
     public function getGetMethod(): string

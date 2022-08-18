@@ -35,6 +35,7 @@ final class InflectorSingularResolverTest extends AbstractTestCase
         yield ['psr4NamespacesToPaths', 'psr4NamespaceToPath'];
         yield ['nestedNews', 'nestedNew'];
         yield ['news', 'new'];
+        yield ['property', 'property'];
         yield ['argsOrOptions', 'argOrOption'];
         // news and plural
         yield ['staticCallsToNews', 'staticCallToNew'];

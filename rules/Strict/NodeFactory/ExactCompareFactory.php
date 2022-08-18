@@ -33,8 +33,11 @@ final class ExactCompareFactory
     ) {
     }
 
-    public function createIdenticalFalsyCompare(Type $exprType, Expr $expr, bool $treatAsNonEmpty): Expr|null
-    {
+    public function createIdenticalFalsyCompare(
+        Type $exprType,
+        Expr $expr,
+        bool $treatAsNonEmpty
+    ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|null {
         if ($exprType instanceof StringType) {
             return new Identical($expr, new String_(''));
         }
@@ -62,8 +65,11 @@ final class ExactCompareFactory
         return $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty);
     }
 
-    public function createNotIdenticalFalsyCompare(Type $exprType, Expr $expr, bool $treatAsNotEmpty): Expr|null
-    {
+    public function createNotIdenticalFalsyCompare(
+        Type $exprType,
+        Expr $expr,
+        bool $treatAsNotEmpty
+    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|null {
         if ($exprType instanceof StringType) {
             return new NotIdentical($expr, new String_(''));
         }
@@ -83,8 +89,11 @@ final class ExactCompareFactory
         return $this->createFromUnionType($exprType, $expr, $treatAsNotEmpty);
     }
 
-    private function createFromUnionType(UnionType $unionType, Expr $expr, bool $treatAsNotEmpty): Expr|null
-    {
+    private function createFromUnionType(
+        UnionType $unionType,
+        Expr $expr,
+        bool $treatAsNotEmpty
+    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|null {
         $unionType = TypeCombinator::removeNull($unionType);
 
         if ($unionType instanceof BooleanType) {
@@ -110,8 +119,11 @@ final class ExactCompareFactory
         return new BooleanAnd($toNullNotIdentical, $compareExpr);
     }
 
-    private function resolveFromCleanedNullUnionType(UnionType $unionType, Expr $expr, bool $treatAsNotEmpty): ?Expr
-    {
+    private function resolveFromCleanedNullUnionType(
+        UnionType $unionType,
+        Expr $expr,
+        bool $treatAsNotEmpty
+    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|null {
         $compareExprs = [];
 
         foreach ($unionType->getTypes() as $unionedType) {
@@ -122,7 +134,7 @@ final class ExactCompareFactory
     }
 
     /**
-     * @return array<Expr|null>
+     * @return array<Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|null>
      */
     private function collectCompareExprs(UnionType $unionType, Expr $expr, bool $treatAsNonEmpty): array
     {
@@ -142,10 +154,11 @@ final class ExactCompareFactory
     }
 
     /**
-     * @param array<Expr|null> $compareExprs
+     * @param array<Identical|BooleanOr|NotIdentical|BooleanAnd|Instanceof_|null> $compareExprs
      */
-    private function resolveTruthyExpr(array $compareExprs): ?Expr
-    {
+    private function resolveTruthyExpr(
+        array $compareExprs
+    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|null {
         $truthyExpr = array_shift($compareExprs);
 
         foreach ($compareExprs as $compareExpr) {
@@ -163,8 +176,11 @@ final class ExactCompareFactory
         return $truthyExpr;
     }
 
-    private function createTruthyFromUnionType(UnionType $unionType, Expr $expr, bool $treatAsNonEmpty): Expr|null
-    {
+    private function createTruthyFromUnionType(
+        UnionType $unionType,
+        Expr $expr,
+        bool $treatAsNonEmpty
+    ): BooleanOr|NotIdentical|Identical|BooleanNot|Instanceof_|null {
         $unionType = $this->cleanUpPossibleNullableUnionType($unionType);
 
         if ($unionType instanceof UnionType) {
@@ -177,8 +193,7 @@ final class ExactCompareFactory
         }
 
         if ($unionType instanceof TypeWithClassName) {
-            $instanceOf = new Instanceof_($expr, new FullyQualified($unionType->getClassName()));
-            return new BooleanNot($instanceOf);
+            return new BooleanNot(new Instanceof_($expr, new FullyQualified($unionType->getClassName())));
         }
 
         $toNullIdentical = new Identical($expr, $this->nodeFactory->createNull());

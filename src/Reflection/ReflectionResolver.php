@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -24,6 +23,7 @@ use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeUtils;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -54,13 +54,18 @@ final class ReflectionResolver
         $this->astResolver = $astResolver;
     }
 
+    /**
+     * @api
+     */
     public function resolveClassAndAnonymousClass(ClassLike $classLike): ClassReflection
     {
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
-            return $this->reflectionProvider->getAnonymousClassReflection(
-                $classLike,
-                $classLike->getAttribute(AttributeKey::SCOPE)
-            );
+            $classLikeScope = $classLike->getAttribute(AttributeKey::SCOPE);
+            if (! $classLikeScope instanceof Scope) {
+                throw new ShouldNotHappenException();
+            }
+
+            return $this->reflectionProvider->getAnonymousClassReflection($classLike, $classLikeScope);
         }
 
         $className = (string) $this->nodeNameResolver->getName($classLike);
@@ -82,23 +87,28 @@ final class ReflectionResolver
         return $scope->getClassReflection();
     }
 
-    public function resolveClassReflectionSourceObject(New_|MethodCall|StaticCall $node): ?ClassReflection
-    {
-        if ($node instanceof New_ && $node->class instanceof FullyQualified) {
-            $className = $node->class->toString();
-            if ($this->reflectionProvider->hasClass($className)) {
-                return $this->reflectionProvider->getClass($className);
+    public function resolveClassReflectionSourceObject(
+        MethodCall|StaticCall|PropertyFetch|StaticPropertyFetch $node
+    ): ?ClassReflection {
+        if ($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch) {
+            $objectType = $node instanceof PropertyFetch
+                ? $this->nodeTypeResolver->getType($node->var)
+                : $this->nodeTypeResolver->getType($node->class);
+
+            if (! $objectType instanceof TypeWithClassName) {
+                return null;
             }
 
-            return null;
+            $className = $objectType->getClassName();
+            if (! $this->reflectionProvider->hasClass($className)) {
+                return null;
+            }
+
+            return $this->reflectionProvider->getClass($className);
         }
 
-        if ($node instanceof MethodCall || $node instanceof StaticCall) {
-            $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
-            return $this->resolveClassReflection($classMethod);
-        }
-
-        return null;
+        $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
+        return $this->resolveClassReflection($classMethod);
     }
 
     /**
@@ -165,7 +175,7 @@ final class ReflectionResolver
     }
 
     public function resolveFunctionLikeReflectionFromCall(
-        MethodCall | StaticCall | FuncCall $call
+        MethodCall|FuncCall|StaticCall $call
     ): MethodReflection | FunctionReflection | null {
         if ($call instanceof MethodCall) {
             return $this->resolveMethodReflectionFromMethodCall($call);
@@ -235,9 +245,9 @@ final class ReflectionResolver
 
         $scope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
         if ($scope instanceof Scope) {
-            $propertyRelfection = $classReflection->getProperty($propertyName, $scope);
-            if ($propertyRelfection instanceof PhpPropertyReflection) {
-                return $propertyRelfection;
+            $propertyReflection = $classReflection->getProperty($propertyName, $scope);
+            if ($propertyReflection instanceof PhpPropertyReflection) {
+                return $propertyReflection;
             }
 
             return null;

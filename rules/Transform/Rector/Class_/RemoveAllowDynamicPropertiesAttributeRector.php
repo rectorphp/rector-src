@@ -47,7 +47,7 @@ class SomeObject {
     public string $someProperty = 'hello world';
 }
 CODE_SAMPLE
-,
+                ,
                 <<<'CODE_SAMPLE'
 namespace Example\Domain;
 
@@ -55,7 +55,7 @@ class SomeObject {
     public string $someProperty = 'hello world';
 }
 CODE_SAMPLE
-,
+                ,
                 ['Example\*']
             ),
         ]);

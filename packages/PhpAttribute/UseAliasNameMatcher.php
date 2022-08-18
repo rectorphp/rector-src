@@ -7,7 +7,7 @@ namespace Rector\PhpAttribute;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Php80\ValueObject\AnnotationToAttribute;
+use Rector\Php80\Contract\ValueObject\AnnotationToAttributeInterface;
 use Rector\PhpAttribute\ValueObject\UseAliasMetadata;
 
 /**
@@ -21,7 +21,7 @@ final class UseAliasNameMatcher
     public function match(
         array $uses,
         string $shortAnnotationName,
-        AnnotationToAttribute $annotationToAttribute
+        AnnotationToAttributeInterface $annotationToAttribute
     ): ?UseAliasMetadata {
         $shortAnnotationName = trim($shortAnnotationName, '@');
 

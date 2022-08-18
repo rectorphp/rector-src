@@ -33,7 +33,10 @@ final class ExclusionManager
     ) {
     }
 
-    public function isNodeSkippedByRector(Node $node, PhpRectorInterface $phpRector): bool
+    /**
+     * @param class-string<PhpRectorInterface> $rectorClass
+     */
+    public function isNodeSkippedByRector(Node $node, string $rectorClass): bool
     {
         if ($node instanceof PropertyProperty || $node instanceof Const_) {
             $node = $node->getAttribute(AttributeKey::PARENT_NODE);
@@ -42,7 +45,7 @@ final class ExclusionManager
             }
         }
 
-        if ($this->hasNoRectorPhpDocTagMatch($node, $phpRector)) {
+        if ($this->hasNoRectorPhpDocTagMatch($node, $rectorClass)) {
             return true;
         }
 
@@ -52,21 +55,22 @@ final class ExclusionManager
 
         // recurse up until a Stmt node is found since it might contain a noRector
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode === null) {
+        if (! $parentNode instanceof Node) {
             return false;
         }
 
-        return $this->isNodeSkippedByRector($parentNode, $phpRector);
+        return $this->isNodeSkippedByRector($parentNode, $rectorClass);
     }
 
-    private function hasNoRectorPhpDocTagMatch(Node $node, PhpRectorInterface $phpRector): bool
+    /**
+     * @param class-string<PhpRectorInterface> $rectorClass
+     */
+    private function hasNoRectorPhpDocTagMatch(Node $node, string $rectorClass): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         /** @var PhpDocTagNode[] $noRectorTags */
         $noRectorTags = array_merge($phpDocInfo->getTagsByName('noRector'), $phpDocInfo->getTagsByName('norector'));
-
-        $rectorClass = $phpRector::class;
 
         if ($this->matchesNoRectorTag($noRectorTags, $rectorClass)) {
             return true;

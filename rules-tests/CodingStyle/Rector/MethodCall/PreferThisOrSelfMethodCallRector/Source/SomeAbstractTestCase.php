@@ -6,4 +6,7 @@ namespace Rector\Tests\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallR
 
 abstract class SomeAbstractTestCase
 {
+    public static function assertSame($expected, $actual): void
+    {
+    }
 }

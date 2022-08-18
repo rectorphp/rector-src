@@ -31,11 +31,9 @@ return static function (RectorConfig $rectorConfig): void {
             // doctrine
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\ManyToMany'),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\Table'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Index'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\UniqueConstraint'),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumns'),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumn'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
 
             // validation
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\All'),

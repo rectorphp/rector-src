@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PostRector\Collector;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Naming\Naming\UseImportsResolver;
@@ -21,7 +22,7 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
     private array $functionUseImportTypesInFilePath = [];
 
     /**
-     * @var array<string, FullyQualifiedObjectType[]|AliasedObjectType[]>
+     * @var array<string, FullyQualifiedObjectType[]>
      */
     private array $useImportTypesInFilePath = [];
 
@@ -36,12 +37,12 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         return $this->useImportTypesInFilePath !== [] || $this->functionUseImportTypesInFilePath !== [];
     }
 
-    public function addUseImport(FullyQualifiedObjectType | AliasedObjectType $objectType): void
+    public function addUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
         /** @var File $file */
         $file = $this->currentFileProvider->getFile();
 
-        $this->useImportTypesInFilePath[$file->getFilePath()][] = $objectType;
+        $this->useImportTypesInFilePath[$file->getFilePath()][] = $fullyQualifiedObjectType;
     }
 
     public function addFunctionUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
@@ -77,9 +78,9 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         return $objectTypes;
     }
 
-    public function hasImport(File $file, Node $node, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
+    public function hasImport(File $file, Name $name, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
-        $useImports = $this->getUseImportTypesByNode($file, $node);
+        $useImports = $this->getUseImportTypesByNode($file, $name);
 
         foreach ($useImports as $useImport) {
             if ($useImport->equals($fullyQualifiedObjectType)) {

@@ -125,12 +125,12 @@ final class MatchSwitchAnalyzer
 
     private function isNextStmtReturnWithExpr(Switch_ $switch): bool
     {
-        $next = $switch->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $next instanceof Return_) {
+        $nextNode = $switch->getAttribute(AttributeKey::NEXT_NODE);
+        if (! $nextNode instanceof Return_) {
             return false;
         }
 
-        if (! $next->expr instanceof Expr) {
+        if (! $nextNode->expr instanceof Expr) {
             return false;
         }
 
@@ -142,7 +142,7 @@ final class MatchSwitchAnalyzer
                     continue;
                 }
 
-                if (! $this->nodeComparator->areNodesEqual($expression->expr->var, $next->expr)) {
+                if (! $this->nodeComparator->areNodesEqual($expression->expr->var, $nextNode->expr)) {
                     return false;
                 }
             }

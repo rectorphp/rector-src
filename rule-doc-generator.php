@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Rector\RuleDocGenerator\Category\RectorCategoryInferer;
+use Rector\Utils\RuleDocGenerator\Category\RectorCategoryInferer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $rectorConfig): void {

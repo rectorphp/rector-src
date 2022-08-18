@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Transform\ValueObject;
 
 use PHPStan\Type\ObjectType;
+use Rector\Core\Validation\RectorAssert;
 
 final class DimFetchAssignToMethodCall
 {
@@ -13,6 +14,7 @@ final class DimFetchAssignToMethodCall
         private readonly string $itemClass,
         private readonly string $addMethod
     ) {
+        RectorAssert::methodName($addMethod);
     }
 
     public function getListObjectType(): ObjectType

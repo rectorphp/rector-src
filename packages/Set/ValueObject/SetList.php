@@ -6,13 +6,11 @@ namespace Rector\Set\ValueObject;
 
 use Rector\Set\Contract\SetListInterface;
 
+/**
+ * @api
+ */
 final class SetList implements SetListInterface
 {
-    /**
-     * @var string
-     */
-    public const DEFLUENT = __DIR__ . '/../../../config/set/defluent.php';
-
     /**
      * @var string
      */
@@ -36,22 +34,7 @@ final class SetList implements SetListInterface
     /**
      * @var string
      */
-    public const FLYSYSTEM_20 = __DIR__ . '/../../../config/set/flysystem-20.php';
-
-    /**
-     * @var string
-     */
-    public const FRAMEWORK_EXTRA_BUNDLE_40 = __DIR__ . '/../../../config/set/framework-extra-bundle-40.php';
-
-    /**
-     * @var string
-     */
-    public const FRAMEWORK_EXTRA_BUNDLE_50 = __DIR__ . '/../../../config/set/framework-extra-bundle-50.php';
-
-    /**
-     * @var string
-     */
-    public const GMAGICK_TO_IMAGICK = __DIR__ . '/../../../config/set/gmagick_to_imagick.php';
+    public const GMAGICK_TO_IMAGICK = __DIR__ . '/../../../config/set/gmagick-to-imagick.php';
 
     /**
      * @var string
@@ -152,11 +135,6 @@ final class SetList implements SetListInterface
      * @var string
      */
     public const TYPE_DECLARATION_STRICT = __DIR__ . '/../../../config/set/type-declaration-strict.php';
-
-    /**
-     * @var string
-     */
-    public const UNWRAP_COMPAT = __DIR__ . '/../../../config/set/unwrap-compat.php';
 
     /**
      * @var string

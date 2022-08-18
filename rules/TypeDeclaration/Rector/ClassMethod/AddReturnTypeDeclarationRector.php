@@ -16,9 +16,9 @@ use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -36,8 +36,8 @@ final class AddReturnTypeDeclarationRector extends AbstractRector implements Con
     private bool $hasChanged = false;
 
     public function __construct(
-        private readonly TypeComparator $typeComparator,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -121,12 +121,12 @@ CODE_SAMPLE
         ObjectType $objectType
     ): void {
         if ($newType instanceof MixedType) {
-            $class = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $class instanceof Class_) {
+            $parentNode = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof Class_) {
                 return;
             }
 
-            $className = (string) $this->nodeNameResolver->getName($class);
+            $className = (string) $this->nodeNameResolver->getName($parentNode);
             $currentObjectType = new ObjectType($className);
             if (! $objectType->equals($currentObjectType) && $classMethod->returnType !== null) {
                 return;
@@ -142,28 +142,12 @@ CODE_SAMPLE
         }
 
         // already set and sub type or equal → no change
-        if ($this->shouldSkipType($classMethod, $newType)) {
+        if ($this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange($classMethod, $newType)) {
             return;
         }
 
-        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newType, TypeKind::RETURN);
-        $classMethod->returnType = $returnTypeNode;
+        $classMethod->returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newType, TypeKind::RETURN);
 
         $this->hasChanged = true;
-    }
-
-    private function shouldSkipType(ClassMethod $classMethod, Type $newType): bool
-    {
-        if ($classMethod->returnType === null) {
-            return false;
-        }
-
-        $currentReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($classMethod->returnType);
-
-        if ($this->typeComparator->isSubtype($currentReturnType, $newType)) {
-            return true;
-        }
-
-        return $this->typeComparator->areTypesEqual($currentReturnType, $newType);
     }
 }

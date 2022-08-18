@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Renaming\ValueObject;
 
 use PHPStan\Type\ObjectType;
+use Rector\Core\Validation\RectorAssert;
 
 final class RenameStaticMethod
 {
@@ -14,6 +15,11 @@ final class RenameStaticMethod
         private readonly string $newClass,
         private readonly string $newMethod
     ) {
+        RectorAssert::className($oldClass);
+        RectorAssert::methodName($oldMethod);
+
+        RectorAssert::className($newClass);
+        RectorAssert::methodName($newMethod);
     }
 
     public function getOldObjectType(): ObjectType

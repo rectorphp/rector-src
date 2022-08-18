@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeFactory;
 
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Type\Type;
-use Rector\Core\PhpParser\Node\NodeFactory;
 
 final class MissingPropertiesFactory
 {
     public function __construct(
-        private readonly NodeFactory $nodeFactory,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
     ) {
     }
@@ -29,7 +29,7 @@ final class MissingPropertiesFactory
                 continue;
             }
 
-            $property = $this->nodeFactory->createPublicProperty($propertyName);
+            $property = new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty($propertyName)]);
             $this->propertyTypeDecorator->decorateProperty($property, $propertyType);
 
             $newProperties[] = $property;

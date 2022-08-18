@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Transform\ValueObject;
 
+use Rector\Core\Validation\RectorAssert;
+use Webmozart\Assert\Assert;
+
 final class ParentClassToTraits
 {
     /**
@@ -13,6 +16,8 @@ final class ParentClassToTraits
         private readonly string $parentType,
         private readonly array $traitNames
     ) {
+        RectorAssert::className($parentType);
+        Assert::allString($traitNames);
     }
 
     public function getParentType(): string

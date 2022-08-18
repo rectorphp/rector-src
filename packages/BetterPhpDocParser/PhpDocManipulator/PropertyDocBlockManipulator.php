@@ -7,7 +7,6 @@ namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Naming\Contract\RenameValueObjectInterface;
 use Rector\Naming\ValueObject\ParamRename;
 
 final class PropertyDocBlockManipulator
@@ -17,20 +16,17 @@ final class PropertyDocBlockManipulator
     ) {
     }
 
-    /**
-     * @param ParamRename $renameValueObject
-     */
-    public function renameParameterNameInDocBlock(RenameValueObjectInterface $renameValueObject): void
+    public function renameParameterNameInDocBlock(ParamRename $paramRename): void
     {
-        $functionLike = $renameValueObject->getFunctionLike();
+        $functionLike = $paramRename->getFunctionLike();
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
-        $paramTagValueNode = $phpDocInfo->getParamTagValueNodeByName($renameValueObject->getCurrentName());
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramRename->getCurrentName());
         if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return;
         }
 
-        $paramTagValueNode->parameterName = '$' . $renameValueObject->getExpectedName();
+        $paramTagValueNode->parameterName = '$' . $paramRename->getExpectedName();
         $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
     }
 }

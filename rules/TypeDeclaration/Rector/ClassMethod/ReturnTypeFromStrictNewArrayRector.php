@@ -26,6 +26,7 @@ use PHPStan\Type\VerbosityLevel;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,7 +37,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictNewArrayRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly TypeComparator $typeComparator
     ) {
     }
 
@@ -120,6 +122,12 @@ CODE_SAMPLE
             return null;
         }
 
+        $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
+
+        if (! $returnType instanceof ArrayType) {
+            return null;
+        }
+
         if (! $this->nodeNameResolver->areNamesEqual($onlyReturn->expr, $variable)) {
             return null;
         }
@@ -131,11 +139,7 @@ CODE_SAMPLE
         $exprType = $this->getType($onlyReturn->expr);
 
         if ($this->shouldAddReturnArrayDocType($exprType)) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-            $exprType = $this->narrowConstantArrayType($exprType);
-
-            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
+            $this->changeReturnType($node, $exprType);
         }
 
         return $node;
@@ -144,6 +148,17 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    private function changeReturnType(Node $node, Type $exprType): void
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        $exprType = $this->narrowConstantArrayType($exprType);
+
+        if (! $this->typeComparator->isSubtype($phpDocInfo->getReturnType(), $exprType)) {
+            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
+        }
     }
 
     private function isVariableOverriddenWithNonArray(

@@ -13,7 +13,7 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 $possiblePaths = [
     // rector-src
     __DIR__ . '/../vendor/autoload.php',
-    // rector package dependnecy
+    // rector package dependency
     __DIR__ . '/../../../../vendor/autoload.php',
 ];
 
@@ -39,7 +39,8 @@ if (! is_string($buildDirectory)) {
 }
 
 $preloadBuilder = new PreloadBuilder();
-$preloadBuilder->buildPreloadScript($buildDirectory);
+$preloadBuilder->buildPreloadScript($buildDirectory, $buildDirectory . '/preload.php');
+$preloadBuilder->buildPreloadScriptForSplitPackage($buildDirectory, $buildDirectory . '/preload-split-package.php');
 
 final class PreloadBuilder
 {
@@ -97,7 +98,7 @@ PHP;
         'Stmt/FunctionLike.php',
     ];
 
-    public function buildPreloadScript(string $buildDirectory): void
+    public function buildPreloadScript(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
         if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
@@ -105,26 +106,29 @@ PHP;
         }
 
         // 1. fine php-parser file infos
-        $fileInfos = $this->findPhpParserFiles($vendorDir);
-
-        // 2. put first-class usages first
-        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo) {
-            $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
-            $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
-
-            return $secondFilePosition <=> $firstFilePosition;
-        });
-
-        // add Smsts marker
-
-        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
-        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
+        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
         // 3. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos);
 
-        file_put_contents($buildDirectory . '/preload.php', $preloadFileContent);
+        file_put_contents($preloadFile, $preloadFileContent);
     }
+
+    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
+            return;
+        }
+
+        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
+
+        // 3. create preload.php from provided files
+        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos);
+
+        file_put_contents($preloadFile, $preloadFileContent);
+    }
+
 
     /**
      * @return SplFileInfo[]
@@ -162,6 +166,36 @@ PHP;
         return $preloadFileContent;
     }
 
+    /**
+     * @param SplFileInfo[] $fileInfos
+     */
+    private function createPreloadFileContentForSplitPackage(array $fileInfos): string
+    {
+        $preloadFileContent = self::PRELOAD_FILE_TEMPLATE;
+
+        foreach ($fileInfos as $fileInfo) {
+            $realPath = $fileInfo->getRealPath();
+            if ($realPath === false) {
+                continue;
+            }
+
+            $preloadFileContent .= $this->createRequireOnceFilePathLineForSplitPackage($realPath);
+        }
+
+        return $preloadFileContent;
+    }
+
+    private function createRequireOnceFilePathLineForSplitPackage(string $realPath): string
+    {
+        if (! str_contains($realPath, 'vendor')) {
+            $filePath = '/src/' . Strings::after($realPath, '/src/');
+            return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
+        }
+
+        $filePath = '/../../../vendor/' . Strings::after($realPath, 'vendor/');
+        return "require_once __DIR__ . '" . $filePath . "';" . PHP_EOL;
+    }
+
     private function createRequireOnceFilePathLine(string $realPath): string
     {
         if (! str_contains($realPath, 'vendor')) {
@@ -192,5 +226,27 @@ PHP;
         }
 
         return self::PRIORITY_LESS_FILE_POSITION;
+    }
+
+    /**
+     * @return SplFileInfo[]
+     */
+    private function findPhpParserFilesAndSortThem(string $vendorDir): array
+    {
+        // 1. fine php-parser file infos
+        $fileInfos = $this->findPhpParserFiles($vendorDir);
+
+        // 2. put first-class usages first
+        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo) {
+            $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
+            $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
+
+            return $secondFilePosition <=> $firstFilePosition;
+        });
+
+        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
+        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
+
+        return $fileInfos;
     }
 }

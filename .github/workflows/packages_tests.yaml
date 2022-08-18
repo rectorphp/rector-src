@@ -20,14 +20,14 @@ jobs:
             fail-fast: false
             matrix:
                 repository_name:
-                    # must be repository name, e.g. https://github.com/rectorphp/rector-nette
+                    # must be repository name, e.g. https://github.com/rectorphp/rector-symfony
                     - rectorphp/rector-symfony
                     - rectorphp/rector-phpunit
                     - rectorphp/rector-doctrine
                     - rectorphp/rector-laravel
-                    - rectorphp/rector-nette
                     - rectorphp/rector-cakephp
                     - rectorphp/rector-phpoffice
+                    - rectorphp/rector-downgrade-php
 
         steps:
             # see https://github.com/actions/checkout#usage

@@ -37,9 +37,9 @@ final class PhpAttributeAnalyzer
         return false;
     }
 
-    public function hasInheritedPhpAttribute(ClassLike $classLike, string $attributeClass): bool
+    public function hasInheritedPhpAttribute(Class_ $class, string $attributeClass): bool
     {
-        $className = (string) $this->nodeNameResolver->getName($classLike);
+        $className = (string) $this->nodeNameResolver->getName($class);
         if (! $this->reflectionProvider->hasClass($className)) {
             return false;
         }
@@ -49,13 +49,13 @@ final class PhpAttributeAnalyzer
 
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             $ancestorClassName = $ancestorClassReflection->getName();
-            $class = $this->astResolver->resolveClassFromName($ancestorClassName);
+            $resolvedClass = $this->astResolver->resolveClassFromName($ancestorClassName);
 
-            if (! $class instanceof Class_) {
+            if (! $resolvedClass instanceof Class_) {
                 continue;
             }
 
-            if ($this->hasPhpAttribute($class, $attributeClass)) {
+            if ($this->hasPhpAttribute($resolvedClass, $attributeClass)) {
                 return true;
             }
         }

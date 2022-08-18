@@ -13,11 +13,11 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
@@ -25,6 +25,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php73\NodeTypeAnalyzer\NodeTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -295,7 +296,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -390,6 +391,10 @@ CODE_SAMPLE
         array $args,
         int|string $position
     ): ?FuncCall {
+        if (! isset($args[$position])) {
+            return null;
+        }
+
         $argValue = $args[$position]->value;
 
         if ($argValue instanceof ConstFetch && $this->valueResolver->isNull($argValue)) {
@@ -404,7 +409,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $type instanceof MixedType) {
+        if (! $type instanceof MixedType || $argValue instanceof Encapsed) {
             return null;
         }
 
@@ -469,7 +474,16 @@ CODE_SAMPLE
             return [];
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($functionReflection->getVariants());
+        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return [];
+        }
+
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+            $functionReflection,
+            $funcCall,
+            $scope
+        );
         $functionName = $this->nodeNameResolver->getName($funcCall);
         $argNames = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
         $positions = [];

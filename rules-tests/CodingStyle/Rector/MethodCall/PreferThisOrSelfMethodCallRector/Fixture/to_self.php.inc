@@ -4,7 +4,7 @@ namespace Rector\Tests\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallR
 
 use Rector\Tests\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector\Source\SomeAbstractTestCase;
 
-class ToSelf extends SomeAbstractTestCase
+final class ToSelf extends SomeAbstractTestCase
 {
     public function run()
     {
@@ -23,14 +23,14 @@ namespace Rector\Tests\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallR
 
 use Rector\Tests\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector\Source\SomeAbstractTestCase;
 
-class ToSelf extends SomeAbstractTestCase
+final class ToSelf extends SomeAbstractTestCase
 {
     public function run()
     {
         self::assertThis();
         self::assertThis();
         self::assertThis();
-        parent::assertThis();
+        self::assertThis();
     }
 }
 

@@ -49,11 +49,17 @@ final class ContextAnalyzer
         return false;
     }
 
+    /**
+     * @api
+     */
     public function isInSwitch(Node $node): bool
     {
         return (bool) $this->betterNodeFinder->findParentType($node, Switch_::class);
     }
 
+    /**
+     * @api
+     */
     public function isInIf(Node $node): bool
     {
         $breakNodes = array_merge([If_::class], self::BREAK_NODES);
@@ -66,21 +72,20 @@ final class ContextAnalyzer
         return $previousNode instanceof If_;
     }
 
-    public function isHasAssignWithIndirectReturn(Node $node, If_ $if): bool
+    public function hasAssignWithIndirectReturn(Node $node, If_ $if): bool
     {
         foreach (ControlStructure::LOOP_NODES as $loopNode) {
             $loopObjectType = new ObjectType($loopNode);
             $parentType = $this->nodeTypeResolver->getType($node);
-            $superType = $parentType->isSuperTypeOf($loopObjectType);
-            $isLoopType = $superType->yes();
 
-            if (! $isLoopType) {
+            $superType = $parentType->isSuperTypeOf($loopObjectType);
+            if (! $superType->yes()) {
                 continue;
             }
 
-            $next = $node->getAttribute(AttributeKey::NEXT_NODE);
-            if ($next instanceof Node) {
-                if ($next instanceof Return_ && $next->expr === null) {
+            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+            if ($nextNode instanceof Node) {
+                if ($nextNode instanceof Return_ && $nextNode->expr === null) {
                     continue;
                 }
 

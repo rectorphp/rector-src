@@ -92,25 +92,74 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->stmts === null) {
+            return null;
+        }
+
         $undefinedVariableNames = $this->undefinedVariableResolver->resolve($node);
 
         if ($undefinedVariableNames === []) {
             return null;
         }
 
+        $variablesInitiation = $this->collectVariablesInitiation($undefinedVariableNames, $node->stmts);
+
+        if ($variablesInitiation === []) {
+            return null;
+        }
+
+        $node->stmts = array_merge($variablesInitiation, $node->stmts);
+
+        return $node;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @return Expression[]
+     */
+    private function collectEarlyExpressionStmts(array $stmts): array
+    {
+        $expressionStmts = [];
+
+        foreach ($stmts as $stmt) {
+            if (! $stmt instanceof Expression) {
+                break;
+            }
+
+            $expressionStmts[] = $stmt;
+        }
+
+        return $expressionStmts;
+    }
+
+    /**
+     * @param string[] $undefinedVariableNames
+     * @param Stmt[] $stmts
+     * @return Expression[]
+     */
+    private function collectVariablesInitiation(array $undefinedVariableNames, array $stmts): array
+    {
         $variablesInitiation = [];
+        $expressionStmts = $this->collectEarlyExpressionStmts($stmts);
+
         foreach ($undefinedVariableNames as $undefinedVariableName) {
-            $value = $this->isArray($undefinedVariableName, (array) $node->stmts)
+            $value = $this->isArray($undefinedVariableName, $stmts)
                 ? new Array_([])
                 : $this->nodeFactory->createNull();
 
             $assign = new Assign(new Variable($undefinedVariableName), $value);
-            $variablesInitiation[] = new Expression($assign);
+            $expresssion = new Expression($assign);
+
+            foreach ($expressionStmts as $expressionStmt) {
+                if ($this->nodeComparator->areNodesEqual($expresssion, $expressionStmt)) {
+                    continue 2;
+                }
+            }
+
+            $variablesInitiation[] = $expresssion;
         }
 
-        $node->stmts = array_merge($variablesInitiation, (array) $node->stmts);
-
-        return $node;
+        return $variablesInitiation;
     }
 
     /**

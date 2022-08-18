@@ -69,7 +69,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $this->nodeRemover->removeArg($node, $position);
+                unset($node->args[$position]);
                 $hasChanged = true;
             }
         }

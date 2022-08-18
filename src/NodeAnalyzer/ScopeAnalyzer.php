@@ -9,22 +9,21 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Namespace_;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use PHPStan\Analyser\MutatingScope;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
+use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ScopeAnalyzer
 {
     /**
      * @var array<class-string<Node>>
      */
-    private const NO_SCOPE_NODES = [
-        Name::class,
-        Namespace_::class,
-        FileWithoutNamespace::class,
-        Identifier::class,
-        Param::class,
-        Arg::class,
-    ];
+    private const NO_SCOPE_NODES = [Name::class, Identifier::class, Param::class, Arg::class];
+
+    public function __construct(private readonly ScopeFactory $scopeFactory)
+    {
+    }
 
     public function hasScope(Node $node): bool
     {
@@ -35,5 +34,28 @@ final class ScopeAnalyzer
         }
 
         return true;
+    }
+
+    public function resolveScope(
+        Node $node,
+        SmartFileInfo $smartFileInfo,
+        ?MutatingScope $mutatingScope = null
+    ): ?MutatingScope {
+        if ($mutatingScope instanceof MutatingScope) {
+            return $mutatingScope;
+        }
+
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
+            return $this->scopeFactory->createFromFile($smartFileInfo);
+        }
+
+        if (! $this->hasScope($parentNode)) {
+            return $this->scopeFactory->createFromFile($smartFileInfo);
+        }
+
+        /** @var MutatingScope|null $parentScope */
+        $parentScope = $parentNode->getAttribute(AttributeKey::SCOPE);
+        return $parentScope;
     }
 }

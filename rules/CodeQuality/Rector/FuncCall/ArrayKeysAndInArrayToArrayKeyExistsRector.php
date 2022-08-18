@@ -33,7 +33,7 @@ function run($packageName, $values)
     return in_array($packageName, $keys, true);
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 function run($packageName, $values)
 {

@@ -31,7 +31,7 @@ final class ChangeArrayPushToArrayAssignRector extends AbstractRector
 $items = [];
 array_push($items, $item);
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 $items = [];
 $items[] = $item;

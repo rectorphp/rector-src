@@ -20,7 +20,8 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         $this->bootFromConfigFiles([$configFile]);
 
         // to invoke configure() method call
-        $this->getService(RenameClassRector::class);
+        $renameClassRector = $this->getService(RenameClassRector::class);
+        $this->assertInstanceOf(RenameClassRector::class, $renameClassRector);
 
         /** @var RenamedClassesDataCollector $renamedClassesDataCollector */
         $renamedClassesDataCollector = $this->getService(RenamedClassesDataCollector::class);

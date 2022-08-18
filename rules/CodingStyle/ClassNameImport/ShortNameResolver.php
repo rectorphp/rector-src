@@ -138,8 +138,7 @@ final class ShortNameResolver
                 return null;
             }
 
-            $fullyQualifiedName = $this->nodeNameResolver->getName($node);
-            $shortNamesToFullyQualifiedNames[$originalName->toString()] = $fullyQualifiedName;
+            $shortNamesToFullyQualifiedNames[$originalName->toString()] = $this->nodeNameResolver->getName($node);
 
             return null;
         });

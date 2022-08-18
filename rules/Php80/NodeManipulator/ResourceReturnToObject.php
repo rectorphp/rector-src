@@ -50,8 +50,8 @@ final class ResourceReturnToObject
      */
     private function processFuncCall(FuncCall $funcCall, array $collectionFunctionToReturnObject): ?Instanceof_
     {
-        $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof BinaryOp && ! $parent instanceof BooleanOr) {
+        $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof BinaryOp && ! $parentNode instanceof BooleanOr) {
             return null;
         }
 
@@ -82,7 +82,7 @@ final class ResourceReturnToObject
         //      - in the right position of BooleanOr, it be NeverType
         //      - the object changed after init
         if (! $argValueType instanceof FullyQualifiedObjectType) {
-            $argValueType = $this->resolveArgValueTypeFromPreviousAssign(
+            return $this->resolveArgValueTypeFromPreviousAssign(
                 $funcCall,
                 $argResourceValue,
                 $collectionFunctionToReturnObject
@@ -121,7 +121,8 @@ final class ResourceReturnToObject
         array $collectionFunctionToReturnObject
     ): ?FullyQualifiedObjectType {
         $objectInstanceCheck = null;
-        $assign = $this->betterNodeFinder->findFirstPrevious($funcCall, function (Node $subNode) use (
+
+        $foundNode = $this->betterNodeFinder->findFirstPrevious($funcCall, function (Node $subNode) use (
             &$objectInstanceCheck,
             $expr,
             $collectionFunctionToReturnObject
@@ -145,7 +146,7 @@ final class ResourceReturnToObject
             return false;
         });
 
-        if (! $assign instanceof Assign) {
+        if (! $foundNode instanceof Assign) {
             return null;
         }
 

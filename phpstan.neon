@@ -41,7 +41,6 @@ parameters:
         # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
         - packages/BetterPhpDocParser/ValueObject/PhpDocNode/AbstractTagValueNode.php
         - packages/Testing/PHPUnit/*.php
-        - rules/DowngradePhp70/Rector/FunctionLike/AbstractDowngradeParamDeclarationRector.php
 
         # demo rule
         - tests/Issues/AliasedImportDouble/Rector/ClassMethod/AddAliasImportRector.php
@@ -217,13 +216,6 @@ parameters:
             message: '#Function "dump_node\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
-        # union false positive
-        - '#Method Rector\\Comments\\CommentRemover\:\:removeFromNode\(\) has parameter \$node with no value type specified in iterable type array#'
-
-        # class-string miss match
-        - '#Parameter \#1 \$classes of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<PHPStan\\PhpDocParser\\Ast\\Node\>\:\:getByAnnotationClasses\(\) expects array<class\-string\>, array<int, string\> given#'
-        - '#Parameter \#1 \$classes of method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>\:\:getByAnnotationClasses\(\) expects array<class\-string\>, array<string\> given#'
-
         - '#expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
         # weird generics
         - '#Method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:getByType\(\) should return array<TNode of PHPStan\\PhpDocParser\\Ast\\Node\> but returns array<PHPStan\\PhpDocParser\\Ast\\Node\>#'
@@ -234,8 +226,7 @@ parameters:
         # resolve later
         - '#Method "(.*?)\(\)" only calling another method call and has no added value\. Use the inlined call instead#'
         - '#Method "processRenameVariable\(\)" returns bool type, so the name should start with is/has/was#'
-        - '#Method "refactorParamType\(\)" returns bool type, so the name should start with is/has/was#'
-        - '#Method "decorateReturnWithSpecificType\(\)" returns bool type, so the name should start with is/has/was#'
+
         - '#Method "resolveObjectType\(\)" returns bool type, so the name should start with is/has/was#'
 
         # native filesystem calls, required for performance reasons
@@ -282,7 +273,6 @@ parameters:
             message: '#Class has a static method must so must contains "Static" in its name#'
             paths:
                 - src/Application/VersionResolver.php #16
-                - utils/compiler/src/Unprefixer.php #9
                 - src/Configuration/ValueObjectInliner.php
 
         # waits for phpstan upgrade to php-parser 4.13
@@ -386,6 +376,8 @@ parameters:
                 - src/*/*Processor.php
                 - rules/Composer/Application/FileProcessor/ComposerFileProcessor.php
                 - src/Contract/Processor/FileProcessorInterface.php
+                - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
+                # reported only in non-CI, for some reason; keep it there even if it's reported as fixed error
                 - packages/Parallel/Application/ParallelFileProcessor.php
 
         # skipped on purpose, as ctor overrie
@@ -468,7 +460,7 @@ parameters:
         - '#Add explicit array type to assigned "(.*?)->(args|params|items|parts|stmts)" expression#'
         # false positive on string type
         - '#Add explicit array type to assigned "\$unusedParameters" expression#'
-        - '#Add explicit array type to assigned "\$unnamedArgs" expression#'
+
         - '#Add explicit array type to assigned "\$innerPattern" expression#'
         # known doc
         - '#Add explicit array type to assigned "\$spreadParams" expression#'
@@ -557,10 +549,6 @@ parameters:
             message: '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: bin/rector.php
 
-        -
-            message: '#Do not compare call directly, use a variable assign#'
-            path: bin/rector.php
-
         # use of internal phpstan classes
         -
             message: '#Creating new PHPStan\\Reflection\\BetterReflection\\SourceLocator\\Optimized(.*?)SourceLocator is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
@@ -600,9 +588,6 @@ parameters:
             message: '#Class cognitive complexity is 55, keep it under 50#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php #41
 
-        # list() function accepts null arguments
-        - '#Parameter \#2 \$args of class PhpParser\\Node\\Expr\\FuncCall constructor expects array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder>, array<int, PhpParser\\Node\\Arg\|null> given#'
-
         # validate class-string input
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
@@ -616,7 +601,7 @@ parameters:
         # optional rule for PHP 8.1
         - '#Register "Rector\\Php81\\Rector\\Class_\\ConstantListClassToEnumRector" service to "php81\.php" config set#'
         - '#Rule Rector\\Php81\\Rector\\Class_\\ConstantListClassToEnumRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
-        - '#Register "Rector\\DowngradePhp80\\Rector\\Enum_\\DowngradeEnumToConstantListClassRector" service to "downgrade\-php80\.php" config set#'
+
         -
             message: '#Method "refactor(Params|Return)\(\)" returns bool type, so the name should start with is/has/was#'
             path: rules/Php81/Rector/Class_/ConstantListClassToEnumRector.php
@@ -633,7 +618,6 @@ parameters:
 
         # resolve later with configurable types
         - '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
-        - '#Instead of calling all public methods of value object, pass it directly#'
 
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
@@ -644,29 +628,10 @@ parameters:
             message: '#New objects with "\$arrayItem" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path:  src/PhpParser/Node/NodeFactory.php
 
-        # reducing original node
-        -
-            message: '#New objects with "\$bitwiseOr" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: rules/DowngradePhp72/NodeManipulator/BitwiseFlagCleaner.php
-
         # faking node to invoke scope callable on attribute
         -
             message: '#New objects with "\$node" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: src/Application/ChangedNodeScopeRefresher.php
-
-        # added nullable type
-        -
-            message: '#New objects with "\$mappedCurrentParamType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path:  rules/DowngradePhp72/PhpDoc/NativeParamToPhpDocDecorator.php
-
-        -
-            message: '#New objects with "\$node" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: src/Rector/AbstractRector.php
-
-        # joined items
-        -
-            message: '#New objects with "\$expr" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: rules/DowngradePhp55/Rector/Isset_/DowngradeArbitraryExpressionArgsToEmptyAndIssetRector.php
 
         # mixed type correction
         -
@@ -678,16 +643,54 @@ parameters:
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
 
         -
-            message: '#New objects with "\$replaceIntoType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: rules/CodeQuality/NodeManipulator/ClassMethodReturnTypeManipulator.php
-
-        -
-            path: rules/DowngradePhp74/Rector/ClassMethod/DowngradeCovariantReturnTypeRector.php
-            message: '#New objects with "\$parentReturnTypeNode" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-        -
-            path: rules/DowngradePhp80/NodeAnalyzer/UnnamedArgumentResolver.php
-            message: '#New objects with "\$functionLikeReflection" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-
-        -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
+
+        - '#Class has a static method must so must contains "Static" in its name#'
+
+        - '#Class method ".+\(\)" is never used#'
+
+        # regex re-validation
+        -
+            message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
+            path: rules/Transform/ValueObject/ParentClassToTraits.php
+
+        -
+            message: '#Relative file path ".+" is not allowed, use absolute one with __DIR__#'
+            paths:
+                - bin/rector.php
+                - src/Bootstrap/RectorConfigsResolver.php
+                - src/ValueObject/StaticNonPhpFileSuffixes.php
+                - tests/FileSystem/FilesFinder/FilesFinderTest.php
+
+        # union booleans
+        - '#Method Rector\\Strict\\NodeFactory\\ExactCompareFactory\:\:createTruthyFromUnionType\(\) should return PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\BooleanNot\|PhpParser\\Node\\Expr\\Instanceof_\|null but returns PhpParser\\Node\\Expr\\BinaryOp\\BooleanAnd\|PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\Instanceof_\|null#'
+        - '#Parameter \#1 \$compareExprs of method Rector\\Strict\\NodeFactory\\ExactCompareFactory\:\:resolveTruthyExpr\(\) expects array<PhpParser\\Node\\Expr\\BinaryOp\\BooleanAnd\|PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\Instanceof_\|null>, array<PhpParser\\Node\\Expr\\BinaryOp\\BooleanOr\|PhpParser\\Node\\Expr\\BinaryOp\\Identical\|PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical\|PhpParser\\Node\\Expr\\BooleanNot\|PhpParser\\Node\\Expr\\Instanceof_\|null> given#'
+
+        # part of tests
+        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000 will always evaluate to true#'
+
+        -
+            message: '#Method call return value that should be used, but is not#'
+            paths:
+                - src/Console/Output/RectorOutputStyle.php
+                - src/Application/ChangedNodeScopeRefresher.php
+                - rules/TypeDeclaration/TypeNormalizer.php
+                - rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNewArrayRector.php
+                - rules/Composer/Guard/VersionGuard.php
+                - rules/Removing/NodeManipulator/ComplexNodeRemover.php
+                - rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php
+                - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+
+        -
+            message: '#Method call return value that should be used, but is not#'
+            path: src/PhpParser/Node/NodeFactory.php
+            count: 1
+
+        # false positives
+        -
+            message: '#This call has duplicate argument#'
+            path: rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
+
+        # tests
+        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) and Rector\\Renaming\\Rector\\Name\\RenameClassRector will always evaluate to true#'

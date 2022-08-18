@@ -5,6 +5,7 @@
     bootstrap="tests/bootstrap.php"
     colors="true"
     executionOrder="defects"
+    convertDeprecationsToExceptions="true"
 >
     <testsuites>
         <testsuite name="main">

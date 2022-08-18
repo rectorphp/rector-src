@@ -39,7 +39,7 @@ count($array) === 0;
 count($array) > 0;
 ! count($array);
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 $array === [];
 $array !== [];
@@ -87,22 +87,22 @@ CODE_SAMPLE
             return null;
         }
 
-        $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parent instanceof Node) {
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
             return null;
         }
 
-        $processIdentical = $this->processIdenticalOrNotIdentical($parent, $node, $expr);
+        $processIdentical = $this->processIdenticalOrNotIdentical($parentNode, $node, $expr);
         if ($processIdentical !== null) {
             return $processIdentical;
         }
 
-        $processGreaterOrSmaller = $this->processGreaterOrSmaller($parent, $node, $expr);
+        $processGreaterOrSmaller = $this->processGreaterOrSmaller($parentNode, $node, $expr);
         if ($processGreaterOrSmaller !== null) {
             return $processGreaterOrSmaller;
         }
 
-        return $this->processMarkTruthy($parent, $node, $expr);
+        return $this->processMarkTruthy($parentNode, $node, $expr);
     }
 
     private function processMarkTruthyNegation(BooleanNot $booleanNot): ?Identical
@@ -144,7 +144,6 @@ CODE_SAMPLE
         if (($node instanceof Identical || $node instanceof NotIdentical) && $node->right instanceof LNumber && $node->right->value === 0) {
             $this->removeNode($funcCall);
             $node->right = new Array_([]);
-            $node->right->setAttribute(AttributeKey::SCOPE, $node->getAttribute(AttributeKey::SCOPE));
 
             return $expr;
         }
@@ -152,7 +151,6 @@ CODE_SAMPLE
         if (($node instanceof Identical || $node instanceof NotIdentical) && $node->left instanceof LNumber && $node->left->value === 0) {
             $this->removeNode($funcCall);
             $node->left = new Array_([]);
-            $node->left->setAttribute(AttributeKey::SCOPE, $node->getAttribute(AttributeKey::SCOPE));
 
             return $expr;
         }

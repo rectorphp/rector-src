@@ -10,16 +10,15 @@ use Rector\Renaming\Contract\MethodCallRenameInterface;
 
 final class MethodCallRenameWithArrayKey implements MethodCallRenameInterface
 {
-    /**
-     * @param mixed $arrayKey
-     */
     public function __construct(
         private readonly string $class,
         private readonly string $oldMethod,
         private readonly string $newMethod,
-        private        $arrayKey
+        private readonly mixed $arrayKey
     ) {
         RectorAssert::className($class);
+        RectorAssert::methodName($oldMethod);
+        RectorAssert::methodName($newMethod);
     }
 
     public function getClass(): string

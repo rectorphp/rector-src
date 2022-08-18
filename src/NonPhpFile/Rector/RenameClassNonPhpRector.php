@@ -50,12 +50,12 @@ final class RenameClassNonPhpRector implements NonPhpRectorInterface, Configurab
 services:
     - SomeOldClass
 CODE_SAMPLE
-                ,
+                    ,
                     <<<'CODE_SAMPLE'
 services:
     - SomeNewClass
 CODE_SAMPLE
-                ,
+                    ,
                     [
                         'SomeOldClass' => 'SomeNewClass',
                     ]

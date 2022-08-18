@@ -73,8 +73,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstExpr = array_shift($livingCode);
-        $node->expr = $firstExpr;
+        $node->expr = array_shift($livingCode);
 
         $newNodes = [];
         foreach ($livingCode as $singleLivingCode) {
@@ -110,8 +109,6 @@ CODE_SAMPLE
         if ($expression->getComments() !== []) {
             $nop = new Nop();
             $nop->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
-
-            $this->phpDocInfoFactory->createFromNode($nop);
 
             return $nop;
         }

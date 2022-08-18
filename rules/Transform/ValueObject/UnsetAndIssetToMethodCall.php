@@ -15,6 +15,8 @@ final class UnsetAndIssetToMethodCall
         private readonly string $unsedMethodCall
     ) {
         RectorAssert::className($type);
+        RectorAssert::methodName($issetMethodCall);
+        RectorAssert::methodName($unsedMethodCall);
     }
 
     public function getObjectType(): ObjectType

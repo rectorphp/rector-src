@@ -90,12 +90,12 @@ final class NodeTransformer
     {
         $arrayItems = $this->transformConcatToItems($concat);
 
-        $array = BuilderHelpers::normalizeValue($arrayItems);
-        if (! $array instanceof Array_) {
+        $expr = BuilderHelpers::normalizeValue($arrayItems);
+        if (! $expr instanceof Array_) {
             throw new ShouldNotHappenException();
         }
 
-        return $array;
+        return $expr;
     }
 
     private function splitMessageAndArgs(FuncCall $sprintfFuncCall): ?SprintfStringAndArgs

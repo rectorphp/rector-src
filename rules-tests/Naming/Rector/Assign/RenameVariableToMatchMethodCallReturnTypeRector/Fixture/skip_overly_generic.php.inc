@@ -6,7 +6,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 
-class SkipOverlyGeneric
+final class SkipOverlyGeneric
 {
     public function run()
     {

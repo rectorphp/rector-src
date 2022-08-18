@@ -121,13 +121,13 @@ CODE_SAMPLE
             return true;
         }
 
-        $parent = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parent instanceof Ternary) {
-            if ($this->isIdenticalToNotNull($funcCall, $parent)) {
+        $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof Ternary) {
+            if ($this->isIdenticalToNotNull($funcCall, $parentNode)) {
                 return true;
             }
 
-            return $this->isNotIdenticalToNull($funcCall, $parent);
+            return $this->isNotIdenticalToNull($funcCall, $parentNode);
         }
 
         return false;

@@ -68,7 +68,7 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-,
+                    ,
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -91,7 +91,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod | Function_ | Closure | ArrowFunction $node
+     * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -107,9 +107,12 @@ CODE_SAMPLE
         $this->refactorReturnType($node, $phpDocInfo);
 
         $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
-        $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
-
         if ($phpDocInfo->hasChanged()) {
+            $this->hasChanged = true;
+        }
+
+        $hasReturnChanged = $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
+        if ($hasReturnChanged) {
             $this->hasChanged = true;
         }
 

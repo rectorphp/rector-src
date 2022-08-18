@@ -33,18 +33,18 @@ final class FuncCallStaticCallToMethodCallAnalyzer
 
     public function matchTypeProvidingExpr(
         Class_ $class,
-        ClassMethod | Function_ $functionLike,
+        ClassMethod $classMethod,
         ObjectType $objectType
     ): MethodCall | PropertyFetch | Variable {
         $expr = $this->typeProvidingExprFromClassResolver->resolveTypeProvidingExprFromClass(
             $class,
-            $functionLike,
+            $classMethod,
             $objectType
         );
 
         if ($expr !== null) {
             if ($expr instanceof Variable) {
-                $this->addClassMethodParamForVariable($expr, $objectType, $functionLike);
+                $this->addClassMethodParamForVariable($expr, $objectType, $classMethod);
             }
 
             return $expr;

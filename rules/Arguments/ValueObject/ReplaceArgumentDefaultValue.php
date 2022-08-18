@@ -17,15 +17,13 @@ final class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueIn
 
     /**
      * @param int<0, max> $position
-     * @param mixed $valueBefore
-     * @param mixed $valueAfter
      */
     public function __construct(
         private readonly string $class,
         private readonly string $method,
         private readonly int $position,
-        private $valueBefore,
-        private $valueAfter
+        private readonly mixed $valueBefore,
+        private readonly mixed $valueAfter
     ) {
         RectorAssert::className($class);
     }

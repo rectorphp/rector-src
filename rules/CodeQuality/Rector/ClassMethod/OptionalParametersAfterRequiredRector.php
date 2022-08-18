@@ -8,11 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\CodingStyle\Reflection\VendorLocationDetector;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php80\NodeResolver\ArgumentSorter;
 use Rector\Php80\NodeResolver\RequireOptionalParamResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -94,17 +97,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($classMethodReflection);
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($classMethodReflection, $classMethod);
         if ($expectedArgOrParamOrder === null) {
             return null;
         }
 
-        $newParams = $this->argumentSorter->sortArgsByExpectedParamOrder(
+        $classMethod->params = $this->argumentSorter->sortArgsByExpectedParamOrder(
             $classMethod->params,
             $expectedArgOrParamOrder
         );
-
-        $classMethod->params = $newParams;
 
         return $classMethod;
     }
@@ -120,7 +121,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection);
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $new);
         if ($expectedArgOrParamOrder === null) {
             return null;
         }
@@ -137,7 +138,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection);
+        $expectedArgOrParamOrder = $this->resolveExpectedArgParamOrderIfDifferent($methodReflection, $methodCall);
         if ($expectedArgOrParamOrder === null) {
             return null;
         }
@@ -158,13 +159,26 @@ CODE_SAMPLE
     /**
      * @return int[]|null
      */
-    private function resolveExpectedArgParamOrderIfDifferent(MethodReflection $methodReflection): ?array
-    {
+    private function resolveExpectedArgParamOrderIfDifferent(
+        MethodReflection $methodReflection,
+        New_|MethodCall|ClassMethod $node
+    ): ?array {
         if ($this->vendorLocationDetector->detectMethodReflection($methodReflection)) {
             return null;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        if ($node instanceof ClassMethod) {
+            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        } else {
+            $scope = $node->getAttribute(AttributeKey::SCOPE);
+
+            if (! $scope instanceof Scope) {
+                return null;
+            }
+
+            $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($methodReflection, $node, $scope);
+        }
+
         $expectedParameterReflections = $this->requireOptionalParamResolver->resolveFromReflection(
             $methodReflection
         );

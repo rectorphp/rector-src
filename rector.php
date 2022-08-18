@@ -7,13 +7,8 @@ use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
 use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
-use Rector\Nette\Set\NetteSetList;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector;
-use Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 
@@ -27,7 +22,6 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::TYPE_DECLARATION,
         SetList::EARLY_RETURN,
         SetList::TYPE_DECLARATION_STRICT,
-        NetteSetList::NETTE_UTILS_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         SetList::CODING_STYLE,
     ]);
@@ -42,8 +36,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(ReturnArrayClassMethodToYieldRector::class, [
         new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
     ]);
-
-    // $rectorConfig->rule(RemoveJustPropertyFetchRector::class);
 
     $rectorConfig->paths([
         __DIR__ . '/bin',
@@ -64,33 +56,13 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         StringClassNameToClassConstantRector::class,
 
-        FinalizeClassesWithoutChildrenRector::class => [
-            __DIR__ . '/rules/DowngradePhp74/Rector/Array_/DowngradeArraySpreadRector.php',
-        ],
-
-        MyCLabsClassToEnumRector::class,
-        SpatieEnumClassToEnumRector::class,
-
-        // test paths
-        '*/tests/**/Fixture/*',
-        '*/rules-tests/**/Fixture/*',
-        '*/packages-tests/**/Fixture/*',
-        '*/tests/**/Fixture*/*',
-        '*/rules-tests/**/Fixture*/*',
-        '*/packages-tests/**/Fixture*/*',
-        // source
-        '*/tests/**/Source/*',
-        '*/rules-tests/**/Source/*',
-        '*/packages-tests/**/Source/*',
-        '*/tests/**/Source*/*',
-        '*/rules-tests/**/Source*/*',
-        '*/packages-tests/**/Source*/*',
-        '*/tests/**/Expected/*',
-        '*/rules-tests/**/Expected/*',
-        '*/packages-tests/**/Expected/*',
-        '*/tests/**/Expected*/*',
-        '*/rules-tests/**/Expected*/*',
-        '*/packages-tests/**/Expected*/*',
+        // tests
+        '**/Fixture*',
+        '**/Fixture/*',
+        '**/Source*',
+        '**/Source/*',
+        '**/Expected/*',
+        '**/Expected*',
         __DIR__ . '/tests/PhpUnit/MultipleFilesChangedTrait/MultipleFilesChangedTraitTest.php',
 
         // to keep original API from PHPStan untouched

@@ -11,7 +11,7 @@ return static function (RectorConfig $rectorConfig): void {
             'OldNamespace' => 'NewNamespace',
             'OldNamespaceWith\OldSplitNamespace' => 'NewNamespaceWith\NewSplitNamespace',
             'Old\Long\AnyNamespace' => 'Short\AnyNamespace',
-            'PHPUnit_Framework_' => 'PHPUnit\Framework\\',
+            'PHPUnit_Framework_' => 'PHPUnit\Framework',
             'Foo\Bar' => 'Foo\Tmp',
             'App\Repositories' => 'App\Repositories\Example',
         ]);
