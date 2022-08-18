@@ -2,13 +2,13 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Doctrine;
 
-use Doctrine\ORM\Mapping as ORM;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
 final class TrailingComma
 {
     /**
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true, )
-     **/
+     * @GenericAnnotation(key="value", )
+     */
     protected $someColumn;
 }
 
@@ -18,11 +18,11 @@ final class TrailingComma
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Doctrine;
 
-use Doctrine\ORM\Mapping as ORM;
+use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
 final class TrailingComma
 {
-    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true)]
+    #[GenericAnnotation(key: 'value')]
     protected $someColumn;
 }
 

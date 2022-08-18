@@ -10,11 +10,12 @@ use Rector\Php80\Contract\ValueObject\AnnotationToAttributeInterface;
 final class NestedAnnotationToAttribute implements AnnotationToAttributeInterface
 {
     /**
-     * @param array<string, string> $annotationPropertiesToAttributeClasses
+     * @param array<string, string>|string[] $annotationPropertiesToAttributeClasses
      */
     public function __construct(
         private readonly string $tag,
-        private readonly array $annotationPropertiesToAttributeClasses
+        private readonly array $annotationPropertiesToAttributeClasses,
+        private bool $removeOriginal = false
     ) {
         RectorAssert::className($tag);
     }
@@ -25,7 +26,7 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, string>|string[]
      */
     public function getAnnotationPropertiesToAttributeClasses(): array
     {
@@ -35,5 +36,10 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
     public function getAttributeClass(): string
     {
         return $this->tag;
+    }
+
+    public function shouldRemoveOriginal(): bool
+    {
+        return $this->removeOriginal;
     }
 }

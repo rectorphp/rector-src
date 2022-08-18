@@ -30,7 +30,6 @@ use Rector\Php80\PhpDoc\PhpDocNodeFinder;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-use Rector\PhpAttribute\RemovableAnnotationAnalyzer;
 use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
@@ -56,7 +55,6 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly PhpDocNodeFinder $phpDocNodeFinder,
         private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer,
-        private readonly RemovableAnnotationAnalyzer $removableAnnotationAnalyzer,
         private readonly AttributeGroupNamedArgumentManipulator $attributeGroupNamedArgumentManipulator,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly UseImportsResolver $useImportsResolver,
@@ -152,7 +150,6 @@ CODE_SAMPLE
         $this->annotationsToAttributes = $configuration;
 
         $this->unwrapableAnnotationAnalyzer->configure($configuration);
-        $this->removableAnnotationAnalyzer->configure($configuration);
     }
 
     public function provideMinPhpVersion(): int
@@ -258,14 +255,10 @@ CODE_SAMPLE
                 $shouldInlinedNested = true;
             }
 
-            if (! $this->removableAnnotationAnalyzer->isRemovable($doctrineTagValueNode)) {
-                $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
-                    $doctrineTagValueNode,
-                    $annotationToAttribute,
-                );
-            } else {
-                $shouldInlinedNested = true;
-            }
+            $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
+                $doctrineTagValueNode,
+                $annotationToAttribute,
+            );
 
             if ($shouldInlinedNested) {
                 // inline nested

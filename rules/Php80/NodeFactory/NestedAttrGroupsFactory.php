@@ -28,12 +28,17 @@ final class NestedAttrGroupsFactory
         foreach ($nestedDoctrineTagAndAnnotationToAttributes as $nestedDoctrineTagAndAnnotationToAttribute) {
             $doctrineAnnotationTagValueNode = $nestedDoctrineTagAndAnnotationToAttribute->getDoctrineAnnotationTagValueNode();
 
-            // add attributes
-            $attributeGroups[] = $this->phpNestedAttributeGroupFactory->create(
-                $doctrineAnnotationTagValueNode,
-                $nestedDoctrineTagAndAnnotationToAttribute->getNestedAnnotationToAttribute(),
-                $uses
-            );
+            $nestedAnnotationToAttribute = $nestedDoctrineTagAndAnnotationToAttribute->getNestedAnnotationToAttribute();
+
+            // do not create alternative for the annotation, only unwrap
+            if (! $nestedAnnotationToAttribute->shouldRemoveOriginal()) {
+                // add attributes
+                $attributeGroups[] = $this->phpNestedAttributeGroupFactory->create(
+                    $doctrineAnnotationTagValueNode,
+                    $nestedDoctrineTagAndAnnotationToAttribute->getNestedAnnotationToAttribute(),
+                    $uses
+                );
+            }
 
             $nestedAttributeGroups = $this->phpNestedAttributeGroupFactory->createNested(
                 $doctrineAnnotationTagValueNode,

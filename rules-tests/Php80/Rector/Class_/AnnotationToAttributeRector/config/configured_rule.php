@@ -34,8 +34,6 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Table'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Index'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\UniqueConstraint'),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumns'),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\JoinColumn'),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
 
             // validation
