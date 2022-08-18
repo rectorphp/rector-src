@@ -15,7 +15,7 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
     public function __construct(
         private readonly string $tag,
         private readonly array $annotationPropertiesToAttributeClasses,
-        private bool $removeOriginal = false
+        private readonly bool $removeOriginal = false
     ) {
         RectorAssert::className($tag);
     }
