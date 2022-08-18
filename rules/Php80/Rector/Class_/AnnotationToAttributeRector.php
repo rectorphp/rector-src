@@ -28,7 +28,7 @@ use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
+//use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -51,7 +51,6 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly AttrGroupsFactory $attrGroupsFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer,
         private readonly AttributeGroupNamedArgumentManipulator $attributeGroupNamedArgumentManipulator,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
@@ -144,8 +143,6 @@ CODE_SAMPLE
     {
         Assert::allIsAOf($configuration, AnnotationToAttribute::class);
         $this->annotationsToAttributes = $configuration;
-
-        $this->unwrapableAnnotationAnalyzer->configure($configuration);
     }
 
     public function provideMinPhpVersion(): int

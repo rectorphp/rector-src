@@ -14,7 +14,6 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
-use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -26,7 +25,6 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly UnwrapableAnnotationAnalyzer $unwrapableAnnotationAnalyzer,
         private readonly AttributeArrayNameInliner $attributeArrayNameInliner,
     ) {
     }
@@ -46,11 +44,7 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
             return false;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS)) {
-            return false;
-        }
-
-        return true;
+        return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEW_INITIALIZERS);
     }
 
     /**
