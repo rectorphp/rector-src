@@ -128,12 +128,18 @@ final class PhpNestedAttributeGroupFactory
         string $originalIdentifier,
         string $nestedAttributeClass
     ): FullyQualified|Name {
-        $matches = Strings::match($originalIdentifier, self::SHORT_ORM_ALIAS_REGEX);
+        /** @var string $shortDoctrineAttributeName */
+        $shortDoctrineAttributeName = Strings::after($nestedAttributeClass, '\\', -1);
 
+        $matches = Strings::match($originalIdentifier, self::SHORT_ORM_ALIAS_REGEX);
         if ($matches !== null) {
             // or alias
-            $shortDoctrineAttributeName = Strings::after($nestedAttributeClass, '\\', -1);
             return new Name('ORM\\' . $shortDoctrineAttributeName);
+        }
+
+        // short alias
+        if (! str_contains($originalIdentifier, '\\')) {
+            return new Name($shortDoctrineAttributeName);
         }
 
         return new FullyQualified($nestedAttributeClass);
