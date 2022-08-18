@@ -9,9 +9,6 @@ use Rector\Core\Validation\RectorAssert;
 
 final class ReplaceStringWithClassConstant
 {
-    /**
-     * @param class-string $classWithConstants
-     */
     public function __construct(
         private readonly string $class,
         private readonly string $method,
@@ -20,6 +17,9 @@ final class ReplaceStringWithClassConstant
         private readonly bool $caseInsensitive = false
     ) {
         RectorAssert::className($class);
+        RectorAssert::methodName($method);
+
+        RectorAssert::className($classWithConstants);
     }
 
     public function getObjectType(): ObjectType

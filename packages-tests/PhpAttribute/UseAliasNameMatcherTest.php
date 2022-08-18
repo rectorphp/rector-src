@@ -47,7 +47,6 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
 
         // uses
         $useAliasMetadata = $this->useAliasNameMatcher->match($uses, $shortAnnotationName, $annotationToAttribute);
-
         $this->assertInstanceOf(UseAliasMetadata::class, $useAliasMetadata);
 
         // test new use import

@@ -8,10 +8,6 @@ use Rector\Core\Validation\RectorAssert;
 
 final class MethodCallToMethodCall
 {
-    /**
-     * @param class-string $oldType
-     * @param class-string $newType
-     */
     public function __construct(
         private readonly string $oldType,
         private readonly string $oldMethod,

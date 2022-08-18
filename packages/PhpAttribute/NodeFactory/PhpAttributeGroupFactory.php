@@ -104,6 +104,8 @@ final class PhpAttributeGroupFactory
     }
 
     /**
+     * @todo deprecated
+     *
      * @param mixed[] $items
      * @return mixed[]
      */

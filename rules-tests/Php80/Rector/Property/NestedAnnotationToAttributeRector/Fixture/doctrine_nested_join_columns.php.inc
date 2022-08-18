@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Doctrine;
+namespace Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,7 +19,7 @@ final class DoctrineNestedJoinColumns
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Doctrine;
+namespace Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
