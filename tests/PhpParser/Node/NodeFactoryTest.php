@@ -41,47 +41,40 @@ final class NodeFactoryTest extends AbstractTestCase
      */
     public function provideDataForArray(): Iterator
     {
-        $numberNode = new LNumber(1);
-        $stringNode = new String_('a');
-        $trueNode = new ConstFetch(new Name('true'));
-        $falseNode = new ConstFetch(new Name('false'));
-        $nullNode = new ConstFetch(new Name('null'));
+        $lNumber = new LNumber(1);
+        $string = new String_('a');
+        $trueConstFetch = new ConstFetch(new Name('true'));
+        $falseConstFetch = new ConstFetch(new Name('false'));
+        $nullConstEtch = new ConstFetch(new Name('null'));
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($numberNode);
-
+        $array->items[] = new ArrayItem($lNumber);
         yield [[1], $array];
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($numberNode, $stringNode);
-
+        $array->items[] = new ArrayItem($lNumber, $string);
         yield [[
             'a' => 1,
         ], $array];
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($numberNode);
-
-        yield [[$numberNode], $array];
-
-        $array = new Array_();
-        $array->items[] = new ArrayItem($stringNode);
-
-        yield [[$stringNode], $array];
+        $array->items[] = new ArrayItem($lNumber);
+        yield [[$lNumber], $array];
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($trueNode);
-
-        yield [[$trueNode], $array];
-
-        $array = new Array_();
-        $array->items[] = new ArrayItem($falseNode);
-
-        yield [[$falseNode], $array];
+        $array->items[] = new ArrayItem($string);
+        yield [[$string], $array];
 
         $array = new Array_();
-        $array->items[] = new ArrayItem($nullNode);
+        $array->items[] = new ArrayItem($trueConstFetch);
+        yield [[$trueConstFetch], $array];
 
-        yield [[$nullNode], $array];
+        $array = new Array_();
+        $array->items[] = new ArrayItem($falseConstFetch);
+        yield [[$falseConstFetch], $array];
+
+        $array = new Array_();
+        $array->items[] = new ArrayItem($nullConstEtch);
+        yield [[$nullConstEtch], $array];
     }
 }
