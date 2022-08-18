@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -91,11 +92,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Property::class];
+        return [Property::class, Class_::class];
     }
 
     /**
-     * @param Property $node
+     * @param Property|Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
