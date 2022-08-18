@@ -18,7 +18,7 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\Constant
 final class DemoClass {
 }
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
