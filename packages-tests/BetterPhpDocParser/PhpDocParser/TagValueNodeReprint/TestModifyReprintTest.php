@@ -63,7 +63,7 @@ final class TestModifyReprintTest extends AbstractTestCase
 
         $expectedDocContent = trim((string) $inputFileInfoAndExpected->getExpected());
 
-        $printedPhpDocInfo = $this->printPhpDocInfoToString($phpDocInfo);
+        $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
         $this->assertSame($expectedDocContent, $printedPhpDocInfo);
     }
 
@@ -80,12 +80,5 @@ final class TestModifyReprintTest extends AbstractTestCase
         }
 
         return $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-    }
-
-    private function printPhpDocInfoToString(PhpDocInfo $phpDocInfo): string
-    {
-        // invoke re-print
-        $phpDocInfo->markAsChanged();
-        return $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
     }
 }
