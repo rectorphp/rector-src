@@ -7,20 +7,16 @@ namespace Rector\Php80\Rector\Switch_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
-use Rector\Php80\NodeManipulator\AssignMatchTransformer;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
-use Rector\Php80\ValueObject\MatchAssignResult;
 use Rector\Php80\ValueObject\MatchResult;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -38,7 +34,6 @@ final class ChangeSwitchToMatchRector extends AbstractRector implements MinPhpVe
         private readonly SwitchExprsResolver $switchExprsResolver,
         private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer,
         private readonly MatchFactory $matchFactory,
-        private readonly AssignMatchTransformer $assignMatchTransformer,
     ) {
     }
 
@@ -105,23 +100,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $isReturn = false;
-
-            foreach ($condAndExprs as $condAndExpr) {
-                if ($condAndExpr->equalsMatchKind(MatchKind::RETURN)) {
-                    $isReturn = true;
-                    break;
-                }
-
-                $expr = $condAndExpr->getExpr();
-                if ($expr instanceof Throw_) {
-                    continue;
-                }
-
-                if (! $expr instanceof Assign) {
-                    continue 2;
-                }
-            }
+            $isReturn = $this->matchSwitchAnalyzer->isReturnCondsAndExprs($condAndExprs);
 
             $matchResult = $this->matchFactory->createFromCondAndExprs($stmt->cond, $condAndExprs, $nextStmt);
             if (! $matchResult instanceof MatchResult) {
@@ -137,26 +116,13 @@ CODE_SAMPLE
             $hasDefaultValue = $this->matchSwitchAnalyzer->hasDefaultValue($match);
 
             if ($assignVar instanceof Expr) {
-                $previousStmt = $node->stmts[$key - 1] ?? null;
-
-                $assignResult = $this->assignMatchTransformer->unwrapMatchArmAssignsToAssign(
-                    $match,
-                    $assignVar,
-                    $hasDefaultValue,
-                    $previousStmt,
-                    $nextStmt
-                );
-
-                if (! $assignResult instanceof MatchAssignResult) {
+                if (! $hasDefaultValue) {
                     continue;
                 }
 
-                $assign = $assignResult->getAssign();
-                if ($assignResult->isShouldRemovePreviousStmt()) {
-                    unset($node->stmts[$key - 1]);
-                }
-
+                $assign = new Assign($assignVar, $match);
                 $node->stmts[$key] = new Expression($assign);
+
                 $hasChanged = true;
 
                 continue;
