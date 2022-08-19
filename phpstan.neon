@@ -694,3 +694,11 @@ parameters:
 
         # tests
         - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) and Rector\\Renaming\\Rector\\Name\\RenameClassRector will always evaluate to true#'
+
+        # false postive, on trait use in multiple classes
+        -
+            message: '#Method name "(.*?)Attribute\(\)" is used in multiple traits\. Make it it unique to avoid conflicts#'
+            paths:
+                - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
+                - packages/BetterPhpDocParser/PhpDoc/ArrayItemNode.php
+
