@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_ as ThrowsStmt;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -76,15 +77,25 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        // @todo refactor to stmts aware interface to move away from NEXT_NODE
-        return [Switch_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Switch_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
+        foreach ($node->stmts as $key => $stmt) {
+            if ($stmt instanceof Switch_) {
+                dump('we have a switch!');
+                die;
+            }
+        }
+
+        return null;
+        die;
+
+
         $condAndExprs = $this->switchExprsResolver->resolve($node);
         if ($this->matchSwitchAnalyzer->shouldSkipSwitch($node, $condAndExprs)) {
             return null;
