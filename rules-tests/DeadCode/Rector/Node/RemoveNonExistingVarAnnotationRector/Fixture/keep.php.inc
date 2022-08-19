@@ -15,7 +15,7 @@ class Keep
         $trainings = $this->getAnotherData();
 
         /** @var object{foo: string} $foo */
-        $foo = json_decode('["foo": "bar"]', false);
+        $foo = json_decode('{"foo": "bar"}', false);
 
         return $trainings;
     }
