@@ -9,8 +9,8 @@ use PhpParser\Node\Expr\Match_;
 final class MatchResult
 {
     public function __construct(
-        private Match_ $match,
-        private bool $shouldRemoveNextStmt
+        private readonly Match_ $match,
+        private readonly bool $shouldRemoveNextStmt
     ) {
     }
 

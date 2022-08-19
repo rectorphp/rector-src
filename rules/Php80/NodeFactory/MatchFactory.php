@@ -57,13 +57,13 @@ final class MatchFactory
             return new MatchResult($match, false);
         }
 
-        $assignVar = $this->resolveAssignVar($condAndExprs);
-        if ($assignVar instanceof ArrayDimFetch) {
+        $expr = $this->resolveAssignVar($condAndExprs);
+        if ($expr instanceof ArrayDimFetch) {
             return null;
         }
 
         $shouldRemoveNextStmt = false;
-        if (! $assignVar instanceof Expr) {
+        if (! $expr instanceof Expr) {
             $shouldRemoveNextStmt = true;
         }
 
