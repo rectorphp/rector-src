@@ -10,17 +10,15 @@ class A
     }
 }
 
-namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
-
 class B extends A
 {
     public function test(): string
     {
         $a = '1';
-        
+
         return $a;
     }
-    
+
 }
 
 ?>
