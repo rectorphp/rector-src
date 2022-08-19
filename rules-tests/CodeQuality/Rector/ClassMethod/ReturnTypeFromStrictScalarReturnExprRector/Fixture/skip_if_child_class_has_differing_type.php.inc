@@ -24,12 +24,3 @@ class B extends A
 }
 
 ?>
------
-<?php
-
-namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
-
-// what is expected code?
-// should remain the same? delete part bellow ----- (included)
-
-?>
