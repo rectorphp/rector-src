@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Throw_ as ThrowsStmt;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\ValueObject\CondAndExpr;
+use Rector\Php80\ValueObject\MatchResult;
 
 final class MatchFactory
 {
@@ -27,7 +28,7 @@ final class MatchFactory
     /**
      * @param CondAndExpr[] $condAndExprs
      */
-    public function createFromCondAndExprs(Expr $condExpr, array $condAndExprs, ?Stmt $nextStmt): ?Match_
+    public function createFromCondAndExprs(Expr $condExpr, array $condAndExprs, ?Stmt $nextStmt): ?MatchResult
     {
         $matchArms = $this->matchArmsFactory->createFromCondAndExprs($condAndExprs);
         $match = new Match_($condExpr, $matchArms);
@@ -41,7 +42,7 @@ final class MatchFactory
             return $this->processImplicitThrowsAfterSwitch($match, $condAndExprs, $nextStmt->expr);
         }
 
-        return $match;
+        return new MatchResult($match, false);
     }
 
     /**
@@ -51,18 +52,9 @@ final class MatchFactory
         Match_ $match,
         array $condAndExprs,
         Expr $returnExpr
-    ): ?Match_ {
-//        if (! $nextStmt instanceof Return_) {
-//            return $match;
-//        }
-
-//        $returnedExpr = $nextStmt->expr;
-//        if (! $returnedExpr instanceof Expr) {
-//            return $match;
-//        }
-
+    ): ?MatchResult {
         if ($this->matchSwitchAnalyzer->hasDefaultValue($match)) {
-            return $match;
+            return new MatchResult($match, false);
         }
 
         $assignVar = $this->resolveAssignVar($condAndExprs);
@@ -70,13 +62,17 @@ final class MatchFactory
             return null;
         }
 
+        $shouldRemoveNextStmt = false;
         if (! $assignVar instanceof Expr) {
-            // @todo propagate somehow in value object return?
-            // $this->removeNode($nextStmt);
+            $shouldRemoveNextStmt = true;
         }
 
         $condAndExprs[] = new CondAndExpr([], $returnExpr, MatchKind::RETURN);
-        return $this->createFromCondAndExprs($match->cond, $condAndExprs, null);
+
+        $matchArms = $this->matchArmsFactory->createFromCondAndExprs($condAndExprs);
+        $wrappedMatch = new Match_($match->cond, $matchArms);
+
+        return new MatchResult($wrappedMatch, $shouldRemoveNextStmt);
     }
 
     /**
@@ -103,17 +99,17 @@ final class MatchFactory
         Match_ $match,
         array $condAndExprs,
         Expr $throwExpr
-    ): ?Match_ {
+    ): MatchResult {
         if ($this->matchSwitchAnalyzer->hasDefaultValue($match)) {
-            return $match;
+            return new MatchResult($match, false);
         }
 
-        // @todo pass via value object
-        // $this->removeNode($nextStmt);
-
         $throw = new Throw_($throwExpr);
-
         $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN);
-        return $this->createFromCondAndExprs($match->cond, $condAndExprs, null);
+
+        $matchArms = $this->matchArmsFactory->createFromCondAndExprs($condAndExprs);
+        $wrappedMatch = new Match_($match->cond, $matchArms);
+
+        return new MatchResult($wrappedMatch, true);
     }
 }

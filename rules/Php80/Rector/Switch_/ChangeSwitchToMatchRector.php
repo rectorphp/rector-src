@@ -23,6 +23,7 @@ use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
 use Rector\Php80\ValueObject\CondAndExpr;
+use Rector\Php80\ValueObject\MatchResult;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -123,9 +124,14 @@ CODE_SAMPLE
                 }
             }
 
-            $match = $this->matchFactory->createFromCondAndExprs($stmt->cond, $condAndExprs, $nextStmt);
-            if (! $match instanceof Match_) {
+            $matchResult = $this->matchFactory->createFromCondAndExprs($stmt->cond, $condAndExprs, $nextStmt);
+            if (! $matchResult instanceof MatchResult) {
                 continue;
+            }
+
+            $match = $matchResult->getMatch();
+            if ($matchResult->shouldRemoveNextStmt()) {
+                unset($node->stmts[$key + 1]);
             }
 
             $assignVar = $this->resolveAssignVar($condAndExprs);
