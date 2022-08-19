@@ -18,6 +18,7 @@ use Rector\Compatibility\NodeFactory\ConstructorClassMethodFactory;
 use Rector\Compatibility\ValueObject\PropertyWithPhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
+use Rector\Php81\Enum\AttributeName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,11 +27,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AttributeCompatibleAnnotationRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const ATTRIBUTE = 'Attribute';
-
     public function __construct(
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly PhpDocTagRemover $phpDocTagRemover,
@@ -159,7 +155,7 @@ CODE_SAMPLE
         }
 
         // has attribute? skip it
-        return $this->phpAttributeAnalyzer->hasPhpAttribute($class, self::ATTRIBUTE);
+        return $this->phpAttributeAnalyzer->hasPhpAttribute($class, AttributeName::ATTRIBUTE);
     }
 
     /**
