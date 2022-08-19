@@ -18,8 +18,8 @@ use Rector\Php80\ValueObject\MatchAssignResult;
 final class AssignMatchTransformer
 {
     public function __construct(
-        private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
