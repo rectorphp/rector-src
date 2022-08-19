@@ -6,10 +6,12 @@ namespace Rector\Php80\Rector\Switch_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\MatchArm;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -74,6 +76,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
+        // @todo refactor to stmts aware interface to move away from NEXT_NODE
         return [Switch_::class];
     }
 
@@ -113,6 +116,9 @@ CODE_SAMPLE
 
         // implicit return default after switch
         $match = $this->processImplicitReturnAfterSwitch($node, $match, $condAndExprs);
+        if (! $match instanceof Match_) {
+            return null;
+        }
 
         $match = $this->processImplicitThrowsAfterSwitch($node, $match, $condAndExprs);
 
@@ -139,12 +145,11 @@ CODE_SAMPLE
 
     private function changeToAssign(Switch_ $switch, Match_ $match, Expr $expr, bool $hasDefaultValue): ?Assign
     {
-        $nextReturn = $switch->getAttribute(AttributeKey::NEXT_NODE);
+        /** @var Stmt|null $nextStmt */
+        $nextStmt = $switch->getAttribute(AttributeKey::NEXT_NODE);
 
-        if ($nextReturn instanceof Return_ && $nextReturn->expr instanceof Expr && ! $this->nodeComparator->areNodesEqual(
-            $expr,
-            $nextReturn->expr
-        )) {
+        // containts next this expr?
+        if (! $hasDefaultValue && $this->isFollowedByReturnWithExprUsage($nextStmt, $expr)) {
             return null;
         }
 
@@ -180,9 +185,7 @@ CODE_SAMPLE
 
     private function resolveCurrentAssign(bool $hasDefaultValue, Assign $assign): ?Assign
     {
-        return $hasDefaultValue
-            ? $assign
-            : null;
+        return $hasDefaultValue ? $assign : null;
     }
 
     /**
@@ -205,14 +208,14 @@ CODE_SAMPLE
     /**
      * @param CondAndExpr[] $condAndExprs
      */
-    private function processImplicitReturnAfterSwitch(Switch_ $switch, Match_ $match, array $condAndExprs): Match_
+    private function processImplicitReturnAfterSwitch(Switch_ $switch, Match_ $match, array $condAndExprs): ?Match_
     {
-        $nextNode = $switch->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $nextNode instanceof Return_) {
+        $nextStmt = $switch->getAttribute(AttributeKey::NEXT_NODE);
+        if (! $nextStmt instanceof Return_) {
             return $match;
         }
 
-        $returnedExpr = $nextNode->expr;
+        $returnedExpr = $nextStmt->expr;
         if (! $returnedExpr instanceof Expr) {
             return $match;
         }
@@ -222,9 +225,12 @@ CODE_SAMPLE
         }
 
         $assignVar = $this->resolveAssignVar($condAndExprs);
+        if ($assignVar instanceof ArrayDimFetch) {
+            return null;
+        }
 
         if (! $assignVar instanceof Expr) {
-            $this->removeNode($nextNode);
+            $this->removeNode($nextStmt);
         }
 
         $condAndExprs[] = new CondAndExpr([], $returnedExpr, MatchKind::RETURN);
@@ -251,5 +257,25 @@ CODE_SAMPLE
 
         $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN);
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
+    }
+
+    private function isFollowedByReturnWithExprUsage(Stmt|null $nextStmt, Expr $expr): bool
+    {
+        if (! $nextStmt instanceof Return_) {
+            return false;
+        }
+
+        if (! $nextStmt->expr instanceof Expr) {
+            return false;
+        }
+
+        $returnExprs = $this->betterNodeFinder->findInstanceOf($nextStmt, Expr::class);
+        foreach ($returnExprs as $returnExpr) {
+            if ($this->nodeComparator->areNodesEqual($expr, $returnExpr)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
