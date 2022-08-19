@@ -228,7 +228,9 @@ final class ShortNameResolver
         foreach ($shortNames as $shortName) {
             $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
 
-            if ($reflectionClass instanceof ReflectionClass && ! $this->classAnalyzer->isAnonymousClassName($reflectionClass->getShortName())) {
+            if ($reflectionClass instanceof ReflectionClass && ! $this->classAnalyzer->isAnonymousClassName(
+                $reflectionClass->getShortName()
+            )) {
                 $fullyQualifiedName = Reflection::expandClassName($shortName, $reflectionClass);
             } elseif (is_string($stmtsMatchedName)) {
                 $fullyQualifiedName = $stmtsMatchedName;
