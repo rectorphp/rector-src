@@ -134,9 +134,6 @@ parameters:
         - '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
         - '#Method (.*?) should return array<T of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
 
-        # fixed in php-parser master
-        - '#Parameter \#4 \$classWithConstants of class Rector\\Privatization\\ValueObject\\ReplaceStringWithClassConstant constructor expects class\-string, string given#'
-
         # buggy phpstan clas-string
         - '#Method (.*?) should return class\-string but returns string#'
 
@@ -401,10 +398,6 @@ parameters:
         -
             message: '#Casting to int something that.{1}s already int#'
             path: packages/NodeTypeResolver/NodeTypeResolver/ScalarTypeResolver.php #46
-
-        -
-            message: '#Cognitive complexity for "Rector\\Php80\\Rector\\Class_\\AnnotationToAttributeRector\:\:processDoctrineAnnotationClasses\(\)" is \d+, keep it under 10#'
-            path: rules/Php80/Rector/Class_/AnnotationToAttributeRector.php
 
         -
             message: '#Use value object over return of values#'
@@ -702,12 +695,7 @@ parameters:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - packages/BetterPhpDocParser/PhpDoc/ArrayItemNode.php
 
-
-        # @todo refactor to StmtsAware in next PR
+        # @todo resolve later
         -
-            message: '#Cognitive complexity for "Rector\\Php80\\Rector\\Switch_\\ChangeSwitchToMatchRector\:\:refactor\(\)" is 11, keep it under 10#'
-            path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
-
-        -
-            message: '#Class cognitive complexity is 36, keep it under 35#'
+            message: '#Cognitive complexity#i'
             path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
