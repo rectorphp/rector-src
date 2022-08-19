@@ -702,3 +702,12 @@ parameters:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - packages/BetterPhpDocParser/PhpDoc/ArrayItemNode.php
 
+
+        # @todo refactor to StmtsAware in next PR
+        -
+            message: '#Cognitive complexity for "Rector\\Php80\\Rector\\Switch_\\ChangeSwitchToMatchRector\:\:refactor\(\)" is 11, keep it under 10#'
+            path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
+
+        -
+            message: '#Class cognitive complexity is 36, keep it under 35#'
+            path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
