@@ -30,10 +30,13 @@ final class DoubleDefault
 {
     public function run($input)
     {
+        $value = null;
+
         $value = match ($input) {
             100 => 1000,
             default => throw new \InvalidArgumentException('Not defined'),
         };
+
         return $value;
     }
 }
