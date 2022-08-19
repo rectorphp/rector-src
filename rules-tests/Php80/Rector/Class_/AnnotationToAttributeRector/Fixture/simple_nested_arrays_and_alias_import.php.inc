@@ -7,9 +7,9 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source as Asser
 final class EntityColumnAndAssertChoice
 {
     /**
-     * @Assert\GenericAnnotation({"php5", "php7", "php8"})
-     * @Assert\GenericAnnotation(choices={"5.0", "5.1", "id"="5.2"})
-     * @Assert\GenericAnnotation(choices={2, 3, 5, 7, 11, 13, 17, 19})
+     * @Assert\GenericAnnotation({"php5", "php7"})
+     * @Assert\GenericAnnotation(choices={"5.0", "id"="5.2"})
+     * @Assert\GenericAnnotation(choices={2, 3, 5})
      */
     public $primeNumbers;
 }
@@ -24,9 +24,9 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source as Asser
 
 final class EntityColumnAndAssertChoice
 {
-    #[Assert\GenericAnnotation(['php5', 'php7', 'php8'])]
-    #[Assert\GenericAnnotation(choices: ['5.0', '5.1', 'id' => '5.2'])]
-    #[Assert\GenericAnnotation(choices: [2, 3, 5, 7, 11, 13, 17, 19])]
+    #[Assert\GenericAnnotation(['php5', 'php7'])]
+    #[Assert\GenericAnnotation(choices: ['5.0', 'id' => '5.2'])]
+    #[Assert\GenericAnnotation(choices: [2, 3, 5])]
     public $primeNumbers;
 }
 
