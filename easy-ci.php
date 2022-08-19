@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\CodeQuality\NodeTypeGroup;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Core\Contract\Console\OutputStyleInterface;
@@ -43,13 +44,12 @@ use Rector\TypeDeclaration\Contract\TypeInferer\ParamTypeInfererInterface;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\Astral\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
-use Symplify\EasyCI\ValueObject\Option;
+use Symplify\EasyCI\Config\EasyCIConfig;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::TYPES_TO_SKIP, [
+return static function (EasyCIConfig $easyCiConfig): void {
+    $easyCiConfig->typesToSkip([
+        ArrayItemNode::class,
         PhpDocNodeDecoratorInterface::class,
         Command::class,
         Application::class,
