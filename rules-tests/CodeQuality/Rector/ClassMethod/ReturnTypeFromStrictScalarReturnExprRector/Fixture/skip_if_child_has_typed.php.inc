@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
 
-class A
+class SkipIfChildClassHasTyped
 {
     public function test()
     {
@@ -10,7 +10,7 @@ class A
     }
 }
 
-class B extends A
+class SomeChild extends SkipIfChildClassHasTyped
 {
     public function test(): string
     {
@@ -20,5 +20,3 @@ class B extends A
     }
 
 }
-
-?>
