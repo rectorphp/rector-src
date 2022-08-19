@@ -276,29 +276,6 @@ final class BetterNodeFinder
     }
 
     /**
-     * Only search in previous Node/Stmt
-     * @api
-     *
-     * @param callable(Node $node): bool $filter
-     */
-    public function findFirstInlinedPrevious(Node $node, callable $filter): ?Node
-    {
-        $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if (! $previousNode instanceof Node) {
-            return null;
-        }
-
-        $foundNode = $this->findFirst($previousNode, $filter);
-
-        // we found what we need
-        if ($foundNode instanceof Node) {
-            return $foundNode;
-        }
-
-        return $this->findFirstInlinedPrevious($previousNode, $filter);
-    }
-
-    /**
      * Search in previous Node/Stmt, when no Node found, lookup previous Stmt of Parent Node
      *
      * @param callable(Node $node): bool $filter
@@ -536,6 +513,29 @@ final class BetterNodeFinder
         }
 
         return null;
+    }
+
+    /**
+     * Only search in previous Node/Stmt
+     * @api
+     *
+     * @param callable(Node $node): bool $filter
+     */
+    private function findFirstInlinedPrevious(Node $node, callable $filter): ?Node
+    {
+        $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+        if (! $previousNode instanceof Node) {
+            return null;
+        }
+
+        $foundNode = $this->findFirst($previousNode, $filter);
+
+        // we found what we need
+        if ($foundNode instanceof Node) {
+            return $foundNode;
+        }
+
+        return $this->findFirstInlinedPrevious($previousNode, $filter);
     }
 
     /**

@@ -9,13 +9,13 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Match_;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\ValueObject\CondAndExpr;
 
@@ -31,7 +31,7 @@ final class MatchSwitchAnalyzer
     /**
      * @param CondAndExpr[] $condAndExprs
      */
-    public function shouldSkipSwitch(Switch_ $switch, array $condAndExprs): bool
+    public function shouldSkipSwitch(Switch_ $switch, array $condAndExprs, ?Stmt $nextStmt): bool
     {
         if ($condAndExprs === []) {
             return true;
@@ -54,11 +54,11 @@ final class MatchSwitchAnalyzer
         }
 
         // is followed by return? is considered implicit default
-        if ($this->isNextStmtReturnWithExpr($switch)) {
+        if ($this->isNextStmtReturnWithExpr($switch, $nextStmt)) {
             return false;
         }
 
-        return ! $this->isNextStmtThrows($switch);
+        return ! $nextStmt instanceof Throw_;
     }
 
     /**
@@ -123,14 +123,13 @@ final class MatchSwitchAnalyzer
         return array_unique($condAndExprKinds);
     }
 
-    private function isNextStmtReturnWithExpr(Switch_ $switch): bool
+    private function isNextStmtReturnWithExpr(Switch_ $switch, ?Stmt $nextStmt): bool
     {
-        $nextNode = $switch->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $nextNode instanceof Return_) {
+        if (! $nextStmt instanceof Return_) {
             return false;
         }
 
-        if (! $nextNode->expr instanceof Expr) {
+        if (! $nextStmt->expr instanceof Expr) {
             return false;
         }
 
@@ -142,18 +141,12 @@ final class MatchSwitchAnalyzer
                     continue;
                 }
 
-                if (! $this->nodeComparator->areNodesEqual($expression->expr->var, $nextNode->expr)) {
+                if (! $this->nodeComparator->areNodesEqual($expression->expr->var, $nextStmt->expr)) {
                     return false;
                 }
             }
         }
 
         return true;
-    }
-
-    private function isNextStmtThrows(Switch_ $switch): bool
-    {
-        $next = $switch->getAttribute(AttributeKey::NEXT_NODE);
-        return $next instanceof Throw_;
     }
 }

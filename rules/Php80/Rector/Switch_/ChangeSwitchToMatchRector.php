@@ -85,68 +85,85 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! is_array($node->stmts)) {
+            return null;
+        }
+
+        $hasChanged = false;
+
         foreach ($node->stmts as $key => $stmt) {
-            if ($stmt instanceof Switch_) {
-                dump('we have a switch!');
-                die;
-            }
-        }
-
-        return null;
-        die;
-
-
-        $condAndExprs = $this->switchExprsResolver->resolve($node);
-        if ($this->matchSwitchAnalyzer->shouldSkipSwitch($node, $condAndExprs)) {
-            return null;
-        }
-
-        if (! $this->matchSwitchAnalyzer->haveCondAndExprsMatchPotential($condAndExprs)) {
-            return null;
-        }
-
-        $isReturn = false;
-
-        foreach ($condAndExprs as $condAndExpr) {
-            if ($condAndExpr->equalsMatchKind(MatchKind::RETURN)) {
-                $isReturn = true;
-                break;
-            }
-
-            $expr = $condAndExpr->getExpr();
-            if ($expr instanceof Throw_) {
+            if (! $stmt instanceof Switch_) {
                 continue;
             }
 
-            if (! $expr instanceof Assign) {
-                return null;
+            $nextStmt = $node->stmts[$key + 1] ?? null;
+
+            $condAndExprs = $this->switchExprsResolver->resolve($stmt);
+            if ($this->matchSwitchAnalyzer->shouldSkipSwitch($stmt, $condAndExprs, $nextStmt)) {
+                continue;
             }
+
+            if (! $this->matchSwitchAnalyzer->haveCondAndExprsMatchPotential($condAndExprs)) {
+                continue;
+            }
+
+            $isReturn = false;
+
+            foreach ($condAndExprs as $condAndExpr) {
+                if ($condAndExpr->equalsMatchKind(MatchKind::RETURN)) {
+                    $isReturn = true;
+                    break;
+                }
+
+                $expr = $condAndExpr->getExpr();
+                if ($expr instanceof Throw_) {
+                    continue;
+                }
+
+                if (! $expr instanceof Assign) {
+                    continue 2;
+                }
+            }
+
+            $match = $this->matchFactory->createFromCondAndExprs($stmt->cond, $condAndExprs);
+
+            // implicit return default after switch
+            $match = $this->processImplicitReturnAfterSwitch($match, $condAndExprs, $nextStmt);
+            if (! $match instanceof Match_) {
+                continue;
+            }
+
+            $match = $this->processImplicitThrowsAfterSwitch($stmt, $match, $condAndExprs, $nextStmt);
+
+            $assignVar = $this->resolveAssignVar($condAndExprs);
+            $hasDefaultValue = $this->matchSwitchAnalyzer->hasDefaultValue($match);
+
+            if ($assignVar instanceof Expr) {
+                $previousStmt = $node->stmts[$key - 1] ?? null;
+                $assign = $this->changeToAssign($stmt, $match, $assignVar, $hasDefaultValue, $previousStmt, $nextStmt);
+                if (! $assign instanceof Assign) {
+                    continue;
+                }
+
+                $node->stmts[$key] = new Expression($assign);
+                $hasChanged = true;
+
+                continue;
+            }
+
+            if (! $hasDefaultValue) {
+                continue;
+            }
+
+            $node->stmts[$key] = $isReturn ? new Return_($match) : new Expression($match);
+            $hasChanged = true;
         }
 
-        $match = $this->matchFactory->createFromCondAndExprs($node->cond, $condAndExprs);
-
-        // implicit return default after switch
-        $match = $this->processImplicitReturnAfterSwitch($node, $match, $condAndExprs);
-        if (! $match instanceof Match_) {
-            return null;
+        if ($hasChanged) {
+            return $node;
         }
 
-        $match = $this->processImplicitThrowsAfterSwitch($node, $match, $condAndExprs);
-
-        $assignVar = $this->resolveAssignVar($condAndExprs);
-        $hasDefaultValue = $this->matchSwitchAnalyzer->hasDefaultValue($match);
-
-        if ($assignVar instanceof Expr) {
-            return $this->changeToAssign($node, $match, $assignVar, $hasDefaultValue);
-        }
-
-        if (! $hasDefaultValue) {
-            return null;
-        }
-
-        return $isReturn
-            ? new Return_($match)
-            : $match;
+        return null;
     }
 
     public function provideMinPhpVersion(): int
@@ -154,23 +171,30 @@ CODE_SAMPLE
         return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
-    private function changeToAssign(Switch_ $switch, Match_ $match, Expr $expr, bool $hasDefaultValue): ?Assign
-    {
-        /** @var Stmt|null $nextStmt */
-        $nextStmt = $switch->getAttribute(AttributeKey::NEXT_NODE);
-
+    private function changeToAssign(
+        Switch_ $switch,
+        Match_ $match,
+        Expr $expr,
+        bool $hasDefaultValue,
+        ?Stmt $previousStmt,
+        ?Stmt $nextStmt
+    ): ?Assign {
         // containts next this expr?
         if (! $hasDefaultValue && $this->isFollowedByReturnWithExprUsage($nextStmt, $expr)) {
             return null;
         }
 
-        $prevInitializedAssign = $this->betterNodeFinder->findFirstInlinedPrevious(
-            $switch,
-            fn (Node $node): bool => $node instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $node->var,
-                $expr
-            )
-        );
+        // @todo extract?
+        $prevInitializedAssign = null;
+
+        if ($previousStmt instanceof Expression) {
+            $previousExpr = $previousStmt->expr;
+            if ($previousExpr instanceof Assign) {
+                if ($this->nodeComparator->areNodesEqual($previousExpr->var, $expr)) {
+                    $prevInitializedAssign = $previousExpr;
+                }
+            }
+        }
 
         $assign = new Assign($expr, $match);
         if (! $prevInitializedAssign instanceof Assign) {
@@ -183,7 +207,8 @@ CODE_SAMPLE
                 return $assign;
             }
         } else {
-            $match->arms[count($match->arms)] = new MatchArm(null, $prevInitializedAssign->expr);
+            $lastArmPosition = count($match->arms);
+            $match->arms[$lastArmPosition] = new MatchArm(null, $prevInitializedAssign->expr);
         }
 
         $parentAssign = $prevInitializedAssign->getAttribute(AttributeKey::PARENT_NODE);
@@ -219,9 +244,11 @@ CODE_SAMPLE
     /**
      * @param CondAndExpr[] $condAndExprs
      */
-    private function processImplicitReturnAfterSwitch(Switch_ $switch, Match_ $match, array $condAndExprs): ?Match_
-    {
-        $nextStmt = $switch->getAttribute(AttributeKey::NEXT_NODE);
+    private function processImplicitReturnAfterSwitch(
+        Match_ $match,
+        array $condAndExprs,
+        ?Stmt $nextStmt
+    ): ?Match_ {
         if (! $nextStmt instanceof Return_) {
             return $match;
         }
@@ -245,16 +272,19 @@ CODE_SAMPLE
         }
 
         $condAndExprs[] = new CondAndExpr([], $returnedExpr, MatchKind::RETURN);
-        return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
+        return $this->matchFactory->createFromCondAndExprs($match->cond, $condAndExprs);
     }
 
     /**
      * @param CondAndExpr[] $condAndExprs
      */
-    private function processImplicitThrowsAfterSwitch(Switch_ $switch, Match_ $match, array $condAndExprs): Match_
-    {
-        $nextNode = $switch->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $nextNode instanceof ThrowsStmt) {
+    private function processImplicitThrowsAfterSwitch(
+        Switch_ $switch,
+        Match_ $match,
+        array $condAndExprs,
+        ?Stmt $nextStmt
+    ): Match_ {
+        if (! $nextStmt instanceof ThrowsStmt) {
             return $match;
         }
 
@@ -262,9 +292,9 @@ CODE_SAMPLE
             return $match;
         }
 
-        $this->removeNode($nextNode);
+        $this->removeNode($nextStmt);
 
-        $throw = new Throw_($nextNode->expr);
+        $throw = new Throw_($nextStmt->expr);
 
         $condAndExprs[] = new CondAndExpr([], $throw, MatchKind::RETURN);
         return $this->matchFactory->createFromCondAndExprs($switch->cond, $condAndExprs);
