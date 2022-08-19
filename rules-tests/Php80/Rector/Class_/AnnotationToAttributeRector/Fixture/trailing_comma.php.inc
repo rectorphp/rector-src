@@ -4,17 +4,16 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
-final class TrailingCommadAfterArray
+final class TrailingComma
 {
     /**
+     * @GenericAnnotation(key="value", )
      * @GenericAnnotation(
      *     "some" = "item",
      *     "summary" = "item",
      * )
      */
-    public function action()
-    {
-    }
+    protected $someColumn;
 }
 
 ?>
@@ -25,12 +24,11 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture;
 
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 
-final class TrailingCommadAfterArray
+final class TrailingComma
 {
+    #[GenericAnnotation(key: 'value')]
     #[GenericAnnotation(some: 'item', summary: 'item')]
-    public function action()
-    {
-    }
+    protected $someColumn;
 }
 
 ?>
