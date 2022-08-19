@@ -140,7 +140,7 @@ CODE_SAMPLE
 
             if ($assignVar instanceof Expr) {
                 $previousStmt = $node->stmts[$key - 1] ?? null;
-                $assign = $this->changeToAssign($stmt, $match, $assignVar, $hasDefaultValue, $previousStmt, $nextStmt);
+                $assign = $this->changeToAssign($match, $assignVar, $hasDefaultValue, $previousStmt, $nextStmt);
                 if (! $assign instanceof Assign) {
                     continue;
                 }
@@ -172,7 +172,6 @@ CODE_SAMPLE
     }
 
     private function changeToAssign(
-        Switch_ $switch,
         Match_ $match,
         Expr $expr,
         bool $hasDefaultValue,
@@ -189,10 +188,8 @@ CODE_SAMPLE
 
         if ($previousStmt instanceof Expression) {
             $previousExpr = $previousStmt->expr;
-            if ($previousExpr instanceof Assign) {
-                if ($this->nodeComparator->areNodesEqual($previousExpr->var, $expr)) {
-                    $prevInitializedAssign = $previousExpr;
-                }
+            if ($previousExpr instanceof Assign && $this->nodeComparator->areNodesEqual($previousExpr->var, $expr)) {
+                $prevInitializedAssign = $previousExpr;
             }
         }
 
@@ -211,9 +208,9 @@ CODE_SAMPLE
             $match->arms[$lastArmPosition] = new MatchArm(null, $prevInitializedAssign->expr);
         }
 
-        $parentAssign = $prevInitializedAssign->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentAssign instanceof Expression) {
-            $this->removeNode($parentAssign);
+        $node = $prevInitializedAssign->getAttribute(AttributeKey::PARENT_NODE);
+        if ($node instanceof Expression) {
+            $this->removeNode($node);
         }
 
         return $assign;
