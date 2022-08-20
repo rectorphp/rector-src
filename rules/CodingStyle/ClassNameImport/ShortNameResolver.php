@@ -17,6 +17,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\Application\File;
@@ -51,6 +52,7 @@ final class ShortNameResolver
         private readonly ReflectionProvider $reflectionProvider,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly UseImportNameMatcher $useImportNameMatcher,
+        private readonly ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -226,7 +228,9 @@ final class ShortNameResolver
         foreach ($shortNames as $shortName) {
             $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
 
-            if ($reflectionClass instanceof ReflectionClass) {
+            if ($reflectionClass instanceof ReflectionClass && ! $this->classAnalyzer->isAnonymousClassName(
+                $reflectionClass->getShortName()
+            )) {
                 $fullyQualifiedName = Reflection::expandClassName($shortName, $reflectionClass);
             } elseif (is_string($stmtsMatchedName)) {
                 $fullyQualifiedName = $stmtsMatchedName;
