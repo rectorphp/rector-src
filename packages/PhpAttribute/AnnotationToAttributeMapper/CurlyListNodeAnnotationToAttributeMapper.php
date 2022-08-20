@@ -40,11 +40,11 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
     public function map($value): Array_
     {
         $arrayItems = [];
-        $valuesWithExplicitSilent = $value->getValues();
+        $arrayItemNodes = $value->getValues();
         $loop = -1;
 
-        foreach ($valuesWithExplicitSilent as $valueWithExplicitSilent) {
-            $valueExpr = $this->annotationToAttributeMapper->map($valueWithExplicitSilent);
+        foreach ($arrayItemNodes as $arrayItemNode) {
+            $valueExpr = $this->annotationToAttributeMapper->map($arrayItemNode);
 
             // remove node
             if ($valueExpr === DocTagNodeState::REMOVE_ARRAY) {
@@ -53,8 +53,8 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
 
             ++$loop;
 
-            $keyExpr = $loop !== $valueWithExplicitSilent->key && is_numeric($valueWithExplicitSilent->key)
-                    ? new LNumber((int) $valueWithExplicitSilent->key)
+            $keyExpr = $loop !== $arrayItemNode->key && is_numeric($arrayItemNode->key)
+                    ? new LNumber((int) $arrayItemNode->key)
                     : null;
 
             if ($valueExpr instanceof ArrayItem && $keyExpr instanceof LNumber) {
