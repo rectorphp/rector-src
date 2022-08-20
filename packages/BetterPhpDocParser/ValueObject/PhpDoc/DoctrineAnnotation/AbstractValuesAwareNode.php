@@ -9,17 +9,10 @@ use PHPStan\PhpDocParser\Ast\NodeAttributes;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Core\Util\StringUtils;
 
 abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
 {
     use NodeAttributes;
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/H6JjOG/3
-     */
-    private const UNQUOTED_VALUE_REGEX = '#^("|\')(?<content>.*?)("|\')$#';
 
     protected bool $hasChanged = false;
 
@@ -89,26 +82,6 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         }
 
         return null;
-    }
-
-    /**
-     * @deprecated
-     * Get direct value of ArrayItemNode and change in the code
-     */
-    public function changeValue(string $key, mixed $value): void
-    {
-        // is quoted?
-        if (isset($this->values[$key]) && is_string($this->values[$key]) && StringUtils::isMatch(
-            $this->values[$key],
-            self::UNQUOTED_VALUE_REGEX
-        )) {
-            $value = '"' . $value . '"';
-        }
-
-        $this->values[$key] = $value;
-
-        // invoke reprint
-        $this->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
     }
 
     public function getSilentValue(): ?ArrayItemNode
