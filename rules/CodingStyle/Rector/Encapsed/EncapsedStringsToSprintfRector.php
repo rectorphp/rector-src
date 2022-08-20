@@ -115,7 +115,15 @@ CODE_SAMPLE
         if ($parentNode instanceof Arg) {
             $node = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
 
-            if ($node instanceof FuncCall && $this->isName($node, '_')) {
+            if ($node instanceof FuncCall && $this->isNames($node, [
+                '_',
+                'dcgettext',
+                'dcngettext',
+                'dgettext',
+                'dngettext',
+                'gettext',
+                'ngettext',
+            ])) {
                 return true;
             }
         }
