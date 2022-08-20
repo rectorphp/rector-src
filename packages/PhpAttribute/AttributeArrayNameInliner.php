@@ -8,6 +8,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Exception\NotImplementedYetException;
 use Webmozart\Assert\Assert;
@@ -65,7 +66,9 @@ final class AttributeArrayNameInliner
             // matching top root array key
             if ($arg->value instanceof ArrayItem) {
                 $arrayItem = $arg->value;
-                if ($arrayItem->key instanceof String_) {
+                if ($arrayItem->key instanceof LNumber) {
+                    $newArgs[] = new Arg($arrayItem->value);
+                } elseif ($arrayItem->key instanceof String_) {
                     $arrayItemString = $arrayItem->key;
                     $newArgs[] = new Arg($arrayItem->value, false, false, [], new Identifier($arrayItemString->value));
                 } elseif ($arrayItem->key === null) {

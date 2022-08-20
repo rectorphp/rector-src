@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
 use Iterator;
+use PhpParser\Node\Scalar\String_;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -25,26 +27,28 @@ final class ArrayParserTest extends AbstractTestCase
 
     /**
      * @dataProvider provideData()
-     * @param array<string, string>|string[] $expectedArray
+     *
+     * @param ArrayItemNode[] $expectedArrayItemNodes
      */
-    public function test(string $docContent, array $expectedArray): void
+    public function test(string $docContent, array $expectedArrayItemNodes): void
     {
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
 
-        $array = $this->arrayParser->parseCurlyArray($betterTokenIterator);
-        $this->assertSame($expectedArray, $array);
+        $arrayItemNodes = $this->arrayParser->parseCurlyArray($betterTokenIterator);
+        $this->assertEquals($expectedArrayItemNodes, $arrayItemNodes);
     }
 
     public function provideData(): Iterator
     {
-        yield ['{key: "value"}', [
-            'key' => '"value"',
-        ]];
+        yield ['{key: "value"}', [new ArrayItemNode('value', 'key', String_::KIND_DOUBLE_QUOTED)]];
 
         yield ['{"key": "value"}', [
-            '"key"' => '"value"',
+            new ArrayItemNode('value', 'key', String_::KIND_DOUBLE_QUOTED, String_::KIND_DOUBLE_QUOTED),
         ]];
 
-        yield ['{"value", "value2"}', ['"value"', '"value2"']];
+        yield ['{"value", "value2"}', [
+            new ArrayItemNode('value', null, String_::KIND_DOUBLE_QUOTED),
+            new ArrayItemNode('value2', null, String_::KIND_DOUBLE_QUOTED),
+        ]];
     }
 }

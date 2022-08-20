@@ -4,30 +4,25 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation;
 
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Stringable;
+use Webmozart\Assert\Assert;
 
 final class CurlyListNode extends AbstractValuesAwareNode implements Stringable
 {
-    public function __toString(): string
+    /**
+     * @param ArrayItemNode[] $arrayItemNodes
+     */
+    public function __construct(private readonly array $arrayItemNodes = [])
     {
-        return $this->implode($this->values);
+        Assert::allIsInstanceOf($this->arrayItemNodes, ArrayItemNode::class);
+        parent::__construct($this->arrayItemNodes);
     }
 
-    private function stringifyValue(mixed $value): string
+    public function __toString(): string
     {
-        if ($value === false) {
-            return 'false';
-        }
-
-        if ($value === true) {
-            return 'true';
-        }
-
-        if (is_array($value)) {
-            return $this->implode($value);
-        }
-
-        return (string) $value;
+        // possibly list items
+        return $this->implode($this->values);
     }
 
     /**
@@ -40,9 +35,9 @@ final class CurlyListNode extends AbstractValuesAwareNode implements Stringable
 
         foreach ($array as $key => $value) {
             if (is_int($key)) {
-                $itemContents .= $this->stringifyValue($value);
+                $itemContents .= (string) $value;
             } else {
-                $itemContents .= $key . '=' . $this->stringifyValue($value);
+                $itemContents .= $key . '=' . $value;
             }
 
             if ($lastItemKey !== $key) {

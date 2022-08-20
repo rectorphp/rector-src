@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7023\Fixture;
+namespace Rector\Core\Tests\Issues\Issue7023\Fixture\Php74;
 
 use Doctrine\ORM\Mapping as ORM;
 use Acme\Entity\User;
@@ -22,7 +22,7 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7023\Fixture;
+namespace Rector\Core\Tests\Issues\Issue7023\Fixture\Php74;
 
 use Doctrine\ORM\Mapping as ORM;
 use Acme\Entity\User;

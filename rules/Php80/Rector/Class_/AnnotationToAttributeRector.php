@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -28,7 +29,6 @@ use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-//use Rector\PhpAttribute\UnwrapableAnnotationAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -119,7 +119,7 @@ CODE_SAMPLE
 
         $uses = $this->useImportsResolver->resolveBareUsesForNode($node);
 
-        // 1. generic tags
+        // 1. bare tags without annotation class, e.g. "@inject"
         $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
 
         // 2. Doctrine annotation classes
@@ -196,7 +196,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Node\Stmt\Use_[] $uses
+     * @param Use_[] $uses
      * @return AttributeGroup[]
      */
     private function processDoctrineAnnotationClasses(PhpDocInfo $phpDocInfo, array $uses): array

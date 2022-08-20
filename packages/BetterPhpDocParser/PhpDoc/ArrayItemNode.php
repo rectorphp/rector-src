@@ -17,8 +17,10 @@ final class ArrayItemNode implements PhpDocTagValueNode, Stringable
      * @param String_::KIND_*|null $kindValueQuoted
      */
     public function __construct(
-        private readonly mixed $value,
-        private readonly int|null $kindValueQuoted = null,
+        public mixed $value,
+        public mixed $key,
+        public int|null $kindValueQuoted = null,
+        public int|null $kindKeyQuoted = null,
     ) {
     }
 
@@ -26,9 +28,21 @@ final class ArrayItemNode implements PhpDocTagValueNode, Stringable
     {
         $value = '';
 
+        if ($this->kindKeyQuoted === String_::KIND_DOUBLE_QUOTED) {
+            $value .= '"' . $this->key . '" = ';
+        } elseif ($this->key !== null) {
+            $value .= $this->key . '=';
+        }
+
         // @todo depends on the context! possibly the top array is quting this stinrg already
         if ($this->kindValueQuoted === String_::KIND_DOUBLE_QUOTED) {
             $value .= '"' . $this->value . '"';
+        } elseif (is_array($this->value)) {
+            foreach ($this->value as $singleValue) {
+                $value .= $singleValue;
+            }
+        } else {
+            $value .= $this->value;
         }
 
         return $value;
