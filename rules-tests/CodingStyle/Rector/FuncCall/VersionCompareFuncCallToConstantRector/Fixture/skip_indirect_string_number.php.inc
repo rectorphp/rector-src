@@ -4,7 +4,7 @@ namespace Rector\Tests\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConst
 
 class SkipIndirectStringNumber
 {
-    private const MIN_PHP_VERSION = '7.3';
+    private const MIN_PHP_VERSION = 'Php73';
 
     public function run()
     {

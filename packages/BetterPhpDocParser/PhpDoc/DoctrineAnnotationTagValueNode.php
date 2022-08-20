@@ -12,7 +12,7 @@ use Stringable;
 final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode implements Stringable
 {
     /**
-     * @param array<mixed, mixed> $values
+     * @param ArrayItemNode[] $values
      */
     public function __construct(
         public IdentifierTypeNode $identifierTypeNode,

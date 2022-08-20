@@ -80,7 +80,6 @@ final class ExprParameterReflectionTypeCorrector
         }
 
         $parameterType = $parameterReflection->getType();
-
         $currentType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($item);
 
         // all good

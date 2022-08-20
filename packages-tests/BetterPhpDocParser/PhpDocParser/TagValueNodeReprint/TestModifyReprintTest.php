@@ -60,11 +60,13 @@ final class TestModifyReprintTest extends AbstractTestCase
         $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(
             'Symfony\Component\Routing\Annotation\Route'
         );
+
         // this will extended tokens of first node
-        $doctrineAnnotationTagValueNode->changeValue('methods', new CurlyListNode([
+        $methodsCurlyListNode = new CurlyListNode([
             new ArrayItemNode('GET', null, String_::KIND_DOUBLE_QUOTED),
             new ArrayItemNode('HEAD', null, String_::KIND_DOUBLE_QUOTED),
-        ]));
+        ]);
+        $doctrineAnnotationTagValueNode->values[] = new ArrayItemNode($methodsCurlyListNode, 'methods');
 
         $expectedDocContent = trim((string) $inputFileInfoAndExpected->getExpected());
 

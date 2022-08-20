@@ -6,6 +6,7 @@ namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
@@ -43,21 +44,30 @@ final class PhpDocClassRenamer
             return;
         }
 
-        $callback = $assertChoiceTagValueNode->getValueWithoutQuotes('callback');
-        if (! $callback instanceof CurlyListNode) {
+        $callbackArrayItemNode = $assertChoiceTagValueNode->getValue('callback');
+        if (! $callbackArrayItemNode instanceof ArrayItemNode) {
             return;
         }
 
-        $callbackClass = $callback->getValueWithoutQuotes(0);
+        $callbackClass = $callbackArrayItemNode->value;
+
+        // array is needed for callable
+        if (! $callbackClass instanceof CurlyListNode) {
+            return;
+        }
+
+        $callableCallbackArrayItems = $callbackClass->getValues();
+        $classNameArrayItemNode = $callableCallbackArrayItems[0];
 
         foreach ($oldToNewClasses as $oldClass => $newClass) {
-            if ($callbackClass !== $oldClass) {
+            if ($classNameArrayItemNode->value !== $oldClass) {
                 continue;
             }
 
-            $callback->changeValue('0', $newClass);
+            $classNameArrayItemNode->value = $newClass;
 
-            $assertChoiceTagValueNode->changeValue('callback', $callback);
+            // trigger reprint
+            $classNameArrayItemNode->setAttribute('orig_node', null);
             break;
         }
     }
@@ -93,28 +103,31 @@ final class PhpDocClassRenamer
             return;
         }
 
+        $classNameArrayItemNode = $doctrineAnnotationTagValueNode->getSilentValue();
+
         foreach ($oldToNewClasses as $oldClass => $newClass) {
-            $className = $doctrineAnnotationTagValueNode->getSilentValue();
-
-            if (is_string($className)) {
-                if ($className === $oldClass) {
-                    $doctrineAnnotationTagValueNode->changeSilentValue($newClass);
+            if ($classNameArrayItemNode instanceof ArrayItemNode) {
+                if ($classNameArrayItemNode->value === $oldClass) {
+                    $classNameArrayItemNode->value = $newClass;
                     continue;
                 }
 
-                $newContent = Strings::replace($className, '#\b' . preg_quote($oldClass, '#') . '\b#', $newClass);
-                if ($newContent === $className) {
-                    continue;
-                }
+                $classNameArrayItemNode->value = Strings::replace(
+                    $classNameArrayItemNode->value,
+                    '#\b' . preg_quote($oldClass, '#') . '\b#',
+                    $newClass
+                );
 
-                $doctrineAnnotationTagValueNode->changeSilentValue($newContent);
+                $classNameArrayItemNode->setAttribute('orig_node', null);
+            }
+
+            $currentTypeArrayItemNode = $doctrineAnnotationTagValueNode->getValue('type');
+            if (! $currentTypeArrayItemNode instanceof ArrayItemNode) {
                 continue;
             }
 
-            $currentType = $doctrineAnnotationTagValueNode->getValueWithoutQuotes('type');
-            if ($currentType === $oldClass) {
-                $doctrineAnnotationTagValueNode->changeValue('type', $newClass);
-                continue;
+            if ($currentTypeArrayItemNode->value === $oldClass) {
+                $currentTypeArrayItemNode->value = $newClass;
             }
         }
     }
@@ -131,20 +144,23 @@ final class PhpDocClassRenamer
             'Doctrine\ORM\Mapping\Embedded'
         ) ? 'class' : 'targetEntity';
 
-        $targetEntity = $doctrineAnnotationTagValueNode->getValueWithoutQuotes($classKey);
-        if ($targetEntity === null) {
+        $targetEntityArrayItemNode = $doctrineAnnotationTagValueNode->getValue($classKey);
+        if (! $targetEntityArrayItemNode instanceof ArrayItemNode) {
             return;
         }
 
+        $targetEntityClass = $targetEntityArrayItemNode->value;
+
         // resolve to FQN
-        $tagFullyQualifiedName = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($targetEntity, $node);
+        $tagFullyQualifiedName = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($targetEntityClass, $node);
 
         foreach ($oldToNewClasses as $oldClass => $newClass) {
             if ($tagFullyQualifiedName !== $oldClass) {
                 continue;
             }
 
-            $doctrineAnnotationTagValueNode->changeValue($classKey, $newClass);
+            $targetEntityArrayItemNode->value = $newClass;
+            $targetEntityArrayItemNode->setAttribute('orig_node', null);
         }
     }
 }

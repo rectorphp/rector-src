@@ -6,6 +6,7 @@ namespace Rector\Php80\ValueObject;
 
 use Rector\Core\Validation\RectorAssert;
 use Rector\Php80\Contract\ValueObject\AnnotationToAttributeInterface;
+use Webmozart\Assert\Assert;
 
 final class NestedAnnotationToAttribute implements AnnotationToAttributeInterface
 {
@@ -18,6 +19,7 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
         private readonly bool $removeOriginal = false
     ) {
         RectorAssert::className($tag);
+        Assert::allString($annotationPropertiesToAttributeClasses);
     }
 
     public function getTag(): string
@@ -41,5 +43,16 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
     public function shouldRemoveOriginal(): bool
     {
         return $this->removeOriginal;
+    }
+
+    public function hasExplicitParameters(): bool
+    {
+        foreach (array_keys($this->annotationPropertiesToAttributeClasses) as $itemName) {
+            if (is_string($itemName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

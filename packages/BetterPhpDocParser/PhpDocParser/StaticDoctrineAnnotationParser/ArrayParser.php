@@ -75,6 +75,35 @@ final class ArrayParser
     }
 
     /**
+     * @param mixed[] $values
+     * @return ArrayItemNode[]
+     */
+    public function createArrayFromValues(array $values): array
+    {
+        $arrayItemNodes = [];
+
+        $naturalKey = 0;
+        foreach ($values as $key => $value) {
+            if (is_array($value)) {
+                [$nestedKey, $nestedValue] = $value;
+
+                if ($nestedKey instanceof ConstExprIntegerNode) {
+                    $nestedKey = $nestedKey->value;
+                }
+
+                // curly candidate?
+                $arrayItemNodes[] = $this->createArrayItemFromKeyAndValue($nestedKey, $nestedValue);
+            } else {
+                $arrayItemNodes[] = $this->createArrayItemFromKeyAndValue($key !== $naturalKey ? $key : null, $value);
+            }
+
+            ++$naturalKey;
+        }
+
+        return $arrayItemNodes;
+    }
+
+    /**
      * Mimics https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L1354-L1385
      * @return array<null|mixed, mixed>
      */
@@ -132,55 +161,52 @@ final class ArrayParser
     }
 
     /**
-     * @param mixed[] $values
-     * @return ArrayItemNode[]
-     */
-    private function createArrayFromValues(array $values): array
-    {
-        $arrayItemNodes = [];
-
-        foreach ($values as $value) {
-            [$key, $val] = $value;
-
-            if ($key instanceof ConstExprIntegerNode) {
-                $key = $key->value;
-            }
-
-            $valueQuoteKind = $this->resolveQuoteKind($val);
-            if (is_string($val) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
-                // give raw value
-                $val = trim($val, '"');
-            }
-
-            $keyQuoteKind = $this->resolveQuoteKind($key);
-            if (is_string($key) && $keyQuoteKind === String_::KIND_DOUBLE_QUOTED) {
-                // give raw value
-                $key = trim($key, '"');
-            }
-
-            if ($key !== null) {
-                $arrayItemNodes[] = new ArrayItemNode($val, $key, $valueQuoteKind, $keyQuoteKind);
-            } else {
-                $arrayItemNodes[] = new ArrayItemNode($val, null, $valueQuoteKind, $keyQuoteKind);
-            }
-        }
-
-        return $arrayItemNodes;
-    }
-
-    /**
      * @return String_::KIND_SINGLE_QUOTED|String_::KIND_DOUBLE_QUOTED|null
      */
     private function resolveQuoteKind(mixed $val): ?int
     {
-        if (is_string($val) && str_starts_with($val, '"') && str_ends_with($val, '"')) {
+        if ($this->isQuotedWith($val, '"')) {
             return String_::KIND_DOUBLE_QUOTED;
         }
 
-        if (is_string($val) && str_starts_with($val, "'") && str_ends_with($val, "'")) {
+        if ($this->isQuotedWith($val, "'")) {
             return String_::KIND_SINGLE_QUOTED;
         }
 
         return null;
+    }
+
+    private function createArrayItemFromKeyAndValue(mixed $key, mixed $value): ArrayItemNode
+    {
+        $valueQuoteKind = $this->resolveQuoteKind($value);
+        if (is_string($value) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
+            // give raw value
+            $value = trim($value, '"');
+        }
+
+        $keyQuoteKind = $this->resolveQuoteKind($key);
+        if (is_string($key) && $keyQuoteKind === String_::KIND_DOUBLE_QUOTED) {
+            // give raw value
+            $key = trim($key, '"');
+        }
+
+        if ($key !== null) {
+            return new ArrayItemNode($value, $key, $valueQuoteKind, $keyQuoteKind);
+        }
+
+        return new ArrayItemNode($value, null, $valueQuoteKind, $keyQuoteKind);
+    }
+
+    private function isQuotedWith(mixed $value, string $quotes): bool
+    {
+        if (! is_string($value)) {
+            return false;
+        }
+
+        if (! str_starts_with($value, $quotes)) {
+            return false;
+        }
+
+        return str_ends_with($value, $quotes);
     }
 }

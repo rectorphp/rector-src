@@ -109,21 +109,9 @@ parameters:
             message: '#Call to function is_string\(\) with float will always evaluate to false#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php
 
-        # class_exists is forbidden to enforce static reflection, but in a compiler pass we want runtime autoloading
-        -
-            message:  '#Function "class_exists\(\)" cannot be used/left in the code#'
-            paths:
-                 # for config class reflection
-                 - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
-
         - '#PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable given#'
 
         - '#Method Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:matchReturnOrAssignNode\(\) should return PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Stmt\\Return_\|null but returns PhpParser\\Node\|null#'
-
-        -
-            message: '#Function "class_exists\(\)" cannot be used/left in the code#'
-            paths:
-                - src/Bootstrap/ExtensionConfigResolver.php
 
         -
             message: '#There should be no empty class#'
@@ -537,10 +525,15 @@ parameters:
         # depends on falsy docs
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Stmt> and (.*?)Stmt(.*?) will always evaluate to true#'
 
-        # autoload check in bin file
         -
-            message: '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: bin/rector.php
+            message: '#Function "class_exists\(\)" cannot be used/left in the code#'
+            paths:
+                # autoload check in bin file
+                - bin/rector.php
+                - src/Bootstrap/ExtensionConfigResolver.php
+                # for config class reflection
+                - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
+
 
         # use of internal phpstan classes
         -
@@ -700,4 +693,17 @@ parameters:
             message: '#Cognitive complexity#i'
             path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
 
+        # validation
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<Rector\\BetterPhpDocParser\\PhpDoc\\ArrayItemNode> and (.*?) will always evaluate to true#'
+
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
+
+        # false positive
+        -
+            message: '#Parameter \#1 \$value of class PhpParser\\Node\\Expr\\ArrayItem constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|string given#'
+            path: packages/PhpAttribute/AnnotationToAttributeMapper/ArrayItemNodeAnnotationToAttributeMapper.php
+
+        # false positive - already known in the param
+        -
+            message: '#Add explicit array type to assigned "\$this\->values" expression#'
+            path: packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php

@@ -6,6 +6,7 @@ namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Core\Rector\AbstractRector;
@@ -28,15 +29,19 @@ class TestRector extends AbstractRector
     public function refactor(Node $node)
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $route = $phpDocInfo->getByAnnotationClass('Symfony\Component\Routing\Annotation\Route');
+        $routeDoctrineAnnotationTagValueNode = $phpDocInfo->getByAnnotationClass('Symfony\Component\Routing\Annotation\Route');
 
-        if (! $route instanceof DoctrineAnnotationTagValueNode) {
+        if (! $routeDoctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return null;
         }
 
-        $defaults = $route->getValue('defaults');
-        if ($defaults === null) {
-            $route->changeValue('defaults', new CurlyListNode());
+        $defaultsArrayItem = $routeDoctrineAnnotationTagValueNode->getValue('defaults');
+        if (! $defaultsArrayItem instanceof ArrayItemNode) {
+            $routeDoctrineAnnotationTagValueNode->values[] = new ArrayItemNode(
+                new CurlyListNode(),
+                'defaults',
+            );
+
             return $node;
         }
 

@@ -24,6 +24,9 @@ final class AnnotationToAttributeMapper
     ) {
     }
 
+    /**
+     * @return Expr|DocTagNodeState::REMOVE_ARRAY
+     */
     public function map(mixed $value): Expr|string
     {
         foreach ($this->annotationToAttributeMappers as $annotationToAttributeMapper) {
