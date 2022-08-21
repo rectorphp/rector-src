@@ -61,12 +61,13 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
 
             ++$loop;
 
-            if ($loop === (int) $arrayItemNode->key) {
+            $arrayItemNodeKey = (int) $arrayItemNode->key;
+            if ($loop === $arrayItemNodeKey) {
                 $arrayItems[] = $valueExpr;
                 continue;
             }
 
-            $valueExpr->key = new LNumber((int) $arrayItemNode->key);
+            $valueExpr->key = new LNumber($arrayItemNodeKey);
             $arrayItems[] = $valueExpr;
         }
 
