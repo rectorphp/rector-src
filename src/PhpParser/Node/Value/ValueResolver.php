@@ -72,19 +72,14 @@ final class ValueResolver
             }
         }
 
-        try {
-            $constExprEvaluator = $this->getConstExprEvaluator();
-            $value = $constExprEvaluator->evaluateDirectly($expr);
-        } catch (ConstExprEvaluationException) {
-            $value = null;
-        }
+        $value = $this->resolveExprValueForConst($expr);
 
         if ($value !== null) {
             return $value;
         }
 
         if ($expr instanceof ConstFetch) {
-            return $value;
+            return $this->nodeNameResolver->getName($expr);
         }
 
         $nodeStaticType = $this->nodeTypeResolver->getType($expr);
@@ -159,6 +154,17 @@ final class ValueResolver
         }
 
         return true;
+    }
+
+    private function resolveExprValueForConst(Expr $expr): mixed
+    {
+        try {
+            $constExprEvaluator = $this->getConstExprEvaluator();
+            return $constExprEvaluator->evaluateDirectly($expr);
+        } catch (ConstExprEvaluationException) {
+        }
+
+        return null;
     }
 
     private function processConcat(Concat $concat, bool $resolvedClassReference): string
@@ -273,17 +279,26 @@ final class ValueResolver
             return constant($classConstantReference);
         }
 
-        if ($this->reflectionProvider->hasClass($class)) {
-            $classReflection = $this->reflectionProvider->getClass($class);
-
-            if ($classReflection->hasConstant($constant)) {
-                $constantReflection = $classReflection->getConstant($constant);
-                return $this->getValue($constantReflection->getValueExpr());
-            }
+        if (! $this->reflectionProvider->hasClass($class)) {
+            // fallback to constant reference itself, to avoid fatal error
+            return $classConstantReference;
         }
 
-        // fallback to constant reference itself, to avoid fatal error
-        return $classConstantReference;
+        $classReflection = $this->reflectionProvider->getClass($class);
+
+        if (! $classReflection->hasConstant($constant)) {
+            // fallback to constant reference itself, to avoid fatal error
+            return $classConstantReference;
+        }
+
+        $constantReflection = $classReflection->getConstant($constant);
+        $valueExpr = $constantReflection->getValueExpr();
+
+        if ($valueExpr instanceof ConstFetch) {
+            return $this->resolveExprValueForConst($valueExpr);
+        }
+
+        return $this->getValue($valueExpr);
     }
 
     private function resolveClassFromSelfStaticParent(ClassConstFetch $classConstFetch, string $class): string
