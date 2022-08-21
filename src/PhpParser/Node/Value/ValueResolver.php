@@ -79,12 +79,8 @@ final class ValueResolver
             $value = null;
         }
 
-        if ($value !== null) {
+        if ($value !== null || $expr instanceof ConstFetch) {
             return $value;
-        }
-
-        if ($expr instanceof ConstFetch) {
-            return $this->nodeNameResolver->getName($expr);
         }
 
         $nodeStaticType = $this->nodeTypeResolver->getType($expr);
