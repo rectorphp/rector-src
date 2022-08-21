@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation;
 
-use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\NodeAttributes;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -70,10 +69,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         return $silentKeyAwareValues;
     }
 
-    /**
-     * @return mixed|Node|null|ArrayItemNode
-     */
-    public function getValue(string | int $desiredKey)
+    public function getValue(string $desiredKey): ?ArrayItemNode
     {
         foreach ($this->values as $value) {
             if ($value->key === $desiredKey) {
