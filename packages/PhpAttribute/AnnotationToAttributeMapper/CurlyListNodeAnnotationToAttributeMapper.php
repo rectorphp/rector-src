@@ -53,7 +53,6 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
                 continue;
             }
 
-            Assert::isInstanceOf($arrayItemNode, ArrayItemNode::class);
             Assert::isInstanceOf($valueExpr, ArrayItem::class);
 
             if (! is_numeric($arrayItemNode->key)) {
