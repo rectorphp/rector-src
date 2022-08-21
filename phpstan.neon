@@ -2,6 +2,8 @@ includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
 parameters:
+    reportUnmatchedIgnoredErrors: false
+
     level: 8
 
     # requires exact closure types
@@ -25,7 +27,6 @@ parameters:
     scanDirectories:
         - stubs
 
-    reportUnmatchedIgnoredErrors: false
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
@@ -702,8 +703,3 @@ parameters:
         -
             message: '#Parameter \#1 \$value of class PhpParser\\Node\\Expr\\ArrayItem constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|string given#'
             path: packages/PhpAttribute/AnnotationToAttributeMapper/ArrayItemNodeAnnotationToAttributeMapper.php
-
-        # false positive - already known in the param
-        -
-            message: '#Add explicit array type to assigned "\$this\->values" expression#'
-            path: packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
