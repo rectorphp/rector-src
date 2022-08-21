@@ -278,7 +278,7 @@ final class ValueResolver
 
             if ($classReflection->hasConstant($constant)) {
                 $constantReflection = $classReflection->getConstant($constant);
-                return $constantReflection->getValueExpr();
+                return $this->getValue($constantReflection->getValueExpr());
             }
         }
 
