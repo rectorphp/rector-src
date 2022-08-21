@@ -78,9 +78,11 @@ final class ValueResolver
         } catch (ConstExprEvaluationException) {
             $value = null;
         }
+
         if ($value !== null) {
             return $value;
         }
+
         if ($expr instanceof ConstFetch) {
             return $value;
         }
