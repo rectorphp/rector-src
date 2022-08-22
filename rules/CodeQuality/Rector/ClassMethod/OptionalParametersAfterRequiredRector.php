@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
@@ -67,11 +68,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, New_::class, MethodCall::class];
+        return [ClassMethod::class, New_::class, MethodCall::class, StaticCall::class];
     }
 
     /**
-     * @param ClassMethod|New_|MethodCall $node
+     * @param ClassMethod|New_|MethodCall|StaticCall $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -131,7 +132,7 @@ CODE_SAMPLE
         return $new;
     }
 
-    private function refactorMethodCall(MethodCall $methodCall): ?MethodCall
+    private function refactorMethodCall(MethodCall|StaticCall $methodCall): MethodCall|StaticCall|null
     {
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($methodCall);
         if (! $methodReflection instanceof MethodReflection) {
@@ -161,7 +162,7 @@ CODE_SAMPLE
      */
     private function resolveExpectedArgParamOrderIfDifferent(
         MethodReflection $methodReflection,
-        New_|MethodCall|ClassMethod $node
+        New_|MethodCall|ClassMethod|StaticCall $node
     ): ?array {
         if ($this->vendorLocationDetector->detectMethodReflection($methodReflection)) {
             return null;
