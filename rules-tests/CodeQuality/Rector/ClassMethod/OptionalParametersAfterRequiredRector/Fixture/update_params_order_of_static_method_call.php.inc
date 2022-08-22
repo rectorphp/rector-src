@@ -12,4 +12,4 @@ final class WebUtil
     }
 }
 
-WebUtil::radioList("inPersonOrVirtual", $inPersonOrVirtualItems, $selected, "", 1, "col-sm-3 margin-bottom-10")
+WebUtil::radioList("inPersonOrVirtual", $inPersonOrVirtualItems, $selected, "", 1, "col-sm-3 margin-bottom-10");
