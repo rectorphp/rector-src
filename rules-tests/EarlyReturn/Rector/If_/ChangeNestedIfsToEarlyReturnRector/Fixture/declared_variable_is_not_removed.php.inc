@@ -36,8 +36,8 @@ class DeclaredVariableIsNotRemoved
         }
 
         if ($condition2) {
-    		    return 0;
-    	  }
+            return 0;
+        }
     }
 }
 
