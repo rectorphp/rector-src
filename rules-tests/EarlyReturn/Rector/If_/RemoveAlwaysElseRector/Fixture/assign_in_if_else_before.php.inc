@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-function dummy($can_order_products, $offset, $limit)
+function assignInIfElseBefore($can_order_products, $offset, $limit)
 {
     if (!empty($can_order_products)) {
         if (!empty($limit)) {
@@ -31,7 +31,7 @@ function dummy($can_order_products, $offset, $limit)
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-function dummy($can_order_products, $offset, $limit)
+function assignInIfElseBefore($can_order_products, $offset, $limit)
 {
     if (!empty($can_order_products)) {
         if (!empty($limit)) {
