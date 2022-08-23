@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\ChangeNestedIfsToEarlyReturnRector\Fixture;
 
-class DeclaredVariableIsNotRemoved
+class DoNotRemovePreviousIfStmts
 {
 	public function foo($condition1, $condition2)
     {
@@ -24,7 +24,7 @@ class DeclaredVariableIsNotRemoved
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\ChangeNestedIfsToEarlyReturnRector\Fixture;
 
-class DeclaredVariableIsNotRemoved
+class DoNotRemovePreviousIfStmts
 {
 	public function foo($condition1, $condition2)
     {
