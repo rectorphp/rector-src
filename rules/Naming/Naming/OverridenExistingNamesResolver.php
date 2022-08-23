@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Naming;
 
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -37,10 +38,10 @@ final class OverridenExistingNamesResolver
 
     public function hasNameInFunctionLikeForParam(
         string $expectedName,
-        ClassMethod|Function_|Closure $classMethod
+        ClassMethod|Function_|Closure|ArrowFunction $classMethod
     ): bool {
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $classMethod->stmts, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf((array) $classMethod->getStmts(), Assign::class);
 
         $usedVariableNames = [];
         foreach ($assigns as $assign) {

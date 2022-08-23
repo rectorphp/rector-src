@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Naming;
 
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -32,7 +33,7 @@ final class ConflictingNameResolver
     /**
      * @return string[]
      */
-    public function resolveConflictingVariableNamesForParam(ClassMethod|Function_|Closure $classMethod): array
+    public function resolveConflictingVariableNamesForParam(ClassMethod|Function_|Closure|ArrowFunction $classMethod): array
     {
         $expectedNames = [];
         foreach ($classMethod->params as $param) {
@@ -49,7 +50,7 @@ final class ConflictingNameResolver
 
     public function hasNameIsInFunctionLike(
         string $variableName,
-        ClassMethod | Function_ | Closure $functionLike
+        ClassMethod | Function_ | Closure | ArrowFunction $functionLike
     ): bool {
         $conflictingVariableNames = $this->resolveConflictingVariableNamesForNew($functionLike);
         return in_array($variableName, $conflictingVariableNames, true);
@@ -58,7 +59,7 @@ final class ConflictingNameResolver
     /**
      * @return string[]
      */
-    private function resolveConflictingVariableNamesForNew(ClassMethod | Function_ | Closure $functionLike): array
+    private function resolveConflictingVariableNamesForNew(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): array
     {
         // cache it!
         $classMethodHash = spl_object_hash($functionLike);
@@ -82,12 +83,12 @@ final class ConflictingNameResolver
     /**
      * @return string[]
      */
-    private function resolveForNewAssigns(ClassMethod | Function_ | Closure $functionLike): array
+    private function resolveForNewAssigns(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): array
     {
         $names = [];
 
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->stmts, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->getStmts(), Assign::class);
         foreach ($assigns as $assign) {
             $name = $this->expectedNameResolver->resolveForAssignNew($assign);
             if ($name === null) {
@@ -103,12 +104,12 @@ final class ConflictingNameResolver
     /**
      * @return string[]
      */
-    private function resolveForNonNewAssigns(ClassMethod | Function_ | Closure $functionLike): array
+    private function resolveForNonNewAssigns(ClassMethod | Function_ | Closure | ArrowFunction $functionLike): array
     {
         $names = [];
 
         /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->stmts, Assign::class);
+        $assigns = $this->betterNodeFinder->findInstanceOf((array) $functionLike->getStmts(), Assign::class);
         foreach ($assigns as $assign) {
             $name = $this->expectedNameResolver->resolveForAssignNonNew($assign);
             if ($name === null) {
