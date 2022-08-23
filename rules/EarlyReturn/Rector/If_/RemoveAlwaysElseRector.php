@@ -6,6 +6,7 @@ namespace Rector\EarlyReturn\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Exit_;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
@@ -14,6 +15,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -133,7 +135,8 @@ CODE_SAMPLE
         $lastStmt = end($node->stmts);
 
         if ($lastStmt instanceof If_ && $lastStmt->else instanceof Else_) {
-            return false;
+            $next = $lastStmt->else->getAttribute(AttributeKey::NEXT_NODE);
+            return $next instanceof Stmt;
         }
 
         return ! ($lastStmt instanceof Return_
