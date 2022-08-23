@@ -87,9 +87,16 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var Stmt[] $previousStmts[] */
+        $previousStmts = [];
+
         foreach ($stmts as $key => $stmt) {
             $nextStmt = $stmts[$key + 1] ?? null;
             if (! $nextStmt instanceof Return_) {
+                if ($nextStmt instanceof Stmt) {
+                    $previousStmts[] = $stmt;
+                }
+
                 continue;
             }
 
@@ -102,7 +109,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            $node->stmts = $this->processNestedIfsWithOnlyReturn($nestedIfsWithOnlyReturn, $nextStmt);
+            $node->stmts = array_merge(
+                $previousStmts,
+                $this->processNestedIfsWithOnlyReturn($nestedIfsWithOnlyReturn, $nextStmt)
+            );
 
             return $node;
         }
