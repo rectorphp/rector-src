@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
+
 function dummy($can_order_products, $offset, $limit)
 {
     if (!empty($can_order_products)) {
@@ -19,7 +21,7 @@ function dummy($can_order_products, $offset, $limit)
             return $can_order_products;
         }
     }
-    
+
     return false;
 }
 
@@ -28,9 +30,6 @@ function dummy($can_order_products, $offset, $limit)
 <?php
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
-
-// what is expected code?
-// should remain the same? delete part bellow ----- (included)
 
 function dummy($can_order_products, $offset, $limit)
 {
@@ -44,14 +43,14 @@ function dummy($can_order_products, $offset, $limit)
 
             if (!empty($can_order_products)) {
                 return $can_order_products;
+            } else {
+                return false;
             }
-            
-            return false;
+        } else {
+            return $can_order_products;
         }
-        
-        return $can_order_products;
     }
-    
+
     return false;
 }
 
