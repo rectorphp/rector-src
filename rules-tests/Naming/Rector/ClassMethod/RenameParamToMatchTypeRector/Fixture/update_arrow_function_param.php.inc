@@ -4,7 +4,7 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Fi
 
 use Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Source\SingleSomeClass;
 
-class MyStaticAnonymousFunction
+class UpdateArrayFunctionParam
 {
     public function run(): void
     {
@@ -21,7 +21,7 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Fi
 
 use Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Source\SingleSomeClass;
 
-class MyStaticAnonymousFunction
+class UpdateArrayFunctionParam
 {
     public function run(): void
     {
