@@ -43,12 +43,10 @@ function dummy($can_order_products, $offset, $limit)
 
             if (!empty($can_order_products)) {
                 return $can_order_products;
-            } else {
-                return false;
             }
-        } else {
-            return $can_order_products;
+            return false;
         }
+        return $can_order_products;
     }
 
     return false;
