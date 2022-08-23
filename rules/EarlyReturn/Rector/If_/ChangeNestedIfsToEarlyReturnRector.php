@@ -93,7 +93,7 @@ CODE_SAMPLE
         foreach ($stmts as $key => $stmt) {
             $nextStmt = $stmts[$key + 1] ?? null;
             if (! $nextStmt instanceof Return_) {
-                if ($nextStmt instanceof Node) {
+                if ($nextStmt instanceof Stmt) {
                     $previousStmts[] = $stmt;
                 }
 
