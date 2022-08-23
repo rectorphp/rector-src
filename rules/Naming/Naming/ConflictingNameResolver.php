@@ -35,8 +35,7 @@ final class ConflictingNameResolver
      */
     public function resolveConflictingVariableNamesForParam(
         ClassMethod|Function_|Closure|ArrowFunction $classMethod
-    ): array
-    {
+    ): array {
         $expectedNames = [];
         foreach ($classMethod->params as $param) {
             $expectedName = $this->matchParamTypeExpectedNameResolver->resolve($param);
@@ -63,8 +62,7 @@ final class ConflictingNameResolver
      */
     private function resolveConflictingVariableNamesForNew(
         ClassMethod | Function_ | Closure | ArrowFunction $functionLike
-    ): array
-    {
+    ): array {
         // cache it!
         $classMethodHash = spl_object_hash($functionLike);
 
