@@ -259,7 +259,7 @@ final class PHPStanNodeScopeResolver
                 : null;
 
             $type = TypeCombinator::union(
-                ...array_map(static fn (Name $class): ObjectType => new ObjectType((string) $class), $catch->types)
+                ...array_map(static fn (Name $name): ObjectType => new ObjectType((string) $name), $catch->types)
             );
 
             $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -68,11 +69,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -112,7 +113,7 @@ CODE_SAMPLE
     private function shouldSkipParam(
         Param $param,
         string $expectedName,
-        ClassMethod|Function_|Closure $classMethod
+        ClassMethod|Function_|Closure|ArrowFunction $classMethod
     ): bool {
         /** @var string $paramName */
         $paramName = $this->getName($param);

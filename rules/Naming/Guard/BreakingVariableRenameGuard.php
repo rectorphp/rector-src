@@ -6,6 +6,7 @@ namespace Rector\Naming\Guard;
 
 use DateTimeInterface;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
@@ -88,7 +89,7 @@ final class BreakingVariableRenameGuard
     public function shouldSkipParam(
         string $currentName,
         string $expectedName,
-        ClassMethod|Function_|Closure $classMethod,
+        ClassMethod|Function_|Closure|ArrowFunction $classMethod,
         Param $param
     ): bool {
         // is the suffix? → also accepted
@@ -122,7 +123,7 @@ final class BreakingVariableRenameGuard
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->find((array) $classMethod->stmts, function (Node $node) use (
+        return (bool) $this->betterNodeFinder->find((array) $classMethod->getStmts(), function (Node $node) use (
             $expectedName
         ): bool {
             if (! $node instanceof Variable) {

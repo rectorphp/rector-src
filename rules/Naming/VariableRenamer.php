@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -31,7 +32,7 @@ final class VariableRenamer
     }
 
     public function renameVariableInFunctionLike(
-        ClassMethod | Function_ | Closure $functionLike,
+        ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
         string $oldName,
         string $expectedName,
         ?Assign $assign = null
@@ -43,7 +44,7 @@ final class VariableRenamer
         }
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $functionLike->stmts,
+            (array) $functionLike->getStmts(),
             function (Node $node) use ($oldName, $expectedName, $assign, &$isRenamingActive): ?Variable {
                 if ($assign !== null && $node === $assign) {
                     $isRenamingActive = true;
