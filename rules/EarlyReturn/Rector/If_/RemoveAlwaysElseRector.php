@@ -135,8 +135,7 @@ CODE_SAMPLE
         $lastStmt = end($node->stmts);
 
         if ($lastStmt instanceof If_ && $lastStmt->else instanceof Else_) {
-            $next = $lastStmt->else->getAttribute(AttributeKey::NEXT_NODE);
-            return $next instanceof Stmt;
+            return $this->doesLastStatementBreakFlow($lastStmt);
         }
 
         return ! ($lastStmt instanceof Return_
