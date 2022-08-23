@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -131,6 +132,10 @@ CODE_SAMPLE
     private function doesLastStatementBreakFlow(If_ | ElseIf_ $node): bool
     {
         $lastStmt = end($node->stmts);
+
+        if ($lastStmt instanceof If_ && $lastStmt->else instanceof Else_) {
+            return false;
+        }
 
         return ! ($lastStmt instanceof Return_
             || $lastStmt instanceof Throw_
