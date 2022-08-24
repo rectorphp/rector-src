@@ -250,7 +250,7 @@ final class IfManipulator
             return false;
         }
 
-        return ! (bool) $if->elseifs;
+        return $if->elseifs === [];
     }
 
     public function createIfNegation(Expr $expr, Return_ $return): If_
@@ -259,9 +259,9 @@ final class IfManipulator
         return $this->createIfStmt($expr, $return);
     }
 
-    public function createIfStmt(Expr $expr, Stmt $stmt): If_
+    public function createIfStmt(Expr $condExpr, Stmt $stmt): If_
     {
-        return new If_($expr, [
+        return new If_($condExpr, [
             'stmts' => [$stmt],
         ]);
     }

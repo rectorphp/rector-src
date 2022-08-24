@@ -17,6 +17,8 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\EarlyReturn\NodeAnalyzer\IfAndAnalyzer;
+use Rector\EarlyReturn\NodeAnalyzer\SimpleScalarAnalyzer;
 use Rector\EarlyReturn\NodeFactory\InvertedIfFactory;
 use Rector\NodeCollector\BinaryOpConditionsCollector;
 use Rector\NodeNestingScope\ContextAnalyzer;
@@ -33,7 +35,9 @@ final class ChangeAndIfToEarlyReturnRector extends AbstractRector
         private readonly IfManipulator $ifManipulator,
         private readonly InvertedIfFactory $invertedIfFactory,
         private readonly ContextAnalyzer $contextAnalyzer,
-        private readonly BinaryOpConditionsCollector $binaryOpConditionsCollector
+        private readonly BinaryOpConditionsCollector $binaryOpConditionsCollector,
+        private readonly SimpleScalarAnalyzer $simpleScalarAnalyzer,
+        private readonly IfAndAnalyzer $ifAndAnalyzer,
     ) {
     }
 
@@ -61,11 +65,11 @@ class SomeClass
 {
     public function canDrive(Car $car)
     {
-        if (!$car->hasWheels) {
+        if (! $car->hasWheels) {
             return false;
         }
 
-        if (!$car->hasFuel) {
+        if (! $car->hasFuel) {
             return false;
         }
 
@@ -99,6 +103,7 @@ CODE_SAMPLE
 
         foreach ($stmts as $key => $stmt) {
             if (! $stmt instanceof If_) {
+                // keep natural original order
                 $newStmts[] = $stmt;
                 continue;
             }
@@ -111,7 +116,7 @@ CODE_SAMPLE
             }
 
             if ($nextStmt instanceof Return_) {
-                if ($this->isIfStmtExprUsedInNextReturn($stmt, $nextStmt)) {
+                if ($this->ifAndAnalyzer->isIfStmtExprUsedInNextReturn($stmt, $nextStmt)) {
                     continue;
                 }
 
@@ -225,27 +230,19 @@ CODE_SAMPLE
             return true;
         }
 
+        // is simple return? skip it
+        $onlyStmt = $if->stmts[0];
+        if ($onlyStmt instanceof Return_ && $onlyStmt->expr instanceof Expr && $this->simpleScalarAnalyzer->isSimpleScalar(
+            $onlyStmt->expr
+        )) {
+            return true;
+        }
+
+        if ($this->ifAndAnalyzer->isIfAndWithInstanceof($if->cond)) {
+            return true;
+        }
+
         return ! $this->isLastIfOrBeforeLastReturn($if, $nexStmt);
-    }
-
-    private function isIfStmtExprUsedInNextReturn(If_ $if, Return_ $return): bool
-    {
-        if (! $return->expr instanceof Expr) {
-            return false;
-        }
-
-        $ifExprs = $this->betterNodeFinder->findInstanceOf($if->stmts, Expr::class);
-        foreach ($ifExprs as $ifExpr) {
-            $isExprFoundInReturn = (bool) $this->betterNodeFinder->findFirst(
-                $return->expr,
-                fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $ifExpr)
-            );
-            if ($isExprFoundInReturn) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function isParentIfReturnsVoidOrParentIfHasNextNode(StmtsAwareInterface $stmtsAware): bool
