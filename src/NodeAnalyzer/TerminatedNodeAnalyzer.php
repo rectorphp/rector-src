@@ -56,7 +56,7 @@ final class TerminatedNodeAnalyzer
             return false;
         }
 
-        if (($stmtsAware instanceof FileWithoutNamespace || $stmtsAware instanceof Namespace_) && $currentStmt instanceof ClassLike || $currentStmt instanceof Function_) {
+        if (($stmtsAware instanceof FileWithoutNamespace || $stmtsAware instanceof Namespace_) && ($currentStmt instanceof ClassLike || $currentStmt instanceof Function_)) {
             return false;
         }
 
