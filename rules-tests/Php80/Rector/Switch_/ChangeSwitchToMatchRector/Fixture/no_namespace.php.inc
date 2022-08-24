@@ -1,5 +1,7 @@
 <?php
 
+$data = 'value';
+
 switch ($data) {
         case Lexer::T_DELETE:
             $statement = $this->DeleteStatement();
@@ -15,6 +17,8 @@ echo $statement;
 ?>
 -----
 <?php
+
+$data = 'value';
 
 $statement = match ($data) {
     Lexer::T_DELETE => $this->DeleteStatement(),
