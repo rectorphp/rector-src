@@ -102,7 +102,7 @@ final class ChangedNodeScopeRefresher
 
     private function reIndexNodeAttributes(Node $node): void
     {
-        if (($node instanceof FileWithoutNamespace || $node instanceof Namespace_ || $node instanceof ClassLike || $node instanceof StmtsAwareInterface) && $node->stmts !== null) {
+        if (($node instanceof Namespace_ || $node instanceof ClassLike || $node instanceof StmtsAwareInterface) && $node->stmts !== null) {
             $node->stmts = array_values($node->stmts);
         }
 
