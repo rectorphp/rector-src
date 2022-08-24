@@ -40,7 +40,7 @@ final class ScopeAnalyzer
         Node $node,
         SmartFileInfo $smartFileInfo,
         ?MutatingScope $mutatingScope = null
-    ): ?MutatingScope {
+    ): MutatingScope {
         if ($mutatingScope instanceof MutatingScope) {
             return $mutatingScope;
         }
@@ -56,6 +56,13 @@ final class ScopeAnalyzer
 
         /** @var MutatingScope|null $parentScope */
         $parentScope = $parentNode->getAttribute(AttributeKey::SCOPE);
-        return $parentScope;
+        if ($parentScope instanceof MutatingScope) {
+            return $parentScope;
+        }
+
+        $scope = $this->scopeFactory->createFromFile($smartFileInfo);
+        $parentNode->setAttribute(AttributeKey::SCOPE, $scope);
+
+        return $scope;
     }
 }
