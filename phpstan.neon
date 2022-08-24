@@ -703,3 +703,8 @@ parameters:
         -
             message: '#Parameter \#1 \$value of class PhpParser\\Node\\Expr\\ArrayItem constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|string given#'
             path: packages/PhpAttribute/AnnotationToAttributeMapper/ArrayItemNodeAnnotationToAttributeMapper.php
+
+        # simple filter
+        -
+            message: '#Use separate function calls with readable variable names#'
+            path: utils/RuleDocGenerator/PostRectorOutFilter.php
