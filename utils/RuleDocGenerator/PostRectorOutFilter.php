@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rector\Utils\RuleDocGenerator;
 
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
-use Rector\Utils\RuleDocGenerator\Contract\OutFilterInterface;
+use Symplify\RuleDocGenerator\Contract\RuleOutFilterInterface;
 use Symplify\RuleDocGenerator\ValueObject\RuleClassWithFilePath;
 
-final class PostRectorOutFilter implements OutFilterInterface
+final class PostRectorOutFilter implements RuleOutFilterInterface
 {
     /**
      * @param RuleClassWithFilePath[] $ruleClassWithFilePath
