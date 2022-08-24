@@ -8,4 +8,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $rectorConfig): void {
     $services = $rectorConfig->services();
     $services->set(RectorCategoryInferer::class);
+
+    $services->set(\Rector\Utils\RuleDocGenerator\PostRectorOutFilter::class);
 };
