@@ -3659,14 +3659,14 @@ Remove if/else if they have same content
 
 ### SimplifyMirrorAssignRector
 
-Removes unneeded $a = $a assigns
+Removes unneeded `$value` = `$value` assigns
 
 - class: [`Rector\DeadCode\Rector\Expression\SimplifyMirrorAssignRector`](../rules/DeadCode/Rector/Expression/SimplifyMirrorAssignRector.php)
 
 ```diff
  function run() {
--                $a = $a;
-             }
+-    $result = $result;
+ }
 ```
 
 <br>
