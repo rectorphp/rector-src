@@ -37,8 +37,9 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\All'),
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
 
-            // JMS
+            // JMS + Symfony
             new AnnotationToAttribute('JMS\Serializer\Annotation\AccessType'),
+            new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),
 
             // test for alias used
             new AnnotationToAttribute(

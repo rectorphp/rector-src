@@ -34,24 +34,31 @@ final class AttributeGroupNamedArgumentManipulator
      */
     private function processReplaceAttr(Attribute $attribute, string $attrName): void
     {
-        if (! in_array($attrName, ['JMS\Serializer\Annotation\AccessType', 'JMS\AccessType'], true)) {
-            return;
+        // @todo add an interface, with array and collector here
+
+        $fqnAttributeName = $attribute->name->getAttribute('attribute_name');
+        if ($fqnAttributeName === 'Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter') {
+            // make first named arg silent, @see https://github.com/rectorphp/rector/issues/7352
+            $firstArg = $attribute->args[0];
+            $firstArg->name = null;
         }
 
-        $args = $attribute->args;
-        if (count($args) !== 1) {
-            return;
-        }
+        if ($fqnAttributeName === 'JMS\Serializer\Annotation\AccessType') {
+            $args = $attribute->args;
+            if (count($args) !== 1) {
+                return;
+            }
 
-        $currentArg = $args[0];
-        if ($currentArg->name !== null) {
-            return;
-        }
+            $currentArg = $args[0];
+            if ($currentArg->name !== null) {
+                return;
+            }
 
-        if (! $currentArg->value instanceof String_) {
-            return;
-        }
+            if (! $currentArg->value instanceof String_) {
+                return;
+            }
 
-        $currentArg->name = new Identifier('type');
+            $currentArg->name = new Identifier('type');
+        }
     }
 }

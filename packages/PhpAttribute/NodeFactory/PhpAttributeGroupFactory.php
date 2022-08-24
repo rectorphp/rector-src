@@ -74,6 +74,9 @@ final class PhpAttributeGroupFactory
             $uses
         );
 
+        // keep FQN in the attribute, so it can be easily detected later
+        $attributeName->setAttribute('attribute_name', $annotationToAttribute->getAttributeClass());
+
         $attribute = new Attribute($attributeName, $args);
         return new AttributeGroup([$attribute]);
     }
