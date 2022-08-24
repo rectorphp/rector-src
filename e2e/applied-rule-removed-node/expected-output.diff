@@ -15,7 +15,7 @@
     ----------- end diff -----------
 
 Applied rules:
- * RemoveDeadConstructorRector
+ * RemoveEmptyClassMethodRector
 
 
 2) src/AlwaysTrue.php:3
