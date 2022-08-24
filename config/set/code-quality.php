@@ -57,7 +57,6 @@ use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfExactValueReturnValueRector;
-use Rector\CodeQuality\Rector\If_\SimplifyIfIssetToNullCoalescingRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
@@ -133,7 +132,6 @@ return static function (RectorConfig $rectorConfig): void {
         SimplifyIfElseToTernaryRector::class,
         JoinStringConcatRector::class,
         ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
-        SimplifyIfIssetToNullCoalescingRector::class,
         ExplicitBoolCompareRector::class,
         CombineIfRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
