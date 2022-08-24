@@ -7,9 +7,5 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $rectorConfig): void {
     $services = $rectorConfig->services();
-
-    $services->defaults()
-        ->autowire();
-
     $services->set(RectorCategoryInferer::class);
 };
