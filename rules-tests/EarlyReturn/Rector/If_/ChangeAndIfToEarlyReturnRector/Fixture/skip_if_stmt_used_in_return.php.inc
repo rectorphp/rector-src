@@ -2,18 +2,16 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector\Fixture;
 
-class SkipIfStmtUsedInReturn
+final class SkipIfStmtUsedInReturn
 {
-    public function run()
+    public function run($otherValue)
     {
         $content = '';
 
-        if (1 === 1 && 2 === 2) {
+        if ($otherValue === 1 && $otherValue === 2) {
             $content = execute($content);
         }
 
         return $content . 'execute';
     }
 }
-
-?>
