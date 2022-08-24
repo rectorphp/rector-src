@@ -28,6 +28,7 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory;
 use Rector\NodeTypeResolver\TypeAnalyzer\MethodTypeAnalyzer;
+use Rector\Php80\Contract\AttributeDecoratorInterface;
 use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
 use Rector\Php81\NodeFactory\ClassFromEnumFactory;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
@@ -49,6 +50,7 @@ use Symplify\EasyCI\Config\EasyCIConfig;
 
 return static function (EasyCIConfig $easyCiConfig): void {
     $easyCiConfig->typesToSkip([
+        AttributeDecoratorInterface::class,
         ArrayItemNode::class,
         PhpDocNodeDecoratorInterface::class,
         Command::class,
