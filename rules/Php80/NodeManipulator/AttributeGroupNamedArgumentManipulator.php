@@ -4,54 +4,36 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeManipulator;
 
-use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\String_;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\Contract\AttributeDecoratorInterface;
 
 final class AttributeGroupNamedArgumentManipulator
 {
     /**
-     * @param AttributeGroup[] $attributeGroups
-     * @return AttributeGroup[]
+     * @param AttributeDecoratorInterface[] $attributeDecorators
      */
-    public function processSpecialClassTypes(array $attributeGroups): array
+    public function __construct(private readonly array $attributeDecorators)
     {
-        foreach ($attributeGroups as $attributeGroup) {
-            $attrs = $attributeGroup->attrs;
-
-            foreach ($attrs as $attr) {
-                $attrName = ltrim($attr->name->toString(), '\\');
-                $this->processReplaceAttr($attr, $attrName);
-            }
-        }
-
-        return $attributeGroups;
     }
 
     /**
-     * Special case for JMS Access type, where string is replaced by specific value
+     * @param AttributeGroup[] $attributeGroups
      */
-    private function processReplaceAttr(Attribute $attribute, string $attrName): void
+    public function decorate(array $attributeGroups): void
     {
-        if (! in_array($attrName, ['JMS\Serializer\Annotation\AccessType', 'JMS\AccessType'], true)) {
-            return;
-        }
+        foreach ($attributeGroups as $attributeGroup) {
+            foreach ($attributeGroup->attrs as $attr) {
+                $phpAttributeName = $attr->name->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
 
-        $args = $attribute->args;
-        if (count($args) !== 1) {
-            return;
-        }
+                foreach ($this->attributeDecorators as $attributeDecorator) {
+                    if ($attributeDecorator->getAttributeName() !== $phpAttributeName) {
+                        continue;
+                    }
 
-        $currentArg = $args[0];
-        if ($currentArg->name !== null) {
-            return;
+                    $attributeDecorator->decorate($attr);
+                }
+            }
         }
-
-        if (! $currentArg->value instanceof String_) {
-            return;
-        }
-
-        $currentArg->name = new Identifier('type');
     }
 }

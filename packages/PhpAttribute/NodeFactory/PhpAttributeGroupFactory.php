@@ -12,6 +12,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Use_;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
@@ -73,6 +74,9 @@ final class PhpAttributeGroupFactory
             $doctrineAnnotationTagValueNode,
             $uses
         );
+
+        // keep FQN in the attribute, so it can be easily detected later
+        $attributeName->setAttribute(AttributeKey::PHP_ATTRIBUTE_NAME, $annotationToAttribute->getAttributeClass());
 
         $attribute = new Attribute($attributeName, $args);
         return new AttributeGroup([$attribute]);
