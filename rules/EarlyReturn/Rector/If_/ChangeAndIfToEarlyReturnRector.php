@@ -250,8 +250,8 @@ CODE_SAMPLE
         if (! $stmtsAware instanceof If_) {
             $parent = $stmtsAware->getAttribute(AttributeKey::PARENT_NODE);
             if ($parent instanceof If_) {
-                $next = $parent->getAttribute(AttributeKey::NEXT_NODE);
-                return ! $next instanceof Return_;
+                $node = $parent->getAttribute(AttributeKey::NEXT_NODE);
+                return ! $node instanceof Return_;
             }
 
             return false;
