@@ -69,9 +69,9 @@ final class DemoFile
     }
     
     /**
-     * @return TypedResponse<string>
+     * @return \Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture\TypedResponse<string>
      */
-    public function run(): TypedResponse
+    public function run(): \Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture\TypedResponse
     {
         return $this->createResponse('qwe');
     }
