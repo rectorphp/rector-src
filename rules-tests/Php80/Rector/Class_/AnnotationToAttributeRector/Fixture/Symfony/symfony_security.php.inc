@@ -15,7 +15,7 @@ final class SymfonySecurity
 }
 
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Symfony;
