@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector\Fixture;
 
-class DoubleNegate
+final class DoubleNegate
 {
     public function run()
     {
@@ -18,7 +18,7 @@ class DoubleNegate
 
 namespace Rector\Tests\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector\Fixture;
 
-class DoubleNegate
+final class DoubleNegate
 {
     public function run()
     {
