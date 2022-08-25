@@ -36,7 +36,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
             $this->changedNodeScopeRefresher->refresh($node, $scope, $smartFileInfo);
         }
 
-        /** @var MutatingScope $scope */
         return $this->refactorWithScope($node, $scope);
     }
 }
