@@ -93,7 +93,7 @@ final class RectifiedAnalyzer
 
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
-        if (count($createdByRule) === 1 && current(
+        if ((is_countable($createdByRule) ? count($createdByRule) : 0) === 1 && current(
             $createdByRule
         ) === $rectifiedNode->getRectorClass() && $rectifiedNode->getNode() === $node) {
             return true;
