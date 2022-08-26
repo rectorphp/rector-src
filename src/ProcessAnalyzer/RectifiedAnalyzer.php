@@ -80,7 +80,10 @@ final class RectifiedAnalyzer
         Node $node,
         ?Node $originalNode
     ): bool {
-        if ($rectifiedNode->getRectorClass() === $rectorClass && $rectifiedNode->getNode() === $node) {
+        $rectifiedNodeClass = $rectifiedNode->getRectorClass();
+        $rectifiedNodeNode = $rectifiedNode->getNode();
+
+        if ($rectifiedNodeClass === $rectorClass && $rectifiedNodeNode === $node) {
             /**
              * allow to revisit the Node with same Rector rule if Node is changed by other rule
              */
@@ -91,7 +94,7 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        if ($this->isPreviousCreatedByRuleAttributeEquals($rectifiedNode, $node)) {
+        if ($this->isPreviousCreatedByRuleAttributeEquals($rectifiedNodeClass, $rectifiedNodeNode, $node)) {
             return true;
         }
 
@@ -99,7 +102,14 @@ final class RectifiedAnalyzer
         return $startTokenPos < 0;
     }
 
-    private function isPreviousCreatedByRuleAttributeEquals(RectifiedNode $rectifiedNode, Node $node): bool
+    /**
+     * @param class-string<RectorInterface> $rectifiedNodeClass
+     */
+    private function isPreviousCreatedByRuleAttributeEquals(
+        string $rectifiedNodeClass,
+        Node $rectifiedNodeNode,
+        Node $node
+    ): bool
     {
         /** @var class-string<RectorInterface>[] $createdByRule */
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
@@ -107,10 +117,10 @@ final class RectifiedAnalyzer
             return false;
         }
 
-        if (current($createdByRule) !== $rectifiedNode->getRectorClass()) {
+        if (current($createdByRule) !== $rectifiedNodeClass) {
             return false;
         }
 
-        return $rectifiedNode->getNode() === $node;
+        return $rectifiedNodeNode === $node;
     }
 }
