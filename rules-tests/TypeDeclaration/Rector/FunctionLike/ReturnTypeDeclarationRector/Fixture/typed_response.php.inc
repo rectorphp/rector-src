@@ -24,6 +24,7 @@ final class DemoFile
      */
     public function createResponse($data): TypedResponse
     {
+        /** @var TypedResponse<T> */
         $response = new TypedResponse();
         $response->data = $data;
         return $response;
