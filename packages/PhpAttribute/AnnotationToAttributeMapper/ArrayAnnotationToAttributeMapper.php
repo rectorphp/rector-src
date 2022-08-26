@@ -7,6 +7,10 @@ namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\String_;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
@@ -19,6 +23,10 @@ use Webmozart\Assert\Assert;
 final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMapperInterface
 {
     private AnnotationToAttributeMapper $annotationToAttributeMapper;
+
+    public function __construct(private readonly ValueResolver $valueResolver)
+    {
+    }
 
     /**
      * Avoid circular reference
@@ -55,7 +63,8 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
             }
 
             if ($valueExpr instanceof ArrayItem) {
-                $arrayItems[] = $valueExpr;
+                $valueExpr = $this->resolveValueExprWithSingleQuoteHandling($valueExpr);
+                $arrayItems[] = $this->resolveValueExprWithSingleQuoteHandling($valueExpr);
             } else {
                 $keyExpr = null;
                 if (! is_int($key)) {
@@ -68,6 +77,19 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
         }
 
         return new Array_($arrayItems);
+    }
+
+    private function resolveValueExprWithSingleQuoteHandling(ArrayItem $arrayItem): ArrayItem
+    {
+        if ($arrayItem->key === null && $arrayItem->value instanceof ClassConstFetch && $arrayItem->value->class instanceof Name && str_contains(
+            (string) $arrayItem->value->class,
+            "'"
+        )) {
+            $arrayItem->value = new String_($this->valueResolver->getValue($arrayItem->value));
+            return $arrayItem;
+        }
+
+        return $arrayItem;
     }
 
     private function isRemoveArrayPlaceholder(mixed $value): bool
