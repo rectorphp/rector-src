@@ -116,8 +116,9 @@ final class RectifiedAnalyzer
             return false;
         }
 
+        // different rule, allowed
         if (current($createdByRule) !== $rectifiedNodeClass) {
-            return false;
+            return true;
         }
 
         return $rectifiedNodeNode === $node;
