@@ -48,5 +48,6 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute(
                 'Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\UseAlias\TestOther'
             ),
+            new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\Security'),
         ]);
 };
