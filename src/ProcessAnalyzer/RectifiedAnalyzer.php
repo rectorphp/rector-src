@@ -91,15 +91,26 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-
-        if ((is_countable($createdByRule) ? count($createdByRule) : 0) === 1 && current(
-            $createdByRule
-        ) === $rectifiedNode->getRectorClass() && $rectifiedNode->getNode() === $node) {
+        if ($this->isPreviousCreatedByRuleAttributeEquals($rectifiedNode, $node)) {
             return true;
         }
 
         $startTokenPos = $node->getStartTokenPos();
         return $startTokenPos < 0;
+    }
+
+    private function isPreviousCreatedByRuleAttributeEquals(RectifiedNode $rectifiedNode, Node $node): bool
+    {
+        /** @var class-string<RectorInterface>[] $createdByRule */
+        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+        if (count($createdByRule) !== 1) {
+            return false;
+        }
+
+        if (current($createdByRule) !== $rectifiedNode->getRectorClass()) {
+            return false;
+        }
+
+        return $rectifiedNode->getNode() === $node;
     }
 }
