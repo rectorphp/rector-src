@@ -222,8 +222,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            dump($doctrineTagValueNode);
-
             $doctrineTagAndAnnotationToAttributes[] = new DoctrineTagAndAnnotationToAttribute(
                 $doctrineTagValueNode,
                 $annotationToAttribute,
