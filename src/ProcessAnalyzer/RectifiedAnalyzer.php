@@ -109,8 +109,7 @@ final class RectifiedAnalyzer
         string $rectifiedNodeClass,
         Node $rectifiedNodeNode,
         Node $node
-    ): bool
-    {
+    ): bool {
         /** @var class-string<RectorInterface>[] $createdByRule */
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
         if (count($createdByRule) !== 1) {
