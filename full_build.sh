@@ -68,9 +68,6 @@ cd ..
 
 rm -rf rector-prefixed-downgraded
 
-# rollback early change of src/functions
-git checkout src/functions
-
 # back to get dev dependencies
 composer install --ansi
 
