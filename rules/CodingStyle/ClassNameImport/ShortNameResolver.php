@@ -23,10 +23,10 @@ use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use ReflectionClass;
 use Symfony\Contracts\Service\Attribute\Required;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
-use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 
 /**
  * @see \Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\ShortNameResolverTest

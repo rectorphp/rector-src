@@ -18,11 +18,11 @@ use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\NullTypeAssignDetector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\PropertyDefaultAssignDetector;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 /**
  * @deprecated

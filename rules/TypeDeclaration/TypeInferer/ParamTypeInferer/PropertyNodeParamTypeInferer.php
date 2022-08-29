@@ -18,10 +18,10 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\Contract\TypeInferer\ParamTypeInfererInterface;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyNodeParamTypeInferer implements ParamTypeInfererInterface
 {

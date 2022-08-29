@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeR
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 class SkipReprintUnionArray
 {

@@ -26,8 +26,8 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Php80\ValueObject\ArrayDimFetchAndConstFetch;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class TokenManipulator
 {

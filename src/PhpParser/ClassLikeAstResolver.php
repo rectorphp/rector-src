@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\Application\File;
-use Symplify\Astral\PhpParser\SmartPhpParser;
+use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 
 final class ClassLikeAstResolver
 {

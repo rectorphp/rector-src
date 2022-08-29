@@ -33,7 +33,7 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Symplify\Astral\PhpParser\SmartPhpParser;
+use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**

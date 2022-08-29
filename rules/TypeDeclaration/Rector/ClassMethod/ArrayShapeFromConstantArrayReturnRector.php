@@ -20,8 +20,8 @@ use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\TypeAnalyzer\ClassMethodReturnTypeResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Symplify\Astral\TypeAnalyzer\ClassMethodReturnTypeResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

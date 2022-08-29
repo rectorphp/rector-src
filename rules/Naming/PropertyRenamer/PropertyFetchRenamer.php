@@ -11,7 +11,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\VarLikeIdentifier;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchRenamer
 {

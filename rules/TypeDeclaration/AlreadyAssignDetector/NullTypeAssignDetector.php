@@ -11,9 +11,9 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeTraverser;
 use Rector\NodeNestingScope\ScopeNestingComparator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 /**
  * Should add extra null type

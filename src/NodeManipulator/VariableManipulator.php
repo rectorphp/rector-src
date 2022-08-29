@@ -23,8 +23,8 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class VariableManipulator
 {

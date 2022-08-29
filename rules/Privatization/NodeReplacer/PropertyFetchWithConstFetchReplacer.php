@@ -13,8 +13,8 @@ use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\Privatization\Naming\ConstantNaming;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchWithConstFetchReplacer
 {

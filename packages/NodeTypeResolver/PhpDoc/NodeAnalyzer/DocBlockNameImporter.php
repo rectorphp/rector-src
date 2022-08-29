@@ -7,7 +7,7 @@ namespace Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\NameImportingPhpDocNodeVisitor;
-use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
 final class DocBlockNameImporter
 {

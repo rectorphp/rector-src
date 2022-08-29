@@ -13,7 +13,6 @@ use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPas
 use Rector\Core\Exception\ShouldNotHappenException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symplify\Astral\ValueObject\AstralConfig;
 use Symplify\AutowireArrayParameter\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
 use Symplify\ComposerJsonManipulator\ValueObject\ComposerJsonManipulatorConfig;
 use Symplify\PackageBuilder\DependencyInjection\CompilerPass\AutowireInterfacesCompilerPass;
@@ -97,7 +96,6 @@ final class RectorKernel implements LightKernelInterface
     {
         return [
             __DIR__ . '/../../config/config.php',
-            AstralConfig::FILE_PATH,
             ComposerJsonManipulatorConfig::FILE_PATH,
             SkipperConfig::FILE_PATH,
             ConsoleColorDiffConfig::FILE_PATH,

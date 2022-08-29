@@ -11,8 +11,8 @@ use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
-use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
 
 /**
  * Decorate node with fully qualified class name for const epxr,
