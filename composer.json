@@ -27,7 +27,6 @@
         "rector/rector-cakephp": "dev-main",
         "rector/rector-doctrine": "dev-main",
         "rector/rector-downgrade-php": "dev-main",
-        "rector/rector-generator": "dev-main",
         "rector/rector-laravel": "dev-main",
         "rector/rector-phpoffice": "dev-main",
         "rector/rector-phpunit": "dev-main",
@@ -52,6 +51,7 @@
     },
     "require-dev": {
         "brianium/paratest": "^6.6",
+        "rector/rector-generator": "dev-main",
         "cweagans/composer-patches": "^1.7.2",
         "myclabs/php-enum": "^1.8.4",
         "nategood/httpful": "^0.3.2",
