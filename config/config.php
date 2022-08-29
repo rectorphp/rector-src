@@ -185,8 +185,8 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(ParameterProvider::class)
         ->arg('$container', service('service_container'));
 
-    $services->set(SmartFileSystem::class);
-    $services->set(JsonFileSystem::class);
+    // $services->set(SmartFileSystem::class);
+//    $services->set(JsonFileSystem::class);
 
     $services->set(InflectorFactory::class);
     $services->set(Inflector::class)
