@@ -186,21 +186,12 @@ parameters:
 
         - '#Cannot call method getSmartFileInfo\(\) on Rector\\Core\\ValueObject\\Application\\File\|null#'
 
-        -
-            message: '#Function "function_exists\(\)" cannot be used/left in the code#'
-            paths:
-                 - src/functions/node_helper.php
-
         - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
 
         # deserves better architecture
         -
             message: '#Do not use chained method calls#'
             path: packages/BetterPhpDocParser/Printer/PhpDocInfoPrinter.php
-
-        -
-            message: '#Function "dump_node\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
 
         - '#expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
         # weird generics
