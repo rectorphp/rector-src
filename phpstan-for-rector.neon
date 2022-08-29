@@ -13,4 +13,3 @@ parameters:
 includes:
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
-    - vendor/phpstan/phpstan-nette/extension.neon
