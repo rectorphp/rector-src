@@ -47,7 +47,6 @@ use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeDecorator\PropertyTypeDecorator;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -67,7 +66,6 @@ final class NodeFactory
     public function __construct(
         private readonly BuilderFactory $builderFactory,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-//        private readonly PhpVersionProvider $phpVersionProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
@@ -158,24 +156,24 @@ final class NodeFactory
 
     public function createPublicMethod(string $name): ClassMethod
     {
-        $methodBuilder = new Method($name);
-        $methodBuilder->makePublic();
+        $method = new Method($name);
+        $method->makePublic();
 
-        return $methodBuilder->getNode();
+        return $method->getNode();
     }
 
     public function createParamFromNameAndType(string $name, ?Type $type): Param
     {
-        $paramBuilder = new ParamBuilder($name);
+        $param = new ParamBuilder($name);
 
         if ($type !== null) {
             $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
             if ($typeNode !== null) {
-                $paramBuilder->setType($typeNode);
+                $param->setType($typeNode);
             }
         }
 
-        return $paramBuilder->getNode();
+        return $param->getNode();
     }
 
     public function createPublicInjectPropertyFromNameAndType(string $name, ?Type $type): Property

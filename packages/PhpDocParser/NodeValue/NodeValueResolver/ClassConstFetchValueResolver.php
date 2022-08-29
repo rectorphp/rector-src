@@ -58,10 +58,6 @@ final class ClassConstFetchValueResolver implements NodeValueResolverInterface
             return null;
         }
 
-//        if (! class_exists($className) && ! interface_exists($className)) {
-//            return null;
-//        }
-
         $reflectionClassConstant = new ReflectionClassConstant($className, $constantName);
         return $reflectionClassConstant->getValue();
     }
