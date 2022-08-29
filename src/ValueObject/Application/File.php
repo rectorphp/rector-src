@@ -163,9 +163,4 @@ final class File
     {
         return $this->rectorWithLineChanges;
     }
-
-    public function getRelativeFilePath(): string
-    {
-        return $this->smartFileInfo->getRelativeFilePathFromCwd();
-    }
 }

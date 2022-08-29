@@ -12,6 +12,7 @@ use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -33,7 +34,8 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PostFileProcessor $postFileProcessor,
-        private readonly ErrorFactory $errorFactory
+        private readonly ErrorFactory $errorFactory,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -131,11 +133,8 @@ final class PhpFileProcessor implements FileProcessorInterface
                 throw $throwable;
             }
 
-            $systemError = new SystemError(
-                $throwable->getMessage(),
-                $file->getRelativeFilePath(),
-                $throwable->getLine(),
-            );
+            $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
+            $systemError = new SystemError($throwable->getMessage(), $relativeFilePath, $throwable->getLine());
 
             return [$systemError];
         }
@@ -165,8 +164,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             return;
         }
 
-        $smartFileInfo = $file->getSmartFileInfo();
-        $message = $smartFileInfo->getRelativeFilePathFromDirectory(getcwd());
-        $this->rectorOutputStyle->writeln($message);
+        $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
+        $this->rectorOutputStyle->writeln($relativeFilePath);
     }
 }

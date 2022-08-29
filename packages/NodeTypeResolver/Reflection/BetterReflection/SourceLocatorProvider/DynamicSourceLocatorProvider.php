@@ -12,14 +12,13 @@ use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLo
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use Rector\NodeTypeResolver\Contract\SourceLocatorProviderInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class DynamicSourceLocatorProvider implements SourceLocatorProviderInterface
 {
     /**
      * @var string[]
      */
-    private array $files = [];
+    private array $filePaths = [];
 
     /**
      * @var array<string, string[]>
@@ -34,9 +33,9 @@ final class DynamicSourceLocatorProvider implements SourceLocatorProviderInterfa
     ) {
     }
 
-    public function setFileInfo(SmartFileInfo $fileInfo): void
+    public function setFilePath(string $filePath): void
     {
-        $this->files = [$fileInfo->getRealPath()];
+        $this->filePaths = [$filePath];
     }
 
     /**
@@ -44,7 +43,7 @@ final class DynamicSourceLocatorProvider implements SourceLocatorProviderInterfa
      */
     public function addFiles(array $files): void
     {
-        $this->files = array_merge($this->files, $files);
+        $this->filePaths = array_merge($this->filePaths, $files);
     }
 
     public function provide(): SourceLocator
@@ -57,7 +56,7 @@ final class DynamicSourceLocatorProvider implements SourceLocatorProviderInterfa
         }
 
         $sourceLocators = [];
-        foreach ($this->files as $file) {
+        foreach ($this->filePaths as $file) {
             $sourceLocators[] = new OptimizedSingleFileSourceLocator($this->fileNodesFetcher, $file);
         }
 

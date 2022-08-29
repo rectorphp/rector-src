@@ -24,6 +24,7 @@ use Rector\Core\Console\Output\RectorOutputStyle;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Exclusion\ExclusionManager;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -112,6 +113,8 @@ CODE_SAMPLE;
 
     private RectorOutputStyle $rectorOutputStyle;
 
+    private FilePathHelper $filePathHelper;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -133,7 +136,8 @@ CODE_SAMPLE;
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        RectorOutputStyle $rectorOutputStyle
+        RectorOutputStyle $rectorOutputStyle,
+        FilePathHelper $filePathHelper
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -155,6 +159,7 @@ CODE_SAMPLE;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
+        $this->filePathHelper = $filePathHelper;
     }
 
     /**
@@ -383,7 +388,9 @@ CODE_SAMPLE;
             return;
         }
 
-        $this->rectorOutputStyle->writeln('[file] ' . $this->file->getRelativeFilePath());
+        $relativeFilePath = $this->filePathHelper->relativePath($this->file->getFilePath());
+
+        $this->rectorOutputStyle->writeln('[file] ' . $relativeFilePath);
         $this->rectorOutputStyle->writeln('[rule] ' . static::class);
         $this->rectorOutputStyle->newLine(1);
     }
