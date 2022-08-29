@@ -736,3 +736,6 @@ parameters:
         -
             message: '#Creating new PHPStan\\Parser\\(CachedParser|SimpleParser) is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: packages/PhpDocParser/PhpParser/SmartPhpParserFactory.php
+
+        # allowed
+        - '#Instead of "Symfony\\Component\\Filesystem\\Filesystem" class/interface use "Symplify\\SmartFileSystem\\SmartFileSystem"#'

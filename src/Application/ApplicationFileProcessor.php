@@ -18,6 +18,7 @@ use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\ValueObject\Bridge;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
 use Symplify\EasyParallel\FileSystem\FilePathNormalizer;
@@ -25,7 +26,6 @@ use Symplify\EasyParallel\ScheduleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 use Webmozart\Assert\Assert;
 
 final class ApplicationFileProcessor
@@ -44,7 +44,7 @@ final class ApplicationFileProcessor
      * @param FileProcessorInterface[] $fileProcessors
      */
     public function __construct(
-        private readonly SmartFileSystem $smartFileSystem,
+        private readonly Filesystem $filesystem,
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly OutputStyleInterface $rectorOutputStyle,
@@ -164,8 +164,8 @@ final class ApplicationFileProcessor
     {
         $smartFileInfo = $file->getSmartFileInfo();
 
-        $this->smartFileSystem->dumpFile($smartFileInfo->getPathname(), $file->getFileContent());
-        $this->smartFileSystem->chmod($smartFileInfo->getRealPath(), $smartFileInfo->getPerms());
+        $this->filesystem->dumpFile($smartFileInfo->getPathname(), $file->getFileContent());
+        $this->filesystem->chmod($smartFileInfo->getRealPath(), $smartFileInfo->getPerms());
     }
 
     /**

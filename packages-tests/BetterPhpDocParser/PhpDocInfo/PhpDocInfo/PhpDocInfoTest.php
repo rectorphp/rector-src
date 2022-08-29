@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 
+use Nette\Utils\FileSystem;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\Nop;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
@@ -13,15 +14,12 @@ use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class PhpDocInfoTest extends AbstractTestCase
 {
     private PhpDocInfo $phpDocInfo;
 
     private PhpDocInfoPrinter $phpDocInfoPrinter;
-
-    private SmartFileSystem $smartFileSystem;
 
     private DocBlockTagReplacer $docBlockTagReplacer;
 
@@ -30,7 +28,6 @@ final class PhpDocInfoTest extends AbstractTestCase
         $this->boot();
 
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
-        $this->smartFileSystem = $this->getService(SmartFileSystem::class);
         $this->docBlockTagReplacer = $this->getService(DocBlockTagReplacer::class);
 
         $this->phpDocInfo = $this->createPhpDocInfoFromFile(__DIR__ . '/Source/doc.txt');
@@ -78,7 +75,7 @@ final class PhpDocInfoTest extends AbstractTestCase
     private function createPhpDocInfoFromFile(string $path): ?PhpDocInfo
     {
         $phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
-        $phpDocContent = $this->smartFileSystem->readFile($path);
+        $phpDocContent = FileSystem::read($path);
 
         $nop = new Nop();
         $nop->setDocComment(new Doc($phpDocContent));

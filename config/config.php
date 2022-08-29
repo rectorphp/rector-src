@@ -44,6 +44,7 @@ use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
 use Rector\Utils\Command\MissingInSetCommand;
 use Symfony\Component\Console\Application;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Php\TypeChecker;
@@ -118,6 +119,8 @@ return static function (RectorConfig $rectorConfig): void {
 
     // parallel
     $services->set(ParametersMerger::class);
+
+    $services->set(Filesystem::class);
 
     // use faster in-memory cache in CI.
     // CI always starts from scratch, therefore IO intensive caching is not worth it

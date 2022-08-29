@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Parser;
 
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
@@ -13,7 +14,6 @@ use PhpParser\Node\Stmt;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class InlineCodeParser
 {
@@ -57,7 +57,6 @@ final class InlineCodeParser
         private readonly NodePrinterInterface $nodePrinter,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly SimplePhpParser $simplePhpParser,
-        private readonly SmartFileSystem $smartFileSystem
     ) {
     }
 
@@ -68,7 +67,7 @@ final class InlineCodeParser
     {
         // to cover files too
         if (is_file($content)) {
-            $content = $this->smartFileSystem->readFile($content);
+            $content = FileSystem::read($content);
         }
 
         // wrap code so php-parser can interpret it

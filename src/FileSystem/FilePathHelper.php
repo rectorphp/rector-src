@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Core\FileSystem;
 
-use Symplify\SmartFileSystem\SmartFileSystem;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class FilePathHelper
 {
     public function __construct(
-        private readonly SmartFileSystem $smartFileSystem,
+        private readonly Filesystem $filesystem,
     ) {
     }
 
@@ -17,7 +17,7 @@ final class FilePathHelper
     {
         $normalizedFileRealPath = $this->normalizePath($fileRealPath);
 
-        $relativeFilePath = $this->smartFileSystem->makePathRelative(
+        $relativeFilePath = $this->filesystem->makePathRelative(
             $normalizedFileRealPath,
             (string) realpath(getcwd())
         );

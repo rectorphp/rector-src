@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\PhpTagsAddedToBlade;
 
+use Nette\Utils\FileSystem;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\ValueObject\Application\File;
@@ -12,7 +13,6 @@ use Rector\Parallel\ValueObject\Bridge;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class PhpTagsAddedToBladeTest extends AbstractRectorTestCase
 {
@@ -48,8 +48,7 @@ final class PhpTagsAddedToBladeTest extends AbstractRectorTestCase
         $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $inputFileInfo->getContents());
 
         // restore original file
-        $smartFileSystem = new SmartFileSystem();
-        $smartFileSystem->dumpFile($inputFileInfo->getRealPath(), $inputFileInfoContent);
+        FileSystem::write($inputFileInfo->getRealPath(), $inputFileInfoContent);
     }
 
     public function provideConfigFilePath(): string

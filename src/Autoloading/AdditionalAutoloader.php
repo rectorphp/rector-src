@@ -8,7 +8,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use Symplify\SmartFileSystem\FileSystemGuard;
+use Webmozart\Assert\Assert;
 
 /**
  * Should it pass autoload files/directories to PHPStan analyzer?
@@ -16,7 +16,6 @@ use Symplify\SmartFileSystem\FileSystemGuard;
 final class AdditionalAutoloader
 {
     public function __construct(
-        private readonly FileSystemGuard $fileSystemGuard,
         private readonly ParameterProvider $parameterProvider,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator
     ) {
@@ -34,7 +33,8 @@ final class AdditionalAutoloader
             return;
         }
 
-        $this->fileSystemGuard->ensureFileExists($autoloadFile, 'Extra autoload');
+        Assert::fileExists($autoloadFile, sprintf('Extra autoload file %s was not found', $autoloadFile));
+
         require_once $autoloadFile;
     }
 

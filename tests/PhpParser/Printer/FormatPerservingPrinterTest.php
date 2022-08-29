@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\PhpParser\Printer;
 
+use Nette\Utils\FileSystem;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class FormatPerservingPrinterTest extends AbstractTestCase
 {
@@ -18,18 +18,15 @@ final class FormatPerservingPrinterTest extends AbstractTestCase
 
     private FormatPerservingPrinter $formatPerservingPrinter;
 
-    private SmartFileSystem $smartFileSystem;
-
     protected function setUp(): void
     {
         $this->boot();
         $this->formatPerservingPrinter = $this->getService(FormatPerservingPrinter::class);
-        $this->smartFileSystem = $this->getService(SmartFileSystem::class);
     }
 
     protected function tearDown(): void
     {
-        $this->smartFileSystem->remove(__DIR__ . '/Fixture');
+        FileSystem::delete(__DIR__ . '/Fixture');
     }
 
     public function testFileModeIsPreserved(): void

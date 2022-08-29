@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -17,7 +18,6 @@ use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\EasyTesting\FixtureSplitter\TrioFixtureSplitter;
 use Symplify\EasyTesting\ValueObject\FixtureSplit\TrioContent;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class TagValueNodeReprintTest extends AbstractTestCase
 {
@@ -114,8 +114,7 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         $temporaryFileName = sys_get_temp_dir() . '/rector/tests/' . $fixturefileInfo->getRelativePathname();
         $firstValue = $trioContent->getFirstValue();
 
-        $smartFileSystem = new SmartFileSystem();
-        $smartFileSystem->dumpFile($temporaryFileName, $firstValue);
+        FileSystem::write($temporaryFileName, $firstValue);
 
         return new SmartFileInfo($temporaryFileName);
     }
