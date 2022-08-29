@@ -145,7 +145,6 @@ parameters:
         - '#Access to an undefined property PhpParser\\Node\\FunctionLike\|PhpParser\\Node\\Stmt\\If_\:\:\$stmts#'
 
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is \d+, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\DogFood\\Rector\\Closure\\UpgradeRectorConfigRector\:\:refactor\(\)" is \d+, keep it under 10#'
 
         - '#(.*?) class\-string, string given#'
 
@@ -724,12 +723,6 @@ parameters:
             message: "#Class cognitive complexity is 69, keep it under 50#"
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
 
-        # update after https://github.com/nikic/PHP-Parser/pull/869 gets released
-        -
-            message: '#Method Rector\\PhpDocParser\\TypeAwareNodeFinder\:\:(.*?) should return (.*?) but returns (.*?)#'
-            paths:
-                - "packages/PhpDocParser/PhpDocParser/TypeAwareNodeFinder.php"
-                - "packages/PhpDocParser/TypeAwareNodeFinder.php"
         -
             message: '#Use explicit names over dynamic ones#'
             path: "packages/PhpDocParser/NodeValue/NodeValueResolver/FuncCallValueResolver.php"
