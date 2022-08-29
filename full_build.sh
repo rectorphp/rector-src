@@ -29,9 +29,6 @@ php -r 'shell_exec("rm -rf " . sys_get_temp_dir() . "/rector_cached_files");';
 
 composer install --no-dev --ansi
 
-# early downgrade individual functions
-bin/rector process src/functions vendor/symfony/string/Resources/functions.php -c build/config/config-downgrade.php --ansi
-
 rsync --exclude rector-build -av * rector-build --quiet
 
 rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests rector-build/bin/generate-changelog.php rector-build/bin/validate-phpstan-version.php rector-build/bin/clean-phpstan.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener rector-build/vendor/symfony/contracts/Cache/ItemInterface.php rector-build/vendor/symfony/dependency-injection/ExpressionLanguageProvider.php rector-build/vendor/symfony/dependency-injection/ExpressionLanguage.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session
