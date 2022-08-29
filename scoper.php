@@ -78,6 +78,13 @@ return [
             $content
         ),
 
+        // unprefixed SmartFileInfo - needed in AbstractTestCase
+        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+            $content,
+            '#' . $prefix . '\\\\Symplify\\\\SmartFileSystem\\\\SmartFileInfo#',
+            'Symplify\SmartFileSystem\SmartFileInfo'
+        ),
+
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'src/Application/VersionResolver.php')) {
                 return $content;
