@@ -42,7 +42,7 @@ final class File
     private array $rectorWithLineChanges = [];
 
     public function __construct(
-        private readonly SmartFileInfo|string $smartFileInfo,
+        private readonly SmartFileInfo $smartFileInfo,
         private string $fileContent
     ) {
         $this->originalFileContent = $fileContent;
@@ -162,10 +162,5 @@ final class File
     public function getRectorWithLineChanges(): array
     {
         return $this->rectorWithLineChanges;
-    }
-
-    public function getRelativeFilePath(): string
-    {
-        return $this->smartFileInfo->getRelativeFilePathFromCwd();
     }
 }
