@@ -145,7 +145,6 @@ parameters:
         - '#Access to an undefined property PhpParser\\Node\\FunctionLike\|PhpParser\\Node\\Stmt\\If_\:\:\$stmts#'
 
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is \d+, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\DogFood\\Rector\\Closure\\UpgradeRectorConfigRector\:\:refactor\(\)" is \d+, keep it under 10#'
 
         - '#(.*?) class\-string, string given#'
 
