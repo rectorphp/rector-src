@@ -45,8 +45,10 @@ final class UseAddingPostRector extends AbstractPostRector
         $file = $this->currentFileProvider->getFile();
         $smartFileInfo = $file->getSmartFileInfo();
 
-        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFileInfo($smartFileInfo);
-        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFileInfo($smartFileInfo);
+        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($smartFileInfo->getRealPath());
+        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath(
+            $smartFileInfo->getRealPath()
+        );
 
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
 

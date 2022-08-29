@@ -12,7 +12,6 @@ use Rector\Naming\Naming\UseImportsResolver;
 use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class UseNodesToAddCollector implements NodeCollectorInterface
 {
@@ -135,17 +134,17 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
     /**
      * @return AliasedObjectType[]|FullyQualifiedObjectType[]
      */
-    public function getObjectImportsByFileInfo(SmartFileInfo $smartFileInfo): array
+    public function getObjectImportsByFilePath(string $filePath): array
     {
-        return $this->useImportTypesInFilePath[$smartFileInfo->getRealPath()] ?? [];
+        return $this->useImportTypesInFilePath[$filePath] ?? [];
     }
 
     /**
      * @return FullyQualifiedObjectType[]
      */
-    public function getFunctionImportsByFileInfo(SmartFileInfo $smartFileInfo): array
+    public function getFunctionImportsByFilePath(string $filePath): array
     {
-        return $this->functionUseImportTypesInFilePath[$smartFileInfo->getRealPath()] ?? [];
+        return $this->functionUseImportTypesInFilePath[$filePath] ?? [];
     }
 
     private function isShortClassImported(string $filePath, string $shortName): bool

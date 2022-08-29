@@ -42,7 +42,7 @@ final class File
     private array $rectorWithLineChanges = [];
 
     public function __construct(
-        private readonly SmartFileInfo $smartFileInfo,
+        private readonly SmartFileInfo|string $smartFileInfo,
         private string $fileContent
     ) {
         $this->originalFileContent = $fileContent;
