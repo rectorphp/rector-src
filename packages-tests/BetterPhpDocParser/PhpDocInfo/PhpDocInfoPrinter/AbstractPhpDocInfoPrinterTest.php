@@ -12,13 +12,10 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
 {
     protected PhpDocInfoPrinter $phpDocInfoPrinter;
-
-    protected SmartFileSystem $smartFileSystem;
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
@@ -28,7 +25,6 @@ abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
 
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
-        $this->smartFileSystem = $this->getService(SmartFileSystem::class);
     }
 
     protected function createPhpDocInfoFromDocCommentAndNode(string $docComment, Node $node): PhpDocInfo

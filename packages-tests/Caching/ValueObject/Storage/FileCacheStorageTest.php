@@ -6,8 +6,8 @@ namespace Rector\Tests\Caching\ValueObject\Storage;
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class FileCacheStorageTest extends AbstractRectorTestCase
 {
@@ -17,7 +17,7 @@ final class FileCacheStorageTest extends AbstractRectorTestCase
     {
         parent::setUp();
 
-        $this->fileCacheStorage = new FileCacheStorage(__DIR__ . '/Source', $this->getService(SmartFileSystem::class));
+        $this->fileCacheStorage = new FileCacheStorage(__DIR__ . '/Source', new Filesystem());
     }
 
     public function testClean(): void

@@ -24,7 +24,7 @@ class InstantMakeInStaticMethod
 {
     public static function run()
     {
-        return (new \Symplify\SmartFileSystem\SmartFileSystem())->dumpFile('file', 'content');
+        return (new \Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\TargetFileSystem())->dumpFile('file', 'content');
     }
 }
 
