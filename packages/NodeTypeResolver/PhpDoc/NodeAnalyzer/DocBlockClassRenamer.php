@@ -7,7 +7,7 @@ namespace Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\ClassRenamePhpDocNodeVisitor;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
-use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
 final class DocBlockClassRenamer
 {

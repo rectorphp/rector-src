@@ -23,7 +23,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchAnalyzer
 {

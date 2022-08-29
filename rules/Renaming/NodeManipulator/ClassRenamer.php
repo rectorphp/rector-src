@@ -33,8 +33,8 @@ use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class ClassRenamer

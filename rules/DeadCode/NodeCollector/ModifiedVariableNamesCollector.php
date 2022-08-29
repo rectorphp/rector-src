@@ -12,7 +12,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ModifiedVariableNamesCollector
 {

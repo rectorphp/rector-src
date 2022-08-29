@@ -24,7 +24,7 @@ use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ComplexNodeRemover
 {

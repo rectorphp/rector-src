@@ -14,7 +14,7 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
-use Symplify\Astral\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 
 final class UnionTypeNodePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor implements BasePhpDocNodeVisitorInterface
 {

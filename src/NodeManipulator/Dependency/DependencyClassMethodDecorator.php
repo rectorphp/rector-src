@@ -18,7 +18,7 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class DependencyClassMethodDecorator
 {

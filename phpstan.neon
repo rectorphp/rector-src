@@ -659,6 +659,7 @@ parameters:
                 - rules/Removing/NodeManipulator/ComplexNodeRemover.php
                 - rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+                - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
 
         -
             message: '#Method call return value that should be used, but is not#'
@@ -699,3 +700,46 @@ parameters:
         -
             message: '#Use separate function calls with readable variable names#'
             path: utils/RuleDocGenerator/PostRectorOutFilter.php
+
+        # phpdoc node traversing
+        -
+            message: "#Implicit array creation is not allowed \\- variable \\$doNodes might not exist#"
+            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+        -
+            message: '#Instead of abstract class, use specific service with composition#'
+            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeVisitor/AbstractPhpDocNodeVisitor.php"
+        -
+            message: '#Use explicit return value over magic &reference#'
+            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+        -
+            message: '#Cognitive complexity for "Rector\\PhpDocParser\\PhpDocParser\\PhpDocNodeTraverser\:\:(.*?)\(\)" is \d+, keep it under 10#'
+            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+        -
+            message: '#Variable property access on TNode of PHPStan\\PhpDocParser\\Ast\\Node#'
+            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+        -
+            message: '#Use explicit names over dynamic ones#'
+            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+        -
+            message: "#Class cognitive complexity is 69, keep it under 50#"
+            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+
+        # update after https://github.com/nikic/PHP-Parser/pull/869 gets released
+        -
+            message: '#Method Rector\\PhpDocParser\\TypeAwareNodeFinder\:\:(.*?) should return (.*?) but returns (.*?)#'
+            paths:
+                - "packages/PhpDocParser/PhpDocParser/TypeAwareNodeFinder.php"
+                - "packages/PhpDocParser/TypeAwareNodeFinder.php"
+        -
+            message: '#Use explicit names over dynamic ones#'
+            path: "packages/PhpDocParser/NodeValue/NodeValueResolver/FuncCallValueResolver.php"
+        -
+            message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
+            path: "packages/PhpDocParser/NodeValue/NodeValueResolver/FuncCallValueResolver.php"
+        -
+            message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+            path: "packages/PhpDocParser/NodeValue/NodeValueResolver/FuncCallValueResolver.php"
+
+        -
+            message: '#Creating new PHPStan\\Parser\\(CachedParser|SimpleParser) is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
+            path: packages/PhpDocParser/PhpParser/SmartPhpParserFactory.php

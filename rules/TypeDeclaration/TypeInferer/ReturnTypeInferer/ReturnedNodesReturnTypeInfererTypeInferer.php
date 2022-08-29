@@ -25,10 +25,10 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\TypeDeclaration\TypeInferer\SplArrayFixedTypeNarrower;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 /**
  * @deprecated

@@ -17,7 +17,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class FullyQualifyStmtsAnalyzer

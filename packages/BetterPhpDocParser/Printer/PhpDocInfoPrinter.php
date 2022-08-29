@@ -23,7 +23,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
-use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\PhpDocInfoPrinterTest

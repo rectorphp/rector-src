@@ -10,7 +10,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\DeadCode\PhpDoc\DeadParamTagValueNodeAnalyzer;
-use Symplify\Astral\PhpDocParser\PhpDocNodeTraverser;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
 final class ParamTagRemover
 {

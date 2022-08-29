@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Node;
 
+use PhpParser\Builder\Method;
+use PhpParser\Builder\Param as ParamBuilder;
+use PhpParser\Builder\Property as PropertyBuilder;
 use PhpParser\BuilderFactory;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node;
@@ -56,9 +59,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Symplify\Astral\ValueObject\NodeBuilder\MethodBuilder;
-use Symplify\Astral\ValueObject\NodeBuilder\ParamBuilder;
-use Symplify\Astral\ValueObject\NodeBuilder\PropertyBuilder;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Node\NodeFactoryTest
@@ -73,9 +73,9 @@ final class NodeFactory
     public function __construct(
         private readonly BuilderFactory $builderFactory,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly PhpVersionProvider $phpVersionProvider,
+//        private readonly PhpVersionProvider $phpVersionProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+//        private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
     ) {
@@ -165,7 +165,7 @@ final class NodeFactory
 
     public function createPublicMethod(string $name): ClassMethod
     {
-        $methodBuilder = new MethodBuilder($name);
+        $methodBuilder = new Method($name);
         $methodBuilder->makePublic();
 
         return $methodBuilder->getNode();
@@ -260,44 +260,44 @@ final class NodeFactory
         return $property;
     }
 
-    public function createGetterClassMethod(string $propertyName, Type $type): ClassMethod
-    {
-        $methodBuilder = new MethodBuilder('get' . ucfirst($propertyName));
-        $methodBuilder->makePublic();
+//    public function createGetterClassMethod(string $propertyName, Type $type): ClassMethod
+//    {
+//        $methodBuilder = new Method('get' . ucfirst($propertyName));
+//        $methodBuilder->makePublic();
+//
+//        $propertyFetch = new PropertyFetch(new Variable(self::THIS), $propertyName);
+//
+//        $return = new Return_($propertyFetch);
+//        $methodBuilder->addStmt($return);
+//
+//        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
+//        if ($typeNode !== null) {
+//            $methodBuilder->setReturnType($typeNode);
+//        }
+//
+//        return $methodBuilder->getNode();
+//    }
 
-        $propertyFetch = new PropertyFetch(new Variable(self::THIS), $propertyName);
-
-        $return = new Return_($propertyFetch);
-        $methodBuilder->addStmt($return);
-
-        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
-        if ($typeNode !== null) {
-            $methodBuilder->setReturnType($typeNode);
-        }
-
-        return $methodBuilder->getNode();
-    }
-
-    public function createSetterClassMethod(string $propertyName, Type $type): ClassMethod
-    {
-        $methodBuilder = new MethodBuilder('set' . ucfirst($propertyName));
-        $methodBuilder->makePublic();
-
-        $variable = new Variable($propertyName);
-
-        $param = $this->createParamWithType($variable, $type);
-        $methodBuilder->addParam($param);
-
-        $propertyFetch = new PropertyFetch(new Variable(self::THIS), $propertyName);
-        $assign = new Assign($propertyFetch, $variable);
-        $methodBuilder->addStmt($assign);
-
-        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::VOID_TYPE)) {
-            $methodBuilder->setReturnType(new Name('void'));
-        }
-
-        return $methodBuilder->getNode();
-    }
+//    public function createSetterClassMethod(string $propertyName, Type $type): ClassMethod
+//    {
+//        $methodBuilder = new MethodBuilder('set' . ucfirst($propertyName));
+//        $methodBuilder->makePublic();
+//
+//        $variable = new Variable($propertyName);
+//
+//        $param = $this->createParamWithType($variable, $type);
+//        $methodBuilder->addParam($param);
+//
+//        $propertyFetch = new PropertyFetch(new Variable(self::THIS), $propertyName);
+//        $assign = new Assign($propertyFetch, $variable);
+//        $methodBuilder->addStmt($assign);
+//
+//        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::VOID_TYPE)) {
+//            $methodBuilder->setReturnType(new Name('void'));
+//        }
+//
+//        return $methodBuilder->getNode();
+//    }
 
     /**
      * @param Expr[] $exprs
@@ -447,27 +447,27 @@ final class NodeFactory
         return $this->createBooleanAndFromNodes($newNodes);
     }
 
-    /**
-     * @api
-     */
-    public function createClassConstant(string $name, Expr $expr, int $modifier): ClassConst
-    {
-        $normalizedExpr = BuilderHelpers::normalizeValue($expr);
-
-        $const = new Const_($name, $normalizedExpr);
-        $classConst = new ClassConst([$const]);
-        $classConst->flags |= $modifier;
-
-        // add @var type by default
-        $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($expr);
-
-        if (! $staticType instanceof MixedType) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classConst);
-            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $staticType);
-        }
-
-        return $classConst;
-    }
+//    /**
+//     * @api
+//     */
+//    public function createClassConstant(string $name, Expr $expr, int $modifier): ClassConst
+//    {
+//        $normalizedExpr = BuilderHelpers::normalizeValue($expr);
+//
+//        $const = new Const_($name, $normalizedExpr);
+//        $classConst = new ClassConst([$const]);
+//        $classConst->flags |= $modifier;
+//
+//        // add @var type by default
+//        $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($expr);
+//
+//        if (! $staticType instanceof MixedType) {
+//            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classConst);
+//            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $staticType);
+//        }
+//
+//        return $classConst;
+//    }
 
     private function createArrayItem(mixed $item, string | int | null $key = null): ArrayItem
     {
@@ -539,14 +539,14 @@ final class NodeFactory
         return $booleanAnd;
     }
 
-    private function createParamWithType(Variable $variable, Type $type): Param
-    {
-        $param = new Param($variable);
-
-        $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
-
-        return $param;
-    }
+//    private function createParamWithType(Variable $variable, Type $type): Param
+//    {
+//        $param = new Param($variable);
+//
+//        $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
+//
+//        return $param;
+//    }
 
     /**
      * @param string|ObjectReference::* $className

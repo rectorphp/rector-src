@@ -11,7 +11,7 @@ use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ArrayDestructVariableFilter
 {

@@ -15,9 +15,9 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
-use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ConstructorAssignDetector
 {
