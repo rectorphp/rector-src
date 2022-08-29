@@ -22,12 +22,12 @@ use Nette\Utils\FileSystem;
 
 class SomeClass
 {
-    public function __construct(private \Symplify\SmartFileSystem\SmartFileSystem $smartFileSystem)
+    public function __construct(private \Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\TargetFileSystem $targetFileSystem)
     {
     }
     public function run()
     {
-        return $this->smartFileSystem->dumpFile('file', 'content');
+        return $this->targetFileSystem->dumpFile('file', 'content');
     }
 }
 

@@ -22,9 +22,9 @@ use Nette\Utils\FileSystem;
 
 class InConstructor
 {
-    public function __construct(\Symplify\SmartFileSystem\SmartFileSystem $smartFileSystem)
+    public function __construct(\Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\TargetFileSystem $targetFileSystem)
     {
-        return $smartFileSystem->dumpFile('file', 'content');
+        return $targetFileSystem->dumpFile('file', 'content');
     }
 }
 
