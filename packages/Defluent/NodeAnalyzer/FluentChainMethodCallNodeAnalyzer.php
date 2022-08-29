@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Defluent\NodeAnalyzer;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
-use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * Utils for chain of MethodCall Node:
@@ -18,68 +15,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class FluentChainMethodCallNodeAnalyzer
 {
-    public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-    ) {
-    }
-
-    /**
-     * @return string[]
-     */
-    public function collectMethodCallNamesInChain(MethodCall $desiredMethodCall): array
-    {
-        $methodCalls = $this->collectAllMethodCallsInChain($desiredMethodCall);
-
-        $methodNames = [];
-        foreach ($methodCalls as $methodCall) {
-            $methodName = $this->nodeNameResolver->getName($methodCall->name);
-            if ($methodName === null) {
-                continue;
-            }
-
-            $methodNames[] = $methodName;
-        }
-
-        return $methodNames;
-    }
-
-    /**
-     * @return MethodCall[]
-     */
-    public function collectAllMethodCallsInChain(MethodCall $methodCall): array
-    {
-        $chainMethodCalls = [$methodCall];
-
-        // traverse up
-        $currentNode = $methodCall->var;
-        while ($currentNode instanceof MethodCall) {
-            $chainMethodCalls[] = $currentNode;
-            $currentNode = $currentNode->var;
-        }
-
-        // traverse down
-        if (count($chainMethodCalls) === 1) {
-            $currentNode = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
-            while ($currentNode instanceof MethodCall) {
-                $chainMethodCalls[] = $currentNode;
-                $currentNode = $currentNode->getAttribute(AttributeKey::PARENT_NODE);
-            }
-        }
-
-        return $chainMethodCalls;
-    }
-
-    public function resolveRootExpr(MethodCall $methodCall): Expr | Name
-    {
-        $callerNode = $methodCall->var;
-
-        while ($callerNode instanceof MethodCall || $callerNode instanceof StaticCall) {
-            $callerNode = $callerNode instanceof StaticCall ? $callerNode->class : $callerNode->var;
-        }
-
-        return $callerNode;
-    }
-
     public function resolveRootMethodCall(MethodCall $methodCall): ?MethodCall
     {
         $callerNode = $methodCall->var;
@@ -93,5 +28,16 @@ final class FluentChainMethodCallNodeAnalyzer
         }
 
         return null;
+    }
+
+    public function resolveRootExpr(MethodCall $methodCall): Expr | Name
+    {
+        $callerNode = $methodCall->var;
+
+        while ($callerNode instanceof MethodCall || $callerNode instanceof StaticCall) {
+            $callerNode = $callerNode instanceof StaticCall ? $callerNode->class : $callerNode->var;
+        }
+
+        return $callerNode;
     }
 }
