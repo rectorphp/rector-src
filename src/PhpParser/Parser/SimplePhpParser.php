@@ -15,7 +15,8 @@ final class SimplePhpParser
 {
     private readonly Parser $phpParser;
 
-    public function __construct() {
+    public function __construct()
+    {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);
     }

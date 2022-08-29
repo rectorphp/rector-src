@@ -9,8 +9,8 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\ValueObject\Application\File;
+use Symfony\Component\Filesystem\Filesystem;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Printer\FormatPerservingPrinterTest
@@ -19,7 +19,7 @@ final class FormatPerservingPrinter
 {
     public function __construct(
         private readonly BetterStandardPrinter $betterStandardPrinter,
-        private readonly SmartFileSystem $smartFileSystem
+        private readonly Filesystem $filesystem
     ) {
     }
 
@@ -32,8 +32,8 @@ final class FormatPerservingPrinter
     {
         $newContent = $this->betterStandardPrinter->printFormatPreserving($newStmts, $oldStmts, $oldTokens);
 
-        $this->smartFileSystem->dumpFile($fileInfo->getRealPath(), $newContent);
-        $this->smartFileSystem->chmod($fileInfo->getRealPath(), $fileInfo->getPerms());
+        $this->filesystem->dumpFile($fileInfo->getRealPath(), $newContent);
+        $this->filesystem->chmod($fileInfo->getRealPath(), $fileInfo->getPerms());
 
         return $newContent;
     }
