@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Console\Command;
 
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Contract\Console\OutputStyleInterface;
@@ -68,7 +69,7 @@ final class InitCommand extends Command
             $fullPHPVersion = (string) $this->phpVersionProvider->provide();
             $phpVersion = Strings::substring($fullPHPVersion, 0, 1) . Strings::substring($fullPHPVersion, 2, 1);
 
-            $fileContent = $this->smartFileSystem->readFile($rectorRootFilePath);
+            $fileContent = FileSystem::read($rectorRootFilePath);
             $fileContent = str_replace(
                 'LevelSetList::UP_TO_PHP_XY',
                 'LevelSetList::UP_TO_PHP_' . $phpVersion,
