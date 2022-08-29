@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rector\Tests\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRector;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class FileWithoutNamespaceTest extends AbstractRectorTestCase
 {
@@ -43,16 +43,14 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
      */
     public function provideData(): Iterator
     {
-        $smartFileSystem = new SmartFileSystem();
-
         $filePathsWithContents = [
             new AddedFileWithContent(
                 $this->getFixtureTempDirectory() . '/SkipWithoutNamespace.php',
-                $smartFileSystem->readFile(__DIR__ . '/Expected/SkipWithoutNamespace.php')
+                FileSystem::read(__DIR__ . '/Expected/SkipWithoutNamespace.php')
             ),
             new AddedFileWithContent(
                 $this->getFixtureTempDirectory() . '/JustTwoExceptionWithoutNamespace.php',
-                $smartFileSystem->readFile(__DIR__ . '/Expected/JustTwoExceptionWithoutNamespace.php')
+                FileSystem::read(__DIR__ . '/Expected/JustTwoExceptionWithoutNamespace.php')
             ),
         ];
 

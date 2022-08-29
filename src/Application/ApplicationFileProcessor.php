@@ -44,7 +44,7 @@ final class ApplicationFileProcessor
      * @param FileProcessorInterface[] $fileProcessors
      */
     public function __construct(
-        private readonly Filesystem $filesytem,
+        private readonly Filesystem $filesystem,
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly OutputStyleInterface $rectorOutputStyle,
@@ -164,8 +164,8 @@ final class ApplicationFileProcessor
     {
         $smartFileInfo = $file->getSmartFileInfo();
 
-        $this->filesytem->dumpFile($smartFileInfo->getPathname(), $file->getFileContent());
-        $this->filesytem->chmod($smartFileInfo->getRealPath(), $smartFileInfo->getPerms());
+        $this->filesystem->dumpFile($smartFileInfo->getPathname(), $file->getFileContent());
+        $this->filesystem->chmod($smartFileInfo->getRealPath(), $smartFileInfo->getPerms());
     }
 
     /**
