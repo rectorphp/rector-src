@@ -79,7 +79,7 @@ return [
         ),
 
         // unprefixed SmartFileInfo - needed in AbstractTestCase
-        fn (string $filePath, string $prefix, string $content): string => Strings::replace(
+        static fn (string $filePath, string $prefix, string $content): string => Strings::replace(
             $content,
             '#' . $prefix . '\\\\Symplify\\\\SmartFileSystem\\\\SmartFileInfo#',
             'Symplify\SmartFileSystem\SmartFileInfo'
