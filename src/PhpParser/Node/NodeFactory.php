@@ -11,7 +11,6 @@ use PhpParser\BuilderFactory;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -35,18 +34,14 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\NotImplementedYetException;
@@ -54,7 +49,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeDecorator\PropertyTypeDecorator;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\MethodName;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
@@ -75,7 +69,6 @@ final class NodeFactory
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
 //        private readonly PhpVersionProvider $phpVersionProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
-//        private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
     ) {
@@ -260,45 +253,6 @@ final class NodeFactory
         return $property;
     }
 
-//    public function createGetterClassMethod(string $propertyName, Type $type): ClassMethod
-//    {
-//        $methodBuilder = new Method('get' . ucfirst($propertyName));
-//        $methodBuilder->makePublic();
-//
-//        $propertyFetch = new PropertyFetch(new Variable(self::THIS), $propertyName);
-//
-//        $return = new Return_($propertyFetch);
-//        $methodBuilder->addStmt($return);
-//
-//        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
-//        if ($typeNode !== null) {
-//            $methodBuilder->setReturnType($typeNode);
-//        }
-//
-//        return $methodBuilder->getNode();
-//    }
-
-//    public function createSetterClassMethod(string $propertyName, Type $type): ClassMethod
-//    {
-//        $methodBuilder = new MethodBuilder('set' . ucfirst($propertyName));
-//        $methodBuilder->makePublic();
-//
-//        $variable = new Variable($propertyName);
-//
-//        $param = $this->createParamWithType($variable, $type);
-//        $methodBuilder->addParam($param);
-//
-//        $propertyFetch = new PropertyFetch(new Variable(self::THIS), $propertyName);
-//        $assign = new Assign($propertyFetch, $variable);
-//        $methodBuilder->addStmt($assign);
-//
-//        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::VOID_TYPE)) {
-//            $methodBuilder->setReturnType(new Name('void'));
-//        }
-//
-//        return $methodBuilder->getNode();
-//    }
-
     /**
      * @param Expr[] $exprs
      */
@@ -447,28 +401,6 @@ final class NodeFactory
         return $this->createBooleanAndFromNodes($newNodes);
     }
 
-//    /**
-//     * @api
-//     */
-//    public function createClassConstant(string $name, Expr $expr, int $modifier): ClassConst
-//    {
-//        $normalizedExpr = BuilderHelpers::normalizeValue($expr);
-//
-//        $const = new Const_($name, $normalizedExpr);
-//        $classConst = new ClassConst([$const]);
-//        $classConst->flags |= $modifier;
-//
-//        // add @var type by default
-//        $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($expr);
-//
-//        if (! $staticType instanceof MixedType) {
-//            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classConst);
-//            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $staticType);
-//        }
-//
-//        return $classConst;
-//    }
-
     private function createArrayItem(mixed $item, string | int | null $key = null): ArrayItem
     {
         $arrayItem = null;
@@ -538,15 +470,6 @@ final class NodeFactory
         /** @var BooleanAnd $booleanAnd */
         return $booleanAnd;
     }
-
-//    private function createParamWithType(Variable $variable, Type $type): Param
-//    {
-//        $param = new Param($variable);
-//
-//        $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
-//
-//        return $param;
-//    }
 
     /**
      * @param string|ObjectReference::* $className

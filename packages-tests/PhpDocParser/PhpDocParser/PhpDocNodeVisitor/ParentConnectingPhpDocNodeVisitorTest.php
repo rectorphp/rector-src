@@ -47,13 +47,8 @@ final class ParentConnectingPhpDocNodeVisitorTest extends AbstractTestCase
 
         $returnTypeParent = $returnTagValueNode->type->getAttribute(PhpDocAttributeKey::PARENT);
         $this->assertSame($returnTagValueNode, $returnTypeParent);
-//    }
 
-//    public function testChildNode(): void
-//    {
-//        $phpDocNode = $this->createPhpDocNode();
-//        $this->phpDocNodeTraverser->traverse($phpDocNode);
-
+        // test child + parent node
         $phpDocChildNode = $phpDocNode->children[0];
         $this->assertInstanceOf(PhpDocTagNode::class, $phpDocChildNode);
 
