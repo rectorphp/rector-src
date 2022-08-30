@@ -9,10 +9,10 @@ use Rector\Core\ValueObject\Application\File;
 
 final class ParenthesizedNestedTernaryAnalyzer
 {
-    public function isParenthesized(File $file, Ternary $node): bool
+    public function isParenthesized(File $file, Ternary $ternary): bool
     {
         $oldTokens = $file->getOldTokens();
-        $startTokenPos = $node->getStartTokenPos();
+        $startTokenPos = $ternary->getStartTokenPos();
 
         return isset($oldTokens[$startTokenPos]) && $oldTokens[$startTokenPos] === '(';
     }
