@@ -6,8 +6,10 @@ function nestedTernaryNoParentheses()
 {
   $a = 1;
   $b = 2;
+  $c = 3;
 
   $value = $a ? $b : $a ?: null;
+  $value = $a ? $b : $a ? $c : null;
 }
 
 ?>
@@ -20,8 +22,10 @@ function nestedTernaryNoParentheses()
 {
   $a = 1;
   $b = 2;
+  $c = 3;
 
   $value = ($a ? $b : $a) ?: null;
+  $value = ($a ? $b : $a) ? $c : null;
 }
 
 ?>
