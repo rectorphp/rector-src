@@ -9,7 +9,7 @@ use PhpParser\Node\Stmt\If_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class ReturnEmptyStmtsRector extends AbstractRector
+final class ReturnEmptyStmtsRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -21,6 +21,9 @@ class ReturnEmptyStmtsRector extends AbstractRector
         return [If_::class];
     }
 
+    /**
+     * @param If_ $node
+     */
     public function refactor(Node $node)
     {
         return $node->stmts;

@@ -46,14 +46,8 @@ final class CommentRemoverTest extends AbstractTestCase
         $fileContent = $this->nodePrinter->print($nodesWithoutComments);
         $fileContent = trim($fileContent);
 
-<<<<<<< HEAD
-        $expectedContent = trim((string) $fileInfoToLocalInputAndExpected->getExpected());
-        $this->assertSame($fileContent, $expectedContent);
-=======
         $expectedContent = trim((string) $expectedOutputContents);
-
-        $this->assertSame($fileContent, $expectedContent, $smartFileInfo->getRelativeFilePathFromCwd());
->>>>>>> make use of own FixtureSplitter
+        $this->assertSame($fileContent, $expectedContent);
 
         // original nodes are not touched
         $originalContent = $this->nodePrinter->print($nodes);

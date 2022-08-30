@@ -52,7 +52,7 @@ final class TagValueNodeReprintTest extends AbstractTestCase
             $fixtureFileInfo->getContents(),
             "#-----\n#"
         );
-        $nodeClass = trim($nodeClass);
+        $nodeClass = trim((string) $nodeClass);
         $tagValueNodeClasses = $this->splitListByEOL($tagValueNodeClasses);
 
         $fixtureFileInfo = $this->createFixtureFileInfo($fileContents, $fixtureFileInfo);

@@ -15,24 +15,6 @@ use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 0141ed2ad0... use own splitter
-=======
-use Rector\Core\Provider\CurrentFileProvider;
->>>>>>> make use of own FixtureSplitter
-=======
-<<<<<<< HEAD
-use Rector\Core\Provider\CurrentFileProvider;
->>>>>>> 65b0df8d9d... fixup! misc
-=======
->>>>>>> f92ffc3a20... fixup! fixup! misc
-=======
->>>>>>> use own splitter
->>>>>>> 0141ed2ad0... use own splitter
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
