@@ -40,7 +40,6 @@
         "symplify/autowire-array-parameter": "^11.1",
         "symplify/composer-json-manipulator": "^11.1",
         "symplify/easy-parallel": "^11.1",
-        "symplify/easy-testing": "^11.1",
         "symplify/package-builder": "^11.1",
         "symplify/rule-doc-generator-contracts": "^11.1",
         "symplify/skipper": "^11.1",

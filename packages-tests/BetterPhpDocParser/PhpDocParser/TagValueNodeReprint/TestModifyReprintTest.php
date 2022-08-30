@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
-use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -29,8 +28,8 @@ use Rector\Core\Provider\CurrentFileProvider;
 >>>>>>> f92ffc3a20... fixup! fixup! misc
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureSplitter;
+use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class TestModifyReprintTest extends AbstractTestCase
 {
@@ -82,19 +81,14 @@ final class TestModifyReprintTest extends AbstractTestCase
     /**
      * @param class-string<Node> $nodeType
      */
-    private function parseFileAndGetFirstNodeOfType(string $fileContent, string $nodeType): PhpDocInfo
+    private function parseFileAndGetFirstNodeOfType(string $fileContents, string $nodeType): PhpDocInfo
     {
-        // wrapping
-        $tempFixtureFilePath = sys_get_temp_dir() . '/_rector/test_fixture_' . md5($fileContent) . '.php';
-        FileSystem::write($tempFixtureFilePath, $fileContent);
-
-        $smartFileInfo = new SmartFileInfo($tempFixtureFilePath);
-
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($smartFileInfo);
+        $fixtureFileInfo = FixtureTempFileDumper::dump($fileContents);
+        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($fixtureFileInfo);
 
         $node = $this->betterNodeFinder->findFirstInstanceOf($nodes, $nodeType);
         if (! $node instanceof Node) {
-            throw new ShouldNotHappenException($smartFileInfo->getRealPath());
+            throw new ShouldNotHappenException($fileContents);
         }
 
         return $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
