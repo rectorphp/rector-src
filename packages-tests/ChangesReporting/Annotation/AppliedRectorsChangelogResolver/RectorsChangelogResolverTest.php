@@ -6,6 +6,7 @@ namespace Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolv
 
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolver\Source\RectorWithChangelog;
@@ -18,10 +19,13 @@ final class RectorsChangelogResolverTest extends AbstractTestCase
 
     private FileDiff $fileDiff;
 
+    private FilePathHelper $filePathHelper;
+
     protected function setUp(): void
     {
         $this->boot();
         $this->rectorsChangelogResolver = $this->getService(RectorsChangelogResolver::class);
+        $this->filePathHelper = $this->getService(FilePathHelper::class);
 
         $this->fileDiff = $this->createFileDiff();
     }
@@ -39,13 +43,16 @@ final class RectorsChangelogResolverTest extends AbstractTestCase
     private function createFileDiff(): FileDiff
     {
         // This is by intention to test the array_unique functionality
-        $rectorWithLineChanges = [];
-        $rectorWithLineChanges[] = new RectorWithLineChange(RectorWithChangelog::class, 1);
-        $rectorWithLineChanges[] = new RectorWithLineChange(RectorWithChangelog::class, 1);
-        $rectorWithLineChanges[] = new RectorWithLineChange(RectorWithOutChangelog::class, 1);
+        $rectorWithLineChanges = [
+            new RectorWithLineChange(RectorWithChangelog::class, 1),
+            new RectorWithLineChange(RectorWithChangelog::class, 1),
+            new RectorWithLineChange(RectorWithOutChangelog::class, 1),
+        ];
 
         $smartFileInfo = new SmartFileInfo(__FILE__);
 
-        return new FileDiff($smartFileInfo->getRelativeFilePathFromCwd(), 'foo', 'foo', $rectorWithLineChanges);
+        $relativeFilePath = $this->filePathHelper->relativePath($smartFileInfo->getRealPath());
+
+        return new FileDiff($relativeFilePath, 'foo', 'foo', $rectorWithLineChanges);
     }
 }

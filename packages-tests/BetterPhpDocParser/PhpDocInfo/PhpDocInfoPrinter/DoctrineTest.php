@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Class_;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\CaseSensitive;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\IndexInTable;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\Short;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
 {
@@ -23,8 +22,7 @@ final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
         $docComment = FileSystem::read($docFilePath);
         $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($docComment, $node);
 
-        $fileInfo = new SmartFileInfo($docFilePath);
-        $relativeFilePathFromCwd = $fileInfo->getRelativeFilePathFromCwd();
+        $relativeFilePathFromCwd = $this->filePathHelper->relativePath($docFilePath);
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
         $this->assertSame($docComment, $printedPhpDocInfo, $relativeFilePathFromCwd);

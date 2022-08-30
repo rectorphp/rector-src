@@ -44,20 +44,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     {
         // speed up
         @ini_set('memory_limit', '-1');
-
-        // include local files
-        if (file_exists(__DIR__ . '/../../../preload.php')) {
-            if (file_exists(__DIR__ . '/../../../vendor')) {
-                require_once __DIR__ . '/../../../preload.php';
-            // test case in rector split package
-            } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
-                require_once __DIR__ . '/../../../preload-split-package.php';
-            }
-        }
-
-        if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
-            require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
-        }
+        $this->includePreloadFilesAndScoperAutoload();
 
         $configFile = $this->provideConfigFilePath();
         $this->bootFromConfigFiles([$configFile]);
@@ -131,6 +118,22 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return sys_get_temp_dir() . '/_temp_fixture_easy_testing';
     }
 
+    private function includePreloadFilesAndScoperAutoload(): void
+    {
+        if (file_exists(__DIR__ . '/../../../preload.php')) {
+            if (file_exists(__DIR__ . '/../../../vendor')) {
+                require_once __DIR__ . '/../../../preload.php';
+            // test case in rector split package
+            } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
+                require_once __DIR__ . '/../../../preload-split-package.php';
+            }
+        }
+
+        if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
+            require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
+        }
+    }
+
     private function doTestFileMatchesExpectedContent(
         SmartFileInfo $originalFileInfo,
         SmartFileInfo $expectedFileInfo,
@@ -146,10 +149,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             return;
         }
 
-        $relativeFilePathFromCwd = $fixtureFileInfo->getRelativeFilePathFromCwd();
-
         try {
-            $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $changedContent, $relativeFilePathFromCwd);
+            $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $changedContent);
         } catch (ExpectationFailedException $expectationFailedException) {
             if (! $allowMatches) {
                 throw $expectationFailedException;
@@ -162,7 +163,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $contents = $this->normalizeNewlines($contents);
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
-            $this->assertStringMatchesFormat($contents, $changedContent, $relativeFilePathFromCwd);
+            $this->assertStringMatchesFormat($contents, $changedContent);
         }
     }
 
