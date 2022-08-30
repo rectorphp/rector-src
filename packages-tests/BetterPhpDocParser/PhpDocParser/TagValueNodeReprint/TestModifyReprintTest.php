@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
+use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -15,9 +16,20 @@ use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+use Rector\Core\Provider\CurrentFileProvider;
+>>>>>>> make use of own FixtureSplitter
+=======
+use Rector\Core\Provider\CurrentFileProvider;
+>>>>>>> 65b0df8d9d... fixup! misc
+=======
+>>>>>>> f92ffc3a20... fixup! fixup! misc
 use Rector\FileSystemRector\Parser\FileInfoParser;
+use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class TestModifyReprintTest extends AbstractTestCase
@@ -43,12 +55,11 @@ final class TestModifyReprintTest extends AbstractTestCase
 
     public function test(): void
     {
-        $fixtureFileInfo = new SmartFileInfo(__DIR__ . '/FixtureModify/route_with_extra_methods.php.inc');
+        [$inputContent, $expectedContent] = FixtureSplitter::loadFileAndSplitInputAndExpected(
+            __DIR__ . '/FixtureModify/route_with_extra_methods.php.inc'
+        );
 
-        $inputFileInfoAndExpected = StaticFixtureSplitter::splitFileInfoToLocalInputAndExpected($fixtureFileInfo);
-        $inputFileInfo = $inputFileInfoAndExpected->getInputFileInfo();
-
-        $phpDocInfo = $this->parseFileAndGetFirstNodeOfType($inputFileInfo, ClassMethod::class);
+        $phpDocInfo = $this->parseFileAndGetFirstNodeOfType($inputContent, ClassMethod::class);
 
         /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
         $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(
@@ -62,7 +73,7 @@ final class TestModifyReprintTest extends AbstractTestCase
         ]);
         $doctrineAnnotationTagValueNode->values[] = new ArrayItemNode($methodsCurlyListNode, 'methods');
 
-        $expectedDocContent = trim((string) $inputFileInfoAndExpected->getExpected());
+        $expectedDocContent = trim((string) $expectedContent);
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
         $this->assertSame($expectedDocContent, $printedPhpDocInfo);
@@ -71,8 +82,14 @@ final class TestModifyReprintTest extends AbstractTestCase
     /**
      * @param class-string<Node> $nodeType
      */
-    private function parseFileAndGetFirstNodeOfType(SmartFileInfo $smartFileInfo, string $nodeType): PhpDocInfo
+    private function parseFileAndGetFirstNodeOfType(string $fileContent, string $nodeType): PhpDocInfo
     {
+        // wrapping
+        $tempFixtureFilePath = sys_get_temp_dir() . '/_rector/test_fixture_' . md5($fileContent) . '.php';
+        FileSystem::write($tempFixtureFilePath, $fileContent);
+
+        $smartFileInfo = new SmartFileInfo($tempFixtureFilePath);
+
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($smartFileInfo);
 
         $node = $this->betterNodeFinder->findFirstInstanceOf($nodes, $nodeType);

@@ -10,8 +10,8 @@ use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
+use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class CommentRemoverTest extends AbstractTestCase
@@ -25,6 +25,7 @@ final class CommentRemoverTest extends AbstractTestCase
     protected function setUp(): void
     {
         $this->boot();
+
         $this->commentRemover = $this->getService(CommentRemover::class);
         $this->fileInfoParser = $this->getService(FileInfoParser::class);
         $this->nodePrinter = $this->getService(BetterStandardPrinter::class);
@@ -35,19 +36,24 @@ final class CommentRemoverTest extends AbstractTestCase
      */
     public function test(SmartFileInfo $smartFileInfo): void
     {
-        $fileInfoToLocalInputAndExpected = StaticFixtureSplitter::splitFileInfoToLocalInputAndExpected($smartFileInfo);
-
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate(
-            $fileInfoToLocalInputAndExpected->getInputFileInfo()
+        [$inputContents, $expectedOutputContents] = FixtureSplitter::loadFileAndSplitInputAndExpected(
+            $smartFileInfo->getRealPath()
         );
 
+        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($inputContents);
         $nodesWithoutComments = $this->commentRemover->removeFromNode($nodes);
 
         $fileContent = $this->nodePrinter->print($nodesWithoutComments);
         $fileContent = trim($fileContent);
 
+<<<<<<< HEAD
         $expectedContent = trim((string) $fileInfoToLocalInputAndExpected->getExpected());
         $this->assertSame($fileContent, $expectedContent);
+=======
+        $expectedContent = trim((string) $expectedOutputContents);
+
+        $this->assertSame($fileContent, $expectedContent, $smartFileInfo->getRelativeFilePathFromCwd());
+>>>>>>> make use of own FixtureSplitter
 
         // original nodes are not touched
         $originalContent = $this->nodePrinter->print($nodes);
