@@ -24,7 +24,8 @@ final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
         $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($docComment, $node);
 
         $fileInfo = new SmartFileInfo($docFilePath);
-        $relativeFilePathFromCwd = $fileInfo->getRelativeFilePathFromCwd();
+
+        $relativeFilePathFromCwd = $this->filePathHelper->relativePath($fileInfo->getRealPath());
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
         $this->assertSame($docComment, $printedPhpDocInfo, $relativeFilePathFromCwd);

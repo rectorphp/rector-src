@@ -6,6 +6,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter;
 
 use Iterator;
 use PhpParser\Node\Stmt\Nop;
+use Rector\Core\FileSystem\FilePathHelper;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
@@ -56,10 +57,9 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
         $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($inputFileInfo->getContents(), new Nop());
         $printedDocComment = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
 
-        $this->assertSame(
-            $expectedFileInfo->getContents(),
-            $printedDocComment,
-            $inputFileInfo->getRelativeFilePathFromCwd()
-        );
+        $filePathHelper = $this->getService(FilePathHelper::class);
+        $relativeInputFilePath = $filePathHelper->relativePath($inputFileInfo->getRealPath());
+
+        $this->assertSame($expectedFileInfo->getContents(), $printedDocComment, $relativeInputFilePath);
     }
 }

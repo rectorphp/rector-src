@@ -10,11 +10,14 @@ use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 
 abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
 {
+    protected FilePathHelper $filePathHelper;
+
     protected PhpDocInfoPrinter $phpDocInfoPrinter;
 
     private PhpDocInfoFactory $phpDocInfoFactory;
@@ -23,6 +26,7 @@ abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
     {
         $this->boot();
 
+        $this->filePathHelper = $this->getService(FilePathHelper::class);
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
     }
