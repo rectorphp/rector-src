@@ -9,8 +9,9 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 use Rector\Testing\Fixture\FixtureFileFinder;
+use Rector\Testing\Fixture\FixtureSplitter;
+use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
-use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
@@ -33,16 +34,18 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
 
     private function doTestFileInfo(SmartFileInfo $smartFileInfo): void
     {
-        $inputFileInfoAndExpectedFileInfo = StaticFixtureSplitter::splitFileInfoToLocalInputAndExpectedFileInfos(
-            $smartFileInfo
+        [$inputFileContents, $expectedType] = FixtureSplitter::loadFileAndSplitInputAndExpected(
+            $smartFileInfo->getRealPath()
         );
-        $inputFileInfo = $inputFileInfoAndExpectedFileInfo->getInputFileInfo();
-        $expectedFileInfo = $inputFileInfoAndExpectedFileInfo->getExpectedFileInfo();
+
+        $inputFileInfo = FixtureTempFileDumper::dump($inputFileContents);
 
         $propertyFetchNodes = $this->getNodesForFileOfType($inputFileInfo->getRealPath(), PropertyFetch::class);
         $resolvedType = $this->nodeTypeResolver->getType($propertyFetchNodes[0]);
 
-        $expectedType = include $expectedFileInfo->getRealPath();
+        // this file actually containts PHP for type
+        $typeFileInfo = FixtureTempFileDumper::dump($expectedType);
+        $expectedType = include $typeFileInfo->getRealPath();
 
         $expectedTypeAsString = $this->getStringFromType($expectedType);
         $resolvedTypeAsString = $this->getStringFromType($resolvedType);

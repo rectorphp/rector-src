@@ -6,6 +6,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Iterator;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -16,8 +17,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\EasyTesting\FixtureSplitter\TrioFixtureSplitter;
-use Symplify\EasyTesting\ValueObject\FixtureSplit\TrioContent;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class TagValueNodeReprintTest extends AbstractTestCase
@@ -49,13 +48,15 @@ final class TagValueNodeReprintTest extends AbstractTestCase
      */
     public function test(SmartFileInfo $fixtureFileInfo): void
     {
-        $trioFixtureSplitter = new TrioFixtureSplitter();
-        $trioContent = $trioFixtureSplitter->splitFileInfo($fixtureFileInfo);
+        [$fileContents, $nodeClass, $tagValueNodeClasses] = Strings::split(
+            $fixtureFileInfo->getContents(),
+            "#-----\n#"
+        );
+        $nodeClass = trim($nodeClass);
+        $tagValueNodeClasses = $this->splitListByEOL($tagValueNodeClasses);
 
-        $nodeClass = trim($trioContent->getSecondValue());
-        $tagValueNodeClasses = $this->splitListByEOL($trioContent->getExpectedResult());
+        $fixtureFileInfo = $this->createFixtureFileInfo($fileContents, $fixtureFileInfo);
 
-        $fixtureFileInfo = $this->createFixtureFileInfo($trioContent, $fixtureFileInfo);
         foreach ($tagValueNodeClasses as $tagValueNodeClass) {
             $this->doTestPrintedPhpDocInfo($fixtureFileInfo, $tagValueNodeClass, $nodeClass);
         }
@@ -112,12 +113,10 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         return explode(PHP_EOL, $trimmedContent);
     }
 
-    private function createFixtureFileInfo(TrioContent $trioContent, SmartFileInfo $fixturefileInfo): SmartFileInfo
+    private function createFixtureFileInfo(string $fileContents, SmartFileInfo $fixturefileInfo): SmartFileInfo
     {
         $temporaryFileName = sys_get_temp_dir() . '/rector/tests/' . $fixturefileInfo->getRelativePathname();
-        $firstValue = $trioContent->getFirstValue();
-
-        FileSystem::write($temporaryFileName, $firstValue);
+        FileSystem::write($temporaryFileName, $fileContents);
 
         return new SmartFileInfo($temporaryFileName);
     }
