@@ -6,7 +6,7 @@ namespace Rector\Core\Bootstrap;
 
 use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symplify\SmartFileSystem\Exception\FileNotFoundException;
+use Webmozart\Assert\Assert;
 
 final class RectorConfigsResolver
 {
@@ -47,10 +47,7 @@ final class RectorConfigsResolver
             return null;
         }
 
-        if (! file_exists($configFile)) {
-            $message = sprintf('File "%s" was not found', $configFile);
-            throw new FileNotFoundException($message);
-        }
+        Assert::fileExists($configFile);
 
         return realpath($configFile);
     }

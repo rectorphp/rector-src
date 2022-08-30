@@ -10,7 +10,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symplify\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Symplify\SmartFileSystem\FileSystemFilter;
-use Symplify\SmartFileSystem\Finder\FinderSanitizer;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
@@ -32,7 +31,6 @@ final class FilesFinder
 
     public function __construct(
         private readonly FilesystemTweaker $filesystemTweaker,
-        private readonly FinderSanitizer $finderSanitizer,
         private readonly FileSystemFilter $fileSystemFilter,
         private readonly SkippedPathsResolver $skippedPathsResolver,
         private readonly UnchangedFilesFilter $unchangedFilesFilter,
@@ -81,7 +79,10 @@ final class FilesFinder
 
         $this->addFilterWithExcludedPaths($finder);
 
-        $smartFileInfos = $this->finderSanitizer->sanitize($finder);
+        $smartFileInfos = [];
+        foreach ($finder as $fileInfo) {
+            $smartFileInfos[] = new SmartFileInfo($fileInfo->getRealPath());
+        }
 
         return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($smartFileInfos);
     }
