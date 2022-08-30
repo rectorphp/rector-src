@@ -16,6 +16,7 @@ use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
@@ -26,6 +27,7 @@ use Rector\Core\NodeAnalyzer\ConstFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 /**
@@ -53,6 +55,14 @@ final class ValueResolver
 
     public function getValue(Expr $expr, bool $resolvedClassReference = false): mixed
     {
+        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+        if ($scope instanceof Scope) {
+            $exprType = $scope->getType($expr);
+            if ($exprType instanceof ConstantScalarType) {
+                return $exprType->getValue();
+            }
+        }
+
         if ($expr instanceof Concat) {
             return $this->processConcat($expr, $resolvedClassReference);
         }
