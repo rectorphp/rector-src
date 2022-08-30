@@ -63,23 +63,10 @@ CODE_SAMPLE
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
-        /**
-         * This check no nested or if/else is ternary, but already parenthesized
-         *
-         *  $a ? $b : $a;
-         *  $a ? $b : ($c ? $d : $e);
-         *  ($a ? $b : $c) ? $d : $e;
-         */
         if (! $parentNode instanceof Ternary) {
             return null;
         }
 
-        /**
-         * This check nested but no parentheses
-         *
-         *  $a ? $b : $a ?: $d;
-         *  $a ? $b : $a ? $c : $d;
-         */
         if ($this->parenthesizedNestedTernaryAnalyzer->isParenthesized($this->file, $parentNode)) {
             return null;
         }
