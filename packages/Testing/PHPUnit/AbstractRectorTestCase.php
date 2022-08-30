@@ -44,20 +44,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     {
         // speed up
         @ini_set('memory_limit', '-1');
-
-        // include local files
-        if (file_exists(__DIR__ . '/../../../preload.php')) {
-            if (file_exists(__DIR__ . '/../../../vendor')) {
-                require_once __DIR__ . '/../../../preload.php';
-            // test case in rector split package
-            } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
-                require_once __DIR__ . '/../../../preload-split-package.php';
-            }
-        }
-
-        if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
-            require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
-        }
+        $this->includePreloadFilesAndScoperAutoload();
 
         $configFile = $this->provideConfigFilePath();
         $this->bootFromConfigFiles([$configFile]);
@@ -129,6 +116,22 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     protected function getFixtureTempDirectory(): string
     {
         return sys_get_temp_dir() . '/_temp_fixture_easy_testing';
+    }
+
+    private function includePreloadFilesAndScoperAutoload(): void
+    {
+        if (file_exists(__DIR__ . '/../../../preload.php')) {
+            if (file_exists(__DIR__ . '/../../../vendor')) {
+                require_once __DIR__ . '/../../../preload.php';
+            // test case in rector split package
+            } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
+                require_once __DIR__ . '/../../../preload-split-package.php';
+            }
+        }
+
+        if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
+            require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
+        }
     }
 
     private function doTestFileMatchesExpectedContent(
