@@ -69,8 +69,7 @@
         "symplify/phpstan-extensions": "^11.1",
         "symplify/phpstan-rules": "^11.1",
         "symplify/rule-doc-generator": "dev-main",
-        "symplify/vendor-patches": "^11.1",
-        "tracy/tracy": "^2.9.4"
+        "symplify/vendor-patches": "^11.1"
     },
     "replace": {
         "rector/rector": "self.version",
