@@ -149,10 +149,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             return;
         }
 
-        $relativeFilePathFromCwd = $fixtureFileInfo->getRelativeFilePathFromCwd();
-
         try {
-            $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $changedContent, $relativeFilePathFromCwd);
+            $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $changedContent);
         } catch (ExpectationFailedException $expectationFailedException) {
             if (! $allowMatches) {
                 throw $expectationFailedException;
@@ -165,7 +163,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $contents = $this->normalizeNewlines($contents);
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
-            $this->assertStringMatchesFormat($contents, $changedContent, $relativeFilePathFromCwd);
+            $this->assertStringMatchesFormat($contents, $changedContent);
         }
     }
 

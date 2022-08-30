@@ -9,9 +9,9 @@ use PhpParser\Node\Expr\StaticCall;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class InvalidNameNodeReporter
 {
@@ -22,7 +22,8 @@ final class InvalidNameNodeReporter
 
     public function __construct(
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly NodePrinterInterface $nodePrinter,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -35,9 +36,12 @@ final class InvalidNameNodeReporter
         if ($file instanceof File) {
             $smartFileInfo = $file->getSmartFileInfo();
             $message .= PHP_EOL . PHP_EOL;
+
+            $relatilveFilePath = $this->filePathHelper->relativePath($smartFileInfo->getRealPath());
+
             $message .= sprintf(
                 'Caused in "%s" file on line %d on code "%s"',
-                $smartFileInfo->getRelativeFilePathFromCwd(),
+                $relatilveFilePath,
                 $node->getStartLine(),
                 $this->nodePrinter->print($node)
             );
@@ -49,8 +53,9 @@ final class InvalidNameNodeReporter
         if ($rectorBacktrace !== null) {
             // issues to find the file in prefixed
             if (file_exists($rectorBacktrace[self::FILE])) {
-                $smartFileInfo = new SmartFileInfo($rectorBacktrace[self::FILE]);
-                $fileAndLine = $smartFileInfo->getRelativeFilePathFromCwd() . ':' . $rectorBacktrace['line'];
+                $filePath = $rectorBacktrace[self::FILE];
+                $relatilveFilePath = $this->filePathHelper->relativePath($filePath);
+                $fileAndLine = $relatilveFilePath . ':' . $rectorBacktrace['line'];
             } else {
                 $fileAndLine = $rectorBacktrace[self::FILE] . ':' . $rectorBacktrace['line'];
             }

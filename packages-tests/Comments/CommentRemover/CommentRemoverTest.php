@@ -47,8 +47,7 @@ final class CommentRemoverTest extends AbstractTestCase
         $fileContent = trim($fileContent);
 
         $expectedContent = trim((string) $fileInfoToLocalInputAndExpected->getExpected());
-
-        $this->assertSame($fileContent, $expectedContent, $smartFileInfo->getRelativeFilePathFromCwd());
+        $this->assertSame($fileContent, $expectedContent);
 
         // original nodes are not touched
         $originalContent = $this->nodePrinter->print($nodes);

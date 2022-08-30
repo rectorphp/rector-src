@@ -11,6 +11,7 @@ use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -29,12 +30,14 @@ final class TagValueNodeReprintTest extends AbstractTestCase
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
+    private FilePathHelper $filePathHelper;
+
     protected function setUp(): void
     {
         $this->boot();
 
         $this->fileInfoParser = $this->getService(FileInfoParser::class);
-
+        $this->filePathHelper = $this->getService(FilePathHelper::class);
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
@@ -153,6 +156,7 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $hasByAnnotationClass = $phpDocInfo->hasByAnnotationClass($annotationClass);
 
-        $this->assertTrue($hasByAnnotationClass, $smartFileInfo->getRelativeFilePathFromCwd());
+        $relativeFilePath = $this->filePathHelper->relativePath($smartFileInfo->getRealPath());
+        $this->assertTrue($hasByAnnotationClass, $relativeFilePath);
     }
 }

@@ -28,11 +28,8 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
         $docComment = FileSystem::read($docFilePath);
         $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($docComment, $node);
 
-        $fileInfo = new SmartFileInfo($docFilePath);
-        $relativeFilePathFromCwd = $fileInfo->getRelativeFilePathFromCwd();
-
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
-        $this->assertSame($docComment, $printedPhpDocInfo, $relativeFilePathFromCwd);
+        $this->assertSame($docComment, $printedPhpDocInfo);
     }
 
     public function provideData(): Iterator
