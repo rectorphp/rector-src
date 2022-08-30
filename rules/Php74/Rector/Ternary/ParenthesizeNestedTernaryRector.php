@@ -63,22 +63,23 @@ CODE_SAMPLE
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
+        /**
+         * This check no nested or else is ternary, but already parenthesized
+         *
+         *  $a ? $b : $a;
+         *  $a ? $b : ($c ? $d : $e);
+         */
         if (! $parentNode instanceof Ternary) {
-            /**
-             * This cover no nested or else is ternary, but already parenthesized
-             *
-             *  $a ? $b : $a
-             *  $a ? $b : ($c ? $d : $e);
-             */
             return null;
         }
 
+        /**
+         * This check nested but no parentheses
+         *
+         *  $a ? $b : $a ?: $d;
+         *  $a ? $b : $a ? $c : $d;
+         */
         if ($this->parenthesizedNestedTernaryAnalyzer->isParenthesized($this->file, $parentNode)) {
-            /**
-             * This cover nested but no parentheses
-             *
-             *  $a ? $b : $a ?: null
-             */
             return null;
         }
 
