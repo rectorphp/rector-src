@@ -15,8 +15,6 @@ use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\EasyTesting\StaticFixtureSplitter;
@@ -32,8 +30,6 @@ final class TestModifyReprintTest extends AbstractTestCase
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
-    private CurrentFileProvider $currentFileProvider;
-
     protected function setUp(): void
     {
         $this->boot();
@@ -43,7 +39,6 @@ final class TestModifyReprintTest extends AbstractTestCase
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
-        $this->currentFileProvider = $this->getService(CurrentFileProvider::class);
     }
 
     public function test(): void
@@ -53,7 +48,6 @@ final class TestModifyReprintTest extends AbstractTestCase
         $inputFileInfoAndExpected = StaticFixtureSplitter::splitFileInfoToLocalInputAndExpected($fixtureFileInfo);
         $inputFileInfo = $inputFileInfoAndExpected->getInputFileInfo();
 
-        $this->currentFileProvider->setFile(new File($inputFileInfo, $inputFileInfo->getContents()));
         $phpDocInfo = $this->parseFileAndGetFirstNodeOfType($inputFileInfo, ClassMethod::class);
 
         /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
