@@ -67,7 +67,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->parenthesizedNestedTernaryAnalyzer->isParenthesized($this->file, $node)) {
+        if ($this->parenthesizedNestedTernaryAnalyzer->isParenthesized($this->file, $parentNode)) {
             return null;
         }
 
