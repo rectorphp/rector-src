@@ -110,7 +110,6 @@
             "rules-tests/Renaming/Rector/FileWithoutNamespace/PseudoNamespaceToNamespaceRector/Source"
         ],
         "files": [
-            "tests/functions/debug_functions.php",
             "stubs/Doctrine/Persistence/ObjectManager.php",
             "stubs/Doctrine/Common/Persistence/ObjectManager.php",
             "rules-tests/Transform/Rector/FuncCall/FuncCallToMethodCallRector/Source/some_view_function.php",
