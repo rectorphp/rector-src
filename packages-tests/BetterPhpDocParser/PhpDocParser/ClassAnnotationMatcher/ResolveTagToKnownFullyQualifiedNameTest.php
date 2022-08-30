@@ -12,9 +12,9 @@ use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
-use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
@@ -75,6 +75,10 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
      */
     public function provideData(): Iterator
     {
+<<<<<<< HEAD
         return StaticFixtureFinder::yieldDirectory(__DIR__ . '/Fixture');
+=======
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
+>>>>>>> [Testin] Use own FixtureFileFinder to keep dependency low
     }
 }

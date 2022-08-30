@@ -8,8 +8,8 @@ use Iterator;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
-use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -28,7 +28,7 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
      */
     public function provideData(): Iterator
     {
-        return StaticFixtureFinder::yieldDirectoryExclusively(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }
 
     private function doTestFileInfo(SmartFileInfo $smartFileInfo): void

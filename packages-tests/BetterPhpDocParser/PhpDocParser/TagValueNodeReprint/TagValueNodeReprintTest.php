@@ -14,8 +14,8 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\EasyTesting\FixtureSplitter\TrioFixtureSplitter;
 use Symplify\EasyTesting\ValueObject\FixtureSplit\TrioContent;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -66,7 +66,7 @@ final class TagValueNodeReprintTest extends AbstractTestCase
      */
     public function provideData(): Iterator
     {
-        return StaticFixtureFinder::yieldDirectory(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }
 
     /**
@@ -74,7 +74,7 @@ final class TagValueNodeReprintTest extends AbstractTestCase
      */
     public function provideDataNested(): Iterator
     {
-        return StaticFixtureFinder::yieldDirectory(__DIR__ . '/FixtureNested');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/FixtureNested');
     }
 
     /**
