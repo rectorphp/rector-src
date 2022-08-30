@@ -10,10 +10,6 @@ class Fixture
         foreach ($items as $key => $value) {
             $result = $value;
         }
-
-        foreach ($items as $key => $value) {
-            $result = $key;
-        }
     }
 }
 
@@ -30,10 +26,6 @@ class Fixture
         $items = [];
         foreach ($items as $value) {
             $result = $value;
-        }
-
-        foreach ($items as $key => $value) {
-            $result = $key;
         }
     }
 }
