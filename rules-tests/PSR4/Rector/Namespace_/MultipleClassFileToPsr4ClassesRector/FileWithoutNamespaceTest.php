@@ -7,8 +7,8 @@ namespace Rector\Tests\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRect
 use Iterator;
 use Nette\Utils\FileSystem;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
+use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FileWithoutNamespaceTest extends AbstractRectorTestCase
@@ -28,13 +28,11 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
 
         $this->assertFilesWereAdded($expectedFilePathsWithContents);
 
-        $inputFileInfoAndExpectedFileInfo = StaticFixtureSplitter::splitFileInfoToLocalInputAndExpectedFileInfos(
-            $originalFileInfo
-        );
+        $fixtureFileInfo = FixtureTempFileDumper::dump($originalFileInfo->getContents());
 
         $this->assertSame(
             $expectedOriginalFileWasRemoved,
-            $this->removedAndAddedFilesCollector->isFileRemoved($inputFileInfoAndExpectedFileInfo->getInputFileInfo())
+            $this->removedAndAddedFilesCollector->isFileRemoved($fixtureFileInfo)
         );
     }
 

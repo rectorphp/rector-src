@@ -393,12 +393,6 @@ parameters:
 
         - '#Method Rector\\Core\\Application\\ApplicationFileProcessor\:\:runParallel\(\) should return array\{system_errors\: array<Rector\\Core\\ValueObject\\Error\\SystemError\>, file_diffs\: array<Rector\\Core\\ValueObject\\Reporting\\FileDiff\>\} but returns array#'
 
-        # Configuration value object, useful
-        -
-            message: '#Named arguments do not add any value here\. Use normal arguments in the same order#'
-            paths:
-                - tests/Application/ApplicationFileProcessor/ApplicationFileProcessorTest.php
-
         # impossible to validate json string is a class-string
         - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface\>\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
 
@@ -739,3 +733,9 @@ parameters:
 
         # allowed
         - '#Instead of "Symfony\\Component\\Filesystem\\Filesystem" class/interface use "Symplify\\SmartFileSystem\\SmartFileSystem"#'
+
+        # used in a trait
+        - '#Class constant "TEMP_FIXTURE_DIRECTORY" is never used#'
+
+        # used in abstract test case
+        - '#Class constant "SPLIT_LINE_REGEX" is never used#'

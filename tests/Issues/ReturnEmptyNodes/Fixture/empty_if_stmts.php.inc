@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RenameParamDefaultInit\Fixture;
+namespace Rector\Core\Tests\Issues\ReturnEmptyNodes\Fixture;
 
-class EmptyIfStmts
+final class EmptyIfStmts
 {
     public function run()
     {
-        if (rand(0,1)) {}
+        if (rand(0,1)) {
+        }
     }
 }

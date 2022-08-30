@@ -11,8 +11,8 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\FileSystem\FilePathHelper;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 
 abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
 {
@@ -39,6 +39,6 @@ abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
 
     protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php'): Iterator
     {
-        return StaticFixtureFinder::yieldDirectory($directory, $suffix);
+        return FixtureFileFinder::yieldDirectory($directory, $suffix);
     }
 }
