@@ -8,7 +8,6 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestCase
@@ -20,21 +19,16 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
     public function test(
         SmartFileInfo $originalFileInfo,
         array $expectedFilePathsWithContents,
-        bool $expectedOriginalFileWasRemoved = true
+        int $expectedRemovedFileCount
     ): void {
         $this->doTestFileInfo($originalFileInfo);
 
-        $this->assertCount($this->removedAndAddedFilesCollector->getAddedFileCount(), $expectedFilePathsWithContents);
+        $addedFileCount = $this->removedAndAddedFilesCollector->getAddedFileCount();
 
+        $this->assertCount($addedFileCount, $expectedFilePathsWithContents);
         $this->assertFilesWereAdded($expectedFilePathsWithContents);
 
-        $inputFileInfoAndExpectedFileInfo = StaticFixtureSplitter::splitFileInfoToLocalInputAndExpectedFileInfos(
-            $originalFileInfo
-        );
-        $this->assertSame(
-            $expectedOriginalFileWasRemoved,
-            $this->removedAndAddedFilesCollector->isFileRemoved($inputFileInfoAndExpectedFileInfo->getInputFileInfo())
-        );
+        $this->assertSame($expectedRemovedFileCount, $this->removedAndAddedFilesCollector->getRemovedFilesCount());
     }
 
     /**
@@ -53,7 +47,7 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
                 FileSystem::read(__DIR__ . '/Expected/UnknownImageFileException.php')
             ),
         ];
-        yield [new SmartFileInfo(__DIR__ . '/Fixture/nette_exceptions.php.inc'), $filePathsWithContents];
+        yield [new SmartFileInfo(__DIR__ . '/Fixture/nette_exceptions.php.inc'), $filePathsWithContents, 1];
 
         $filePathsWithContents = [
             new AddedFileWithContent(
@@ -70,16 +64,20 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
             ),
         ];
 
-        yield [new SmartFileInfo(__DIR__ . '/Fixture/class_trait_and_interface.php.inc'), $filePathsWithContents];
+        yield [new SmartFileInfo(__DIR__ . '/Fixture/class_trait_and_interface.php.inc'), $filePathsWithContents, 1];
 
         $filePathsWithContents = [
             new AddedFileWithContent(
                 $this->getFixtureTempDirectory() . '/ClassMatchesFilenameException.php',
                 FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilenameException.php')
             ),
+            new AddedFileWithContent(
+                $this->getFixtureTempDirectory() . '/ClassMatchesFilename.php',
+                FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilename.php')
+            ),
         ];
 
-        yield [new SmartFileInfo(__DIR__ . '/Fixture/ClassMatchesFilename.php.inc'), $filePathsWithContents, false];
+        yield [new SmartFileInfo(__DIR__ . '/Fixture/ClassMatchesFilename.php.inc'), $filePathsWithContents, 1];
     }
 
     public function provideConfigFilePath(): string

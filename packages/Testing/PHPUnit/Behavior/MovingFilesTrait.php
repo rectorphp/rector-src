@@ -7,6 +7,7 @@ namespace Rector\Testing\PHPUnit\Behavior;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\PhpParser\Printer\NodesWithFileDestinationPrinter;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
+use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Webmozart\Assert\Assert;
 
 /**
@@ -41,12 +42,14 @@ trait MovingFilesTrait
              * to make work in all OSs, for example:
              * In MacOS, the realpath() of sys_get_temp_dir() pointed to /private/var/* which symlinked of /var/*
              */
+
             [, $expectedFilePathWithContentFilePath] = explode(
-                '_temp_fixture_easy_testing',
+                FixtureTempFileDumper::TEMP_FIXTURE_DIRECTORY,
                 $expectedFilePathWithContent->getFilePath()
             );
+
             [, $addedFilePathWithContentFilePath] = explode(
-                '_temp_fixture_easy_testing',
+                FixtureTempFileDumper::TEMP_FIXTURE_DIRECTORY,
                 $addedFilePathWithContent->getFilePath()
             );
 

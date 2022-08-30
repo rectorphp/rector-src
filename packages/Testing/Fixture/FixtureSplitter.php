@@ -13,7 +13,7 @@ final class FixtureSplitter
      * @var string
      * @see https://regex101.com/r/zZDoyy/1
      */
-    private const SPLIT_LINE_REGEX = '#-----\n#';
+    public const SPLIT_LINE_REGEX = '#\-\-\-\-\-\r?\n#';
 
     /**
      * @return array<string, string>

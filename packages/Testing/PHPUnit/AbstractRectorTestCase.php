@@ -15,7 +15,6 @@ use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
-use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
@@ -23,6 +22,7 @@ use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
+use SplFileInfo;
 use Symplify\EasyTesting\DataProvider\StaticFixtureUpdater;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -43,8 +43,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     private ApplicationFileProcessor $applicationFileProcessor;
 
-    private FilePathHelper $filePathHelper;
-
     protected function setUp(): void
     {
         // speed up
@@ -58,8 +56,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
         $this->parameterProvider = $this->getService(ParameterProvider::class);
         $this->dynamicSourceLocatorProvider = $this->getService(DynamicSourceLocatorProvider::class);
-        $this->filePathHelper = $this->getService(FilePathHelper::class);
 
+        // restore added and removed files to 0
         $this->removedAndAddedFilesCollector = $this->getService(RemovedAndAddedFilesCollector::class);
         $this->removedAndAddedFilesCollector->reset();
 
@@ -100,7 +98,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo) // , bool $allowMatches = true): void
     {
-        if (Strings::match($fixtureFileInfo->getContents(), "#-----\n#")) {
+        if (Strings::match($fixtureFileInfo->getContents(), FixtureSplitter::SPLIT_LINE_REGEX)) {
             // changed content
             [$inputFileContents, $expectedFileContents] = FixtureSplitter::loadFileAndSplitInputAndExpected(
                 $fixtureFileInfo->getRealPath()
@@ -127,10 +125,10 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function getFixtureTempDirectory(): string
     {
-        return sys_get_temp_dir() . '/_temp_fixture_easy_testing';
+        return sys_get_temp_dir() . FixtureTempFileDumper::TEMP_FIXTURE_DIRECTORY;
     }
 
-    private function resolveOriginalFixtureFileSuffix(\SplFileInfo $splFileInfo): string
+    private function resolveOriginalFixtureFileSuffix(SplFileInfo $splFileInfo): string
     {
         $fixtureRealPath = $splFileInfo->getRealPath();
         if (str_ends_with($fixtureRealPath, '.inc')) {
@@ -174,8 +172,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         if ($this->removedAndAddedFilesCollector->isFileRemoved($originalFileInfo)) {
             return;
         }
-
-        $relativeFilePathFromCwd = $this->filePathHelper->relativePath($fixtureFileInfo->getRealPath());
 
         try {
             $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $changedContent);
