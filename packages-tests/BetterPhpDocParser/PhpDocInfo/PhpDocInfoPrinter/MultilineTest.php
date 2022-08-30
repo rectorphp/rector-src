@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Class_\SomeEntityClass;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\TableClass;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class MultilineTest extends AbstractPhpDocInfoPrinterTest
 {
