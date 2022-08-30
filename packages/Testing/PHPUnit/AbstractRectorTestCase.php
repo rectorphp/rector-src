@@ -17,7 +17,16 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
+=======
+use Rector\Testing\PHPUnit\Behavior\MultipleFilesChangedTrait;
+>>>>>>> cleanup fixture methods
+>>>>>>> c3767daefa... cleanup fixture methods
 use Symplify\EasyTesting\DataProvider\StaticFixtureUpdater;
 use Symplify\EasyTesting\StaticFixtureSplitter;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
@@ -83,15 +92,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
      */
     protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
-        return StaticFixtureFinder::yieldDirectoryExclusively($directory, $suffix);
-    }
-
-    /**
-     * @return Iterator<string, array<int, SmartFileInfo>>
-     */
-    protected function yieldFilesWithPathnameFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
-    {
-        return StaticFixtureFinder::yieldDirectoryExclusivelyWithRelativePathname($directory, $suffix);
+        return FixtureFileFinder::yieldDirectory($directory, $suffix);
     }
 
     protected function isWindows(): bool
