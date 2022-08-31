@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Application\FileSystem;
 
 use Rector\Core\Contract\Console\OutputStyleInterface;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Printer\NodesWithFileDestinationPrinter;
 use Rector\Core\ValueObject\Configuration;
 use Symfony\Component\Filesystem\Filesystem;
@@ -18,7 +19,8 @@ final class RemovedAndAddedFilesProcessor
         private readonly Filesystem $filesystem,
         private readonly NodesWithFileDestinationPrinter $nodesWithFileDestinationPrinter,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-        private readonly OutputStyleInterface $rectorOutputStyle
+        private readonly OutputStyleInterface $rectorOutputStyle,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -33,16 +35,19 @@ final class RemovedAndAddedFilesProcessor
 
     private function processDeletedFiles(Configuration $configuration): void
     {
-        foreach ($this->removedAndAddedFilesCollector->getRemovedFiles() as $removedFile) {
-            $relativePath = $removedFile->getRelativeFilePathFromDirectory(getcwd());
+        foreach ($this->removedAndAddedFilesCollector->getRemovedFiles() as $removedFilePath) {
+            $removedFileRelativePath = $this->filePathHelper->relativePath($removedFilePath);
+
+            // @todo file helper
+            //            $removedFileRelativePath = $removedFile->getRelativeFilePathFromDirectory(getcwd());
 
             if ($configuration->isDryRun()) {
-                $message = sprintf('File "%s" will be removed', $relativePath);
+                $message = sprintf('File "%s" will be removed', $removedFileRelativePath);
                 $this->rectorOutputStyle->warning($message);
             } else {
-                $message = sprintf('File "%s" was removed', $relativePath);
+                $message = sprintf('File "%s" was removed', $removedFileRelativePath);
                 $this->rectorOutputStyle->warning($message);
-                $this->filesystem->remove($removedFile->getPathname());
+                $this->filesystem->remove($removedFilePath);
             }
         }
     }

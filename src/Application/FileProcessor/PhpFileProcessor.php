@@ -87,8 +87,17 @@ final class PhpFileProcessor implements FileProcessorInterface
 
     public function supports(File $file, Configuration $configuration): bool
     {
-        $smartFileInfo = $file->getSmartFileInfo();
-        return $smartFileInfo->hasSuffixes($configuration->getFileExtensions());
+        $filePath = $file->getFilePath(); // getSmartFileInfo();
+
+        $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+        return in_array($filePathExtension, $configuration->getFileExtensions(), true);
+
+        //        dump($filePath);
+        //        dump($configuration->getFileExtensions());
+        //        die;
+        //
+        //
+        //        return $filePath->hasSuffixes($configuration->getFileExtensions());
     }
 
     /**
@@ -125,7 +134,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
             $autoloadSystemError = $this->errorFactory->createAutoloadError(
                 $analysedCodeException,
-                $file->getSmartFileInfo()
+                $file->getFilePath()
             );
             return [$autoloadSystemError];
         } catch (Throwable $throwable) {
@@ -144,8 +153,8 @@ final class PhpFileProcessor implements FileProcessorInterface
 
     private function printFile(File $file, Configuration $configuration): void
     {
-        $smartFileInfo = $file->getSmartFileInfo();
-        if ($this->removedAndAddedFilesCollector->isFileRemoved($smartFileInfo)) {
+        $filePath = $file->getFilePath(); // getSmartFileInfo();
+        if ($this->removedAndAddedFilesCollector->isFileRemoved($filePath)) {
             // skip, because this file exists no more
             return;
         }

@@ -27,17 +27,17 @@ final class ChangedFilesDetector
      */
     public function addFileWithDependencies(string $filePath, array $dependentFiles): void
     {
-        $fileInfoCacheKey = $this->getFileInfoCacheKey($filePath);
+        $filePathCacheKey = $this->getFilePathCacheKey($filePath);
         $hash = $this->hashFile($filePath);
 
-        $this->cache->save($fileInfoCacheKey, CacheKey::FILE_HASH_KEY, $hash);
-        $this->cache->save($fileInfoCacheKey . '_files', CacheKey::DEPENDENT_FILES_KEY, $dependentFiles);
+        $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $hash);
+        $this->cache->save($filePathCacheKey . '_files', CacheKey::DEPENDENT_FILES_KEY, $dependentFiles);
     }
 
     public function hasFileChanged(string $filePath): bool
     {
         $currentFileHash = $this->hashFile($filePath);
-        $fileInfoCacheKey = $this->getFileInfoCacheKey($filePath);
+        $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
 
         $cachedValue = $this->cache->load($fileInfoCacheKey, CacheKey::FILE_HASH_KEY);
         return $currentFileHash !== $cachedValue;
@@ -45,7 +45,7 @@ final class ChangedFilesDetector
 
     public function invalidateFile(string $filePath): void
     {
-        $fileInfoCacheKey = $this->getFileInfoCacheKey($filePath);
+        $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
         $this->cache->clean($fileInfoCacheKey);
     }
 
@@ -59,7 +59,7 @@ final class ChangedFilesDetector
      */
     public function getDependentFilePaths(string $filePath): array
     {
-        $fileInfoCacheKey = $this->getFileInfoCacheKey($filePath);
+        $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
 
         $cacheValue = $this->cache->load($fileInfoCacheKey . '_files', CacheKey::DEPENDENT_FILES_KEY);
         if ($cacheValue === null) {
@@ -90,7 +90,7 @@ final class ChangedFilesDetector
         $this->storeConfigurationDataHash($filePath, $configHash);
     }
 
-    private function getFileInfoCacheKey(string $filePath): string
+    private function getFilePathCacheKey(string $filePath): string
     {
         return sha1($filePath);
     }

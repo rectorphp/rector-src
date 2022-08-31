@@ -27,16 +27,14 @@ final class FormatPerservingPrinter
      * @param Node[] $oldStmts
      * @param Node[] $oldTokens
      */
-    public function printToFile(\SplFileInfo $fileInfo, array $newStmts, array $oldStmts, array $oldTokens): string
+    public function printToFile(string $filePath, array $newStmts, array $oldStmts, array $oldTokens): string
     {
-        $filePath = $fileInfo->getRealPath();
-
         $newContent = $this->betterStandardPrinter->printFormatPreserving($newStmts, $oldStmts, $oldTokens);
 
         $this->filesystem->dumpFile($filePath, $newContent);
 
         // @todo how to keep origianl access rights without the SplFileInfo
-        $this->filesystem->chmod($filePath, $fileInfo->getPerms());
+        // $this->filesystem->chmod($filePath, $fileInfo->getPerms());
 
         return $newContent;
     }
@@ -56,12 +54,7 @@ final class FormatPerservingPrinter
     {
         $newStmts = $this->resolveNewStmts($file);
 
-        return $this->printToFile(
-            $file->getSmartFileInfo(),
-            $newStmts,
-            $file->getOldStmts(),
-            $file->getOldTokens()
-        );
+        return $this->printToFile($file->getFilePath(), $newStmts, $file->getOldStmts(), $file->getOldTokens());
     }
 
     /**

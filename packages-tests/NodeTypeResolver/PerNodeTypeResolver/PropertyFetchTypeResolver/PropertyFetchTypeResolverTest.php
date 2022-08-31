@@ -38,14 +38,14 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
             $smartFileInfo->getRealPath()
         );
 
-        $inputFileInfo = FixtureTempFileDumper::dump($inputFileContents);
+        $inputFilePath = FixtureTempFileDumper::dump($inputFileContents);
 
-        $propertyFetchNodes = $this->getNodesForFileOfType($inputFileInfo->getRealPath(), PropertyFetch::class);
+        $propertyFetchNodes = $this->getNodesForFileOfType($inputFilePath, PropertyFetch::class);
         $resolvedType = $this->nodeTypeResolver->getType($propertyFetchNodes[0]);
 
         // this file actually containts PHP for type
-        $typeFileInfo = FixtureTempFileDumper::dump($expectedType);
-        $expectedType = include $typeFileInfo->getRealPath();
+        $typeFilePath = FixtureTempFileDumper::dump($expectedType);
+        $expectedType = include $typeFilePath;
 
         $expectedTypeAsString = $this->getStringFromType($expectedType);
         $resolvedTypeAsString = $this->getStringFromType($resolvedType);

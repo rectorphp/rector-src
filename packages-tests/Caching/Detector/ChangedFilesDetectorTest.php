@@ -7,7 +7,6 @@ namespace Rector\Tests\Caching\Detector;
 use Iterator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ChangedFilesDetectorTest extends AbstractRectorTestCase
 {
@@ -44,8 +43,6 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
      */
     public function testGetDependentFileInfos(string $filePath, array $dependantFiles): void
     {
-        //        $smartFileInfo = new SmartFileInfo($filePathName);
-
         $this->changedFilesDetector->addFileWithDependencies($filePath, $dependantFiles);
         $dependantFilePaths = $this->changedFilesDetector->getDependentFilePaths($filePath);
 

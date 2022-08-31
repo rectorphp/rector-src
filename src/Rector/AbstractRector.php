@@ -366,8 +366,8 @@ CODE_SAMPLE;
             return true;
         }
 
-        $smartFileInfo = $this->file->getSmartFileInfo();
-        if ($this->skipper->shouldSkipElementAndFileInfo($this, $smartFileInfo)) {
+        $filePath = $this->file->getFilePath(); // getSmartFileInfo();
+        if ($this->skipper->shouldSkipElementAndFileInfo($this, $filePath)) {
             return true;
         }
 

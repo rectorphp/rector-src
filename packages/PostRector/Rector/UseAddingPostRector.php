@@ -9,9 +9,11 @@ use PhpParser\Node\Stmt\Namespace_;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\CodingStyle\Application\UseImportsRemover;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -43,12 +45,12 @@ final class UseAddingPostRector extends AbstractPostRector
         }
 
         $file = $this->currentFileProvider->getFile();
-        $smartFileInfo = $file->getSmartFileInfo();
+        if (! $file instanceof File) {
+            throw new ShouldNotHappenException();
+        }
 
-        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($smartFileInfo->getRealPath());
-        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath(
-            $smartFileInfo->getRealPath()
-        );
+        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
+        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath($file->getFilePath());
 
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
 

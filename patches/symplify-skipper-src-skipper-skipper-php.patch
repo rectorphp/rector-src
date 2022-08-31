@@ -1,0 +1,11 @@
+--- /dev/null
++++ ../src/Skipper/Skipper.php
+@@ -37,7 +37,7 @@
+         return $this->shouldSkipElementAndFileInfo(self::FILE_ELEMENT, $smartFileInfo);
+     }
+ 
+-    public function shouldSkipElementAndFileInfo(string | object $element, SmartFileInfo $smartFileInfo): bool
++    public function shouldSkipElementAndFileInfo(string | object $element, SmartFileInfo|string $smartFileInfo): bool
+     {
+         foreach ($this->skipVoters as $skipVoter) {
+             if ($skipVoter->match($element)) {

@@ -53,10 +53,10 @@ final class ChangedNodeScopeRefresher
             return;
         }
 
-        if (! $filePath instanceof SmartFileInfo) {
+        if (! is_string($filePath)) {
             /** @var File $file */
             $file = $this->currentFileProvider->getFile();
-            $filePath = $file->getSmartFileInfo();
+            $filePath = $file->getFilePath();
         }
 
         $mutatingScope = $this->scopeAnalyzer->resolveScope($node, $filePath, $mutatingScope);

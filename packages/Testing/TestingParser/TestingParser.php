@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Testing\TestingParser;
 
+use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use Rector\Core\Configuration\Option;
 use Rector\Core\PhpParser\Parser\RectorParser;
@@ -26,8 +27,8 @@ final class TestingParser
 
     public function parseFilePathToFile(string $filePath): File
     {
-        $smartFileInfo = new SmartFileInfo($filePath);
-        $file = new File($smartFileInfo, $smartFileInfo->getContents());
+        //        $smartFileInfo = new SmartFileInfo($filePath);
+        $file = new File($filePath, FileSystem::read($filePath));
 
         $stmts = $this->rectorParser->parseFile($filePath);
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
@@ -43,12 +44,11 @@ final class TestingParser
         // autoload file
         require_once $filePath;
 
-        $smartFileInfo = new SmartFileInfo($filePath);
         $this->parameterProvider->changeParameter(Option::SOURCE, [$filePath]);
 
         $nodes = $this->rectorParser->parseFile($filePath);
 
-        $file = new File($smartFileInfo, $smartFileInfo->getContents());
+        $file = new File($filePath, FileSystem::read($filePath));
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
     }
 }

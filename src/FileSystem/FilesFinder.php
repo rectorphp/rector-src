@@ -10,11 +10,6 @@ use Rector\Skipper\Enum\AsteriskMatch;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-<<<<<<< HEAD
-use Symplify\SmartFileSystem\SmartFileInfo;
-=======
-use Symplify\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
->>>>>>> [DX] Remove internally SmartFileInfo, to save memory for every single file + service
 
 /**
  * @see \Rector\Core\Tests\FileSystem\FilesFinder\FilesFinderTest

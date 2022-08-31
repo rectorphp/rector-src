@@ -15,8 +15,7 @@ final class AffectedFilesCollector
 
     public function addFile(File $file): void
     {
-        $smartFileInfo = $file->getSmartFileInfo();
-        $this->affectedFiles[$smartFileInfo->getRealPath()] = $file;
+        $this->affectedFiles[$file->getFilePath()] = $file;
     }
 
     public function getNext(): ?File
@@ -30,7 +29,6 @@ final class AffectedFilesCollector
 
     public function removeFromList(File $file): void
     {
-        $smartFileInfo = $file->getSmartFileInfo();
-        unset($this->affectedFiles[$smartFileInfo->getRealPath()]);
+        unset($this->affectedFiles[$file->getFilePath()]);
     }
 }

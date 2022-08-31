@@ -40,8 +40,9 @@ final class FormatPerservingPrinterTest extends AbstractTestCase
 
         chmod(__DIR__ . '/Fixture/file.php', self::EXPECTED_FILEMOD);
 
-        $fileInfo = new SmartFileInfo(__DIR__ . '/Fixture/file.php');
-        $printedFile = $this->formatPerservingPrinter->printToFile($fileInfo, [], [], []);
+        $filePath = __DIR__ . '/Fixture/file.php';
+        //        $fileInfo = new SmartFileInfo($filePath);
+        $printedFile = $this->formatPerservingPrinter->printToFile($filePath, [], [], []);
         $this->assertStringEqualsFile(__DIR__ . '/Fixture/file.php', $printedFile);
 
         $this->assertSame(self::EXPECTED_FILEMOD, fileperms(__DIR__ . '/Fixture/file.php') & 0777);

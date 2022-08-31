@@ -13,7 +13,6 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PSR4\FileInfoAnalyzer\FileInfoDeletionAnalyzer;
 use Rector\PSR4\NodeManipulator\NamespaceManipulator;
-use Rector\Symfony\Printer\NeighbourClassLikePrinter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -25,7 +24,7 @@ final class MultipleClassFileToPsr4ClassesRector extends AbstractRector
     public function __construct(
         private readonly NamespaceManipulator $namespaceManipulator,
         private readonly FileInfoDeletionAnalyzer $fileInfoDeletionAnalyzer,
-        private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
+        private readonly \Rector\Core\PhpParser\Printer\NeighbourClassLikePrinter $neighbourClassLikePrinter,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
     ) {
     }
@@ -162,8 +161,8 @@ CODE_SAMPLE
 
     private function printNewNodes(ClassLike $classLike, Namespace_ | FileWithoutNamespace $mainNode): void
     {
-        $smartFileInfo = $this->file->getSmartFileInfo();
-        $this->neighbourClassLikePrinter->printClassLike($classLike, $mainNode, $smartFileInfo, $this->file);
+        $filePath = $this->file->getFilePath();
+        $this->neighbourClassLikePrinter->printClassLike($classLike, $mainNode, $filePath, $this->file);
     }
 
     /**
