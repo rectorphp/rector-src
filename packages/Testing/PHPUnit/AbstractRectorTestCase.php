@@ -19,6 +19,7 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
+use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
@@ -178,6 +179,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             if (! $allowMatches) {
                 throw $expectationFailedException;
             }
+
+            FixtureFileUpdater::updateFixtureContent($originalFileInfo, $changedContent, $fixtureFileInfo);
 
             $contents = $expectedFileInfo->getContents();
 
