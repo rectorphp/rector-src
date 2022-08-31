@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\If_\RemoveAlwaysElseRector\Fixture;
 
-final class DemoFile
+final class SkipElseInlineHTML
 {
 	public function run()
 	{
