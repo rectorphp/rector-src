@@ -25,11 +25,11 @@ final class ClassNameImportSkipper
 
     public function shouldSkipNameForFullyQualifiedObjectType(
         File $file,
-        Name $name,
+        \PhpParser\Node $node,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): bool {
         foreach ($this->classNameImportSkipVoters as $classNameImportSkipVoter) {
-            if ($classNameImportSkipVoter->shouldSkip($file, $fullyQualifiedObjectType, $name)) {
+            if ($classNameImportSkipVoter->shouldSkip($file, $fullyQualifiedObjectType, $node)) {
                 return true;
             }
         }

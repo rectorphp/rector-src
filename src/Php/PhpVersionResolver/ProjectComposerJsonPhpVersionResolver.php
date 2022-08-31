@@ -26,12 +26,12 @@ final class ProjectComposerJsonPhpVersionResolver
         $projectComposerJson = Json::decode($composerJsonContents, Json::FORCE_ARRAY);
 
         // see https://getcomposer.org/doc/06-config.md#platform
-        $platformPhp = $projectComposerJson->getConfig()['platform']['php'] ?? null;
+        $platformPhp = $projectComposerJson['config']['platform']['php'] ?? null;
         if ($platformPhp !== null) {
             return $this->phpVersionFactory->createIntVersion($platformPhp);
         }
 
-        $requirePhpVersion = $projectComposerJson->getRequirePhpVersion();
+        $requirePhpVersion = $projectComposerJson['require']['php'] ?? null;
         if ($requirePhpVersion === null) {
             return null;
         }
