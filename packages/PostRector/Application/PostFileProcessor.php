@@ -11,7 +11,7 @@ use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
-use Symplify\Skipper\Skipper\Skipper;
+use Rector\Skipper\Skipper\Skipper;
 
 final class PostFileProcessor
 {
