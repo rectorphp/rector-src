@@ -168,7 +168,6 @@ final class ClassRenamer
 
         // no need to preslash "use \SomeNamespace" of imported namespace
         if ($parentNode instanceof UseUse && ($parentNode->type === Use_::TYPE_NORMAL || $parentNode->type === Use_::TYPE_UNKNOWN)) {
-
             // no need to rename imports, they will be handled by autoimport and coding standard
             // also they might cause some rename
             return null;

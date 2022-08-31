@@ -34,7 +34,6 @@ final class MatchFactory
 
         // is default value missing? maybe it can be found in next stmt
         if (! $this->matchSwitchAnalyzer->hasCondsAndExprDefaultValue($condAndExprs)) {
-
             // 1. is followed by throws stmts?
             if ($nextStmt instanceof ThrowsStmt) {
                 $throw = new Throw_($nextStmt->expr);
