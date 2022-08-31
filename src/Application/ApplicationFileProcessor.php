@@ -25,7 +25,6 @@ use Symplify\EasyParallel\FileSystem\FilePathNormalizer;
 use Symplify\EasyParallel\ScheduleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
-use Symplify\SmartFileSystem\SmartFileInfo;
 use Webmozart\Assert\Assert;
 
 final class ApplicationFileProcessor
@@ -162,10 +161,13 @@ final class ApplicationFileProcessor
 
     private function printFile(File $file): void
     {
-        $smartFileInfo = $file->getSmartFileInfo();
+        $filePath = $file->getFilePath();
+        //        $smartFileInfo = $file->getFilePath() getSmartFileInfo();
 
-        $this->filesystem->dumpFile($smartFileInfo->getPathname(), $file->getFileContent());
-        $this->filesystem->chmod($smartFileInfo->getRealPath(), $smartFileInfo->getPerms());
+        $this->filesystem->dumpFile($filePath, $file->getFileContent());
+
+        // @todo how to keep original chmod rights?
+        // $this->filesystem->chmod($filePath, $smartFileInfo->getPerms());
     }
 
     /**

@@ -12,6 +12,7 @@ use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLo
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use Rector\NodeTypeResolver\Contract\SourceLocatorProviderInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use Webmozart\Assert\Assert;
 
 final class DynamicSourceLocatorProvider implements SourceLocatorProviderInterface
 {
@@ -74,6 +75,8 @@ final class DynamicSourceLocatorProvider implements SourceLocatorProviderInterfa
      */
     public function addFilesByDirectory(string $directory, array $files): void
     {
+        Assert::allString($files);
+
         $this->filesByDirectory[$directory] = $files;
     }
 }

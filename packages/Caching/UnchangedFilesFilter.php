@@ -15,29 +15,29 @@ final class UnchangedFilesFilter
     }
 
     /**
-     * @param SmartFileInfo[]|string[] $fileInfos
-     * @return SmartFileInfo[]
+     * @param string[] $filePaths
+     * @return string[]
      */
-    public function filterAndJoinWithDependentFileInfos(array $fileInfos): array
+    public function filterAndJoinWithDependentFileInfos(array $filePaths): array
     {
         $changedFileInfos = [];
         $dependentFileInfos = [];
 
-        foreach ($fileInfos as $fileInfo) {
-            if (is_string($fileInfo)) {
-                $fileInfo = new SmartFileInfo($fileInfo);
-            }
+        foreach ($filePaths as $filePath) {
+            //            if (is_string($filePath)) {
+            //                $filePath = new SmartFileInfo($filePath);
+            //            }
 
-            if (! $this->changedFilesDetector->hasFileChanged($fileInfo)) {
+            if (! $this->changedFilesDetector->hasFileChanged($filePath)) {
                 continue;
             }
 
-            $changedFileInfos[] = $fileInfo;
-            $this->changedFilesDetector->invalidateFile($fileInfo);
+            $changedFileInfos[] = $filePath;
+            $this->changedFilesDetector->invalidateFile($filePath);
 
             $dependentFileInfos = array_merge(
                 $dependentFileInfos,
-                $this->changedFilesDetector->getDependentFileInfos($fileInfo)
+                $this->changedFilesDetector->getDependentFilePaths($filePath)
             );
         }
 

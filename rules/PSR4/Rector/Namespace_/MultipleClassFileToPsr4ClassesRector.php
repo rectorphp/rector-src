@@ -105,10 +105,8 @@ CODE_SAMPLE
             return $nodeToReturn;
         }
 
-        $smartFileInfo = $this->file->getSmartFileInfo();
-
         // 2. nothing to return - remove the file
-        $this->removedAndAddedFilesCollector->removeFile($smartFileInfo);
+        $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
 
         return null;
     }

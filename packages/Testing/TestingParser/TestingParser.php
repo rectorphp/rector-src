@@ -29,7 +29,7 @@ final class TestingParser
         $smartFileInfo = new SmartFileInfo($filePath);
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
 
-        $stmts = $this->rectorParser->parseFile($smartFileInfo);
+        $stmts = $this->rectorParser->parseFile($filePath);
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
 
         return $file;
@@ -46,7 +46,7 @@ final class TestingParser
         $smartFileInfo = new SmartFileInfo($filePath);
         $this->parameterProvider->changeParameter(Option::SOURCE, [$filePath]);
 
-        $nodes = $this->rectorParser->parseFile($smartFileInfo);
+        $nodes = $this->rectorParser->parseFile($filePath);
 
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);

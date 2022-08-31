@@ -240,7 +240,7 @@ CODE_SAMPLE;
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
-        $this->changedNodeScopeRefresher->refresh($refactoredNode, $currentScope, $this->file->getSmartFileInfo());
+        $this->changedNodeScopeRefresher->refresh($refactoredNode, $currentScope, $this->file->getFilePath());
 
         // is equals node type? return node early
         if ($originalNode::class === $refactoredNode::class) {
@@ -371,7 +371,7 @@ CODE_SAMPLE;
             return true;
         }
 
-        $rectifiedNode = $this->rectifiedAnalyzer->verify(static::class, $node, $smartFileInfo);
+        $rectifiedNode = $this->rectifiedAnalyzer->verify(static::class, $node, $this->file->getFilePath());
         return $rectifiedNode instanceof RectifiedNode;
     }
 

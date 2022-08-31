@@ -23,7 +23,6 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ProcessCommand extends AbstractProcessCommand
 {
@@ -116,8 +115,8 @@ final class ProcessCommand extends AbstractProcessCommand
 
     private function invalidateCacheForChangedAndErroredFiles(ProcessResult $processResult): void
     {
-        foreach ($processResult->getChangedFileInfos() as $changedFileInfo) {
-            $this->changedFilesDetector->invalidateFile($changedFileInfo);
+        foreach ($processResult->getChangedFilePaths() as $changedFilePath) {
+            $this->changedFilesDetector->invalidateFile($changedFilePath);
         }
 
         foreach ($processResult->getErrors() as $systemError) {
@@ -126,8 +125,7 @@ final class ProcessCommand extends AbstractProcessCommand
                 continue;
             }
 
-            $errorFileInfo = new SmartFileInfo($errorFile);
-            $this->changedFilesDetector->invalidateFile($errorFileInfo);
+            $this->changedFilesDetector->invalidateFile($errorFile);
         }
     }
 

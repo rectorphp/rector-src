@@ -33,7 +33,7 @@ final class FileInfoParser
             $smartFileInfo = FixtureTempFileDumper::dump($smartFileInfo);
         }
 
-        $stmts = $this->rectorParser->parseFile($smartFileInfo);
+        $stmts = $this->rectorParser->parseFile($smartFileInfo->getRealPath());
         $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
 
         $file = new File($smartFileInfo, $smartFileInfo->getContents());
