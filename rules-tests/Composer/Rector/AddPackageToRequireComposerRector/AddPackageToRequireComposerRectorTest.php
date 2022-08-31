@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Tests\Composer\Rector\AddPackageToRequireComposerRector;
 
 use Iterator;
-use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Rector\Testing\Fixture\FixtureFileFinder;
+use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class AddPackageToRequireComposerRectorTest extends AbstractRectorTestCase

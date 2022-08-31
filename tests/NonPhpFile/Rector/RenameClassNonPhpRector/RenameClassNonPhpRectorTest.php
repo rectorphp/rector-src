@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\NonPhpFile\Rector\RenameClassNonPhpRector;
 
 use Iterator;
-use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Rector\Testing\Fixture\FixtureFileFinder;
+use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class RenameClassNonPhpRectorTest extends AbstractRectorTestCase
