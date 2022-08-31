@@ -9,11 +9,11 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 use Rector\Tests\Naming\Naming\UseImportsResolver\Source\FirstClass;
 use Rector\Tests\Naming\Naming\UseImportsResolver\Source\SecondClass;
-use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class UseImportsResolverTest extends AbstractTestCase
@@ -61,6 +61,6 @@ final class UseImportsResolverTest extends AbstractTestCase
      */
     public function provideData(): Iterator
     {
-        return StaticFixtureFinder::yieldDirectoryExclusively(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldDirectoryExclusively(__DIR__ . '/Fixture');
     }
 }

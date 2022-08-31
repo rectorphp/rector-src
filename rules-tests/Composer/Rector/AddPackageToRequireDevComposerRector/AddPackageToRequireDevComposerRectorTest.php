@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Tests\Composer\Rector\AddPackageToRequireDevComposerRector;
 
 use Iterator;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class AddPackageToRequireDevComposerRectorTest extends AbstractRectorTestCase
@@ -21,7 +21,7 @@ final class AddPackageToRequireDevComposerRectorTest extends AbstractRectorTestC
 
     public function provideData(): Iterator
     {
-        return StaticFixtureFinder::yieldDirectory(__DIR__ . '/Fixture', '*.json');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture', '*.json');
     }
 
     public function provideConfigFilePath(): string

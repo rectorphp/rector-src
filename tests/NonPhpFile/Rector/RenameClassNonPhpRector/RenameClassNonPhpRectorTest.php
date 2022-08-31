@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\NonPhpFile\Rector\RenameClassNonPhpRector;
 
 use Iterator;
+use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\EasyTesting\DataProvider\StaticFixtureFinder;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class RenameClassNonPhpRectorTest extends AbstractRectorTestCase
@@ -24,7 +24,7 @@ final class RenameClassNonPhpRectorTest extends AbstractRectorTestCase
      */
     public function provideData(): Iterator
     {
-        return StaticFixtureFinder::yieldDirectory(__DIR__ . '/Fixture', '*');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture', '*');
     }
 
     public function provideConfigFilePath(): string

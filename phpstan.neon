@@ -739,3 +739,7 @@ parameters:
 
         # used in abstract test case
         - '#Class constant "SPLIT_LINE_REGEX" is never used#'
+
+        -
+            message: '#Only booleans are allowed in a negated boolean, string\|false given#'
+            path: packages/Testing/Fixture/FixtureFileUpdater.php

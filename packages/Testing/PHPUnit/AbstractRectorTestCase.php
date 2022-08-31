@@ -19,11 +19,11 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
+use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
 use SplFileInfo;
-use Symplify\EasyTesting\DataProvider\StaticFixtureUpdater;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -180,7 +180,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
                 throw $expectationFailedException;
             }
 
-            StaticFixtureUpdater::updateFixtureContent($originalFileInfo, $changedContent, $fixtureFileInfo);
+            FixtureFileUpdater::updateFixtureContent($originalFileInfo, $changedContent, $fixtureFileInfo);
+
             $contents = $expectedFileInfo->getContents();
 
             // make sure we don't get a diff in which every line is different (because of differences in EOL)
