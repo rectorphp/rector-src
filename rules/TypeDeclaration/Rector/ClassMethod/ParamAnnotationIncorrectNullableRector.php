@@ -18,6 +18,7 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\Guard\PhpDocNestedAnnotationGuard;
 use Rector\TypeDeclaration\Helper\PhpDocNullableTypeHelper;
+use Rector\TypeDeclaration\NodeAnalyzer\ParamAnalyzer;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -33,6 +34,7 @@ final class ParamAnnotationIncorrectNullableRector extends AbstractRector
         private readonly PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard,
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly ParamAnalyzer $paramAnalyzer
     ) {
     }
 
@@ -108,20 +110,6 @@ CODE_SAMPLE
         return $this->updateParamTagsIfRequired($phpDocNode, $node, $phpDocInfo);
     }
 
-    private function matchParamByName(string $desiredParamName, ClassMethod|Function_ $node): ?Param
-    {
-        foreach ($node->getParams() as $param) {
-            $paramName = $this->nodeNameResolver->getName($param);
-            if ('$' . $paramName !== $desiredParamName) {
-                continue;
-            }
-
-            return $param;
-        }
-
-        return null;
-    }
-
     private function wasUpdateOfParamTypeRequired(
         PhpDocInfo $phpDocInfo,
         Type $newType,
@@ -170,7 +158,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $param = $this->matchParamByName($paramTagValueNode->parameterName, $node);
+            $param = $this->paramAnalyzer->getParamByName($paramTagValueNode->parameterName, $node);
             if (! $param instanceof Param) {
                 continue;
             }

@@ -24,7 +24,6 @@ final class TraitTypeAnalyzer
         }
 
         $fullyQualifiedName = $this->nodeTypeResolver->getFullyQualifiedClassName($type);
-
         if (! $this->reflectionProvider->hasClass($fullyQualifiedName)) {
             return false;
         }

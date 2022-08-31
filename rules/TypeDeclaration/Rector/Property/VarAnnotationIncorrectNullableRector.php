@@ -7,13 +7,12 @@ namespace Rector\TypeDeclaration\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\PhpDocParser\PhpDocInfoAnalyzer;
 use Rector\TypeDeclaration\Guard\PhpDocNestedAnnotationGuard;
 use Rector\TypeDeclaration\Helper\PhpDocNullableTypeHelper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,6 +28,7 @@ final class VarAnnotationIncorrectNullableRector extends AbstractRector
         private readonly PhpDocNullableTypeHelper $phpDocNullableTypeHelper,
         private readonly PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly PhpDocInfoAnalyzer $phpDocInfoAnalyzer,
     ) {
     }
 
@@ -89,7 +89,7 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if (! $this->isVarDocAlreadySet($phpDocInfo)) {
+        if (! $this->phpDocInfoAnalyzer->isVarDocAlreadySet($phpDocInfo)) {
             return null;
         }
 
@@ -126,17 +126,5 @@ CODE_SAMPLE
         }
 
         return $node;
-    }
-
-    private function isVarDocAlreadySet(PhpDocInfo $phpDocInfo): bool
-    {
-        foreach (['@var', '@phpstan-var', '@psalm-var'] as $tagName) {
-            $varType = $phpDocInfo->getVarType($tagName);
-            if (! $varType instanceof MixedType) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

@@ -743,5 +743,38 @@ parameters:
             message: '#Only booleans are allowed in a negated boolean, string\|false given#'
             path: packages/Testing/Fixture/FixtureFileUpdater.php
 
-        # resolve later
-        - '#Content of method "(.*)" is duplicated\. Use unique content or service instead#'
+        -
+            message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
+            paths:
+                - packages/NodeTypeResolver/NodeTypeResolver.php
+                - packages/NodeTypeResolver/PHPStan/TypeHasher.php
+
+        -
+            message: '#Content of method "refactor\(\)" is duplicated\. Use unique content or service instead#'
+            paths:
+                - rules/CodingStyle/Rector/ArrowFunction/StaticArrowFunctionRector.php
+                - rules/CodingStyle/Rector/Closure/StaticClosureRector.php
+        -
+            message: '#Content of method "getFunctionLikePhpDocInfo\(\)" is duplicated\. Use unique content or service instead#'
+            paths:
+                - rules/TypeDeclaration/TypeInferer/ParamTypeInferer/PHPUnitDataProviderParamTypeInferer.php
+                - packages/NodeTypeResolver/NodeTypeResolver/ParamTypeResolver.php
+
+        -
+            message: '#Content of method "areExclusiveExprReturns\(\)" is duplicated\. Use unique content or service instead#'
+            paths:
+                - rules/TypeDeclaration/NodeAnalyzer/ReturnTypeAnalyzer/StrictNativeFunctionReturnTypeAnalyzer.php
+                - rules/TypeDeclaration/NodeAnalyzer/ReturnTypeAnalyzer/StrictReturnNewAnalyzer.php
+
+        -
+            message: '#Content of method "resolveAssignVar\(\)" is duplicated\. Use unique content or service instead#'
+            paths:
+                - rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
+                - rules/Php80/NodeFactory/MatchFactory.php
+
+        # function like ocvariant
+        - '#Parameter \#2 \$functionLike of method Rector\\TypeDeclaration\\NodeAnalyzer\\ParamAnalyzer\:\:getParamByName\(\) expects PhpParser\\Node\\Stmt\\ClassMethod\|PhpParser\\Node\\Stmt\\Function_, PhpParser\\Node\\FunctionLike given#'
+
+        -
+            message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
+            path:  rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php

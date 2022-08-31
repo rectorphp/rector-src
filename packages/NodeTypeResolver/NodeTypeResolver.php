@@ -260,9 +260,6 @@ final class NodeTypeResolver
         return is_a($bareType, $desiredType, true);
     }
 
-    /**
-     * @return class-string
-     */
     public function getFullyQualifiedClassName(TypeWithClassName $typeWithClassName): string
     {
         if ($typeWithClassName instanceof ShortenedObjectType) {

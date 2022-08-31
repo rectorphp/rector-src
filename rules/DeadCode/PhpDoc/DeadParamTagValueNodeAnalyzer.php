@@ -22,6 +22,7 @@ use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\DeadCode\TypeNodeAnalyzer\MixedArrayTypeNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\TypeDeclaration\NodeAnalyzer\ParamAnalyzer;
 
 final class DeadParamTagValueNodeAnalyzer
 {
@@ -29,13 +30,14 @@ final class DeadParamTagValueNodeAnalyzer
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly TypeComparator $typeComparator,
         private readonly GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
-        private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer
+        private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
+        private readonly ParamAnalyzer $paramAnalyzer,
     ) {
     }
 
     public function isDead(ParamTagValueNode $paramTagValueNode, FunctionLike $functionLike): bool
     {
-        $param = $this->matchParamByName($paramTagValueNode->parameterName, $functionLike);
+        $param = $this->paramAnalyzer->getParamByName($paramTagValueNode->parameterName, $functionLike);
         if (! $param instanceof Param) {
             return false;
         }
@@ -137,19 +139,5 @@ final class DeadParamTagValueNodeAnalyzer
         }
 
         return true;
-    }
-
-    private function matchParamByName(string $desiredParamName, FunctionLike $functionLike): ?Param
-    {
-        foreach ($functionLike->getParams() as $param) {
-            $paramName = $this->nodeNameResolver->getName($param);
-            if ('$' . $paramName !== $desiredParamName) {
-                continue;
-            }
-
-            return $param;
-        }
-
-        return null;
     }
 }
