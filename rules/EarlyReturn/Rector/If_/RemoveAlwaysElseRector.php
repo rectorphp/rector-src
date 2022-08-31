@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
+use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,6 +23,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysElseRector extends AbstractRector
 {
+    public function __construct(private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -100,7 +105,7 @@ CODE_SAMPLE
             return [$if, $node, ...$nodesToReturnAfterNode];
         }
 
-        if ($node->else !== null) {
+        if ($node->else !== null && ! $this->inlineHTMLAnalyzer->hasInlineHTML($node->else)) {
             $stmts = $node->else->stmts;
             $node->else = null;
 
