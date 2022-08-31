@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Php\PhpVersionResolver;
 
 use Composer\Semver\VersionParser;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\Core\Util\PhpVersionFactory;
 
@@ -21,7 +22,7 @@ final class ProjectComposerJsonPhpVersionResolver
 
     public function resolve(string $composerJson): ?int
     {
-        $composerJsonContents = \Nette\Utils\FileSystem::read($composerJson);
+        $composerJsonContents = FileSystem::read($composerJson);
         $projectComposerJson = Json::decode($composerJsonContents, Json::FORCE_ARRAY);
 
         // see https://getcomposer.org/doc/06-config.md#platform
