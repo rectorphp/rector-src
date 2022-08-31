@@ -43,9 +43,11 @@ use Rector\PSR4\Composer\PSR4NamespaceMatcher;
 use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
 use Rector\Utils\Command\MissingInSetCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
+use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Php\TypeChecker;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -190,9 +192,10 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(VersionParser::class);
     $services->set(TypeChecker::class);
 
-    // phpdoc parser
-    $services->set(\PHPStan\PhpDocParser\Lexer\Lexer::class);
-    $services->alias(PhpDocParser::class, BetterPhpDocParser::class);
+    // console
+    $services->set(SymfonyStyleFactory::class);
+    $services->set(SymfonyStyle::class)
+        ->factory([service(SymfonyStyleFactory::class), 'create']);
 
     // cache
     $services->set(DependencyResolver::class)
@@ -234,6 +237,8 @@ return static function (RectorConfig $rectorConfig): void {
 
     // phpdoc parser
     $services->set(PhpDocParser::class);
+    $services->alias(PhpDocParser::class, BetterPhpDocParser::class);
+
     $services->set(\PHPStan\PhpDocParser\Lexer\Lexer::class);
     $services->set(TypeParser::class);
     $services->set(ConstExprParser::class);
