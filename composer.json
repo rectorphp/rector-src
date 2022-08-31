@@ -39,7 +39,7 @@
         "symfony/string": "^6.0",
         "symplify/autowire-array-parameter": "^11.1",
         "symplify/easy-parallel": "^11.1",
-        "symplify/package-builder": "^11.1",
+        "symplify/package-builder": "dev-main",
         "symplify/rule-doc-generator-contracts": "^11.1",
         "symplify/skipper": "^11.1",
         "symplify/smart-file-system": "^11.1",
