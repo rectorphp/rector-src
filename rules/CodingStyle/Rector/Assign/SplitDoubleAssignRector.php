@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\Assign;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Stmt\Expression;
@@ -71,20 +72,44 @@ CODE_SAMPLE
             return null;
         }
 
-        $nestedAssign = $firstAssign->expr;
+        $lastAssignValue = $this->resolveLastAssignExpr($firstAssign);
+        return $this->collectExpressions($firstAssign, $lastAssignValue);
+    }
 
-        $newAssign = new Assign($firstAssign->var, $nestedAssign->expr);
-        $newAssignExpression = new Expression($newAssign);
+    /**
+     * @return Expression[]
+     */
+    private function collectExpressions(Assign $assign, Expr $expr): array
+    {
+        /** @var Expression[] $expressions */
+        $expressions = [];
 
-        // avoid calling the same method/funtion/new twice
-        if (! $nestedAssign->expr instanceof CallLike) {
-            $varAssign = new Assign($nestedAssign->var, $nestedAssign->expr);
+        while ($assign instanceof Assign) {
+            $expressions[] = new Expression(new Assign($assign->var, $expr));
 
-            return [$newAssignExpression, new Expression($varAssign)];
+            // CallLike check need to be after first fill Expression
+            // so use existing variable defined to avoid repetitive call
+            if ($expr instanceof CallLike) {
+                $expr = $assign->var;
+            }
+
+            if (! $assign->expr instanceof Assign) {
+                break;
+            }
+
+            /** @var Expr $assign */
+            $assign = $assign->expr;
         }
 
-        $varAssign = new Assign($nestedAssign->var, $firstAssign->var);
+        return $expressions;
+    }
 
-        return [$newAssignExpression, new Expression($varAssign)];
+    private function resolveLastAssignExpr(Assign $assign): Expr
+    {
+        if (! $assign->expr instanceof Assign) {
+            return $assign->expr;
+        }
+
+        return $this->resolveLastAssignExpr($assign->expr);
     }
 }
