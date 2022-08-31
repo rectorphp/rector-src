@@ -238,7 +238,7 @@ CODE_SAMPLE;
             $this->connectParentNodes($refactoredNode);
         }
 
-        /** @var MutatingScope $currentScope */
+        /** @var MutatingScope|null $currentScope */
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
         $this->changedNodeScopeRefresher->refresh($refactoredNode, $currentScope, $this->file->getSmartFileInfo());
 
