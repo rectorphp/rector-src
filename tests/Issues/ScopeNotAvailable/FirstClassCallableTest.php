@@ -13,9 +13,9 @@ final class FirstClassCallableTest extends AbstractRectorTestCase
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
     /**
@@ -23,7 +23,7 @@ final class FirstClassCallableTest extends AbstractRectorTestCase
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureFirstClassCallable');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureFirstClassCallable');
     }
 
     public function provideConfigFilePath(): string

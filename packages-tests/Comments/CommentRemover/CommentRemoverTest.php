@@ -13,7 +13,6 @@ use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class CommentRemoverTest extends AbstractTestCase
 {
@@ -35,12 +34,9 @@ final class CommentRemoverTest extends AbstractTestCase
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $smartFileInfo): void
+    public function test(string $filePath): void
     {
-        [$inputContents, $expectedOutputContents] = FixtureSplitter::loadFileAndSplitInputAndExpected(
-            $smartFileInfo->getRealPath()
-        );
-
+        [$inputContents, $expectedOutputContents] = FixtureSplitter::loadFileAndSplitInputAndExpected($filePath);
         $inputFilePath = FixtureTempFileDumper::dump($inputContents);
 
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($inputFilePath);
@@ -59,6 +55,6 @@ final class CommentRemoverTest extends AbstractTestCase
 
     public function provideData(): Iterator
     {
-        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
     }
 }

@@ -6,24 +6,20 @@ namespace Rector\Tests\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRect
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class TreatAsNonEmptyRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureTreatAsNonEmpty');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureTreatAsNonEmpty');
     }
 
     public function provideConfigFilePath(): string

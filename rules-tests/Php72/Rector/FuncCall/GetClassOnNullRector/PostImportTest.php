@@ -6,24 +6,20 @@ namespace Rector\Tests\Php72\Rector\FuncCall\GetClassOnNullRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PostImportTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePostImport');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixturePostImport');
     }
 
     public function provideConfigFilePath(): string

@@ -12,32 +12,25 @@ use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
 {
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $smartFileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($smartFileInfo);
+        $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
     }
 
-    private function doTestFileInfo(SmartFileInfo $smartFileInfo): void
+    private function doTestFile(string $filePath): void
     {
-        [$inputFileContents, $expectedType] = FixtureSplitter::loadFileAndSplitInputAndExpected(
-            $smartFileInfo->getRealPath()
-        );
-
+        [$inputFileContents, $expectedType] = FixtureSplitter::loadFileAndSplitInputAndExpected($filePath);
         $inputFilePath = FixtureTempFileDumper::dump($inputFileContents);
 
         $propertyFetchNodes = $this->getNodesForFileOfType($inputFilePath, PropertyFetch::class);

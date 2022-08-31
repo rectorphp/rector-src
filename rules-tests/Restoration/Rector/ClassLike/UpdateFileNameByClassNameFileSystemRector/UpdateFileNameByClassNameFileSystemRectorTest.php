@@ -8,16 +8,15 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class UpdateFileNameByClassNameFileSystemRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $smartFileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($smartFileInfo);
+        $this->doTestFile($filePath);
 
         $originalDirectory = dirname($this->originalTempFilePath);
 
@@ -28,12 +27,9 @@ final class UpdateFileNameByClassNameFileSystemRectorTest extends AbstractRector
         $this->assertFileWasAdded($expectedAddedFileWithContent);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string

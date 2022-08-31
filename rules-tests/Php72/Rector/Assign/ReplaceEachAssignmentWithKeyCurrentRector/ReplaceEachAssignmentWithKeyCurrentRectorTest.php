@@ -7,16 +7,15 @@ namespace Rector\Tests\Php72\Rector\Assign\ReplaceEachAssignmentWithKeyCurrentRe
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use SplFileInfo;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ReplaceEachAssignmentWithKeyCurrentRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
     /**
@@ -24,7 +23,7 @@ final class ReplaceEachAssignmentWithKeyCurrentRectorTest extends AbstractRector
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string

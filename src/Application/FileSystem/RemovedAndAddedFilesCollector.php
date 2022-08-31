@@ -95,10 +95,10 @@ final class RemovedAndAddedFilesCollector
         );
     }
 
-//    public function getAffectedFilesCount(): int
-//    {
-//        return count($this->addedFiles) + count($this->removedFilePaths);
-//    }
+    public function getAffectedFilesCount(): int
+    {
+        return count($this->addedFiles) + count($this->removedFilePaths);
+    }
 
     public function getAddedFileCount(): int
     {

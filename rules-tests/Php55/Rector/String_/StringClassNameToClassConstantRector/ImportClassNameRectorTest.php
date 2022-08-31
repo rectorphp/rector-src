@@ -6,24 +6,20 @@ namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ImportClassNameRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureImport');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureImport');
     }
 
     public function provideConfigFilePath(): string

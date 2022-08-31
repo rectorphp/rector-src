@@ -6,7 +6,6 @@ namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRe
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see \Rector\PostRector\Rector\NameImportingPostRector
@@ -16,17 +15,14 @@ final class AutoImportNamesOnlyOnChangedFilesTest extends AbstractRectorTestCase
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureNameImportingOnChangedFiles');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureNameImportingOnChangedFiles');
     }
 
     public function provideConfigFilePath(): string
