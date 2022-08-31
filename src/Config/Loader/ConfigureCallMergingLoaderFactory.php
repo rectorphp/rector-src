@@ -12,9 +12,8 @@ use Symfony\Component\Config\Loader\GlobFileLoader;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symplify\SymplifyKernel\Contract\Config\LoaderFactoryInterface;
 
-final class ConfigureCallMergingLoaderFactory implements LoaderFactoryInterface
+final class ConfigureCallMergingLoaderFactory
 {
     public function __construct(
         private readonly ConfigureCallValuesCollector $configureCallValuesCollector

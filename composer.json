@@ -43,7 +43,6 @@
         "symplify/rule-doc-generator-contracts": "^11.1",
         "symplify/skipper": "^11.1",
         "symplify/smart-file-system": "^11.1",
-        "symplify/symplify-kernel": "dev-main",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {

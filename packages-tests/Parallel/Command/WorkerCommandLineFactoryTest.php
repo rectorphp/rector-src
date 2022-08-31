@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Parallel\Command;
 
 use Iterator;
+use PHPUnit\Framework\TestCase;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Command\ProcessCommand;
@@ -13,9 +14,8 @@ use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
-use Symplify\PackageBuilder\Testing\AbstractKernelTestCase;
 
-final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
+final class WorkerCommandLineFactoryTest extends TestCase
 {
     /**
      * @var string
@@ -33,10 +33,11 @@ final class WorkerCommandLineFactoryTest extends AbstractKernelTestCase
 
     protected function setUp(): void
     {
-        $this->bootKernel(RectorKernel::class);
+        $rectorKernel = new RectorKernel();
+        $container = $rectorKernel->create();
 
-        $this->workerCommandLineFactory = $this->getService(WorkerCommandLineFactory::class);
-        $this->processCommand = $this->getService(ProcessCommand::class);
+        $this->workerCommandLineFactory = $container->get(WorkerCommandLineFactory::class);
+        $this->processCommand = $container->get(ProcessCommand::class);
     }
 
     /**
