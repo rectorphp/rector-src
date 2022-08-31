@@ -23,7 +23,6 @@ use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
 use SplFileInfo;
-use Symplify\EasyTesting\DataProvider\StaticFixtureUpdater;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -180,7 +179,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
                 throw $expectationFailedException;
             }
 
-            StaticFixtureUpdater::updateFixtureContent($originalFileInfo, $changedContent, $fixtureFileInfo);
             $contents = $expectedFileInfo->getContents();
 
             // make sure we don't get a diff in which every line is different (because of differences in EOL)
