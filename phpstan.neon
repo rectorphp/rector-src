@@ -742,6 +742,3 @@ parameters:
         -
             message: '#Only booleans are allowed in a negated boolean, string\|false given#'
             path: packages/Testing/Fixture/FixtureFileUpdater.php
-
-        # resolve later
-        - '#Content of method "(.*)" is duplicated\. Use unique content or service instead#'
