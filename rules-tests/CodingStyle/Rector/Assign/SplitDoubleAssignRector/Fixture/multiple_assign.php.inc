@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Assign\SplitDoubleAssignRector\Fixture;
 
-final class DemoFile
+final class MultipleAssign
 {
     public function run()
     {
@@ -16,7 +16,7 @@ final class DemoFile
 
 namespace Rector\Tests\CodingStyle\Rector\Assign\SplitDoubleAssignRector\Fixture;
 
-final class DemoFile
+final class MultipleAssign
 {
     public function run()
     {
