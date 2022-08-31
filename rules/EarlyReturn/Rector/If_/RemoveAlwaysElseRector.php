@@ -97,7 +97,9 @@ CODE_SAMPLE
             $this->mirrorComments($node, $firstElseIf);
 
             $nodesToReturnAfterNode = $this->getStatementsElseIfs($node);
-            if ($originalNode->else instanceof Else_) {
+            if ($originalNode->else instanceof Else_ && ! $this->inlineHTMLAnalyzer->hasInlineHTML(
+                $originalNode->else
+            )) {
                 $node->else = null;
                 $nodesToReturnAfterNode = array_merge($nodesToReturnAfterNode, [$originalNode->else]);
             }
@@ -105,7 +107,7 @@ CODE_SAMPLE
             return [$if, $node, ...$nodesToReturnAfterNode];
         }
 
-        if ($node->else !== null && ! $this->inlineHTMLAnalyzer->hasInlineHTML($node->else)) {
+        if ($node->else instanceof Else_ && ! $this->inlineHTMLAnalyzer->hasInlineHTML($node->else)) {
             $stmts = $node->else->stmts;
             $node->else = null;
 
