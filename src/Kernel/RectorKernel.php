@@ -12,6 +12,7 @@ use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCal
 use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symplify\AutowireArrayParameter\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
 use Symplify\PackageBuilder\DependencyInjection\CompilerPass\AutowireInterfacesCompilerPass;
@@ -29,10 +30,15 @@ final class RectorKernel
         $this->configureCallValuesCollector = new ConfigureCallValuesCollector();
     }
 
+    public function create(): ContainerInterface
+    {
+        return $this->createFromConfigs([]);
+    }
+
     /**
      * @param string[] $configFiles
      */
-    public function createFromConfigs(array $configFiles): ContainerInterface
+    public function createFromConfigs(array $configFiles): ContainerBuilder
     {
         $defaultConfigFiles = $this->createDefaultConfigFiles();
         $configFiles = array_merge($defaultConfigFiles, $configFiles);
@@ -40,7 +46,7 @@ final class RectorKernel
         $compilerPasses = $this->createCompilerPasses();
 
         $configureCallMergingLoaderFactory = new ConfigureCallMergingLoaderFactory($this->configureCallValuesCollector);
-        $containerBuilderFactory = new \Rector\Core\Kernel\ContainerBuilderFactory($configureCallMergingLoaderFactory);
+        $containerBuilderFactory = new ContainerBuilderFactory($configureCallMergingLoaderFactory);
 
         $containerBuilder = $containerBuilderFactory->create($configFiles, $compilerPasses);
 
