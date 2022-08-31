@@ -41,7 +41,6 @@
         "symplify/easy-parallel": "^11.1",
         "symplify/package-builder": "dev-main",
         "symplify/rule-doc-generator-contracts": "^11.1",
-        "symplify/skipper": "^11.1",
         "symplify/smart-file-system": "^11.1",
         "webmozart/assert": "^1.11"
     },

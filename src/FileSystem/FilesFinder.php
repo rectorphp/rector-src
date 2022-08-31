@@ -6,9 +6,10 @@ namespace Rector\Core\FileSystem;
 
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Core\Util\StringUtils;
+use Rector\Skipper\Enum\AsteriskMatch;
+use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symplify\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
@@ -16,18 +17,6 @@ use Symplify\SmartFileSystem\SmartFileInfo;
  */
 final class FilesFinder
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/e1jm7v/1
-     */
-    private const STARTS_WITH_ASTERISK_REGEX = '#^\*(.*?)[^*]$#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/EgJQyZ/1
-     */
-    private const ENDS_WITH_ASTERISK_REGEX = '#^[^*](.*?)\*$#';
-
     public function __construct(
         private readonly FilesystemTweaker $filesystemTweaker,
         private readonly SkippedPathsResolver $skippedPathsResolver,
@@ -139,12 +128,12 @@ final class FilesFinder
     private function normalizeForFnmatch(string $path): string
     {
         // ends with *
-        if (StringUtils::isMatch($path, self::ENDS_WITH_ASTERISK_REGEX)) {
+        if (StringUtils::isMatch($path, AsteriskMatch::ONLY_ENDS_WITH_ASTERISK_REGEX)) {
             return '*' . $path;
         }
 
         // starts with *
-        if (StringUtils::isMatch($path, self::STARTS_WITH_ASTERISK_REGEX)) {
+        if (StringUtils::isMatch($path, AsteriskMatch::ONLY_STARTS_WITH_ASTERISK_REGEX)) {
             return $path . '*';
         }
 
