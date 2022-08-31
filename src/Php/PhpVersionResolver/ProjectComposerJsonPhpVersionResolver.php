@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\Php\PhpVersionResolver;
 
 use Composer\Semver\VersionParser;
+use Nette\Utils\Json;
 use Rector\Core\Util\PhpVersionFactory;
-use Symplify\ComposerJsonManipulator\ComposerJsonFactory;
 
 /**
  * @see \Rector\Core\Tests\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver\ProjectComposerJsonPhpVersionResolverTest
@@ -14,7 +14,6 @@ use Symplify\ComposerJsonManipulator\ComposerJsonFactory;
 final class ProjectComposerJsonPhpVersionResolver
 {
     public function __construct(
-        private readonly ComposerJsonFactory $composerJsonFactory,
         private readonly VersionParser $versionParser,
         private readonly PhpVersionFactory $phpVersionFactory
     ) {
@@ -22,7 +21,8 @@ final class ProjectComposerJsonPhpVersionResolver
 
     public function resolve(string $composerJson): ?int
     {
-        $projectComposerJson = $this->composerJsonFactory->createFromFilePath($composerJson);
+        $composerJsonContents = \Nette\Utils\FileSystem::read($composerJson);
+        $projectComposerJson = Json::decode($composerJsonContents, Json::FORCE_ARRAY);
 
         // see https://getcomposer.org/doc/06-config.md#platform
         $platformPhp = $projectComposerJson->getConfig()['platform']['php'] ?? null;

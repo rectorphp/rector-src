@@ -65,7 +65,6 @@ return [
         'Normalizer',
         // used by public API
         'Symplify\SmartFileSystem\SmartFileInfo',
-        'Symplify\ComposerJsonManipulator\ValueObject\ComposerJson',
     ],
     'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
     'expose-constants' => ['__RECTOR_RUNNING__', '#^SYMFONY\_[\p{L}_]+$#'],
