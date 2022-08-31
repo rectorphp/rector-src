@@ -20,9 +20,9 @@ final class SkipperTest extends TestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $container = $rectorKernel->createFromConfigs([__DIR__ . '/config/config.php']);
+        $containerBuilder = $rectorKernel->createFromConfigs([__DIR__ . '/config/config.php']);
 
-        $this->skipper = $container->get(Skipper::class);
+        $this->skipper = $containerBuilder->get(Skipper::class);
     }
 
     /**
