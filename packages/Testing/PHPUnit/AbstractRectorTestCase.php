@@ -96,7 +96,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return strncasecmp(PHP_OS, 'WIN', 3) === 0;
     }
 
-    protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo) // , bool $allowMatches = true): void
+    protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo): void
     {
         if (Strings::match($fixtureFileInfo->getContents(), FixtureSplitter::SPLIT_LINE_REGEX)) {
             // changed content
@@ -116,11 +116,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $this->originalTempFileInfo = $inputFileInfo;
 
-        $this->doTestFileMatchesExpectedContent(
-            $inputFileInfo,
-            $expectedFileInfo,
-            $fixtureFileInfo
-        ); //, $allowMatches);
+        $this->doTestFileMatchesExpectedContent($inputFileInfo, $expectedFileInfo, $fixtureFileInfo);
     }
 
     protected function getFixtureTempDirectory(): string
@@ -161,8 +157,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     private function doTestFileMatchesExpectedContent(
         SmartFileInfo $originalFileInfo,
         SmartFileInfo $expectedFileInfo,
-        SmartFileInfo $fixtureFileInfo,
-        bool $allowMatches = true
+        SmartFileInfo $fixtureFileInfo
     ): void {
         $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFileInfo->getRealPath()]);
 
@@ -176,10 +171,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         try {
             $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $changedContent);
         } catch (ExpectationFailedException $expectationFailedException) {
-            if (! $allowMatches) {
-                throw $expectationFailedException;
-            }
-
             FixtureFileUpdater::updateFixtureContent($originalFileInfo, $changedContent, $fixtureFileInfo);
 
             $contents = $expectedFileInfo->getContents();
