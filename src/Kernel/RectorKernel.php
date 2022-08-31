@@ -17,10 +17,8 @@ use Symplify\AutowireArrayParameter\DependencyInjection\CompilerPass\AutowireArr
 use Symplify\PackageBuilder\DependencyInjection\CompilerPass\AutowireInterfacesCompilerPass;
 use Symplify\PackageBuilder\ValueObject\ConsoleColorDiffConfig;
 use Symplify\Skipper\ValueObject\SkipperConfig;
-use Symplify\SymplifyKernel\ContainerBuilderFactory;
-use Symplify\SymplifyKernel\Contract\LightKernelInterface;
 
-final class RectorKernel implements LightKernelInterface
+final class RectorKernel
 {
     private readonly ConfigureCallValuesCollector $configureCallValuesCollector;
 
@@ -42,10 +40,9 @@ final class RectorKernel implements LightKernelInterface
         $compilerPasses = $this->createCompilerPasses();
 
         $configureCallMergingLoaderFactory = new ConfigureCallMergingLoaderFactory($this->configureCallValuesCollector);
+        $containerBuilderFactory = new \Rector\Core\Kernel\ContainerBuilderFactory($configureCallMergingLoaderFactory);
 
-        $containerBuilderFactory = new ContainerBuilderFactory($configureCallMergingLoaderFactory);
-
-        $containerBuilder = $containerBuilderFactory->create($configFiles, $compilerPasses, []);
+        $containerBuilder = $containerBuilderFactory->create($configFiles, $compilerPasses);
 
         // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
         $containerBuilder->setParameter('container.dumper.inline_factories', true);
