@@ -61,6 +61,6 @@ final class UseImportsResolverTest extends AbstractTestCase
      */
     public function provideData(): Iterator
     {
-        return FixtureFileFinder::yieldDirectoryExclusively(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }
 }
