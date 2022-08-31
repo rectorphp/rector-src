@@ -32,7 +32,7 @@ final class FilesFinder
         private readonly FilesystemTweaker $filesystemTweaker,
         private readonly SkippedPathsResolver $skippedPathsResolver,
         private readonly UnchangedFilesFilter $unchangedFilesFilter,
-        private readonly \Rector\Core\FileSystem\FileAndDirectoryFilter $fileAndDirectoryFilter,
+        private readonly FileAndDirectoryFilter $fileAndDirectoryFilter,
     ) {
     }
 
