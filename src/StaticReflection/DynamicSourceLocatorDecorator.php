@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\StaticReflection;
 
+use Rector\Core\FileSystem\FileAndDirectoryFilter;
 use Rector\Core\FileSystem\PhpFilesFinder;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
-use Symplify\SmartFileSystem\FileSystemFilter;
 
 /**
  * @see https://phpstan.org/blog/zero-config-analysis-with-static-reflection
@@ -15,9 +15,9 @@ use Symplify\SmartFileSystem\FileSystemFilter;
 final class DynamicSourceLocatorDecorator
 {
     public function __construct(
-        private readonly FileSystemFilter $fileSystemFilter,
         private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
-        private readonly PhpFilesFinder $phpFilesFinder
+        private readonly PhpFilesFinder $phpFilesFinder,
+        private readonly FileAndDirectoryFilter $fileAndDirectoryFilter
     ) {
     }
 
@@ -30,10 +30,10 @@ final class DynamicSourceLocatorDecorator
             return;
         }
 
-        $files = $this->fileSystemFilter->filterFiles($paths);
+        $files = $this->fileAndDirectoryFilter->filterFiles($paths);
         $this->dynamicSourceLocatorProvider->addFiles($files);
 
-        $directories = $this->fileSystemFilter->filterDirectories($paths);
+        $directories = $this->fileAndDirectoryFilter->filterDirectories($paths);
         foreach ($directories as $directory) {
             $filesInfosInDirectory = $this->phpFilesFinder->findInPaths([$directory]);
 

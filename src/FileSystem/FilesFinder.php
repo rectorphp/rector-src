@@ -9,7 +9,6 @@ use Rector\Core\Util\StringUtils;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symplify\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
-use Symplify\SmartFileSystem\FileSystemFilter;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
@@ -31,9 +30,9 @@ final class FilesFinder
 
     public function __construct(
         private readonly FilesystemTweaker $filesystemTweaker,
-        private readonly FileSystemFilter $fileSystemFilter,
         private readonly SkippedPathsResolver $skippedPathsResolver,
         private readonly UnchangedFilesFilter $unchangedFilesFilter,
+        private readonly \Rector\Core\FileSystem\FileAndDirectoryFilter $fileAndDirectoryFilter,
     ) {
     }
 
@@ -46,8 +45,8 @@ final class FilesFinder
     {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
-        $filePaths = $this->fileSystemFilter->filterFiles($filesAndDirectories);
-        $directories = $this->fileSystemFilter->filterDirectories($filesAndDirectories);
+        $filePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
+        $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
 
         $smartFileInfos = $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
 
