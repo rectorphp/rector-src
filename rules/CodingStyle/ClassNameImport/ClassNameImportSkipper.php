@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -25,7 +26,7 @@ final class ClassNameImportSkipper
 
     public function shouldSkipNameForFullyQualifiedObjectType(
         File $file,
-        \PhpParser\Node $node,
+        Node $node,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): bool {
         foreach ($this->classNameImportSkipVoters as $classNameImportSkipVoter) {
