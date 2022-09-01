@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Caching;
 
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class UnchangedFilesFilter
 {
@@ -24,10 +23,6 @@ final class UnchangedFilesFilter
         $dependentFileInfos = [];
 
         foreach ($filePaths as $filePath) {
-            //            if (is_string($filePath)) {
-            //                $filePath = new SmartFileInfo($filePath);
-            //            }
-
             if (! $this->changedFilesDetector->hasFileChanged($filePath)) {
                 continue;
             }

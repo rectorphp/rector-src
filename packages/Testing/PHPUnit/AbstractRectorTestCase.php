@@ -84,6 +84,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     }
 
     /**
+     * @deprecated
      * @return Iterator<SmartFileInfo>
      */
     protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
@@ -99,7 +100,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     protected function doTestFile(string $fixtureFilePath): void
     {
         $fixtureFileContents = FileSystem::read($fixtureFilePath);
-
         if (Strings::match($fixtureFileContents, FixtureSplitter::SPLIT_LINE_REGEX)) {
             // changed content
             [$inputFileContents, $expectedFileContents] = FixtureSplitter::loadFileAndSplitInputAndExpected(

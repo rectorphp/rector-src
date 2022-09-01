@@ -11,7 +11,6 @@ use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @api
@@ -27,7 +26,6 @@ final class TestingParser
 
     public function parseFilePathToFile(string $filePath): File
     {
-        //        $smartFileInfo = new SmartFileInfo($filePath);
         $file = new File($filePath, FileSystem::read($filePath));
 
         $stmts = $this->rectorParser->parseFile($filePath);
