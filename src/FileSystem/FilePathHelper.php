@@ -16,6 +16,10 @@ final class FilePathHelper
 
     public function relativePath(string $fileRealPath): string
     {
+        if (! $this->filesystem->isAbsolutePath($fileRealPath)) {
+            return $fileRealPath;
+        }
+
         return $this->relativeFilePathFromDirectory($fileRealPath, getcwd());
     }
 
