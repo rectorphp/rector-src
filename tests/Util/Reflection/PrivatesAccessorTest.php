@@ -7,6 +7,7 @@ namespace Rector\Core\Tests\Util\Reflection;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateMethods;
+use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateProperty;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 
 final class PrivatesAccessorTest extends TestCase
@@ -60,5 +61,43 @@ final class PrivatesAccessorTest extends TestCase
     public function provideDataReference(): Iterator
     {
         yield [new SomeClassWithPrivateMethods(), 'multipleByTwo', 10, 20];
+    }
+
+    public function testGetterSetter(): void
+    {
+        $privatesAccessor = new PrivatesAccessor();
+        $someClassWithPrivateProperty = new SomeClassWithPrivateProperty();
+
+        $fetchedValue = $privatesAccessor->getPrivateProperty($someClassWithPrivateProperty, 'value');
+        $this->assertSame($someClassWithPrivateProperty->getValue(), $fetchedValue);
+
+        $fetchedParentValue = $privatesAccessor->getPrivateProperty($someClassWithPrivateProperty, 'parentValue');
+        $this->assertSame($someClassWithPrivateProperty->getParentValue(), $fetchedParentValue);
+
+        $privatesAccessor->setPrivateProperty($someClassWithPrivateProperty, 'value', 25);
+        $this->assertSame(25, $someClassWithPrivateProperty->getValue());
+    }
+
+    public function testGetterSetterTypesafe(): void
+    {
+        $privatesAccessor = new PrivatesAccessor();
+        $someClassWithPrivateProperty = new SomeClassWithPrivateProperty();
+
+        $newObject = new \stdClass();
+        $this->assertNotSame($newObject, $someClassWithPrivateProperty->getObject());
+        $privatesAccessor->setPrivatePropertyOfClass(
+            $someClassWithPrivateProperty,
+            'object',
+            $newObject,
+            \stdClass::class
+        );
+        $this->assertSame($newObject, $someClassWithPrivateProperty->getObject());
+
+        $fetchedValue = $privatesAccessor->getPrivatePropertyOfClass(
+            $someClassWithPrivateProperty,
+            'object',
+            \stdClass::class
+        );
+        $this->assertSame($someClassWithPrivateProperty->getObject(), $fetchedValue);
     }
 }
