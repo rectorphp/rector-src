@@ -10,6 +10,7 @@ use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\RectorConsoleOutputStyleFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
 use Rector\Core\Kernel\RectorKernel;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -145,9 +146,7 @@ try {
         ]);
     } else {
         // report fatal errors in console format
-        $rectorConsoleOutputStyleFactory = new RectorConsoleOutputStyleFactory(
-            new \Rector\Core\Util\Reflection\PrivatesAccessor()
-        );
+        $rectorConsoleOutputStyleFactory = new RectorConsoleOutputStyleFactory(new PrivatesAccessor());
         $rectorConsoleOutputStyle = $rectorConsoleOutputStyleFactory->create();
         $rectorConsoleOutputStyle->error($throwable->getMessage());
     }

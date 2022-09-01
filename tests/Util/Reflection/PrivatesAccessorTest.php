@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateMethods;
 use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateProperty;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
+use stdClass;
 
 final class PrivatesAccessorTest extends TestCase
 {
@@ -83,20 +84,20 @@ final class PrivatesAccessorTest extends TestCase
         $privatesAccessor = new PrivatesAccessor();
         $someClassWithPrivateProperty = new SomeClassWithPrivateProperty();
 
-        $newObject = new \stdClass();
+        $newObject = new stdClass();
         $this->assertNotSame($newObject, $someClassWithPrivateProperty->getObject());
         $privatesAccessor->setPrivatePropertyOfClass(
             $someClassWithPrivateProperty,
             'object',
             $newObject,
-            \stdClass::class
+            stdClass::class
         );
         $this->assertSame($newObject, $someClassWithPrivateProperty->getObject());
 
         $fetchedValue = $privatesAccessor->getPrivatePropertyOfClass(
             $someClassWithPrivateProperty,
             'object',
-            \stdClass::class
+            stdClass::class
         );
         $this->assertSame($someClassWithPrivateProperty->getObject(), $fetchedValue);
     }
