@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\Util\Reflection;
 
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 use Symplify\PackageBuilder\Exception\InvalidPrivatePropertyTypeException;
 use Symplify\PackageBuilder\Exception\MissingPrivatePropertyException;
 
@@ -20,7 +23,7 @@ final class PrivatesAccessor
     public function callPrivateMethod(object|string $object, string $methodName, array $arguments): mixed
     {
         if (is_string($object)) {
-            $reflectionClass = new \ReflectionClass($object);
+            $reflectionClass = new ReflectionClass($object);
             $object = $reflectionClass->newInstanceWithoutConstructor();
         }
 
@@ -35,7 +38,7 @@ final class PrivatesAccessor
     public function callPrivateMethodWithReference(object|string $object, string $methodName, mixed $argument): mixed
     {
         if (is_string($object)) {
-            $reflectionClass = new \ReflectionClass($object);
+            $reflectionClass = new ReflectionClass($object);
             $object = $reflectionClass->newInstanceWithoutConstructor();
         }
 
@@ -99,23 +102,23 @@ final class PrivatesAccessor
         $propertyReflection->setValue($object, $value);
     }
 
-    private function createAccessibleMethodReflection(object $object, string $methodName): \ReflectionMethod
+    private function createAccessibleMethodReflection(object $object, string $methodName): ReflectionMethod
     {
-        $reflectionMethod = new \ReflectionMethod($object::class, $methodName);
+        $reflectionMethod = new ReflectionMethod($object::class, $methodName);
         $reflectionMethod->setAccessible(true);
 
         return $reflectionMethod;
     }
 
-    private function resolvePropertyReflection(object $object, string $propertyName): \ReflectionProperty
+    private function resolvePropertyReflection(object $object, string $propertyName): ReflectionProperty
     {
         if (property_exists($object, $propertyName)) {
-            return new \ReflectionProperty($object, $propertyName);
+            return new ReflectionProperty($object, $propertyName);
         }
 
         $parentClass = get_parent_class($object);
         if ($parentClass !== false) {
-            return new \ReflectionProperty($parentClass, $propertyName);
+            return new ReflectionProperty($parentClass, $propertyName);
         }
 
         $errorMessage = sprintf('Property "$%s" was not found in "%s" class', $propertyName, $object::class);

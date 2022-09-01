@@ -3,8 +3,9 @@
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector\Fixture;
 
 use Iterator;
+use PHPUnit\Framework\TestCase;
 
-final class SkipTooManyIterator
+final class SkipIteratorInTest extends TestCase
 {
     public function provide(): Iterator
     {

@@ -5,21 +5,25 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use PHPUnit\Framework\TestCase;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
 use Rector\Privatization\TypeManipulator\NormalizeTypeToRespectArrayScalarType;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
@@ -36,7 +40,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector\AddArrayReturnDocTypeRectorTest
  */
-final class AddArrayReturnDocTypeRector extends AbstractRector
+final class AddArrayReturnDocTypeRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly ReturnTypeInferer $returnTypeInferer,
@@ -106,9 +110,9 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->isDataProviderClassMethod($node)) {
+        if ($this->isDataProviderClassMethod($node, $scope)) {
             return null;
         }
 
@@ -277,8 +281,12 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isDataProviderClassMethod(ClassMethod $classMethod): bool
+    private function isDataProviderClassMethod(ClassMethod $classMethod, Scope $scope): bool
     {
+        if ($this->isPublicMethodInTestCaseWithReturnIterator($scope, $classMethod)) {
+            return true;
+        }
+
         // should skip data provider, because complex structures
         $class = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
         if (! $class instanceof Class_) {
@@ -289,5 +297,27 @@ CODE_SAMPLE
 
         $classMethodName = $classMethod->name->toString();
         return in_array($classMethodName, $dataProviderMethodNames, true);
+    }
+
+    private function isPublicMethodInTestCaseWithReturnIterator(Scope $scope, ClassMethod $classMethod): bool
+    {
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        if (! $classReflection->isSubclassOf(TestCase::class)) {
+            return false;
+        }
+
+        if (! $classMethod->returnType instanceof FullyQualified) {
+            return false;
+        }
+
+        if (! $this->isName($classMethod->returnType, 'Iterator')) {
+            return false;
+        }
+
+        return $classMethod->isPublic();
     }
 }

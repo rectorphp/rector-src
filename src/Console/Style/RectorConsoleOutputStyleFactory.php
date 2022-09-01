@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class RectorConsoleOutputStyleFactory
 {
-    public function __construct(private PrivatesAccessor $privatesAccessor)
+    public function __construct(private readonly PrivatesAccessor $privatesAccessor)
     {
     }
 
