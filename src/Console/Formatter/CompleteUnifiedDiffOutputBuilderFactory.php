@@ -8,6 +8,7 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
+ * @api
  * Creates @see UnifiedDiffOutputBuilder with "$contextLines = 1000;"
  */
 final class CompleteUnifiedDiffOutputBuilderFactory
