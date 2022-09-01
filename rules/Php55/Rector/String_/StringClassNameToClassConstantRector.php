@@ -144,6 +144,11 @@ CODE_SAMPLE
             return true;
         }
 
+        // possibly string
+        if (ctype_lower($classLikeName[0])) {
+            return true;
+        }
+
         foreach ($this->classesToSkip as $classToSkip) {
             if ($this->nodeNameResolver->isStringName($classLikeName, $classToSkip)) {
                 return true;
