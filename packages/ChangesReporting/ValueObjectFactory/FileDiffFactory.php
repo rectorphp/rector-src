@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\ChangesReporting\ValueObjectFactory;
 
+use Rector\Core\Console\Formatter\ConsoleDiffer;
 use Rector\Core\Differ\DefaultDiffer;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Reporting\FileDiff;
-use Symplify\PackageBuilder\Console\Output\ConsoleDiffer;
 
 final class FileDiffFactory
 {

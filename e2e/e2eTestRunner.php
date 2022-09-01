@@ -4,11 +4,12 @@
 // runs a rector e2e test.
 // checks whether we expect a certain output, or alternatively that rector just processed everything without errors
 
+use Rector\Core\Console\Formatter\ColorConsoleDiffFormatter;
+use Rector\Core\Console\Formatter\ConsoleDiffer;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Console\Command\Command;
-use Symplify\PackageBuilder\Console\Formatter\ColorConsoleDiffFormatter;
-use Symplify\PackageBuilder\Console\Output\ConsoleDiffer;
 
 $projectRoot = __DIR__ .'/..';
 $rectorBin = $projectRoot . '/bin/rector';
@@ -40,7 +41,7 @@ if (!file_exists($expectedDiff)) {
     exit($exitCode);
 }
 
-$symfonyStyleFactory = new SymfonyStyleFactory(new \Rector\Core\Util\Reflection\PrivatesAccessor());
+$symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
 $symfonyStyle =  $symfonyStyleFactory->create();
 
 $matchedExpectedOutput = false;

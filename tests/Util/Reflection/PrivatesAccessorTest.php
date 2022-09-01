@@ -13,7 +13,7 @@ use stdClass;
 
 final class PrivatesAccessorTest extends TestCase
 {
-    private PrivatesAccessor $privatesAccessor;
+    private readonly PrivatesAccessor $privatesAccessor;
 
     protected function setUp(): void
     {
