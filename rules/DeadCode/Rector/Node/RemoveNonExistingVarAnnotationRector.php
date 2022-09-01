@@ -22,8 +22,8 @@ use PhpParser\Node\Stmt\While_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
-use Symplify\PackageBuilder\Php\TypeChecker;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -53,8 +53,8 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
     ];
 
     public function __construct(
-        private readonly TypeChecker $typeChecker,
-        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
+        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
@@ -156,11 +156,11 @@ CODE_SAMPLE
     private function shouldSkip(Node $node): bool
     {
         if (! $node instanceof Nop) {
-            return ! $this->typeChecker->isInstanceOf($node, self::NODES_TO_MATCH);
+            return ! $this->multiInstanceofChecker->isInstanceOf($node, self::NODES_TO_MATCH);
         }
 
         if (count($node->getComments()) <= 1) {
-            return ! $this->typeChecker->isInstanceOf($node, self::NODES_TO_MATCH);
+            return ! $this->multiInstanceofChecker->isInstanceOf($node, self::NODES_TO_MATCH);
         }
 
         return true;

@@ -22,7 +22,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Symplify\PackageBuilder\Reflection\PrivatesCaller;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\TagValueNodeReprintTest
@@ -38,7 +38,7 @@ final class BetterPhpDocParser extends PhpDocParser
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
         private readonly array $phpDocNodeDecorators,
-        private readonly PrivatesCaller $privatesCaller = new PrivatesCaller(),
+        private readonly PrivatesAccessor $privatesAccessor = new PrivatesAccessor(),
     ) {
         parent::__construct($typeParser, $constExprParser);
     }
@@ -116,7 +116,7 @@ final class BetterPhpDocParser extends PhpDocParser
         $startPosition = $betterTokenIterator->currentPosition();
 
         /** @var PhpDocChildNode $phpDocNode */
-        $phpDocNode = $this->privatesCaller->callPrivateMethod($this, 'parseChild', [$betterTokenIterator]);
+        $phpDocNode = $this->privatesAccessor->callPrivateMethod($this, 'parseChild', [$betterTokenIterator]);
         $endPosition = $betterTokenIterator->currentPosition();
 
         $startAndEnd = new StartAndEnd($startPosition, $endPosition);

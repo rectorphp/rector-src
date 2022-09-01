@@ -24,9 +24,9 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symplify\PackageBuilder\Php\TypeChecker;
 use Webmozart\Assert\Assert;
 
 /**
@@ -37,9 +37,9 @@ final class BetterNodeFinder
     public function __construct(
         private readonly NodeFinder $nodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly TypeChecker $typeChecker,
         private readonly NodeComparator $nodeComparator,
         private readonly ClassAnalyzer $classAnalyzer,
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
@@ -310,7 +310,7 @@ final class BetterNodeFinder
     {
         return $this->findFirstPrevious(
             $mainNode,
-            fn (Node $node): bool => $this->typeChecker->isInstanceOf($node, $types)
+            fn (Node $node): bool => $this->multiInstanceofChecker->isInstanceOf($node, $types)
         );
     }
 

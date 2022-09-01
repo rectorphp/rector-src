@@ -10,9 +10,9 @@ use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\RectorConsoleOutputStyleFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
 use Rector\Core\Kernel\RectorKernel;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symplify\PackageBuilder\Reflection\PrivatesCaller;
 
 // @ intentionally: continue anyway
 @ini_set('memory_limit', '-1');
@@ -146,7 +146,7 @@ try {
         ]);
     } else {
         // report fatal errors in console format
-        $rectorConsoleOutputStyleFactory = new RectorConsoleOutputStyleFactory(new PrivatesCaller());
+        $rectorConsoleOutputStyleFactory = new RectorConsoleOutputStyleFactory(new PrivatesAccessor());
         $rectorConsoleOutputStyle = $rectorConsoleOutputStyleFactory->create();
         $rectorConsoleOutputStyle->error($throwable->getMessage());
     }

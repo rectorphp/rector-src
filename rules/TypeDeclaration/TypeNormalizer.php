@@ -14,9 +14,9 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\ValueObject\NestedArrayType;
-use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\TypeNormalizerTest

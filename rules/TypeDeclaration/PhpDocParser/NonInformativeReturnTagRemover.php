@@ -25,11 +25,11 @@ use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
-use Symplify\PackageBuilder\Php\TypeChecker;
 
 final class NonInformativeReturnTagRemover
 {
@@ -49,7 +49,7 @@ final class NonInformativeReturnTagRemover
 
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly TypeChecker $typeChecker
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
@@ -70,7 +70,10 @@ final class NonInformativeReturnTagRemover
         $returnType = $phpDocInfo->getReturnType();
 
         // is bare type
-        if ($this->typeChecker->isInstanceOf($returnType, [FloatType::class, StringType::class, IntegerType::class])) {
+        if ($this->multiInstanceofChecker->isInstanceOf(
+            $returnType,
+            [FloatType::class, StringType::class, IntegerType::class]
+        )) {
             $phpDocInfo->removeByType(ReturnTagValueNode::class);
             return;
         }
