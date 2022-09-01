@@ -8,7 +8,7 @@ use PhpParser\Node\Stmt;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Dependency\DependencyResolver as PHPStanDependencyResolver;
-use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 
 final class DependencyResolver
 {

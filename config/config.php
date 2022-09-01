@@ -50,7 +50,6 @@ use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
-use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -170,9 +169,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(Lexer::class)
         ->factory([service(PHPStanServicesFactory::class), 'createEmulativeLexer']);
-
-    // symplify/package-builder
-    $services->set(PrivatesAccessor::class);
 
     $services->set(ParameterProvider::class)
         ->arg('$container', service('service_container'));
