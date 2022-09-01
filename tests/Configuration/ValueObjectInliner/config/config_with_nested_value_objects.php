@@ -13,6 +13,7 @@ use Rector\Core\Tests\Configuration\ValueObjectInliner\Source\WithType;
 
 return static function (RectorConfig $rectorConfig): void {
     $services = $rectorConfig->services();
+
     $services->defaults()
         ->public()
         ->autowire()
