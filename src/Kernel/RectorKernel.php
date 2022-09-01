@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\Kernel;
 
 use Rector\Core\Config\Loader\ConfigureCallMergingLoaderFactory;
-use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Collector\ConfigureCallValuesCollector;
+use Rector\Core\DependencyInjection\CompilerPass\AutowireRectorCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
@@ -15,7 +15,6 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symplify\AutowireArrayParameter\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
-use Symplify\PackageBuilder\DependencyInjection\CompilerPass\AutowireInterfacesCompilerPass;
 use Symplify\PackageBuilder\ValueObject\ConsoleColorDiffConfig;
 
 final class RectorKernel
@@ -81,7 +80,7 @@ final class RectorKernel
             new RemoveSkippedRectorsCompilerPass(),
 
             // autowire Rectors by default (mainly for tests)
-            new AutowireInterfacesCompilerPass([RectorInterface::class]),
+            new AutowireRectorCompilerPass(),
             new MakeRectorsPublicCompilerPass(),
 
             // add all merged arguments of Rector services
