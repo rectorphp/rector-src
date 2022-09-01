@@ -6,7 +6,7 @@ namespace Rector\Skipper\SkipCriteriaResolver;
 
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 
 final class SkippedClassResolver
 {

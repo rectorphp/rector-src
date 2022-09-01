@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Rector\Core\Php;
 
 use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Exception\Configuration\InvalidConfigurationException;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use ReflectionClass;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 /**
  * @see \Rector\Core\Tests\Php\PhpVersionProviderTest
