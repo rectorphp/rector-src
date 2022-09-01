@@ -7,7 +7,6 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector;
 use Iterator;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see RenameClassRector
@@ -17,17 +16,14 @@ final class RenameParentTest extends AbstractRectorTestCase
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureRenameParent');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureRenameParent');
     }
 
     public function provideConfigFilePath(): string

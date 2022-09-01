@@ -6,24 +6,20 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclaration
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class Php80RectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureForPhp80');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureForPhp80');
     }
 
     public function provideConfigFilePath(): string

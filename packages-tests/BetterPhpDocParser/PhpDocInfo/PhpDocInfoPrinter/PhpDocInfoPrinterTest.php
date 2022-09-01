@@ -8,7 +8,6 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\FileSystem\FilePathHelper;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
 {
@@ -42,15 +41,17 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
     /**
      * @dataProvider provideDataEmpty()
      */
-    public function testEmpty(SmartFileInfo $fileInfo): void
+    public function testEmpty(string $filePath): void
     {
-        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($fileInfo->getContents(), new Nop());
+        $fileContents = FileSystem::read($filePath);
+
+        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($fileContents, new Nop());
         $this->assertEmpty($this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo));
     }
 
     public function provideDataEmpty(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
     }
 
     private function doComparePrintedFileEquals(string $inputFilePath, string $expectedFilePath): void

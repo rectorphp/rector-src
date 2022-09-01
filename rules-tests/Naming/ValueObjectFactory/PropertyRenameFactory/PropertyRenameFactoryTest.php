@@ -41,9 +41,9 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfoWithProperty, string $expectedName, string $currentName): void
+    public function test(string $filePathWithProperty, string $expectedName, string $currentName): void
     {
-        $property = $this->getPropertyFromFileInfo($fileInfoWithProperty->getRealPath());
+        $property = $this->getPropertyFromFilePath($filePathWithProperty);
 
         $expectedPropertyName = $this->matchPropertyTypeExpectedNameResolver->resolve($property);
         if ($expectedPropertyName === null) {
@@ -64,10 +64,10 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
      */
     public function provideData(): Iterator
     {
-        yield [new SmartFileInfo(__DIR__ . '/Fixture/skip_some_class.php.inc'), 'eliteManager', 'eventManager'];
+        yield [__DIR__ . '/Fixture/skip_some_class.php.inc', 'eliteManager', 'eventManager'];
     }
 
-    private function getPropertyFromFileInfo(string $filePath): Property
+    private function getPropertyFromFilePath(string $filePath): Property
     {
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($filePath);
 

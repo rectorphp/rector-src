@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
@@ -17,7 +18,6 @@ use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class TagValueNodeReprintTest extends AbstractTestCase
 {
@@ -46,12 +46,12 @@ final class TagValueNodeReprintTest extends AbstractTestCase
      * @dataProvider provideData()
      * @dataProvider provideDataNested()
      */
-    public function test(SmartFileInfo $fixtureFileInfo): void
+    public function test(string $filePath): void
     {
-        [$fileContents, $nodeClass, $tagValueNodeClasses] = Strings::split(
-            $fixtureFileInfo->getContents(),
-            "#-----\n#"
-        );
+        $fixtureFileContents = FileSystem::read($filePath);
+
+        [$fileContents, $nodeClass, $tagValueNodeClasses] = Strings::split($fixtureFileContents, "#-----\n#");
+
         $nodeClass = trim((string) $nodeClass);
         $tagValueNodeClasses = $this->splitListByEOL($tagValueNodeClasses);
 
@@ -62,20 +62,14 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         }
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideDataNested(): Iterator
     {
-        return FixtureFileFinder::yieldDirectory(__DIR__ . '/FixtureNested');
+        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/FixtureNested');
     }
 
     /**

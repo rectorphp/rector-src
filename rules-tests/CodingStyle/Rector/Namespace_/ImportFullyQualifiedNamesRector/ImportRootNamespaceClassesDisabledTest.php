@@ -6,7 +6,6 @@ namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRe
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see \Rector\PostRector\Rector\NameImportingPostRector
@@ -16,9 +15,9 @@ final class ImportRootNamespaceClassesDisabledTest extends AbstractRectorTestCas
     /**
      * @dataProvider provideData()
      */
-    public function test(SmartFileInfo $fileInfo): void
+    public function test(string $filePath): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($filePath);
     }
 
     /**
@@ -26,7 +25,7 @@ final class ImportRootNamespaceClassesDisabledTest extends AbstractRectorTestCas
      */
     public function provideData(): iterable
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureRoot');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureRoot');
     }
 
     public function provideConfigFilePath(): string
