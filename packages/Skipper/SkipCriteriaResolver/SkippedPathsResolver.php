@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Skipper\SkipCriteriaResolver;
 
 use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\FileSystem\FilePathHelper;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 /**
  * @see \Rector\Tests\Skipper\SkipCriteriaResolver\SkippedPathsResolver\SkippedPathsResolverTest

@@ -7,10 +7,10 @@ namespace Rector\Testing\TestingParser;
 use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 /**
  * @api

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Rector\Core\Autoloading;
 
 use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Symfony\Component\Console\Input\InputInterface;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Webmozart\Assert\Assert;
 
 /**

@@ -11,6 +11,7 @@ use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Console\Command\ProcessCommand;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
@@ -26,7 +27,6 @@ use Symplify\EasyParallel\Enum\ReactEvent;
 use Symplify\EasyParallel\ValueObject\ParallelProcess;
 use Symplify\EasyParallel\ValueObject\ProcessPool;
 use Symplify\EasyParallel\ValueObject\Schedule;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Throwable;
 
 /**

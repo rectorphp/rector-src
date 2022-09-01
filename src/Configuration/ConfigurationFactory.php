@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rector\Core\Configuration;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 
 final class ConfigurationFactory
 {

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rector\Core\Autoloading;
 
 use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Throwable;
 use Webmozart\Assert\Assert;
 

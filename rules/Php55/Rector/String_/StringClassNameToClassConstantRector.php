@@ -11,12 +11,12 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -38,7 +38,7 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
     ];
 
     public function __construct(
-        private readonly ClassLikeExistenceChecker $classLikeExistenceChecker
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -140,7 +140,7 @@ CODE_SAMPLE
 
     private function shouldSkip(string $classLikeName, String_ $string): bool
     {
-        if (! $this->classLikeExistenceChecker->doesClassLikeInsensitiveExists($classLikeName)) {
+        if (! $this->reflectionProvider->hasClass($classLikeName)) {
             return true;
         }
 
