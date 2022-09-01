@@ -11,7 +11,6 @@ use Rector\Skipper\Skipper\Skipper;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\FifthElement;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\SixthSense;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\ThreeMan;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class SkipperTest extends TestCase
 {
@@ -30,12 +29,7 @@ final class SkipperTest extends TestCase
      */
     public function testSkipFileInfo(string $filePath, bool $expectedSkip): void
     {
-        $smartFileInfo = new SmartFileInfo($filePath);
-
-        $resultSkip = $this->skipper->shouldSkipFileInfo($smartFileInfo);
-        $this->assertSame($expectedSkip, $resultSkip);
-
-        $filePathResultSkip = $this->skipper->shouldSkipFilePath($smartFileInfo->getRealPath());
+        $filePathResultSkip = $this->skipper->shouldSkipFilePath($filePath);
         $this->assertSame($expectedSkip, $filePathResultSkip);
     }
 

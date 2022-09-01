@@ -30,7 +30,7 @@ final class SkipSkipperTest extends TestCase
      */
     public function test(string $element, string $filePath, bool $expectedSkip): void
     {
-        $resolvedSkip = $this->skipper->shouldSkipElementAndFileInfo($element, $filePath);
+        $resolvedSkip = $this->skipper->shouldSkipElementAndFilePath($element, $filePath);
         $this->assertSame($expectedSkip, $resolvedSkip);
     }
 

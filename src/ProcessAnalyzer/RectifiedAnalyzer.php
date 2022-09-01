@@ -39,8 +39,6 @@ final class RectifiedAnalyzer
             return new RectifiedNode($rectorClass, $node);
         }
 
-        //        $realPath = $smartFileInfo->getRealPath();
-
         if (! isset($this->previousFileWithNodes[$filePath])) {
             $this->previousFileWithNodes[$filePath] = new RectifiedNode($rectorClass, $node);
             return null;

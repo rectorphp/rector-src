@@ -27,7 +27,7 @@ final class FileInfoDeletionAnalyzer
     public function isClassLikeAndFileInfoMatch(File $file, ClassLike $classLike): bool
     {
         $className = (string) $this->nodeNameResolver->getName($classLike);
-        $filePath = $file->getFilePath(); // getSmartFileInfo();
+        $filePath = $file->getFilePath();
 
         $basename = pathinfo($filePath, PATHINFO_BASENAME);
 

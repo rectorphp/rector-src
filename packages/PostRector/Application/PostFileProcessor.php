@@ -81,6 +81,6 @@ final class PostFileProcessor
             return false;
         }
 
-        return $this->skipper->shouldSkipElementAndFileInfo($postRector, $file->getFilePath());
+        return $this->skipper->shouldSkipElementAndFilePath($postRector, $file->getFilePath());
     }
 }

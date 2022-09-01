@@ -85,7 +85,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     /**
      * @deprecated Use \Rector\Testing\PHPUnit\AbstractRectorTestCase::yieldFilePathsFromDirectory() instead
-     * @return Iterator<<SmartFileInfo>>
      */
     protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {

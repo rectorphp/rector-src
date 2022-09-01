@@ -18,10 +18,10 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeRemoval\BreakingRemovalGuard;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class NodesToRemoveCollector implements NodeCollectorInterface
 {
@@ -58,9 +58,7 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
         }
 
         $file = $this->currentFileProvider->getFile();
-
-        // /** @var SmartFileInfo|null $fileInfo */
-        if ($file !== null) {
+        if ($file instanceof File) {
             $this->affectedFilesCollector->addFile($file);
         }
 

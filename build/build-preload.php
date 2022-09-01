@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Finder\Finder;
 use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 $possiblePaths = [
     // rector-src

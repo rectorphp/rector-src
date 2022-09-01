@@ -64,6 +64,7 @@ return [
     'expose-classes' => [
         'Normalizer',
         // used by public API
+        // @deprecated, to be removed
         'Symplify\SmartFileSystem\SmartFileInfo',
     ],
     'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
@@ -77,6 +78,7 @@ return [
             $content
         ),
 
+        // @deprecated - to be removed
         // unprefixed SmartFileInfo - needed in AbstractTestCase
         static fn (string $filePath, string $prefix, string $content): string => Strings::replace(
             $content,
