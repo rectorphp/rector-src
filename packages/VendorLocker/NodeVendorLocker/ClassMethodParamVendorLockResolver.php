@@ -6,18 +6,18 @@ namespace Rector\VendorLocker\NodeVendorLocker;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
 
 final class ClassMethodParamVendorLockResolver
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PathNormalizer $pathNormalizer,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -124,7 +124,7 @@ final class ClassMethodParamVendorLockResolver
                 return true;
             }
 
-            $normalizedFileName = $this->pathNormalizer->normalizePath($fileName);
+            $normalizedFileName = $this->filePathHelper->normalizePathAndSchema($fileName);
             if (str_contains($normalizedFileName, $filePathPartName)) {
                 return true;
             }

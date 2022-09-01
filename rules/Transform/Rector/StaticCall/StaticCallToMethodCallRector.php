@@ -52,7 +52,7 @@ class SomeClass
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-use Symplify\SmartFileSystem\SmartFileSystem;
+use App\Custom\SmartFileSystem;
 
 class SomeClass
 {
@@ -77,7 +77,7 @@ CODE_SAMPLE
                     new StaticCallToMethodCall(
                         'Nette\Utils\FileSystem',
                         'write',
-                        'Symplify\SmartFileSystem\SmartFileSystem',
+                        'App\Custom\SmartFileSystem',
                         'dumpFile'
                     ),
                 ]

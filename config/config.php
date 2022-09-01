@@ -54,10 +54,6 @@ use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\PackageBuilder\Reflection\PrivatesCaller;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
-use Symplify\SmartFileSystem\FileSystemFilter;
-use Symplify\SmartFileSystem\FileSystemGuard;
-use Symplify\SmartFileSystem\Finder\FinderSanitizer;
-use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
 
 return static function (RectorConfig $rectorConfig): void {
     // make use of https://github.com/symplify/easy-parallel
@@ -178,11 +174,8 @@ return static function (RectorConfig $rectorConfig): void {
         ->factory([service(PHPStanServicesFactory::class), 'createEmulativeLexer']);
 
     // symplify/package-builder
-    $services->set(FileSystemGuard::class);
     $services->set(PrivatesAccessor::class);
     $services->set(PrivatesCaller::class);
-    $services->set(FinderSanitizer::class);
-    $services->set(FileSystemFilter::class);
 
     $services->set(ParameterProvider::class)
         ->arg('$container', service('service_container'));
@@ -247,5 +240,4 @@ return static function (RectorConfig $rectorConfig): void {
 
     // skipper
     $services->set(ClassLikeExistenceChecker::class);
-    $services->set(PathNormalizer::class);
 };
