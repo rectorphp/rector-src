@@ -139,7 +139,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function getFixtureTempDirectory(): string
     {
-        return sys_get_temp_dir() . FixtureTempFileDumper::TEMP_FIXTURE_DIRECTORY;
+        return FixtureTempFileDumper::getTempDirectory();
     }
 
     private function resolveExpectedContents(string $filePath): string
@@ -147,7 +147,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $contents = FileSystem::read($filePath);
 
         // make sure we don't get a diff in which every line is different (because of differences in EOL)
-        return $this->normalizeNewlines($contents);
+        return str_replace("\r\n", "\n", $contents);
     }
 
     private function resolveOriginalFixtureFileSuffix(string $filePath): string
@@ -203,11 +203,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
             $this->assertStringMatchesFormat($contents, $changedContent);
         }
-    }
-
-    private function normalizeNewlines(string $string): string
-    {
-        return str_replace("\r\n", "\n", $string);
     }
 
     private function processFilePath(string $filePath): string
