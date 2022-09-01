@@ -54,7 +54,7 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
 
     public function __construct(
         private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
-        private MultiInstanceofChecker $multiInstanceofChecker
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 

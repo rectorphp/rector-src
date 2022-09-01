@@ -49,7 +49,7 @@ final class NonInformativeReturnTagRemover
 
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private MultiInstanceofChecker $multiInstanceofChecker
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
