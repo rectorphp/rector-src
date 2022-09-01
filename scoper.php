@@ -61,9 +61,7 @@ return [
     ],
 
     // expose
-    'expose-classes' => [
-        'Normalizer',
-    ],
+    'expose-classes' => ['Normalizer'],
     'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
     'expose-constants' => ['__RECTOR_RUNNING__', '#^SYMFONY\_[\p{L}_]+$#'],
 
