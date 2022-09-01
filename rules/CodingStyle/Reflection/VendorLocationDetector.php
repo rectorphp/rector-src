@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Reflection;
 
 use PHPStan\Reflection\MethodReflection;
-use Symplify\SmartFileSystem\Normalizer\PathNormalizer;
+use Rector\Core\FileSystem\FilePathHelper;
 
 final class VendorLocationDetector
 {
     public function __construct(
-        private readonly PathNormalizer $pathNormalizer,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -24,7 +24,7 @@ final class VendorLocationDetector
             return false;
         }
 
-        $normalizedFileName = $this->pathNormalizer->normalizePath($fileName);
+        $normalizedFileName = $this->filePathHelper->normalizePathAndSchema($fileName);
         return str_contains($normalizedFileName, '/vendor/');
     }
 }
