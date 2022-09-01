@@ -49,6 +49,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
+<<<<<<< HEAD
+=======
+use Symplify\PackageBuilder\Yaml\ParametersMerger;
+>>>>>>> use loca lsymfony style factory
 
 return static function (RectorConfig $rectorConfig): void {
     // make use of https://github.com/symplify/easy-parallel
