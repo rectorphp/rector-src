@@ -7,7 +7,6 @@ namespace Rector\Testing\Fixture;
 use Iterator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FixtureFileFinder
 {
@@ -20,20 +19,6 @@ final class FixtureFileFinder
 
         foreach ($fileInfos as $fileInfo) {
             yield [$fileInfo->getRealPath()];
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    public static function yieldDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
-    {
-        $fileInfos = self::findFilesInDirectory($directory, $suffix);
-
-        foreach ($fileInfos as $fileInfo) {
-            // @todo is this one needed? maybe symfony is good enough :)
-            $smartFileInfo = new SmartFileInfo($fileInfo->getRealPath());
-            yield [$smartFileInfo];
         }
     }
 
