@@ -812,3 +812,19 @@ parameters:
             message: '#Offset \(int\|string\) on non\-empty\-array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
             path: packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
         - '#Parameter \#3 \$secondCondition of method Rector\\Core\\NodeManipulator\\BinaryOpManipulator\:\:matchFirstAndSecondConditionNode\(\) expects \(callable\(PhpParser\\Node, PhpParser\\Node\=\)\: bool\)\|class\-string<PhpParser\\Node>, Closure\(PhpParser\\Node, PhpParser\\Node\)\: bool given#'
+
+        -
+            message: '#Method Rector\\Core\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
+            path: src/Util/ArrayParametersMerger.php
+
+        -
+            message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
+            path: src/Util/ArrayParametersMerger.php
+
+        -
+            message: '#Construct empty\(\) is not allowed\. Use more strict comparison#'
+            path: src/Util/ArrayParametersMerger.php
+
+        -
+            message: '#"empty\(\$right\)" is forbidden to use#'
+            path: src/Util/ArrayParametersMerger.php

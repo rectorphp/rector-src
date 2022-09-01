@@ -12,6 +12,7 @@ use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
+use Rector\Core\Util\ArrayParametersMerger;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
@@ -19,7 +20,6 @@ use Rector\Parallel\ValueObject\Bridge;
 use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
-use Symplify\PackageBuilder\Yaml\ParametersMerger;
 use Throwable;
 
 final class WorkerRunner
@@ -30,7 +30,7 @@ final class WorkerRunner
     private const RESULT = 'result';
 
     public function __construct(
-        private readonly ParametersMerger $parametersMerger,
+        private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PhpFileProcessor $phpFileProcessor,
         private readonly NodeScopeResolver $nodeScopeResolver,
@@ -89,7 +89,7 @@ final class WorkerRunner
 
                     $currentErrorsAndFileDiffs = $this->phpFileProcessor->process($file, $configuration);
 
-                    $errorAndFileDiffs = $this->parametersMerger->merge(
+                    $errorAndFileDiffs = $this->arrayParametersMerger->merge(
                         $errorAndFileDiffs,
                         $currentErrorsAndFileDiffs
                     );

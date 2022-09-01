@@ -7,7 +7,6 @@ declare(strict_types=1);
 use Nette\Utils\Strings;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Finder\Finder;
-use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
 
 $possiblePaths = [
     // rector-src
@@ -28,7 +27,7 @@ foreach ($possiblePaths as $possiblePath) {
 
 $buildDirectory = $argv[1];
 
-$symfonyStyleFactory = new SymfonyStyleFactory();
+$symfonyStyleFactory = new \Rector\Core\Console\Style\SymfonyStyleFactory(new \Rector\Core\Util\Reflection\PrivatesAccessor());
 $symfonyStyle = $symfonyStyleFactory->create();
 
 if (! is_string($buildDirectory)) {
