@@ -7,7 +7,6 @@ namespace Rector\Tests\Caching\ValueObject\Storage;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FileCacheStorageTest extends AbstractRectorTestCase
 {
@@ -26,21 +25,22 @@ final class FileCacheStorageTest extends AbstractRectorTestCase
         $this->assertTrue(true, 'Non existant file cleaning is correctly handled');
 
         $this->fileCacheStorage->save('aaK1STfY', 'TEST', 'file cached');
-        $file1 = new SmartFileInfo(__DIR__ . '/Source/0e/76/0e76658526655756207688271159624026011393.php');
+        $file1 = __DIR__ . '/Source/0e/76/0e76658526655756207688271159624026011393.php';
+
         $this->fileCacheStorage->save('aaO8zKZF', 'TEST', 'file cached with the same two first caracters');
-        $file2 = new SmartFileInfo(__DIR__ . '/Source/0e/89/0e89257456677279068558073954252716165668.php');
+        $file2 = __DIR__ . '/Source/0e/89/0e89257456677279068558073954252716165668.php';
 
         $this->fileCacheStorage->clean('aaK1STfY');
 
-        $this->assertFileDoesNotExist($file1->getRealPath());
+        $this->assertFileDoesNotExist($file1);
         $this->assertDirectoryDoesNotExist(__DIR__ . '/Source/0e/76');
 
-        $this->assertFileExists($file2->getRealPath());
+        $this->assertFileExists($file2);
         $this->assertDirectoryExists(__DIR__ . '/Source/0e/89');
 
         $this->fileCacheStorage->clean('aaO8zKZF');
 
-        $this->assertFileDoesNotExist($file2->getRealPath());
+        $this->assertFileDoesNotExist($file2);
         $this->assertDirectoryDoesNotExist(__DIR__ . '/Source/0e/89');
         $this->assertDirectoryDoesNotExist(__DIR__ . '/Source/0e');
     }

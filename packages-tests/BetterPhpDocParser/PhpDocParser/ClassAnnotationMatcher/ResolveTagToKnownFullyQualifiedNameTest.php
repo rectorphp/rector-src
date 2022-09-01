@@ -15,7 +15,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
 {
@@ -43,9 +42,9 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
     /**
      * @dataProvider provideData()
      */
-    public function testResolvesClass(SmartFileInfo $file): void
+    public function testResolvesClass(string $filePath): void
     {
-        $nodes = $this->testingParser->parseFileToDecoratedNodes($file->getRelativeFilePath());
+        $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
         $properties = $this->nodeFinder->findInstancesOf($nodes, [Property::class]);
 
         foreach ($properties as $property) {
@@ -70,11 +69,8 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
         }
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
-        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
     }
 }

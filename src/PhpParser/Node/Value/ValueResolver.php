@@ -254,9 +254,6 @@ final class ValueResolver
         }
 
         return $file->getFilePath();
-        //
-        //        $smartFileInfo = $file->getSmartFileInfo();
-        //        return $smartFileInfo->getPathname();
     }
 
     /**

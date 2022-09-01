@@ -13,7 +13,6 @@ use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
 use Rector\Naming\ValueObject\PropertyRename;
 use Rector\Naming\ValueObjectFactory\PropertyRenameFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PropertyRenameFactoryTest extends AbstractTestCase
 {
@@ -59,9 +58,6 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
         $this->assertSame($currentName, $actualPropertyRename->getCurrentName());
     }
 
-    /**
-     * @return Iterator<string[]|SmartFileInfo[]>
-     */
     public function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/skip_some_class.php.inc', 'eliteManager', 'eventManager'];

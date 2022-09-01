@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace Rector\Testing\Fixture;
 
 use Iterator;
-use Nette\Utils\Strings;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symplify\SmartFileSystem\SmartFileInfo;
-use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 
 final class FixtureFileFinder
 {
@@ -27,7 +24,7 @@ final class FixtureFileFinder
     }
 
     /**
-     * @return Iterator<array<int, SmartFileInfo>>
+     * @deprecated
      */
     public static function yieldDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {

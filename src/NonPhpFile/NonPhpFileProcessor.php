@@ -61,11 +61,9 @@ final class NonPhpFileProcessor implements FileProcessorInterface
 
     public function supports(File $file, Configuration $configuration): bool
     {
-        //        $smartFileInfo = $file->getFilePath();
-
         // early assign to variable for increase performance
         // @see https://3v4l.org/FM3vY#focus=8.0.7 vs https://3v4l.org/JZW7b#focus=8.0.7
-        $filePath = $file->getFilePath(); // $smartFileInfo->getPathname();
+        $filePath = $file->getFilePath();
 
         // bug in path extension
         foreach ($this->getSupportedFileExtensions() as $fileExtension) {

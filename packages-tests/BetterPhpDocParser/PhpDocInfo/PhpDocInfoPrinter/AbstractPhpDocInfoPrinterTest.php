@@ -13,7 +13,6 @@ use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
 {
@@ -36,14 +35,6 @@ abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
     {
         $node->setDocComment(new Doc($docComment));
         return $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-    }
-
-    /**
-     * @return Iterator<array<int, SmartFileInfo>>
-     */
-    protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php'): Iterator
-    {
-        return FixtureFileFinder::yieldDirectory($directory, $suffix);
     }
 
     /**

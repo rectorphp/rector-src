@@ -7,7 +7,6 @@ namespace Rector\Skipper\SkipVoter;
 use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\Matcher\FileInfoMatcher;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PathSkipVoter implements SkipVoterInterface
 {
@@ -22,9 +21,9 @@ final class PathSkipVoter implements SkipVoterInterface
         return true;
     }
 
-    public function shouldSkip(string | object $element, SmartFileInfo | string $file): bool
+    public function shouldSkip(string | object $element, string $filePath): bool
     {
         $skippedPaths = $this->skippedPathsResolver->resolve();
-        return $this->fileInfoMatcher->doesFileInfoMatchPatterns($file, $skippedPaths);
+        return $this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedPaths);
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Skipper\Skipper;
 
 use Rector\Skipper\Contract\SkipVoterInterface;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @api
@@ -28,28 +27,22 @@ final class Skipper
 
     public function shouldSkipElement(string | object $element): bool
     {
-        $fileInfo = new SmartFileInfo(__FILE__);
-        return $this->shouldSkipElementAndFileInfo($element, $fileInfo);
-    }
-
-    public function shouldSkipFileInfo(SmartFileInfo $smartFileInfo): bool
-    {
-        return $this->shouldSkipElementAndFileInfo(self::FILE_ELEMENT, $smartFileInfo);
+        return $this->shouldSkipElementAndFilePath($element, __FILE__);
     }
 
     public function shouldSkipFilePath(string $filePath): bool
     {
-        return $this->shouldSkipElementAndFileInfo(self::FILE_ELEMENT, $filePath);
+        return $this->shouldSkipElementAndFilePath(self::FILE_ELEMENT, $filePath);
     }
 
-    public function shouldSkipElementAndFileInfo(string | object $element, SmartFileInfo|string $smartFileInfo): bool
+    public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
     {
         foreach ($this->skipVoters as $skipVoter) {
             if (! $skipVoter->match($element)) {
                 continue;
             }
 
-            return $skipVoter->shouldSkip($element, $smartFileInfo);
+            return $skipVoter->shouldSkip($element, $filePath);
         }
 
         return false;

@@ -6,7 +6,6 @@ namespace Rector\Core\Tests\Issues\ScopeNotAvailable;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FirstClassCallableTest extends AbstractRectorTestCase
 {
@@ -18,9 +17,6 @@ final class FirstClassCallableTest extends AbstractRectorTestCase
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SmartFileInfo>
-     */
     public function provideData(): Iterator
     {
         return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureFirstClassCallable');
