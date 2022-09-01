@@ -22,9 +22,9 @@ use PhpParser\Node\Stmt\Expression;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symplify\PackageBuilder\Php\TypeChecker;
 
 final class AssignManipulator
 {
@@ -44,7 +44,7 @@ final class AssignManipulator
         private readonly NodeComparator $nodeComparator,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly TypeChecker $typeChecker
+        private MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
@@ -72,7 +72,10 @@ final class AssignManipulator
             return true;
         }
 
-        if ($parentNode !== null && $this->typeChecker->isInstanceOf($parentNode, self::MODIFYING_NODE_TYPES)) {
+        if ($parentNode !== null && $this->multiInstanceofChecker->isInstanceOf(
+            $parentNode,
+            self::MODIFYING_NODE_TYPES
+        )) {
             return true;
         }
 

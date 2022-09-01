@@ -49,7 +49,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use Symplify\PackageBuilder\Php\TypeChecker;
 use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\PackageBuilder\Reflection\PrivatesCaller;
@@ -185,7 +184,6 @@ return static function (RectorConfig $rectorConfig): void {
         ->factory([service(InflectorFactory::class), 'build']);
 
     $services->set(VersionParser::class);
-    $services->set(TypeChecker::class);
 
     // console
     $services->set(SymfonyStyleFactory::class);

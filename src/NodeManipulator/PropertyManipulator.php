@@ -28,7 +28,6 @@ use PhpParser\Node\Stmt\Unset_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -36,6 +35,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -46,7 +46,6 @@ use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
 use Rector\ReadWrite\NodeAnalyzer\ReadWritePropertyAnalyzer;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
-use Symplify\PackageBuilder\Php\TypeChecker;
 
 /**
  * For inspiration to improve this service,
@@ -82,7 +81,6 @@ final class PropertyManipulator
         private readonly VariableToConstantGuard $variableToConstantGuard,
         private readonly ReadWritePropertyAnalyzer $readWritePropertyAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly TypeChecker $typeChecker,
         private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -91,7 +89,8 @@ final class PropertyManipulator
         private readonly PromotedPropertyResolver $promotedPropertyResolver,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly AstResolver $astResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
@@ -275,7 +274,7 @@ final class PropertyManipulator
             return false;
         }
 
-        if ($this->typeChecker->isInstanceOf(
+        if ($this->multiInstanceofChecker->isInstanceOf(
             $parentNode,
             [PreInc::class, PreDec::class, PostInc::class, PostDec::class]
         )) {
