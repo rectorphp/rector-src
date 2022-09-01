@@ -11,6 +11,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Util\ArrayParametersMerger;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
@@ -23,7 +24,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
 use Symplify\EasyParallel\ScheduleFactory;
-use Symplify\PackageBuilder\Yaml\ParametersMerger;
 use Webmozart\Assert\Assert;
 
 final class ApplicationFileProcessor
@@ -48,7 +48,7 @@ final class ApplicationFileProcessor
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileFactory $fileFactory,
         private readonly NodeScopeResolver $nodeScopeResolver,
-        private readonly ParametersMerger $parametersMerger,
+        private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ParameterProvider $parameterProvider,
         private readonly ScheduleFactory $scheduleFactory,
@@ -125,7 +125,7 @@ final class ApplicationFileProcessor
                 }
 
                 $result = $fileProcessor->process($file, $configuration);
-                $systemErrorsAndFileDiffs = $this->parametersMerger->merge($systemErrorsAndFileDiffs, $result);
+                $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
             }
 
             // progress bar +1

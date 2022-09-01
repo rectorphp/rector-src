@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection\Collector;
 
+use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Util\ArrayParametersMerger;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use ReflectionClass;
 use ReflectionClassConstant;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Definition;
-use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
-use Symplify\PackageBuilder\Yaml\ParametersMerger;
 
 final class ConfigureCallValuesCollector
 {
@@ -19,14 +20,14 @@ final class ConfigureCallValuesCollector
      */
     private array $configureCallValuesByRectorClass = [];
 
-    private readonly ParametersMerger $parametersMerger;
+    private readonly ArrayParametersMerger $arrayParametersMerger;
 
     private readonly SymfonyStyle $symfonyStyle;
 
     public function __construct()
     {
-        $this->parametersMerger = new ParametersMerger();
-        $symfonyStyleFactory = new SymfonyStyleFactory();
+        $this->arrayParametersMerger = new ArrayParametersMerger();
+        $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
         $this->symfonyStyle = $symfonyStyleFactory->create();
     }
 
@@ -98,7 +99,7 @@ final class ConfigureCallValuesCollector
             if (! isset($this->configureCallValuesByRectorClass[$rectorClass])) {
                 $this->configureCallValuesByRectorClass[$rectorClass] = $configureValue;
             } else {
-                $mergedParameters = $this->parametersMerger->merge(
+                $mergedParameters = $this->arrayParametersMerger->merge(
                     $this->configureCallValuesByRectorClass[$rectorClass],
                     $configureValue
                 );
