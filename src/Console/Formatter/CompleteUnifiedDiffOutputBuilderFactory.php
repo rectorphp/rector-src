@@ -14,7 +14,7 @@ use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 final class CompleteUnifiedDiffOutputBuilderFactory
 {
     public function __construct(
-        private PrivatesAccessor $privatesAccessor
+        private readonly PrivatesAccessor $privatesAccessor
     ) {
     }
 
