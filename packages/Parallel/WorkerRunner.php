@@ -6,6 +6,7 @@ namespace Rector\Parallel;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use Nette\Utils\FileSystem;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
@@ -79,7 +80,7 @@ final class WorkerRunner
 
             foreach ($filePaths as $filePath) {
                 try {
-                    $file = new File($filePath, \Nette\Utils\FileSystem::read($filePath));
+                    $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
                     if (! $this->phpFileProcessor->supports($file, $configuration)) {

@@ -7,7 +7,6 @@ namespace Rector\Core\Tests\PhpParser\Printer;
 use Nette\Utils\FileSystem;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FormatPerservingPrinterTest extends AbstractTestCase
 {
@@ -41,7 +40,7 @@ final class FormatPerservingPrinterTest extends AbstractTestCase
         chmod(__DIR__ . '/Fixture/file.php', self::EXPECTED_FILEMOD);
 
         $filePath = __DIR__ . '/Fixture/file.php';
-        //        $fileInfo = new SmartFileInfo($filePath);
+
         $printedFile = $this->formatPerservingPrinter->printToFile($filePath, [], [], []);
         $this->assertStringEqualsFile(__DIR__ . '/Fixture/file.php', $printedFile);
 

@@ -19,8 +19,10 @@ final class UpdateFileNameByClassNameFileSystemRectorTest extends AbstractRector
     {
         $this->doTestFileInfo($smartFileInfo);
 
+        $originalDirectory = dirname($this->originalTempFilePath);
+
         $expectedAddedFileWithContent = new AddedFileWithContent(
-            $this->originalTempFilePath->getRealPathDirectory() . '/SkipDifferentClassName.php',
+            $originalDirectory . '/SkipDifferentClassName.php',
             FileSystem::read(__DIR__ . '/Fixture/skip_different_class_name.php.inc')
         );
         $this->assertFileWasAdded($expectedAddedFileWithContent);

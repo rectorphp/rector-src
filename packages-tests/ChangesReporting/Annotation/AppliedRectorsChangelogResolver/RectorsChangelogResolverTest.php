@@ -11,7 +11,6 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolver\Source\RectorWithChangelog;
 use Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolver\Source\RectorWithOutChangelog;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class RectorsChangelogResolverTest extends AbstractTestCase
 {
@@ -49,10 +48,7 @@ final class RectorsChangelogResolverTest extends AbstractTestCase
             new RectorWithLineChange(RectorWithOutChangelog::class, 1),
         ];
 
-        $smartFileInfo = new SmartFileInfo(__FILE__);
-
-        $relativeFilePath = $this->filePathHelper->relativePath($smartFileInfo->getRealPath());
-
+        $relativeFilePath = $this->filePathHelper->relativePath(__FILE__);
         return new FileDiff($relativeFilePath, 'foo', 'foo', $rectorWithLineChanges);
     }
 }

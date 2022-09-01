@@ -24,7 +24,6 @@ use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
-use SplFileInfo;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -97,22 +96,22 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return strncasecmp(PHP_OS, 'WIN', 3) === 0;
     }
 
-    protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo): void
+    protected function doTestFile(string $fixtureFilePath): void
     {
-        $fixtureFilePath = $fixtureFileInfo->getRealPath();
+        $fixtureFileContents = FileSystem::read($fixtureFilePath);
 
-        if (Strings::match($fixtureFileInfo->getContents(), FixtureSplitter::SPLIT_LINE_REGEX)) {
+        if (Strings::match($fixtureFileContents, FixtureSplitter::SPLIT_LINE_REGEX)) {
             // changed content
             [$inputFileContents, $expectedFileContents] = FixtureSplitter::loadFileAndSplitInputAndExpected(
-                $fixtureFileInfo->getRealPath()
+                $fixtureFilePath
             );
         } else {
             // no change
-            $inputFileContents = $fixtureFileInfo->getContents();
-            $expectedFileContents = $fixtureFileInfo->getContents();
+            $inputFileContents = $fixtureFileContents;
+            $expectedFileContents = $fixtureFileContents;
         }
 
-        $fileSuffix = $this->resolveOriginalFixtureFileSuffix($fixtureFileInfo);
+        $fileSuffix = $this->resolveOriginalFixtureFileSuffix($fixtureFilePath);
 
         $inputFilePath = FixtureTempFileDumper::dump($inputFileContents, $fileSuffix);
         $expectedFilePath = FixtureTempFileDumper::dump($expectedFileContents, $fileSuffix);
@@ -120,6 +119,12 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->originalTempFilePath = $inputFilePath;
 
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFilePath, $fixtureFilePath);
+    }
+
+    protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo): void
+    {
+        $fixtureFileRealPath = $fixtureFileInfo->getRealPath();
+        $this->doTestFile($fixtureFileRealPath);
     }
 
     protected function getFixtureTempDirectory(): string
@@ -135,18 +140,17 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return $this->normalizeNewlines($contents);
     }
 
-    private function resolveOriginalFixtureFileSuffix(SplFileInfo $splFileInfo): string
+    private function resolveOriginalFixtureFileSuffix(string $filePath): string
     {
-        $fixtureRealPath = $splFileInfo->getRealPath();
-        if (str_ends_with($fixtureRealPath, '.inc')) {
-            $fixtureRealPath = rtrim($fixtureRealPath, '.inc');
+        if (str_ends_with($filePath, '.inc')) {
+            $filePath = rtrim($filePath, '.inc');
         }
 
-        if (str_ends_with($fixtureRealPath, '.blade.php')) {
+        if (str_ends_with($filePath, '.blade.php')) {
             return 'blade.php';
         }
 
-        return pathinfo($fixtureRealPath, PATHINFO_EXTENSION);
+        return pathinfo($filePath, PATHINFO_EXTENSION);
     }
 
     private function includePreloadFilesAndScoperAutoload(): void

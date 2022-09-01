@@ -140,10 +140,6 @@
     },
     "extra": {
         "patches": {
-            "symplify/skipper": [
-                "patches/symplify-skipper-src-skipper-skipper-php.patch",
-                "patches/symplify-skipper-src-contract-skipvoterinterface-php.patch"
-            ],
             "nikic/php-parser": [
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-expr-closure-php.patch",
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-stmt-finally-php.patch",

@@ -87,17 +87,8 @@ final class PhpFileProcessor implements FileProcessorInterface
 
     public function supports(File $file, Configuration $configuration): bool
     {
-        $filePath = $file->getFilePath(); // getSmartFileInfo();
-
-        $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $filePathExtension = pathinfo($file->getFilePath(), PATHINFO_EXTENSION);
         return in_array($filePathExtension, $configuration->getFileExtensions(), true);
-
-        //        dump($filePath);
-        //        dump($configuration->getFileExtensions());
-        //        die;
-        //
-        //
-        //        return $filePath->hasSuffixes($configuration->getFileExtensions());
     }
 
     /**

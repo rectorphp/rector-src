@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Iterator;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
@@ -56,7 +55,6 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         $nodeClass = trim((string) $nodeClass);
         $tagValueNodeClasses = $this->splitListByEOL($tagValueNodeClasses);
 
-        //        $fixtureFileInfo = $this->createFixtureFileInfo($fileContents, $fixtureFileInfo->getRealPath());
         $fixtureFilePath = FixtureTempFileDumper::dump($fileContents);
 
         foreach ($tagValueNodeClasses as $tagValueNodeClass) {
@@ -110,14 +108,6 @@ final class TagValueNodeReprintTest extends AbstractTestCase
     {
         $trimmedContent = trim($content);
         return explode(PHP_EOL, $trimmedContent);
-    }
-
-    private function createFixtureFileInfo(string $fileContents, string $filePath): SmartFileInfo
-    {
-        $temporaryFileName = sys_get_temp_dir() . '/rector/tests/' . $filePath;
-        FileSystem::write($temporaryFileName, $fileContents);
-
-        return new SmartFileInfo($temporaryFileName);
     }
 
     /**

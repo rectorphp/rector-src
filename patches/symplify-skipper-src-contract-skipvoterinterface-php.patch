@@ -1,9 +1,0 @@
---- /dev/null
-+++ ../src/Contract/SkipVoterInterface.php
-@@ -10,5 +10,5 @@
- {
-     public function match(string | object $element): bool;
- 
--    public function shouldSkip(string | object $element, SmartFileInfo $smartFileInfo): bool;
-+    public function shouldSkip(string | object $element, $smartFileInfo): bool;
- }

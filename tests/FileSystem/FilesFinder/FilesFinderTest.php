@@ -62,19 +62,15 @@ final class FilesFinderTest extends AbstractTestCase
 
     public function testMultipleSuffixes(): void
     {
-        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], ['yaml', 'yml']);
-        $this->assertCount(2, $foundFiles);
+        $foundFilePaths = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], ['yaml', 'yml']);
+        $this->assertCount(2, $foundFilePaths);
 
-        $foundFileNames = [];
-        foreach ($foundFiles as $foundFile) {
-            $foundFileNames[] = $foundFile;
-        }
+        $expectedFoundFilePath = [__DIR__ . '/Source/some_config.yml', __DIR__ . '/Source/other_config.yaml'];
 
-        $expectedFoundFileNames = [__DIR__ . '/Source/some_config.yml', __DIR__ . '/Source/other_config.yaml'];
+        sort($foundFilePaths);
+        sort($expectedFoundFilePath);
 
-        sort($foundFileNames);
-        sort($expectedFoundFileNames);
-        $this->assertSame($expectedFoundFileNames, $foundFileNames);
+        $this->assertSame($expectedFoundFilePath, $foundFilePaths);
     }
 
     public function testDirectoriesWithGlobPattern(): void
