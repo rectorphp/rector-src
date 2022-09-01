@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class SymfonyStyleFactory
 {
-    public function __construct(private PrivatesAccessor $privatesAccessor)
+    public function __construct(private readonly PrivatesAccessor $privatesAccessor)
     {
     }
 
