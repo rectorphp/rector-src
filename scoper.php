@@ -61,12 +61,7 @@ return [
     ],
 
     // expose
-    'expose-classes' => [
-        'Normalizer',
-        // used by public API
-        // @deprecated, to be removed
-        'Symplify\SmartFileSystem\SmartFileInfo',
-    ],
+    'expose-classes' => ['Normalizer'],
     'expose-functions' => ['u', 'b', 's', 'trigger_deprecation'],
     'expose-constants' => ['__RECTOR_RUNNING__', '#^SYMFONY\_[\p{L}_]+$#'],
 
@@ -76,14 +71,6 @@ return [
             sprintf('use %s\PhpParser;', $prefix),
             'use PhpParser;',
             $content
-        ),
-
-        // @deprecated - to be removed
-        // unprefixed SmartFileInfo - needed in AbstractTestCase
-        static fn (string $filePath, string $prefix, string $content): string => Strings::replace(
-            $content,
-            '#' . $prefix . '\\\\Symplify\\\\SmartFileSystem\\\\SmartFileInfo#',
-            'Symplify\SmartFileSystem\SmartFileInfo'
         ),
 
         static function (string $filePath, string $prefix, string $content): string {

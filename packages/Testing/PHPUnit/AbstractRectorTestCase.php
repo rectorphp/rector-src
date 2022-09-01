@@ -25,7 +25,6 @@ use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 abstract class AbstractRectorTestCase extends AbstractTestCase implements RectorTestInterface
 {
@@ -126,15 +125,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->originalTempFilePath = $inputFilePath;
 
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFilePath, $fixtureFilePath);
-    }
-
-    /**
-     * @deprecated Use doTestFile() with file path instead
-     */
-    protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo): void
-    {
-        $fixtureFileRealPath = $fixtureFileInfo->getRealPath();
-        $this->doTestFile($fixtureFileRealPath);
     }
 
     protected function getFixtureTempDirectory(): string
