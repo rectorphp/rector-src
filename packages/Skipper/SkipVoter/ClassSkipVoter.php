@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\SkipVoter;
 
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\Skipper\SkipSkipper;
-use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 
 final class ClassSkipVoter implements SkipVoterInterface
 {
     public function __construct(
-        private readonly ClassLikeExistenceChecker $classLikeExistenceChecker,
         private readonly SkipSkipper $skipSkipper,
-        private readonly SkippedClassResolver $skippedClassResolver
+        private readonly SkippedClassResolver $skippedClassResolver,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -24,7 +24,7 @@ final class ClassSkipVoter implements SkipVoterInterface
             return true;
         }
 
-        return $this->classLikeExistenceChecker->doesClassLikeExist($element);
+        return $this->reflectionProvider->hasClass($element);
     }
 
     public function shouldSkip(string | object $element, string $filePath): bool

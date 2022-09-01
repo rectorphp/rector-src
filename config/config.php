@@ -49,7 +49,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 use Symplify\PackageBuilder\Console\Style\SymfonyStyleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -229,7 +228,4 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(\PHPStan\PhpDocParser\Lexer\Lexer::class);
     $services->set(TypeParser::class);
     $services->set(ConstExprParser::class);
-
-    // skipper
-    $services->set(ClassLikeExistenceChecker::class);
 };

@@ -39,8 +39,7 @@
         "symfony/string": "^6.0",
         "symplify/autowire-array-parameter": "^11.1",
         "symplify/easy-parallel": "^11.1",
-        "symplify/symplify-kernel": "dev-main",
-        "symplify/package-builder": "dev-main",
+        "symplify/symplify-kernel": "^11.1.7",
         "symplify/rule-doc-generator-contracts": "^11.1",
         "webmozart/assert": "^1.11"
     },

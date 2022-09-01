@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\SkipCriteriaResolver;
 
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use Symplify\PackageBuilder\Reflection\ClassLikeExistenceChecker;
 
 final class SkippedClassResolver
 {
@@ -17,7 +17,7 @@ final class SkippedClassResolver
 
     public function __construct(
         private readonly ParameterProvider $parameterProvider,
-        private readonly ClassLikeExistenceChecker $classLikeExistenceChecker
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -43,7 +43,7 @@ final class SkippedClassResolver
                 continue;
             }
 
-            if (! $this->classLikeExistenceChecker->doesClassLikeExist($key)) {
+            if (! $this->reflectionProvider->hasClass($key)) {
                 continue;
             }
 
