@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\ValueObject\Application\File;
 use Symfony\Component\Filesystem\Filesystem;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Printer\FormatPerservingPrinterTest
@@ -28,12 +27,14 @@ final class FormatPerservingPrinter
      * @param Node[] $oldStmts
      * @param Node[] $oldTokens
      */
-    public function printToFile(SmartFileInfo $fileInfo, array $newStmts, array $oldStmts, array $oldTokens): string
+    public function printToFile(string $filePath, array $newStmts, array $oldStmts, array $oldTokens): string
     {
         $newContent = $this->betterStandardPrinter->printFormatPreserving($newStmts, $oldStmts, $oldTokens);
 
-        $this->filesystem->dumpFile($fileInfo->getRealPath(), $newContent);
-        $this->filesystem->chmod($fileInfo->getRealPath(), $fileInfo->getPerms());
+        $this->filesystem->dumpFile($filePath, $newContent);
+
+        // @todo how to keep origianl access rights without the SplFileInfo
+        // $this->filesystem->chmod($filePath, $fileInfo->getPerms());
 
         return $newContent;
     }
@@ -53,12 +54,7 @@ final class FormatPerservingPrinter
     {
         $newStmts = $this->resolveNewStmts($file);
 
-        return $this->printToFile(
-            $file->getSmartFileInfo(),
-            $newStmts,
-            $file->getOldStmts(),
-            $file->getOldTokens()
-        );
+        return $this->printToFile($file->getFilePath(), $newStmts, $file->getOldStmts(), $file->getOldTokens());
     }
 
     /**

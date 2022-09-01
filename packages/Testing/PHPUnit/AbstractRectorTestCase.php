@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Testing\PHPUnit;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -23,7 +24,6 @@ use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
-use SplFileInfo;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -35,7 +35,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected RemovedAndAddedFilesCollector $removedAndAddedFilesCollector;
 
-    protected ?SmartFileInfo $originalTempFileInfo = null;
+    protected ?string $originalTempFilePath = null;
 
     protected static ?ContainerInterface $allRectorContainer = null;
 
@@ -78,12 +78,13 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $this->parameterProvider,
             $this->dynamicSourceLocatorProvider,
             $this->removedAndAddedFilesCollector,
-            $this->originalTempFileInfo,
+            $this->originalTempFilePath,
         );
         gc_collect_cycles();
     }
 
     /**
+     * @deprecated
      * @return Iterator<SmartFileInfo>
      */
     protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
@@ -96,27 +97,34 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return strncasecmp(PHP_OS, 'WIN', 3) === 0;
     }
 
-    protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo): void
+    protected function doTestFile(string $fixtureFilePath): void
     {
-        if (Strings::match($fixtureFileInfo->getContents(), FixtureSplitter::SPLIT_LINE_REGEX)) {
+        $fixtureFileContents = FileSystem::read($fixtureFilePath);
+        if (Strings::match($fixtureFileContents, FixtureSplitter::SPLIT_LINE_REGEX)) {
             // changed content
             [$inputFileContents, $expectedFileContents] = FixtureSplitter::loadFileAndSplitInputAndExpected(
-                $fixtureFileInfo->getRealPath()
+                $fixtureFilePath
             );
         } else {
             // no change
-            $inputFileContents = $fixtureFileInfo->getContents();
-            $expectedFileContents = $fixtureFileInfo->getContents();
+            $inputFileContents = $fixtureFileContents;
+            $expectedFileContents = $fixtureFileContents;
         }
 
-        $fileSuffix = $this->resolveOriginalFixtureFileSuffix($fixtureFileInfo);
+        $fileSuffix = $this->resolveOriginalFixtureFileSuffix($fixtureFilePath);
 
-        $inputFileInfo = FixtureTempFileDumper::dump($inputFileContents, $fileSuffix);
-        $expectedFileInfo = FixtureTempFileDumper::dump($expectedFileContents, $fileSuffix);
+        $inputFilePath = FixtureTempFileDumper::dump($inputFileContents, $fileSuffix);
+        $expectedFilePath = FixtureTempFileDumper::dump($expectedFileContents, $fileSuffix);
 
-        $this->originalTempFileInfo = $inputFileInfo;
+        $this->originalTempFilePath = $inputFilePath;
 
-        $this->doTestFileMatchesExpectedContent($inputFileInfo, $expectedFileInfo, $fixtureFileInfo);
+        $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFilePath, $fixtureFilePath);
+    }
+
+    protected function doTestFileInfo(SmartFileInfo $fixtureFileInfo): void
+    {
+        $fixtureFileRealPath = $fixtureFileInfo->getRealPath();
+        $this->doTestFile($fixtureFileRealPath);
     }
 
     protected function getFixtureTempDirectory(): string
@@ -124,18 +132,25 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return sys_get_temp_dir() . FixtureTempFileDumper::TEMP_FIXTURE_DIRECTORY;
     }
 
-    private function resolveOriginalFixtureFileSuffix(SplFileInfo $splFileInfo): string
+    private function resolveExpectedContents(string $filePath): string
     {
-        $fixtureRealPath = $splFileInfo->getRealPath();
-        if (str_ends_with($fixtureRealPath, '.inc')) {
-            $fixtureRealPath = rtrim($fixtureRealPath, '.inc');
+        $contents = FileSystem::read($filePath);
+
+        // make sure we don't get a diff in which every line is different (because of differences in EOL)
+        return $this->normalizeNewlines($contents);
+    }
+
+    private function resolveOriginalFixtureFileSuffix(string $filePath): string
+    {
+        if (str_ends_with($filePath, '.inc')) {
+            $filePath = rtrim($filePath, '.inc');
         }
 
-        if (str_ends_with($fixtureRealPath, '.blade.php')) {
+        if (str_ends_with($filePath, '.blade.php')) {
             return 'blade.php';
         }
 
-        return pathinfo($fixtureRealPath, PATHINFO_EXTENSION);
+        return pathinfo($filePath, PATHINFO_EXTENSION);
     }
 
     private function includePreloadFilesAndScoperAutoload(): void
@@ -155,28 +170,25 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     }
 
     private function doTestFileMatchesExpectedContent(
-        SmartFileInfo $originalFileInfo,
-        SmartFileInfo $expectedFileInfo,
-        SmartFileInfo $fixtureFileInfo
+        string $originalFilePath,
+        string $expectedFilePath,
+        string $fixtureFilePath
     ): void {
-        $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFileInfo->getRealPath()]);
+        $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFilePath]);
 
-        $changedContent = $this->processFileInfo($originalFileInfo);
+        $changedContent = $this->processFilePath($originalFilePath);
 
         // file is removed, we cannot compare it
-        if ($this->removedAndAddedFilesCollector->isFileRemoved($originalFileInfo)) {
+        if ($this->removedAndAddedFilesCollector->isFileRemoved($originalFilePath)) {
             return;
         }
 
         try {
-            $this->assertStringEqualsFile($expectedFileInfo->getRealPath(), $changedContent);
+            $this->assertStringEqualsFile($expectedFilePath, $changedContent);
         } catch (ExpectationFailedException) {
-            FixtureFileUpdater::updateFixtureContent($originalFileInfo, $changedContent, $fixtureFileInfo);
+            FixtureFileUpdater::updateFixtureContent($originalFilePath, $changedContent, $fixtureFilePath);
 
-            $contents = $expectedFileInfo->getContents();
-
-            // make sure we don't get a diff in which every line is different (because of differences in EOL)
-            $contents = $this->normalizeNewlines($contents);
+            $contents = $this->resolveExpectedContents($expectedFilePath);
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
             $this->assertStringMatchesFormat($contents, $changedContent);
@@ -188,20 +200,20 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         return str_replace("\r\n", "\n", $string);
     }
 
-    private function processFileInfo(SmartFileInfo $fileInfo): string
+    private function processFilePath(string $filePath): string
     {
-        $this->dynamicSourceLocatorProvider->setFilePath($fileInfo->getRealPath());
+        $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
         // needed for PHPStan, because the analyzed file is just created in /temp - need for trait and similar deps
         /** @var NodeScopeResolver $nodeScopeResolver */
         $nodeScopeResolver = $this->getService(NodeScopeResolver::class);
-        $nodeScopeResolver->setAnalysedFiles([$fileInfo->getRealPath()]);
+        $nodeScopeResolver->setAnalysedFiles([$filePath]);
 
         /** @var ConfigurationFactory $configurationFactory */
         $configurationFactory = $this->getService(ConfigurationFactory::class);
-        $configuration = $configurationFactory->createForTests([$fileInfo->getRealPath()]);
+        $configuration = $configurationFactory->createForTests([$filePath]);
 
-        $file = new File($fileInfo, $fileInfo->getContents());
+        $file = new File($filePath, FileSystem::read($filePath));
         $this->applicationFileProcessor->processFiles([$file], $configuration);
 
         return $file->getFileContent();

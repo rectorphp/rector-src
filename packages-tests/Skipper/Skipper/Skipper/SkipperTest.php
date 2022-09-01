@@ -34,6 +34,9 @@ final class SkipperTest extends TestCase
 
         $resultSkip = $this->skipper->shouldSkipFileInfo($smartFileInfo);
         $this->assertSame($expectedSkip, $resultSkip);
+
+        $filePathResultSkip = $this->skipper->shouldSkipFilePath($smartFileInfo->getRealPath());
+        $this->assertSame($expectedSkip, $filePathResultSkip);
     }
 
     /**

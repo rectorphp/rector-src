@@ -6,6 +6,7 @@ namespace Rector\Parallel;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use Nette\Utils\FileSystem;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
@@ -19,7 +20,6 @@ use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
-use Symplify\SmartFileSystem\SmartFileInfo;
 use Throwable;
 
 final class WorkerRunner
@@ -80,9 +80,7 @@ final class WorkerRunner
 
             foreach ($filePaths as $filePath) {
                 try {
-                    $smartFileInfo = new SmartFileInfo($filePath);
-
-                    $file = new File($smartFileInfo, $smartFileInfo->getContents());
+                    $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
                     if (! $this->phpFileProcessor->supports($file, $configuration)) {

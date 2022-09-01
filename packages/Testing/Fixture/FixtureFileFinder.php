@@ -15,6 +15,18 @@ use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 final class FixtureFileFinder
 {
     /**
+     * @return Iterator<array<int, string>>
+     */
+    public static function yieldFilePathsFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
+    {
+        $fileInfos = self::findFilesInDirectory($directory, $suffix);
+
+        foreach ($fileInfos as $fileInfo) {
+            yield [$fileInfo->getRealPath()];
+        }
+    }
+
+    /**
      * @return Iterator<array<int, SmartFileInfo>>
      */
     public static function yieldDirectory(string $directory, string $suffix = '*.php.inc'): Iterator

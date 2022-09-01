@@ -7,7 +7,6 @@ namespace Rector\Core\Tests\FileSystem\FilesFinder;
 use Iterator;
 use Rector\Core\FileSystem\FilesFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FilesFinderTest extends AbstractTestCase
 {
@@ -43,9 +42,11 @@ final class FilesFinderTest extends AbstractTestCase
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], [$suffix]);
         $this->assertCount($count, $foundFiles);
 
-        /** @var SmartFileInfo $foundFile */
+        /** @var string $foundFile */
         $foundFile = array_pop($foundFiles);
-        $this->assertSame($expectedFileName, $foundFile->getBasename());
+        $fileBasename = $this->getFileBasename($foundFile);
+
+        $this->assertSame($expectedFileName, $fileBasename);
     }
 
     /**
@@ -61,19 +62,15 @@ final class FilesFinderTest extends AbstractTestCase
 
     public function testMultipleSuffixes(): void
     {
-        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], ['yaml', 'yml']);
-        $this->assertCount(2, $foundFiles);
+        $foundFilePaths = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], ['yaml', 'yml']);
+        $this->assertCount(2, $foundFilePaths);
 
-        $foundFileNames = [];
-        foreach ($foundFiles as $foundFile) {
-            $foundFileNames[] = $foundFile->getFilename();
-        }
+        $expectedFoundFilePath = [__DIR__ . '/Source/some_config.yml', __DIR__ . '/Source/other_config.yaml'];
 
-        $expectedFoundFileNames = ['some_config.yml', 'other_config.yaml'];
+        sort($foundFilePaths);
+        sort($expectedFoundFilePath);
 
-        sort($foundFileNames);
-        sort($expectedFoundFileNames);
-        $this->assertSame($expectedFoundFileNames, $foundFileNames);
+        $this->assertSame($expectedFoundFilePath, $foundFilePaths);
     }
 
     public function testDirectoriesWithGlobPattern(): void
@@ -87,8 +84,15 @@ final class FilesFinderTest extends AbstractTestCase
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source/**/foo.txt'], ['txt']);
         $this->assertCount(2, $foundFiles);
 
-        /** @var SmartFileInfo $foundFile */
+        /** @var string $foundFile */
         $foundFile = array_pop($foundFiles);
-        $this->assertSame('foo.txt', $foundFile->getBasename());
+
+        $fileBasename = $this->getFileBasename($foundFile);
+        $this->assertSame('foo.txt', $fileBasename);
+    }
+
+    private function getFileBasename(string $foundFile): string
+    {
+        return pathinfo($foundFile, PATHINFO_BASENAME);
     }
 }

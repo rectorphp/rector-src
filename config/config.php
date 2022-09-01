@@ -134,7 +134,7 @@ return static function (RectorConfig $rectorConfig): void {
     $extensionConfigResolver = new ExtensionConfigResolver();
     $extensionConfigFiles = $extensionConfigResolver->provide();
     foreach ($extensionConfigFiles as $extensionConfigFile) {
-        $rectorConfig->import($extensionConfigFile->getRealPath());
+        $rectorConfig->import($extensionConfigFile);
     }
 
     // require only in dev

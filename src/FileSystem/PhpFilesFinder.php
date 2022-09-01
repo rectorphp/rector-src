@@ -7,7 +7,6 @@ namespace Rector\Core\FileSystem;
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\StaticNonPhpFileSuffixes;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class PhpFilesFinder
 {
@@ -19,40 +18,40 @@ final class PhpFilesFinder
 
     /**
      * @param string[] $paths
-     * @return SmartFileInfo[]
+     * @return string[]
      */
     public function findInPaths(array $paths): array
     {
-        $phpFileInfos = $this->filesFinder->findInDirectoriesAndFiles($paths);
+        $filePaths = $this->filesFinder->findInDirectoriesAndFiles($paths);
         $suffixRegexPattern = StaticNonPhpFileSuffixes::getSuffixRegexPattern();
 
         // filter out non-PHP files
-        foreach ($phpFileInfos as $key => $phpFileInfo) {
-            $pathname = $phpFileInfo->getPathname();
+        foreach ($filePaths as $key => $filePath) {
+            //            $pathname = $filePath->getPathname();
 
             /**
              *  check .blade.php early so next .php check in next if can be skipped
              */
-            if (str_ends_with($pathname, '.blade.php')) {
-                unset($phpFileInfos[$key]);
+            if (str_ends_with($filePath, '.blade.php')) {
+                unset($filePaths[$key]);
                 continue;
             }
 
             /**
              * obvious
              */
-            if (str_ends_with($pathname, '.php')) {
+            if (str_ends_with($filePath, '.php')) {
                 continue;
             }
 
             /**
              * only check with regex when needed
              */
-            if (StringUtils::isMatch($pathname, $suffixRegexPattern)) {
-                unset($phpFileInfos[$key]);
+            if (StringUtils::isMatch($filePath, $suffixRegexPattern)) {
+                unset($filePaths[$key]);
             }
         }
 
-        return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($phpFileInfos);
+        return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
     }
 }

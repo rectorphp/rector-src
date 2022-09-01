@@ -13,12 +13,12 @@ final class FixtureTempFileDumper
      */
     public const TEMP_FIXTURE_DIRECTORY = '/rector/tests_fixture_';
 
-    public static function dump(string $fileContents, string $suffix = 'php'): SmartFileInfo
+    public static function dump(string $fileContents, string $suffix = 'php'): string
     {
         // the "php" suffix is important, because that will hook into \Rector\Core\Application\FileProcessor\PhpFileProcessor
         $temporaryFileName = sys_get_temp_dir() . self::TEMP_FIXTURE_DIRECTORY . '/' . md5($fileContents) . '.' . $suffix;
         FileSystem::write($temporaryFileName, $fileContents);
 
-        return new SmartFileInfo($temporaryFileName);
+        return $temporaryFileName;
     }
 }

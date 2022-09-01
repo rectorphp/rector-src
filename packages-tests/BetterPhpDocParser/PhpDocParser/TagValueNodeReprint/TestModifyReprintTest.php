@@ -72,8 +72,8 @@ final class TestModifyReprintTest extends AbstractTestCase
      */
     private function parseFileAndGetFirstNodeOfType(string $fileContents, string $nodeType): PhpDocInfo
     {
-        $fixtureFileInfo = FixtureTempFileDumper::dump($fileContents);
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($fixtureFileInfo);
+        $fixtureFilePath = FixtureTempFileDumper::dump($fileContents);
+        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($fixtureFilePath);
 
         $node = $this->betterNodeFinder->findFirstInstanceOf($nodes, $nodeType);
         if (! $node instanceof Node) {

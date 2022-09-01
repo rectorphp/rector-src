@@ -11,6 +11,7 @@ use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
+use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
@@ -40,7 +41,9 @@ final class CommentRemoverTest extends AbstractTestCase
             $smartFileInfo->getRealPath()
         );
 
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($inputContents);
+        $inputFilePath = FixtureTempFileDumper::dump($inputContents);
+
+        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($inputFilePath);
         $nodesWithoutComments = $this->commentRemover->removeFromNode($nodes);
 
         $fileContent = $this->nodePrinter->print($nodesWithoutComments);

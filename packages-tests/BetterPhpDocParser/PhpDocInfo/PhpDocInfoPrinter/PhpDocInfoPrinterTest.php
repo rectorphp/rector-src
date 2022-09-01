@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\FileSystem\FilePathHelper;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -15,27 +16,27 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
      * @dataProvider provideData()
      * @dataProvider provideDataCallable()
      */
-    public function test(SmartFileInfo $docFileInfo): void
+    public function test(string $docFilePath): void
     {
-        $this->doComparePrintedFileEquals($docFileInfo, $docFileInfo);
+        $this->doComparePrintedFileEquals($docFilePath, $docFilePath);
     }
 
     public function testRemoveSpace(): void
     {
         $this->doComparePrintedFileEquals(
-            new SmartFileInfo(__DIR__ . '/FixtureChanged/with_space.txt'),
-            new SmartFileInfo(__DIR__ . '/FixtureChangedExpected/with_space_expected.txt')
+            __DIR__ . '/FixtureChanged/with_space.txt',
+            __DIR__ . '/FixtureChangedExpected/with_space_expected.txt'
         );
     }
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureBasic', '*.txt');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureBasic', '*.txt');
     }
 
     public function provideDataCallable(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureCallable', '*.txt');
+        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureCallable', '*.txt');
     }
 
     /**
@@ -52,14 +53,17 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
     }
 
-    private function doComparePrintedFileEquals(SmartFileInfo $inputFileInfo, SmartFileInfo $expectedFileInfo): void
+    private function doComparePrintedFileEquals(string $inputFilePath, string $expectedFilePath): void
     {
-        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($inputFileInfo->getContents(), new Nop());
+        $inputFileContents = FileSystem::read($inputFilePath);
+        $expectedFileContents = FileSystem::read($expectedFilePath);
+
+        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($inputFileContents, new Nop());
         $printedDocComment = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
 
         $filePathHelper = $this->getService(FilePathHelper::class);
-        $relativeInputFilePath = $filePathHelper->relativePath($inputFileInfo->getRealPath());
+        $relativeInputFilePath = $filePathHelper->relativePath($inputFilePath);
 
-        $this->assertSame($expectedFileInfo->getContents(), $printedDocComment, $relativeInputFilePath);
+        $this->assertSame($expectedFileContents, $printedDocComment, $relativeInputFilePath);
     }
 }

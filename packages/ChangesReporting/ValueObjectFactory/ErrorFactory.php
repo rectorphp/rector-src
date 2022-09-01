@@ -8,7 +8,6 @@ use PHPStan\AnalysedCodeException;
 use Rector\Core\Error\ExceptionCorrector;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\ValueObject\Error\SystemError;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ErrorFactory
 {
@@ -20,10 +19,10 @@ final class ErrorFactory
 
     public function createAutoloadError(
         AnalysedCodeException $analysedCodeException,
-        SmartFileInfo $smartFileInfo
+        string $filePath
     ): SystemError {
         $message = $this->exceptionCorrector->getAutoloadExceptionMessageAndAddLocation($analysedCodeException);
-        $relativeFilePath = $this->filePathHelper->relativePath($smartFileInfo->getRealPath());
+        $relativeFilePath = $this->filePathHelper->relativePath($filePath);
 
         return new SystemError($message, $relativeFilePath);
     }

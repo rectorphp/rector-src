@@ -21,11 +21,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
-use Symplify\EasyParallel\FileSystem\FilePathNormalizer;
+//use Symplify\EasyParallel\FileSystem\FilePathNormalizer;
 use Symplify\EasyParallel\ScheduleFactory;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Yaml\ParametersMerger;
-use Symplify\SmartFileSystem\SmartFileInfo;
 use Webmozart\Assert\Assert;
 
 final class ApplicationFileProcessor
@@ -54,7 +53,7 @@ final class ApplicationFileProcessor
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ParameterProvider $parameterProvider,
         private readonly ScheduleFactory $scheduleFactory,
-        private readonly FilePathNormalizer $filePathNormalizer,
+        //        private readonly FilePathNormalizer $filePathNormalizer,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly array $fileProcessors = []
     ) {
@@ -162,10 +161,13 @@ final class ApplicationFileProcessor
 
     private function printFile(File $file): void
     {
-        $smartFileInfo = $file->getSmartFileInfo();
+        $filePath = $file->getFilePath();
+        //        $smartFileInfo = $file->getFilePath() getSmartFileInfo();
 
-        $this->filesystem->dumpFile($smartFileInfo->getPathname(), $file->getFileContent());
-        $this->filesystem->chmod($smartFileInfo->getRealPath(), $smartFileInfo->getPerms());
+        $this->filesystem->dumpFile($filePath, $file->getFileContent());
+
+        // @todo how to keep original chmod rights?
+        // $this->filesystem->chmod($filePath, $smartFileInfo->getPerms());
     }
 
     /**
@@ -198,13 +200,14 @@ final class ApplicationFileProcessor
     }
 
     /**
-     * @param SmartFileInfo[] $fileInfos
+     * @param string[] $filePaths
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    private function runParallel(array $fileInfos, Configuration $configuration, InputInterface $input): array
+    private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): array
     {
+        // @todo possibly relative paths?
         // must be a string, otherwise the serialization returns empty arrays
-        $filePaths = $this->filePathNormalizer->resolveFilePathsFromFileInfos($fileInfos);
+        // $filePaths // = $this->filePathNormalizer->resolveFilePathsFromFileInfos($filePaths);
 
         $schedule = $this->scheduleFactory->create(
             $this->cpuCoreCountProvider->provide(),
@@ -279,17 +282,17 @@ final class ApplicationFileProcessor
     {
         Assert::allIsAOf($files, File::class);
 
-        $filePaths = [];
+        $phpFilePaths = [];
 
         foreach ($files as $file) {
-            $smartFileInfo = $file->getSmartFileInfo();
-            $pathname = $smartFileInfo->getPathname();
-
-            if (\str_ends_with($pathname, '.php')) {
-                $filePaths[] = $pathname;
+            $filePath = $file->getFilePath();
+            //            $smartFileInfo = $file->getSmartFileInfo();
+            //            $pathname = $smartFileInfo->getPathname();
+            if (\str_ends_with($filePath, '.php')) {
+                $phpFilePaths[] = $filePath;
             }
         }
 
-        return $filePaths;
+        return $phpFilePaths;
     }
 }

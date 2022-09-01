@@ -6,24 +6,23 @@ namespace Rector\Core\Bootstrap;
 
 use Rector\RectorInstaller\GeneratedConfig;
 use ReflectionClass;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ExtensionConfigResolver
 {
     /**
-     * @return SmartFileInfo[]
+     * @return string[]
      */
     public function provide(): array
     {
-        $configFileInfos = [];
+        $configFilePaths = [];
 
         if (! class_exists('Rector\RectorInstaller\GeneratedConfig')) {
-            return $configFileInfos;
+            return $configFilePaths;
         }
 
         $generatedConfigReflectionClass = new ReflectionClass('Rector\RectorInstaller\GeneratedConfig');
         if ($generatedConfigReflectionClass->getFileName() === false) {
-            return $configFileInfos;
+            return $configFilePaths;
         }
 
         $generatedConfigDirectory = dirname($generatedConfigReflectionClass->getFileName());
@@ -44,11 +43,11 @@ final class ExtensionConfigResolver
                     $includedFilePath = sprintf('%s/%s', $installPath, $includedFile);
                 }
 
-                $configFileInfos[] = new SmartFileInfo($includedFilePath);
+                $configFilePaths[] = $includedFilePath;
             }
         }
 
-        return $configFileInfos;
+        return $configFilePaths;
     }
 
     /**

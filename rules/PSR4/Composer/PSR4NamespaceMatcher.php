@@ -6,9 +6,9 @@ namespace Rector\PSR4\Composer;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see \Rector\Tests\PSR4\Composer\PSR4NamespaceMatcherTest
@@ -16,13 +16,14 @@ use Symplify\SmartFileSystem\SmartFileInfo;
 final class PSR4NamespaceMatcher implements PSR4AutoloadNamespaceMatcherInterface
 {
     public function __construct(
-        private readonly PSR4AutoloadPathsProvider $psr4AutoloadPathsProvider
+        private readonly PSR4AutoloadPathsProvider $psr4AutoloadPathsProvider,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
     public function getExpectedNamespace(File $file, Node $node): ?string
     {
-        $smartFileInfo = $file->getSmartFileInfo();
+        $filePath = $file->getFilePath();
         $psr4Autoloads = $this->psr4AutoloadPathsProvider->provide();
 
         foreach ($psr4Autoloads as $namespace => $path) {
@@ -30,12 +31,15 @@ final class PSR4NamespaceMatcher implements PSR4AutoloadNamespaceMatcherInterfac
             $paths = is_array($path) ? $path : [$path];
 
             foreach ($paths as $path) {
+                $relativeFilePath = $this->filePathHelper->relativePath($filePath);
+                $relativeDirectoryPath = dirname($relativeFilePath);
+
                 $path = rtrim($path, '/');
-                if (! \str_starts_with($smartFileInfo->getRelativeDirectoryPath(), $path)) {
+                if (! \str_starts_with($relativeDirectoryPath, $path)) {
                     continue;
                 }
 
-                $expectedNamespace = $namespace . $this->resolveExtraNamespace($smartFileInfo, $path);
+                $expectedNamespace = $namespace . $this->resolveExtraNamespace($relativeDirectoryPath, $path);
 
                 if (str_contains($expectedNamespace, '-')) {
                     return null;
@@ -51,9 +55,9 @@ final class PSR4NamespaceMatcher implements PSR4AutoloadNamespaceMatcherInterfac
     /**
      * Get the extra path that is not included in root PSR-4 namespace
      */
-    private function resolveExtraNamespace(SmartFileInfo $smartFileInfo, string $path): string
+    private function resolveExtraNamespace(string $relativeDirectoryPath, string $path): string
     {
-        $extraNamespace = Strings::substring($smartFileInfo->getRelativeDirectoryPath(), Strings::length($path) + 1);
+        $extraNamespace = Strings::substring($relativeDirectoryPath, Strings::length($path) + 1);
         $extraNamespace = Strings::replace($extraNamespace, '#/#', '\\');
 
         return trim($extraNamespace);

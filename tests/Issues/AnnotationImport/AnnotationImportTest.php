@@ -18,7 +18,7 @@ final class AnnotationImportTest extends AbstractRectorTestCase
      */
     public function test(SmartFileInfo $fileInfo): void
     {
-        $this->doTestFileInfo($fileInfo);
+        $this->doTestFile($fileInfo->getRealPath());
     }
 
     /**

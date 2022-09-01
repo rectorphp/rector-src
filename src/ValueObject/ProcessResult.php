@@ -6,7 +6,6 @@ namespace Rector\Core\ValueObject;
 
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
-use Symplify\SmartFileSystem\SmartFileInfo;
 use Webmozart\Assert\Assert;
 
 /**
@@ -66,13 +65,13 @@ final class ProcessResult
     }
 
     /**
-     * @return SmartFileInfo[]
+     * @return string[]
      */
-    public function getChangedFileInfos(): array
+    public function getChangedFilePaths(): array
     {
         $fileInfos = [];
         foreach ($this->fileDiffs as $fileDiff) {
-            $fileInfos[] = new SmartFileInfo($fileDiff->getRelativeFilePath());
+            $fileInfos[] = $fileDiff->getRelativeFilePath();
         }
 
         return array_unique($fileInfos);

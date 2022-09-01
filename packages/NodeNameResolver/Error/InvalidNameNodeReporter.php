@@ -34,10 +34,10 @@ final class InvalidNameNodeReporter
         $file = $this->currentFileProvider->getFile();
 
         if ($file instanceof File) {
-            $smartFileInfo = $file->getSmartFileInfo();
+            //            $smartFileInfo = $file->getFilePath(); // getSmartFileInfo();
             $message .= PHP_EOL . PHP_EOL;
 
-            $relatilveFilePath = $this->filePathHelper->relativePath($smartFileInfo->getRealPath());
+            $relatilveFilePath = $this->filePathHelper->relativePath($file->getFilePath());
 
             $message .= sprintf(
                 'Caused in "%s" file on line %d on code "%s"',

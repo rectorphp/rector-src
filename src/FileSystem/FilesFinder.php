@@ -10,7 +10,6 @@ use Rector\Skipper\Enum\AsteriskMatch;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 /**
  * @see \Rector\Core\Tests\FileSystem\FilesFinder\FilesFinderTest
@@ -28,7 +27,7 @@ final class FilesFinder
     /**
      * @param string[] $source
      * @param string[] $suffixes
-     * @return SmartFileInfo[]
+     * @return string[]
      */
     public function findInDirectoriesAndFiles(array $source, array $suffixes = []): array
     {
@@ -37,15 +36,15 @@ final class FilesFinder
         $filePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
 
-        $smartFileInfos = $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
+        $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
 
-        return array_merge($smartFileInfos, $this->findInDirectories($directories, $suffixes));
+        return array_merge($currentAndDependentFilePaths, $this->findInDirectories($directories, $suffixes));
     }
 
     /**
      * @param string[] $directories
      * @param string[] $suffixes
-     * @return SmartFileInfo[]
+     * @return string[]
      */
     private function findInDirectories(array $directories, array $suffixes): array
     {
@@ -67,12 +66,12 @@ final class FilesFinder
 
         $this->addFilterWithExcludedPaths($finder);
 
-        $smartFileInfos = [];
+        $filePaths = [];
         foreach ($finder as $fileInfo) {
-            $smartFileInfos[] = new SmartFileInfo($fileInfo->getRealPath());
+            $filePaths[] = $fileInfo->getRealPath();
         }
 
-        return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($smartFileInfos);
+        return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
     }
 
     /**

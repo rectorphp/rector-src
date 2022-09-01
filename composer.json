@@ -139,7 +139,6 @@
         "release": "vendor/bin/monorepo-builder release patch --ansi"
     },
     "extra": {
-        "composer-exit-on-patch-failure": true,
         "patches": {
             "nikic/php-parser": [
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-expr-closure-php.patch",
@@ -163,6 +162,7 @@
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/symfony-dependency-injection.patch"
             ]
         },
+        "composer-exit-on-patch-failure": true,
         "enable-patching": true,
         "branch-alias": {
             "dev-main": "0.14-dev"

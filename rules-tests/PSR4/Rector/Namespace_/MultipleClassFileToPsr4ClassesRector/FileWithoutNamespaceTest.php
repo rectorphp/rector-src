@@ -9,7 +9,6 @@ use Nette\Utils\FileSystem;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class FileWithoutNamespaceTest extends AbstractRectorTestCase
 {
@@ -18,22 +17,19 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
      * @dataProvider provideData()
      */
     public function test(
-        SmartFileInfo $originalFileInfo,
+        string $originalFilePath,
         array $expectedFilePathsWithContents,
         bool $expectedOriginalFileWasRemoved = true
     ): void {
-        $this->doTestFileInfo($originalFileInfo);
+        $fixtureFilePath = FixtureTempFileDumper::dump(FileSystem::read($originalFilePath));
+        $this->doTestFile($fixtureFilePath);
 
         $this->assertCount($this->removedAndAddedFilesCollector->getAddedFileCount(), $expectedFilePathsWithContents);
-
         $this->assertFilesWereAdded($expectedFilePathsWithContents);
 
-        $fixtureFileInfo = FixtureTempFileDumper::dump($originalFileInfo->getContents());
+        $isFileRemoved = $this->removedAndAddedFilesCollector->isFileRemoved($fixtureFilePath);
 
-        $this->assertSame(
-            $expectedOriginalFileWasRemoved,
-            $this->removedAndAddedFilesCollector->isFileRemoved($fixtureFileInfo)
-        );
+        $this->assertSame($expectedOriginalFileWasRemoved, $isFileRemoved);
     }
 
     /**
@@ -52,10 +48,7 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
             ),
         ];
 
-        yield [
-            new SmartFileInfo(__DIR__ . '/FixtureFileWithoutNamespace/some_without_namespace.php.inc'),
-            $filePathsWithContents,
-        ];
+        yield [__DIR__ . '/FixtureFileWithoutNamespace/some_without_namespace.php.inc', $filePathsWithContents];
     }
 
     public function provideConfigFilePath(): string

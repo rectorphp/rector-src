@@ -12,7 +12,6 @@ use PhpParser\Node\Param;
 use PHPStan\Analyser\MutatingScope;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
-use Symplify\SmartFileSystem\SmartFileInfo;
 
 final class ScopeAnalyzer
 {
@@ -38,7 +37,7 @@ final class ScopeAnalyzer
 
     public function resolveScope(
         Node $node,
-        SmartFileInfo $smartFileInfo,
+        string $filePath,
         ?MutatingScope $mutatingScope = null
     ): ?MutatingScope {
         if ($mutatingScope instanceof MutatingScope) {
@@ -47,11 +46,11 @@ final class ScopeAnalyzer
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof Node) {
-            return $this->scopeFactory->createFromFile($smartFileInfo);
+            return $this->scopeFactory->createFromFile($filePath);
         }
 
         if (! $this->hasScope($parentNode)) {
-            return $this->scopeFactory->createFromFile($smartFileInfo);
+            return $this->scopeFactory->createFromFile($filePath);
         }
 
         /** @var MutatingScope|null $parentScope */
