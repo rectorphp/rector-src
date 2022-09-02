@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\CodeQuality\NodeAnalyzer\ForAnalyzer;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
+use Rector\CodeQuality\NodeAnalyzer\VariableNameUsedNextAnalyzer;
 use Rector\CodeQuality\NodeFactory\ForeachFactory;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -43,7 +44,8 @@ final class ForToForeachRector extends AbstractRector
         private readonly Inflector $inflector,
         private readonly ForAnalyzer $forAnalyzer,
         private readonly ForeachFactory $foreachFactory,
-        private readonly ForeachAnalyzer $foreachAnalyzer
+        private readonly ForeachAnalyzer $foreachAnalyzer,
+        private readonly VariableNameUsedNextAnalyzer $variableNameUsedNextAnalyzer
     ) {
     }
 
@@ -152,7 +154,7 @@ CODE_SAMPLE
             $iteratedVariableSingle = 'single' . ucfirst($iteratedVariableSingle);
         }
 
-        if (! $this->forAnalyzer->isValueVarUsedNext($for, $iteratedVariableSingle)) {
+        if (! $this->variableNameUsedNextAnalyzer->isValueVarUsedNext($for, $iteratedVariableSingle)) {
             return $this->createForeachFromForWithIteratedVariableSingle($for, $iteratedVariableSingle);
         }
 
@@ -160,7 +162,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->forAnalyzer->isValueVarUsedNext($for, $originalVariableSingle)) {
+        if (! $this->variableNameUsedNextAnalyzer->isValueVarUsedNext($for, $originalVariableSingle)) {
             return $this->createForeachFromForWithIteratedVariableSingle($for, $originalVariableSingle);
         }
 
