@@ -19,7 +19,7 @@ final class FirstClassCallableTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureFirstClassCallable');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureFirstClassCallable');
     }
 
     public function provideConfigFilePath(): string

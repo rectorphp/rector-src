@@ -19,7 +19,7 @@ final class CustomConfigTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureCustomConfig');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureCustomConfig');
     }
 
     public function provideConfigFilePath(): string

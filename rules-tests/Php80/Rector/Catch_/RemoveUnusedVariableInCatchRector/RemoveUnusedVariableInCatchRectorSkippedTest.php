@@ -19,7 +19,7 @@ final class RemoveUnusedVariableInCatchRectorSkippedTest extends AbstractRectorT
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureSkipped');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureSkipped');
     }
 
     public function provideConfigFilePath(): string

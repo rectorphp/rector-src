@@ -22,7 +22,7 @@ final class AutoImportNamesPhp74Test extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureAutoImportNamesPhp74');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureAutoImportNamesPhp74');
     }
 
     public function provideConfigFilePath(): string

@@ -19,7 +19,7 @@ final class UnionIntersectionTypedPropertyRectorTest extends AbstractRectorTestC
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureUnionIntersectionTypes');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureUnionIntersectionTypes');
     }
 
     public function provideConfigFilePath(): string

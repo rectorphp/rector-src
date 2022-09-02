@@ -64,12 +64,12 @@ final class TagValueNodeReprintTest extends AbstractTestCase
 
     public function provideData(): Iterator
     {
-        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideDataNested(): Iterator
     {
-        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/FixtureNested');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/FixtureNested');
     }
 
     /**

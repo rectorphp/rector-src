@@ -23,7 +23,7 @@ final class RenameParentTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureRenameParent');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureRenameParent');
     }
 
     public function provideConfigFilePath(): string

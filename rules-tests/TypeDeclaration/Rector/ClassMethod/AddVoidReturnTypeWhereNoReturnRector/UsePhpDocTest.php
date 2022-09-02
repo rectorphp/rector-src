@@ -19,7 +19,7 @@ final class UsePhpDocTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureUsePhpDoc');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureUsePhpDoc');
     }
 
     public function provideConfigFilePath(): string

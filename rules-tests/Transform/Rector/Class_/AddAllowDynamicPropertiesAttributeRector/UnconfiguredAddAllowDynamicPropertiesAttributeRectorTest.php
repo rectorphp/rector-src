@@ -19,7 +19,7 @@ final class UnconfiguredAddAllowDynamicPropertiesAttributeRectorTest extends Abs
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureAllClasses');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureAllClasses');
     }
 
     public function provideConfigFilePath(): string

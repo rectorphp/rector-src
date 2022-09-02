@@ -41,8 +41,8 @@ abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
      * This is a new way to load test fixtures :)
      * @return Iterator<array<int, string>>
      */
-    protected function yieldFilePathsFromDirectory(string $directory, string $suffix = '*.php'): Iterator
+    protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php'): Iterator
     {
-        return FixtureFileFinder::yieldFilePathsFromDirectory($directory, $suffix);
+        return FixtureFileFinder::yieldDirectory($directory, $suffix);
     }
 }

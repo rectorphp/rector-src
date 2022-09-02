@@ -19,7 +19,7 @@ final class Php81ArraySpreadInsteadOfArrayMergeRectorTest extends AbstractRector
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixturePhp81');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp81');
     }
 
     public function provideConfigFilePath(): string

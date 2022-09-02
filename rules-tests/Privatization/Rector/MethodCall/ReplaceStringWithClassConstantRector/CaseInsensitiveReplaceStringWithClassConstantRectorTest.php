@@ -19,7 +19,7 @@ final class CaseInsensitiveReplaceStringWithClassConstantRectorTest extends Abst
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureCaseInsensitive');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureCaseInsensitive');
     }
 
     public function provideConfigFilePath(): string

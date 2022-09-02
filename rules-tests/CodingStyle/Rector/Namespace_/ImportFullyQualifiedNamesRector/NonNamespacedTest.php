@@ -22,7 +22,7 @@ final class NonNamespacedTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureNonNamespaced');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureNonNamespaced');
     }
 
     public function provideConfigFilePath(): string

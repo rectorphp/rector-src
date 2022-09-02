@@ -22,7 +22,7 @@ final class AutoImportNamesOnlyOnChangedFilesTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureNameImportingOnChangedFiles');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureNameImportingOnChangedFiles');
     }
 
     public function provideConfigFilePath(): string

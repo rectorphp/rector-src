@@ -19,7 +19,7 @@ final class UnionTypeParamTypeDeclarationRectorTest extends AbstractRectorTestCa
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureUnionType');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureUnionType');
     }
 
     public function provideConfigFilePath(): string

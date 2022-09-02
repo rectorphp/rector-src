@@ -19,7 +19,7 @@ final class Php74Test extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixturePhp74');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp74');
     }
 
     public function provideConfigFilePath(): string

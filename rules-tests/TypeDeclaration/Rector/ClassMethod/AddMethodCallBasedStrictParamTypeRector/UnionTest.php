@@ -19,7 +19,7 @@ final class UnionTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureUnion');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureUnion');
     }
 
     public function provideConfigFilePath(): string
