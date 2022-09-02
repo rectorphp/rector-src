@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Transform\Rector\Class_\AddInterfaceByTraitRector\Fixture;
+
 interface FooInterface {
 }
 
@@ -8,8 +10,6 @@ interface BarInterface extends FooInterface {
 
 trait FooTrait {
 }
-
-namespace Rector\Tests\Transform\Rector\Class_\AddInterfaceByTraitRector\Fixture;
 
 class Bar implements BarInterface {
     use FooTrait;
@@ -18,6 +18,8 @@ class Bar implements BarInterface {
 -----
 <?php
 
+namespace Rector\Tests\Transform\Rector\Class_\AddInterfaceByTraitRector\Fixture;
+
 interface FooInterface {
 }
 
@@ -26,8 +28,6 @@ interface BarInterface extends FooInterface {
 
 trait FooTrait {
 }
-
-namespace Rector\Tests\Transform\Rector\Class_\AddInterfaceByTraitRector\Fixture;
 
 class Bar implements BarInterface {
     use FooTrait;
