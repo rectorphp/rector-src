@@ -19,7 +19,7 @@ final class ChangeSwitchToMatchRectorSkippedTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureSkipped');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureSkipped');
     }
 
     public function provideConfigFilePath(): string

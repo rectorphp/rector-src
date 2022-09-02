@@ -20,7 +20,7 @@ final class NonPhpTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(
+        return $this->yieldFilesFromDirectory(
             __DIR__ . '/FixtureRenameNonPhp',
             StaticNonPhpFileSuffixes::getSuffixRegexPattern()
         );

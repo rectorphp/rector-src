@@ -19,7 +19,7 @@ final class ShouldNotRemoveAnnotationDirectConfigRectorTest extends AbstractRect
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureShouldNotRemoveAnnotationDirectConfig');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureShouldNotRemoveAnnotationDirectConfig');
     }
 
     public function provideConfigFilePath(): string

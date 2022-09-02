@@ -30,12 +30,12 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureBasic', '*.txt');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureBasic', '*.txt');
     }
 
     public function provideDataCallable(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureCallable', '*.txt');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureCallable', '*.txt');
     }
 
     /**
@@ -51,7 +51,7 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
 
     public function provideDataEmpty(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
     }
 
     private function doComparePrintedFileEquals(string $inputFilePath, string $expectedFilePath): void

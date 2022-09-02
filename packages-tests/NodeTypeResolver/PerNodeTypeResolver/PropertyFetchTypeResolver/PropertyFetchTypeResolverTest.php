@@ -25,7 +25,7 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
 
     public function provideData(): Iterator
     {
-        return FixtureFileFinder::yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }
 
     private function doTestFile(string $filePath): void

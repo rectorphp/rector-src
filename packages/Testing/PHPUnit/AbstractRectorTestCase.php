@@ -83,7 +83,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     }
 
     /**
-     * @deprecated Use \Rector\Testing\PHPUnit\AbstractRectorTestCase::yieldFilePathsFromDirectory() instead
+     * @return Iterator<<string>>
      */
     protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
@@ -91,11 +91,12 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     }
 
     /**
-     * @return Iterator<<string>>
+     * @api
+     * @deprecated BC alias for yieldFilesFromDirectory()
      */
     protected function yieldFilePathsFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
-        return FixtureFileFinder::yieldFilePathsFromDirectory($directory, $suffix);
+        return $this->yieldFilesFromDirectory($directory, $suffix);
     }
 
     protected function isWindows(): bool

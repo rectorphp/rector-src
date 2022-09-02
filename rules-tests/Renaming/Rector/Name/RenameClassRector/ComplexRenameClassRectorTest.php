@@ -19,7 +19,7 @@ final class ComplexRenameClassRectorTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/ComplexFixture');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/ComplexFixture');
     }
 
     public function provideConfigFilePath(): string

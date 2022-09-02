@@ -19,7 +19,7 @@ final class ImportClassNameRectorTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureImport');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureImport');
     }
 
     public function provideConfigFilePath(): string

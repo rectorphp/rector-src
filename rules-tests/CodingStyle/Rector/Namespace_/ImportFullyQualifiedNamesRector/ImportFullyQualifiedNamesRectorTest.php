@@ -24,17 +24,17 @@ final class ImportFullyQualifiedNamesRectorTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/Fixture');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideDataFunction(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureFunction');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureFunction');
     }
 
     public function provideDataGeneric(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureGeneric');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureGeneric');
     }
 
     public function provideConfigFilePath(): string

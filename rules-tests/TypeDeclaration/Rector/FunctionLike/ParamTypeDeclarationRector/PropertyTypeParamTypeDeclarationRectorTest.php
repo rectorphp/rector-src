@@ -19,7 +19,7 @@ final class PropertyTypeParamTypeDeclarationRectorTest extends AbstractRectorTes
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixturePropertyType');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePropertyType');
     }
 
     public function provideConfigFilePath(): string

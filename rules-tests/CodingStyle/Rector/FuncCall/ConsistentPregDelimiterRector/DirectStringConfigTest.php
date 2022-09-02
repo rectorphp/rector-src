@@ -19,7 +19,7 @@ final class DirectStringConfigTest extends AbstractRectorTestCase
 
     public function provideData(): Iterator
     {
-        return $this->yieldFilePathsFromDirectory(__DIR__ . '/FixtureDirectStringConfig');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureDirectStringConfig');
     }
 
     public function provideConfigFilePath(): string
