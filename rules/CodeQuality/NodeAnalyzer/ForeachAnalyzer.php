@@ -119,14 +119,19 @@ final class ForeachAnalyzer
             return true;
         }
 
+        return $this->isValueVarUsedNext($foreach, $singularValueVarName);
+    }
+
+    public function isValueVarUsedNext(Foreach_ $foreach, string $valueVarName): bool
+    {
         return (bool) $this->betterNodeFinder->findFirstNext($foreach, function (Node $node) use (
-            $singularValueVarName
+            $valueVarName
         ): bool {
             if (! $node instanceof Variable) {
                 return false;
             }
 
-            return $this->nodeNameResolver->isName($node, $singularValueVarName);
+            return $this->nodeNameResolver->isName($node, $valueVarName);
         });
     }
 }
