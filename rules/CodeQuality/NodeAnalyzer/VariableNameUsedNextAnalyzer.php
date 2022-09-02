@@ -13,8 +13,10 @@ use Rector\NodeNameResolver\NodeNameResolver;
 
 final class VariableNameUsedNextAnalyzer
 {
-    public function __construct(private readonly BetterNodeFinder $betterNodeFinder, private readonly NodeNameResolver $nodeNameResolver)
-    {
+    public function __construct(
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeNameResolver $nodeNameResolver
+    ) {
     }
 
     public function isValueVarUsedNext(For_|Foreach_ $for, string $valueVarName): bool

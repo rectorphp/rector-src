@@ -124,6 +124,9 @@ final class ForeachAnalyzer
             return true;
         }
 
-        return $this->variableNameUsedNextAnalyzer->isValueVarUsedNext($foreach, (string) $this->nodeNameResolver->getName($foreach->valueVar));
+        return $this->variableNameUsedNextAnalyzer->isValueVarUsedNext(
+            $foreach,
+            (string) $this->nodeNameResolver->getName($foreach->valueVar)
+        );
     }
 }
