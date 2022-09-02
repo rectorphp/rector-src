@@ -116,10 +116,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->foreachAnalyzer->isValueVarUsedNext($node, $valueVarName)) {
-            return null;
-        }
-
         return $this->processRename($node, $valueVarName, $singularValueVarName);
     }
 

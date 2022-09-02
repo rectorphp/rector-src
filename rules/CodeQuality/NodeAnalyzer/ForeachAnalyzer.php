@@ -24,7 +24,8 @@ final class ForeachAnalyzer
         private readonly ForAnalyzer $forAnalyzer,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly VariableNameUsedNextAnalyzer $variableNameUsedNextAnalyzer
     ) {
     }
 
@@ -119,19 +120,10 @@ final class ForeachAnalyzer
             return true;
         }
 
-        return $this->isValueVarUsedNext($foreach, $singularValueVarName);
-    }
+        if ($this->variableNameUsedNextAnalyzer->isValueVarUsedNext($foreach, $singularValueVarName)) {
+            return true;
+        }
 
-    public function isValueVarUsedNext(Foreach_ $foreach, string $valueVarName): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirstNext($foreach, function (Node $node) use (
-            $valueVarName
-        ): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($node, $valueVarName);
-        });
+        return $this->variableNameUsedNextAnalyzer->isValueVarUsedNext($foreach, (string) $this->nodeNameResolver->getName($foreach->valueVar));
     }
 }
