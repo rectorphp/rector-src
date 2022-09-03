@@ -14,7 +14,7 @@ use PhpParser\Node\Expr\ConstFetch;
  */
 final class ConstFetchAnalyzer
 {
-    public function isTrueOrFalse(Node $node): bool
+    public function isTrueOrFalse(Expr $node): bool
     {
         if ($this->isTrue($node)) {
             return true;
@@ -23,12 +23,12 @@ final class ConstFetchAnalyzer
         return $this->isFalse($node);
     }
 
-    public function isFalse(Node $node): bool
+    public function isFalse(Expr $node): bool
     {
         return $this->isConstantWithLowercasedName($node, 'false');
     }
 
-    public function isTrue(Node $node): bool
+    public function isTrue(Expr $node): bool
     {
         return $this->isConstantWithLowercasedName($node, 'true');
     }
