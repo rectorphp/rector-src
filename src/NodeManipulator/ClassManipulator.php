@@ -6,19 +6,15 @@ namespace Rector\Core\NodeManipulator;
 
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 
 final class ClassManipulator
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodesToRemoveCollector $nodesToRemoveCollector,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ClassChildAnalyzer $classChildAnalyzer
     ) {
@@ -47,19 +43,6 @@ final class ClassManipulator
         return false;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getPrivatePropertyNames(Class_ $class): array
-    {
-        $privateProperties = array_filter(
-            $class->getProperties(),
-            static fn (Property $property): bool => $property->isPrivate()
-        );
-
-        return $this->nodeNameResolver->getNames($privateProperties);
-    }
-
     public function hasTrait(Class_ $class, string $desiredTrait): bool
     {
         foreach ($class->getTraitUses() as $traitUse) {
@@ -86,17 +69,6 @@ final class ClassManipulator
                 $traitUse->traits[$key] = new FullyQualified($newTrait);
                 break;
             }
-        }
-    }
-
-    public function removeInterface(Class_ $class, string $desiredInterface): void
-    {
-        foreach ($class->implements as $implement) {
-            if (! $this->nodeNameResolver->isName($implement, $desiredInterface)) {
-                continue;
-            }
-
-            $this->nodesToRemoveCollector->addNodeToRemove($implement);
         }
     }
 }
