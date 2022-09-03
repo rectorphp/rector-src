@@ -89,18 +89,6 @@ final class ClassManipulator
         }
     }
 
-    /**
-     * @return string[]
-     */
-    public function getClassLikeNodeParentInterfaceNames(Class_ | Interface_ $classLike): array
-    {
-        if ($classLike instanceof Class_) {
-            return $this->nodeNameResolver->getNames($classLike->implements);
-        }
-
-        return $this->nodeNameResolver->getNames($classLike->extends);
-    }
-
     public function removeInterface(Class_ $class, string $desiredInterface): void
     {
         foreach ($class->implements as $implement) {
