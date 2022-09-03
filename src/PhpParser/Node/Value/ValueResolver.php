@@ -72,15 +72,15 @@ final class ValueResolver
             }
         }
 
-//        $value = $this->resolveExprValueForConst($expr);
+        //        $value = $this->resolveExprValueForConst($expr);
 
-//        if ($value !== null) {
-//            return $value;
-//        }
+        //        if ($value !== null) {
+        //            return $value;
+        //        }
 
-//        if ($expr instanceof ConstFetch) {
-//            return $this->nodeNameResolver->getName($expr);
-//        }
+        //        if ($expr instanceof ConstFetch) {
+        //            return $this->nodeNameResolver->getName($expr);
+        //        }
 
         $nodeStaticType = $this->nodeTypeResolver->getType($expr);
 
