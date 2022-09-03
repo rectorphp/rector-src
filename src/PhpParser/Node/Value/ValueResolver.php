@@ -110,9 +110,9 @@ final class ValueResolver
         return false;
     }
 
-    public function isFalse(Node $node): bool
+    public function isFalse(Expr $expr): bool
     {
-        return $this->constFetchAnalyzer->isFalse($node);
+        return $this->constFetchAnalyzer->isFalse($expr);
     }
 
     public function isTrueOrFalse(Node $node): bool
@@ -120,14 +120,14 @@ final class ValueResolver
         return $this->constFetchAnalyzer->isTrueOrFalse($node);
     }
 
-    public function isTrue(Node $node): bool
+    public function isTrue(Expr $expr): bool
     {
-        return $this->constFetchAnalyzer->isTrue($node);
+        return $this->constFetchAnalyzer->isTrue($expr);
     }
 
-    public function isNull(Node $node): bool
+    public function isNull(Expr $expr): bool
     {
-        return $this->constFetchAnalyzer->isNull($node);
+        return $this->constFetchAnalyzer->isNull($expr);
     }
 
     public function isValueEqual(Expr $firstExpr, Expr $secondExpr): bool

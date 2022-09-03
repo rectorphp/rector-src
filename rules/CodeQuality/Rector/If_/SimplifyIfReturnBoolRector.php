@@ -74,8 +74,10 @@ CODE_SAMPLE
         /** @var Return_ $nextNode */
         $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-        /** @var Node $innerIfInnerNode */
         $innerIfInnerNode = $ifInnerNode->expr;
+        if (! $innerIfInnerNode instanceof Expr) {
+            return null;
+        }
 
         if ($this->valueResolver->isTrue($innerIfInnerNode)) {
             $newReturnNode = $this->processReturnTrue($node, $nextNode);

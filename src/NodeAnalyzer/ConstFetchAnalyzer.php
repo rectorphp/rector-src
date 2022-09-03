@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 
 /**
@@ -32,9 +33,9 @@ final class ConstFetchAnalyzer
         return $this->isConstantWithLowercasedName($node, 'true');
     }
 
-    public function isNull(Node $node): bool
+    public function isNull(Expr $expr): bool
     {
-        return $this->isConstantWithLowercasedName($node, 'null');
+        return $this->isConstantWithLowercasedName($expr, 'null');
     }
 
     private function isConstantWithLowercasedName(Node $node, string $name): bool
