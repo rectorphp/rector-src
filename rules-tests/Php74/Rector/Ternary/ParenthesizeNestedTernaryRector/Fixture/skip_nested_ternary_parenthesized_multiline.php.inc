@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Ternary\ParenthesizeNestedTernaryRector\Fixture;
 
-function SkipNestedTernaryParenthesizedIf()
+function SkipNestedTernaryParenthesizedMultiline()
 {
     is_dir('app')
         ? 'app'
