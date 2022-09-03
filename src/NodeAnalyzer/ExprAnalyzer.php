@@ -6,6 +6,7 @@ namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
@@ -84,15 +85,20 @@ final class ExprAnalyzer
         if ($expr instanceof ConstFetch) {
             return true;
         }
-        if (! $expr->class instanceof Name) {
+
+        if ($expr instanceof ClassConstFetch) {
+            if (! $expr->class instanceof Name) {
+                return false;
+            }
+
+            if (! $expr->name instanceof Identifier) {
+                return false;
+            }
+
             // static::class cannot be used for compile-time class name resolution
             return $expr->class->toString() !== ObjectReference::STATIC;
         }
-        if (! $expr->name instanceof Identifier) {
-            // static::class cannot be used for compile-time class name resolution
-            return $expr->class->toString() !== ObjectReference::STATIC;
-        }
-        // static::class cannot be used for compile-time class name resolution
-        return $expr->class->toString() !== ObjectReference::STATIC;
+
+        return false;
     }
 }
