@@ -86,7 +86,10 @@ final class ExprAnalyzer
         }
 
         if ($expr instanceof ClassConstFetch) {
-            return $expr->class instanceof Name && $expr->name instanceof Identifier;
+            if ($expr->class instanceof Name && $expr->name instanceof Identifier) {
+                // static::class cannot be used for compile-time class name resolution
+                return $expr->class->toString() !== 'static';
+            }
         }
 
         return false;
