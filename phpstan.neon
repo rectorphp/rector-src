@@ -816,7 +816,3 @@ parameters:
         -
             message: '#"empty\(\$right\)" is forbidden to use#'
             path: src/Util/ArrayParametersMerger.php
-
-        -
-            message: '#Class cognitive complexity is 53, keep it under 50#'
-            path: packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
