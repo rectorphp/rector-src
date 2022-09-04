@@ -140,6 +140,10 @@ CODE_SAMPLE
 
     private function shouldSkip(string $classLikeName, String_ $string): bool
     {
+        if ($classLikeName !== $string->value) {
+            return true;
+        }
+
         if (! $this->reflectionProvider->hasClass($classLikeName)) {
             return true;
         }
