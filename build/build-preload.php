@@ -302,12 +302,7 @@ CODE_SAMPLE;
         $fileInfos = $this->findPhpDocParserFiles($vendorDir);
 
         // 2. put first-class usages first
-        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo): int {
-            $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
-            $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
-
-            return $secondFilePosition <=> $firstFilePosition;
-        });
+        $fileInfos = $this->sortFileInfos($fileInfos);
 
         return $fileInfos;
     }
@@ -321,15 +316,26 @@ CODE_SAMPLE;
         $fileInfos = $this->findPhpParserFiles($vendorDir);
 
         // 2. put first-class usages first
+        $fileInfos = $this->sortFileInfos($fileInfos);
+
+        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
+        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
+
+        return $fileInfos;
+    }
+
+    /**
+     * @param SplFileInfo[] $fileInfos
+     * @return SplFileInfo[]
+     */
+    private function sortFileInfos(array $fileInfos): array
+    {
         usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo): int {
             $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
             $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
 
             return $secondFilePosition <=> $firstFilePosition;
         });
-
-        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
-        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
 
         return $fileInfos;
     }
