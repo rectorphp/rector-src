@@ -48,6 +48,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/utils',
         __DIR__ . '/config',
         __DIR__ . '/scoper.php',
+        __DIR__ . '/build/build-preload.php',
     ]);
 
     $rectorConfig->importNames();

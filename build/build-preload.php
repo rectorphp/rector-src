@@ -292,6 +292,9 @@ CODE_SAMPLE;
         return self::PRIORITY_LESS_FILE_POSITION;
     }
 
+    /**
+     * @return SplFileInfo[]
+     */
     private function findPhpDocParserFilesAndSortThem(string $vendorDir): array
     {
         // 1. fine php-parser file infos
