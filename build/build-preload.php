@@ -5,6 +5,8 @@
 declare(strict_types=1);
 
 use Nette\Utils\Strings;
+use Rector\Core\Console\Style\SymfonyStyleFactory;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Finder\Finder;
 
@@ -27,7 +29,7 @@ foreach ($possiblePaths as $possiblePath) {
 
 $buildDirectory = $argv[1];
 
-$symfonyStyleFactory = new \Rector\Core\Console\Style\SymfonyStyleFactory(new \Rector\Core\Util\Reflection\PrivatesAccessor());
+$symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
 $symfonyStyle = $symfonyStyleFactory->create();
 
 if (! is_string($buildDirectory)) {
@@ -45,13 +47,13 @@ final class PreloadBuilder
     /**
      * @var string
      */
-    private const PRELOAD_FILE_TEMPLATE = <<<'PHP'
+    private const PRELOAD_FILE_TEMPLATE = <<<'CODE_SAMPLE'
 <?php
 
 declare(strict_types=1);
 
 
-PHP;
+CODE_SAMPLE;
 
     /**
      * @var int
@@ -64,7 +66,7 @@ PHP;
      *
      * @var string[]
      */
-    private  const HIGH_PRIORITY_FILES = [
+    private const HIGH_PRIORITY_FILES = [
         'Node.php',
         'NodeAbstract.php',
         'Expr.php',
@@ -98,18 +100,8 @@ PHP;
 
     public function buildPreloadScript(string $buildDirectory, string $preloadFile): void
     {
-        $vendorDir = $buildDirectory . '/vendor';
-        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
-            return;
-        }
-
-        // 1. fine php-parser file infos
-        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
-
-        // 3. create preload.php from provided files
-        $preloadFileContent = $this->createPreloadFileContent($fileInfos);
-
-        file_put_contents($preloadFile, $preloadFileContent);
+        $this->buildPreloadPhpParser($buildDirectory, $preloadFile);
+        $this->buildPreloadPhpDocParser($buildDirectory, $preloadFile);
     }
 
     public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
@@ -127,6 +119,37 @@ PHP;
         file_put_contents($preloadFile, $preloadFileContent);
     }
 
+    private function buildPreloadPhpDocParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
+            return;
+        }
+
+        // 1. fine php-parser file infos
+        $fileInfos = $this->findPhpDocParserFiles($vendorDir);
+
+        // 3. create preload.php from provided files
+        $preloadFileContent = $this->createPreloadFileContent($fileInfos, true);
+
+        file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
+    }
+
+    private function buildPreloadPhpParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
+            return;
+        }
+
+        // 1. fine php-parser file infos
+        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
+
+        // 3. create preload.php from provided files
+        $preloadFileContent = $this->createPreloadFileContent($fileInfos);
+
+        file_put_contents($preloadFile, $preloadFileContent);
+    }
 
     /**
      * @return SplFileInfo[]
@@ -146,11 +169,25 @@ PHP;
     }
 
     /**
+     * @return SplFileInfo[]
+     */
+    private function findPhpDocParserFiles(string $vendorDir): array
+    {
+        $finder = (new Finder())
+            ->files()
+            ->name('*.php')
+            ->in($vendorDir . '/phpstan/phpdoc-parser')
+            ->sortByName();
+
+        return iterator_to_array($finder->getIterator());
+    }
+
+    /**
      * @param SplFileInfo[] $fileInfos
      */
-    private function createPreloadFileContent(array $fileInfos): string
+    private function createPreloadFileContent(array $fileInfos, bool $append = false): string
     {
-        $preloadFileContent = self::PRELOAD_FILE_TEMPLATE;
+        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE;
 
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
@@ -235,7 +272,7 @@ PHP;
         $fileInfos = $this->findPhpParserFiles($vendorDir);
 
         // 2. put first-class usages first
-        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo) {
+        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo): int {
             $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
             $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
 
