@@ -107,17 +107,17 @@ CODE_SAMPLE;
 
     public function buildPreloadScript(string $buildDirectory, string $preloadFile): void
     {
-        $this->buildPreloadPhpParser($buildDirectory, $preloadFile);
-        $this->buildPreloadPhpDocParser($buildDirectory, $preloadFile);
-    }
-
-    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
-    {
         $this->buildPreloadScriptPhpParser($buildDirectory, $preloadFile);
         $this->buildPreloadScriptPhpDocParser($buildDirectory, $preloadFile);
     }
 
-    private function buildPreloadScriptPhpParser(string $buildDirectory, string $preloadFile): void
+    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
+    {
+        $this->buildPreloadScriptForSplitPhpParser($buildDirectory, $preloadFile);
+        $this->buildPreloadScriptForSplitPhpDocParser($buildDirectory, $preloadFile);
+    }
+
+    private function buildPreloadScriptForSplitPhpParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
         if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
@@ -132,7 +132,7 @@ CODE_SAMPLE;
         file_put_contents($preloadFile, $preloadFileContent);
     }
 
-    private function buildPreloadScriptPhpDocParser(string $buildDirectory, string $preloadFile): void
+    private function buildPreloadScriptForSplitPhpDocParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
         if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
@@ -148,7 +148,7 @@ CODE_SAMPLE;
         file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
     }
 
-    private function buildPreloadPhpDocParser(string $buildDirectory, string $preloadFile): void
+    private function buildPreloadScriptPhpDocParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
         if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
@@ -164,7 +164,7 @@ CODE_SAMPLE;
         file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
     }
 
-    private function buildPreloadPhpParser(string $buildDirectory, string $preloadFile): void
+    private function buildPreloadScriptPhpParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
         if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
