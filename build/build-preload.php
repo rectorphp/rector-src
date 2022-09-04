@@ -113,6 +113,12 @@ CODE_SAMPLE;
 
     public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
     {
+        $this->buildPreloadScriptPhpParser($buildDirectory, $preloadFile);
+        $this->buildPreloadScriptPhpDocParser($buildDirectory, $preloadFile);
+    }
+
+    private function buildPreloadScriptPhpParser(string $buildDirectory, string $preloadFile): void
+    {
         $vendorDir = $buildDirectory . '/vendor';
         if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
             return;
@@ -124,6 +130,22 @@ CODE_SAMPLE;
         $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos);
 
         file_put_contents($preloadFile, $preloadFileContent);
+    }
+
+    private function buildPreloadScriptPhpDocParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
+            return;
+        }
+
+        // 1. fine php-parser file infos
+        $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
+
+        // 3. create preload.php from provided files
+        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos, true);
+
+        file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
     }
 
     private function buildPreloadPhpDocParser(string $buildDirectory, string $preloadFile): void
@@ -211,9 +233,9 @@ CODE_SAMPLE;
     /**
      * @param SplFileInfo[] $fileInfos
      */
-    private function createPreloadFileContentForSplitPackage(array $fileInfos): string
+    private function createPreloadFileContentForSplitPackage(array $fileInfos, bool $append = false): string
     {
-        $preloadFileContent = self::PRELOAD_FILE_TEMPLATE;
+        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE;
 
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
