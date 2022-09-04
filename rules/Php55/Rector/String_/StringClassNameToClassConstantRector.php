@@ -6,6 +6,7 @@ namespace Rector\Php55\Rector\String_;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
@@ -105,6 +106,14 @@ CODE_SAMPLE
         }
 
         $fullyQualified = new FullyQualified($classLikeName);
+        if ($classLikeName !== $node->value) {
+            $preSlashCount = abs(strlen($classLikeName) - strlen($node->value));
+            $preSlash = str_repeat('\\', $preSlashCount);
+            $string = new String_($preSlash);
+
+            return new Concat($string, new ClassConstFetch($fullyQualified, 'class'));
+        }
+
         return new ClassConstFetch($fullyQualified, 'class');
     }
 
@@ -140,10 +149,6 @@ CODE_SAMPLE
 
     private function shouldSkip(string $classLikeName, String_ $string): bool
     {
-        if ($classLikeName !== $string->value) {
-            return true;
-        }
-
         if (! $this->reflectionProvider->hasClass($classLikeName)) {
             return true;
         }
