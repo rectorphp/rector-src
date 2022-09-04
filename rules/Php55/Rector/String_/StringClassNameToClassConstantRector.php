@@ -107,7 +107,7 @@ CODE_SAMPLE
 
         $fullyQualified = new FullyQualified($classLikeName);
         if ($classLikeName !== $node->value) {
-            $preSlashCount = abs(strlen($classLikeName) - strlen($node->value));
+            $preSlashCount = strlen($node->value) - strlen($classLikeName);
             $preSlash = str_repeat('\\', $preSlashCount);
             $string = new String_($preSlash);
 
