@@ -11,6 +11,9 @@ final class SymfonyRoute
      */
     public function action()
     {
+        $keepSpace = 1;
+
+        $keepSpaceAgain = 1;
     }
 }
 
@@ -27,6 +30,9 @@ final class SymfonyRoute
     #[Route(path: '/path', name: EntityColumnAndAssertChoice::class)]
     public function action()
     {
+        $keepSpace = 1;
+
+        $keepSpaceAgain = 1;
     }
 }
 
