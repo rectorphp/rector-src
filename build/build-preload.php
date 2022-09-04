@@ -124,9 +124,10 @@ CODE_SAMPLE;
             return;
         }
 
+        // 1. find php-parser file infos
         $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
-        // 3. create preload.php from provided files
+        // 2. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos);
 
         file_put_contents($preloadFile, $preloadFileContent);
@@ -139,10 +140,10 @@ CODE_SAMPLE;
             return;
         }
 
-        // 1. fine php-parser file infos
+        // 1. find phpdoc-parser file infos
         $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
 
-        // 3. create preload.php from provided files
+        // 2. create preload-split-package.php from provided files
         $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos, true);
 
         file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
@@ -155,10 +156,10 @@ CODE_SAMPLE;
             return;
         }
 
-        // 1. fine php-parser file infos
+        // 1. find phpdoc-parser file infos
         $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
 
-        // 3. create preload.php from provided files
+        // 2. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos, true);
 
         file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
@@ -171,7 +172,7 @@ CODE_SAMPLE;
             return;
         }
 
-        // 1. fine php-parser file infos
+        // 1. find php-parser file infos
         $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
         // 3. create preload.php from provided files
@@ -297,7 +298,7 @@ CODE_SAMPLE;
      */
     private function findPhpDocParserFilesAndSortThem(string $vendorDir): array
     {
-        // 1. fine php-parser file infos
+        // 1. find php-parser file infos
         $fileInfos = $this->findPhpDocParserFiles($vendorDir);
 
         // 2. put first-class usages first
@@ -316,7 +317,7 @@ CODE_SAMPLE;
      */
     private function findPhpParserFilesAndSortThem(string $vendorDir): array
     {
-        // 1. fine php-parser file infos
+        // 1. find php-parser file infos
         $fileInfos = $this->findPhpParserFiles($vendorDir);
 
         // 2. put first-class usages first
