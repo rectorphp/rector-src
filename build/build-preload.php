@@ -96,6 +96,9 @@ CODE_SAMPLE;
         'Declaration.php',
         'Builder/FunctionLike.php',
         'Stmt/FunctionLike.php',
+
+        // to make Trait found
+        'NodeAttributes.php',
     ];
 
     public function buildPreloadScript(string $buildDirectory, string $preloadFile): void
@@ -127,7 +130,7 @@ CODE_SAMPLE;
         }
 
         // 1. fine php-parser file infos
-        $fileInfos = $this->findPhpDocParserFiles($vendorDir);
+        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
         // 3. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos, true);
