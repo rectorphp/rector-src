@@ -33,6 +33,7 @@ use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
+use PHPStan\BetterReflection\Identifier\Exception\InvalidIdentifierName;
 use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
@@ -195,7 +196,7 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+                $this->processNodesFromNodeScopeResolver($node->stmts, $traitScope, $nodeCallback);
                 $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
@@ -322,6 +323,24 @@ final class PHPStanNodeScopeResolver
     /**
      * @param Stmt[] $stmts
      * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function processNodesFromNodeScopeResolver(
+        array $stmts,
+        MutatingScope $mutatingScope,
+        callable $nodeCallback
+    ): void {
+        try {
+            $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        } catch (InvalidIdentifierName $invalidIdentifierName) {
+            if ($invalidIdentifierName->getMessage() !== 'Invalid identifier name "0"') {
+                throw $invalidIdentifierName;
+            }
+        }
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
      * @return Stmt[]
      */
     private function processNodesWithDependentFiles(
@@ -330,7 +349,7 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        $this->processNodesFromNodeScopeResolver($stmts, $mutatingScope, $nodeCallback);
         $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $filePath);
 
         return $stmts;
