@@ -40,7 +40,7 @@ if (! is_string($buildDirectory)) {
 
 $preloadBuilder = new PreloadBuilder();
 $preloadBuilder->buildPreloadScript($buildDirectory, $buildDirectory . '/preload.php');
-$preloadBuilder->buildPreloadScriptForSplitPackage($buildDirectory, $buildDirectory . '/preload-split-package.php');
+$preloadBuilder->buildPreloadScript($buildDirectory, $buildDirectory . '/preload-split-package.php');
 
 final class PreloadBuilder
 {
@@ -111,21 +111,6 @@ CODE_SAMPLE;
         $this->buildPreloadPhpDocParser($buildDirectory, $preloadFile);
     }
 
-    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
-    {
-        $vendorDir = $buildDirectory . '/vendor';
-        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
-            return;
-        }
-
-        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
-
-        // 3. create preload.php from provided files
-        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos);
-
-        file_put_contents($preloadFile, $preloadFileContent);
-    }
-
     private function buildPreloadPhpDocParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
@@ -133,10 +118,10 @@ CODE_SAMPLE;
             return;
         }
 
-        // 1. fine php-parser file infos
+        // 1. fine phpdoc-parser file infos
         $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
 
-        // 3. create preload.php from provided files
+        // 2. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos, true);
 
         file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
@@ -152,7 +137,7 @@ CODE_SAMPLE;
         // 1. fine php-parser file infos
         $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
-        // 3. create preload.php from provided files
+        // 2. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos);
 
         file_put_contents($preloadFile, $preloadFileContent);
