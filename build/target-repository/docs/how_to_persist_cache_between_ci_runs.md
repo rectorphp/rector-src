@@ -42,4 +42,4 @@ On GitHub Actions, you can use the [built-in cache action](https://github.com/ac
       - name: Rector Dry Run
         run: php vendor/bin/rector process --dry-run --config=rector.php
 ```
-Runs on barnches inherit the cache from their parent.
+In this key configuration, runs on branches inherit the cache from their parent, if any.
