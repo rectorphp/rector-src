@@ -67,6 +67,7 @@ CODE_SAMPLE;
      * @var string[]
      */
     private const HIGH_PRIORITY_FILES = [
+        // nikic/php-parser
         'Node.php',
         'NodeAbstract.php',
         'Expr.php',
@@ -97,8 +98,11 @@ CODE_SAMPLE;
         'Builder/FunctionLike.php',
         'Stmt/FunctionLike.php',
 
-        // to make Trait found
+        // phpstan/phpdoc-parser
         'NodeAttributes.php',
+        'ConstExprNode.php',
+        'PhpDocTagValueNode.php',
+        'TypeNode.php',
     ];
 
     public function buildPreloadScript(string $buildDirectory, string $preloadFile): void
@@ -130,7 +134,7 @@ CODE_SAMPLE;
         }
 
         // 1. fine php-parser file infos
-        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
+        $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
 
         // 3. create preload.php from provided files
         $preloadFileContent = $this->createPreloadFileContent($fileInfos, true);
@@ -264,6 +268,22 @@ CODE_SAMPLE;
         }
 
         return self::PRIORITY_LESS_FILE_POSITION;
+    }
+
+    private function findPhpDocParserFilesAndSortThem(string $vendorDir): array
+    {
+        // 1. fine php-parser file infos
+        $fileInfos = $this->findPhpDocParserFiles($vendorDir);
+
+        // 2. put first-class usages first
+        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo): int {
+            $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
+            $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
+
+            return $secondFilePosition <=> $firstFilePosition;
+        });
+
+        return $fileInfos;
     }
 
     /**
