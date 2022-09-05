@@ -67,6 +67,7 @@ CODE_SAMPLE
         if ($enumCaseName === null) {
             return null;
         }
+
         if ($this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
@@ -108,6 +109,7 @@ CODE_SAMPLE
         if ($enumCaseName === null) {
             return null;
         }
+
         if ($this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
@@ -131,6 +133,7 @@ CODE_SAMPLE
         if ($enumCaseName === null) {
             return null;
         }
+
         if ($this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
