@@ -18,6 +18,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -252,8 +253,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function pScalar_DNumber(DNumber $dNumber): string
     {
-        if (is_string($dNumber->value)) {
-            return $dNumber->value;
+        if ($this->shouldPrintNewRawValue($dNumber)) {
+            return (string) $dNumber->getAttribute(AttributeKey::RAW_VALUE);
         }
 
         return parent::pScalar_DNumber($dNumber);
@@ -467,6 +468,24 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . (($modifiers & Class_::MODIFIER_PRIVATE) !== 0 ? 'private ' : '')
             . (($modifiers & Class_::MODIFIER_STATIC) !== 0 ? 'static ' : '')
             . (($modifiers & Class_::MODIFIER_READONLY) !== 0 ? 'readonly ' : '');
+    }
+
+    /**
+     * Invoke re-print even if only raw value was changed.
+     * That allows PHPStan to use int strict types, while changing the value with literal "_"
+     */
+    protected function pScalar_LNumber(LNumber $lNumber): string|int
+    {
+        if ($this->shouldPrintNewRawValue($lNumber)) {
+            return (string) $lNumber->getAttribute(AttributeKey::RAW_VALUE);
+        }
+
+        return parent::pScalar_LNumber($lNumber);
+    }
+
+    private function shouldPrintNewRawValue(LNumber|DNumber $lNumber): bool
+    {
+        return $lNumber->getAttribute(AttributeKey::REPRINT_RAW_VALUE) === true;
     }
 
     private function resolveContentOnExpr(Expr $expr, string $content): string

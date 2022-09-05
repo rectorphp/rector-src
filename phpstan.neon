@@ -551,8 +551,9 @@ parameters:
             message: '#Instead of "DateTime" class/interface use "Nette\\Utils\\DateTime"#'
             path: src/Application/VersionResolver.php
 
+        # complex multiprinter
         -
-            message: '#Class cognitive complexity is 55, keep it under 50#'
+            message: '#Class cognitive complexity is \d+, keep it under 50#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php #41
 
         # validate class-string input
