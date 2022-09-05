@@ -22,7 +22,7 @@ final class IssueDowngradeParamTypeToPhp71Test extends AbstractRectorTestCase
      */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureDownToPhp71');
     }
 
     public function provideConfigFilePath(): string
