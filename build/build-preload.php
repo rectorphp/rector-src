@@ -5,6 +5,8 @@
 declare(strict_types=1);
 
 use Nette\Utils\Strings;
+use Rector\Core\Console\Style\SymfonyStyleFactory;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Finder\Finder;
 
@@ -27,7 +29,7 @@ foreach ($possiblePaths as $possiblePath) {
 
 $buildDirectory = $argv[1];
 
-$symfonyStyleFactory = new \Rector\Core\Console\Style\SymfonyStyleFactory(new \Rector\Core\Util\Reflection\PrivatesAccessor());
+$symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
 $symfonyStyle = $symfonyStyleFactory->create();
 
 if (! is_string($buildDirectory)) {
@@ -45,13 +47,13 @@ final class PreloadBuilder
     /**
      * @var string
      */
-    private const PRELOAD_FILE_TEMPLATE = <<<'PHP'
+    private const PRELOAD_FILE_TEMPLATE = <<<'CODE_SAMPLE'
 <?php
 
 declare(strict_types=1);
 
 
-PHP;
+CODE_SAMPLE;
 
     /**
      * @var int
@@ -64,7 +66,8 @@ PHP;
      *
      * @var string[]
      */
-    private  const HIGH_PRIORITY_FILES = [
+    private const HIGH_PRIORITY_FILES = [
+        // nikic/php-parser
         'Node.php',
         'NodeAbstract.php',
         'Expr.php',
@@ -94,16 +97,82 @@ PHP;
         'Declaration.php',
         'Builder/FunctionLike.php',
         'Stmt/FunctionLike.php',
+
+        // phpstan/phpdoc-parser
+        'NodeAttributes.php',
+        'ConstExprNode.php',
+        'PhpDocTagValueNode.php',
+        'TypeNode.php',
     ];
 
     public function buildPreloadScript(string $buildDirectory, string $preloadFile): void
+    {
+        $this->buildPreloadScriptPhpParser($buildDirectory, $preloadFile);
+        $this->buildPreloadScriptPhpDocParser($buildDirectory, $preloadFile);
+    }
+
+    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
+    {
+        $this->buildPreloadScriptForSplitPhpParser($buildDirectory, $preloadFile);
+        $this->buildPreloadScriptForSplitPhpDocParser($buildDirectory, $preloadFile);
+    }
+
+    private function buildPreloadScriptForSplitPhpParser(string $buildDirectory, string $preloadFile): void
     {
         $vendorDir = $buildDirectory . '/vendor';
         if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
             return;
         }
 
-        // 1. fine php-parser file infos
+        // 1. find php-parser file infos
+        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
+
+        // 2. create preload.php from provided files
+        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos);
+
+        file_put_contents($preloadFile, $preloadFileContent);
+    }
+
+    private function buildPreloadScriptForSplitPhpDocParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
+            return;
+        }
+
+        // 1. find phpdoc-parser file infos
+        $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
+
+        // 2. create preload-split-package.php from provided files
+        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos, true);
+
+        file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
+    }
+
+    private function buildPreloadScriptPhpDocParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/phpstan/phpdoc-parser')) {
+            return;
+        }
+
+        // 1. find phpdoc-parser file infos
+        $fileInfos = $this->findPhpDocParserFilesAndSortThem($vendorDir);
+
+        // 2. create preload.php from provided files
+        $preloadFileContent = $this->createPreloadFileContent($fileInfos, true);
+
+        file_put_contents($preloadFile, $preloadFileContent, FILE_APPEND);
+    }
+
+    private function buildPreloadScriptPhpParser(string $buildDirectory, string $preloadFile): void
+    {
+        $vendorDir = $buildDirectory . '/vendor';
+        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
+            return;
+        }
+
+        // 1. find php-parser file infos
         $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
 
         // 3. create preload.php from provided files
@@ -111,22 +180,6 @@ PHP;
 
         file_put_contents($preloadFile, $preloadFileContent);
     }
-
-    public function buildPreloadScriptForSplitPackage(string $buildDirectory, string $preloadFile): void
-    {
-        $vendorDir = $buildDirectory . '/vendor';
-        if (! is_dir($vendorDir . '/nikic/php-parser/lib/PhpParser')) {
-            return;
-        }
-
-        $fileInfos = $this->findPhpParserFilesAndSortThem($vendorDir);
-
-        // 3. create preload.php from provided files
-        $preloadFileContent = $this->createPreloadFileContentForSplitPackage($fileInfos);
-
-        file_put_contents($preloadFile, $preloadFileContent);
-    }
-
 
     /**
      * @return SplFileInfo[]
@@ -146,11 +199,25 @@ PHP;
     }
 
     /**
+     * @return SplFileInfo[]
+     */
+    private function findPhpDocParserFiles(string $vendorDir): array
+    {
+        $finder = (new Finder())
+            ->files()
+            ->name('*.php')
+            ->in($vendorDir . '/phpstan/phpdoc-parser')
+            ->sortByName();
+
+        return iterator_to_array($finder->getIterator());
+    }
+
+    /**
      * @param SplFileInfo[] $fileInfos
      */
-    private function createPreloadFileContent(array $fileInfos): string
+    private function createPreloadFileContent(array $fileInfos, bool $append = false): string
     {
-        $preloadFileContent = self::PRELOAD_FILE_TEMPLATE;
+        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE;
 
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
@@ -167,9 +234,9 @@ PHP;
     /**
      * @param SplFileInfo[] $fileInfos
      */
-    private function createPreloadFileContentForSplitPackage(array $fileInfos): string
+    private function createPreloadFileContentForSplitPackage(array $fileInfos, bool $append = false): string
     {
-        $preloadFileContent = self::PRELOAD_FILE_TEMPLATE;
+        $preloadFileContent = $append ? '' : self::PRELOAD_FILE_TEMPLATE;
 
         foreach ($fileInfos as $fileInfo) {
             $realPath = $fileInfo->getRealPath();
@@ -229,21 +296,46 @@ PHP;
     /**
      * @return SplFileInfo[]
      */
+    private function findPhpDocParserFilesAndSortThem(string $vendorDir): array
+    {
+        // 1. find php-parser file infos
+        $fileInfos = $this->findPhpDocParserFiles($vendorDir);
+
+        // 2. put first-class usages first
+        $fileInfos = $this->sortFileInfos($fileInfos);
+
+        return $fileInfos;
+    }
+
+    /**
+     * @return SplFileInfo[]
+     */
     private function findPhpParserFilesAndSortThem(string $vendorDir): array
     {
-        // 1. fine php-parser file infos
+        // 1. find php-parser file infos
         $fileInfos = $this->findPhpParserFiles($vendorDir);
 
         // 2. put first-class usages first
-        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo) {
+        $fileInfos = $this->sortFileInfos($fileInfos);
+
+        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
+        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
+
+        return $fileInfos;
+    }
+
+    /**
+     * @param SplFileInfo[] $fileInfos
+     * @return SplFileInfo[]
+     */
+    private function sortFileInfos(array $fileInfos): array
+    {
+        usort($fileInfos, function (SplFileInfo $firstFileInfo, SplFileInfo $secondFileInfo): int {
             $firstFilePosition = $this->matchFilePriorityPosition($firstFileInfo);
             $secondFilePosition = $this->matchFilePriorityPosition($secondFileInfo);
 
             return $secondFilePosition <=> $firstFilePosition;
         });
-
-        $stmtsAwareInterface = new SplFileInfo(__DIR__ . '/../src/Contract/PhpParser/Node/StmtsAwareInterface.php');
-        array_splice($fileInfos, 1, 0, [$stmtsAwareInterface]);
 
         return $fileInfos;
     }
