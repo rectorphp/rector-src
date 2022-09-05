@@ -24,7 +24,7 @@ final class StaticMethodCall
 {
     public function run($value)
     {
-        $compare = SomeEnum::USED_TO_BE_CONST;
+        $compare = \Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum::USED_TO_BE_CONST;
     }
 }
 

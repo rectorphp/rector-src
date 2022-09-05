@@ -24,7 +24,7 @@ final class UsageOfGetValue
 {
     public function run($value)
     {
-        $enum = SomeEnum::USED_TO_BE_CONST->value;
+        $enum = \Rector\Tests\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector\Source\SomeEnum::USED_TO_BE_CONST->value;
     }
 }
 
