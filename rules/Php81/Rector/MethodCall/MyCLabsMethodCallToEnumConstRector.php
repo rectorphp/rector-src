@@ -25,6 +25,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MyCLabsMethodCallToEnumConstRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string[]
+     */
+    private const ENUM_METHODS = ['from', 'values', 'keys', 'isValid', 'search', 'toArray', 'assertValidValue'];
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Refactor MyCLabs enum fetch to Enum const', [
@@ -60,6 +65,10 @@ CODE_SAMPLE
 
         $enumCaseName = $this->getName($node->name);
         if ($enumCaseName === null) {
+            return null;
+        }
+
+        if ($this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
 
@@ -101,6 +110,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldOmitEnumCase($enumCaseName)) {
+            return null;
+        }
+
         return $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
     }
 
@@ -118,6 +131,10 @@ CODE_SAMPLE
 
         $enumCaseName = $this->getName($staticCall->name);
         if ($enumCaseName === null) {
+            return null;
+        }
+
+        if ($this->shouldOmitEnumCase($enumCaseName)) {
             return null;
         }
 
@@ -141,5 +158,10 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function shouldOmitEnumCase(string $enumCaseName): bool
+    {
+        return in_array($enumCaseName, self::ENUM_METHODS, true);
     }
 }
