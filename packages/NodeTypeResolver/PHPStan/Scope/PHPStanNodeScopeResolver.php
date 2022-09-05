@@ -113,6 +113,10 @@ final class PHPStanNodeScopeResolver
             $isScopeRefreshing,
             $filePath
         ): void {
+            if ($node instanceof Node\Scalar\LNumber) {
+                dump_with_depth($node);
+            }
+
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
