@@ -210,7 +210,7 @@ final class PhpDocInfoPrinter
             if ($phpDocChildNode->value instanceof DoctrineAnnotationTagValueNode && $shouldReprintChildNode) {
                 $silentValueArrayItemNode = $phpDocChildNode->value->getSilentValue();
 
-                if (! $silentValueArrayItemNode instanceof ArrayItemNode) {
+                if ($silentValueArrayItemNode !== null && ! $silentValueArrayItemNode instanceof ArrayItemNode) {
                     $printedNode = (string) $phpDocChildNode;
 
                     // remove extra space between tags
