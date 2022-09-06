@@ -15,8 +15,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
-use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
-use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -58,12 +56,6 @@ final class PhpDocInfoPrinter
      * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines
      */
     private const NEWLINE_WITH_ASTERISK = "\n" . ' *';
-
-    /**
-     * @see https://regex101.com/r/WR3goY/1/
-     * @var string
-     */
-    private const TAG_AND_SPACE_REGEX = '#(@.*?) \(#';
 
     private int $tokenCount = 0;
 
@@ -195,29 +187,23 @@ final class PhpDocInfoPrinter
 
         $shouldReprintChildNode = $this->shouldReprint($phpDocChildNode);
 
-        if ($phpDocChildNode instanceof PhpDocTagNode) {
-            if ($shouldReprintChildNode && ($phpDocChildNode->value instanceof ParamTagValueNode || $phpDocChildNode->value instanceof ThrowsTagValueNode || $phpDocChildNode->value instanceof VarTagValueNode || $phpDocChildNode->value instanceof ReturnTagValueNode || $phpDocChildNode->value instanceof PropertyTagValueNode)) {
-                // the type has changed → reprint
-                $phpDocChildNodeStartEnd = $phpDocChildNode->getAttribute(PhpDocAttributeKey::START_AND_END);
-                // bump the last position of token after just printed node
-                if ($phpDocChildNodeStartEnd instanceof StartAndEnd) {
-                    $this->currentTokenPosition = $phpDocChildNodeStartEnd->getEnd();
-                }
+        if ($phpDocChildNode instanceof PhpDocTagNode &&
+            ($shouldReprintChildNode && (
+                $phpDocChildNode->value instanceof ParamTagValueNode ||
+                $phpDocChildNode->value instanceof ThrowsTagValueNode ||
+                $phpDocChildNode->value instanceof VarTagValueNode ||
+                $phpDocChildNode->value instanceof ReturnTagValueNode ||
+                $phpDocChildNode->value instanceof PropertyTagValueNode
+            ))) {
+            // the type has changed → reprint
+            $phpDocChildNodeStartEnd = $phpDocChildNode->getAttribute(PhpDocAttributeKey::START_AND_END);
 
-                return $this->standardPrintPhpDocChildNode($phpDocChildNode);
+            // bump the last position of token after just printed node
+            if ($phpDocChildNodeStartEnd instanceof StartAndEnd) {
+                $this->currentTokenPosition = $phpDocChildNodeStartEnd->getEnd();
             }
 
-            if ($phpDocChildNode->value instanceof DoctrineAnnotationTagValueNode && $shouldReprintChildNode) {
-                $silentValueArrayItemNode = $phpDocChildNode->value->getSilentValue();
-
-                if (! $silentValueArrayItemNode instanceof ArrayItemNode) {
-                    $printedNode = (string) $phpDocChildNode;
-
-                    // remove extra space between tags
-                    $printedNode = Strings::replace($printedNode, self::TAG_AND_SPACE_REGEX, '$1(');
-                    return self::NEWLINE_WITH_ASTERISK . ($printedNode === '' ? '' : ' ' . $printedNode);
-                }
-            }
+            return $this->standardPrintPhpDocChildNode($phpDocChildNode);
         }
 
         /** @var StartAndEnd|null $startAndEnd */
