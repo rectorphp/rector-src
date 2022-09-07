@@ -11,7 +11,9 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\NodeTraverser;
 use PHPStan\Type\ArrayType;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -30,7 +32,8 @@ final class RemoveUnusedNonEmptyArrayBeforeForeachRector extends AbstractRector
         private readonly CountManipulator $countManipulator,
         private readonly IfManipulator $ifManipulator,
         private readonly UselessIfCondBeforeForeachDetector $uselessIfCondBeforeForeachDetector,
-        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer
+        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -94,7 +97,23 @@ CODE_SAMPLE
         $stmt = $node->stmts[0];
 
         if ($node->cond instanceof Assign) {
-            return [new Expression($node->cond), $stmt];
+            if ($this->nodeComparator->areNodesEqual($node->cond->var, $stmt->expr)) {
+                return [new Expression($node->cond), $stmt];
+            }
+
+            $expr = $node->cond->var;
+            $isUsed = false;
+
+            $this->traverseNodesWithCallable($stmt, function (Node $node) use ($expr, &$isUsed) {
+                if ($this->nodeComparator->areNodesEqual($expr, $node)) {
+                    $isUsed = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+            });
+
+            if ($isUsed) {
+                return null;
+            }
         }
 
         $ifComments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
