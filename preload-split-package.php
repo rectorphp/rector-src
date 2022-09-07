@@ -81,7 +81,6 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Clo
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Const_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/DeclareItem.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ArrayDimFetch.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ArrayItem.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/Array_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ArrowFunction.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/Assign.php';
@@ -139,7 +138,6 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Exp
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ClassConstFetch.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/Clone_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/Closure.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ClosureUse.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/ConstFetch.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/Empty_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Expr/Error.php';
@@ -183,11 +181,9 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Par
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/PropertyItem.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/DNumber.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/Encapsed.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/EncapsedStringPart.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/Float_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/Int_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/InterpolatedString.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/LNumber.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/MagicConst/Class_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/MagicConst/Dir.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Scalar/MagicConst/File.php';
@@ -206,7 +202,6 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stm
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Class_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Const_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Continue_.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/DeclareDeclare.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Declare_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Do_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Echo_.php';
@@ -230,9 +225,7 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stm
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Namespace_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Nop.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Property.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/PropertyProperty.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Return_.php';
-require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/StaticVar.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Static_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Switch_.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Node/Stmt/Throw_.php';
