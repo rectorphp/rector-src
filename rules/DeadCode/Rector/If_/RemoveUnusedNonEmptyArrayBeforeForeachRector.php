@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\ArrayType;
-use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -32,8 +31,7 @@ final class RemoveUnusedNonEmptyArrayBeforeForeachRector extends AbstractRector
         private readonly CountManipulator $countManipulator,
         private readonly IfManipulator $ifManipulator,
         private readonly UselessIfCondBeforeForeachDetector $uselessIfCondBeforeForeachDetector,
-        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer
     ) {
     }
 
