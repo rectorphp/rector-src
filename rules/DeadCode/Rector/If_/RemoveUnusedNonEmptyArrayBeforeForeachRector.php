@@ -95,23 +95,7 @@ CODE_SAMPLE
         $stmt = $node->stmts[0];
 
         if ($node->cond instanceof Assign) {
-            if ($this->nodeComparator->areNodesEqual($node->cond->var, $stmt->expr)) {
-                return [new Expression($node->cond), $stmt];
-            }
-
-            $expr = $node->cond->var;
-            $isUsed = false;
-
-            $this->traverseNodesWithCallable($stmt, function (Node $node) use ($expr, &$isUsed) {
-                if ($this->nodeComparator->areNodesEqual($expr, $node)) {
-                    $isUsed = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
-            });
-
-            if ($isUsed) {
-                return null;
-            }
+            return null;
         }
 
         $ifComments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
