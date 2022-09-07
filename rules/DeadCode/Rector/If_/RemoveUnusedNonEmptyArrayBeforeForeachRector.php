@@ -93,7 +93,7 @@ CODE_SAMPLE
         /** @var Foreach_ $stmt */
         $stmt = $node->stmts[0];
 
-        if ($node->cond instanceof Assign && $this->nodeComparator->areNodesEqual($node->cond->var, $stmt->expr)) {
+        if ($node->cond instanceof Assign) {
             return [new Expression($node->cond), $stmt];
         }
 
