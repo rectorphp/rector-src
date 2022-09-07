@@ -7,7 +7,7 @@ namespace Rector\Core\Tests\Issues\PartialValueDocblockRemoval;
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class AutoImportTest extends AbstractRectorTestCase
+final class PartialValueDocblockRemovalAutoImportTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
