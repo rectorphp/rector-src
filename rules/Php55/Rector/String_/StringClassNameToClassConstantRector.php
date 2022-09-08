@@ -108,23 +108,26 @@ CODE_SAMPLE
             return null;
         }
 
-        $name = new FullyQualified($classLikeName);
+        $fullyQualified = new FullyQualified($classLikeName);
+
+        $name = clone $fullyQualified;
         $name->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
 
         $aliasName = $this->aliasNameResolver->resolveByName($name);
-        $name = is_string($aliasName)
+
+        $fullyQualifiedOrName = is_string($aliasName)
             ? new Name($aliasName)
-            : $name;
+            : $fullyQualified;
 
         if ($classLikeName !== $node->value) {
             $preSlashCount = strlen($node->value) - strlen($classLikeName);
             $preSlash = str_repeat('\\', $preSlashCount);
             $string = new String_($preSlash);
 
-            return new Concat($string, new ClassConstFetch($name, 'class'));
+            return new Concat($string, new ClassConstFetch($fullyQualifiedOrName, 'class'));
         }
 
-        return new ClassConstFetch($name, 'class');
+        return new ClassConstFetch($fullyQualifiedOrName, 'class');
     }
 
     /**
