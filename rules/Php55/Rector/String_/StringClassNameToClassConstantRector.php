@@ -115,7 +115,7 @@ CODE_SAMPLE
 
         $aliasName = $this->aliasNameResolver->resolveByName($name);
 
-        $fullyQualifiedOrName = is_string($aliasName)
+        $fullyQualifiedOrAliasName = is_string($aliasName)
             ? new Name($aliasName)
             : $fullyQualified;
 
@@ -124,10 +124,10 @@ CODE_SAMPLE
             $preSlash = str_repeat('\\', $preSlashCount);
             $string = new String_($preSlash);
 
-            return new Concat($string, new ClassConstFetch($fullyQualifiedOrName, 'class'));
+            return new Concat($string, new ClassConstFetch($fullyQualifiedOrAliasName, 'class'));
         }
 
-        return new ClassConstFetch($fullyQualifiedOrName, 'class');
+        return new ClassConstFetch($fullyQualifiedOrAliasName, 'class');
     }
 
     /**
