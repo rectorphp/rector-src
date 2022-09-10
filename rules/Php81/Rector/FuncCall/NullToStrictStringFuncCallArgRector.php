@@ -503,6 +503,7 @@ CODE_SAMPLE
         if (! $this->nodeNameResolver->isNames($funcCall, $functionNames)) {
             return true;
         }
+
         return $funcCall->isFirstClassCallable();
     }
 }
