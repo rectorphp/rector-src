@@ -10,21 +10,24 @@ final class Fnmatcher
     {
         $normalizedMatchingPath = $this->normalizePath($matchingPath);
         $normalizedFilePath = $this->normalizePath($filePath);
+
         if (\fnmatch($normalizedMatchingPath, $normalizedFilePath)) {
             return \true;
+        }
+
+        if (\fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath)) {
+            return true;
         }
 
         $realPathMatchingPath = realpath($normalizedMatchingPath);
         $realpathNormalizedFilePath = realpath($normalizedFilePath);
 
         if (! is_string($realPathMatchingPath)) {
-            // in case of relative compare
-            return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
+            return false;
         }
 
         if (! is_string($realpathNormalizedFilePath)) {
-            // in case of relative compare
-            return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
+            return false;
         }
 
         $realPathMatchingPath = $this->normalizePath($realPathMatchingPath);
