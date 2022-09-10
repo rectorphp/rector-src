@@ -10,7 +10,6 @@ final class Fnmatcher
     {
         $normalizedMatchingPath = $this->normalizePath($matchingPath);
         $normalizedFilePath = $this->normalizePath($filePath);
-
         if (\fnmatch($normalizedMatchingPath, $normalizedFilePath)) {
             return \true;
         }
