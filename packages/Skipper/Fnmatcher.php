@@ -16,35 +16,7 @@ final class Fnmatcher
         }
 
         // in case of relative compare
-        if (\fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath)) {
-            return true;
-        }
-
-        $realPathMatchingPath = realpath($normalizedMatchingPath);
-        $realpathNormalizedFilePath = realpath($normalizedFilePath);
-
-        if (! is_string($realPathMatchingPath)) {
-            return false;
-        }
-
-        if (! is_string($realpathNormalizedFilePath)) {
-            return false;
-        }
-
-        $realPathMatchingPath = $this->normalizePath($realPathMatchingPath);
-        $realpathNormalizedFilePath = $this->normalizePath($realpathNormalizedFilePath);
-
-        // skip define direct path
-        if (is_file($realPathMatchingPath)) {
-            return $realPathMatchingPath === $realpathNormalizedFilePath;
-        }
-
-        // ensure add / suffix to ensure no same prefix directory
-        if (is_dir($realPathMatchingPath)) {
-            $realPathMatchingPath = rtrim($realPathMatchingPath, '/') . '/';
-        }
-
-        return str_starts_with($realpathNormalizedFilePath, $realPathMatchingPath);
+        return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
     }
 
     private function normalizePath(string $path): string
