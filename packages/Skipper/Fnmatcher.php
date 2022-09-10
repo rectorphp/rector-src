@@ -14,6 +14,13 @@ final class Fnmatcher
             return \true;
         }
 
+        $realPathMatchingPath = realpath($normalizedMatchingPath);
+        $realpathNormalizedPath = realpath($normalizedFilePath);
+
+        if (is_string($realPathMatchingPath) && is_string($realpathNormalizedPath)) {
+            return str_starts_with($realpathNormalizedPath, $realPathMatchingPath);
+        }
+
         // in case of relative compare
         return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
     }
