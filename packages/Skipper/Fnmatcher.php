@@ -20,10 +20,12 @@ final class Fnmatcher
             // in case of relative compare
             return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
         }
+
         if (! is_string($realpathNormalizedPath)) {
             // in case of relative compare
             return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
         }
+
         return str_starts_with($realpathNormalizedPath, $realPathMatchingPath);
     }
 
