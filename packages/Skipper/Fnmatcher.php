@@ -15,18 +15,29 @@ final class Fnmatcher
         }
 
         $realPathMatchingPath = realpath($normalizedMatchingPath);
-        $realpathNormalizedPath = realpath($normalizedFilePath);
+        $realpathNormalizedFilePath = realpath($normalizedFilePath);
+
         if (! is_string($realPathMatchingPath)) {
             // in case of relative compare
             return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
         }
 
-        if (! is_string($realpathNormalizedPath)) {
+        if (! is_string($realpathNormalizedFilePath)) {
             // in case of relative compare
             return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
         }
 
-        return str_starts_with($realpathNormalizedPath, $realPathMatchingPath);
+        // skip define direct path
+        if (is_file($realPathMatchingPath)) {
+            return $realPathMatchingPath === $realpathNormalizedFilePath;
+        }
+
+        // ensure add / suffix to ensure no same prefix directory
+        if (is_dir($realPathMatchingPath)) {
+            $realPathMatchingPath = rtrim($realPathMatchingPath, '/') . '/';
+        }
+
+        return str_starts_with($realpathNormalizedFilePath, $realPathMatchingPath);
     }
 
     private function normalizePath(string $path): string
