@@ -1,4 +1,4 @@
-name: End to End Skipper test
+name: End to End tests
 
 on:
     pull_request:
