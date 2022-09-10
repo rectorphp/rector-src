@@ -49,5 +49,5 @@ jobs:
                 working-directory: ${{ matrix.directory }}
 
             # run e2e test no path, look by rector.php
-            -   run: php ../e2eTestRunnerPath.php src
+            -   run: php ../e2eTestRunnerPath.php
                 working-directory: ${{ matrix.directory }}
