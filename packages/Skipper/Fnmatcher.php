@@ -15,6 +15,7 @@ final class Fnmatcher
             return \true;
         }
 
+        // in case of relative compare
         if (\fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath)) {
             return true;
         }
