@@ -51,3 +51,7 @@ jobs:
             # run e2e test no path, look by rector.php
             -   run: php ../e2eTestRunnerPath.php
                 working-directory: ${{ matrix.directory }}
+
+            # run e2e test with config use path lists
+            -   run: php ../e2eTestRunnerPath.php -c rector_skip_path_list.php src/Test.php
+                working-directory: ${{ matrix.directory }}
