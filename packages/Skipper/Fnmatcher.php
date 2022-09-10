@@ -27,6 +27,9 @@ final class Fnmatcher
             return \fnmatch('*/' . $normalizedMatchingPath, $normalizedFilePath);
         }
 
+        $realPathMatchingPath = $this->normalizePath($realPathMatchingPath);
+        $realpathNormalizedFilePath = $this->normalizePath($realpathNormalizedFilePath);
+
         // skip define direct path
         if (is_file($realPathMatchingPath)) {
             return $realPathMatchingPath === $realpathNormalizedFilePath;
