@@ -7,6 +7,7 @@ namespace Rector\Tests\Skipper\Skipper\Skipper;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use Rector\Core\Kernel\RectorKernel;
+use Rector\Core\ValueObject\Application\File;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\FifthElement;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\SixthSense;
@@ -40,6 +41,7 @@ final class SkipperTest extends TestCase
     {
         yield [__DIR__ . '/Fixture/SomeRandom/file.txt', false];
         yield [__DIR__ . '/Fixture/SomeSkipped/any.txt', true];
+        yield ['packages-tests/Skipper/Skipper/Skipper/Fixture/SomeSkippedPath/any.txt', true];
     }
 
     /**
