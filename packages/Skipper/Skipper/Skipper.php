@@ -42,7 +42,11 @@ final class Skipper
                 continue;
             }
 
-            return $skipVoter->shouldSkip($element, $filePath);
+            if (! $skipVoter->shouldSkip($element, $filePath)) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
