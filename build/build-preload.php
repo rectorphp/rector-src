@@ -337,6 +337,7 @@ CODE_SAMPLE;
             foreach (self::IN_USE_CLASS_FILES as $inUseClassFile) {
                 if (str_ends_with($fileInfo->getPathname(), $inUseClassFile)) {
                     unset($fileInfos[$key]);
+                    continue 2;
                 }
             }
         }
