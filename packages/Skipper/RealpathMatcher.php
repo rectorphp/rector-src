@@ -8,34 +8,31 @@ final class RealpathMatcher
 {
     public function match(string $matchingPath, string $filePath): bool
     {
-        $normalizedMatchingPath = $this->normalizePath($matchingPath);
-        $normalizedFilePath = $this->normalizePath($filePath);
-
-        $realPathMatchingPath = realpath($normalizedMatchingPath);
-        $realpathNormalizedFilePath = realpath($normalizedFilePath);
+        $realPathMatchingPath = realpath($matchingPath);
+        $realpathFilePath = realpath($filePath);
 
         if (! is_string($realPathMatchingPath)) {
             return false;
         }
 
-        if (! is_string($realpathNormalizedFilePath)) {
+        if (! is_string($realpathFilePath)) {
             return false;
         }
 
-        $realPathMatchingPath = $this->normalizePath($realPathMatchingPath);
-        $realpathNormalizedFilePath = $this->normalizePath($realpathNormalizedFilePath);
+        $normalizedMatchingPath = $this->normalizePath($realPathMatchingPath);
+        $normalizedFilePath = $this->normalizePath($realpathFilePath);
 
         // skip define direct path
-        if (is_file($realPathMatchingPath)) {
-            return $realPathMatchingPath === $realpathNormalizedFilePath;
+        if (is_file($normalizedMatchingPath)) {
+            return $normalizedMatchingPath === $normalizedFilePath;
         }
 
         // ensure add / suffix to ensure no same prefix directory
-        if (is_dir($realPathMatchingPath)) {
-            $realPathMatchingPath = rtrim($realPathMatchingPath, '/') . '/';
+        if (is_dir($normalizedMatchingPath)) {
+            $normalizedMatchingPath = rtrim($normalizedMatchingPath, '/') . '/';
         }
 
-        return str_starts_with($realpathNormalizedFilePath, $realPathMatchingPath);
+        return str_starts_with($normalizedFilePath, $normalizedMatchingPath);
     }
 
     private function normalizePath(string $path): string
