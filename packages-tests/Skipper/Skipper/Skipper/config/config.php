@@ -11,6 +11,9 @@ return static function (RectorConfig $rectorConfig): void {
         // windows like path
         '*\SomeSkipped\*',
 
+        __DIR__ . '/../Fixture/SomeSkippedPath',
+        __DIR__ . '/../Fixture/SomeSkippedPathToFile/any.txt',
+
         // elements
         FifthElement::class,
         SixthSense::class,
