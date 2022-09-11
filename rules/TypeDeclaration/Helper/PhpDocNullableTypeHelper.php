@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Helper;
 
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Param;
+use PHPStan\Type\ClosureType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
@@ -133,12 +134,17 @@ final class PhpDocNullableTypeHelper
     ): ?Type {
         /** @var array<(NullType | UnionType)> $updatedDocTypes */
         $updatedDocTypes = [];
-        $phpDocTypeContainsNullType = false;
+        $isPhpDocTypeContainingNullType = false;
+        $isPhpDocTypeContainingClosureType = $phpDocType instanceof ClosureType;
         if ($phpDocType instanceof UnionType) {
-            $phpDocTypeContainsNullType = TypeCombinator::containsNull($phpDocType);
+            $isPhpDocTypeContainingNullType = TypeCombinator::containsNull($phpDocType);
             foreach ($phpDocType->getTypes() as $subType) {
                 if ($subType instanceof NullType) {
                     continue;
+                }
+
+                if ($subType instanceof ClosureType) {
+                    $isPhpDocTypeContainingClosureType = true;
                 }
 
                 $updatedDocTypes[] = $subType;
@@ -148,14 +154,18 @@ final class PhpDocNullableTypeHelper
         }
 
         if (! $this->isItRequiredToRemoveOrAddNullTypeToUnion(
-            $phpDocTypeContainsNullType,
+            $isPhpDocTypeContainingNullType,
             $isPhpParserTypeContainingNullType
         )) {
             return null;
         }
 
         if ($isPhpParserTypeContainingNullType) {
-            $updatedDocTypes[] = new NullType();
+            if ($isPhpDocTypeContainingClosureType) {
+                array_unshift($updatedDocTypes, new NullType());
+            } else {
+                $updatedDocTypes[] = new NullType();
+            }
         }
 
         return $this->composeUpdatedPhpDocType($updatedDocTypes);
