@@ -12,6 +12,7 @@ return static function (RectorConfig $rectorConfig): void {
         '*\SomeSkipped\*',
 
         __DIR__ . '/../Fixture/SomeSkippedPath',
+        __DIR__ . '/../Fixture/SomeSkippedPathToFile/any.txt',
 
         // elements
         FifthElement::class,
