@@ -43,7 +43,15 @@ final class ClosureTypeMapper implements TypeMapperInterface
             $typeKind
         );
 
-        return new SpacingAwareCallableTypeNode($identifierTypeNode, [], $returnDocTypeNode);
+        $parameterDocTypeNodes = [];
+        foreach ($type->getParameters() as $parameterReflection) {
+            $parameterDocTypeNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
+                $parameterReflection->getType(),
+                $typeKind
+            );
+        }
+
+        return new SpacingAwareCallableTypeNode($identifierTypeNode, $parameterDocTypeNodes, $returnDocTypeNode);
     }
 
     /**
