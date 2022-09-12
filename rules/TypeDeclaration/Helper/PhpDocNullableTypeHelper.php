@@ -85,6 +85,77 @@ final class PhpDocNullableTypeHelper
         return $cleanNullableMixed;
     }
 
+    /**
+     * @param array<Type> $updatedDocTypes
+     *
+     * @return array<Type>
+     */
+    private function appendOrPrependNullTypeIfAppropriate(
+        bool $isPhpParserTypeContainingNullType,
+        bool $isPhpDocTypeContainingClosureType,
+        array $updatedDocTypes
+    ): array {
+        if (! $isPhpParserTypeContainingNullType) {
+            return $updatedDocTypes;
+        }
+
+        if ($isPhpDocTypeContainingClosureType) {
+            array_unshift($updatedDocTypes, new NullType());
+        } else {
+            $updatedDocTypes[] = new NullType();
+        }
+
+        return $updatedDocTypes;
+    }
+
+    private function hasClosureType(Type $phpDocType): bool
+    {
+        if ($phpDocType instanceof ClosureType) {
+            return true;
+        }
+
+        if ($phpDocType instanceof UnionType) {
+            foreach ($phpDocType->getTypes() as $subType) {
+                if ($subType instanceof ClosureType) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasNullType(Type $phpDocType): bool
+    {
+        $isPhpDocTypeContainingNullType = false;
+        if ($phpDocType instanceof UnionType) {
+            return TypeCombinator::containsNull($phpDocType);
+        }
+
+        return $isPhpDocTypeContainingNullType;
+    }
+
+    /**
+     * @return Type[]
+     */
+    private function resolveUpdatedDocTypes(Type $phpDocType): array
+    {
+        $updatedDocTypes = [];
+        if ($phpDocType instanceof UnionType) {
+            foreach ($phpDocType->getTypes() as $subType) {
+                if ($subType instanceof NullType) {
+                    continue;
+                }
+
+                $updatedDocTypes[] = $subType;
+            }
+        } else {
+            $updatedDocTypes[] = $phpDocType;
+        }
+
+        return $updatedDocTypes;
+    }
+
     private function cleanNullableMixed(UnionType $unionType): Type
     {
         if (! TypeCombinator::containsNull($unionType)) {
@@ -132,26 +203,9 @@ final class PhpDocNullableTypeHelper
         Type $phpDocType,
         bool $isPhpParserTypeContainingNullType
     ): ?Type {
-        /** @var array<(NullType | UnionType)> $updatedDocTypes */
-        $updatedDocTypes = [];
-        $isPhpDocTypeContainingNullType = false;
-        $isPhpDocTypeContainingClosureType = $phpDocType instanceof ClosureType;
-        if ($phpDocType instanceof UnionType) {
-            $isPhpDocTypeContainingNullType = TypeCombinator::containsNull($phpDocType);
-            foreach ($phpDocType->getTypes() as $subType) {
-                if ($subType instanceof NullType) {
-                    continue;
-                }
-
-                if ($subType instanceof ClosureType) {
-                    $isPhpDocTypeContainingClosureType = true;
-                }
-
-                $updatedDocTypes[] = $subType;
-            }
-        } else {
-            $updatedDocTypes[] = $phpDocType;
-        }
+        $isPhpDocTypeContainingNullType = $this->hasNullType($phpDocType);
+        $isPhpDocTypeContainingClosureType = $this->hasClosureType($phpDocType);
+        $updatedDocTypes = $this->resolveUpdatedDocTypes($phpDocType);
 
         if (! $this->isItRequiredToRemoveOrAddNullTypeToUnion(
             $isPhpDocTypeContainingNullType,
@@ -160,13 +214,11 @@ final class PhpDocNullableTypeHelper
             return null;
         }
 
-        if ($isPhpParserTypeContainingNullType) {
-            if ($isPhpDocTypeContainingClosureType) {
-                array_unshift($updatedDocTypes, new NullType());
-            } else {
-                $updatedDocTypes[] = new NullType();
-            }
-        }
+        $updatedDocTypes = $this->appendOrPrependNullTypeIfAppropriate(
+            $isPhpParserTypeContainingNullType,
+            $isPhpDocTypeContainingClosureType,
+            $updatedDocTypes
+        );
 
         return $this->composeUpdatedPhpDocType($updatedDocTypes);
     }

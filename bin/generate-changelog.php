@@ -134,6 +134,7 @@ final class GenerateChangelogCommand extends Command
                     $thanks = $item->user->login;
                     break;
                 }
+
                 $issuesToReference[] = sprintf('#%d', $item->number);
             }
 

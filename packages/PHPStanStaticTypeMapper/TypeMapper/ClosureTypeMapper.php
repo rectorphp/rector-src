@@ -44,9 +44,9 @@ final class ClosureTypeMapper implements TypeMapperInterface
         );
 
         $parameterDocTypeNodes = [];
-        foreach ($type->getParameters() as $parameter) {
+        foreach ($type->getParameters() as $parameterReflection) {
             $parameterDocTypeNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-                $parameter->getType(),
+                $parameterReflection->getType(),
                 $typeKind
             );
         }
