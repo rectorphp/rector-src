@@ -23,6 +23,13 @@ final class SymplifyQuoteEscapeRector extends AbstractRector
      */
     private const ESCAPED_CHAR_REGEX = '#\\\\|\$|\\n|\\t#sim';
 
+    /**
+     * @var string
+     * @see https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex/
+     * @see https://regex101.com/r/lGUhRb/1
+     */
+    private const HAS_NON_PRINTABLE_CHARS = '#[\x00-\x1F\x80-\xFF]#';
+
     private bool $hasChanged = false;
 
     public function getRuleDefinition(): RuleDefinition
@@ -70,6 +77,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?String_
     {
+        if (StringUtils::isMatch($node->value, self::HAS_NON_PRINTABLE_CHARS)) {
+            return null;
+        }
+
         $doubleQuoteCount = substr_count($node->value, '"');
         $singleQuoteCount = substr_count($node->value, "'");
         $kind = $node->getAttribute(AttributeKey::KIND);
