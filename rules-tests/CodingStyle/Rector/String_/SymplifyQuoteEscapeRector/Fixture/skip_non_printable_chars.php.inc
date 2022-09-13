@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector\Fixture;
 
-final class DemoFile
+final class SkipNonPrintableChars
 {
     public function run()
     {
