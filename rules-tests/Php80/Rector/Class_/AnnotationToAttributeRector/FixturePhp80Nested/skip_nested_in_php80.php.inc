@@ -13,5 +13,3 @@ final class SkipNestedInPhp80
      */
     public array $selected = [];
 }
-
-?>
