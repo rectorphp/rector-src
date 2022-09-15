@@ -24,6 +24,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
@@ -53,6 +54,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly AttributeGroupNamedArgumentManipulator $attributeGroupNamedArgumentManipulator,
         private readonly UseImportsResolver $useImportsResolver,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -206,6 +208,7 @@ CODE_SAMPLE
         }
 
         $doctrineTagAndAnnotationToAttributes = [];
+        $doctrineTagValueNodes = [];
 
         foreach ($phpDocInfo->getPhpDocNode()->children as $phpDocChildNode) {
             if (! $phpDocChildNode instanceof PhpDocTagNode) {
@@ -226,11 +229,20 @@ CODE_SAMPLE
                 $doctrineTagValueNode,
                 $annotationToAttribute,
             );
+            $doctrineTagValueNodes[] = $doctrineTagValueNode;
+        }
 
+        $attributeGroups = $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes, $uses);
+
+        if ($this->phpAttributeAnalyzer->hasRemoveArrayState($attributeGroups)) {
+            return [];
+        }
+
+        foreach ($doctrineTagValueNodes as $doctrineTagValueNode) {
             $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $doctrineTagValueNode);
         }
 
-        return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes, $uses);
+        return $attributeGroups;
     }
 
     private function matchAnnotationToAttribute(
