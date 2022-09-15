@@ -10,6 +10,7 @@ use PhpParser\Node\Scalar\String_;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
+use Rector\PhpAttribute\Enum\DocTagNodeState;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -39,6 +40,10 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
     public function map($arrayItemNode): Expr
     {
         $valueExpr = $this->annotationToAttributeMapper->map($arrayItemNode->value);
+
+        if (is_string($valueExpr) && $valueExpr == DocTagNodeState::REMOVE_ARRAY) {
+            return new ArrayItem(new String_($valueExpr), null);
+        }
 
         if ($arrayItemNode->key !== null) {
             $keyValue = match ($arrayItemNode->kindKeyQuoted) {
