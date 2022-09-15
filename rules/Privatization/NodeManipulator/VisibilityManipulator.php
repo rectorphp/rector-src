@@ -30,11 +30,6 @@ final class VisibilityManipulator
         $this->addVisibilityFlag($node, Visibility::STATIC);
     }
 
-    public function makeAbstract(ClassMethod | Class_ $node): void
-    {
-        $this->addVisibilityFlag($node, Visibility::ABSTRACT);
-    }
-
     /**
      * @api
      */
@@ -43,8 +38,25 @@ final class VisibilityManipulator
         if (! $node->isStatic()) {
             return;
         }
-
+        
         $node->flags -= Class_::MODIFIER_STATIC;
+    }
+
+    public function makeAbstract(ClassMethod | Class_ $node): void
+    {
+        $this->addVisibilityFlag($node, Visibility::ABSTRACT);
+    }
+
+    /**
+     * @api
+     */
+    public function makeNonAbstract(ClassMethod | Property $node): void
+    {
+        if (! $node->isAbstract()) {
+            return;
+        }
+
+        $node->flags -= Class_::MODIFIER_ABSTRACT;
     }
 
     public function makeFinal(Class_ | ClassMethod | ClassConst $node): void
@@ -75,6 +87,7 @@ final class VisibilityManipulator
         }
 
         if ($node->isPublic()) {
+            $node->flags |= Class_::MODIFIER_PUBLIC;
             $node->flags -= Class_::MODIFIER_PUBLIC;
         }
 
