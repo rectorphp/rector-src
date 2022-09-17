@@ -52,10 +52,12 @@ final class VisibilityManipulator
      */
     public function makeNonAbstract(ClassMethod | Property $node): void
     {
-        if (! $node instanceof ClassMethod || ! $node->isAbstract()) {
+        if (! $node instanceof ClassMethod) {
             return;
         }
-
+        if (! $node->isAbstract()) {
+            return;
+        }
         $node->flags -= Class_::MODIFIER_ABSTRACT;
     }
 
