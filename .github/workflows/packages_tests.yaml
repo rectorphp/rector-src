@@ -28,6 +28,7 @@ jobs:
                     - rectorphp/rector-cakephp
                     - rectorphp/rector-phpoffice
                     - rectorphp/rector-downgrade-php
+                    - rectorphp/rector-php-parser
 
         steps:
             # see https://github.com/actions/checkout#usage
