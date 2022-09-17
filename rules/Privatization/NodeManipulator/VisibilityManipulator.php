@@ -38,7 +38,7 @@ final class VisibilityManipulator
         if (! $node->isStatic()) {
             return;
         }
-        
+
         $node->flags -= Class_::MODIFIER_STATIC;
     }
 
