@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\ArrowFunction;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PHPStan\Analyser\Scope;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -17,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector\AddArrowFunctionReturnTypeRectorTest
  */
-final class AddArrowFunctionReturnTypeRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class AddArrowFunctionReturnTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -45,7 +46,7 @@ CODE_SAMPLE
     /**
      * @param ArrowFunction $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
         if ($node->returnType !== null) {
             return null;
