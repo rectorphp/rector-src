@@ -2,6 +2,7 @@
 
 namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
 
+use Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\Nested\AnotherClass;
 use Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\AnotherClass as SomeAlias;
 
 class UseNameFromAlias
@@ -18,6 +19,7 @@ class UseNameFromAlias
 
 namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
 
+use Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\Nested\AnotherClass;
 use Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\AnotherClass as SomeAlias;
 
 class UseNameFromAlias
