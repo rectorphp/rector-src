@@ -38,7 +38,7 @@ final class VisibilityManipulator
         if (! $node->isStatic()) {
             return;
         }
-        
+
         $node->flags -= Class_::MODIFIER_STATIC;
     }
 
@@ -50,9 +50,9 @@ final class VisibilityManipulator
     /**
      * @api
      */
-    public function makeNonAbstract(ClassMethod | Property $node): void
+    public function makeNonAbstract(ClassMethod | Class_ $node): void
     {
-        if (! $node instanceof ClassMethod || ! $node->isAbstract()) {
+        if (! $node->isAbstract()) {
             return;
         }
 
