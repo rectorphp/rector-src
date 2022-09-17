@@ -55,9 +55,11 @@ final class VisibilityManipulator
         if (! $node instanceof ClassMethod) {
             return;
         }
+
         if (! $node->isAbstract()) {
             return;
         }
+
         $node->flags -= Class_::MODIFIER_ABSTRACT;
     }
 
