@@ -64,6 +64,6 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SCALAR_TYPES;
+        return PhpVersionFeature::ARROW_FUNCTION;
     }
 }
