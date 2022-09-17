@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
@@ -22,6 +23,7 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeDeclarationRector::class,
         PropertyTypeDeclarationRector::class,
         AddClosureReturnTypeRector::class,
+        AddArrowFunctionReturnTypeRector::class,
         AddArrayParamDocTypeRector::class,
         AddArrayReturnDocTypeRector::class,
         ParamTypeByMethodCallTypeRector::class,
