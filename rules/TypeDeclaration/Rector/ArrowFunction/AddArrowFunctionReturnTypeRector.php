@@ -6,9 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ArrowFunction;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
-use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
