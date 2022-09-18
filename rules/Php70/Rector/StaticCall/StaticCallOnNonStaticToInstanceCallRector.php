@@ -148,8 +148,12 @@ CODE_SAMPLE
             return true;
         }
 
-        // does the method even exist?
         $classReflection = $this->reflectionProvider->getClass($className);
+        if ($classReflection->isAbstract()) {
+            return true;
+        }
+
+        // does the method even exist?
         if (! $classReflection->hasMethod($methodName)) {
             return true;
         }
