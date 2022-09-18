@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\If_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -32,7 +33,7 @@ final class UselessIfCondBeforeForeachDetector
      * Matches:
      * !empty($values)
      */
-    public function isMatchingNotEmpty(If_ $if, Expr $foreachExpr, $scope): bool
+    public function isMatchingNotEmpty(If_ $if, Expr $foreachExpr, Scope $scope): bool
     {
         $cond = $if->cond;
         if (! $cond instanceof BooleanNot) {
