@@ -19,6 +19,7 @@ use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use PHPStan\Analyser\Scope;
 
 final class UselessIfCondBeforeForeachDetector
 {
@@ -34,7 +35,7 @@ final class UselessIfCondBeforeForeachDetector
      * Matches:
      * !empty($values)
      */
-    public function isMatchingNotEmpty(If_ $if, Expr $foreachExpr): bool
+    public function isMatchingNotEmpty(If_ $if, Expr $foreachExpr, $scope): bool
     {
         $cond = $if->cond;
         if (! $cond instanceof BooleanNot) {
@@ -52,7 +53,13 @@ final class UselessIfCondBeforeForeachDetector
             return false;
         }
 
-        // is array though?
+        // early check array from Scope
+        $arrayType = $scope->getType($empty->expr);
+        if (! $arrayType instanceof ArrayType) {
+            return false;
+        }
+
+        // is still array though?
         $arrayType = $this->nodeTypeResolver->getType($empty->expr);
         if (! $arrayType instanceof ArrayType) {
             return false;
