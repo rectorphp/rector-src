@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -112,7 +113,7 @@ CODE_SAMPLE
             $aliasName = $this->aliasNameResolver->resolveByName($name);
             $node = $name->getAttribute(AttributeKey::PARENT_NODE);
 
-            if (is_string($aliasName) && ! $node instanceof UseUse) {
+            if (is_string($aliasName) && ! $node instanceof UseUse && ! $this->hasOtherSameUseStatementWithoutAlias($name, $currentUses)) {
                 return new Name($aliasName);
             }
 
@@ -120,6 +121,27 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * @param Use_[] $currentUses
+     */
+    private function hasOtherSameUseStatementWithoutAlias(Name $name, array $currentUses): bool
+    {
+        $currentName = $name->toString();
+        foreach ($currentUses as $currentUse) {
+            foreach ($currentUse->uses as $useUse) {
+                if ($useUse->alias instanceof Identifier) {
+                    continue;
+                }
+
+                if ($useUse->name->toString() === $currentName) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
