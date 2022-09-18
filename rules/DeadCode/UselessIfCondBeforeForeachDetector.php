@@ -18,13 +18,10 @@ use PHPStan\Type\ArrayType;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\NodeTypeResolver\NodeTypeResolver;
-use PHPStan\Analyser\Scope;
 
 final class UselessIfCondBeforeForeachDetector
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly NodeComparator $nodeComparator,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ParamAnalyzer $paramAnalyzer
@@ -53,14 +50,8 @@ final class UselessIfCondBeforeForeachDetector
             return false;
         }
 
-        // early check array from Scope
+        // is array though?
         $arrayType = $scope->getType($empty->expr);
-        if (! $arrayType instanceof ArrayType) {
-            return false;
-        }
-
-        // is still array though?
-        $arrayType = $this->nodeTypeResolver->getType($empty->expr);
         if (! $arrayType instanceof ArrayType) {
             return false;
         }
