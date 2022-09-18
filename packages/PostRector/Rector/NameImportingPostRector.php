@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
@@ -16,6 +18,8 @@ use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Naming\Naming\AliasNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,7 +34,8 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly AliasNameResolver $aliasNameResolver
     ) {
     }
 
@@ -105,10 +110,41 @@ CODE_SAMPLE
         $currentUses = $this->betterNodeFinder->findInstanceOf($file->getNewStmts(), Use_::class);
 
         if ($this->shouldImportName($name, $currentUses)) {
+            $aliasName = $this->aliasNameResolver->resolveByName($name);
+            $node = $name->getAttribute(AttributeKey::PARENT_NODE);
+
+            if (is_string($aliasName) && ! $node instanceof UseUse && ! $this->hasOtherSameUseStatementWithoutAlias(
+                $name,
+                $currentUses
+            )) {
+                return new Name($aliasName);
+            }
+
             return $this->nameImporter->importName($name, $file, $currentUses);
         }
 
         return null;
+    }
+
+    /**
+     * @param Use_[] $currentUses
+     */
+    private function hasOtherSameUseStatementWithoutAlias(Name $name, array $currentUses): bool
+    {
+        $currentName = $name->toString();
+        foreach ($currentUses as $currentUse) {
+            foreach ($currentUse->uses as $useUse) {
+                if ($useUse->alias instanceof Identifier) {
+                    continue;
+                }
+
+                if ($useUse->name->toString() === $currentName) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

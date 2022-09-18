@@ -158,7 +158,7 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Name|NullableType|PhpParserUnionType $inferredReturnNode */
+        /** @var Name|NullableType|PhpParserUnionType|IntersectionType $inferredReturnNode */
         $this->addReturnType($node, $inferredReturnNode);
         $this->nonInformativeReturnTagRemover->removeReturnTagIfNotUseful($node);
 
@@ -206,7 +206,7 @@ CODE_SAMPLE
 
     private function addReturnType(
         ClassMethod | Function_ $functionLike,
-        Name|NullableType|\PhpParser\Node\UnionType|IntersectionType $inferredReturnNode
+        Name|NullableType|PhpParserUnionType|IntersectionType $inferredReturnNode
     ): void {
         if ($functionLike->returnType === null) {
             $functionLike->returnType = $inferredReturnNode;
