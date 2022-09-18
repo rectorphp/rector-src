@@ -113,7 +113,10 @@ CODE_SAMPLE
             $aliasName = $this->aliasNameResolver->resolveByName($name);
             $node = $name->getAttribute(AttributeKey::PARENT_NODE);
 
-            if (is_string($aliasName) && ! $node instanceof UseUse && ! $this->hasOtherSameUseStatementWithoutAlias($name, $currentUses)) {
+            if (is_string($aliasName) && ! $node instanceof UseUse && ! $this->hasOtherSameUseStatementWithoutAlias(
+                $name,
+                $currentUses
+            )) {
                 return new Name($aliasName);
             }
 
