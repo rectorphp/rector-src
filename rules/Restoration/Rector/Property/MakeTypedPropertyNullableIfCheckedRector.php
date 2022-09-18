@@ -83,8 +83,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $isPropretyNullChecked = $this->isPropertyNullChecked($onlyProperty);
-        if (! $isPropretyNullChecked) {
+        $isPropertyNullChecked = $this->isPropertyNullChecked($onlyProperty);
+        if (! $isPropertyNullChecked) {
             return null;
         }
 
