@@ -78,6 +78,11 @@ CODE_SAMPLE
         /** @var PropertyProperty $onlyProperty */
         $onlyProperty = $node->props[0];
 
+        //Skip properties with default values
+        if ($onlyProperty->default instanceof Node\Expr) {
+            return null;
+        }
+
         $isPropretyNullChecked = $this->isPropertyNullChecked($onlyProperty);
         if (! $isPropretyNullChecked) {
             return null;
