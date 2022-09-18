@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
@@ -157,7 +158,7 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Name|NullableType|PhpParserUnionType $inferredReturnNode */
+        /** @var Name|NullableType|PhpParserUnionType|IntersectionType $inferredReturnNode */
         $this->addReturnType($node, $inferredReturnNode);
         $this->nonInformativeReturnTagRemover->removeReturnTagIfNotUseful($node);
 
@@ -205,7 +206,7 @@ CODE_SAMPLE
 
     private function addReturnType(
         ClassMethod | Function_ $functionLike,
-        Name|NullableType|PhpParserUnionType $inferredReturnNode
+        Name|NullableType|PhpParserUnionType|IntersectionType $inferredReturnNode
     ): void {
         if ($functionLike->returnType === null) {
             $functionLike->returnType = $inferredReturnNode;
