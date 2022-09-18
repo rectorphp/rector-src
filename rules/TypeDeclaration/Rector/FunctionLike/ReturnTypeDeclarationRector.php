@@ -206,7 +206,7 @@ CODE_SAMPLE
 
     private function addReturnType(
         ClassMethod | Function_ $functionLike,
-        Name|NullableType|\PhpParser\Node\UnionType|IntersectionType $inferredReturnNode
+        Name|NullableType|PhpParserUnionType|IntersectionType $inferredReturnNode
     ): void {
         if ($functionLike->returnType === null) {
             $functionLike->returnType = $inferredReturnNode;
