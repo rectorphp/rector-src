@@ -42,7 +42,7 @@ final class ClassNameImportSkipper
     }
 
     /**
-     * @param Use_[] $existingUses
+     * @param Use_[]|GroupUse[] $existingUses
      */
     public function isShortNameInUseStatement(Name $name, array $existingUses): bool
     {
