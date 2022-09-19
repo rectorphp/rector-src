@@ -4,7 +4,7 @@ namespace Rector\Core\Tests\Issues\AutoImportGroupUse\Fixture;
 
 use Rector\Core\Tests\Issues\AutoImportGroupUse\Source\{ SomeClass };
 
-final class AutoImportInAlias extends \Rector\Core\Tests\Issues\AutoImportGroupUse\Source\SomeClass
+final class AutoImportInGroupUse extends \Rector\Core\Tests\Issues\AutoImportGroupUse\Source\SomeClass
 {
 }
 
@@ -16,7 +16,7 @@ namespace Rector\Core\Tests\Issues\AutoImportGroupUse\Fixture;
 
 use Rector\Core\Tests\Issues\AutoImportGroupUse\Source\{ SomeClass };
 
-final class AutoImportInAlias extends SomeClass
+final class AutoImportInGroupUse extends SomeClass
 {
 }
 
