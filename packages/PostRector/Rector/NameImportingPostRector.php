@@ -138,7 +138,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Use_[] $currentUses
+     * @param Use_[]|GroupUse[] $currentUses
      */
     private function shouldImportName(Name $name, array $currentUses): bool
     {
