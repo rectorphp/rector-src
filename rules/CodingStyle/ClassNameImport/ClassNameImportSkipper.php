@@ -6,11 +6,13 @@ namespace Rector\CodingStyle\ClassNameImport;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class ClassNameImportSkipper
@@ -20,7 +22,8 @@ final class ClassNameImportSkipper
      */
     public function __construct(
         private readonly array $classNameImportSkipVoters,
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private readonly UseImportsResolver $useImportsResolver
     ) {
     }
 
@@ -52,15 +55,17 @@ final class ClassNameImportSkipper
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     public function isAlreadyImported(Name $name, array $uses): bool
     {
         $stringName = $name->toString();
 
         foreach ($uses as $use) {
+            $prefix = $this->useImportsResolver->resolvePrefix($use);
+
             foreach ($use->uses as $useUse) {
-                if ($useUse->name->toString() === $stringName) {
+                if ($prefix . $useUse->name->toString() === $stringName) {
                     return true;
                 }
             }
@@ -70,7 +75,7 @@ final class ClassNameImportSkipper
     }
 
     /**
-     * @param Use_[] $uses
+     * @param Use_[]|GroupUse[] $uses
      */
     public function isFoundInUse(Name $name, array $uses): bool
     {
@@ -78,6 +83,8 @@ final class ClassNameImportSkipper
         $nameLastName = strtolower($name->getLast());
 
         foreach ($uses as $use) {
+            $prefix = $this->useImportsResolver->resolvePrefix($use);
+
             foreach ($use->uses as $useUse) {
                 $useUseLastName = strtolower($useUse->name->getLast());
 
@@ -85,7 +92,7 @@ final class ClassNameImportSkipper
                     continue;
                 }
 
-                if ($this->isJustRenamedClass($stringName, $useUse)) {
+                if ($this->isJustRenamedClass($stringName, $prefix, $useUse)) {
                     continue;
                 }
 
@@ -96,9 +103,9 @@ final class ClassNameImportSkipper
         return false;
     }
 
-    private function isJustRenamedClass(string $stringName, UseUse $useUse): bool
+    private function isJustRenamedClass(string $stringName, string $prefix, UseUse $useUse): bool
     {
-        $useUseNameString = $useUse->name->toString();
+        $useUseNameString = $prefix . $useUse->name->toString();
 
         // is in renamed classes? skip it
         foreach ($this->renamedClassesDataCollector->getOldToNewClasses() as $oldClass => $newClass) {
