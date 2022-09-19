@@ -7,7 +7,9 @@ namespace Rector\PostRector\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -102,7 +104,16 @@ CODE_SAMPLE
     private function processNodeName(Name $name, File $file): ?Node
     {
         if ($name->isSpecialClassName()) {
-            return $name;
+            return null;
+        }
+
+        $namespaces = array_filter(
+            $file->getNewStmts(),
+            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_
+        );
+
+        if (count($namespaces) > 1) {
+            return null;
         }
 
         /** @var Use_[]|GroupUse[] $currentUses */
