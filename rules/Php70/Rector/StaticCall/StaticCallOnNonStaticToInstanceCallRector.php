@@ -14,6 +14,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
+use Rector\CodingStyle\ValueObject\ObjectMagicMethods;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -144,6 +145,10 @@ CODE_SAMPLE
 
     private function shouldSkip(string $methodName, string $className, StaticCall $staticCall): bool
     {
+        if (in_array($methodName, ObjectMagicMethods::METHOD_NAMES, true)) {
+            return true;
+        }
+
         if (! $this->reflectionProvider->hasClass($className)) {
             return true;
         }
