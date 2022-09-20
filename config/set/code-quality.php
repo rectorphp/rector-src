@@ -32,6 +32,7 @@ use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector;
 use Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
+use Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector;
 use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector;
@@ -141,6 +142,7 @@ return static function (RectorConfig $rectorConfig): void {
         SimplifyRegexPatternRector::class,
         BooleanNotIdenticalToNotIdenticalRector::class,
         StrvalToTypeCastRector::class,
+        FloatvalToTypeCastRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         AndAssignsToSeparateLinesRector::class,
         ForToForeachRector::class,
