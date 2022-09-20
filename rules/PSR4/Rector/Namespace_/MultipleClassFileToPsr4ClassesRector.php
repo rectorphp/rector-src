@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PSR4\Rector\Namespace_;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
@@ -113,13 +112,13 @@ CODE_SAMPLE
 
     private function hasAtLeastTwoClassLikes(Node $node): bool
     {
-        $nonAnonymousClassLikes = $this->findNonAnonymousClassLikes($node);
+        $nonAnonymousClassLikes = $this->betterNodeFinder->findNonAnonymousClassLikes($node);
         return count($nonAnonymousClassLikes) > 1;
     }
 
     private function refactorNamespace(Namespace_ $namespace): ?Namespace_
     {
-        $classLikes = $this->findNonAnonymousClassLikes($namespace);
+        $classLikes = $this->betterNodeFinder->findNonAnonymousClassLikes($namespace);
         $this->namespaceManipulator->removeClassLikes($namespace);
 
         $nodeToReturn = null;
@@ -142,7 +141,7 @@ CODE_SAMPLE
 
     private function refactorFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): ?FileWithoutNamespace
     {
-        $classLikes = $this->findNonAnonymousClassLikes($fileWithoutNamespace);
+        $classLikes = $this->betterNodeFinder->findNonAnonymousClassLikes($fileWithoutNamespace);
 
         $nodeToReturn = null;
 
@@ -164,21 +163,5 @@ CODE_SAMPLE
     {
         $filePath = $this->file->getFilePath();
         $this->neighbourClassLikePrinter->printClassLike($classLike, $mainNode, $filePath, $this->file);
-    }
-
-    /**
-     * @return ClassLike[]
-     */
-    private function findNonAnonymousClassLikes(Node $node): array
-    {
-        $classLikes = $this->betterNodeFinder->findInstanceOf([$node], ClassLike::class);
-
-        return array_filter($classLikes, static function (ClassLike $classLike): bool {
-            if (! $classLike instanceof Class_) {
-                return true;
-            }
-
-            return ! $classLike->isAnonymous();
-        });
     }
 }
