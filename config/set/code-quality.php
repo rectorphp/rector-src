@@ -28,9 +28,11 @@ use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
 use Rector\CodeQuality\Rector\FuncCall\AddPregQuoteDelimiterRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKeyExistsRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
+use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector;
 use Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
+use Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector;
 use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector;
@@ -41,6 +43,7 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
+use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
 use Rector\CodeQuality\Rector\FunctionLike\RemoveAlwaysTrueConditionSetInConstructorRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
@@ -138,6 +141,8 @@ return static function (RectorConfig $rectorConfig): void {
         SimplifyBoolIdenticalTrueRector::class,
         SimplifyRegexPatternRector::class,
         BooleanNotIdenticalToNotIdenticalRector::class,
+        StrvalToTypeCastRector::class,
+        FloatvalToTypeCastRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         AndAssignsToSeparateLinesRector::class,
         ForToForeachRector::class,
@@ -152,6 +157,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddPregQuoteDelimiterRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,
         IntvalToTypeCastRector::class,
+        BoolvalToTypeCastRector::class,
         ArrayKeyExistsTernaryThenValueToCoalescingRector::class,
         AbsolutizeRequireAndIncludePathRector::class,
         ChangeArrayPushToArrayAssignRector::class,
