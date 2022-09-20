@@ -224,6 +224,19 @@ final class BetterNodeFinder
     }
 
     /**
+     * @return ClassLike[]
+     */
+    public function findNonAnonymousClassLikes(Node $node): array
+    {
+        $classLikes = $this->findInstanceOf([$node], ClassLike::class);
+
+        return array_filter(
+            $classLikes,
+            fn (ClassLike $classLike): bool => ! $this->classAnalyzer->isAnonymousClass($classLike)
+        );
+    }
+
+    /**
      * @param Node|Node[] $nodes
      * @param callable(Node $filter): bool $filter
      */
