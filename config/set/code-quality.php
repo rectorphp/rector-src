@@ -28,6 +28,7 @@ use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
 use Rector\CodeQuality\Rector\FuncCall\AddPregQuoteDelimiterRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKeyExistsRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
+use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector;
 use Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
@@ -152,6 +153,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddPregQuoteDelimiterRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,
         IntvalToTypeCastRector::class,
+        BoolvalToTypeCastRector::class,
         ArrayKeyExistsTernaryThenValueToCoalescingRector::class,
         AbsolutizeRequireAndIncludePathRector::class,
         ChangeArrayPushToArrayAssignRector::class,
