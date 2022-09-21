@@ -45,7 +45,7 @@ jobs:
                 env:
                     COMPOSER_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-            # install do not use composer/ramsey github action packges, it uses cache including "dev", we want to avoid it here
+            # install do not use composer/ramsey github action package, it uses cache including "dev", we want to avoid it here
             # this run is needed to install patches, the --no-dev skips them
             -   run: composer install --ansi
             # to remove dev dependencies
