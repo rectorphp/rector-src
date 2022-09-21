@@ -200,6 +200,8 @@ CODE_SAMPLE;
 
         $this->printDebugCurrentFileAndRule();
 
+        $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
+
         $refactoredNode = $this->refactor($node);
 
         // nothing to change → continue
