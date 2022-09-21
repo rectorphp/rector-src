@@ -19,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FloatvalToTypeCastRector extends AbstractRector
 {
     /**
-     * @var array<int, string>
+     * @var string[]
      */
     private const VAL_FUNCTION_NAMES = ['floatval', 'doubleval'];
 
@@ -85,8 +85,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $castNode = new Double($node->args[0]->value);
-        $castNode->setAttribute(AttributeKey::KIND, Double::KIND_FLOAT);
-        return $castNode;
+        $double = new Double($node->args[0]->value);
+        $double->setAttribute(AttributeKey::KIND, Double::KIND_FLOAT);
+        return $double;
     }
 }
