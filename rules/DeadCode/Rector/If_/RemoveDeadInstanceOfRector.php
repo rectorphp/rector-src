@@ -112,7 +112,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Stmt[]|null
+     * @return null|Stmt[]|If_
      */
     private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): null|array|If_
     {
