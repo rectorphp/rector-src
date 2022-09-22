@@ -123,6 +123,11 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $this->matchTypeForUnionedObjectTypes($type, $typeKind);
         }
 
+        return $this->mapNullabledType($nullabledType, $typeKind);
+    }
+
+    private function mapNullabledType(Type $nullabledType, string $typeKind): ?Node
+    {
         // void cannot be nullable
         if ($nullabledType instanceof VoidType) {
             return null;
@@ -130,7 +135,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         // null is already part of mixed
         if ($nullabledType instanceof MixedType) {
-            $nullableType = new MixedType();
+            $nullabledType = new MixedType();
         }
 
         $nullabledTypeNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($nullabledType, $typeKind);
