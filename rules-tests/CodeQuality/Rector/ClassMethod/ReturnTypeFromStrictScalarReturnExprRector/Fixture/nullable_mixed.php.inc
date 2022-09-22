@@ -17,7 +17,7 @@ function y()
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
 
-function y(): mixed
+function y()
 {
     if (rand() < 0.5) {
         return null;
