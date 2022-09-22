@@ -130,7 +130,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         // null is already part of mixed
         if ($nullabledType instanceof MixedType) {
-            return new Name('mixed');
+            $nullableType = new MixedType();
         }
 
         $nullabledTypeNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($nullabledType, $typeKind);
