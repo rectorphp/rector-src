@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\NodeTypeCorrector;
 
 use PHPStan\Type\Accessory\HasOffsetType;
+use PHPStan\Type\Accessory\HasOffsetValueType;
 use PHPStan\Type\Accessory\NonEmptyArrayType;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 
 final class HasOffsetTypeCorrector
@@ -30,7 +32,15 @@ final class HasOffsetTypeCorrector
                 continue;
             }
 
+            if ($intersectionedType instanceof HasOffsetValueType) {
+                continue;
+            }
+
             $clearTypes[] = $intersectionedType;
+        }
+
+        if ($clearTypes === []) {
+            return new MixedType();
         }
 
         if (count($clearTypes) === 1) {
