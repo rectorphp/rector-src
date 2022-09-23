@@ -34,11 +34,7 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
     /**
      * @var string[]
      */
-    private array $classesToSkip = [
-        // can be string
-        'Error',
-        'Exception',
-    ];
+    private array $classesToSkip = [];
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -168,6 +164,11 @@ CODE_SAMPLE
 
         $classReflection = $this->reflectionProvider->getClass($classLikeName);
         if ($classReflection->getName() !== $classLikeName) {
+            return true;
+        }
+
+        // skip short class names, mostly invalid use of strings
+        if (! str_contains($classLikeName, '\\')) {
             return true;
         }
 

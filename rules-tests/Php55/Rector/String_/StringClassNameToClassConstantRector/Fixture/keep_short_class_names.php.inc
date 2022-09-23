@@ -6,6 +6,6 @@ final class KeepShortClassNames
 {
     public function run()
     {
-        return 'directory';
+        return 'Directory';
     }
 }
