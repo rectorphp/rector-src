@@ -34,6 +34,13 @@ final class PropertyNaming
     private const EXCLUDED_CLASSES = ['#Closure#', '#^Spl#', '#FileInfo#', '#^std#', '#Iterator#', '#SimpleXML#'];
 
     /**
+     * @var array<string, string>
+     */
+    private const CONTEXT_AWARE_NAMES_BY_TYPE = [
+        'Twig\Environment' => 'twigEnvironment',
+    ];
+
+    /**
      * @var string
      */
     private const INTERFACE = 'Interface';
@@ -95,6 +102,13 @@ final class PropertyNaming
         foreach (self::EXCLUDED_CLASSES as $excludedClass) {
             if (StringUtils::isMatch($className, $excludedClass)) {
                 return null;
+            }
+        }
+
+        // special cases to keep context
+        foreach (self::CONTEXT_AWARE_NAMES_BY_TYPE as $type => $contextAwareName) {
+            if ($className === $type) {
+                return new ExpectedName($contextAwareName, $contextAwareName);
             }
         }
 
