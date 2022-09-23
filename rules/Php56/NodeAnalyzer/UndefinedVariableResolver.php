@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
@@ -82,10 +83,7 @@ final class UndefinedVariableResolver
                 return null;
             }
 
-            // defined 100 %
-            /** @var Scope $scope */
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-            if ($scope->hasVariableType($variableName)->yes()) {
+            if ($this->hasVariableTypeOrCurrentStmtUnreachable($node, $variableName)) {
                 return null;
             }
 
@@ -95,6 +93,19 @@ final class UndefinedVariableResolver
         });
 
         return array_unique($undefinedVariables);
+    }
+
+    private function hasVariableTypeOrCurrentStmtUnreachable(Variable $variable, string $variableName): bool
+    {
+        // defined 100 %
+        /** @var Scope $scope */
+        $scope = $variable->getAttribute(AttributeKey::SCOPE);
+        if ($scope->hasVariableType($variableName)->yes()) {
+            return true;
+        }
+
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($variable);
+        return $currentStmt instanceof Stmt && $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true;
     }
 
     private function issetOrUnsetOrEmptyParent(Node $parentNode): bool
