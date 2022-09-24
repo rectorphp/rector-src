@@ -11,7 +11,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -122,15 +121,14 @@ CODE_SAMPLE
         $currentUses = $this->useImportsResolver->resolveForNode($name);
 
         if ($this->shouldImportName($name, $currentUses)) {
-            $alias = $this->resolveAlias($name);
+            $nameInUse = $this->resolveNameInUse($name, $currentUses);
 
-            if ($alias instanceof Name) {
-                return $alias;
+            if ($nameInUse instanceof FullyQualified) {
+                return null;
             }
 
-            $sameLastNameAliased = $this->resolveSameLastNameAliased($name, $currentUses);
-            if ($sameLastNameAliased instanceof Name) {
-                return $sameLastNameAliased;
+            if ($nameInUse instanceof Name) {
+                return $nameInUse;
             }
 
             return $this->nameImporter->importName($name, $file, $currentUses);
@@ -142,18 +140,34 @@ CODE_SAMPLE
     /**
      * @param Use_[]|GroupUse[] $currentUses
      */
-    private function resolveSameLastNameAliased(Name $name, array $currentUses): ?Name
+    private function resolveNameInUse(Name $name, array $currentUses): null|Name|FullyQualified
     {
         $originalName = $name->getAttribute(AttributeKey::ORIGINAL_NAME);
+
         if (! $originalName instanceof FullyQualified) {
             return null;
         }
 
-        $lastName = $name->getLast();
+        $aliasName = $this->aliasNameResolver->resolveByName($name);
+        if (is_string($aliasName)) {
+            return new Name($aliasName);
+        }
 
-        /**
-         * Lookup same last name but aliased
-         */
+        $isShortFullyQualifiedName = substr_count($name->toCodeString(), '\\') === 1;
+
+        if (! $isShortFullyQualifiedName) {
+            return $this->resolveLongNameInUseName($name, $currentUses);
+        }
+
+        return $this->resolveConflictedShortNameInUse($name, $currentUses);
+    }
+
+    /**
+     * @param Use_[]|GroupUse[] $currentUses
+     */
+    private function resolveLongNameInUseName(Name $name, array $currentUses): ?Name
+    {
+        $lastName = $name->getLast();
         foreach ($currentUses as $currentUse) {
             foreach ($currentUse->uses as $useUse) {
                 if ($useUse->name->getLast() !== $lastName) {
@@ -169,20 +183,30 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveAlias(Name $name): ?Name
+    /**
+     * @param Use_[]|GroupUse[] $currentUses
+     */
+    private function resolveConflictedShortNameInUse(Name $name, array $currentUses): ?FullyQualified
     {
-        $originalName = $name->getAttribute(AttributeKey::ORIGINAL_NAME);
+        $currentName = $name->toString();
+        foreach ($currentUses as $currentUse) {
+            $prefix = $this->useImportsResolver->resolvePrefix($currentUse);
 
-        if (! $originalName instanceof FullyQualified) {
-            return null;
+            foreach ($currentUse->uses as $useUse) {
+                $useName = $prefix . $name->toString();
+                $lastUseName = $name->getLast();
+
+                if (! $useUse->alias instanceof Identifier && $useName !== $currentName && $lastUseName === $currentName) {
+                    return new FullyQualified($currentName);
+                }
+
+                if ($useUse->alias instanceof Identifier && $useUse->alias->toString() === $currentName) {
+                    return new FullyQualified($currentName);
+                }
+            }
         }
 
-        $aliasName = $this->aliasNameResolver->resolveByName($name);
-        if (! is_string($aliasName)) {
-            return null;
-        }
-
-        return new Name($aliasName);
+        return null;
     }
 
     /**
