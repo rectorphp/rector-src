@@ -159,7 +159,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($useUse->alias instanceof Identifier) {
+                if ($useUse->alias instanceof Identifier && $useUse->alias->toString() !== $lastName) {
                     return new Name($lastName);
                 }
             }
