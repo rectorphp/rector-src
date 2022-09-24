@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\ClassNameImport;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
@@ -93,6 +94,10 @@ final class ClassNameImportSkipper
                 }
 
                 if ($this->isJustRenamedClass($stringName, $prefix, $useUse)) {
+                    continue;
+                }
+
+                if ($useUse->alias instanceof Identifier && $useUse->alias->toString() === $nameLastName) {
                     continue;
                 }
 
