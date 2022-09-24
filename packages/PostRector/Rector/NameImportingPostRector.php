@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
@@ -126,7 +127,42 @@ CODE_SAMPLE
                 return $alias;
             }
 
+            $sameLastNameAliased = $this->resolveSameLastNameAliased($name, $currentUses);
+            if ($sameLastNameAliased instanceof Name) {
+                return $sameLastNameAliased;
+            }
+
             return $this->nameImporter->importName($name, $file, $currentUses);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Use_[]|GroupUse[] $currentUses
+     */
+    private function resolveSameLastNameAliased(Name $name, array $currentUses): ?Name
+    {
+        $originalName = $name->getAttribute(AttributeKey::ORIGINAL_NAME);
+        if (! $originalName instanceof FullyQualified) {
+            return null;
+        }
+
+        $lastName = $name->getLast();
+
+        /**
+         * Lookup same last name but aliased
+         */
+        foreach ($currentUses as $currentUse) {
+            foreach ($currentUse->uses as $useUse) {
+                if ($useUse->name->getLast() !== $lastName) {
+                    continue;
+                }
+
+                if ($useUse->alias instanceof Identifier) {
+                    return new Name($lastName);
+                }
+            }
         }
 
         return null;
