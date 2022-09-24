@@ -135,10 +135,10 @@ Run PHPUnit with the test file to confirm:
 vendor/bin/phpunit rules-tests/Privatization/Rector/Class_/FinalizeClassesWithoutChildrenRector/FinalizeClassesWithoutChildrenRectorTest.php
 ```
 
-To run only the single test fixture, add `--filter test#X`, where X is the fixture's order number.
+To run only the single test fixture, add `--filter X`, where X is the fixture's file name.
 
 ```bash
-vendor/bin/phpunit rules-tests/Privatization/Rector/Class_/FinalizeClassesWithoutChildrenRector/FinalizeClassesWithoutChildrenRectorTest.php --filter test#4
+vendor/bin/phpunit rules-tests/Privatization/Rector/Class_/FinalizeClassesWithoutChildrenRector/FinalizeClassesWithoutChildrenRectorTest.php --filter add_final.php.inc
 ```
 
 If PHPUnit fails, you've successfully added a test case! :)

@@ -22,7 +22,8 @@ final class FixtureFileFinder
 
         $fileInfos = iterator_to_array($finder);
         foreach ($fileInfos as $fileInfo) {
-            yield [$fileInfo->getRealPath()];
+            $realPath = $fileInfo->getRealPath();
+            yield \pathinfo($realPath, \PATHINFO_BASENAME) => [$realPath];
         }
     }
 }
