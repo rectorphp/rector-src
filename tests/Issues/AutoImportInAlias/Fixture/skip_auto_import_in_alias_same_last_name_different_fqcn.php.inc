@@ -5,7 +5,7 @@ namespace Rector\Core\Tests\Issues\AutoImportInAlias\Fixture;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\AssignOp\Plus as AssignPlus;
 
-final class AutoImportInAliasSameLastNameDifferentFqcn
+final class SkipAutoImportInAliasSameLastNameDifferentFqcn
 {
     public function run(\Rector\Core\Tests\Issues\AutoImportInAlias\Source\Plus $plus)
     {
