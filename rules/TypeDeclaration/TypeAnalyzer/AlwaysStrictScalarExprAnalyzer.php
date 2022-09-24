@@ -56,7 +56,7 @@ final class AlwaysStrictScalarExprAnalyzer
         if ($expr instanceof FuncCall) {
             $returnType = $this->resolveFuncCallType($expr);
 
-            if ($returnType === null) {
+            if (! $returnType instanceof Type) {
                 return null;
             }
 
@@ -84,11 +84,7 @@ final class AlwaysStrictScalarExprAnalyzer
             return true;
         }
 
-        if ($type instanceof BooleanType) {
-            return true;
-        }
-
-        return false;
+        return $type instanceof BooleanType;
     }
 
     private function resolveTypeFromScalar(Scalar $scalar): Type|null

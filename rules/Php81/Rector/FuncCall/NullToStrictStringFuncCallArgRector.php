@@ -484,7 +484,7 @@ CODE_SAMPLE
             $funcCall,
             $scope
         );
-        $functionName = $this->nodeNameResolver->getName($funcCall);
+        $functionName = $functionReflection->getName();
         $argNames = self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING[$functionName];
         $positions = [];
 
