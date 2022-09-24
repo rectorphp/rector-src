@@ -83,6 +83,7 @@ final class AlwaysStrictScalarExprAnalyzer
         if ($type instanceof IntegerType) {
             return true;
         }
+
         return $type instanceof BooleanType;
     }
 
