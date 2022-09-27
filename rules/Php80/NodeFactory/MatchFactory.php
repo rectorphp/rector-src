@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_ as ThrowsStmt;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\ValueObject\CondAndExpr;
@@ -21,7 +22,8 @@ final class MatchFactory
 {
     public function __construct(
         private readonly MatchArmsFactory $matchArmsFactory,
-        private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer
+        private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -49,6 +51,10 @@ final class MatchFactory
                 // @todo this should be improved
                 $expr = $this->resolveAssignVar($condAndExprs);
                 if ($expr instanceof ArrayDimFetch) {
+                    return null;
+                }
+
+                if ($expr instanceof Expr && ! $this->nodeComparator->areNodesEqual($nextStmt->expr, $expr)) {
                     return null;
                 }
 
