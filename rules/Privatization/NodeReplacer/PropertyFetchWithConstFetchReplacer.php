@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\Property;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\Privatization\Naming\ConstantNaming;
 
@@ -48,13 +47,8 @@ final class PropertyFetchWithConstFetchReplacer
                 return null;
             }
 
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
             // replace with constant fetch
-            $classConstFetch = $this->nodeFactory->createSelfFetchConstant($constantName);
-            $classConstFetch->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
-
-            return $classConstFetch;
+            return $this->nodeFactory->createSelfFetchConstant($constantName);
         });
     }
 }
