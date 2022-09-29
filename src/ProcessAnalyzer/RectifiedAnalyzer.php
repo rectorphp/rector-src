@@ -24,8 +24,9 @@ final class RectifiedAnalyzer
      */
     private array $previousFileWithNodes = [];
 
-    public function __construct(private readonly NodeComparator $nodeComparator)
-    {
+    public function __construct(
+        private readonly NodeComparator $nodeComparator
+    ) {
     }
 
     /**

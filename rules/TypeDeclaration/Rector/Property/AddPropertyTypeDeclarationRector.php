@@ -28,8 +28,9 @@ final class AddPropertyTypeDeclarationRector extends AbstractRector implements C
      */
     private array $addPropertyTypeDeclarations = [];
 
-    public function __construct(private readonly ReflectionResolver $reflectionResolver)
-    {
+    public function __construct(
+        private readonly ReflectionResolver $reflectionResolver
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

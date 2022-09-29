@@ -23,8 +23,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysElseRector extends AbstractRector
 {
-    public function __construct(private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer)
-    {
+    public function __construct(
+        private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

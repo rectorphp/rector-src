@@ -16,8 +16,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class StaticArrowFunctionRector extends AbstractRector
 {
-    public function __construct(private readonly StaticGuard $staticGuard)
-    {
+    public function __construct(
+        private readonly StaticGuard $staticGuard
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

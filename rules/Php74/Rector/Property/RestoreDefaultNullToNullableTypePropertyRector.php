@@ -19,8 +19,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RestoreDefaultNullToNullableTypePropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly ConstructorAssignDetector $constructorAssignDetector)
-    {
+    public function __construct(
+        private readonly ConstructorAssignDetector $constructorAssignDetector
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

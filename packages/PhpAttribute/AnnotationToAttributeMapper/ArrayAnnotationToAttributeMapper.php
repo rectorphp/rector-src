@@ -24,8 +24,9 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
 {
     private AnnotationToAttributeMapper $annotationToAttributeMapper;
 
-    public function __construct(private readonly ValueResolver $valueResolver)
-    {
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
     }
 
     /**

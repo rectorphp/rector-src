@@ -20,8 +20,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddFalseDefaultToBoolPropertyRector extends AbstractRector
 {
-    public function __construct(private readonly ConstructorAssignDetector $constructorAssignDetector)
-    {
+    public function __construct(
+        private readonly ConstructorAssignDetector $constructorAssignDetector
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

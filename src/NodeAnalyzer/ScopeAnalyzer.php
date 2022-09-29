@@ -20,8 +20,9 @@ final class ScopeAnalyzer
      */
     private const NO_SCOPE_NODES = [Name::class, Identifier::class, Param::class, Arg::class];
 
-    public function __construct(private readonly ScopeFactory $scopeFactory)
-    {
+    public function __construct(
+        private readonly ScopeFactory $scopeFactory
+    ) {
     }
 
     public function hasScope(Node $node): bool

@@ -22,8 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
 {
-    public function __construct(private readonly ReflectionResolver $reflectionResolver)
-    {
+    public function __construct(
+        private readonly ReflectionResolver $reflectionResolver
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

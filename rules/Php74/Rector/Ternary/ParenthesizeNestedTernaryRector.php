@@ -21,8 +21,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ParenthesizeNestedTernaryRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly ParenthesizedNestedTernaryAnalyzer $parenthesizedNestedTernaryAnalyzer)
-    {
+    public function __construct(
+        private readonly ParenthesizedNestedTernaryAnalyzer $parenthesizedNestedTernaryAnalyzer
+    ) {
     }
 
     public function provideMinPhpVersion(): int
