@@ -149,7 +149,7 @@ parameters:
         - '#(.*?) class\-string, string given#'
 
         # PHP 7_4 literal syntax
-        - '#Property PhpParser\\Node\\Scalar\\DNumber\:\:\$value \(float\|int\) does not accept string#'
+
 
         -
             message: '#Array destruct is not allowed\. Use value object to pass data instead#'
@@ -163,7 +163,7 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 10#'
 
-        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\Printer\\PhpDocInfoPrinter\:\:printDocChildNode\(\)" is \d+, keep it under 10#'
+
         - '#Cognitive complexity for "Rector\\NodeTypeResolver\\NodeTypeResolver\:\:getType\(\)" is \d+, keep it under 10#'
 
         -
