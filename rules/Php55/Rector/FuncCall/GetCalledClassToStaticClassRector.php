@@ -22,8 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class GetCalledClassToStaticClassRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly ClassAnalyzer $classAnalyzer)
-    {
+    public function __construct(
+        private readonly ClassAnalyzer $classAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

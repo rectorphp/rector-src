@@ -13,8 +13,9 @@ final class CurlyListNode extends AbstractValuesAwareNode implements Stringable
     /**
      * @param ArrayItemNode[] $arrayItemNodes
      */
-    public function __construct(private readonly array $arrayItemNodes = [])
-    {
+    public function __construct(
+        private readonly array $arrayItemNodes = []
+    ) {
         Assert::allIsInstanceOf($this->arrayItemNodes, ArrayItemNode::class);
         parent::__construct($this->arrayItemNodes);
     }

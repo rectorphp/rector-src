@@ -20,8 +20,9 @@ final class PhpDocNestedAnnotationGuard
      */
     private const SIMPLE_ANNOTATION_REGEX = '/@[A-z]+\(?/i';
 
-    public function __construct(private readonly PhpDocInfoFactory $phpDocInfoFactory)
-    {
+    public function __construct(
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
+    ) {
     }
 
     /**

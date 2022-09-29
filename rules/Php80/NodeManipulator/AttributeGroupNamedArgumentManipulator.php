@@ -13,8 +13,9 @@ final class AttributeGroupNamedArgumentManipulator
     /**
      * @param AttributeDecoratorInterface[] $attributeDecorators
      */
-    public function __construct(private readonly array $attributeDecorators)
-    {
+    public function __construct(
+        private readonly array $attributeDecorators
+    ) {
     }
 
     /**
