@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Variable;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprUsedInNodeAnalyzer
 {
@@ -25,6 +26,12 @@ final class ExprUsedInNodeAnalyzer
 
     public function isUsed(Node $node, Expr $expr): bool
     {
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+
+        if (! $this->nodeComparator->areNodesEqual($node, $originalNode)) {
+            return true;
+        }
+
         if ($node instanceof Include_) {
             return true;
         }
