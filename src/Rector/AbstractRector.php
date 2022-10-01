@@ -400,6 +400,9 @@ CODE_SAMPLE;
         $nodeTraverser->traverse($nodes);
     }
 
+    /**
+     * @param Node[] $nodes
+     */
     private function connectNodes(array $nodes): void
     {
         $nodeTraverser = new NodeTraverser();
