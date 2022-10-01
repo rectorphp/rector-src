@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7494\Fixture;
+namespace Rector\Core\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
 
-class Fixture
+class NextNodeChanged
 {
     private $dummyProperty;
 
@@ -26,9 +26,9 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7494\Fixture;
+namespace Rector\Core\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
 
-class Fixture
+class NextNodeChanged
 {
     private $dummyProperty;
 
