@@ -238,11 +238,7 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
-        if ($parentNode instanceof Node) {
-            // update parents relations - must run before connectParentNodes()
-            $refactoredNode->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
-            $this->connectParentNodes($refactoredNode);
-        }
+        $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
@@ -356,11 +352,7 @@ CODE_SAMPLE;
         $nodes = array_values($nodes);
 
         foreach ($nodes as $key => $subNode) {
-            if ($parentNode instanceof Node) {
-                // update parents relations - must run before connectParentNodes()
-                $subNode->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
-                $this->connectParentNodes($subNode);
-            }
+            $this->updateAndconnectParentNodes($subNode, $parentNode);
 
             if (isset($nodes[$key + 1])) {
                 $subNode->setAttribute(AttributeKey::NEXT_NODE, $nodes[$key + 1]);
@@ -405,11 +397,16 @@ CODE_SAMPLE;
         return $rectifiedNode instanceof RectifiedNode;
     }
 
-    private function connectParentNodes(Node $node): void
+    private function updateAndconnectParentNodes(Node $node, ?Node $parentNode): void
     {
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new ParentConnectingVisitor());
-        $nodeTraverser->traverse([$node]);
+        if ($parentNode instanceof Node) {
+            // update parents relations - must run before addVisitor(new ParentConnectingVisitor())
+            $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
+
+            $nodeTraverser = new NodeTraverser();
+            $nodeTraverser->addVisitor(new ParentConnectingVisitor());
+            $nodeTraverser->traverse([$node]);
+        }
     }
 
     private function printDebugCurrentFileAndRule(): void
