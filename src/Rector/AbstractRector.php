@@ -359,6 +359,7 @@ CODE_SAMPLE;
             }
         }
 
+        $nodes = array_values($nodes);
         foreach (array_keys($nodes) as $key) {
             if (isset($nodes[$key + 1])) {
                 $node->setAttribute(AttributeKey::NEXT_NODE, $nodes[$key + 1]);
