@@ -351,10 +351,15 @@ CODE_SAMPLE;
      */
     private function setParentNextPreviousNodeArrayNodes(Node $node, array $nodes): void
     {
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        foreach ($nodes as $key => $subNode) {
-            $subNode->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
+        if ($node->hasAttribute(AttributeKey::PARENT_NODE)) {
+            foreach ($nodes as $subNode) {
+                // update parents relations - must run before connectParentNodes()
+                $subNode->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
+                $this->connectParentNodes($subNode);
+            }
+        }
 
+        foreach (array_keys($nodes) as $key) {
             if (isset($nodes[$key + 1])) {
                 $node->setAttribute(AttributeKey::NEXT_NODE, $nodes[$key + 1]);
             }
