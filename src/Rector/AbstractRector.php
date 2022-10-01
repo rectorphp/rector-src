@@ -232,7 +232,7 @@ CODE_SAMPLE;
             $firstNodeKey = array_key_first($refactoredNode);
             $this->mirrorComments($refactoredNode[$firstNodeKey], $originalNode);
 
-            $this->setParentNextPreviousNodeArrayNodes($node, $refactoredNode, $parentNode);
+            $this->setParentNextPreviousNodeArrayNodes($refactoredNode, $parentNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
@@ -351,7 +351,7 @@ CODE_SAMPLE;
     /**
      * @param Node[] $nodes
      */
-    private function setParentNextPreviousNodeArrayNodes(Node $node, array $nodes, ?Node $parentNode): void
+    private function setParentNextPreviousNodeArrayNodes(array $nodes, ?Node $parentNode): void
     {
         $nodes = array_values($nodes);
 
@@ -363,11 +363,11 @@ CODE_SAMPLE;
             }
 
             if (isset($nodes[$key + 1])) {
-                $node->setAttribute(AttributeKey::NEXT_NODE, $nodes[$key + 1]);
+                $subNode->setAttribute(AttributeKey::NEXT_NODE, $nodes[$key + 1]);
             }
 
             if (isset($nodes[$key - 1])) {
-                $node->setAttribute(AttributeKey::PREVIOUS_NODE, $nodes[$key - 1]);
+                $subNode->setAttribute(AttributeKey::PREVIOUS_NODE, $nodes[$key - 1]);
             }
         }
     }
