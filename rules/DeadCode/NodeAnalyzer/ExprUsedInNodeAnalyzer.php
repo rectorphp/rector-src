@@ -26,12 +26,6 @@ final class ExprUsedInNodeAnalyzer
 
     public function isUsed(Node $node, Expr $expr): bool
     {
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-
-        if (! $this->nodeComparator->areNodesEqual($node, $originalNode)) {
-            return true;
-        }
-
         if ($node instanceof Include_) {
             return true;
         }
@@ -42,6 +36,12 @@ final class ExprUsedInNodeAnalyzer
             if (\str_starts_with($print, '${$')) {
                 return true;
             }
+        }
+
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+
+        if ($originalNode instanceof Node && ! $this->nodeComparator->areNodesEqual($node, $originalNode)) {
+            return true;
         }
 
         if ($node instanceof FuncCall && $expr instanceof Variable) {
