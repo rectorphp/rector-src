@@ -223,6 +223,8 @@ CODE_SAMPLE;
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
         if (is_array($refactoredNode)) {
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -230,15 +232,15 @@ CODE_SAMPLE;
             $firstNodeKey = array_key_first($refactoredNode);
             $this->mirrorComments($refactoredNode[$firstNodeKey], $originalNode);
 
-            $this->setParentNextPreviousNodeArrayNodes($node, $refactoredNode);
+            $this->setParentNextPreviousNodeArrayNodes($node, $parentNode, $refactoredNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
 
-        if ($node->hasAttribute(AttributeKey::PARENT_NODE)) {
+        if ($parentNode instanceof Node) {
             // update parents relations - must run before connectParentNodes()
-            $refactoredNode->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
+            $refactoredNode->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
             $this->connectParentNodes($refactoredNode);
         }
 
@@ -349,18 +351,17 @@ CODE_SAMPLE;
     /**
      * @param Node[] $nodes
      */
-    private function setParentNextPreviousNodeArrayNodes(Node $node, array $nodes): void
+    private function setParentNextPreviousNodeArrayNodes(Node $node, ?Node $parentNode, array $nodes): void
     {
-        if ($node->hasAttribute(AttributeKey::PARENT_NODE)) {
-            foreach ($nodes as $subNode) {
+        $nodes = array_values($nodes);
+
+        foreach ($nodes as $key => $subNode) {
+            if ($parentNode instanceof Node) {
                 // update parents relations - must run before connectParentNodes()
-                $subNode->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
+                $subNode->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
                 $this->connectParentNodes($subNode);
             }
-        }
 
-        $nodes = array_values($nodes);
-        foreach (array_keys($nodes) as $key) {
             if (isset($nodes[$key + 1])) {
                 $node->setAttribute(AttributeKey::NEXT_NODE, $nodes[$key + 1]);
             }
