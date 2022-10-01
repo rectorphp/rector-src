@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
@@ -232,7 +233,8 @@ CODE_SAMPLE;
             $firstNodeKey = array_key_first($refactoredNode);
             $this->mirrorComments($refactoredNode[$firstNodeKey], $originalNode);
 
-            $this->setParentNextPreviousNodeArrayNodes($refactoredNode, $parentNode);
+            $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+            $this->connectNodes($refactoredNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
@@ -345,26 +347,6 @@ CODE_SAMPLE;
     }
 
     /**
-     * @param Node[] $nodes
-     */
-    private function setParentNextPreviousNodeArrayNodes(array $nodes, ?Node $parentNode): void
-    {
-        $nodes = array_values($nodes);
-
-        foreach ($nodes as $key => $subNode) {
-            $this->updateAndconnectParentNodes($subNode, $parentNode);
-
-            if (isset($nodes[$key + 1])) {
-                $subNode->setAttribute(AttributeKey::NEXT_NODE, $nodes[$key + 1]);
-            }
-
-            if (isset($nodes[$key - 1])) {
-                $subNode->setAttribute(AttributeKey::PREVIOUS_NODE, $nodes[$key - 1]);
-            }
-        }
-    }
-
-    /**
      * @param class-string<Node> $nodeClass
      */
     private function isMatchingNodeType(string $nodeClass): bool
@@ -397,16 +379,32 @@ CODE_SAMPLE;
         return $rectifiedNode instanceof RectifiedNode;
     }
 
-    private function updateAndconnectParentNodes(Node $node, ?Node $parentNode): void
+    /**
+     * @param Node[]|Node $node
+     */
+    private function updateAndconnectParentNodes(array | Node $node, ?Node $parentNode): void
     {
-        if ($parentNode instanceof Node) {
+        if (! $parentNode instanceof Node) {
+            return;
+        }
+
+        $nodes = $node instanceof Node ? [$node] : $node;
+
+        foreach ($nodes as $node) {
             // update parents relations - must run before addVisitor(new ParentConnectingVisitor())
             $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
-
-            $nodeTraverser = new NodeTraverser();
-            $nodeTraverser->addVisitor(new ParentConnectingVisitor());
-            $nodeTraverser->traverse([$node]);
         }
+
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new ParentConnectingVisitor());
+        $nodeTraverser->traverse($nodes);
+    }
+
+    private function connectNodes(array $nodes): void
+    {
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new NodeConnectingVisitor());
+        $nodeTraverser->traverse($nodes);
     }
 
     private function printDebugCurrentFileAndRule(): void
