@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
@@ -223,6 +224,8 @@ CODE_SAMPLE;
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
         if (is_array($refactoredNode)) {
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -230,15 +233,14 @@ CODE_SAMPLE;
             $firstNodeKey = array_key_first($refactoredNode);
             $this->mirrorComments($refactoredNode[$firstNodeKey], $originalNode);
 
+            $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+            $this->connectNodes($refactoredNode);
+
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
 
-        if ($node->hasAttribute(AttributeKey::PARENT_NODE)) {
-            // update parents relations - must run before connectParentNodes()
-            $refactoredNode->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
-            $this->connectParentNodes($refactoredNode);
-        }
+        $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
@@ -377,11 +379,35 @@ CODE_SAMPLE;
         return $rectifiedNode instanceof RectifiedNode;
     }
 
-    private function connectParentNodes(Node $node): void
+    /**
+     * @param Node[]|Node $node
+     */
+    private function updateAndconnectParentNodes(array | Node $node, ?Node $parentNode): void
     {
+        if (! $parentNode instanceof Node) {
+            return;
+        }
+
+        $nodes = $node instanceof Node ? [$node] : $node;
+
+        foreach ($nodes as $node) {
+            // update parents relations - must run before addVisitor(new ParentConnectingVisitor())
+            $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
+        }
+
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new ParentConnectingVisitor());
-        $nodeTraverser->traverse([$node]);
+        $nodeTraverser->traverse($nodes);
+    }
+
+    /**
+     * @param Node[] $nodes
+     */
+    private function connectNodes(array $nodes): void
+    {
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new NodeConnectingVisitor());
+        $nodeTraverser->traverse($nodes);
     }
 
     private function printDebugCurrentFileAndRule(): void

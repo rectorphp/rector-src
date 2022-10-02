@@ -28,7 +28,7 @@ class Fixture
      */
     public function run($a = '"', $b)
     {
-        if (! $a) {
+        if ($a === '' || $a === '0') {
             return;
         }
         if (! $b) {
