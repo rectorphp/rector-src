@@ -30,12 +30,6 @@
 * ![](https://github.com/rectorphp/rector-phpunit/actions/workflows/tests.yaml/badge.svg)
 * ![](https://github.com/rectorphp/rector-phpunit/actions/workflows/code_analysis.yaml/badge.svg)
 
-## CakePHP
-
-* https://github.com/rectorphp/rector-cakephp
-* ![](https://github.com/rectorphp/rector-cakephp/actions/workflows/tests.yaml/badge.svg)
-* ![](https://github.com/rectorphp/rector-cakephp/actions/workflows/code_analysis.yaml/badge.svg)
-
 ## Doctrine
 
 * https://github.com/rectorphp/rector-doctrine
