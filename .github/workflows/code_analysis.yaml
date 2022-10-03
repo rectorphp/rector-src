@@ -52,6 +52,10 @@ jobs:
                             bin/rector init-recipe --ansi
                             bin/rector generate --ansi
 
+                    -
+                        name: 'Detect unused dependencies'
+                        run: vendor/bin/unused_scanner unused-scanner.php
+
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
         timeout-minutes: 10
