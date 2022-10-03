@@ -32,9 +32,7 @@ final class ClassConstManipulator
 
         $className = (string) $this->nodeNameResolver->getName($class);
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
-            $ancestorClass = $this->astResolver->resolveClassFromClassReflection(
-                $ancestorClassReflection
-            );
+            $ancestorClass = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
 
             if (! $ancestorClass instanceof ClassLike) {
                 continue;
