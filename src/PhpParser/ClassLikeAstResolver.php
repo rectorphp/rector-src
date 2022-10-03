@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\ValueObject\Application\File;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 
 final class ClassLikeAstResolver
@@ -27,12 +27,12 @@ final class ClassLikeAstResolver
     public function __construct(
         private readonly SmartPhpParser $smartPhpParser,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
     public function resolveClassFromClassReflection(
-        ClassReflection $classReflection,
-        string $desiredClassName
+        ClassReflection $classReflection
     ): Trait_ | Class_ | Interface_ | Enum_ | null {
         if ($classReflection->isBuiltin()) {
             return null;
@@ -63,7 +63,7 @@ final class ClassLikeAstResolver
 
         $reflectionClassName = $classReflection->getName();
         foreach ($classLikes as $classLike) {
-            if ($reflectionClassName !== $desiredClassName) {
+            if (! $this->nodeNameResolver->isName($classLike, $reflectionClassName)) {
                 continue;
             }
 

@@ -90,7 +90,7 @@ final class FamilyRelationsAnalyzer
                 continue;
             }
 
-            $class = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection, $ancestorClassName);
+            $class = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
             if (! $class instanceof Class_) {
                 continue;
             }
