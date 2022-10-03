@@ -148,7 +148,7 @@ Among there projects belong:
 * [Sylius/SyliusRector](https://github.com/Sylius/SyliusRector)
 * [CoditoNet/rector-money](https://github.com/CoditoNet/rector-money)
 * [laminas/laminas-servicemanager-migration](https://github.com/laminas/laminas-servicemanager-migration)
-* [cakephp/upgrade]https://github.com/cakephp/upgrade)
+* [cakephp/upgrade](https://github.com/cakephp/upgrade)
 
 <br>
 
