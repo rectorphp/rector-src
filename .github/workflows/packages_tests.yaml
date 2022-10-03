@@ -25,7 +25,6 @@ jobs:
                     - rectorphp/rector-phpunit
                     - rectorphp/rector-doctrine
                     - rectorphp/rector-laravel
-                    - rectorphp/rector-cakephp
                     - rectorphp/rector-phpoffice
                     - rectorphp/rector-downgrade-php
                     - rectorphp/rector-php-parser
