@@ -92,6 +92,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $type = $scope->getType($node->var);
+        if (! $type instanceof TypeWithClassName) {
+            return null;
+        }
+
         $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
 
         if (! $classReflection instanceof ClassReflection) {
@@ -105,7 +110,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $type = $scope->getType($node->var);
         if ($this->shouldSkipClassMethod($classLike, $node, $type)) {
             return null;
         }
