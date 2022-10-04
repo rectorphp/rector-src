@@ -28,7 +28,7 @@ final class IntegerUnionString
 {
     public function run(int|string $value)
     {
-        if ($value !== 0 || $value !== '') {
+        if ($value !== 0 && $value !== '') {
             return 'name';
         }
 
