@@ -6,6 +6,6 @@ final class SkipAssignmentConstructorPromotion
 {
     public function __construct(private string $value)
     {
-		$this->value = trim($value);
+		    $this->value = 'any value';
     }
 }
