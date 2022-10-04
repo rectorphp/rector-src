@@ -61,7 +61,7 @@ final class ParentAttributeSourceLocator implements SourceLocator
                 $classReflector,
                 $class,
                 $fakeLocatedSource,
-                new Namespace_(new Name('Symfony\Component\DependencyInjection\Attribute'))
+                'Symfony\Component\DependencyInjection\Attribute'
             );
         }
 
