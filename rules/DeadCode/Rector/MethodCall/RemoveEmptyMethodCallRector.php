@@ -20,7 +20,6 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
@@ -97,15 +96,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
+        $classLike = $this->resolveClassLike($node);
 
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
-
-        $classLike = $this->reflectionAstResolver->resolveClassFromObjectType(
-            new ObjectType($classReflection->getName())
-        );
         if (! $classLike instanceof ClassLike) {
             return null;
         }
@@ -135,6 +127,17 @@ CODE_SAMPLE
         $this->removeNode($node);
 
         return $node;
+    }
+
+    private function resolveClassLike(MethodCall $methodCall): ?ClassLike
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($methodCall);
+
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        return $this->reflectionAstResolver->resolveClassFromName($classReflection->getName());
     }
 
     private function getScope(MethodCall $methodCall): ?Scope
