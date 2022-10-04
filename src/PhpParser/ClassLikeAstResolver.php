@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 
@@ -27,7 +28,8 @@ final class ClassLikeAstResolver
 
     public function __construct(
         private readonly SmartPhpParser $smartPhpParser,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeNameResolver $nodeNameResolver,
     ) {
     }
 
@@ -59,39 +61,19 @@ final class ClassLikeAstResolver
             return null;
         }
 
-        return $this->resolveClassLikeFromStmts($stmts, $className);
-    }
+        /** @var array<Class_|Trait_|Interface_|Enum_> $classLikes */
+        $classLikes = $this->betterNodeFinder->findInstanceOf($stmts, ClassLike::class);
 
-    /**
-     * @param Stmt[] $stmts
-     */
-    private function resolveClassLikeFromStmts(array $stmts, string $className): ?ClassLike
-    {
-        $classStmt = null;
-
-        foreach ($stmts as $stmt) {
-            if ($stmt instanceof Namespace_) {
-                $classLike = $this->resolveClassLikeFromStmts($stmt->stmts, $className);
-                if ($classLike instanceof ClassLike) {
-                    return $classLike;
-                }
-            }
-
-            if (! $stmt instanceof ClassLike) {
+        foreach ($classLikes as $classLike) {
+            if (! $this->nodeNameResolver->isName($classLike, $className)) {
                 continue;
             }
 
-            $this->classLikesByName[$this->nodeNameResolver->getName($stmt)] = $stmt;
-            if ($this->nodeNameResolver->isName($stmt, $className)) {
-                $classStmt = $stmt;
-            }
+            $this->classLikesByName[$className] = $classLike;
+            return $classLike;
         }
 
-        $this->classLikesByName[$className] = $classStmt;
-        if ($classStmt instanceof ClassLike) {
-            return $classStmt;
-        }
-
+        $this->classLikesByName[$className] = null;
         return null;
     }
 }
