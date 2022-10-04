@@ -28,7 +28,7 @@ final class UnionNullBoolean
 {
     public function run(bool|null $maye)
     {
-        if ($maye === true) {
+        if ($maye !== true) {
             return true;
         }
 
