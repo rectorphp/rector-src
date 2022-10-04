@@ -102,6 +102,7 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var Class_|Trait_|Interface_|Enum_ $classLike */
         if ($this->shouldSkipClassMethod($classLike, $node, $type)) {
             return null;
         }
