@@ -19,11 +19,14 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -35,7 +38,8 @@ final class RemoveEmptyMethodCallRector extends AbstractRector
 {
     public function __construct(
         private readonly AstResolver $reflectionAstResolver,
-        private readonly CallAnalyzer $callAnalyzer
+        private readonly CallAnalyzer $callAnalyzer,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -88,16 +92,20 @@ CODE_SAMPLE
             return null;
         }
 
-        $type = $scope->getType($node->var);
-        if (! $type instanceof TypeWithClassName) {
+        $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($node);
+
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        $classLike = $this->reflectionAstResolver->resolveClassFromObjectType($type);
+        $classLike = $this->reflectionAstResolver->resolveClassFromObjectType(
+            new ObjectType($classReflection->getName())
+        );
         if (! $classLike instanceof ClassLike) {
             return null;
         }
 
+        $type = $scope->getType($node->var);
         if ($this->shouldSkipClassMethod($classLike, $node, $type)) {
             return null;
         }
