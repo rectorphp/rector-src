@@ -63,7 +63,8 @@ final class ScopeAnalyzer
         }
 
         /**
-         * There is no higher Node than FileWithoutNamespace and Namespace_
+         * There is no higher Node than FileWithoutNamespace
+         * There is no code that can live outside Namespace_
          */
         if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
             return $this->scopeFactory->createFromFile($filePath);
