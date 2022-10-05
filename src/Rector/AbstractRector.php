@@ -348,6 +348,9 @@ CODE_SAMPLE;
         $this->nodeRemover->removeNode($node);
     }
 
+    /**
+     * @param Node[]|Node $node
+     */
     private function refreshScopeNodes(array | Node $node, string $filePath, ?MutatingScope $mutatingScope): void
     {
         $nodes = $node instanceof Node ? [$node] : $node;
