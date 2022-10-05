@@ -9,7 +9,9 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\MutatingScope;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
@@ -56,6 +58,17 @@ final class ScopeAnalyzer
 
         /** @var MutatingScope|null $parentScope */
         $parentScope = $parentNode->getAttribute(AttributeKey::SCOPE);
-        return $parentScope;
+        if ($parentScope instanceof MutatingScope) {
+            return $parentScope;
+        }
+
+        /**
+         * There is no higher Node than FileWithoutNamespace and Namespace_
+         */
+        if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
+            return $this->scopeFactory->createFromFile($filePath);
+        }
+
+        return null;
     }
 }
