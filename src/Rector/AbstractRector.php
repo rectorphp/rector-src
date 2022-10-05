@@ -226,6 +226,10 @@ CODE_SAMPLE;
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
+        /** @var MutatingScope|null $currentScope */
+        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
+        $filePath = $this->file->getFilePath();
+
         if (is_array($refactoredNode)) {
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -235,16 +239,14 @@ CODE_SAMPLE;
 
             $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
             $this->connectNodes($refactoredNode);
+            $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
 
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
-
-        /** @var MutatingScope|null $currentScope */
-        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
-        $this->changedNodeScopeRefresher->refresh($refactoredNode, $currentScope, $this->file->getFilePath());
+        $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         // is equals node type? return node early
         if ($originalNode::class === $refactoredNode::class) {
@@ -344,6 +346,15 @@ CODE_SAMPLE;
     protected function removeNode(Node $node): void
     {
         $this->nodeRemover->removeNode($node);
+    }
+
+    private function refreshScopeNodes(array | Node $node, string $filePath, ?MutatingScope $mutatingScope): void
+    {
+        $nodes = $node instanceof Node ? [$node] : $node;
+
+        foreach ($nodes as $node) {
+            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
+        }
     }
 
     /**
