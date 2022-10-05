@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php70\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use Rector\Core\Rector\AbstractRector;
@@ -62,9 +63,14 @@ final class CallUserMethodRector extends AbstractRector implements MinPhpVersion
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $newName = self::OLD_TO_NEW_FUNCTIONS[$this->getName($node)];
         $node->name = new Name($newName);
 
+        /** @var Arg[] $oldArgs */
         $oldArgs = $node->args;
 
         unset($node->args[1]);

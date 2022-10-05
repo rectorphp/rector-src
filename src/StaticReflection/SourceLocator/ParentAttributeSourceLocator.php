@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\StaticReflection\SourceLocator;
 
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\BetterReflection\Identifier\Identifier;
 use PHPStan\BetterReflection\Identifier\IdentifierType;
 use PHPStan\BetterReflection\Reflection\Reflection;
@@ -61,7 +59,7 @@ final class ParentAttributeSourceLocator implements SourceLocator
                 $classReflector,
                 $class,
                 $fakeLocatedSource,
-                new Namespace_(new Name('Symfony\Component\DependencyInjection\Attribute'))
+                'Symfony\Component\DependencyInjection\Attribute'
             );
         }
 
