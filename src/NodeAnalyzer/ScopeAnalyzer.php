@@ -64,7 +64,7 @@ final class ScopeAnalyzer
 
         /**
          * There is no higher Node than FileWithoutNamespace
-         * There is no code that can live outside Namespace_, ref https://3v4l.org/har0k
+         * There is no code that can live outside Namespace_, @see https://3v4l.org/har0k
          */
         if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
             return $this->scopeFactory->createFromFile($filePath);
