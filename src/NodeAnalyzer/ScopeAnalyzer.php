@@ -70,6 +70,13 @@ final class ScopeAnalyzer
             return $this->scopeFactory->createFromFile($filePath);
         }
 
+        /**
+         * Fallback when current Node is FileWithoutNamespace or Namespace_ already
+         */
+        if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+            return $this->scopeFactory->createFromFile($filePath);
+        }
+
         return null;
     }
 }
