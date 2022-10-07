@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclaration
 
 /**
  * Both class parent and child need to be in same fixture file
- * as the changed part is parent
+ * as demonstrate the changed parts are both
  */
 class ParentNoReturnStmt2
 {
@@ -31,7 +31,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclaration
 
 /**
  * Both class parent and child need to be in same fixture file
- * as the changed part is parent
+ * as demonstrate the changed parts are both
  */
 class ParentNoReturnStmt2
 {

@@ -6,7 +6,7 @@ use stdClass;
 
 /**
  * Both class parent and child need to be in same fixture file
- * as the changed part is parent
+ * as demonstrate the changed parts are both, which should only child
  */
 class ParentNoReturnStmt
 {
@@ -38,7 +38,7 @@ use stdClass;
 
 /**
  * Both class parent and child need to be in same fixture file
- * as the changed part is parent
+ * as demonstrate the changed parts are both, which should only child
  */
 class ParentNoReturnStmt
 {
