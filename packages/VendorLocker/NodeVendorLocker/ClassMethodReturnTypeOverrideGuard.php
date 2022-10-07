@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker\NodeVendorLocker;
 
-use PHPStan\Type\VoidType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -16,6 +15,7 @@ use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\VoidType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
