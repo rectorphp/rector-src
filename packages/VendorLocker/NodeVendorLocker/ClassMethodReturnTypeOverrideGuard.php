@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker\NodeVendorLocker;
 
+use PHPStan\Type\VoidType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -21,6 +22,7 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\StaticTypeMapper\PhpDoc\CustomPHPStanDetector;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 final class ClassMethodReturnTypeOverrideGuard
 {
@@ -38,7 +40,8 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly CustomPHPStanDetector $customPHPStanDetector
+        private readonly CustomPHPStanDetector $customPHPStanDetector,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -102,6 +105,11 @@ final class ClassMethodReturnTypeOverrideGuard
      */
     private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod): bool
     {
+        $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
+        if ($returnType instanceof VoidType) {
+            return true;
+        }
+
         $methodName = $this->nodeNameResolver->getName($classMethod);
         foreach ($childrenClassReflections as $childClassReflection) {
             if (! $childClassReflection->hasNativeMethod($methodName)) {
