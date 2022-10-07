@@ -15,12 +15,14 @@ use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\VoidType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\StaticTypeMapper\PhpDoc\CustomPHPStanDetector;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 final class ClassMethodReturnTypeOverrideGuard
 {
@@ -38,7 +40,8 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly CustomPHPStanDetector $customPHPStanDetector
+        private readonly CustomPHPStanDetector $customPHPStanDetector,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -102,6 +105,8 @@ final class ClassMethodReturnTypeOverrideGuard
      */
     private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod): bool
     {
+        $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
+
         $methodName = $this->nodeNameResolver->getName($classMethod);
         foreach ($childrenClassReflections as $childClassReflection) {
             if (! $childClassReflection->hasNativeMethod($methodName)) {
@@ -116,6 +121,11 @@ final class ClassMethodReturnTypeOverrideGuard
             }
 
             if ($method->returnType instanceof Node) {
+                return true;
+            }
+
+            $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
+            if ($returnType instanceof VoidType && ! $childReturnType instanceof VoidType) {
                 return true;
             }
         }
