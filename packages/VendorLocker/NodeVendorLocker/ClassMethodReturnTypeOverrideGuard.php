@@ -106,9 +106,6 @@ final class ClassMethodReturnTypeOverrideGuard
     private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod): bool
     {
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
-        if ($returnType instanceof VoidType) {
-            return true;
-        }
 
         $methodName = $this->nodeNameResolver->getName($classMethod);
         foreach ($childrenClassReflections as $childClassReflection) {
@@ -124,6 +121,11 @@ final class ClassMethodReturnTypeOverrideGuard
             }
 
             if ($method->returnType instanceof Node) {
+                return true;
+            }
+
+            $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
+            if ($returnType instanceof VoidType && ! $childReturnType instanceof VoidType) {
                 return true;
             }
         }
