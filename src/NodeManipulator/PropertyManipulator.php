@@ -301,7 +301,7 @@ final class PropertyManipulator
             return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch);
         }
 
-        return false;
+        return $parentNode instanceof Unset_;
     }
 
     private function isFoundByRefParam(MethodCall | StaticCall $node): bool
