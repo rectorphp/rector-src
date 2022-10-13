@@ -80,7 +80,7 @@ return [
             }
 
             // comment out
-            return str_replace('\trigger_error', '\\ \trigger_error', $content);
+            return str_replace('@trigger_error', '// @trigger_error', $content);
         },
 
         static function (string $filePath, string $prefix, string $content): string {
