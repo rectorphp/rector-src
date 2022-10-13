@@ -13,9 +13,13 @@ Head to [`rectorphp/rector`](http://github.com/rectorphp/rector) for documentati
 
 Code of this repository requires PHP 8. For `rector/rector` package the build downgrades code to PHP 7.2+.
 
+<br>
+
 ## How to Contribute
 
 Please read [contributing guideline](/CONTRIBUTING.md) for how to contribute to rector.
+
+<br>
 
 ## Code of Conduct
 
