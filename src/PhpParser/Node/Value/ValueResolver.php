@@ -22,6 +22,7 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ConstFetchAnalyzer;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -41,7 +42,8 @@ final class ValueResolver
         private readonly ConstFetchAnalyzer $constFetchAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -150,6 +152,10 @@ final class ValueResolver
 
     private function resolveExprValueForConst(Expr $expr): mixed
     {
+        if ($this->exprAnalyzer->isDynamicExpr($expr)) {
+            return null;
+        }
+
         try {
             $constExprEvaluator = $this->getConstExprEvaluator();
             return $constExprEvaluator->evaluateDirectly($expr);
