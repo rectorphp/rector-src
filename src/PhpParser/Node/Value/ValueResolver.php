@@ -152,7 +152,7 @@ final class ValueResolver
 
     private function resolveExprValueForConst(Expr $expr): mixed
     {
-        if ($this->exprAnalyzer->isDynamicExpr($expr)) {
+        if ($expr instanceof ClassConstFetch && $this->exprAnalyzer->isDynamicExpr($expr)) {
             return null;
         }
 
