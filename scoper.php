@@ -80,7 +80,6 @@ return [
             }
 
             // comment out
-            $content = str_replace('@trigger_error', '// @trigger_error', $content);
             return str_replace('@\trigger_error', '// @\trigger_error', $content);
         },
 
