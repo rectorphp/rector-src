@@ -10,6 +10,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
@@ -22,7 +23,6 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ConstFetchAnalyzer;
-use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -42,8 +42,7 @@ final class ValueResolver
         private readonly ConstFetchAnalyzer $constFetchAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -152,10 +151,6 @@ final class ValueResolver
 
     private function resolveExprValueForConst(Expr $expr): mixed
     {
-        if ($expr instanceof ClassConstFetch && $this->exprAnalyzer->isDynamicExpr($expr)) {
-            return null;
-        }
-
         try {
             $constExprEvaluator = $this->getConstExprEvaluator();
             return $constExprEvaluator->evaluateDirectly($expr);
@@ -191,7 +186,7 @@ final class ValueResolver
             }
 
             // resolve "SomeClass::SOME_CONST"
-            if ($expr instanceof ClassConstFetch) {
+            if ($expr instanceof ClassConstFetch && $expr->class instanceof Name) {
                 return $this->resolveClassConstFetch($expr);
             }
 
