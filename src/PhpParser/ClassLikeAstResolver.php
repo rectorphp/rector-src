@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\ValueObject\Application\File;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 
 final class ClassLikeAstResolver
@@ -27,19 +27,20 @@ final class ClassLikeAstResolver
     public function __construct(
         private readonly SmartPhpParser $smartPhpParser,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NodeNameResolver $nodeNameResolver,
     ) {
     }
 
     public function resolveClassFromClassReflection(
-        ClassReflection $classReflection,
-        string $desiredClassName
+        ClassReflection $classReflection
     ): Trait_ | Class_ | Interface_ | Enum_ | null {
         if ($classReflection->isBuiltin()) {
             return null;
         }
 
-        if (isset($this->classLikesByName[$classReflection->getName()])) {
-            return $this->classLikesByName[$classReflection->getName()];
+        $className = $classReflection->getName();
+        if (isset($this->classLikesByName[$className])) {
+            return $this->classLikesByName[$className];
         }
 
         $fileName = $classReflection->getFileName();
@@ -47,31 +48,30 @@ final class ClassLikeAstResolver
         // probably internal class
         if ($fileName === null) {
             // avoid parsing falsy-file again
-            $this->classLikesByName[$classReflection->getName()] = null;
+            $this->classLikesByName[$className] = null;
             return null;
         }
 
         $stmts = $this->smartPhpParser->parseFile($fileName);
         if ($stmts === []) {
             // avoid parsing falsy-file again
-            $this->classLikesByName[$classReflection->getName()] = null;
+            $this->classLikesByName[$className] = null;
             return null;
         }
 
         /** @var array<Class_|Trait_|Interface_|Enum_> $classLikes */
         $classLikes = $this->betterNodeFinder->findInstanceOf($stmts, ClassLike::class);
 
-        $reflectionClassName = $classReflection->getName();
         foreach ($classLikes as $classLike) {
-            if ($reflectionClassName !== $desiredClassName) {
+            if (! $this->nodeNameResolver->isName($classLike, $className)) {
                 continue;
             }
 
-            $this->classLikesByName[$classReflection->getName()] = $classLike;
+            $this->classLikesByName[$className] = $classLike;
             return $classLike;
         }
 
-        $this->classLikesByName[$classReflection->getName()] = null;
+        $this->classLikesByName[$className] = null;
         return null;
     }
 }

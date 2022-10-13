@@ -77,7 +77,7 @@ final class AstResolver
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        return $this->resolveClassFromClassReflection($classReflection, $className);
+        return $this->resolveClassFromClassReflection($classReflection);
     }
 
     public function resolveClassFromObjectType(
@@ -216,10 +216,9 @@ final class AstResolver
     }
 
     public function resolveClassFromClassReflection(
-        ClassReflection $classReflection,
-        string $className
+        ClassReflection $classReflection
     ): Trait_ | Class_ | Interface_ | Enum_ | null {
-        return $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection, $className);
+        return $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
     }
 
     /**

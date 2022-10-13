@@ -19,11 +19,13 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -35,7 +37,8 @@ final class RemoveEmptyMethodCallRector extends AbstractRector
 {
     public function __construct(
         private readonly AstResolver $reflectionAstResolver,
-        private readonly CallAnalyzer $callAnalyzer
+        private readonly CallAnalyzer $callAnalyzer,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -93,11 +96,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $classLike = $this->reflectionAstResolver->resolveClassFromObjectType($type);
+        $classLike = $this->resolveClassLike($node);
+
         if (! $classLike instanceof ClassLike) {
             return null;
         }
 
+        /** @var Class_|Trait_|Interface_|Enum_ $classLike */
         if ($this->shouldSkipClassMethod($classLike, $node, $type)) {
             return null;
         }
@@ -123,6 +128,17 @@ CODE_SAMPLE
         $this->removeNode($node);
 
         return $node;
+    }
+
+    private function resolveClassLike(MethodCall $methodCall): ?ClassLike
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($methodCall);
+
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
+        return $this->reflectionAstResolver->resolveClassFromName($classReflection->getName());
     }
 
     private function getScope(MethodCall $methodCall): ?Scope

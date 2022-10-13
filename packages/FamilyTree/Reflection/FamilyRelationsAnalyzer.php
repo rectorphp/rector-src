@@ -84,13 +84,11 @@ final class FamilyRelationsAnalyzer
         $kindPropertyFetch = $this->getKindPropertyFetch($property);
 
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
-            $ancestorClassName = $ancestorClassReflection->getName();
-
             if ($ancestorClassReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
                 continue;
             }
 
-            $class = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection, $ancestorClassName);
+            $class = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
             if (! $class instanceof Class_) {
                 continue;
             }
