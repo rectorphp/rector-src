@@ -73,6 +73,16 @@ return [
             $content
         ),
 
+        // fix symfony deprecation reports, @see https://github.com/rectorphp/rector/issues/7434
+        static function (string $filePath, string $prefix, string $content): string {
+            if (! \str_ends_with($filePath, 'vendor/symfony/contracts/Deprecation/function.php')) {
+                return $content;
+            }
+
+            // comment out
+            return str_replace('\trigger_error', '\\ \trigger_error', $content);
+        },
+
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'src/Application/VersionResolver.php')) {
                 return $content;
