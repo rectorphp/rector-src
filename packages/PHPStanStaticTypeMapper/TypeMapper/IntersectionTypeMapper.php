@@ -90,7 +90,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
                 $resolvedTypeName = self::STRING;
                 $resolvedType = new Name(self::STRING);
             } elseif (! $resolvedType instanceof Name) {
-                throw new ShouldNotHappenException();
+                return null;
             } else {
                 $resolvedTypeName = (string) $resolvedType;
             }
