@@ -2,8 +2,8 @@
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionIntersectionTypes;
 
-use MockObject;
-use ObjectRepository;
+use PHPUnit\Framework\MockObject\MockObject;
+use Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Source\Doctrine\ObjectRepository;
 
 final class DemoFile
 {
@@ -19,15 +19,15 @@ final class DemoFile
 
 namespace Rector\Tests\Php74\Rector\Property\TypedPropertyRector\FixtureUnionIntersectionTypes;
 
-use MockObject;
-use ObjectRepository;
+use PHPUnit\Framework\MockObject\MockObject;
+use Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Source\Doctrine\ObjectRepository;
 
 final class DemoFile
 {
     /**
      * @var MockObject&ObjectRepository<ItemCountry>
      */
-    private \MockObject&\ObjectRepository $itemCountryRepo;
+    private \PHPUnit\Framework\MockObject\MockObject&\Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Source\Doctrine\ObjectRepository $itemCountryRepo;
 }
 
 ?>

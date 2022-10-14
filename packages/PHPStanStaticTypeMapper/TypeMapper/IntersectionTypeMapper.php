@@ -13,7 +13,6 @@ use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
@@ -90,7 +89,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
                 $resolvedTypeName = self::STRING;
                 $resolvedType = new Name(self::STRING);
             } elseif (! $resolvedType instanceof Name) {
-                throw new ShouldNotHappenException();
+                return null;
             } else {
                 $resolvedTypeName = (string) $resolvedType;
             }
