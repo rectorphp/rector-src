@@ -19,6 +19,7 @@ use Rector\Core\ValueObject\PhpVersion;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeFactory\NestedAttrGroupsFactory;
+use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -82,8 +83,11 @@ CODE_SAMPLE
                 [
                     [
                         new NestedAnnotationToAttribute('Doctrine\ORM\Mapping\JoinTable', [
-                            'joinColumns' => 'Doctrine\ORM\Mapping\JoinColumn',
-                            'inverseJoinColumns' => 'Doctrine\ORM\Mapping\InverseJoinColumn',
+                            new AnnotationPropertyToAttributeClass('Doctrine\ORM\Mapping\JoinColumn', 'joinColumns'),
+                            new AnnotationPropertyToAttributeClass(
+                                'Doctrine\ORM\Mapping\InverseJoinColumn',
+                                'inverseJoinColumns'
+                            ),
                         ]),
                     ],
                 ]
