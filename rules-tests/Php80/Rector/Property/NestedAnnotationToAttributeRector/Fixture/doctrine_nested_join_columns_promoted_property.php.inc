@@ -5,7 +5,7 @@ namespace Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\F
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinColumns;
 
-final class DoctrineNestedJoinColumns
+final class DoctrineNestedJoinColumnsPromotedProperty
 {
     public function __construct(
         /**
@@ -28,8 +28,7 @@ namespace Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\F
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinColumns;
 
-
-final class DoctrineNestedJoinColumns
+final class DoctrineNestedJoinColumnsPromotedProperty
 {
     public function __construct(
         #[JoinColumn(name: "entity_id", referencedColumnName: "id")]
