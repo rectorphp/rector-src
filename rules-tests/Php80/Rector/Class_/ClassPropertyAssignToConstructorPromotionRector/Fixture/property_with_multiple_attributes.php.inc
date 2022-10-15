@@ -31,7 +31,9 @@ use JetBrains\PhpStorm\Immutable;
 
 final class PropertyWithMultipleAttributes
 {
-    public function __construct(#[Immutable] #[Deprecated] public float $latitude)
+    public function __construct(#[Immutable]
+    #[Deprecated]
+    public float $latitude)
     {
     }
 }
