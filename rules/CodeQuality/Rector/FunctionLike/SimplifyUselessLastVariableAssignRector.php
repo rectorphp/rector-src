@@ -174,13 +174,13 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkipOnAssignStmt(Expression $assignStmt): bool
+    private function shouldSkipOnAssignStmt(Expression $expression): bool
     {
-        if ($this->hasSomeComment($assignStmt)) {
+        if ($this->hasSomeComment($expression)) {
             return true;
         }
 
-        $assign = $assignStmt->expr;
+        $assign = $expression->expr;
         if (! $assign instanceof Assign && ! $assign instanceof AssignOp) {
             return true;
         }
@@ -195,28 +195,24 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($value instanceof Array_ && $this->arrayManipulator->isDynamicArray($value)) {
-            return true;
-        }
-
-        return false;
+        return $value instanceof Array_ && $this->arrayManipulator->isDynamicArray($value);
     }
 
-    private function hasSomeComment(Expression $stmt): bool
+    private function hasSomeComment(Expression $expression): bool
     {
-        if ($stmt->getComments() !== []) {
+        if ($expression->getComments() !== []) {
             return true;
         }
 
-        return $stmt->getDocComment() !== null;
+        return $expression->getDocComment() !== null;
     }
 
     /**
      * @param Stmt[] $stmts
      */
-    private function isAssigmentUseless(array $stmts, Expression $assignStmt, Return_ $return): bool
+    private function isAssigmentUseless(array $stmts, Expression $expression, Return_ $return): bool
     {
-        $assign = $assignStmt->expr;
+        $assign = $expression->expr;
         if (! $assign instanceof Assign && ! $assign instanceof AssignOp) {
             return false;
         }
@@ -226,7 +222,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $nodesInRange = $this->getNodesInRange($stmts, $assignStmt, $return);
+        $nodesInRange = $this->getNodesInRange($stmts, $expression, $return);
         if ($nodesInRange === null) {
             return false;
         }
@@ -245,13 +241,13 @@ CODE_SAMPLE
      * @param Stmt[] $stmts
      * @return Stmt[]|null
      */
-    private function getNodesInRange(array $stmts, Expression $start, Return_ $end): ?array
+    private function getNodesInRange(array $stmts, Expression $expression, Return_ $return): ?array
     {
         $resultStmts = [];
         $wasStarted = false;
 
         foreach ($stmts as $stmt) {
-            if ($stmt === $start) {
+            if ($stmt === $expression) {
                 $wasStarted = true;
             }
 
@@ -259,7 +255,7 @@ CODE_SAMPLE
                 $resultStmts[] = $stmt;
             }
 
-            if ($stmt === $end) {
+            if ($stmt === $return) {
                 return $resultStmts;
             }
         }

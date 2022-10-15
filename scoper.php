@@ -16,7 +16,7 @@ $timestamp = $dateTime->format('Ym');
 
 // @see https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md
 $polyfillsBootstraps = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
+    static fn (SplFileInfo $fileInfo): string => $fileInfo->getPathname(),
     iterator_to_array(
         Finder::create()
             ->files()
@@ -27,7 +27,7 @@ $polyfillsBootstraps = array_map(
 );
 
 $polyfillsStubs = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
+    static fn (SplFileInfo $fileInfo): string => $fileInfo->getPathname(),
     iterator_to_array(
         Finder::create()
             ->files()
