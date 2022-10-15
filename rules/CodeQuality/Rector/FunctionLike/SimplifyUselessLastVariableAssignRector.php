@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\MixedType;
 use Rector\CodeQuality\NodeAnalyzer\ReturnAnalyzer;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\NodeManipulator\ArrayManipulator;
@@ -227,9 +226,14 @@ CODE_SAMPLE
             return false;
         }
 
+        $nodesInRange = $this->getNodesInRange($stmts, $assignStmt, $return);
+        if ($nodesInRange === null) {
+            return false;
+        }
+
         //Find the variable usage
         $variableUsageNodes = $this->betterNodeFinder->find(
-            $this->getNodesInRange($stmts, $assignStmt, $return),
+            $nodesInRange,
             fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
         );
 
@@ -239,9 +243,9 @@ CODE_SAMPLE
 
     /**
      * @param Stmt[] $stmts
-     * @return Stmt[]
+     * @return Stmt[]|null
      */
-    private function getNodesInRange(array $stmts, Expression $start, Return_ $end): array
+    private function getNodesInRange(array $stmts, Expression $start, Return_ $end): ?array
     {
         $resultStmts = [];
         $wasStarted = false;
@@ -261,7 +265,8 @@ CODE_SAMPLE
         }
 
         if ($wasStarted) {
-            throw new ShouldNotHappenException('End node was not found.');
+            // This should not happen, if you land here check your given parameter
+            return null;
         }
 
         return $resultStmts;
