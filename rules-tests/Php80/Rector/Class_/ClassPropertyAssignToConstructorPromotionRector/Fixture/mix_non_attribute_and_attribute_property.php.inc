@@ -31,7 +31,8 @@ use JetBrains\PhpStorm\Immutable;
 
 final class MixNonAttributeAndAttributeProperty
 {
-    public function __construct(#[Immutable] public float $latitude, public float $longitude)
+    public function __construct(#[Immutable]
+    public float $latitude, public float $longitude)
     {
     }
 }
