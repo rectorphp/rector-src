@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
@@ -73,11 +74,11 @@ final class VariableAnalyzer
             }
 
             $parentNode = $subNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentNode instanceof ClosureUse) {
-                return false;
+            if ($parentNode instanceof ClosureUse) {
+                return $parentNode->byRef;
             }
 
-            return $parentNode->byRef;
+            return $parentNode instanceof AssignRef;
         });
     }
 
