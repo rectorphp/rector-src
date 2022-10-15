@@ -182,9 +182,9 @@ final class PhpNestedAttributeGroupFactory
         array $arrayItemNodes,
         NestedAnnotationToAttribute $nestedAnnotationToAttribute
     ): array {
-        foreach ($nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses() as $annotationPropertiesToAttributeClass) {
+        foreach ($nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses() as $annotationPropertyToAttributeClass) {
             foreach ($arrayItemNodes as $key => $arrayItemNode) {
-                if ($arrayItemNode->key !== $annotationPropertiesToAttributeClass->getAnnotationProperty()) {
+                if ($arrayItemNode->key !== $annotationPropertyToAttributeClass->getAnnotationProperty()) {
                     continue;
                 }
 
