@@ -194,6 +194,7 @@ CODE_SAMPLE
         if ($this->exprAnalyzer->isDynamicExpr($value)) {
             return true;
         }
+
         return $value instanceof Array_ && $this->arrayManipulator->isDynamicArray($value);
     }
 
