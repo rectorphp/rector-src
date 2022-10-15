@@ -6,20 +6,35 @@ namespace Rector\Php80\ValueObject;
 
 use Rector\Core\Validation\RectorAssert;
 use Rector\Php80\Contract\ValueObject\AnnotationToAttributeInterface;
-use Webmozart\Assert\Assert;
 
 final class NestedAnnotationToAttribute implements AnnotationToAttributeInterface
 {
     /**
-     * @param array<string, string>|string[] $annotationPropertiesToAttributeClasses
+     * @var AnnotationPropertyToAttributeClass[]
+     */
+    private array $annotationPropertiesToAttributeClasses = [];
+
+    /**
+     * @param array<string, string>|string[]|AnnotationPropertyToAttributeClass[] $annotationPropertiesToAttributeClasses
      */
     public function __construct(
         private readonly string $tag,
-        private readonly array $annotationPropertiesToAttributeClasses,
-        private readonly bool $removeOriginal = false
+        array $annotationPropertiesToAttributeClasses,
+        private readonly bool $removeOriginal = false,
     ) {
         RectorAssert::className($tag);
-        Assert::allString($annotationPropertiesToAttributeClasses);
+
+        // back compatibility for raw scalar values
+        foreach ($annotationPropertiesToAttributeClasses as $annotationProperty => $attributeClass) {
+            if ($attributeClass instanceof AnnotationPropertyToAttributeClass) {
+                $this->annotationPropertiesToAttributeClasses[] = $attributeClass;
+            } else {
+                $this->annotationPropertiesToAttributeClasses[] = new AnnotationPropertyToAttributeClass(
+                    $attributeClass,
+                    $annotationProperty,
+                );
+            }
+        }
     }
 
     public function getTag(): string
@@ -28,7 +43,7 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
     }
 
     /**
-     * @return array<string, string>|string[]
+     * @return AnnotationPropertyToAttributeClass[]
      */
     public function getAnnotationPropertiesToAttributeClasses(): array
     {
@@ -47,8 +62,8 @@ final class NestedAnnotationToAttribute implements AnnotationToAttributeInterfac
 
     public function hasExplicitParameters(): bool
     {
-        foreach (array_keys($this->annotationPropertiesToAttributeClasses) as $itemName) {
-            if (is_string($itemName)) {
+        foreach ($this->annotationPropertiesToAttributeClasses as $annotationPropertiesToAttributeClass) {
+            if (is_string($annotationPropertiesToAttributeClass->getAnnotationProperty())) {
                 return true;
             }
         }

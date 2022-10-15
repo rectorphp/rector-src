@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -16,10 +17,12 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeFactory\NestedAttrGroupsFactory;
-use Rector\Php80\ValueObject\AttributeGroupsAndUses;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
+use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -41,6 +44,7 @@ final class NestedAnnotationToAttributeRector extends AbstractRector implements 
         private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly NestedAttrGroupsFactory $nestedAttrGroupsFactory,
+        private readonly UseNodesToAddCollector $useNodesToAddCollector
     ) {
     }
 
@@ -107,21 +111,13 @@ CODE_SAMPLE
 
         $uses = $this->useImportsResolver->resolveBareUsesForNode($node);
 
-
-        $attributeGroupsAndUses = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $uses);
-        if (! $attributeGroupsAndUses instanceof AttributeGroupsAndUses) {
+        $attributeGroups = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $uses);
+        if ($attributeGroups === []) {
             return null;
         }
 
-        $node->attrGroups = $attributeGroupsAndUses->getAttributeGroups();
-
-        // add new uses
-        $newUses = $attributeGroupsAndUses->getUses();
-        if ($newUses !== []) {
-            // ...
-            dump(12345);
-            die;
-        }
+        $node->attrGroups = $attributeGroups;
+        $this->completeExtraUseImports($attributeGroups);
 
         return $node;
     }
@@ -141,12 +137,13 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Node\Stmt\Use_[] $existingUses
+     * @param Node\Stmt\Use_[] $uses
+     * @return AttributeGroup[]
      */
-    private function transformDoctrineAnnotationClassesToAttributeGroups(PhpDocInfo $phpDocInfo, array $existingUses): ?AttributeGroupsAndUses
+    private function transformDoctrineAnnotationClassesToAttributeGroups(PhpDocInfo $phpDocInfo, array $uses): array
     {
         if ($phpDocInfo->getPhpDocNode()->children === []) {
-            return null;
+            return [];
         }
 
         $nestedDoctrineTagAndAnnotationToAttributes = [];
@@ -174,10 +171,7 @@ CODE_SAMPLE
             );
         }
 
-        $attributeGroups = $this->nestedAttrGroupsFactory->create($nestedDoctrineTagAndAnnotationToAttributes, $existingUses);
-
-        // @todo
-        return new AttributeGroupsAndUses($attributeGroups, []);
+        return $this->nestedAttrGroupsFactory->create($nestedDoctrineTagAndAnnotationToAttributes, $uses);
     }
 
     private function matchAnnotationToAttribute(
@@ -196,5 +190,22 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * @param AttributeGroup[] $attributeGroups
+     */
+    private function completeExtraUseImports(array $attributeGroups): void
+    {
+        foreach ($attributeGroups as $attributeGroup) {
+            foreach ($attributeGroup->attrs as $attr) {
+                $namespacedAttrName = $attr->name->getAttribute(AttributeKey::EXTRA_USE_IMPORT);
+                if (! is_string($namespacedAttrName)) {
+                    continue;
+                }
+
+                $this->useNodesToAddCollector->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
+            }
+        }
     }
 }

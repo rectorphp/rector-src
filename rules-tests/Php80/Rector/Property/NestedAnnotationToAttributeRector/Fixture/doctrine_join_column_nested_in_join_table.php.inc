@@ -21,8 +21,8 @@ final class DoctrineJoinColumnNestedInJoinTable
 
 namespace Rector\Tests\Php80\Rector\Property\NestedAnnotationToAttributeRector\Fixture;
 
-use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 
 final class DoctrineJoinColumnNestedInJoinTable

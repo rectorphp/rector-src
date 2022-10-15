@@ -16,6 +16,8 @@ use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
@@ -80,7 +82,7 @@ final class PhpNestedAttributeGroupFactory
             );
         }
 
-        $nestedAttributeClass = $nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses()[0];
+        $nestedAnnotationPropertyToAttributeClass = $nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses()[0];
 
         foreach ($doctrineAnnotationTagValueNode->values as $arrayItemNode) {
             $nestedDoctrineAnnotationTagValueNode = $arrayItemNode->value;
@@ -96,7 +98,11 @@ final class PhpNestedAttributeGroupFactory
                 $attributeArgs = $this->createAttributeArgs($nestedArrayItemNode->value, $nestedAnnotationToAttribute);
 
                 $originalIdentifier = $doctrineAnnotationTagValueNode->identifierTypeNode->name;
-                $attributeName = $this->resolveAliasedAttributeName($originalIdentifier, $nestedAttributeClass);
+
+                $attributeName = $this->resolveAliasedAttributeName(
+                    $originalIdentifier,
+                    $nestedAnnotationPropertyToAttributeClass
+                );
 
                 $attribute = new Attribute($attributeName, $attributeArgs);
                 $attributeGroups[] = new AttributeGroup([$attribute]);
@@ -145,10 +151,14 @@ final class PhpNestedAttributeGroupFactory
      */
     private function resolveAliasedAttributeName(
         string $originalIdentifier,
-        string $nestedAttributeClass
+        AnnotationPropertyToAttributeClass $annotationPropertyToAttributeClass
     ): FullyQualified|Name {
         /** @var string $shortDoctrineAttributeName */
-        $shortDoctrineAttributeName = Strings::after($nestedAttributeClass, '\\', -1);
+        $shortDoctrineAttributeName = Strings::after(
+            $annotationPropertyToAttributeClass->getAttributeClass(),
+            '\\',
+            -1
+        );
 
         $matches = Strings::match($originalIdentifier, self::SHORT_ORM_ALIAS_REGEX);
         if ($matches !== null) {
@@ -161,7 +171,7 @@ final class PhpNestedAttributeGroupFactory
             return new Name($shortDoctrineAttributeName);
         }
 
-        return new FullyQualified($nestedAttributeClass);
+        return new FullyQualified($annotationPropertyToAttributeClass->getAttributeClass());
     }
 
     /**
@@ -172,11 +182,9 @@ final class PhpNestedAttributeGroupFactory
         array $arrayItemNodes,
         NestedAnnotationToAttribute $nestedAnnotationToAttribute
     ): array {
-        foreach (array_keys(
-            $nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses()
-        ) as $itemToRemoveName) {
+        foreach ($nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses() as $annotationPropertiesToAttributeClass) {
             foreach ($arrayItemNodes as $key => $arrayItemNode) {
-                if ($arrayItemNode->key !== $itemToRemoveName) {
+                if ($arrayItemNode->key !== $annotationPropertiesToAttributeClass->getAnnotationProperty()) {
                     continue;
                 }
 
@@ -196,8 +204,11 @@ final class PhpNestedAttributeGroupFactory
     ): array {
         $attributeGroups = [];
 
-        foreach ($nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses() as $itemName => $nestedAttributeClass) {
-            $nestedArrayItemNode = $doctrineAnnotationTagValueNode->getValue($itemName);
+        foreach ($nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses() as $annotationPropertyToAttributeClass) {
+            /** @var string $annotationProperty */
+            $annotationProperty = $annotationPropertyToAttributeClass->getAnnotationProperty();
+
+            $nestedArrayItemNode = $doctrineAnnotationTagValueNode->getValue($annotationProperty);
             if (! $nestedArrayItemNode instanceof ArrayItemNode) {
                 continue;
             }
@@ -218,7 +229,18 @@ final class PhpNestedAttributeGroupFactory
                 );
 
                 $originalIdentifier = $nestedDoctrineAnnotationTagValueNode->identifierTypeNode->name;
-                $attributeName = $this->resolveAliasedAttributeName($originalIdentifier, $nestedAttributeClass);
+
+                $attributeName = $this->resolveAliasedAttributeName(
+                    $originalIdentifier,
+                    $annotationPropertyToAttributeClass
+                );
+
+                if ($annotationPropertyToAttributeClass->doesNeedNewImport() && count($attributeName->parts) === 1) {
+                    $attributeName->setAttribute(
+                        AttributeKey::EXTRA_USE_IMPORT,
+                        $annotationPropertyToAttributeClass->getAttributeClass()
+                    );
+                }
 
                 $attribute = new Attribute($attributeName, $attributeArgs);
                 $attributeGroups[] = new AttributeGroup([$attribute]);
