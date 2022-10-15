@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\Property;
 
 use PhpParser\Node;
-use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -18,6 +17,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Php80\NodeFactory\NestedAttrGroupsFactory;
+use Rector\Php80\ValueObject\AttributeGroupsAndUses;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -107,12 +107,21 @@ CODE_SAMPLE
 
         $uses = $this->useImportsResolver->resolveBareUsesForNode($node);
 
-        $attributeGroups = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $uses);
-        if ($attributeGroups === []) {
+
+        $attributeGroupsAndUses = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $uses);
+        if (! $attributeGroupsAndUses instanceof AttributeGroupsAndUses) {
             return null;
         }
 
-        $node->attrGroups = $attributeGroups;
+        $node->attrGroups = $attributeGroupsAndUses->getAttributeGroups();
+
+        // add new uses
+        $newUses = $attributeGroupsAndUses->getUses();
+        if ($newUses !== []) {
+            // ...
+            dump(12345);
+            die;
+        }
 
         return $node;
     }
@@ -132,13 +141,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Node\Stmt\Use_[] $uses
-     * @return AttributeGroup[]
+     * @param Node\Stmt\Use_[] $existingUses
      */
-    private function transformDoctrineAnnotationClassesToAttributeGroups(PhpDocInfo $phpDocInfo, array $uses): array
+    private function transformDoctrineAnnotationClassesToAttributeGroups(PhpDocInfo $phpDocInfo, array $existingUses): ?AttributeGroupsAndUses
     {
         if ($phpDocInfo->getPhpDocNode()->children === []) {
-            return [];
+            return null;
         }
 
         $nestedDoctrineTagAndAnnotationToAttributes = [];
@@ -166,7 +174,10 @@ CODE_SAMPLE
             );
         }
 
-        return $this->nestedAttrGroupsFactory->create($nestedDoctrineTagAndAnnotationToAttributes, $uses);
+        $attributeGroups = $this->nestedAttrGroupsFactory->create($nestedDoctrineTagAndAnnotationToAttributes, $existingUses);
+
+        // @todo
+        return new AttributeGroupsAndUses($attributeGroups, []);
     }
 
     private function matchAnnotationToAttribute(
