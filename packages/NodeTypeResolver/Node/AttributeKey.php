@@ -164,4 +164,9 @@ final class AttributeKey
      * @var string
      */
     public const REPRINT_RAW_VALUE = 'reprint_raw_value';
+
+    /**
+     * @var string
+     */
+    public const EXTRA_USE_IMPORT = 'extra_use_import';
 }
