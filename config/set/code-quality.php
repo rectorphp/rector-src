@@ -46,6 +46,7 @@ use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
 use Rector\CodeQuality\Rector\FunctionLike\RemoveAlwaysTrueConditionSetInConstructorRector;
+use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessLastVariableAssignRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
@@ -190,5 +191,6 @@ return static function (RectorConfig $rectorConfig): void {
         TernaryFalseExpressionToIfRector::class,
         InlineConstructorDefaultToPropertyRector::class,
         SimplifyIfExactValueReturnValueRector::class,
+        SimplifyUselessLastVariableAssignRector::class,
     ]);
 };
