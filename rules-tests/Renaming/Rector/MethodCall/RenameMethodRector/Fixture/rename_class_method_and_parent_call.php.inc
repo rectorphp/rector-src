@@ -12,14 +12,6 @@ class MyCustomType extends AbstractType
     }
 }
 
-class AnotherClass extends \DateTime
-{
-    public function setDefaultOptions(SomeResolver $resolver)
-    {
-        parent::setDefaultOptions($resolver);
-    }
-}
-
 ?>
 -----
 <?php
@@ -33,14 +25,6 @@ class MyCustomType extends AbstractType
     public function configureOptions(SomeResolver $resolver)
     {
         parent::configureOptions($resolver);
-    }
-}
-
-class AnotherClass extends \DateTime
-{
-    public function setDefaultOptions(SomeResolver $resolver)
-    {
-        parent::setDefaultOptions($resolver);
     }
 }
 
