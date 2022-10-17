@@ -146,6 +146,11 @@ CODE_SAMPLE
             }
         }
 
+        // skip same line that cause infinite loop
+        if ($rangeLine === 0) {
+            return null;
+        }
+
         return [$node, new Nop()];
     }
 

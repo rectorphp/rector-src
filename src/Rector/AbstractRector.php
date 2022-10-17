@@ -238,8 +238,8 @@ CODE_SAMPLE;
             $this->mirrorComments($refactoredNode[$firstNodeKey], $originalNode);
 
             $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
-            $this->connectNodes($refactoredNode);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
+            $this->connectNodes($refactoredNode);
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;

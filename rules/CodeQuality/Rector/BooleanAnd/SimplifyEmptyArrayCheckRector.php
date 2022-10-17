@@ -68,7 +68,26 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
 
                 return isset($node->args[0]);
             },
-            Empty_::class
+            // empty(...)
+            function (Node $node): bool {
+                if (! $node instanceof Empty_) {
+                    return false;
+                }
+
+                if ($node->expr instanceof FuncCall) {
+                    if ($node->expr->isFirstClassCallable()) {
+                        return false;
+                    }
+
+                    if (!$this->isName($node->expr, 'array_filter')) {
+                        return false;
+                    }
+
+                    return isset($node->expr->args[0]);
+                }
+
+                return true;
+            }
         );
 
         if (! $twoNodeMatch instanceof TwoNodeMatch) {
@@ -84,10 +103,7 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
         /** @var Empty_ $emptyOrNotIdenticalNode */
         $emptyOrNotIdenticalNode = $twoNodeMatch->getSecondExpr();
 
-        if ($emptyOrNotIdenticalNode->expr instanceof FuncCall && ! $emptyOrNotIdenticalNode->expr->isFirstClassCallable() && $this->isName(
-            $emptyOrNotIdenticalNode->expr,
-            'array_filter'
-        ) && $this->nodeComparator->areNodesEqual($emptyOrNotIdenticalNode->expr->args[0]->value, $firstArgValue)) {
+        if ($emptyOrNotIdenticalNode->expr instanceof FuncCall) {
             return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
         }
 

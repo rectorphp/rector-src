@@ -11,6 +11,8 @@ use PhpParser\ParserFactory;
 use PHPStan\Parser\CachedParser;
 use PHPStan\Parser\SimpleParser;
 
+use function PHPSTORM_META\map;
+
 /**
  * Based on PHPStan-based PHP-Parser best practices:
  *
@@ -33,7 +35,15 @@ final class SmartPhpParserFactory
     private function createNativePhpParser(): Parser
     {
         $parserFactory = new ParserFactory();
-        $lexerEmulative = new Emulative();
+        $lexerEmulative = new Emulative([
+            'usedAttributes' => [
+                'comments',
+                'startLine',
+                'endLine',
+                'startTokenPos',
+                'endTokenPos',
+            ],
+        ]);
 
         return $parserFactory->create(ParserFactory::PREFER_PHP7, $lexerEmulative);
     }
