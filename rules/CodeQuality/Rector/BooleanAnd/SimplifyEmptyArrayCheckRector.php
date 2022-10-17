@@ -7,7 +7,6 @@ namespace Rector\CodeQuality\Rector\BooleanAnd;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\Empty_;
@@ -77,10 +76,10 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
         return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
     }
 
-    private function resolvetwoNodeMatch(BinaryOp $binaryOp): ?TwoNodeMatch
+    private function resolvetwoNodeMatch(BooleanAnd $booleanAnd): ?TwoNodeMatch
     {
         return $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
-            $binaryOp,
+            $booleanAnd,
             // is_array(...)
             function (Node $node): bool {
                 if (! $node instanceof FuncCall) {
