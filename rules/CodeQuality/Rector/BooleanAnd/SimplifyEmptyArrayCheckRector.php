@@ -49,15 +49,24 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
+        $leftNode = $node->left;
         $twoNodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
             $node,
             // is_array(...)
-            function (Node $node): bool {
+            function (Node $node) use ($leftNode): bool {
                 if (! $node instanceof FuncCall) {
                     return false;
                 }
 
-                return $this->isName($node, 'is_array');
+                if (! $this->isName($node, 'is_array')) {
+                    return false;
+                }
+
+                if ($leftNode instanceof Empty_) {
+                    return $this->nodeComparator->areNodesEqual($leftNode->expr, $node->args[0]->value);
+                }
+
+                return true;
             },
             Empty_::class
         );
