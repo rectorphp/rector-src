@@ -34,13 +34,7 @@ final class SmartPhpParserFactory
     {
         $parserFactory = new ParserFactory();
         $lexerEmulative = new Emulative([
-            'usedAttributes' => [
-                'comments',
-                'startLine',
-                'endLine',
-                'startTokenPos',
-                'endTokenPos',
-            ],
+            'usedAttributes' => ['comments', 'startLine', 'endLine', 'startTokenPos', 'endTokenPos'],
         ]);
 
         return $parserFactory->create(ParserFactory::PREFER_PHP7, $lexerEmulative);

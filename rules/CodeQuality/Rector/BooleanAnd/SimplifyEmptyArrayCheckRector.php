@@ -79,7 +79,7 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                         return false;
                     }
 
-                    if (!$this->isName($node->expr, 'array_filter')) {
+                    if (! $this->isName($node->expr, 'array_filter')) {
                         return false;
                     }
 
