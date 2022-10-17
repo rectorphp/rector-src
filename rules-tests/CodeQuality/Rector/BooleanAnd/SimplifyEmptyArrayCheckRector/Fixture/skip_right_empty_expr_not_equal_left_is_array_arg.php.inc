@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector\Fixture;
 
-final class SkipRightEmptyExprNotEqualRightIsArray
+final class SkipRightEmptyExprNotEqualLeftIsArray
 {
     public function run( $a )
     {
