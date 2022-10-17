@@ -121,7 +121,7 @@ CODE_SAMPLE
         }
 
         $endLine = $node->getEndLine();
-        $line = $nextNode->getLine();
+        $line = $nextNode->getStartLine();
         $rangeLine = $line - $endLine;
 
         if ($rangeLine > 1) {
@@ -138,7 +138,7 @@ CODE_SAMPLE
             }
 
             /** @var Comment[] $comments */
-            $line = $comments[0]->getLine();
+            $line = $comments[0]->getStartLine();
             $rangeLine = $line - $endLine;
 
             if ($rangeLine > 1) {
