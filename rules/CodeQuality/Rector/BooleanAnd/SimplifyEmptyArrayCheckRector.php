@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\BooleanAnd;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\Empty_;
@@ -50,8 +51,36 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        $twoNodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
-            $node,
+        $twoNodeMatch = $this->resolvetwoNodeMatch($node);
+
+        if (! $twoNodeMatch instanceof TwoNodeMatch) {
+            return null;
+        }
+
+        /** @var FuncCall $isArrayExpr */
+        $isArrayExpr = $twoNodeMatch->getFirstExpr();
+
+        /** @var Expr $firstArgValue */
+        $firstArgValue = $isArrayExpr->args[0]->value;
+
+        /** @var Empty_ $emptyOrNotIdenticalNode */
+        $emptyOrNotIdenticalNode = $twoNodeMatch->getSecondExpr();
+
+        if ($emptyOrNotIdenticalNode->expr instanceof FuncCall) {
+            return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($emptyOrNotIdenticalNode->expr, $firstArgValue)) {
+            return null;
+        }
+
+        return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
+    }
+
+    private function resolvetwoNodeMatch(BinaryOp $binaryOp): ?TwoNodeMatch
+    {
+        return $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
+            $binaryOp,
             // is_array(...)
             function (Node $node): bool {
                 if (! $node instanceof FuncCall) {
@@ -89,28 +118,5 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                 return true;
             }
         );
-
-        if (! $twoNodeMatch instanceof TwoNodeMatch) {
-            return null;
-        }
-
-        /** @var FuncCall $isArrayExpr */
-        $isArrayExpr = $twoNodeMatch->getFirstExpr();
-
-        /** @var Expr $firstArgValue */
-        $firstArgValue = $isArrayExpr->args[0]->value;
-
-        /** @var Empty_ $emptyOrNotIdenticalNode */
-        $emptyOrNotIdenticalNode = $twoNodeMatch->getSecondExpr();
-
-        if ($emptyOrNotIdenticalNode->expr instanceof FuncCall) {
-            return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
-        }
-
-        if (! $this->nodeComparator->areNodesEqual($emptyOrNotIdenticalNode->expr, $firstArgValue)) {
-            return null;
-        }
-
-        return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
     }
 }
