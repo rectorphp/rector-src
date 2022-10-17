@@ -11,8 +11,6 @@ use PhpParser\ParserFactory;
 use PHPStan\Parser\CachedParser;
 use PHPStan\Parser\SimpleParser;
 
-use function PHPSTORM_META\map;
-
 /**
  * Based on PHPStan-based PHP-Parser best practices:
  *
