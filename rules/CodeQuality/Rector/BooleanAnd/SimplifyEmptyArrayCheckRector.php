@@ -49,7 +49,6 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        $leftNode = $node->left;
         $twoNodeMatch = $this->binaryOpManipulator->matchFirstAndSecondConditionNode(
             $node,
             // is_array(...)
@@ -71,8 +70,15 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
             return null;
         }
 
+        /** @var FuncCall $isArrayExpr */
+        $isArrayExpr = $twoNodeMatch->getSecondExpr();
+
         /** @var Empty_ $emptyOrNotIdenticalNode */
         $emptyOrNotIdenticalNode = $twoNodeMatch->getSecondExpr();
+
+        if (! $this->nodeComparator->areNodesEqual($emptyOrNotIdenticalNode->expr, $isArrayExpr->args[0]->value)) {
+            return null;
+        }
 
         return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
     }
