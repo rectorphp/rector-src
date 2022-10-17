@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\BooleanAnd;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -57,11 +58,15 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                     return false;
                 }
 
+                if ($node->isFirstClassCallable()) {
+                    return false;
+                }
+
                 if (! $this->isName($node, 'is_array')) {
                     return false;
                 }
 
-                return true;
+                return isset($node->args[0]);
             },
             Empty_::class
         );
@@ -71,12 +76,22 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
         }
 
         /** @var FuncCall $isArrayExpr */
-        $isArrayExpr = $twoNodeMatch->getSecondExpr();
+        $isArrayExpr = $twoNodeMatch->getFirstExpr();
+
+        /** @var Expr $firstArgValue */
+        $firstArgValue = $isArrayExpr->args[0]->value;
 
         /** @var Empty_ $emptyOrNotIdenticalNode */
         $emptyOrNotIdenticalNode = $twoNodeMatch->getSecondExpr();
 
-        if (! $this->nodeComparator->areNodesEqual($emptyOrNotIdenticalNode->expr, $isArrayExpr->args[0]->value)) {
+        if ($emptyOrNotIdenticalNode->expr instanceof FuncCall && ! $emptyOrNotIdenticalNode->expr->isFirstClassCallable() && $this->isName(
+            $emptyOrNotIdenticalNode->expr,
+            'array_filter'
+        ) && $this->nodeComparator->areNodesEqual($emptyOrNotIdenticalNode->expr->args[0]->value, $firstArgValue)) {
+            return new Identical($emptyOrNotIdenticalNode->expr, new Array_());
+        }
+
+        if (! $this->nodeComparator->areNodesEqual($emptyOrNotIdenticalNode->expr, $firstArgValue)) {
             return null;
         }
 
