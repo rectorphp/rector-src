@@ -10,7 +10,7 @@ final class SkipLeftEmptyExprNotEqualRightIsArray
         $x = !empty( $a['x'] ) ? $a['x'] : array();
         $y = !empty( $a['y'] ) ? $a['y'] : array();
 
-        if ( empty( $random ) && is_array( $x ) && is_array( $y ) ) {
+        if ( empty( $random ) && is_array( $x ) ) {
             echo "hello";
         }
     }
