@@ -8,6 +8,8 @@ class DowngradeParamReflectionGetAttribute
 {
     public function run(ReflectionClass $reflectionClass)
     {
+        echo $reflectionClass->getFileName();
+
         if ($reflectionClass->getAttributes()) {
             return true;
         }
@@ -30,6 +32,8 @@ class DowngradeParamReflectionGetAttribute
      */
     public function run($reflectionClass)
     {
+        echo $reflectionClass->getFileName();
+
         if (method_exists($reflectionClass, 'getAttributes') ? $reflectionClass->getAttributes() : []) {
             return true;
         }

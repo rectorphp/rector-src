@@ -329,7 +329,28 @@ final class NodeTypeResolver
     {
         $node = $this->betterNodeFinder->findFirstPrevious(
             $variable,
-            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $variable)
+            function (Node $subNode) use ($variable): bool {
+                if (! $this->nodeComparator->areNodesEqual($subNode, $variable)) {
+                    return false;
+                }
+
+                if (! $subNode instanceof Param) {
+                    /** @var Variable $subNode */
+                    $scope = $subNode->getAttribute(AttributeKey::SCOPE);
+
+                    if (! $scope instanceof Scope) {
+                        return false;
+                    }
+
+                    $type = $scope->getType($subNode);
+
+                    if ($type instanceof MixedType) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         );
 
         if (! $node instanceof Param) {
