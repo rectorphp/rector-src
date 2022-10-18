@@ -13,6 +13,8 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -21,6 +23,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Broker\ClassAutoloadingException;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantBooleanType;
@@ -35,14 +38,19 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\HasOffsetTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
@@ -66,6 +74,11 @@ final class NodeTypeResolver
         private readonly AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
         private readonly IdentifierTypeResolver $identifierTypeResolver,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly NodeComparator $nodeComparator,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly NodeNameResolver $nodeNameResolver,
         array $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
@@ -161,7 +174,17 @@ final class NodeTypeResolver
                 $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $type, $scope);
             }
 
-            return $this->hasOffsetTypeCorrector->correct($type);
+            $type = $this->hasOffsetTypeCorrector->correct($type);
+
+            if (! $type instanceof MixedType) {
+                return $type;
+            }
+
+            if ($node instanceof Variable) {
+                return $this->resolveVariableTypeFromParamType($node, $type);
+            }
+
+            return $type;
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
@@ -300,6 +323,33 @@ final class NodeTypeResolver
         }
 
         return $classReflection->isSubclassOf($objectType->getClassName());
+    }
+
+    private function resolveVariableTypeFromParamType(Variable $node, MixedType $mixedType): Type
+    {
+        $found = $this->betterNodeFinder->findFirstPrevious(
+            $node,
+            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $node)
+        );
+
+        if (! $found instanceof Param) {
+            return $mixedType;
+        }
+
+        $parentNode = $found->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof FunctionLike) {
+            return $mixedType;
+        }
+
+        $paramName = $this->nodeNameResolver->getName($found);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($parentNode);
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
+
+        if (! $paramTagValueNode instanceof ParamTagValueNode) {
+            return $mixedType;
+        }
+
+        return $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($paramTagValueNode->type, $found);
     }
 
     private function isUnionTypeable(Type $first, Type $second): bool
