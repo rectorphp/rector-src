@@ -331,7 +331,7 @@ final class NodeTypeResolver
         $node = $this->betterNodeFinder->findFirstPrevious(
             $variable,
             function (Node $subNode) use ($variable): bool {
-                if (! $this->nodeComparator->areNodesEqual($subNode, $variable)) {
+                if ($subNode instanceof Arg || ! $this->nodeComparator->areNodesEqual($subNode, $variable)) {
                     return false;
                 }
 
@@ -339,10 +339,6 @@ final class NodeTypeResolver
                     $scope = $subNode->getAttribute(AttributeKey::SCOPE);
 
                     if (! $scope instanceof Scope) {
-                        return false;
-                    }
-
-                    if ($subNode instanceof Arg) {
                         return false;
                     }
 
