@@ -245,15 +245,6 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
-        $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
-
-        // is equals node type? return node early
-        if ($originalNode::class === $refactoredNode::class) {
-            return $refactoredNode;
-        }
-
-        $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
-
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
 
@@ -262,6 +253,12 @@ CODE_SAMPLE;
             : $refactoredNode;
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
+
+        // Node result is different? re-connect parent node and scope refresh
+        if ($originalNode::class !== $refactoredNode::class) {
+            $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+            $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
+        }
 
         return $refactoredNode;
     }
