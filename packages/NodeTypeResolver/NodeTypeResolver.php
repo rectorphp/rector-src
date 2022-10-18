@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -335,13 +336,17 @@ final class NodeTypeResolver
                 }
 
                 if (! $subNode instanceof Param) {
-                    /** @var Variable $subNode */
                     $scope = $subNode->getAttribute(AttributeKey::SCOPE);
 
                     if (! $scope instanceof Scope) {
                         return false;
                     }
 
+                    if ($subNode instanceof Arg) {
+                        return false;
+                    }
+
+                    /** @var Variable $subNode */
                     $type = $scope->getType($subNode);
 
                     if ($type instanceof MixedType) {
