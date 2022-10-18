@@ -325,23 +325,23 @@ final class NodeTypeResolver
         return $classReflection->isSubclassOf($objectType->getClassName());
     }
 
-    private function resolveVariableTypeFromParamType(Variable $node, MixedType $mixedType): Type
+    private function resolveVariableTypeFromParamType(Variable $variable, MixedType $mixedType): Type
     {
-        $found = $this->betterNodeFinder->findFirstPrevious(
-            $node,
-            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $node)
+        $node = $this->betterNodeFinder->findFirstPrevious(
+            $variable,
+            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $variable)
         );
 
-        if (! $found instanceof Param) {
+        if (! $node instanceof Param) {
             return $mixedType;
         }
 
-        $parentNode = $found->getAttribute(AttributeKey::PARENT_NODE);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof FunctionLike) {
             return $mixedType;
         }
 
-        $paramName = $this->nodeNameResolver->getName($found);
+        $paramName = $this->nodeNameResolver->getName($node);
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($parentNode);
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
@@ -349,7 +349,7 @@ final class NodeTypeResolver
             return $mixedType;
         }
 
-        return $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($paramTagValueNode->type, $found);
+        return $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($paramTagValueNode->type, $node);
     }
 
     private function isUnionTypeable(Type $first, Type $second): bool
