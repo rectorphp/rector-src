@@ -349,6 +349,26 @@ CODE_SAMPLE;
         $this->nodeRemover->removeNode($node);
     }
 
+    private function refreshDocComment(Node $node): void
+    {
+        if ($node instanceof Nop) {
+            return;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        if (! $phpDocInfo->hasChanged()) {
+            return;
+        }
+
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
+        if ($phpDocNode->children === []) {
+            $node->setAttribute(AttributeKey::COMMENTS, null);
+            return;
+        }
+
+        $node->setDocComment(new Doc((string) $phpDocNode));
+    }
+
     /**
      * @param Node[]|Node $node
      */
@@ -361,12 +381,7 @@ CODE_SAMPLE;
              * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
              * to make PHPStan type can be correctly detected
              */
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $phpDocNode = $phpDocInfo->getPhpDocNode();
-
-            if ($phpDocInfo->hasChanged() && $phpDocNode->children !== []) {
-                $node->setDocComment(new Doc((string) $phpDocNode));
-            }
+            $this->refreshDocComment($node);
 
             $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
