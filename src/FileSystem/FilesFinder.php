@@ -69,7 +69,7 @@ final class FilesFinder
         $filePaths = [];
         foreach ($finder as $fileInfo) {
             $path = $fileInfo->getRealPath();
-            if ($path) {
+            if ($path !== false) {
                 $filePaths[] = $path;
             }
         }
