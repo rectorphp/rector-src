@@ -68,7 +68,10 @@ final class FilesFinder
 
         $filePaths = [];
         foreach ($finder as $fileInfo) {
-            $filePaths[] = $fileInfo->getRealPath();
+            $path = $fileInfo->getRealPath();
+            if ($path) {
+                $filePaths[] = $path;
+            }
         }
 
         return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
