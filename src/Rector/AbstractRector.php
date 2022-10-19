@@ -253,10 +253,10 @@ CODE_SAMPLE;
          * to make PHPStan type can be correctly detected
          */
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $docNode = $phpDocInfo->getPhpDocNode();
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
 
-        if ($phpDocInfo->hasChanged() && $docNode->children !== []) {
-            $node->setDocComment(new Doc((string) $docNode));
+        if ($phpDocInfo->hasChanged() && $phpDocNode->children !== []) {
+            $node->setDocComment(new Doc((string) $phpDocNode));
         }
 
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
