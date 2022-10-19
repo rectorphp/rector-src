@@ -248,9 +248,15 @@ CODE_SAMPLE;
 
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
 
-        $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($refactoredNode);
-        if ($originalNode::class === $refactoredNode::class && $phpdocInfo->hasChanged()) {
-            return $this->refactor($refactoredNode);
+        /**
+         * Early refresh PhpDocInfo before check to ensure doc node is latest update
+         * @see https://github.com/rectorphp/rector-src/pull/3001
+         */
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $docNode = $phpDocInfo->getPhpDocNode();
+
+        if ($phpDocInfo->hasChanged() && $docNode->children !== []) {
+            $node->setDocComment(new Doc((string) $docNode));
         }
 
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
@@ -385,17 +391,6 @@ CODE_SAMPLE;
     {
         if ($this->nodesToRemoveCollector->isNodeRemoved($node)) {
             return true;
-        }
-
-        /**
-         * Early refresh PhpDocInfo before check to ensure doc node is latest update
-         * @see https://github.com/rectorphp/rector-src/pull/3001
-         */
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $docNode = $phpDocInfo->getPhpDocNode();
-
-        if ($docNode->children !== []) {
-            $node->setDocComment(new Doc((string) $docNode));
         }
 
         if ($this->exclusionManager->isNodeSkippedByRector($node, static::class)) {
