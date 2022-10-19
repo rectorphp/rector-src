@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Rector;
 
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -384,6 +385,17 @@ CODE_SAMPLE;
     {
         if ($this->nodesToRemoveCollector->isNodeRemoved($node)) {
             return true;
+        }
+
+        /**
+         * Early refresh PhpDocInfo before check to ensure doc node is latest update
+         * @see https://github.com/rectorphp/rector-src/pull/3001
+         */
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $docNode = $phpDocInfo->getPhpDocNode();
+
+        if ($docNode->children !== []) {
+            $node->setDocComment(new Doc((string) $docNode));
         }
 
         if ($this->exclusionManager->isNodeSkippedByRector($node, static::class)) {
