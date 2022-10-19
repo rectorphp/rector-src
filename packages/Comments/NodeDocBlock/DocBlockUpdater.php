@@ -17,7 +17,7 @@ final class DocBlockUpdater
     ) {
     }
 
-    public function updatePrintedNodeWithPhpDocInfo(Node $node): void
+    public function updateNodeWithPhpDocInfo(Node $node): void
     {
         $phpDocInfo = $this->resolveChangedPhpDocInfo($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
