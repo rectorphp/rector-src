@@ -19,6 +19,7 @@ final class DocBlockUpdater
 
     public function updateNodeWithPhpDocInfo(Node $node): void
     {
+        // nothing to change? don't save it
         $phpDocInfo = $this->resolveChangedPhpDocInfo($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return;
@@ -48,6 +49,7 @@ final class DocBlockUpdater
 
     public function updateRefactoredNodeWithPhpDocInfo(Node $node): void
     {
+        // nothing to change? don't save it
         $phpDocInfo = $this->resolveChangedPhpDocInfo($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return;
@@ -64,7 +66,6 @@ final class DocBlockUpdater
 
     private function resolveChangedPhpDocInfo(Node $node): ?PhpDocInfo
     {
-        // nothing to change? don't save it
         $phpDocInfo = $node->getAttribute(AttributeKey::PHP_DOC_INFO);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
