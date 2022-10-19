@@ -557,7 +557,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
                 continue;
             }
 
-            $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
+            $this->docBlockUpdater->updatePrintedNodeWithPhpDocInfo($node);
         }
     }
 

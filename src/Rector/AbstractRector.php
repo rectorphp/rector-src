@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Rector;
 
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -20,6 +19,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Console\Output\RectorOutputStyle;
@@ -117,6 +117,8 @@ CODE_SAMPLE;
 
     private FilePathHelper $filePathHelper;
 
+    private DocBlockUpdater $docBlockUpdater;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -139,7 +141,8 @@ CODE_SAMPLE;
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
-        FilePathHelper $filePathHelper
+        FilePathHelper $filePathHelper,
+        DocBlockUpdater $docBlockUpdater
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -162,6 +165,7 @@ CODE_SAMPLE;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
+        $this->docBlockUpdater = $docBlockUpdater;
     }
 
     /**
@@ -349,26 +353,6 @@ CODE_SAMPLE;
         $this->nodeRemover->removeNode($node);
     }
 
-    private function refreshDocComment(Node $node): void
-    {
-        if ($node instanceof Nop) {
-            return;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if (! $phpDocInfo->hasChanged()) {
-            return;
-        }
-
-        $phpDocNode = $phpDocInfo->getPhpDocNode();
-        if ($phpDocNode->children === []) {
-            $node->setAttribute(AttributeKey::COMMENTS, null);
-            return;
-        }
-
-        $node->setDocComment(new Doc((string) $phpDocNode));
-    }
-
     /**
      * @param Node[]|Node $node
      */
@@ -381,7 +365,7 @@ CODE_SAMPLE;
              * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
              * to make PHPStan type can be correctly detected
              */
-            $this->refreshDocComment($node);
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
             $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
