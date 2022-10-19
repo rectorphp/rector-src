@@ -249,7 +249,8 @@ CODE_SAMPLE;
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
 
         /**
-         * Early refresh PhpDocInfo before refresh Scope to ensure doc node is latest update
+         * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
+         * @see https://github.com/rectorphp/rector/issues/7546
          * @see https://github.com/rectorphp/rector-src/pull/3001
          */
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
