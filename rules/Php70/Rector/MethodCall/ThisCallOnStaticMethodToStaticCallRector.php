@@ -125,6 +125,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $objectReference = $this->resolveClassSelf($node);
         return $this->nodeFactory->createStaticCall($objectReference, $methodName, $node->args);
     }
