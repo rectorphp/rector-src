@@ -249,7 +249,7 @@ CODE_SAMPLE;
 
         $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($refactoredNode);
         if ($originalNode::class === $refactoredNode::class && $phpdocInfo->hasChanged()) {
-            $this->refactor($refactoredNode);
+            return $this->refactor($refactoredNode);
         }
 
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
