@@ -250,6 +250,7 @@ CODE_SAMPLE;
 
         /**
          * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
+         * to make PHPStan type can be correctly detected
          */
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $docNode = $phpDocInfo->getPhpDocNode();
