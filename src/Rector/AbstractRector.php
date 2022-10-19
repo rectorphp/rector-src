@@ -247,18 +247,6 @@ CODE_SAMPLE;
         }
 
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
-
-        /**
-         * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
-         * to make PHPStan type can be correctly detected
-         */
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $phpDocNode = $phpDocInfo->getPhpDocNode();
-
-        if ($phpDocInfo->hasChanged() && $phpDocNode->children !== []) {
-            $node->setDocComment(new Doc((string) $phpDocNode));
-        }
-
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         // is equals node type? return node early
@@ -369,6 +357,17 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
+            /**
+             * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
+             * to make PHPStan type can be correctly detected
+             */
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+            $phpDocNode = $phpDocInfo->getPhpDocNode();
+
+            if ($phpDocInfo->hasChanged() && $phpDocNode->children !== []) {
+                $node->setDocComment(new Doc((string) $phpDocNode));
+            }
+
             $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
     }
