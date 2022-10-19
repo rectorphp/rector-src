@@ -246,6 +246,12 @@ CODE_SAMPLE;
         }
 
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+
+        $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($refactoredNode);
+        if ($originalNode::class === $refactoredNode::class && $phpdocInfo->hasChanged()) {
+            return $this->refactor($refactoredNode);
+        }
+
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         // is equals node type? return node early

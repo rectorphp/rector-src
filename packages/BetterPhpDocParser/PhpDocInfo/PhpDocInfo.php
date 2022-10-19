@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocInfo;
 
-use PhpParser\Comment;
-use PhpParser\Comment\Doc;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\InvalidTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
@@ -31,7 +29,6 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\Core\Configuration\CurrentNodeProvider;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -456,10 +453,6 @@ final class PhpDocInfo
         $node = $this->currentNodeProvider->getNode();
         if ($node !== null) {
             $this->rectorChangeCollector->notifyNodeFileInfo($node);
-            $docNode = $this->getPhpDocNode();
-            if ($docNode->children !== []) {
-                $node->setDocComment(new Doc((string) $docNode));
-            }
         }
     }
 
