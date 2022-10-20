@@ -19,6 +19,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Console\Output\RectorOutputStyle;
@@ -116,6 +117,8 @@ CODE_SAMPLE;
 
     private FilePathHelper $filePathHelper;
 
+    private DocBlockUpdater $docBlockUpdater;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -138,7 +141,8 @@ CODE_SAMPLE;
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
-        FilePathHelper $filePathHelper
+        FilePathHelper $filePathHelper,
+        DocBlockUpdater $docBlockUpdater
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -161,6 +165,7 @@ CODE_SAMPLE;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
+        $this->docBlockUpdater = $docBlockUpdater;
     }
 
     /**
@@ -356,6 +361,12 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
+            /**
+             * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
+             * to make PHPStan type can be correctly detected
+             */
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+
             $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
     }
