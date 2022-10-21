@@ -2,7 +2,7 @@
 
 namespace Rector\Core\Tests\Issues\AutoImportShortName;
 
-class FixtureDisableShortClassNameAutoImport
+class SkipImportDisabledShortClassName
 {
     public function run(\DateTime $dateTime)
     {
