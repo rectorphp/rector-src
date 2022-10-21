@@ -7,8 +7,5 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\DeadCode\Rector\FunctionLike\RemoveDuplicatedIfReturnRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        RemoveUnusedPrivateMethodRector::class,
-        RemoveDuplicatedIfReturnRector::class,
-    ]);
+    $rectorConfig->rules([RemoveUnusedPrivateMethodRector::class, RemoveDuplicatedIfReturnRector::class]);
 };
