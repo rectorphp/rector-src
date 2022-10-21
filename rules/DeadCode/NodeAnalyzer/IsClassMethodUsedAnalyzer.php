@@ -92,7 +92,7 @@ final class IsClassMethodUsedAnalyzer
         }
 
         if (count($array->items) !== 2) {
-            return true;
+            return false;
         }
 
         if (! $array->items[1] instanceof ArrayItem) {
