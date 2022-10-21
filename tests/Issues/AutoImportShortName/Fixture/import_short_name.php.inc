@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName;
+namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
 
 class ImportShortName
 {
@@ -13,7 +13,7 @@ class ImportShortName
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName;
+namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
 class ImportShortName
