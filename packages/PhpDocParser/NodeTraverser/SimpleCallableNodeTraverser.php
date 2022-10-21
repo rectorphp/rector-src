@@ -7,6 +7,7 @@ namespace Rector\PhpDocParser\NodeTraverser;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeVisitor\CallableNodeVisitor;
 
 /**
@@ -35,7 +36,27 @@ final class SimpleCallableNodeTraverser
         $nodeTraverser = new NodeTraverser();
         $callableNodeVisitor = new CallableNodeVisitor($callable);
         $nodeTraverser->addVisitor($callableNodeVisitor);
-        $nodeTraverser->addVisitor(new ParentConnectingVisitor());
+
+        if ($this->shouldConnectParent($nodes)) {
+            $nodeTraverser->addVisitor(new ParentConnectingVisitor());
+        }
+
         $nodeTraverser->traverse($nodes);
+    }
+
+    /**
+     * @param Node[] $nodes
+     */
+    private function shouldConnectParent(array $nodes): bool
+    {
+        foreach ($nodes as $node) {
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+            if ($parentNode instanceof Node) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
