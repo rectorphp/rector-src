@@ -52,11 +52,11 @@ final class SimpleCallableNodeTraverser
         foreach ($nodes as $node) {
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
-            if ($parentNode instanceof Node) {
-                return true;
+            if (! $parentNode instanceof Node) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 }
