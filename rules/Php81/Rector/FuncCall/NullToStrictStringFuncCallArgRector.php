@@ -315,6 +315,17 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
         'socket_send' => ['data'],
         'mail' => ['to', 'subject', 'message'],
         'mb_send_mail' => ['to', 'subject', 'message'],
+        'ctype_alnum' => ['text'],
+        'ctype_alpha' => ['text'],
+        'ctype_cntrl' => ['text'],
+        'ctype_digit' => ['text'],
+        'ctype_graph' => ['text'],
+        'ctype_lower' => ['text'],
+        'ctype_print' => ['text'],
+        'ctype_punct' => ['text'],
+        'ctype_space' => ['text'],
+        'ctype_upper' => ['text'],
+        'ctype_xdigit' => ['text'],
     ];
 
     public function __construct(
