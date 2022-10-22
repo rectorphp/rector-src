@@ -4,7 +4,7 @@ namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
 
 use Rector\Core\Tests\Issues\AutoImportShortName\Source\DateTime;
 
-class SkipSameLastName
+class SkipSameLastNameImported
 {
     public function run(\DateTime $dateTime)
     {
