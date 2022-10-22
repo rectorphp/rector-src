@@ -45,6 +45,13 @@ final class SimpleCallableNodeTraverser
     }
 
     /**
+     * The ArrowFunction when call ->getStmts(), it returns
+     *
+     *      return [new Node\Stmt\Return_($this->expr)]
+     *
+     * The $expr property has parent Node ArrowFunction, but not the Return_ stmt,
+     * so need to mirror $expr parent Node into Return_ stmt
+     *
      * @param Node[] $nodes
      */
     private function mirrorParentReturnArrowFunction(array $nodes): void
