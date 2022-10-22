@@ -39,7 +39,7 @@ final class SimpleCallableNodeTraverser
         $nodeTraverser = new NodeTraverser();
         $callableNodeVisitor = new CallableNodeVisitor($callable);
         $nodeTraverser->addVisitor($callableNodeVisitor);
-        $this->mirrorParent($nodes);
+        $this->mirrorParentReturnArrowFunction($nodes);
         $nodeTraverser->addVisitor(new ParentConnectingVisitor());
         $nodeTraverser->traverse($nodes);
     }
@@ -47,7 +47,7 @@ final class SimpleCallableNodeTraverser
     /**
      * @param Node[] $nodes
      */
-    private function mirrorParent(array $nodes): void
+    private function mirrorParentReturnArrowFunction(array $nodes): void
     {
         foreach ($nodes as $node) {
             if (! $node instanceof Return_) {
