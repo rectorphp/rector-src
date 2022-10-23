@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\ClassMethod;
 
+use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr;
@@ -222,9 +223,13 @@ CODE_SAMPLE
                 $parentClassMethodParam->byRef,
                 $parentClassMethodParam->variadic,
                 [],
-                $parentClassMethodParam->flags,
-                $parentClassMethodParam->attrGroups
+                $parentClassMethodParam->flags
             );
+
+            if ($parentClassMethodParam->attrGroups !== []) {
+                $attrGroupsAsComment = $this->nodePrinter->print($parentClassMethodParam->attrGroups);
+                $node->params[$key]->setAttribute(AttributeKey::COMMENTS, [new Comment($attrGroupsAsComment)]);
+            }
         }
 
         return $node;
