@@ -7,9 +7,6 @@ final class SkipCallableTypeDifferentDefinition
     /** @var CallbackHandler */
     private $fallback;
 
-    /**
-     * @param mixed[] $cache
-     */
     public function __construct(callable $fallback)
     {
         $this->fallback = $fallback;
