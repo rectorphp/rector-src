@@ -103,6 +103,12 @@ final class RectifiedAnalyzer
             return true;
         }
 
+        /**
+         * Start token pos must be < 0 to continue, as the node and parent node just re-printed
+         *
+         * - Node's original node is null
+         * - Parent Node's original node is null
+         */
         $startTokenPos = $node->getStartTokenPos();
         return $startTokenPos < 0;
     }
