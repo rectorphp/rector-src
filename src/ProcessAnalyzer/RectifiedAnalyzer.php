@@ -115,9 +115,10 @@ final class RectifiedAnalyzer
             return $countCreatedByRule !== 0;
         }
 
-        // different rule, allowed
+        // different rule, allowed if the $rectifiedNodeNode is parent of Node
         if (current($createdByRule) !== $rectifiedNodeClass) {
-            return true;
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+            return $parentNode === $rectifiedNodeNode;
         }
 
         return $rectifiedNodeNode === $node;
