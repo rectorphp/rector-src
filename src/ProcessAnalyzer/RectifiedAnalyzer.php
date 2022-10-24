@@ -115,10 +115,20 @@ final class RectifiedAnalyzer
             return $countCreatedByRule !== 0;
         }
 
-        // different rule, allowed if the $rectifiedNodeNode is parent of Node
+        /**
+         * different rule, allowed if:
+         *      - node parent is Node and parent Node's original Node is a Node, which not just reprinted
+         *      - doesn't has parent node
+         */
         if (current($createdByRule) !== $rectifiedNodeClass) {
             $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-            return $parentNode === $rectifiedNodeNode;
+
+            if ($parentNode instanceof Node) {
+                $parentOriginalNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
+                return $parentOriginalNode instanceof Node;
+            }
+
+            return true;
         }
 
         return $rectifiedNodeNode === $node;
