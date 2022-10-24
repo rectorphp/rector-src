@@ -92,45 +92,18 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        if ($this->isPreviousCreatedByRuleAttributeEquals($rectifiedNodeClass, $rectifiedNodeNode, $node)) {
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+        if (! $parentNode instanceof Node) {
+            return true;
+        }
+
+        $parentOriginalNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if ($parentOriginalNode instanceof Node) {
             return true;
         }
 
         $startTokenPos = $node->getStartTokenPos();
         return $startTokenPos < 0;
-    }
-
-    /**
-     * @param class-string<RectorInterface> $rectifiedNodeClass
-     */
-    private function isPreviousCreatedByRuleAttributeEquals(
-        string $rectifiedNodeClass,
-        Node $rectifiedNodeNode,
-        Node $node
-    ): bool {
-        /** @var class-string<RectorInterface>[] $createdByRule */
-        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-        $countCreatedByRule = count($createdByRule);
-        if ($countCreatedByRule !== 1) {
-            return $countCreatedByRule !== 0;
-        }
-
-        /**
-         * different rule, allowed if:
-         *      - node parent is Node and parent Node's original Node is a Node, which not just reprinted
-         *      - doesn't has parent node
-         */
-        if (current($createdByRule) !== $rectifiedNodeClass) {
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-            if ($parentNode instanceof Node) {
-                $parentOriginalNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
-                return $parentOriginalNode instanceof Node;
-            }
-
-            return true;
-        }
-
-        return $rectifiedNodeNode === $node;
     }
 }
