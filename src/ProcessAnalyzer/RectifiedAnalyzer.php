@@ -36,7 +36,7 @@ final class RectifiedAnalyzer
     {
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
 
-        if ($this->hasCreatedByRule($rectorClass, $node, $originalNode)) {
+        if ($this->hasCreatedByRule($rectorClass, $originalNode)) {
             return new RectifiedNode($rectorClass, $node);
         }
 
@@ -62,9 +62,12 @@ final class RectifiedAnalyzer
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
-    private function hasCreatedByRule(string $rectorClass, Node $node, ?Node $originalNode): bool
+    private function hasCreatedByRule(string $rectorClass, ?Node $originalNode): bool
     {
-        $originalNode ??= $node;
+        if (! $originalNode instanceof Node) {
+            return false;
+        }
+
         $createdByRule = $originalNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
         return in_array($rectorClass, $createdByRule, true);
     }
