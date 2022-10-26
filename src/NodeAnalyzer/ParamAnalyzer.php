@@ -147,6 +147,10 @@ final class ParamAnalyzer
     private function isUsedAsArg(Node $node, Param $param): bool
     {
         if ($node instanceof New_ || $node instanceof CallLike) {
+            if ($node->isFirstClassCallable()) {
+                return false;
+            }
+
             foreach ($node->getArgs() as $arg) {
                 if ($this->nodeComparator->areNodesEqual($param->var, $arg->value)) {
                     return true;
