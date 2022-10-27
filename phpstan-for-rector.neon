@@ -12,4 +12,3 @@ parameters:
 # load extension
 includes:
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
-    - vendor/phpstan/phpstan-phpunit/extension.neon
