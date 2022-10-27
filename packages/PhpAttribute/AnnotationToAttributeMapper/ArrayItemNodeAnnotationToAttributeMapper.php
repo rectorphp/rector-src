@@ -7,7 +7,9 @@ namespace Rector\PhpAttribute\AnnotationToAttributeMapper;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
+use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
@@ -56,6 +58,13 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
             $keyExpr = $this->annotationToAttributeMapper->map($keyValue);
         } else {
             $keyExpr = null;
+
+            if (is_string($arrayItemNode->value) && str_starts_with($arrayItemNode->value, '@') && ! str_ends_with($arrayItemNode->value, ')')) {
+                $identifierTypeNode = new IdentifierTypeNode($arrayItemNode->value);
+                $arrayItemNode->value = new DoctrineAnnotationTagValueNode($identifierTypeNode);
+
+                return $this->map($arrayItemNode);
+            }
         }
 
         // @todo how to skip natural integer keys?

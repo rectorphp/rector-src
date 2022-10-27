@@ -80,11 +80,6 @@ final class PlainValueParser
             return $this->parseNestedDoctrineAnnotationTagValueNode($currentTokenValue, $tokenIterator);
         }
 
-        // nested entity which doesn't has () suffix on start with @
-        if ($this->hasNoParenthesesAnnotation($tokenIterator, $currentTokenValue)) {
-            return $this->parseNestedDoctrineAnnotationTagValueNode($currentTokenValue, $tokenIterator);
-        }
-
         $start = $tokenIterator->currentPosition();
 
         // from "quote to quote"
@@ -100,26 +95,6 @@ final class PlainValueParser
         }
 
         return $currentTokenValue;
-    }
-
-    private function hasNoParenthesesAnnotation(BetterTokenIterator $tokenIterator, string $currentTokenValue): bool
-    {
-        if (! $tokenIterator->isCurrentTokenType(
-            Lexer::TOKEN_COMMA,
-            Lexer::TOKEN_PHPDOC_EOL,
-            Lexer::TOKEN_CLOSE_CURLY_BRACKET
-        )) {
-            return false;
-        }
-
-        if (! str_starts_with($currentTokenValue, '@')) {
-            return false;
-        }
-
-        /**
-         * Avoid crash on single char '@' value
-         */
-        return strlen($currentTokenValue) > 1;
     }
 
     private function parseNestedDoctrineAnnotationTagValueNode(
