@@ -57,7 +57,7 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
             /** @var Expr $keyExpr */
             $keyExpr = $this->annotationToAttributeMapper->map($keyValue);
         } else {
-            if (is_string($arrayItemNode->value) && str_starts_with($arrayItemNode->value, '@') && ! str_ends_with(
+            if ($arrayItemNode->kindValueQuoted === null && is_string($arrayItemNode->value) && str_starts_with($arrayItemNode->value, '@') && ! str_ends_with(
                 $arrayItemNode->value,
                 ')'
             )) {
