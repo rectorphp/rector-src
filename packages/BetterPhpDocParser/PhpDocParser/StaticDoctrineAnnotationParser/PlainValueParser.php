@@ -18,6 +18,7 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\PhpAttribute\Enum\DocTagNodeState;
 use Symfony\Contracts\Service\Attribute\Required;
 
 final class PlainValueParser
@@ -77,6 +78,11 @@ final class PlainValueParser
 
         // nested entity!
         if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_PARENTHESES)) {
+            return $this->parseNestedDoctrineAnnotationTagValueNode($currentTokenValue, $tokenIterator);
+        }
+
+        // nested entity which doesn't has () suffix on start with @
+        if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_COMMA, Lexer::TOKEN_PHPDOC_EOL, Lexer::TOKEN_CLOSE_CURLY_BRACKET) && str_starts_with($currentTokenValue, '@')) {
             return $this->parseNestedDoctrineAnnotationTagValueNode($currentTokenValue, $tokenIterator);
         }
 
