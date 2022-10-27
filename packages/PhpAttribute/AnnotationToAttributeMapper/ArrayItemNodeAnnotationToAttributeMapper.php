@@ -59,7 +59,10 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
         } else {
             $keyExpr = null;
 
-            if (is_string($arrayItemNode->value) && str_starts_with($arrayItemNode->value, '@') && ! str_ends_with($arrayItemNode->value, ')')) {
+            if (is_string($arrayItemNode->value) && str_starts_with($arrayItemNode->value, '@') && ! str_ends_with(
+                $arrayItemNode->value,
+                ')'
+            )) {
                 $identifierTypeNode = new IdentifierTypeNode($arrayItemNode->value);
                 $arrayItemNode->value = new DoctrineAnnotationTagValueNode($identifierTypeNode);
 
