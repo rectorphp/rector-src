@@ -18,12 +18,6 @@
 * ![](https://github.com/rectorphp/rector-symfony/actions/workflows/tests.yaml/badge.svg)
 * ![](https://github.com/rectorphp/rector-symfony/actions/workflows/code_analysis.yaml/badge.svg)
 
-## Laravel
-
-* https://github.com/rectorphp/rector-laravel
-* ![](https://github.com/rectorphp/rector-laravel/actions/workflows/tests.yaml/badge.svg)
-* ![](https://github.com/rectorphp/rector-laravel/actions/workflows/code_analysis.yaml/badge.svg)
-
 ## PHPUnit
 
 * https://github.com/rectorphp/rector-phpunit
