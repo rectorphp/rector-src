@@ -18,7 +18,6 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\PhpAttribute\Enum\DocTagNodeState;
 use Symfony\Contracts\Service\Attribute\Required;
 
 final class PlainValueParser
@@ -105,7 +104,11 @@ final class PlainValueParser
 
     private function hasNoParenthesesAnnotation(BetterTokenIterator $tokenIterator, string $currentTokenValue): bool
     {
-        if (! $tokenIterator->isCurrentTokenType(Lexer::TOKEN_COMMA, Lexer::TOKEN_PHPDOC_EOL, Lexer::TOKEN_CLOSE_CURLY_BRACKET)) {
+        if (! $tokenIterator->isCurrentTokenType(
+            Lexer::TOKEN_COMMA,
+            Lexer::TOKEN_PHPDOC_EOL,
+            Lexer::TOKEN_CLOSE_CURLY_BRACKET
+        )) {
             return false;
         }
 
