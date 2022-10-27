@@ -57,8 +57,6 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
             /** @var Expr $keyExpr */
             $keyExpr = $this->annotationToAttributeMapper->map($keyValue);
         } else {
-            $keyExpr = null;
-
             if (is_string($arrayItemNode->value) && str_starts_with($arrayItemNode->value, '@') && ! str_ends_with(
                 $arrayItemNode->value,
                 ')'
@@ -68,6 +66,8 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
 
                 return $this->map($arrayItemNode);
             }
+
+            $keyExpr = null;
         }
 
         // @todo how to skip natural integer keys?
