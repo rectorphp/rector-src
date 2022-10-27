@@ -57,13 +57,7 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
             /** @var Expr $keyExpr */
             $keyExpr = $this->annotationToAttributeMapper->map($keyValue);
         } else {
-            if ($arrayItemNode->kindValueQuoted === null && is_string($arrayItemNode->value) && str_starts_with(
-                $arrayItemNode->value,
-                '@'
-            ) && ! str_ends_with(
-                $arrayItemNode->value,
-                ')'
-            )) {
+            if ($this->hasNoParenthesesAnnotation($arrayItemNode)) {
                 $identifierTypeNode = new IdentifierTypeNode($arrayItemNode->value);
                 $arrayItemNode->value = new DoctrineAnnotationTagValueNode($identifierTypeNode);
 
@@ -76,5 +70,22 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
         // @todo how to skip natural integer keys?
 
         return new ArrayItem($valueExpr, $keyExpr);
+    }
+
+    private function hasNoParenthesesAnnotation(ArrayItemNode $arrayItemNode): bool
+    {
+        if (is_int($arrayItemNode->kindValueQuoted)) {
+            return false;
+        }
+
+        if (! is_string($arrayItemNode->value)) {
+            return false;
+        }
+
+        if (! str_starts_with($arrayItemNode->value, '@')) {
+            return false;
+        }
+
+        return ! str_ends_with($arrayItemNode->value, ')');
     }
 }
