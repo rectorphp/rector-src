@@ -10,10 +10,12 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\Core\Validation\RectorAssert;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 use Symfony\Contracts\Service\Attribute\Required;
+use Webmozart\Assert\InvalidArgumentException;
 
 /**
  * @implements AnnotationToAttributeMapperInterface<ArrayItemNode>
@@ -58,10 +60,15 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
             $keyExpr = $this->annotationToAttributeMapper->map($keyValue);
         } else {
             if ($this->hasNoParenthesesAnnotation($arrayItemNode)) {
-                $identifierTypeNode = new IdentifierTypeNode($arrayItemNode->value);
-                $arrayItemNode->value = new DoctrineAnnotationTagValueNode($identifierTypeNode);
+                try {
+                    RectorAssert::className(ltrim((string) $arrayItemNode->value, '@'));
 
-                return $this->map($arrayItemNode);
+                    $identifierTypeNode = new IdentifierTypeNode($arrayItemNode->value);
+                    $arrayItemNode->value = new DoctrineAnnotationTagValueNode($identifierTypeNode);
+
+                    return $this->map($arrayItemNode);
+                } catch (InvalidArgumentException) {
+                }
             }
 
             $keyExpr = null;
