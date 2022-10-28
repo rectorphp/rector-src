@@ -8,7 +8,7 @@ if (class_exists('Doctrine\Common\Collections\ArrayCollection')) {
     return;
 }
 
-class ArrayCollection
+class ArrayCollection implements Collection
 {
 
 }
