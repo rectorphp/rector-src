@@ -18,6 +18,8 @@ use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeNameResolver\NodeVisitor\RenameClassCallbackVisitor;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -32,6 +34,7 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ClassRenamer $classRenamer,
         private readonly RectorConfigProvider $rectorConfigProvider,
+        private readonly RenameClassCallbackVisitor $renameClassCallbackVisitor,
     ) {
     }
 
@@ -115,6 +118,14 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
+        if (isset($configuration['__callbacks__'])) {
+            Assert::allIsCallable($configuration['__callbacks__']);
+            /** @var array<callable(ClassLike, NodeNameResolver): ?string> $oldToNewClassCallbacks */
+            $oldToNewClassCallbacks = $configuration['__callbacks__'];
+            $this->renameClassCallbackVisitor->addOldToNewClassCallbacks($oldToNewClassCallbacks);
+            unset($configuration['__callbacks__']);
+        }
+
         Assert::allString($configuration);
         Assert::allString(array_keys($configuration));
 
