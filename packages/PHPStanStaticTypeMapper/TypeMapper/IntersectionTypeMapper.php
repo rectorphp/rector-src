@@ -97,7 +97,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
                 continue;
             }
 
-            if (! $this->reflectionProvider->hasClass((string) $resolvedType)) {
+            if (! $this->reflectionProvider->hasClass($resolvedTypeName)) {
                 continue;
             }
 
