@@ -87,6 +87,20 @@ final class IntersectionTypeMapper implements TypeMapperInterface
                 continue;
             }
 
+            $resolvedTypeName = (string) $resolvedType;
+            if (in_array($resolvedTypeName, ['string', 'object'], true)) {
+                return $resolvedType;
+            }
+
+            // $this->reflectionProvider->hasClass() returns true for iterable, so check early
+            if ($resolvedTypeName === 'iterable') {
+                continue;
+            }
+
+            if (! $this->reflectionProvider->hasClass((string) $resolvedType)) {
+                continue;
+            }
+
             $intersectionedTypeNodes[] = $resolvedType;
         }
 
@@ -108,15 +122,6 @@ final class IntersectionTypeMapper implements TypeMapperInterface
     {
         $resolvedType = $this->phpStanStaticTypeMapper->mapToPhpParserNode($intersectionedType, $typeKind);
         if (! $resolvedType instanceof Name) {
-            return null;
-        }
-
-        // $this->reflectionProvider->hasClass() returns true for iterable, so check early
-        if ((string) $resolvedType === 'iterable') {
-            return null;
-        }
-
-        if (! $this->reflectionProvider->hasClass((string) $resolvedType)) {
             return null;
         }
 
