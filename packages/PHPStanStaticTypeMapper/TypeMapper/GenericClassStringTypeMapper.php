@@ -13,7 +13,7 @@ use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 
 /**
- * @implements TypeMapperInterface<AccessoryLiteralStringType>
+ * @implements TypeMapperInterface<GenericClassStringType>
  */
 final class GenericClassStringTypeMapper implements TypeMapperInterface
 {
