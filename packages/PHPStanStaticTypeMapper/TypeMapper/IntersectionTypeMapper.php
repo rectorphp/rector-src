@@ -105,7 +105,14 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             $intersectionedTypeNodes[] = $resolvedType;
         }
 
-        if (count($intersectionedTypeNodes) < 2) {
+        $countIntersectionedTypeNodes = count($intersectionedTypeNodes);
+        if ($countIntersectionedTypeNodes === 1) {
+            /** @var Name $currentNode */
+            $currentNode = current($intersectionedTypeNodes);
+            return $currentNode;
+        }
+
+        if ($intersectionedTypeNodes === []) {
             return null;
         }
 
