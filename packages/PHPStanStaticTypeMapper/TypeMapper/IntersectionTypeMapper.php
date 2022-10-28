@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Type\Generic\GenericClassStringType;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -16,6 +16,7 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -24,15 +25,11 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class IntersectionTypeMapper implements TypeMapperInterface
 {
-    /**
-     * @var string
-     */
-    private const STRING = 'string';
-
     private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -84,22 +81,10 @@ final class IntersectionTypeMapper implements TypeMapperInterface
 
         $intersectionedTypeNodes = [];
         foreach ($type->getTypes() as $intersectionedType) {
-            $resolvedType = $this->phpStanStaticTypeMapper->mapToPhpParserNode($intersectionedType, $typeKind);
-            if ($intersectionedType instanceof GenericClassStringType) {
-                $resolvedTypeName = self::STRING;
-                $resolvedType = new Name(self::STRING);
-            } elseif (! $resolvedType instanceof Name) {
-                return null;
-            } else {
-                $resolvedTypeName = (string) $resolvedType;
-            }
+            $resolvedType = $this->resolveType($intersectionedType, $typeKind);
 
-            if ($resolvedTypeName === 'iterable') {
+            if (! $resolvedType instanceof Name) {
                 continue;
-            }
-
-            if (in_array($resolvedTypeName, [self::STRING, 'object'], true)) {
-                return $resolvedType;
             }
 
             $intersectionedTypeNodes[] = $resolvedType;
@@ -117,6 +102,28 @@ final class IntersectionTypeMapper implements TypeMapperInterface
         }
 
         return new Node\IntersectionType($intersectionedTypeNodes);
+    }
+
+    /**
+     * @param TypeKind::* $typeKind
+     */
+    private function resolveType(Type $intersectionedType, string $typeKind): ?Name
+    {
+        $resolvedType = $this->phpStanStaticTypeMapper->mapToPhpParserNode($intersectionedType, $typeKind);
+        if (! $resolvedType instanceof Name) {
+            return null;
+        }
+
+        // $this->reflectionProvider->hasClass() returns true for iterable, so check early
+        if ((string) $resolvedType === 'iterable') {
+            return null;
+        }
+
+        if (! $this->reflectionProvider->hasClass((string) $resolvedType)) {
+            return null;
+        }
+
+        return $resolvedType;
     }
 
     private function matchMockObjectType(IntersectionType $intersectionType): ?FullyQualified
