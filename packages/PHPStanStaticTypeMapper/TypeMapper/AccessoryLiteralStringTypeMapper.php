@@ -34,7 +34,7 @@ final class AccessoryLiteralStringTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param AccessoryNumericStringType $type
+     * @param AccessoryLiteralStringType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
