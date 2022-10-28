@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureInlinePublic;
 
-final class HasMethodType
+final class ObjectHasMethodType
 {
     public $obj;
 
@@ -22,7 +22,7 @@ final class HasMethodType
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureInlinePublic;
 
-final class HasMethodType
+final class ObjectHasMethodType
 {
     public object|string|null $obj = null;
 
