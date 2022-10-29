@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
 use Rector\Core\Php\PhpVersionProvider;
@@ -88,12 +89,16 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             }
 
             $resolvedTypeName = (string) $resolvedType;
-            if ($resolvedTypeName === 'object') {
+
+            if ($intersectionedType instanceof ObjectWithoutClassType) {
                 return $resolvedType;
             }
 
-            // $this->reflectionProvider->hasClass() returns true for iterable, so check early
-            if ($resolvedTypeName === 'iterable') {
+            /**
+             * $this->reflectionProvider->hasClass($resolvedTypeName) returns true on iterable type
+             * this ensure type type is ObjectType early
+             */
+            if (! $intersectionedType instanceof ObjectType) {
                 continue;
             }
 
