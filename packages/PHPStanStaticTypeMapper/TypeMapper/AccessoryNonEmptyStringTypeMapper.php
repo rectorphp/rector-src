@@ -10,6 +10,8 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
 use PHPStan\Type\Type;
+use Rector\Core\Php\PhpVersionProvider;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 
 /**
@@ -17,6 +19,11 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
  */
 final class AccessoryNonEmptyStringTypeMapper implements TypeMapperInterface
 {
+    public function __construct(
+        private readonly PhpVersionProvider $phpVersionProvider
+    ) {
+    }
+
     /**
      * @return class-string<Type>
      */
@@ -38,6 +45,10 @@ final class AccessoryNonEmptyStringTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::SCALAR_TYPES)) {
+            return null;
+        }
+
         return new Name('string');
     }
 }
