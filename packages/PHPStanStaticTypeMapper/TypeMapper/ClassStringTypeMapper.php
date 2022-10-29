@@ -14,24 +14,16 @@ use PHPStan\Type\Type;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements TypeMapperInterface<ClassStringType>
  */
 final class ClassStringTypeMapper implements TypeMapperInterface
 {
-    private GenericClassStringTypeMapper $genericClassStringTypeMapper;
-
     public function __construct(
+        private readonly GenericClassStringTypeMapper $genericClassStringTypeMapper,
         private readonly PhpVersionProvider $phpVersionProvider
     ) {
-    }
-
-    #[Required]
-    public function autowire(GenericClassStringTypeMapper $genericClassStringTypeMapper): void
-    {
-        $this->genericClassStringTypeMapper = $genericClassStringTypeMapper;
     }
 
     /**
