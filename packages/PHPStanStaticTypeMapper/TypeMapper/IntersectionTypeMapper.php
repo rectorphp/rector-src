@@ -8,9 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Type\Generic\GenericClassStringType;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
 use Rector\Core\Php\PhpVersionProvider;
@@ -24,15 +25,11 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class IntersectionTypeMapper implements TypeMapperInterface
 {
-    /**
-     * @var string
-     */
-    private const STRING = 'string';
-
     private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -85,20 +82,38 @@ final class IntersectionTypeMapper implements TypeMapperInterface
         $intersectionedTypeNodes = [];
         foreach ($type->getTypes() as $intersectionedType) {
             $resolvedType = $this->phpStanStaticTypeMapper->mapToPhpParserNode($intersectionedType, $typeKind);
-            if ($intersectionedType instanceof GenericClassStringType) {
-                $resolvedTypeName = self::STRING;
-                $resolvedType = new Name(self::STRING);
-            } elseif (! $resolvedType instanceof Name) {
-                return null;
-            } else {
-                $resolvedTypeName = (string) $resolvedType;
+
+            if (! $resolvedType instanceof Name) {
+                continue;
             }
 
-            if (in_array($resolvedTypeName, [self::STRING, 'object'], true)) {
+            $resolvedTypeName = (string) $resolvedType;
+
+            if ($intersectionedType instanceof ObjectWithoutClassType) {
                 return $resolvedType;
             }
 
+            /**
+             * $this->reflectionProvider->hasClass($resolvedTypeName) returns true on iterable type
+             * this ensure type is ObjectType early
+             */
+            if (! $intersectionedType instanceof ObjectType) {
+                continue;
+            }
+
+            if (! $this->reflectionProvider->hasClass($resolvedTypeName)) {
+                continue;
+            }
+
             $intersectionedTypeNodes[] = $resolvedType;
+        }
+
+        if ($intersectionedTypeNodes === []) {
+            return null;
+        }
+
+        if (count($intersectionedTypeNodes) === 1) {
+            return current($intersectionedTypeNodes);
         }
 
         return new Node\IntersectionType($intersectionedTypeNodes);
