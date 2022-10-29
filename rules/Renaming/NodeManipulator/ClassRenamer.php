@@ -35,6 +35,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\Renaming\Helper\RenameClassCallbackHandler;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class ClassRenamer
@@ -61,6 +62,7 @@ final class ClassRenamer
         private readonly NodeRemover $nodeRemover,
         private readonly ParameterProvider $parameterProvider,
         private readonly UseImportsResolver $useImportsResolver,
+        private readonly RenameClassCallbackHandler $renameClassCallbackHandler,
     ) {
     }
 
@@ -69,7 +71,7 @@ final class ClassRenamer
      */
     public function renameNode(Node $node, array $oldToNewClasses): ?Node
     {
-        $oldToNewTypes = $this->createOldToNewTypes($oldToNewClasses);
+        $oldToNewTypes = $this->createOldToNewTypes($node, $oldToNewClasses);
         $this->refactorPhpDoc($node, $oldToNewTypes, $oldToNewClasses);
 
         if ($node instanceof Name) {
@@ -441,8 +443,9 @@ final class ClassRenamer
      * @param array<string, string> $oldToNewClasses
      * @return OldToNewType[]
      */
-    private function createOldToNewTypes(array $oldToNewClasses): array
+    private function createOldToNewTypes(Node $node, array $oldToNewClasses): array
     {
+        $oldToNewClasses = $this->resolveOldToNewClassCallbacks($node, $oldToNewClasses);
         $cacheKey = md5(serialize($oldToNewClasses));
 
         if (isset($this->oldToNewTypesByCacheKey[$cacheKey])) {
@@ -460,5 +463,14 @@ final class ClassRenamer
         $this->oldToNewTypesByCacheKey[$cacheKey] = $oldToNewTypes;
 
         return $oldToNewTypes;
+    }
+
+    /**
+     * @param array<string, string> $oldToNewClasses
+     * @return array<string, string>
+     */
+    private function resolveOldToNewClassCallbacks(Node $node, array $oldToNewClasses): array
+    {
+        return [...$oldToNewClasses, ...$this->renameClassCallbackHandler->getOldToNewClassesFromNode($node)];
     }
 }
