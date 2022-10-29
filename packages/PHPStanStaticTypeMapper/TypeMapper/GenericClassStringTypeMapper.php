@@ -12,13 +12,21 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements TypeMapperInterface<GenericClassStringType>
  */
 final class GenericClassStringTypeMapper implements TypeMapperInterface
 {
-    public $phpStanStaticTypeMapper;
+    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
+
+    #[Required]
+    public function autowire(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
+    {
+        $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
+    }
 
     /**
      * @return class-string<Type>
