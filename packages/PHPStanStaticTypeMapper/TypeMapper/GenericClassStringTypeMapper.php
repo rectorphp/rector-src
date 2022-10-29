@@ -13,6 +13,8 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\Core\Php\PhpVersionProvider;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -23,6 +25,11 @@ use Symfony\Contracts\Service\Attribute\Required;
 final class GenericClassStringTypeMapper implements TypeMapperInterface
 {
     private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
+
+    public function __construct(
+        private readonly PhpVersionProvider $phpVersionProvider
+    ) {
+    }
 
     #[Required]
     public function autowire(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
@@ -55,6 +62,10 @@ final class GenericClassStringTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::SCALAR_TYPES)) {
+            return null;
+        }
+
         return new Name('string');
     }
 
