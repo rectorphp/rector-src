@@ -6,6 +6,7 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\GenericClassStringType;
@@ -17,6 +18,8 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
  */
 final class GenericClassStringTypeMapper implements TypeMapperInterface
 {
+    public $phpStanStaticTypeMapper;
+
     /**
      * @return class-string<Type>
      */
@@ -30,7 +33,10 @@ final class GenericClassStringTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
-        return new IdentifierTypeNode('string');
+        $attributeAwareIdentifierTypeNode = new IdentifierTypeNode('class-string');
+        $genericTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type, $typeKind);
+
+        return new GenericTypeNode($attributeAwareIdentifierTypeNode, [$genericTypeNode]);
     }
 
     /**
