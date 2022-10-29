@@ -17,7 +17,6 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -82,7 +81,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
 
         $intersectionedTypeNodes = [];
         foreach ($type->getTypes() as $intersectionedType) {
-            $resolvedType = $this->resolveType($intersectionedType, $typeKind);
+            $resolvedType = $this->phpStanStaticTypeMapper->mapToPhpParserNode($intersectionedType, $typeKind);
 
             if (! $resolvedType instanceof Name) {
                 continue;
@@ -118,19 +117,6 @@ final class IntersectionTypeMapper implements TypeMapperInterface
         }
 
         return new Node\IntersectionType($intersectionedTypeNodes);
-    }
-
-    /**
-     * @param TypeKind::* $typeKind
-     */
-    private function resolveType(Type $intersectionedType, string $typeKind): ?Name
-    {
-        $resolvedType = $this->phpStanStaticTypeMapper->mapToPhpParserNode($intersectionedType, $typeKind);
-        if (! $resolvedType instanceof Name) {
-            return null;
-        }
-
-        return $resolvedType;
     }
 
     private function matchMockObjectType(IntersectionType $intersectionType): ?FullyQualified
