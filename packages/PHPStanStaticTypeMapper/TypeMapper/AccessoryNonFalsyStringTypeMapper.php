@@ -37,7 +37,7 @@ final class AccessoryNonFalsyStringTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
-        return new IdentifierTypeNode('non-falsy-string');
+        return new IdentifierTypeNode('string');
     }
 
     /**
