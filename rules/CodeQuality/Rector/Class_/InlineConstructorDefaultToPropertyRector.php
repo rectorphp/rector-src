@@ -46,6 +46,10 @@ CODE_SAMPLE
 final class SomeClass
 {
     private $name = 'John';
+
+    public function __construct()
+    {
+    }
 }
 CODE_SAMPLE
             ),
