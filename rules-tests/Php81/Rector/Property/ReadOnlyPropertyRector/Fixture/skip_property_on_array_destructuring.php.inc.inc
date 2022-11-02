@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final class SkipPropertyOnCloneObjectAssignPropertyFetch
+final class SkipPropetyOnArrayDestructuring
 {
     public function __construct(
         private ?string $accessToken = null,
