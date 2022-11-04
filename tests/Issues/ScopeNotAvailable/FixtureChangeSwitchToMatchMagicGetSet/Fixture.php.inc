@@ -15,13 +15,21 @@ final class Fixture
                 default:
                     $result = "foo default";
             }
-        } else {
+        } elseif ($rand === 0) {
             switch ($rand) {
                 case 1:
                     $result = "bar";
                     break;
                 default:
                     $result = "bar default";
+            }
+        } else {
+            switch ($rand) {
+                case 1:
+                    $result = "baz";
+                    break;
+                default:
+                    $result = "baz default";
             }
         }
 
@@ -45,10 +53,15 @@ final class Fixture
                 1 => "foo",
                 default => "foo default",
             };
-        } else {
+        } elseif ($rand === 0) {
             $result = match ($rand) {
                 1 => "bar",
                 default => "bar default",
+            };
+        } else {
+            $result = match ($rand) {
+                1 => "baz",
+                default => "baz default",
             };
         }
 
