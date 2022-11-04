@@ -231,11 +231,6 @@ final class PHPStanNodeScopeResolver
         }
 
         foreach ($stmtsAware->stmts as $stmt) {
-            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
-            if ($scope instanceof MutatingScope) {
-                continue;
-            }
-
             $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
