@@ -17,6 +17,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
@@ -165,6 +166,10 @@ final class PHPStanNodeScopeResolver
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
+            if ($node instanceof Else_) {
+                $this->processElse($node, $mutatingScope);
+            }
+
             if ($node instanceof Trait_) {
                 $traitName = $this->resolveClassName($node);
 
@@ -217,6 +222,13 @@ final class PHPStanNodeScopeResolver
         };
 
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
+    }
+
+    private function processElse(Else_ $else, MutatingScope $mutatingScope): void
+    {
+        foreach ($else->stmts as $stmt) {
+            $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
     }
 
     private function processArrayItem(ArrayItem $arrayItem, MutatingScope $mutatingScope): void
