@@ -209,13 +209,13 @@ CODE_SAMPLE
 
     private function hasNoParamOrVariadic(ObjectType $objectType, string $setterMethodName, Scope $scope): bool
     {
-        $methodReflection = $objectType->getMethod($setterMethodName, $scope);
+        $extendedMethodReflection = $objectType->getMethod($setterMethodName, $scope);
 
-        if (! $methodReflection instanceof ResolvedMethodReflection) {
+        if (! $extendedMethodReflection instanceof ResolvedMethodReflection) {
             return false;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($extendedMethodReflection->getVariants());
         $parameters = $parametersAcceptor->getParameters();
         if (count($parameters) !== 1) {
             return true;

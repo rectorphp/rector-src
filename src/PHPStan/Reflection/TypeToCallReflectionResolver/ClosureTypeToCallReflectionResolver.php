@@ -6,6 +6,7 @@ namespace Rector\Core\PHPStan\Reflection\TypeToCallReflectionResolver;
 
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
+use PHPStan\Reflection\ParametersAcceptorWithPhpDocs;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\ClosureType;
 use PHPStan\Type\Type;
@@ -26,9 +27,12 @@ final class ClosureTypeToCallReflectionResolver implements TypeToCallReflectionR
      */
     public function resolve(Type $type, Scope $scope): NativeFunctionReflection
     {
+        /** @var ParametersAcceptorWithPhpDocs[] $parametersAcceptors */
+        $parametersAcceptors = $type->getCallableParametersAcceptors($scope);
+
         return new NativeFunctionReflection(
             '{closure}',
-            $type->getCallableParametersAcceptors($scope),
+            $parametersAcceptors,
             null,
             TrinaryLogic::createMaybe(),
             false
