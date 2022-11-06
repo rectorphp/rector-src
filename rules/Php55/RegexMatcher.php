@@ -24,12 +24,6 @@ final class RegexMatcher
      */
     private const LETTER_SUFFIX_REGEX = '#(?<modifiers>\w+)$#';
 
-    /**
-     * @var string[]
-     * @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
-     */
-    private const ALL_MODIFIERS = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
-
     public function __construct(
         private readonly ValueResolver $valueResolver
     ) {
@@ -52,7 +46,7 @@ final class RegexMatcher
                 return null;
             }
 
-            if (! in_array($pattern[strlen($pattern) - 1], self::ALL_MODIFIERS, true)) {
+            if ($delimiter === '(' && $pattern[strlen($pattern) - 1] === ')') {
                 return null;
             }
 
