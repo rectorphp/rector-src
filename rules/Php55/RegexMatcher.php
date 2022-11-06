@@ -46,7 +46,7 @@ final class RegexMatcher
                 return null;
             }
 
-            if ($delimiter === '(' && $pattern[strlen($pattern) - 1] === ')') {
+            if (in_array($pattern[strlen($pattern) - 1], [')', '}', ']', '>'], true)) {
                 return null;
             }
 

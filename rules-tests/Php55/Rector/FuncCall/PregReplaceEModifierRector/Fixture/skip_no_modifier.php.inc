@@ -8,4 +8,9 @@ class SkipNoModifier
     {
         echo preg_replace('([[:upper:]]+)', '_$0', 'FOO');
     }
+
+    public function run2()
+    {
+        echo preg_replace('{[[:upper:]]+}', '_$0', 'FOO');
+    }
 }
