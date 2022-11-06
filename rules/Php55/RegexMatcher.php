@@ -24,6 +24,12 @@ final class RegexMatcher
      */
     private const LETTER_SUFFIX_REGEX = '#(?<modifiers>\w+)$#';
 
+    /**
+     * @var string[]
+     * @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
+     */
+    private const ALL_MODIFIERS = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
+
     public function __construct(
         private readonly ValueResolver $valueResolver
     ) {
@@ -44,6 +50,12 @@ final class RegexMatcher
             $modifiers = Strings::after($pattern, $delimiter, -1);
             if (! \str_contains($modifiers, 'e')) {
                 return null;
+            }
+
+            for ($i = 0; $i < strlen($modifiers); ++$i) {
+                if (! in_array($modifiers[$i], self::ALL_MODIFIERS, true)) {
+                    return null;
+                }
             }
 
             $patternWithoutE = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);

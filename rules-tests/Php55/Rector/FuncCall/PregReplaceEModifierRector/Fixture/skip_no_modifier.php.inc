@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php55\Rector\FuncCall\PregReplaceEModifierRector\Fixture;
 
-class SkipNoQuote
+class SkipNoModifier
 {
     public function run()
     {
