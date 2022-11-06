@@ -52,10 +52,8 @@ final class RegexMatcher
                 return null;
             }
 
-            for ($i = 0; $i < strlen($modifiers); ++$i) {
-                if (! in_array($modifiers[$i], self::ALL_MODIFIERS, true)) {
-                    return null;
-                }
+            if (! in_array($pattern[strlen($pattern) - 1], self::ALL_MODIFIERS, true)) {
+                return null;
             }
 
             $patternWithoutE = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);
