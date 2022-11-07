@@ -42,7 +42,7 @@ final class FuncCallValueResolver implements NodeValueResolverInterface
             return dirname($currentFilePath);
         }
 
-        $args = $expr->getArgs();
+        $args = $expr->isFirstClassCallable() ? [] : $expr->getArgs();
         $arguments = [];
         foreach ($args as $arg) {
             $arguments[] = $this->constExprEvaluator->evaluateDirectly($arg->value);

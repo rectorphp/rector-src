@@ -13,6 +13,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\VariadicPlaceholder;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Transform\ValueObject\StaticCallRecipe;
@@ -113,7 +114,9 @@ CODE_SAMPLE
         return new StaticCall(
             $fullyQualified,
             $this->staticCallRecipe->getMethodName(),
-            $fileGetContentsFuncCall->getArgs()
+            $fileGetContentsFuncCall->isFirstClassCallable()
+                ? [new VariadicPlaceholder()]
+                : $fileGetContentsFuncCall->getArgs()
         );
     }
 
