@@ -46,6 +46,10 @@ final class RegexMatcher
                 return null;
             }
 
+            if (in_array($pattern[strlen($pattern) - 1], [')', '}', ']', '>'], true)) {
+                return null;
+            }
+
             $patternWithoutE = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);
             return new String_($patternWithoutE);
         }
