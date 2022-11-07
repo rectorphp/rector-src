@@ -197,6 +197,10 @@ CODE_SAMPLE
             return $this->isUsedInPreviousAssign($assign, $expr);
         }
 
+        if ($expr->isFirstClassCallable()) {
+            return false;
+        }
+
         foreach ($expr->getArgs() as $arg) {
             $variable = $arg->value;
 

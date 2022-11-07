@@ -62,6 +62,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $args = $node->getArgs();
         $secondArg = $args[1];
 

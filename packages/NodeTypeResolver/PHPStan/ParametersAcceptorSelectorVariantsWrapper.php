@@ -20,6 +20,10 @@ final class ParametersAcceptorSelectorVariantsWrapper
     ): ParametersAcceptor {
         $variants = $reflection->getVariants();
 
+        if ($callLike->isFirstClassCallable()) {
+            return ParametersAcceptorSelector::selectSingle($variants);
+        }
+
         return count($variants) > 1
             ? ParametersAcceptorSelector::selectFromArgs($scope, $callLike->getArgs(), $variants)
             : ParametersAcceptorSelector::selectSingle($variants);

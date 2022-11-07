@@ -64,6 +64,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return false;
+        }
+
         if ($this->hasArraySpread($funcCall)) {
             return null;
         }

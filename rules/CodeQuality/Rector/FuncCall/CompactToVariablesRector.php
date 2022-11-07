@@ -85,6 +85,10 @@ CODE_SAMPLE
             return $this->compactConverter->convertToArray($node);
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstArg = $node->getArgs()[0];
 
         $firstValue = $firstArg->value;
