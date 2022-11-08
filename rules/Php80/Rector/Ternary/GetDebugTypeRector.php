@@ -111,7 +111,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            return ! $this->isValidClassConstFetch($ternary->if);
+            return $this->shouldSkipClassConstFetch($ternary->if);
         }
 
         if (! $this->nodeNameResolver->isName($ternary->if, 'get_class')) {
@@ -129,13 +129,13 @@ CODE_SAMPLE
         return ! $this->nodeNameResolver->isName($ternary->else, 'gettype');
     }
 
-    private function isValidClassConstFetch(ClassConstFetch $classConstFetch): bool
+    private function shouldSkipClassConstFetch(ClassConstFetch $classConstFetch): bool
     {
         if (! $classConstFetch->name instanceof Identifier) {
-            return false;
+            return true;
         }
 
-        return $classConstFetch->name->toString() === 'class';
+        return $classConstFetch->name->toString() !== 'class';
     }
 
     private function areValuesIdentical(Ternary $ternary): bool
