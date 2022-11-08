@@ -6,8 +6,10 @@ namespace Rector\Php80\Rector\Ternary;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
+use PhpParser\Node\Identifier;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -77,17 +79,19 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var FuncCall $funcCall */
-        $funcCall = $node->if;
-        if (! isset($funcCall->args[0])) {
+        /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
+        $getClassFuncCallOrClassConstFetchClass = $node->if;
+        if ($getClassFuncCallOrClassConstFetchClass instanceof FuncCall && ! isset($getClassFuncCallOrClassConstFetchClass->args[0])) {
             return null;
         }
 
-        if (! $funcCall->args[0] instanceof Arg) {
+        if ($getClassFuncCallOrClassConstFetchClass instanceof FuncCall && ! $getClassFuncCallOrClassConstFetchClass->args[0] instanceof Arg) {
             return null;
         }
 
-        $firstExpr = $funcCall->args[0]->value;
+        $firstExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
+            ? $getClassFuncCallOrClassConstFetchClass->args[0]->value
+            : $getClassFuncCallOrClassConstFetchClass->class;
 
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
     }
@@ -103,7 +107,17 @@ CODE_SAMPLE
         }
 
         if (! $ternary->if instanceof FuncCall) {
-            return true;
+            if ($ternary->cond->isFirstClassCallable()) {
+                return true;
+            }
+
+            $args = $ternary->cond->getArgs();
+            $currentArgValue = $args[0]->value;
+
+            return ! ($ternary->if instanceof ClassConstFetch && $this->nodeComparator->areNodesEqual(
+                $ternary->if->class,
+                $currentArgValue
+            ) && $ternary->if->name instanceof Identifier && $ternary->if->name->toString() === 'class');
         }
 
         if (! $this->nodeNameResolver->isName($ternary->if, 'get_class')) {
@@ -127,13 +141,16 @@ CODE_SAMPLE
 
         $firstExpr = $isObjectFuncCall->args[0]->value;
 
-        /** @var FuncCall $getClassFuncCall */
-        $getClassFuncCall = $ternary->if;
-        if (! $getClassFuncCall->args[0] instanceof Arg) {
+        /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
+        $getClassFuncCallOrClassConstFetchClass = $ternary->if;
+
+        if ($getClassFuncCallOrClassConstFetchClass instanceof FuncCall && ! $getClassFuncCallOrClassConstFetchClass->args[0] instanceof Arg) {
             return false;
         }
 
-        $secondExpr = $getClassFuncCall->args[0]->value;
+        $secondExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
+            ? $getClassFuncCallOrClassConstFetchClass->args[0]->value
+            : $getClassFuncCallOrClassConstFetchClass->class;
 
         /** @var FuncCall $gettypeFuncCall */
         $gettypeFuncCall = $ternary->else;
