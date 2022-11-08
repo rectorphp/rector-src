@@ -81,14 +81,6 @@ CODE_SAMPLE
 
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
         $getClassFuncCallOrClassConstFetchClass = $node->if;
-        if ($getClassFuncCallOrClassConstFetchClass instanceof FuncCall && ! isset($getClassFuncCallOrClassConstFetchClass->args[0])) {
-            return null;
-        }
-
-        if ($getClassFuncCallOrClassConstFetchClass instanceof FuncCall && ! $getClassFuncCallOrClassConstFetchClass->args[0] instanceof Arg) {
-            return null;
-        }
-
         $firstExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
             ? $getClassFuncCallOrClassConstFetchClass->args[0]->value
             : $getClassFuncCallOrClassConstFetchClass->class;
@@ -102,22 +94,24 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($ternary->cond->isFirstClassCallable()) {
+            return true;
+        }
+
+        if (! isset($ternary->cond->args[0])) {
+            return true;
+        }
+
         if (! $this->nodeNameResolver->isName($ternary->cond, 'is_object')) {
             return true;
         }
 
         if (! $ternary->if instanceof FuncCall) {
-            if ($ternary->cond->isFirstClassCallable()) {
+            if (! $ternary->if instanceof ClassConstFetch) {
                 return true;
             }
 
-            $args = $ternary->cond->getArgs();
-            $currentArgValue = $args[0]->value;
-
-            return ! ($ternary->if instanceof ClassConstFetch && $this->nodeComparator->areNodesEqual(
-                $ternary->if->class,
-                $currentArgValue
-            ) && $ternary->if->name instanceof Identifier && $ternary->if->name->toString() === 'class');
+            return ! $this->isValidClassConstFetch($ternary->cond, $ternary->if);
         }
 
         if (! $this->nodeNameResolver->isName($ternary->if, 'get_class')) {
@@ -128,17 +122,33 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($ternary->else->isFirstClassCallable()) {
+            return true;
+        }
+
         return ! $this->nodeNameResolver->isName($ternary->else, 'gettype');
+    }
+
+    private function isValidClassConstFetch(FuncCall $funcCall, ClassConstFetch $classConstFetch): bool
+    {
+        $args = $funcCall->getArgs();
+        $currentArgValue = $args[0]->value;
+
+        if (! $this->nodeComparator->areNodesEqual($classConstFetch->class, $currentArgValue)) {
+            return false;
+        }
+
+        if (! $classConstFetch->name instanceof Identifier) {
+            return false;
+        }
+
+        return $classConstFetch->name->toString() === 'class';
     }
 
     private function areValuesIdentical(Ternary $ternary): bool
     {
         /** @var FuncCall $isObjectFuncCall */
         $isObjectFuncCall = $ternary->cond;
-        if (! $isObjectFuncCall->args[0] instanceof Arg) {
-            return false;
-        }
-
         $firstExpr = $isObjectFuncCall->args[0]->value;
 
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
