@@ -111,7 +111,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            return ! $this->isValidClassConstFetch($ternary->cond, $ternary->if);
+            return ! $this->isValidClassConstFetch($ternary->if);
         }
 
         if (! $this->nodeNameResolver->isName($ternary->if, 'get_class')) {
@@ -129,15 +129,8 @@ CODE_SAMPLE
         return ! $this->nodeNameResolver->isName($ternary->else, 'gettype');
     }
 
-    private function isValidClassConstFetch(FuncCall $funcCall, ClassConstFetch $classConstFetch): bool
+    private function isValidClassConstFetch(ClassConstFetch $classConstFetch): bool
     {
-        $args = $funcCall->getArgs();
-        $currentArgValue = $args[0]->value;
-
-        if (! $this->nodeComparator->areNodesEqual($classConstFetch->class, $currentArgValue)) {
-            return false;
-        }
-
         if (! $classConstFetch->name instanceof Identifier) {
             return false;
         }
