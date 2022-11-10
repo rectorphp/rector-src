@@ -25,8 +25,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MakeTypedPropertyNullableIfCheckedRector extends AbstractRector
 {
-    public function __construct(private VisibilityManipulator $visibilityManipulator)
-    {
+    public function __construct(
+        private VisibilityManipulator $visibilityManipulator
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
