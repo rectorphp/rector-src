@@ -663,7 +663,7 @@ parameters:
 
         # false postive, on trait use in multiple classes
         -
-            message: '#Method name "(.*?)Attribute\(\)" is used in multiple traits\. Make it it unique to avoid conflicts#'
+            message: '#Method name "(.*?)Attribute\(\)" is used in multiple traits\. Make it unique to avoid conflicts#'
             paths:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - packages/BetterPhpDocParser/PhpDoc/ArrayItemNode.php
