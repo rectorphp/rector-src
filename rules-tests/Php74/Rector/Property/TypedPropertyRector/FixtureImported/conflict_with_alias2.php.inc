@@ -29,7 +29,7 @@ use Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass a
 
 final class ConflictWithAlias2
 {
-    private \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\Source\AnotherClass $anotherClass;
+    private AnotherClass $anotherClass;
 
     public function __construct(AnotherClass $anotherClass)
     {

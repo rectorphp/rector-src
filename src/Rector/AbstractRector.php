@@ -10,6 +10,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
@@ -250,13 +251,25 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
-        $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         // is equals node type? return node early
         if ($originalNode::class === $refactoredNode::class) {
+            /**
+             * Expression and Return_ are special
+             *
+             * Eg:
+             *  - Expression on Assign with ArrowFunction changed to Closure
+             *  - Return_ on ArrowFunction usage, Return_ is created dynamically on getStmts()
+             */
+            if ($refactoredNode instanceof Expression || $refactoredNode instanceof Return_) {
+                $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+            }
+
             return $refactoredNode;
         }
+
+        $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
