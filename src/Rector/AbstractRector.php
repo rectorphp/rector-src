@@ -206,7 +206,10 @@ CODE_SAMPLE;
 
         $this->printDebugCurrentFileAndRule();
 
-        $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if ($originalNode instanceof Node) {
+            $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
+        }
 
         $refactoredNode = $this->refactor($node);
 
@@ -220,8 +223,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        /** @var Node $originalNode */
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
+        $originalNode ??= $node;
 
         /** @var Node[]|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
