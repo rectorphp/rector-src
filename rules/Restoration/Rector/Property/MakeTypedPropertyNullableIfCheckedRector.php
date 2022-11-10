@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,6 +25,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MakeTypedPropertyNullableIfCheckedRector extends AbstractRector
 {
+    public function __construct(private VisibilityManipulator $visibilityManipulator)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Make typed property nullable if checked', [
@@ -100,6 +105,10 @@ CODE_SAMPLE
 
         $node->type = new NullableType($currentPropertyType);
         $onlyProperty->default = $this->nodeFactory->createNull();
+
+        if ($node->isReadonly()) {
+            $this->visibilityManipulator->removeReadonly($node);
+        }
 
         return $node;
     }
