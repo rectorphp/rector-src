@@ -254,6 +254,10 @@ CODE_SAMPLE;
 
         // is equals node type? return node early
         if ($originalNode::class === $refactoredNode::class) {
+            if ($refactoredNode instanceof Expression) {
+                $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+            }
+
             return $refactoredNode;
         }
 
