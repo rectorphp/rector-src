@@ -326,6 +326,7 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
         'ctype_space' => ['text'],
         'ctype_upper' => ['text'],
         'ctype_xdigit' => ['text'],
+        'uniqid' => ['prefix'],
     ];
 
     public function __construct(
