@@ -4,18 +4,11 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRec
 
 use PhpParser\Node\Expr\Assign;
 
-final class SkipMethodCallRenameBellow
+final class SkipParamRenameBelow
 {
-    public function run()
+    public function run($assign)
     {
-        $assign = $this->getAssign();
-
         $jsonDataAssign = new Assign(1, 2);
         $this->addNodeBeforeNode($jsonDataAssign, $assign);
-    }
-
-    private function getAssign()
-    {
-        return new Assign();
     }
 }
