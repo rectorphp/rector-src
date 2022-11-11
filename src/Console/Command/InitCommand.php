@@ -6,14 +6,11 @@ namespace Rector\Core\Console\Command;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use Rector\Core\Configuration\Option;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Php\PhpVersionProvider;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class InitCommand extends Command
 {
@@ -26,7 +23,6 @@ final class InitCommand extends Command
         private readonly \Symfony\Component\Filesystem\Filesystem $filesystem,
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly SymfonyStyle $symfonyStyle
     ) {
         parent::__construct();
     }
@@ -36,27 +32,10 @@ final class InitCommand extends Command
         $this->setName('init');
 
         $this->setDescription('Generate rector.php configuration file');
-
-        // deprecated
-        $this->addOption(
-            Option::TEMPLATE_TYPE,
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'A template type like default, nette, doctrine etc.'
-        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $templateType = (string) $input->getOption(Option::TEMPLATE_TYPE);
-        if ($templateType !== '') {
-            // notice warning
-            $this->symfonyStyle->warning(
-                'The option "--type" is deprecated. Custom config should be part of project documentation instead.'
-            );
-            sleep(3);
-        }
-
         $rectorRootFilePath = getcwd() . '/rector.php';
 
         $doesFileExist = $this->filesystem->exists($rectorRootFilePath);
