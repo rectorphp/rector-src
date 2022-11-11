@@ -7,6 +7,7 @@ namespace Rector\Core\PhpParser\Comparing;
 use PhpParser\Node;
 use Rector\Comments\CommentRemover;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Webmozart\Assert\Assert;
 
 final class NodeComparator
 {
@@ -42,12 +43,20 @@ final class NodeComparator
             return false;
         }
 
-        if (is_array($firstNode) && $secondNode === null) {
-            return false;
+        if (is_array($firstNode)) {
+            Assert::allIsInstanceOf($firstNode, Node::class);
+
+            if ($secondNode === null) {
+                return false;
+            }
         }
 
-        if (is_array($secondNode) && $firstNode === null) {
-            return false;
+        if (is_array($secondNode)) {
+            Assert::allIsInstanceOf($secondNode, Node::class);
+
+            if ($firstNode === null) {
+                return false;
+            }
         }
 
         return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
