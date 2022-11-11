@@ -814,3 +814,7 @@ parameters:
         -
             message: '#"empty\(\$right\)" is forbidden to use#'
             path: src/Util/ArrayParametersMerger.php
+
+        -
+            message: '#Cognitive complexity for "Rector\\Core\\Rector\\AbstractRector\:\:enterNode\(\)" is 11, keep it under 10#'
+            path: src/Rector/AbstractRector.php
