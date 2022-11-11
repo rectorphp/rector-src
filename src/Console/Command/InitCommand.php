@@ -83,6 +83,8 @@ final class InitCommand extends Command
             $projectPhpDirectoriesContents .= '        __DIR__ . \'/' . $projectPhpDirectory . '\',' . PHP_EOL;
         }
 
+        $projectPhpDirectoriesContents = rtrim($projectPhpDirectoriesContents);
+
         return str_replace('__PATHS__', $projectPhpDirectoriesContents, $rectorPhpTemplateContents);
     }
 }
