@@ -44,7 +44,7 @@ final class NodeComparator
         }
 
         if (is_array($firstNode)) {
-            Assert::allIsInstanceOf($firstNode, Node::class);
+            Assert::allIsAOf($firstNode, Node::class);
 
             if ($secondNode === null) {
                 return false;
@@ -52,7 +52,7 @@ final class NodeComparator
         }
 
         if (is_array($secondNode)) {
-            Assert::allIsInstanceOf($secondNode, Node::class);
+            Assert::allIsAOf($secondNode, Node::class);
 
             if ($firstNode === null) {
                 return false;
