@@ -42,6 +42,14 @@ final class NodeComparator
             return false;
         }
 
+        if (is_array($firstNode) && $secondNode === null) {
+            return false;
+        }
+
+        if (is_array($secondNode) && $firstNode === null) {
+            return false;
+        }
+
         return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
     }
 
