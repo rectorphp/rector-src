@@ -34,6 +34,14 @@ final class NodeComparator
      */
     public function areNodesEqual(Node | array | null $firstNode, Node | array | null $secondNode): bool
     {
+        if ($firstNode instanceof Node && $secondNode === null) {
+            return false;
+        }
+
+        if ($secondNode instanceof Node && $firstNode === null) {
+            return false;
+        }
+
         return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
     }
 
@@ -61,17 +69,17 @@ final class NodeComparator
             return true;
         }
 
+        $firstClass = $firstNode::class;
+        $secondClass = $secondNode::class;
+
+        if ($firstClass !== $secondClass) {
+            return false;
+        }
+
         if ($firstNode->getStartTokenPos() !== $secondNode->getStartTokenPos()) {
             return false;
         }
 
-        if ($firstNode->getEndTokenPos() !== $secondNode->getEndTokenPos()) {
-            return false;
-        }
-
-        $firstClass = $firstNode::class;
-        $secondClass = $secondNode::class;
-
-        return $firstClass === $secondClass;
+        return $firstNode->getEndTokenPos() === $secondNode->getEndTokenPos();
     }
 }
