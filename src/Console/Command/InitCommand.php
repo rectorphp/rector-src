@@ -80,7 +80,7 @@ final class InitCommand extends Command
 
         $projectPhpDirectoriesContents = '';
         foreach ($projectPhpDirectories as $projectPhpDirectory) {
-            $projectPhpDirectoriesContents .= '        __DIR__ . \'/' . $projectPhpDirectory . '\',' . PHP_EOL;
+            $projectPhpDirectoriesContents .= "        __DIR__ . '/" . $projectPhpDirectory . "'," . PHP_EOL;
         }
 
         $projectPhpDirectoriesContents = rtrim($projectPhpDirectoriesContents);
