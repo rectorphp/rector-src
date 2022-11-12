@@ -12,7 +12,6 @@ use PhpParser\Node\Scalar\Encapsed;
 use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\Php73\NodeTypeAnalyzer\NodeTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -38,11 +37,6 @@ final class StringifyStrNeedlesRector extends AbstractRector implements MinPhpVe
         'strrchr',
         'stristr',
     ];
-
-    public function __construct(
-        private readonly NodeTypeAnalyzer $nodeTypeAnalyzer
-    ) {
-    }
 
     public function provideMinPhpVersion(): int
     {
@@ -99,7 +93,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->nodeTypeAnalyzer->isStringyType($needleType)) {
+        if ($needleType->isString()->yes()) {
             return null;
         }
 

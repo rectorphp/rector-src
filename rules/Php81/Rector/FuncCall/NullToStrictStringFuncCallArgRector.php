@@ -26,7 +26,6 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
-use Rector\Php73\NodeTypeAnalyzer\NodeTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -331,8 +330,7 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
 
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly NodeTypeAnalyzer $nodeTypeAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -460,7 +458,7 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($argValue);
-        if ($this->nodeTypeAnalyzer->isStringyType($type)) {
+        if ($type->isString()->yes()) {
             return null;
         }
 
