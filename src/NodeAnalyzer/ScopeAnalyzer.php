@@ -78,7 +78,7 @@ final class ScopeAnalyzer
         }
 
         /**
-         * Node and parent Node doesn't has Scope, and its Start token pos must be < 0,
+         * Node and parent Node doesn't has Scope, and its Start token pos is < 0,
          * it means the node and parent node just re-printed, the Scope need to be resolved from file
          */
         if ($parentNode->getStartTokenPos() < 0) {
