@@ -27,8 +27,6 @@ final class ChangedFilesDetector
      */
     public function addFileWithDependencies(string $filePath, array $dependentFiles): void
     {
-        $filePath = (string) realpath($filePath);
-
         $filePathCacheKey = $this->getFilePathCacheKey($filePath);
         $hash = $this->hashFile($filePath);
 
@@ -38,8 +36,6 @@ final class ChangedFilesDetector
 
     public function hasFileChanged(string $filePath): bool
     {
-        $filePath = (string) realpath($filePath);
-
         $currentFileHash = $this->hashFile($filePath);
         $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
 
@@ -49,8 +45,6 @@ final class ChangedFilesDetector
 
     public function invalidateFile(string $filePath): void
     {
-        $filePath = (string) realpath($filePath);
-
         $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
         $this->cache->clean($fileInfoCacheKey);
     }
@@ -65,8 +59,6 @@ final class ChangedFilesDetector
      */
     public function getDependentFilePaths(string $filePath): array
     {
-        $filePath = (string) realpath($filePath);
-
         $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
 
         $cacheValue = $this->cache->load($fileInfoCacheKey . '_files', CacheKey::DEPENDENT_FILES_KEY);
@@ -93,8 +85,6 @@ final class ChangedFilesDetector
      */
     public function setFirstResolvedConfigFileInfo(string $filePath): void
     {
-        $filePath = (string) realpath($filePath);
-
         // the first config is core to all → if it was changed, just invalidate it
         $configHash = $this->fileHashComputer->compute($filePath);
         $this->storeConfigurationDataHash($filePath, $configHash);
@@ -102,6 +92,7 @@ final class ChangedFilesDetector
 
     private function getFilePathCacheKey(string $filePath): string
     {
+        $filePath = (string) realpath($filePath);
         return sha1($filePath);
     }
 
