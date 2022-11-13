@@ -92,7 +92,7 @@ final class ChangedFilesDetector
 
     private function getFilePathCacheKey(string $filePath): string
     {
-        $filePath = (string) realpath($filePath);
+        $filePath = realpath($filePath) ?: $filePath;
         return sha1($filePath);
     }
 
