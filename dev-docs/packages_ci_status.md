@@ -30,12 +30,6 @@
 * ![](https://github.com/rectorphp/rector-doctrine/actions/workflows/tests.yaml/badge.svg)
 * ![](https://github.com/rectorphp/rector-doctrine/actions/workflows/code_analysis.yaml/badge.svg)
 
-## PHP Office
-
-* https://github.com/rectorphp/rector-phpoffice
-* ![](https://github.com/rectorphp/rector-phpoffice/actions/workflows/tests.yaml/badge.svg)
-* ![](https://github.com/rectorphp/rector-phpoffice/actions/workflows/code_analysis.yaml/badge.svg)
-
 ## Downgrade PHP
 
 * https://github.com/rectorphp/rector-downgrade-php
