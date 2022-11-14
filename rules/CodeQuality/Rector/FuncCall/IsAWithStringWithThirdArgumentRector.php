@@ -73,7 +73,7 @@ CODE_SAMPLE
         }
 
         $firstArgumentStaticType = $this->getType($node->args[0]->value);
-        if (! $firstArgumentStaticType instanceof StringType) {
+        if (!$firstArgumentStaticType->isString()->yes()) {
             return null;
         }
 

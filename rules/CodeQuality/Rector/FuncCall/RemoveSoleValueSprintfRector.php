@@ -98,7 +98,7 @@ CODE_SAMPLE
         $valueArgument = $secondArg->value;
 
         $valueType = $this->getType($valueArgument);
-        if (! $valueType instanceof StringType) {
+        if (! $valueType->isString()->yes()) {
             return null;
         }
 

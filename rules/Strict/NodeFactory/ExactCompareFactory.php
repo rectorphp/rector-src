@@ -38,7 +38,7 @@ final class ExactCompareFactory
         Expr $expr,
         bool $treatAsNonEmpty
     ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null {
-        if ($exprType instanceof StringType) {
+        if ($exprType->isString()->yes()) {
             return new Identical($expr, new String_(''));
         }
 
@@ -70,7 +70,7 @@ final class ExactCompareFactory
         Expr $expr,
         bool $treatAsNotEmpty
     ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
-        if ($exprType instanceof StringType) {
+        if ($exprType->isString()->yes()) {
             return new NotIdentical($expr, new String_(''));
         }
 

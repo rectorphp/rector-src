@@ -72,7 +72,7 @@ final class AlwaysStrictScalarExprAnalyzer
 
     private function isScalarType(Type $type): bool
     {
-        if ($type instanceof StringType && ! $type instanceof ConstantStringType) {
+        if ($type->isString()->yes() && ! $type instanceof ConstantStringType) {
             return true;
         }
 

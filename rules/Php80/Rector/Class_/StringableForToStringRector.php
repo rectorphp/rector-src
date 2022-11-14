@@ -109,7 +109,7 @@ CODE_SAMPLE
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($toStringClassMethod);
-        if (! $returnType instanceof StringType) {
+        if (! $returnType->isString()->yes()) {
             $this->processNotStringType($toStringClassMethod);
         }
 
@@ -155,7 +155,7 @@ CODE_SAMPLE
             }
 
             $type = $this->nodeTypeResolver->getType($subNode->expr);
-            if ($type instanceof StringType) {
+            if ($type->isString()->yes()) {
                 return null;
             }
 
