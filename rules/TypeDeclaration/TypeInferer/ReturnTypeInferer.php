@@ -200,7 +200,7 @@ final class ReturnTypeInferer
             return $unionType;
         }
 
-        if (! ($types[0] instanceof IntegerType && $types[1] instanceof StringType)) {
+        if (! ($types[0] instanceof IntegerType && $types[1]->isString()->yes())) {
             return $unionType;
         }
 

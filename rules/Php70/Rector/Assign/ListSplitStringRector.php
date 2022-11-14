@@ -53,7 +53,7 @@ final class ListSplitStringRector extends AbstractRector implements MinPhpVersio
         }
 
         $exprType = $this->getType($node->expr);
-        if (! $exprType instanceof StringType) {
+        if (! $exprType->isString()->yes()) {
             return null;
         }
 

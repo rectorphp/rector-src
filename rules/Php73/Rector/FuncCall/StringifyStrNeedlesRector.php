@@ -89,15 +89,7 @@ CODE_SAMPLE
         $needleArgValue = $node->args[1]->value;
 
         $needleType = $this->getType($needleArgValue);
-        if ($needleType instanceof StringType) {
-            return null;
-        }
-
         if ($needleType->isString()->yes()) {
-            return null;
-        }
-
-        if ($needleArgValue instanceof String_) {
             return null;
         }
 

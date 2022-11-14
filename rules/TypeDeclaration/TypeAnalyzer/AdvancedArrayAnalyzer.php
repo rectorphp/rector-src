@@ -48,7 +48,7 @@ final class AdvancedArrayAnalyzer
             return false;
         }
 
-        return $arrayType->getItemType() instanceof StringType;
+        return $arrayType->getItemType()->isString()->yes();
     }
 
     public function isMixedOfSpecificOverride(ArrayType $arrayType, PhpDocInfo $phpDocInfo): bool
