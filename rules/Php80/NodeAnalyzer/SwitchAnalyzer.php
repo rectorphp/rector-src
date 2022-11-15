@@ -40,15 +40,16 @@ final class SwitchAnalyzer
         }
 
         $uniqueTypes = $this->typeFactory->uniquateTypes($types);
+        $countUniqueTypes = count($uniqueTypes);
 
-        if (count($uniqueTypes) === 1 && $uniqueTypes[0] instanceof IntegerType) {
+        if ($countUniqueTypes === 1 && $uniqueTypes[0] instanceof IntegerType) {
             $switchCondType = $this->nodeTypeResolver->getType($expr);
             if (! $switchCondType instanceof MixedType && $switchCondType->isString()->maybe()) {
                 return true;
             }
         }
 
-        return count($uniqueTypes) > 1;
+        return $countUniqueTypes > 1;
     }
 
     public function hasEachCaseBreak(Switch_ $switch): bool
