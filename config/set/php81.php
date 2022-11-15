@@ -13,10 +13,8 @@ use Rector\Php81\Rector\FuncCall\Php81ResourceReturnToObjectRector;
 use Rector\Php81\Rector\FunctionLike\IntersectionTypesRector;
 use Rector\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(ReturnNeverTypeRector::class);
     $rectorConfig->rule(MyCLabsClassToEnumRector::class);
     $rectorConfig->rule(MyCLabsMethodCallToEnumConstRector::class);
     $rectorConfig->rule(FinalizePublicClassConstantRector::class);

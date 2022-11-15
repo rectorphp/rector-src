@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 use Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector;
 
-use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
 use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
-use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
@@ -58,7 +55,6 @@ return static function (RectorConfig $rectorConfig): void {
             ArgumentAdderRector::class,
             [new ArgumentAdder('Nette\Utils\Strings', 'replace', 2, 'replacement', '')]
         );
-    $rectorConfig->rule(RemoveParentCallWithoutParentRector::class);
     $rectorConfig->rule(SetStateToStaticRector::class);
     $rectorConfig->rule(FinalPrivateToPrivateVisibilityRector::class);
     // @see https://php.watch/versions/8.0/pgsql-aliases-deprecated
@@ -88,20 +84,6 @@ return static function (RectorConfig $rectorConfig): void {
             'pg_numrows' => 'pg_num_rows',
             'pg_result' => 'pg_fetch_result',
             'pg_setclientencoding' => 'pg_set_client_encoding',
-        ]);
-    $rectorConfig->rule(OptionalParametersAfterRequiredRector::class);
-
-    $rectorConfig
-        ->ruleWithConfiguration(FunctionArgumentDefaultValueReplacerRector::class, [
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'lte', 'le'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, '', '!='),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, '!', '!='),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'g', 'gt'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'l', 'lt'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'lte', 'le'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'n', 'ne'),
         ]);
 
     $rectorConfig->rule(Php8ResourceReturnToObjectRector::class);
