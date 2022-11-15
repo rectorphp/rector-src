@@ -63,16 +63,20 @@ final class StaticTypeAnalyzer
         if ($type instanceof NullType) {
             return true;
         }
+
         if ($type instanceof BooleanType) {
             return true;
         }
+
         if ($type->isString()
             ->yes()) {
             return true;
         }
+
         if ($type instanceof IntegerType) {
             return true;
         }
+
         return $type instanceof FloatType;
     }
 
