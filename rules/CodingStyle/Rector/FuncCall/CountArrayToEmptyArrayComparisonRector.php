@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
-use PHPStan\Type\ArrayType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -136,7 +135,9 @@ CODE_SAMPLE
 
     private function isArray(Expr $expr): bool
     {
-        return $this->getType($expr)->isArray()->yes();
+        return $this->getType($expr)
+            ->isArray()
+            ->yes();
     }
 
     private function processIdenticalOrNotIdentical(Node $node, FuncCall $funcCall, Expr $expr): ?Expr

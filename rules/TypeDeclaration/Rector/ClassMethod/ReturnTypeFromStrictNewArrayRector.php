@@ -221,7 +221,8 @@ CODE_SAMPLE
             return ! $exprType->getItemType() instanceof NeverType;
         }
 
-        return $exprType->isArray()->yes();
+        return $exprType->isArray()
+            ->yes();
     }
 
     private function narrowConstantArrayType(Type $type): Type

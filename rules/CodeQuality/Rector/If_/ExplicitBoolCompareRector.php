@@ -23,12 +23,10 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
-use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -135,7 +133,8 @@ CODE_SAMPLE
 
     private function shouldSkip(Type $conditionStaticType, BinaryOp $binaryOp, ?Node $nextNode): bool
     {
-        return $conditionStaticType->isString()->yes() && $binaryOp instanceof BooleanOr && ! $nextNode instanceof Node;
+        return $conditionStaticType->isString()
+            ->yes() && $binaryOp instanceof BooleanOr && ! $nextNode instanceof Node;
     }
 
     private function resolveNewConditionNode(Expr $expr, bool $isNegated): ?BinaryOp
