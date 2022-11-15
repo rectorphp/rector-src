@@ -65,7 +65,7 @@ final class StaticTypeAnalyzer
             return true;
         }
 
-        return $type instanceof BooleanType || $type instanceof StringType || $type instanceof IntegerType || $type instanceof FloatType;
+        return $type instanceof BooleanType || $type->isString()->yes() || $type instanceof IntegerType || $type instanceof FloatType;
     }
 
     private function isAlwaysTruableUnionType(Type $type): bool
