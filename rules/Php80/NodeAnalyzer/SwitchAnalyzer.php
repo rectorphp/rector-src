@@ -10,6 +10,8 @@ use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
+use PHPStan\Type\IntegerType;
+use PHPStan\Type\MixedType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 
@@ -24,7 +26,7 @@ final class SwitchAnalyzer
     /**
      * @param Case_[] $cases
      */
-    public function hasDifferentTypeCases(array $cases): bool
+    public function hasDifferentTypeCases(array $cases, Expr $expr): bool
     {
         $types = [];
         foreach ($cases as $case) {
@@ -38,6 +40,14 @@ final class SwitchAnalyzer
         }
 
         $uniqueTypes = $this->typeFactory->uniquateTypes($types);
+
+        if (count($uniqueTypes) === 1 && $uniqueTypes[0] instanceof IntegerType) {
+            $switchCondType = $this->nodeTypeResolver->getType($expr);
+            if (! $switchCondType instanceof MixedType && $switchCondType->isString()->maybe()) {
+                return true;
+            }
+        }
+
         return count($uniqueTypes) > 1;
     }
 
