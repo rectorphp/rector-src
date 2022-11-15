@@ -48,7 +48,7 @@ final class GetterTypeDeclarationPropertyTypeInferer
                 $classMethod
             );
             // let PhpDoc solve that later for more precise type
-            if ($returnType instanceof ArrayType) {
+            if ($returnType->isArray()->yes()) {
                 return new MixedType();
             }
 

@@ -231,7 +231,7 @@ CODE_SAMPLE
         $originalTypeCount = count($unionType->getTypes());
 
         foreach ($unionType->getTypes() as $unionedType) {
-            if ($unionedType instanceof ArrayType) {
+            if ($unionedType->isArray()->yes()) {
                 if ($hasArrayType) {
                     continue;
                 }

@@ -13,7 +13,7 @@ final class IterableTypeAnalyzer
 {
     public function detect(Type $type): bool
     {
-        if ($type instanceof ArrayType) {
+        if ($type->isArray()->yes()) {
             return true;
         }
 
