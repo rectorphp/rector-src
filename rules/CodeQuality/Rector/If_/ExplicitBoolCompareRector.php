@@ -171,7 +171,7 @@ CODE_SAMPLE
     private function resolveCount(bool $isNegated, FuncCall $funcCall): Identical | Greater | null
     {
         $countedType = $this->getType($funcCall->args[0]->value);
-        if ($countedType instanceof ArrayType) {
+        if ($countedType->isArray()->yes()) {
             return null;
         }
 

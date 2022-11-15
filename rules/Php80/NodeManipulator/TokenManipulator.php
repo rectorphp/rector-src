@@ -62,7 +62,7 @@ final class TokenManipulator
             }
 
             $tokenStaticType = $this->nodeTypeResolver->getType($node->var);
-            if (! $tokenStaticType instanceof ArrayType) {
+            if (! $tokenStaticType->isArray()->yes()) {
                 return null;
             }
 
@@ -88,7 +88,7 @@ final class TokenManipulator
             }
 
             $tokenStaticType = $this->nodeTypeResolver->getType($node->expr);
-            if ($tokenStaticType instanceof ArrayType) {
+            if ($tokenStaticType->isArray()->yes()) {
                 return null;
             }
 
@@ -104,7 +104,7 @@ final class TokenManipulator
             }
 
             $tokenStaticType = $this->nodeTypeResolver->getType($node->expr);
-            if ($tokenStaticType instanceof ArrayType) {
+            if ($tokenStaticType->isArray()->yes()) {
                 return null;
             }
 
@@ -237,7 +237,7 @@ final class TokenManipulator
             }
 
             $tokenStaticType = $this->nodeTypeResolver->getType($possibleTokenArray->var);
-            if (! $tokenStaticType instanceof ArrayType) {
+            if (! $tokenStaticType->isArray()->yes()) {
                 return null;
             }
 

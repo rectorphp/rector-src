@@ -124,7 +124,7 @@ CODE_SAMPLE
 
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
 
-        if (! $returnType instanceof ArrayType) {
+        if (! $returnType->isArray()->yes()) {
             return null;
         }
 
@@ -221,7 +221,7 @@ CODE_SAMPLE
             return ! $exprType->getItemType() instanceof NeverType;
         }
 
-        return $exprType instanceof ArrayType;
+        return $exprType->isArray()->yes();
     }
 
     private function narrowConstantArrayType(Type $type): Type

@@ -50,7 +50,7 @@ final class ExactCompareFactory
             return new Identical($expr, $this->nodeFactory->createFalse());
         }
 
-        if ($exprType instanceof ArrayType) {
+        if ($exprType->isArray()->yes()) {
             return new Identical($expr, new Array_([]));
         }
 
@@ -78,7 +78,7 @@ final class ExactCompareFactory
             return new NotIdentical($expr, new LNumber(0));
         }
 
-        if ($exprType instanceof ArrayType) {
+        if ($exprType->isArray()->yes()) {
             return new NotIdentical($expr, new Array_([]));
         }
 

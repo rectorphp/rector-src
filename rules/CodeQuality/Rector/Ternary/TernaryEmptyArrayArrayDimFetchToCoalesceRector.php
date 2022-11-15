@@ -75,7 +75,7 @@ CODE_SAMPLE
         }
 
         $emptyExprType = $this->getType($negagedExpr->expr);
-        if (! $emptyExprType instanceof ArrayType) {
+        if (! $emptyExprType->isArray()->yes()) {
             return null;
         }
 
