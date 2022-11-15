@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\ArrayType;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
@@ -116,7 +115,8 @@ CODE_SAMPLE
         }
 
         $type = $scope->getType($foreach->expr);
-        return ! $type->isArray()->yes();
+        return ! $type->isArray()
+            ->yes();
     }
 
     private function shouldSkipAsPartOfOtherLoop(Foreach_ $foreach): bool

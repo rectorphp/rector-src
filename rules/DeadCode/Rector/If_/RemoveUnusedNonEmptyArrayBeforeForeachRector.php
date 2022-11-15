@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\ArrayType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
@@ -122,7 +121,9 @@ CODE_SAMPLE
         if (($if->cond instanceof Variable || $this->propertyFetchAnalyzer->isPropertyFetch($if->cond))
             && $this->nodeComparator->areNodesEqual($if->cond, $foreachExpr)
         ) {
-            return $scope->getType($if->cond)->isArray()->yes();
+            return $scope->getType($if->cond)
+                ->isArray()
+                ->yes();
         }
 
         if ($this->uselessIfCondBeforeForeachDetector->isMatchingNotIdenticalEmptyArray($if, $foreachExpr)) {

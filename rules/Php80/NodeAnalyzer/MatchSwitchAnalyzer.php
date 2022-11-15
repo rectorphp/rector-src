@@ -55,7 +55,7 @@ final class MatchSwitchAnalyzer
             return true;
         }
 
-        if ($this->switchAnalyzer->hasDifferentTypeCases($switch->cases)) {
+        if ($this->switchAnalyzer->hasDifferentTypeCases($switch->cases, $switch->cond)) {
             return true;
         }
 

@@ -7,7 +7,6 @@ namespace Rector\CodeQuality\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
-use PHPStan\Type\StringType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -73,7 +72,7 @@ CODE_SAMPLE
         }
 
         $firstArgumentStaticType = $this->getType($node->args[0]->value);
-        if (!$firstArgumentStaticType->isString()->yes()) {
+        if (! $firstArgumentStaticType->isString()->yes()) {
             return null;
         }
 
