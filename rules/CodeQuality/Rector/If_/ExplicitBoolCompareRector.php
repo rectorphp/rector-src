@@ -137,9 +137,11 @@ CODE_SAMPLE
             ->yes()) {
             return false;
         }
+
         if (! $binaryOp instanceof BooleanOr) {
             return false;
         }
+
         return ! $nextNode instanceof Node;
     }
 
