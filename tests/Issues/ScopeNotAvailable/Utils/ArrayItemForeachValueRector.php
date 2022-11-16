@@ -15,9 +15,7 @@ class ArrayItemForeachValueRector extends AbstractScopeAwareRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Hello!', [
-            new CodeSample('',''),
-        ]);
+        return new RuleDefinition('Hello!', [new CodeSample('', '')]);
     }
 
     public function getNodeTypes(): array
