@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Utils;
+namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Variable;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
