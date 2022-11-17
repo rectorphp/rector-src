@@ -252,6 +252,10 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
+        $refactoredNode = $originalNode instanceof Stmt && $refactoredNode instanceof Expr
+            ? new Expression($refactoredNode)
+            : $refactoredNode;
+
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
@@ -262,11 +266,6 @@ CODE_SAMPLE;
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
-
-        $refactoredNode = $originalNode instanceof Stmt && $refactoredNode instanceof Expr
-            ? new Expression($refactoredNode)
-            : $refactoredNode;
-
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
         return $refactoredNode;
