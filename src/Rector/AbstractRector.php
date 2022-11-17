@@ -251,7 +251,7 @@ CODE_SAMPLE;
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
-        
+
         $refactoredNode = $originalNode instanceof Stmt && $refactoredNode instanceof Expr
             ? new Expression($refactoredNode)
             : $refactoredNode;
