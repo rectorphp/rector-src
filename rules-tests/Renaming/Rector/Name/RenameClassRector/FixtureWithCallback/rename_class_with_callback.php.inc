@@ -14,20 +14,6 @@ if ($badRequest instanceof \Rector\Tests\Renaming\Rector\Name\RenameClassRector\
     echo \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWithCallback\BadRequest::class;
 }
 
-class CorrectlyNamedException extends Exception {
-
-}
-
-$correctlyNamedException = new \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWithCallback\CorrectlyNamedException();
-
-interface Processor {
-
-}
-
-class FruitProcessor implements \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWithCallback\Processor {
-
-}
-
 ?>
 -----
 <?php
@@ -44,20 +30,6 @@ $badRequest = new \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWi
 
 if ($badRequest instanceof \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWithCallback\BadRequestException) {
     echo \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWithCallback\BadRequestException::class;
-}
-
-class CorrectlyNamedException extends Exception {
-
-}
-
-$correctlyNamedException = new \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWithCallback\CorrectlyNamedException();
-
-interface ProcessorInterface {
-
-}
-
-class FruitProcessor implements \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureWithCallback\ProcessorInterface {
-
 }
 
 ?>
