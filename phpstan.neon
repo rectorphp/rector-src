@@ -2,7 +2,7 @@ includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
 parameters:
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     level: 8
 
@@ -107,10 +107,6 @@ parameters:
 
         - '#Access to an undefined property PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable\:\:\$name#'
 
-        -
-            message: '#Call to function is_string\(\) with float will always evaluate to false#'
-            path: src/PhpParser/Printer/BetterStandardPrinter.php
-
         - '#PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable given#'
 
         - '#Method Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:matchReturnOrAssignNode\(\) should return PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Stmt\\Return_\|null but returns PhpParser\\Node\|null#'
@@ -149,9 +145,6 @@ parameters:
 
         - '#(.*?) class\-string, string given#'
 
-        # PHP 7_4 literal syntax
-        - '#Property PhpParser\\Node\\Scalar\\DNumber\:\:\$value \(float\|int\) does not accept string#'
-
         -
             message: '#Array destruct is not allowed\. Use value object to pass data instead#'
             paths:
@@ -164,7 +157,6 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 10#'
 
-        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\Printer\\PhpDocInfoPrinter\:\:printDocChildNode\(\)" is \d+, keep it under 10#'
         - '#Cognitive complexity for "Rector\\NodeTypeResolver\\NodeTypeResolver\:\:getType\(\)" is \d+, keep it under 10#'
 
         -
@@ -270,22 +262,11 @@ parameters:
         # many internal cases
         - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
 
-        # generated content - not reliable values
-        -
-            message: '#Offset (.*?) on array(.*?) on left side of \?\? always exists and is not nullable#'
-            paths:
-                - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
-
         -
             path: src/Bootstrap/RectorConfigsResolver.php
             message: '#Method Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:resolveFromInput\(\) should return string\|null but returns string\|false#'
 
         - '#Cognitive complexity for "Rector\\Core\\NodeManipulator\\ClassMethodAssignManipulator\:\:collectReferenceVariableNames\(\)" is 13, keep it under 10#'
-
-        # on purpose to make use of worker paralle pattern
-        -
-            message: '#Instead of abstract class, use specific service with composition#'
-            path: src/Console/Command/AbstractProcessCommand.php
 
         # known value object, nullable due to typed property
         -
@@ -396,10 +377,6 @@ parameters:
         -
             message: '#Only booleans are allowed in an if condition, array\|null given#'
             path: rules/Naming/Naming/PropertyNaming.php
-
-        -
-            path: src/Bootstrap/ExtensionConfigResolver.php
-            message: '#Offset (.*?)includes(.*?) always exists and is not nullable#'
 
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
@@ -538,16 +515,6 @@ parameters:
             message: '#Instead of "Symfony\\Component\\Finder\\SplFileInfo" class/interface use "Symplify\\SmartFileSystem\\SmartFileInfo"#'
             path: src/FileSystem/FilesFinder.php #113
 
-        # format specifiers definition rule
-        -
-            message: '#Modifier "%s" is not matching passed variable type "array<int, string>"\. The "string" type is expected \- see https\://dibiphp\.com/en/documentation\#toc\-modifiers\-for\-arrays#'
-            path: rules/CodingStyle/Rector/Encapsed/EncapsedStringsToSprintfRector.php #35
-
-        # PropertyFetches inside method are different
-        -
-            message: '#Content of method "processGreater(Left|Right)\(\)" is duplicated with method "processGreaterOrEqual(Left|Right)\(\)" in "Rector\\DeadCode\\Rector\\ConstFetch\\RemovePhpVersionIdCheckRector" class\. Use unique content or service instead#'
-            path: rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
-
         -
             message: '#Instead of "DateTime" class/interface use "Nette\\Utils\\DateTime"#'
             path: src/Application/VersionResolver.php
@@ -642,7 +609,6 @@ parameters:
                 - src/Application/ChangedNodeScopeRefresher.php
                 - rules/TypeDeclaration/TypeNormalizer.php
                 - rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNewArrayRector.php
-                - rules/Composer/Guard/VersionGuard.php
                 - rules/Removing/NodeManipulator/ComplexNodeRemover.php
                 - rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
@@ -677,11 +643,6 @@ parameters:
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<Rector\\BetterPhpDocParser\\PhpDoc\\ArrayItemNode> and (.*?) will always evaluate to true#'
 
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
-
-        # false positive
-        -
-            message: '#Parameter \#1 \$value of class PhpParser\\Node\\Expr\\ArrayItem constructor expects PhpParser\\Node\\Expr, PhpParser\\Node\\Expr\|string given#'
-            path: packages/PhpAttribute/AnnotationToAttributeMapper/ArrayItemNodeAnnotationToAttributeMapper.php
 
         # simple filter
         -
@@ -758,9 +719,6 @@ parameters:
                 - rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
                 - rules/Php80/NodeFactory/MatchFactory.php
 
-        # function like ocvariant
-        - '#Parameter \#2 \$functionLike of method Rector\\TypeDeclaration\\NodeAnalyzer\\ParamAnalyzer\:\:getParamByName\(\) expects PhpParser\\Node\\Stmt\\ClassMethod\|PhpParser\\Node\\Stmt\\Function_, PhpParser\\Node\\FunctionLike given#'
-
         -
             message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
             path:  rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
@@ -797,7 +755,6 @@ parameters:
         -
             message: '#Offset \(int\|string\) on non\-empty\-array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
             path: packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
-        - '#Parameter \#3 \$secondCondition of method Rector\\Core\\NodeManipulator\\BinaryOpManipulator\:\:matchFirstAndSecondConditionNode\(\) expects \(callable\(PhpParser\\Node, PhpParser\\Node\=\)\: bool\)\|class\-string<PhpParser\\Node>, Closure\(PhpParser\\Node, PhpParser\\Node\)\: bool given#'
 
         -
             message: '#Method Rector\\Core\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
