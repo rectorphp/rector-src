@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\MethodCall\RenameMethodRector;
 use Rector\Renaming\ValueObject\MethodCallRename;
-use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\AbstractType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
 use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\DifferentInterface;
@@ -22,7 +21,5 @@ return static function (RectorConfig $rectorConfig): void {
         new MethodCallRename(Foo::class, 'old', 'new'),
         new MethodCallRename(NewInterface::class, 'some_old', 'some_new'),
         new MethodCallRename(DifferentInterface::class, 'renameMe', 'toNewVersion'),
-        // with array key
-        new MethodCallRenameWithArrayKey('Nette\Utils\Html', 'addToArray', 'addToHtmlArray', 'hey'),
     ]);
 };

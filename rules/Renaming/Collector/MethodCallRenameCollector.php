@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\Collector;
 
-use Rector\Renaming\Contract\MethodCallRenameInterface;
+use Rector\Renaming\ValueObject\MethodCallRename;
 
 final class MethodCallRenameCollector
 {
     /**
-     * @var MethodCallRenameInterface[]
+     * @var MethodCallRename[]
      */
     private array $methodCallRenames = [];
 
     /**
-     * @param MethodCallRenameInterface[] $methodCallRenames
+     * @param MethodCallRename[] $methodCallRenames
      */
     public function addMethodCallRenames(array $methodCallRenames): void
     {
@@ -22,7 +22,7 @@ final class MethodCallRenameCollector
     }
 
     /**
-     * @return MethodCallRenameInterface[]
+     * @return MethodCallRename[]
      */
     public function getMethodCallRenames(): array
     {
