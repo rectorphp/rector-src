@@ -16,12 +16,12 @@ final class CreatedByRuleDecorator
      */
     public function decorate(array | Node $node, Node $originalNode, string $rectorClass): void
     {
-        if ($node instanceof Node) {
-            if ($node === $originalNode) {
-                $this->createByRule($node, $rectorClass);
-                return;
-            }
+        if ($node instanceof Node && $node === $originalNode) {
+            $this->createByRule($node, $rectorClass);
+            return;
+        }
 
+        if ($node instanceof Node) {
             $node = [$node];
         }
 
