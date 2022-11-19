@@ -33,9 +33,7 @@ final class CreatedByRuleDecorator
             return;
         }
 
-        $phpstanCachePrinter = $originalNode->getAttribute(AttributeKey::PHPSTAN_CACHE_PRINTER);
-
-        if (! is_string($phpstanCachePrinter)) {
+        if (! $originalNode->hasAttribute(AttributeKey::PHPSTAN_CACHE_PRINTER)) {
             return;
         }
 
