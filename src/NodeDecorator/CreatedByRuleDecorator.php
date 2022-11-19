@@ -29,9 +29,25 @@ final class CreatedByRuleDecorator
 
     private function createByRule(Node $node, string $rectorClass): void
     {
-        $mergeCreatedByRule = array_merge($node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [], [$rectorClass]);
-        $mergeCreatedByRule = array_unique($mergeCreatedByRule);
+        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+        $lastRectorRuleKey = array_key_last($createdByRule);
 
-        $node->setAttribute(AttributeKey::CREATED_BY_RULE, $mergeCreatedByRule);
+        // empty array, insert
+        if ($lastRectorRuleKey === null) {
+            $node->setAttribute(AttributeKey::CREATED_BY_RULE, [$rectorClass]);
+            return;
+        }
+
+        // consecutive, no need to refill
+        if ($createdByRule[$lastRectorRuleKey] === $rectorClass) {
+            return;
+        }
+
+        // filter out when exists, then append
+        $createdByRule = array_filter(
+            $createdByRule,
+            static fn (string $rectorRule): bool => $rectorRule !== $rectorClass
+        );
+        $node->setAttribute(AttributeKey::CREATED_BY_RULE, [...$createdByRule, $rectorClass]);
     }
 }
