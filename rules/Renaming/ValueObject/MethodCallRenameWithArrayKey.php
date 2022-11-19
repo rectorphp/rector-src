@@ -8,12 +8,13 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\Validation\RectorAssert;
 use Rector\Renaming\Contract\MethodCallRenameInterface;
 
-final class MethodCallRename implements MethodCallRenameInterface
+final class MethodCallRenameWithArrayKey implements MethodCallRenameInterface
 {
     public function __construct(
         private readonly string $class,
         private readonly string $oldMethod,
-        private readonly string $newMethod
+        private readonly string $newMethod,
+        private readonly mixed $arrayKey
     ) {
         RectorAssert::className($class);
         RectorAssert::methodName($oldMethod);
@@ -38,5 +39,13 @@ final class MethodCallRename implements MethodCallRenameInterface
     public function getNewMethod(): string
     {
         return $this->newMethod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getArrayKey()
+    {
+        return $this->arrayKey;
     }
 }
