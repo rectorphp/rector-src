@@ -38,7 +38,7 @@ final class CreatedByRuleDecorator
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
-    public function decorateExpr(Node $node, Node $originalNode = null, string $rectorClass): void
+    public function decorateExpr(Node $node, Node $originalNode, string $rectorClass): void
     {
         if (! $originalNode instanceof Expr) {
             return;
