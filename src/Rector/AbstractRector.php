@@ -36,7 +36,6 @@ use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
-use Rector\Core\ValueObject\RectifiedNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -215,6 +214,7 @@ CODE_SAMPLE;
 
         // nothing to change → continue
         if ($refactoredNode === null) {
+            $this->createdByRuleDecorator->decorateWithPHPStanCachePrinterExists($node, $originalNode, static::class);
             return null;
         }
 
@@ -401,8 +401,7 @@ CODE_SAMPLE;
             return true;
         }
 
-        $rectifiedNode = $this->rectifiedAnalyzer->verify(static::class, $node, $this->file->getFilePath());
-        return $rectifiedNode instanceof RectifiedNode;
+        return $this->rectifiedAnalyzer->hasRectified(static::class, $node);
     }
 
     /**

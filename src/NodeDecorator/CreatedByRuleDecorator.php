@@ -27,6 +27,21 @@ final class CreatedByRuleDecorator
         $this->createByRule($originalNode, $rectorClass);
     }
 
+    public function decorateWithPHPStanCachePrinterExists(Node $node, ?Node $originalNode, string $rectorClass): void
+    {
+        if (! $originalNode instanceof Node) {
+            return;
+        }
+
+        $phpstanCachePrinter = $originalNode->getAttribute(AttributeKey::PHPSTAN_CACHE_PRINTER);
+
+        if (! is_string($phpstanCachePrinter)) {
+            return;
+        }
+
+        $this->decorate($node, $originalNode, $rectorClass);
+    }
+
     private function createByRule(Node $node, string $rectorClass): void
     {
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
