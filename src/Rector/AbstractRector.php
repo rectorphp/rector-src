@@ -210,12 +210,11 @@ CODE_SAMPLE;
             $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
         }
 
-        $originalNode ??= $node;
         $refactoredNode = $this->refactor($node);
 
         // nothing to change → continue
         if ($refactoredNode === null) {
-            $this->createdByRuleDecorator->decorateWithPHPStanCachePrinterExists($node, $originalNode, static::class);
+            $this->createdByRuleDecorator->decorateExpr($node, $originalNode, static::class);
             return null;
         }
 
@@ -223,6 +222,8 @@ CODE_SAMPLE;
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
         }
+
+        $originalNode ??= $node;
 
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);

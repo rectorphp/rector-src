@@ -169,9 +169,4 @@ final class AttributeKey
      * @var string
      */
     public const EXTRA_USE_IMPORT = 'extra_use_import';
-
-    /**
-     * @var string
-     */
-    public const PHPSTAN_CACHE_PRINTER = 'phpstan_cache_printer';
 }
