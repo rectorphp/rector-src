@@ -224,7 +224,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        /** @var Node[]|Node $refactoredNode */
+        /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
         $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
@@ -240,8 +240,8 @@ CODE_SAMPLE;
             $originalNodeHash = spl_object_hash($originalNode);
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
-            $firstNodeKey = array_key_first($refactoredNode);
-            $this->mirrorComments($refactoredNode[$firstNodeKey], $originalNode);
+            $firstNode = current($refactoredNode);
+            $this->mirrorComments($firstNode, $originalNode);
 
             $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
             $this->connectNodes($refactoredNode);

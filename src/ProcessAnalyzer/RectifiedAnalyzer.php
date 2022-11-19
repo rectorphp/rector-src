@@ -39,12 +39,11 @@ final class RectifiedAnalyzer
         /** @var class-string<RectorInterface>[] $createdByRule */
         $createdByRule = $createdByRuleNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
-        $lastRectorRuleKey = array_key_last($createdByRule);
-        if ($lastRectorRuleKey === null) {
+        if ($createdByRule === []) {
             return false;
         }
 
-        return $createdByRule[$lastRectorRuleKey] === $rectorClass;
+        return end($createdByRule) === $rectorClass;
     }
 
     /**

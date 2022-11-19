@@ -53,16 +53,15 @@ final class CreatedByRuleDecorator
     {
         /** @var class-string<RectorInterface>[] $createdByRule */
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-        $lastRectorRuleKey = array_key_last($createdByRule);
 
         // empty array, insert
-        if ($lastRectorRuleKey === null) {
+        if ($createdByRule === []) {
             $node->setAttribute(AttributeKey::CREATED_BY_RULE, [$rectorClass]);
             return;
         }
 
         // consecutive, no need to refill
-        if ($createdByRule[$lastRectorRuleKey] === $rectorClass) {
+        if (end($createdByRule) === $rectorClass) {
             return;
         }
 
