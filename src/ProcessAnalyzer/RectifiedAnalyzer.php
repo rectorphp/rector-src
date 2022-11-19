@@ -12,7 +12,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  * This service verify if the Node:
  *
  *      - already applied same Rector rule before current Rector rule on last previous Rector rule.
- *      - just re-printed but token start overlapped and still >= 0
+ *      - just re-printed but token start still >= 0
  */
 final class RectifiedAnalyzer
 {
@@ -27,7 +27,7 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        return ! $this->shouldContinue($node, $originalNode);
+        return $this->isJustReprintedOverlappedTokenStart($node, $originalNode);
     }
 
     /**
@@ -47,21 +47,21 @@ final class RectifiedAnalyzer
         return $createdByRule[$lastRectorRuleKey] === $rectorClass;
     }
 
-    private function shouldContinue(Node $node, ?Node $originalNode): bool
+    private function isJustReprintedOverlappedTokenStart(Node $node, ?Node $originalNode): bool
     {
         if ($originalNode instanceof Node) {
-            return true;
+            return false;
         }
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         if (! $parentNode instanceof Node) {
-            return true;
+            return false;
         }
 
         $parentOriginalNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
         if ($parentOriginalNode instanceof Node) {
-            return true;
+            return false;
         }
 
         /**
@@ -71,6 +71,6 @@ final class RectifiedAnalyzer
          * - Parent Node's original node is null
          */
         $startTokenPos = $node->getStartTokenPos();
-        return $startTokenPos < 0;
+        return $startTokenPos >= 0;
     }
 }
