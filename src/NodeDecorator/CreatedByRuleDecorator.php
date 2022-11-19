@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Rector\Core\NodeDecorator;
 
 use PhpParser\Node;
+use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class CreatedByRuleDecorator
 {
     /**
      * @param array<Node>|Node $node
+     * @param class-string<RectorInterface> $rectorClass
      */
     public function decorate(array | Node $node, Node $originalNode, string $rectorClass): void
     {
@@ -27,6 +29,9 @@ final class CreatedByRuleDecorator
         $this->createByRule($originalNode, $rectorClass);
     }
 
+    /**
+     * @param class-string<RectorInterface> $rectorClass
+     */
     public function decorateWithPHPStanCachePrinterExists(Node $node, ?Node $originalNode, string $rectorClass): void
     {
         if (! $originalNode instanceof Node) {
@@ -40,8 +45,12 @@ final class CreatedByRuleDecorator
         $this->decorate($node, $originalNode, $rectorClass);
     }
 
+    /**
+     * @param class-string<RectorInterface> $rectorClass
+     */
     private function createByRule(Node $node, string $rectorClass): void
     {
+        /** @var class-string<RectorInterface>[] $createdByRule */
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
         $lastRectorRuleKey = array_key_last($createdByRule);
 

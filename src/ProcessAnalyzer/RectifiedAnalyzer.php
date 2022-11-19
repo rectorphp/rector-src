@@ -36,6 +36,7 @@ final class RectifiedAnalyzer
     private function hasConsecutiveCreatedByRule(string $rectorClass, Node $node, ?Node $originalNode): bool
     {
         $createdByRuleNode = $originalNode ?? $node;
+        /** @var class-string<RectorInterface>[] $createdByRule */
         $createdByRule = $createdByRuleNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
         $lastRectorRuleKey = array_key_last($createdByRule);
