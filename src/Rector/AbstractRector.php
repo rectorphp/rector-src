@@ -210,6 +210,7 @@ CODE_SAMPLE;
             $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
         }
 
+        $originalNode ??= $node;
         $refactoredNode = $this->refactor($node);
 
         // nothing to change → continue
@@ -222,8 +223,6 @@ CODE_SAMPLE;
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
         }
-
-        $originalNode ??= $node;
 
         /** @var Node[]|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);

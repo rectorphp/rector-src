@@ -32,12 +32,8 @@ final class CreatedByRuleDecorator
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
-    public function decorateWithPHPStanCachePrinterExists(Node $node, ?Node $originalNode, string $rectorClass): void
+    public function decorateWithPHPStanCachePrinterExists(Node $node, Node $originalNode, string $rectorClass): void
     {
-        if (! $originalNode instanceof Node) {
-            return;
-        }
-
         if (! $originalNode->hasAttribute(AttributeKey::PHPSTAN_CACHE_PRINTER)) {
             return;
         }
