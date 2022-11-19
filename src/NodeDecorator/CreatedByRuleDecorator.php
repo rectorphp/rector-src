@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\NodeDecorator;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -39,6 +40,10 @@ final class CreatedByRuleDecorator
      */
     public function decorateWithPHPStanCachePrinterExists(Node $node, Node $originalNode, string $rectorClass): void
     {
+        if (! $originalNode instanceof Expr) {
+            return;
+        }
+
         if (! $originalNode->hasAttribute(AttributeKey::PHPSTAN_CACHE_PRINTER)) {
             return;
         }
