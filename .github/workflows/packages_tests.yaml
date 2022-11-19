@@ -26,6 +26,13 @@ jobs:
                     - rectorphp/rector-doctrine
                     - rectorphp/rector-downgrade-php
                     - rectorphp/rector-php-parser
+                actions:
+                    -
+                        name: 'Unit Tests'
+                        run: vendor/bin/phpunit
+                    -
+                        name: 'PHPStan'
+                        run: vendor/bin/phpstan
 
         steps:
             # see https://github.com/actions/checkout#usage
@@ -50,4 +57,4 @@ jobs:
 
             -   run: composer install --ansi
 
-            -   run: vendor/bin/phpunit
+            -   run: ${{ matrix.actions.run }}
