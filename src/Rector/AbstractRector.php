@@ -426,22 +426,26 @@ CODE_SAMPLE;
     }
 
     /**
-     * @param Node[] $nodes
+     * @param non-empty-array<Node> $nodes
      */
     private function connectNodes(array $nodes, Node $node): void
     {
         $firstNode = current($nodes);
-        $previousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
+        $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-        if (! $previousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
-            $nodes = [$node->getAttribute(AttributeKey::PREVIOUS_NODE), ...$nodes];
+        if (! $firstNodePreviousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
+            /** @var Node $previousNode */
+            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+            $nodes = [$previousNode, ...$nodes];
         }
 
         $lastNode = end($nodes);
-        $nextNode = $lastNode->getAttribute(AttributeKey::NEXT_NODE);
+        $lastNodeNextNode = $lastNode->getAttribute(AttributeKey::NEXT_NODE);
 
-        if (! $nextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
-            $nodes = [...$nodes, $node->getAttribute(AttributeKey::NEXT_NODE)];
+        if (! $lastNodeNextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
+            /** @var Node $nextNode */
+            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+            $nodes = [...$nodes, $nextNode];
         }
 
         $nodeTraverser = new NodeTraverser();
