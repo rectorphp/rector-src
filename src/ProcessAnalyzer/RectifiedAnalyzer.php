@@ -46,15 +46,6 @@ final class RectifiedAnalyzer
         return end($createdByRule) === $rectorClass;
     }
 
-    /**
-     * Start token pos must be < 0 to continue if the node and/or parent node just re-printed
-     *
-     * - Node's original node is Node -> continue
-     * - Node's original node is null
-     *      - with no parent and Node start token pos >= 0 -> stop
-     *      - has parent with original node a Node -> continue
-     *      - parent original Node is null and parent start token post >=0 -> stop
-     */
     private function isJustReprintedOverlappedTokenStart(Node $node, ?Node $originalNode): bool
     {
         if ($originalNode instanceof Node) {
@@ -64,7 +55,7 @@ final class RectifiedAnalyzer
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         if (! $parentNode instanceof Node) {
-            return $node->getStartTokenPos() >= 0;
+            return false;
         }
 
         $parentOriginalNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
@@ -72,6 +63,13 @@ final class RectifiedAnalyzer
             return false;
         }
 
-        return $parentNode->getStartTokenPos() >= 0;
+        /**
+         * Start token pos must be < 0 to continue, as the node and parent node just re-printed
+         *
+         * - Node's original node is null
+         * - Parent Node's original node is null
+         */
+        $startTokenPos = $node->getStartTokenPos();
+        return $startTokenPos >= 0;
     }
 }
