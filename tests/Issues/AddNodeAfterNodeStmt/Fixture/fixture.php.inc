@@ -8,7 +8,7 @@ final class Fixture
     {
         if ($a === 1) {
         }
-        echo 'existing next stmt';
+        echo 'existing next stmt after if';
     }
 }
 
@@ -24,8 +24,8 @@ final class Fixture
     {
         if ($a === 1) {
         }
-        echo 'this is new stmt after stmt';
-        echo 'existing next stmt';
+        echo 'this is new stmt after if';
+        echo 'existing next stmt after if';
     }
 }
 

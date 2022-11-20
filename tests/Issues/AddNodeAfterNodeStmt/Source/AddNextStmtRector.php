@@ -33,7 +33,7 @@ class AddNextStmtRector extends AbstractRector
     public function refactor(Node $node)
     {
         $this->nodesToAddCollector->addNodeAfterNode(
-            new Echo_([new String_("this is new stmt after stmt")]),
+            new Echo_([new String_("this is new stmt after if")]),
             $node
         );
         return $node;
