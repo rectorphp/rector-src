@@ -447,7 +447,7 @@ CODE_SAMPLE;
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
             $nodes = [...$nodes, $nextNode];
         }
-        
+
         if (count($nodes) === 1) {
             return;
         }
