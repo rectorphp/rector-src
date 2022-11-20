@@ -210,12 +210,10 @@ CODE_SAMPLE;
             $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
         }
 
-        $originalNode ??= $node;
         $refactoredNode = $this->refactor($node);
 
         // nothing to change → continue
         if ($refactoredNode === null) {
-            $this->createdByRuleDecorator->decorateExpr($node, $originalNode, static::class);
             return null;
         }
 
@@ -223,6 +221,8 @@ CODE_SAMPLE;
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
         }
+
+        $originalNode ??= $node;
 
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
@@ -244,7 +244,7 @@ CODE_SAMPLE;
             $this->mirrorComments($firstNode, $originalNode);
 
             $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
-            $this->connectNodes($refactoredNode);
+            $this->connectNodes($refactoredNode, $node);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             // will be replaced in leaveNode() the original node must be passed
@@ -256,6 +256,7 @@ CODE_SAMPLE;
             : $refactoredNode;
 
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+        $this->connectNodes([$refactoredNode], $node);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         // is equals node type? return node early
@@ -427,8 +428,22 @@ CODE_SAMPLE;
     /**
      * @param Node[] $nodes
      */
-    private function connectNodes(array $nodes): void
+    private function connectNodes(array $nodes, Node $node): void
     {
+        $firstNode = current($nodes);
+        $previousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
+
+        if (! $previousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
+            $nodes = [$node->getAttribute(AttributeKey::PREVIOUS_NODE), ...$nodes];
+        }
+
+        $lastNode = end($nodes);
+        $nextNode = $lastNode->getAttribute(AttributeKey::NEXT_NODE);
+
+        if (! $nextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
+            $nodes = [...$nodes, $node->getAttribute(AttributeKey::NEXT_NODE)];
+        }
+
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NodeConnectingVisitor());
         $nodeTraverser->traverse($nodes);

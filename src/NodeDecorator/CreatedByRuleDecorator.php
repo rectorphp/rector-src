@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\NodeDecorator;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -33,18 +32,6 @@ final class CreatedByRuleDecorator
         }
 
         $this->createByRule($originalNode, $rectorClass);
-    }
-
-    /**
-     * @param class-string<RectorInterface> $rectorClass
-     */
-    public function decorateExpr(Node $node, Node $originalNode, string $rectorClass): void
-    {
-        if (! $originalNode instanceof Expr) {
-            return;
-        }
-
-        $this->decorate($node, $originalNode, $rectorClass);
     }
 
     /**
