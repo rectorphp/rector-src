@@ -146,8 +146,8 @@ CODE_SAMPLE
             }
         }
 
-        // skip same line or < 0 that can cause infinite loop
-        if ($rangeLine <= 0) {
+        // skip same line that cause infinite loop
+        if ($rangeLine === 0) {
             return null;
         }
 
