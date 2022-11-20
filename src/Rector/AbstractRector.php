@@ -447,6 +447,10 @@ CODE_SAMPLE;
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
             $nodes = [...$nodes, $nextNode];
         }
+        
+        if (count($nodes) === 1) {
+            return;
+        }
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NodeConnectingVisitor());
