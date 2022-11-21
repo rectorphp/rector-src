@@ -38,10 +38,6 @@ final class PropertyPromotionRenamer
 
     public function renamePropertyPromotion(Class_|Interface_ $classLike): void
     {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PROPERTY_PROMOTION)) {
-            return;
-        }
-
         $constructClassMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
             return;
@@ -51,10 +47,6 @@ final class PropertyPromotionRenamer
         $blockingParamNames = $this->resolveBlockingParamNames($constructClassMethod);
 
         foreach ($constructClassMethod->params as $param) {
-            if ($param->flags === 0) {
-                continue;
-            }
-
             // promoted property
             $desiredPropertyName = $this->matchParamTypeExpectedNameResolver->resolve($param);
             if ($desiredPropertyName === null) {
