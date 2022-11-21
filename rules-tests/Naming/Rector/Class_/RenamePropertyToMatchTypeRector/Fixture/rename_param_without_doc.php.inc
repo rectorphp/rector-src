@@ -42,5 +42,4 @@ final class RenameParamWithoutDoc
         return $this->classAnalyzer;
     }
 }
-
 ?>
