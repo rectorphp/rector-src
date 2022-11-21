@@ -14,6 +14,7 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class MatchPropertyTypeExpectedNameResolver
 {
@@ -23,7 +24,8 @@ final class MatchPropertyTypeExpectedNameResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyManipulator $propertyManipulator,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -45,9 +47,13 @@ final class MatchPropertyTypeExpectedNameResolver
             return null;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+        $type = $this->nodeTypeResolver->getType($property);
+        $expectedName = $this->propertyNaming->getExpectedNameFromType($type);
+        if (! $expectedName instanceof ExpectedName) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+            $expectedName = $this->propertyNaming->getExpectedNameFromType($phpDocInfo->getVarType());
+        }
 
-        $expectedName = $this->propertyNaming->getExpectedNameFromType($phpDocInfo->getVarType());
         if (! $expectedName instanceof ExpectedName) {
             return null;
         }
