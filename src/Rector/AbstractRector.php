@@ -366,7 +366,7 @@ CODE_SAMPLE;
              * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
              * to make PHPStan type can be correctly detected
              */
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+            $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
 
             $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
