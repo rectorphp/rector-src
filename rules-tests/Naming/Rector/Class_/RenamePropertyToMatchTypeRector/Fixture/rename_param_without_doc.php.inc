@@ -9,7 +9,7 @@ final class RenameParamWithoutDoc
     private ClassAnalyzer $analyzer;
     
     public function __construct(
-        private ClassAnalyzer $analyzer
+        ClassAnalyzer $analyzer
     ) {
         $this->analyzer = $analyzer;
     }
