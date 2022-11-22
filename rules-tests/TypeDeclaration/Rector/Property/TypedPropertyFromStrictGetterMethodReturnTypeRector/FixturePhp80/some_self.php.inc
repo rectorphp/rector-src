@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector\Fixture;
 
-final class Test
+final class SomeSelf
 {
     private $test;
 
@@ -17,7 +17,7 @@ final class Test
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector\Fixture;
 
-final class Test
+final class SomeSelf
 {
     private self $test;
 
