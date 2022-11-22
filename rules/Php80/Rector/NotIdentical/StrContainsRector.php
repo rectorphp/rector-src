@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\NotIdentical;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\LNumber;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -82,6 +85,13 @@ CODE_SAMPLE
             return null;
         }
 
+        if (isset($funcCall->args[2])) {
+            if ($this->isName($funcCall->name, 'strpos') && $this->isPositiveInteger($funcCall->args[2]->value)) {
+                $funcCall->args[0] = new Arg($this->nodeFactory->createFuncCall('substr', [$funcCall->args[0], $funcCall->args[2]]));
+            }
+            unset($funcCall->args[2]);
+        }
+
         $funcCall->name = new Name('str_contains');
 
         if ($node instanceof Identical) {
@@ -122,5 +132,14 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isPositiveInteger(Expr $offset): bool
+    {
+        if (! $offset instanceof LNumber) {
+            return false;
+        }
+
+        return $offset->value > 0;
     }
 }
