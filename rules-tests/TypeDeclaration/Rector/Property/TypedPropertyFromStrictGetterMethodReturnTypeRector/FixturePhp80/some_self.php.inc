@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector\FixturePhp80;
 
 final class SomeSelf
 {
@@ -15,7 +15,7 @@ final class SomeSelf
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector\FixturePhp80;
 
 final class SomeSelf
 {
