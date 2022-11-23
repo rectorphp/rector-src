@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocInfo;
 
+use PhpParser\Comment\Doc;
+use PhpParser\Node\Stmt\InlineHTML;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\InvalidTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
@@ -28,6 +30,7 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -62,7 +65,8 @@ final class PhpDocInfo
         private readonly AnnotationNaming $annotationNaming,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly RectorChangeCollector $rectorChangeCollector,
-        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder
+        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
         $this->originalPhpDocNode = clone $phpDocNode;
 
@@ -452,6 +456,10 @@ final class PhpDocInfo
 
         $node = $this->currentNodeProvider->getNode();
         if ($node !== null) {
+            if (! $node instanceof InlineHTML) {
+                $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
+            }
+
             $this->rectorChangeCollector->notifyNodeFileInfo($node);
         }
     }

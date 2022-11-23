@@ -16,6 +16,7 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -36,6 +37,7 @@ final class PhpDocInfoFactory
         private readonly AnnotationNaming $annotationNaming,
         private readonly RectorChangeCollector $rectorChangeCollector,
         private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -139,7 +141,8 @@ final class PhpDocInfoFactory
             $this->annotationNaming,
             $this->currentNodeProvider,
             $this->rectorChangeCollector,
-            $this->phpDocNodeByTypeFinder
+            $this->phpDocNodeByTypeFinder,
+            $this->docBlockUpdater
         );
 
         $node->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
