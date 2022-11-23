@@ -87,8 +87,12 @@ CODE_SAMPLE
 
         if (isset($funcCall->args[2])) {
             if ($this->isName($funcCall->name, 'strpos') && $this->isPositiveInteger($funcCall->args[2]->value)) {
-                $funcCall->args[0] = new Arg($this->nodeFactory->createFuncCall('substr', [$funcCall->args[0], $funcCall->args[2]]));
+                $funcCall->args[0] = new Arg($this->nodeFactory->createFuncCall(
+                    'substr',
+                    [$funcCall->args[0], $funcCall->args[2]]
+                ));
             }
+
             unset($funcCall->args[2]);
         }
 
@@ -134,12 +138,12 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isPositiveInteger(Expr $offset): bool
+    private function isPositiveInteger(Expr $expr): bool
     {
-        if (! $offset instanceof LNumber) {
+        if (! $expr instanceof LNumber) {
             return false;
         }
 
-        return $offset->value > 0;
+        return $expr->value > 0;
     }
 }
