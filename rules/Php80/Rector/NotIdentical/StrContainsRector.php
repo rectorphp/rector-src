@@ -92,6 +92,7 @@ CODE_SAMPLE
                     [$funcCall->args[0], $funcCall->args[2]]
                 ));
             }
+
             unset($funcCall->args[2]);
         }
 
@@ -137,12 +138,12 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isPositiveInteger(Expr $offset): bool
+    private function isPositiveInteger(Expr $expr): bool
     {
-        if (! $offset instanceof LNumber) {
+        if (! $expr instanceof LNumber) {
             return false;
         }
 
-        return $offset->value > 0;
+        return $expr->value > 0;
     }
 }

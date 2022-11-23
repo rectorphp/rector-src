@@ -92,6 +92,7 @@ final class VarDocPropertyTypeInferer
         return $resolvedType;
     }
 
+
     private function shouldAddNull(Type $resolvedType, ?Type $assignInferredPropertyType): bool
     {
         if (! $assignInferredPropertyType instanceof Type) {

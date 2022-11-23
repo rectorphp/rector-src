@@ -131,6 +131,7 @@ CODE_SAMPLE
         return $node;
     }
 
+
     private function shouldSkip(Type $conditionStaticType, BinaryOp $binaryOp, ?Node $nextNode): bool
     {
         if (! $conditionStaticType->isString()

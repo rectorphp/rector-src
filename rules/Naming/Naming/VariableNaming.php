@@ -56,6 +56,7 @@ final class VariableNaming
         return lcfirst($countedValueName);
     }
 
+
     public function createCountedValueName(string $valueName, ?Scope $scope): string
     {
         if ($scope === null) {

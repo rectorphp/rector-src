@@ -21,6 +21,7 @@ final class NormalizeTypeToRespectArrayScalarType
     ) {
     }
 
+
     public function normalizeToArray(Type $type, ?Node $returnNode): ArrayType|UnionType|Type
     {
         if ($returnNode === null) {

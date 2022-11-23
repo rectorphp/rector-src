@@ -263,6 +263,7 @@ CODE_SAMPLE
         return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
     }
 
+
     private function addClassMethodParam(
         ClassMethod $classMethod,
         ArgumentAdder $argumentAdder,

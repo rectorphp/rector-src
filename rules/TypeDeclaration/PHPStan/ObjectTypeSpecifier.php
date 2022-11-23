@@ -129,6 +129,7 @@ final class ObjectTypeSpecifier
         return null;
     }
 
+
     private function processAliasedObject(
         string $alias,
         string $className,

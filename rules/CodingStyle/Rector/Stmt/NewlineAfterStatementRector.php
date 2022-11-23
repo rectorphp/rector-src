@@ -166,6 +166,7 @@ CODE_SAMPLE
         return ! isset($comments[0]);
     }
 
+
     private function shouldSkip(?Node $nextNode): bool
     {
         if (! $nextNode instanceof Stmt) {

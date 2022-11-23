@@ -28,6 +28,7 @@ final class ChangedArgumentsDetector
         return ! $this->valueResolver->isValue($param->default, $value);
     }
 
+
     public function isTypeChanged(Param $param, ?Type $newType): bool
     {
         if ($param->type === null) {

@@ -105,6 +105,7 @@ final class TrustedClassMethodPropertyTypeInferer
         return $this->resolveType($property, $propertyName, $classLike, $resolvedType);
     }
 
+
     private function resolveType(
         Property $property,
         string $propertyName,

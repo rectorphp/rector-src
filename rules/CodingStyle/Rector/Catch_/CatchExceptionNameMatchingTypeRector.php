@@ -168,6 +168,7 @@ CODE_SAMPLE
         $this->replaceNextUsageVariable($tryCatch, $nextNode, $oldVariableName, $newVariableName);
     }
 
+
     private function replaceNextUsageVariable(
         Node $currentNode,
         ?Node $nextNode,

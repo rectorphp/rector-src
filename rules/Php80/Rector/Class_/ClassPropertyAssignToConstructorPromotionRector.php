@@ -223,6 +223,7 @@ CODE_SAMPLE
         return false;
     }
 
+
     private function isCallableTypeIdentifier(?Node $node): bool
     {
         return $node instanceof Identifier && $this->isName($node, 'callable');

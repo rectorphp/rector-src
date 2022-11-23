@@ -255,6 +255,7 @@ final class ReturnTypeInferer
         return false;
     }
 
+
     private function isNamespacedFullyQualified(?Node $node): bool
     {
         return $node instanceof FullyQualified && str_contains($node->toString(), '\\');
