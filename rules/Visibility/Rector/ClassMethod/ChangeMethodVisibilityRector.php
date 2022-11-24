@@ -90,6 +90,10 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        if ($this->methodVisibilities === []) {
+            return null;
+        }
+
         $parentClassName = $this->parentClassScopeResolver->resolveParentClassName($scope);
         if ($parentClassName === null) {
             return null;
@@ -109,7 +113,7 @@ CODE_SAMPLE
             return $node;
         }
 
-        return $node;
+        return null;
     }
 
     /**
