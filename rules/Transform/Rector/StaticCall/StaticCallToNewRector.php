@@ -86,7 +86,7 @@ CODE_SAMPLE
             return new New_(new FullyQualified($class), $node->args);
         }
 
-        return $node;
+        return null;
     }
 
     /**

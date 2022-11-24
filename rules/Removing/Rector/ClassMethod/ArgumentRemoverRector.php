@@ -27,6 +27,8 @@ final class ArgumentRemoverRector extends AbstractRector implements Configurable
      */
     private array $removedArguments = [];
 
+    private bool $hasChanged = false;
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -60,8 +62,10 @@ CODE_SAMPLE
     /**
      * @param MethodCall|StaticCall|ClassMethod $node
      */
-    public function refactor(Node $node): MethodCall | StaticCall | ClassMethod
+    public function refactor(Node $node): MethodCall | StaticCall | ClassMethod | null
     {
+        $this->hasChanged = false;
+
         foreach ($this->removedArguments as $removedArgument) {
             if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
                 $node,
@@ -77,7 +81,11 @@ CODE_SAMPLE
             $this->processPosition($node, $removedArgument);
         }
 
-        return $node;
+        if ($this->hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     /**
@@ -119,6 +127,7 @@ CODE_SAMPLE
         }
 
         if ($this->isArgumentValueMatch($node->args[$argumentRemover->getPosition()], $match)) {
+            $this->hasChanged = true;
             $this->nodeRemover->removeArg($node, $argumentRemover->getPosition());
         }
     }
