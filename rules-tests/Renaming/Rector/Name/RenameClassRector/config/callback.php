@@ -10,6 +10,6 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\EnforceInterfaceS
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(RenameClassRector::class, [
-            '__callbacks__' => [new EnforceExceptionSuffixCallback(), new EnforceInterfaceSuffixCallback()],
+            RenameClassRector::CALLBACKS => [new EnforceExceptionSuffixCallback(), new EnforceInterfaceSuffixCallback()],
         ]);
 };

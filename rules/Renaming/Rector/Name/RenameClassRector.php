@@ -30,6 +30,11 @@ use Webmozart\Assert\Assert;
  */
 final class RenameClassRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const CALLBACKS = '__callbacks__';
+
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ClassRenamer $classRenamer,
@@ -118,13 +123,13 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $oldToNewClassCallbacks = $configuration['__callbacks__'] ?? [];
+        $oldToNewClassCallbacks = $configuration[self::CALLBACKS] ?? [];
         Assert::isArray($oldToNewClassCallbacks);
         if ($oldToNewClassCallbacks !== []) {
             Assert::allIsCallable($oldToNewClassCallbacks);
             /** @var array<callable(ClassLike, NodeNameResolver): ?string> $oldToNewClassCallbacks */
             $this->renameClassCallbackHandler->addOldToNewClassCallbacks($oldToNewClassCallbacks);
-            unset($configuration['__callbacks__']);
+            unset($configuration[self::CALLBACKS]);
         }
 
         Assert::allString($configuration);
