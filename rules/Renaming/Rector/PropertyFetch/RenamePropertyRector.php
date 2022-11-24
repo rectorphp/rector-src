@@ -30,6 +30,8 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
      */
     private array $renamedProperties = [];
 
+    private bool $hasChanged = false;
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Replaces defined old properties by new ones.', [
@@ -55,7 +57,15 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof ClassLike) {
-            return $this->processFromClassLike($node);
+            foreach ($this->renamedProperties as $renamedProperty) {
+                $this->renameProperty($node, $renamedProperty);
+            }
+
+            if ($this->hasChanged) {
+                return $node;
+            }
+
+            return null;
         }
 
         return $this->processFromPropertyFetch($node);
@@ -68,15 +78,6 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
     {
         Assert::allIsAOf($configuration, RenameProperty::class);
         $this->renamedProperties = $configuration;
-    }
-
-    private function processFromClassLike(ClassLike $classLike): ClassLike
-    {
-        foreach ($this->renamedProperties as $renamedProperty) {
-            $this->renameProperty($classLike, $renamedProperty);
-        }
-
-        return $classLike;
     }
 
     private function renameProperty(ClassLike $classLike, RenameProperty $renameProperty): void
@@ -105,6 +106,7 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
             return;
         }
 
+        $this->hasChanged = true;
         $property->props[0]->name = new VarLikeIdentifier($newProperty);
     }
 
