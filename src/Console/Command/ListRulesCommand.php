@@ -52,7 +52,7 @@ final class ListRulesCommand extends Command
                 'rectors' => $rectorClasses,
             ];
 
-            echo Json::encode($data, Json::PRETTY);
+            echo Json::encode($data, Json::PRETTY) . PHP_EOL;
             return Command::SUCCESS;
         }
 
