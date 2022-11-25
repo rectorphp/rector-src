@@ -74,6 +74,7 @@ final class NodeFactory
 
     /**
      * Creates "SomeClass::CONSTANT"
+     * @deprecated
      */
     public function createShortClassConstFetch(string $shortClassName, string $constantName): ClassConstFetch
     {
