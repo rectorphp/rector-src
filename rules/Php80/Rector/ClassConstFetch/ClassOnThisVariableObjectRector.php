@@ -79,10 +79,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($class->isFinal()) {
-            $node->class = new Name('self');
-        }
-
         $className = $class->isFinal() ? 'self' : 'static';
         $node->class = new Name($className);
 
