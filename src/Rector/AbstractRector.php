@@ -227,7 +227,7 @@ CODE_SAMPLE;
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
-        $rectorWithLineChange = new RectorWithLineChange($this::class, $originalNode->getLine());
+        $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
