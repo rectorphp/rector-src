@@ -46,7 +46,7 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function run($object)
+    public function run()
     {
         return static::class;
     }
