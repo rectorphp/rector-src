@@ -36,15 +36,17 @@ final class PropertyPromotionRenamer
     ) {
     }
 
-    public function renamePropertyPromotion(Class_|Interface_ $classLike): void
+    public function renamePropertyPromotion(Class_|Interface_ $classLike): bool
     {
+        $hasChanged = false;
+
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::PROPERTY_PROMOTION)) {
-            return;
+            return false;
         }
 
         $constructClassMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
-            return;
+            return false;
         }
 
         // resolve possible and existing param names
@@ -71,7 +73,10 @@ final class PropertyPromotionRenamer
             }
 
             $this->renameParamVarNameAndVariableUsage($classLike, $constructClassMethod, $desiredPropertyName, $param);
+            $hasChanged = true;
         }
+
+        return $hasChanged;
     }
 
     private function renameParamVarNameAndVariableUsage(
