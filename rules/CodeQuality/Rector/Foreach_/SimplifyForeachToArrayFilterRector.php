@@ -19,6 +19,8 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\UnionType;
 use Rector\CodeQuality\NodeFactory\ArrayFilterFactory;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,6 +31,7 @@ final class SimplifyForeachToArrayFilterRector extends AbstractRector
 {
     public function __construct(
         private readonly ArrayFilterFactory $arrayFilterFactory,
+        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
     ) {
     }
 
@@ -85,6 +88,11 @@ CODE_SAMPLE
 
         $condExpr = $ifNode->cond;
 
+        $foreachKeyVar = $node->keyVar;
+        if ($foreachKeyVar !== null && $this->shouldSkipForeachKeyUsage($ifNode, $foreachKeyVar)) {
+            return null;
+        }
+
         if ($condExpr instanceof FuncCall) {
             return $this->refactorFuncCall($ifNode, $condExpr, $node, $foreachValueVar);
         }
@@ -117,6 +125,30 @@ CODE_SAMPLE
         }
 
         return $ifNode->elseifs !== [];
+    }
+
+    private function shouldSkipForeachKeyUsage(If_ $ifNode, Expr $keyVar): bool
+    {
+        if (! $keyVar instanceof Variable) {
+            return false;
+        }
+
+        $keyVarUsage = $this->betterNodeFinder->find(
+            $ifNode,
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $keyVar)
+        );
+
+        $keyVarUsageCount = count($keyVarUsage);
+        if ($keyVarUsageCount === 1) {
+            $parentArrayDimFetch = $keyVarUsage[0]->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentArrayDimFetch instanceof ArrayDimFetch) {
+                return true;
+            }
+
+            return $parentArrayDimFetch->dim !== $keyVarUsage[0];
+        }
+
+        return $keyVarUsageCount !== 0;
     }
 
     private function isArrayDimFetchInForLoop(Foreach_ $foreach, ArrayDimFetch $arrayDimFetch): bool
