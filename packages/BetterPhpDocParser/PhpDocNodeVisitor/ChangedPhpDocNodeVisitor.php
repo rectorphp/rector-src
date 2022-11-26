@@ -39,7 +39,7 @@ final class ChangedPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         if ($nodeStartAndEnd->getStart() !== $origNodeStartAndEnd->getStart() || $nodeStartAndEnd->getEnd() !== $origNodeStartAndEnd->getEnd()) {
             $this->hasChanged = true;
-            return true;
+            return $node;
         }
 
         return null;
