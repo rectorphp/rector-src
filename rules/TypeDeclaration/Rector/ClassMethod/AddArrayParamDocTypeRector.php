@@ -119,7 +119,9 @@ CODE_SAMPLE
             $paramName = $this->getName($param);
             $this->phpDocTypeChanger->changeParamType($phpDocInfo, $paramType, $param, $paramName);
 
-            $hasChangedNode = true;
+            if ($phpDocInfo->hasChanged()) {
+                $hasChangedNode = true;
+            }
         }
 
         if ($phpDocInfo->hasChanged() && $hasChangedNode) {
