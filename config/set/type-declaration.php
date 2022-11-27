@@ -62,7 +62,7 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeFromStrictScalarReturnExprRector::class,
         TypedPropertyFromStrictSetUpRector::class,
         ParamTypeByParentCallTypeRector::class,
-        // AddParamTypeSplFixedArrayRector::class,
+        AddParamTypeSplFixedArrayRector::class,
         AddParamTypeBasedOnPHPUnitDataProviderRector::class,
     ]);
 };
