@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationRector;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class PropertyTypeParamTypeDeclarationRectorTest extends AbstractRectorTestCase
+final class AddParamTypeFromPropertyTypeRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
@@ -17,13 +17,16 @@ final class PropertyTypeParamTypeDeclarationRectorTest extends AbstractRectorTes
         $this->doTestFile($filePath);
     }
 
+    /**
+     * @return Iterator<array<string>>
+     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePropertyType');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/typed_properties.php';
+        return __DIR__ . '/config/configured_rule.php';
     }
 }
