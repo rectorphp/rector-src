@@ -6,7 +6,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\F
 
 use \Drupal\Core\Url;
 
-final class ParamTest {
+final class ParamAndReturnWithDescriptionOnNextLine {
 
   /**
    * A dummy method to test rector param removal.

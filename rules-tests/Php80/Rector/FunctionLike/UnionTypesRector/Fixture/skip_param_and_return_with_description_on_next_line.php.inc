@@ -6,7 +6,7 @@ namespace Rector\Tests\Php80\Rector\FunctionLike\UnionTypesRector\Fixture;
 
 use \Drupal\Core\Url;
 
-final class ParamTest {
+final class ParamAndReturnWithDescriptionOnNextLine {
 
   /**
    * A dummy method to test rector param removal.
