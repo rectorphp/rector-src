@@ -24,7 +24,7 @@ use Rector\Php74\TypeAnalyzer\ObjectTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\VarDocPropertyTypeInferer;
-use Rector\VendorLocker\VendorLockResolver;
+use Rector\VendorLocker\NodeVendorLocker\PropertyTypeVendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -55,12 +55,12 @@ final class TypedPropertyRector extends AbstractScopeAwareRector implements Allo
 
     public function __construct(
         private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
-        private readonly VendorLockResolver $vendorLockResolver,
         private readonly VarTagRemover $varTagRemover,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly ObjectTypeAnalyzer $objectTypeAnalyzer,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly PropertyTypeVendorLockResolver $propertyTypeVendorLockResolver,
     ) {
     }
 
@@ -176,14 +176,14 @@ CODE_SAMPLE
 
         // false positive
         if (! $node instanceof Name) {
-            return $this->vendorLockResolver->isPropertyTypeChangeVendorLockedIn($property);
+            return $this->propertyTypeVendorLockResolver->isVendorLocked($property);
         }
 
         if ($this->isName($node, 'mixed')) {
             return true;
         }
 
-        return $this->vendorLockResolver->isPropertyTypeChangeVendorLockedIn($property);
+        return $this->propertyTypeVendorLockResolver->isVendorLocked($property);
     }
 
     private function addDefaultValueNullForNullableType(Property $property, Type $propertyType): void

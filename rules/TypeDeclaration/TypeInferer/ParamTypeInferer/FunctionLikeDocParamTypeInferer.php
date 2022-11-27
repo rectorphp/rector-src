@@ -14,9 +14,8 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\TypeDeclaration\Contract\TypeInferer\ParamTypeInfererInterface;
 
-final class FunctionLikeDocParamTypeInferer implements ParamTypeInfererInterface
+final class FunctionLikeDocParamTypeInferer
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
