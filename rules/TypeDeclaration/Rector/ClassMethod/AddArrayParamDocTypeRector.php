@@ -141,10 +141,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $isArrayable = $paramType->isIterable()
-            ->yes() || $paramType->isArray()
-            ->yes() || ($paramType->isIterable()->maybe() || $paramType->isArray()->maybe());
-        if (! $isArrayable) {
+        if (! $this->isArrayableType($paramType)) {
             return true;
         }
 
@@ -163,5 +160,18 @@ CODE_SAMPLE
         }
 
         return $iterableValueType->isExplicitMixed();
+    }
+
+    private function isArrayableType(Type $type): bool
+    {
+        if ($type->isIterable()->yes()) {
+            return true;
+        }
+
+        if ($type->isArray()->yes()) {
+            return true;
+        }
+
+        return $type->isIterable()->maybe() || $type->isArray()->maybe();
     }
 }
