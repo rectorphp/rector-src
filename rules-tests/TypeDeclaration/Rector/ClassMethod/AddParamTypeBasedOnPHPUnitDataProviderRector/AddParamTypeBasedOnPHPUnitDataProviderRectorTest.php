@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\DoubleImportedTraitUse;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class DoubleImportedTraitUseTest extends AbstractRectorTestCase
+final class AddParamTypeBasedOnPHPUnitDataProviderRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
@@ -27,6 +27,6 @@ final class DoubleImportedTraitUseTest extends AbstractRectorTestCase
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/double_imported_trait_use.php';
+        return __DIR__ . '/config/configured_rule.php';
     }
 }
