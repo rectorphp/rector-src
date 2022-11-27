@@ -34,6 +34,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\TypedPropertyRectorTest
  * @see \Rector\Tests\Php74\Rector\Property\TypedPropertyRector\ImportedTest
+ *
+ * @deprecated Moving doc types to type declarations is dangerous. Use specific strict types instead.
+ * This rule will be split info many small ones.
  */
 final class TypedPropertyRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {

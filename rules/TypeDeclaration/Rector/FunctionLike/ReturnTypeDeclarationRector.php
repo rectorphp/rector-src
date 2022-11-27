@@ -38,6 +38,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
  *
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\ReturnTypeDeclarationRectorTest
+ *
+ * @deprecated Moving doc types to type declarations is dangerous. Use specific strict types instead.
+ * This rule will be split info many small ones.
  */
 final class ReturnTypeDeclarationRector extends AbstractRector implements MinPhpVersionInterface
 {
