@@ -784,3 +784,6 @@ parameters:
 
         # returns bool for notifications
         - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'
+
+        # false positive
+        - '#Method Rector\\TypeDeclaration\\Rector\\ClassMethod\\AddParamTypeBasedOnPHPUnitDataProviderRector\:\:resolveDataProviderPhpDocTagNode\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|null but returns PHPStan\\PhpDocParser\\Ast\\Node\|null#'

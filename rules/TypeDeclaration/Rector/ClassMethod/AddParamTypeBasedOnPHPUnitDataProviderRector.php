@@ -9,7 +9,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -23,7 +22,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
@@ -95,9 +93,11 @@ final class SomeTest extends TestCase
 CODE_SAMPLE
             ),
         ]);
-
     }
 
+    /**
+     * @return array<class-string<Node>>
+     */
     public function getNodeTypes(): array
     {
         return [ClassMethod::class];
@@ -106,7 +106,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?ClassMethod
     {
         if (! $node->isPublic()) {
             return null;
@@ -120,10 +120,15 @@ CODE_SAMPLE
             return null;
         }
 
+        $dataProviderPhpDocTagNode = $this->resolveDataProviderPhpDocTagNode($node);
+        if (! $dataProviderPhpDocTagNode instanceof PhpDocTagNode) {
+            return null;
+        }
+
         $hasChanged = false;
 
         foreach ($node->getParams() as $param) {
-            $paramTypeDeclaration = $this->inferParam($param);
+            $paramTypeDeclaration = $this->inferParam($param, $dataProviderPhpDocTagNode);
             if ($paramTypeDeclaration instanceof MixedType) {
                 continue;
             }
@@ -142,9 +147,9 @@ CODE_SAMPLE
         return null;
     }
 
-    private function inferParam(Param $param): Type
+    private function inferParam(Param $param, PhpDocTagNode $dataProviderPhpDocTagNode): Type
     {
-        $dataProviderClassMethod = $this->resolveDataProviderClassMethod($param);
+        $dataProviderClassMethod = $this->resolveDataProviderClassMethod($param, $dataProviderPhpDocTagNode);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
             return new MixedType();
         }
@@ -165,25 +170,20 @@ CODE_SAMPLE
         return $this->resolveYieldStaticArrayTypeByParameterPosition($yields, $parameterPosition);
     }
 
-    private function resolveDataProviderClassMethod(Param $param): ?ClassMethod
-    {
-        $phpDocInfo = $this->getFunctionLikePhpDocInfo($param);
-
-        $phpDocTagNode = $phpDocInfo->getByName('@dataProvider');
-        if (! $phpDocTagNode instanceof PhpDocTagNode) {
-            return null;
-        }
-
+    private function resolveDataProviderClassMethod(
+        Param $param,
+        PhpDocTagNode $dataProviderPhpDocTagNode
+    ): ?ClassMethod {
         $class = $this->betterNodeFinder->findParentType($param, Class_::class);
         if (! $class instanceof Class_) {
             return null;
         }
 
-        if (! $phpDocTagNode->value instanceof GenericTagValueNode) {
+        if (! $dataProviderPhpDocTagNode->value instanceof GenericTagValueNode) {
             return null;
         }
 
-        $content = $phpDocTagNode->value->value;
+        $content = $dataProviderPhpDocTagNode->value->value;
         $match = Strings::match($content, self::METHOD_NAME_REGEX);
         if ($match === null) {
             return null;
@@ -258,16 +258,6 @@ CODE_SAMPLE
         return $arrayTypes;
     }
 
-    private function getFunctionLikePhpDocInfo(Param $param): PhpDocInfo
-    {
-        $parentNode = $param->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof FunctionLike) {
-            throw new ShouldNotHappenException();
-        }
-
-        return $this->phpDocInfoFactory->createFromNodeOrEmpty($parentNode);
-    }
-
     /**
      * @return Type[]
      */
@@ -294,5 +284,15 @@ CODE_SAMPLE
         }
 
         return $paramOnPositionTypes;
+    }
+
+    private function resolveDataProviderPhpDocTagNode(ClassMethod $classMethod): ?PhpDocTagNode
+    {
+        $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
+        if (! $classMethodPhpDocInfo instanceof PhpDocInfo) {
+            return null;
+        }
+
+        return $classMethodPhpDocInfo->getByName('@dataProvider');
     }
 }
