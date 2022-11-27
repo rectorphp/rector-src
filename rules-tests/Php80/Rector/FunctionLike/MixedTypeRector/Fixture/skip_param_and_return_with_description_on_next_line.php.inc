@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
+namespace Rector\Tests\Php80\Rector\FunctionLike\MixedTypeRector\Fixture;
 
 use \Drupal\Core\Url;
 
