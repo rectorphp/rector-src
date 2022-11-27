@@ -35,6 +35,8 @@ final class GetterNodeParamTypeInferer implements ParamTypeInfererInterface
 
     public function inferParam(Param $param): Type
     {
+        return new MixedType();
+
         $class = $this->betterNodeFinder->findParentType($param, Class_::class);
         if (! $class instanceof Class_) {
             return new MixedType();
