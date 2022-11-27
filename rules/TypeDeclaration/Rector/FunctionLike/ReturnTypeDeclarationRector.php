@@ -29,7 +29,7 @@ use Rector\TypeDeclaration\TypeAnalyzer\ObjectTypeComparator;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnTypeDeclarationReturnTypeInfererTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
-use Rector\VendorLocker\VendorLockResolver;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -38,6 +38,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @changelog https://wiki.php.net/rfc/scalar_type_hints_v5
  *
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\ReturnTypeDeclarationRectorTest
+ *
+ * @deprecated Moving doc types to type declarations is dangerous. Use specific strict types instead.
+ * This rule will be split info many small ones.
  */
 final class ReturnTypeDeclarationRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -46,10 +49,10 @@ final class ReturnTypeDeclarationRector extends AbstractRector implements MinPhp
         private readonly ReturnTypeAlreadyAddedChecker $returnTypeAlreadyAddedChecker,
         private readonly NonInformativeReturnTagRemover $nonInformativeReturnTagRemover,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly VendorLockResolver $vendorLockResolver,
         private readonly PhpParserTypeAnalyzer $phpParserTypeAnalyzer,
         private readonly ObjectTypeComparator $objectTypeComparator,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
     ) {
     }
 
@@ -171,7 +174,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->vendorLockResolver->isReturnChangeVendorLockedIn($classMethod);
+        return $this->classMethodReturnVendorLockResolver->isVendorLocked($classMethod);
     }
 
     private function shouldSkipInferredReturnNode(ClassMethod | Function_ $functionLike): bool
@@ -190,7 +193,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($functionLike instanceof ClassMethod && $this->vendorLockResolver->isReturnChangeVendorLockedIn(
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnVendorLockResolver->isVendorLocked(
             $functionLike
         )) {
             return true;

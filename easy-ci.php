@@ -43,8 +43,8 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\TypeDeclaration\Contract\PHPStan\TypeWithClassTypeSpecifierInterface;
-use Rector\TypeDeclaration\Contract\TypeInferer\ParamTypeInfererInterface;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
+use Rector\TypeDeclaration\NodeAnalyzer\ControllerRenderMethodAnalyzer;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symplify\EasyCI\Config\EasyCIConfig;
@@ -59,7 +59,8 @@ return static function (EasyCIConfig $easyCiConfig): void {
         Application::class,
         RectorInterface::class,
         TypeToCallReflectionResolverInterface::class,
-        ParamTypeInfererInterface::class,
+        // used in another Rector package
+        ControllerRenderMethodAnalyzer::class,
         ReturnTypeInfererInterface::class,
         FileProcessorInterface::class,
         ClassNameImportSkipVoterInterface::class,

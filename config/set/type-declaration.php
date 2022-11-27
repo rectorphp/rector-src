@@ -24,7 +24,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
-use Rector\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\Param\ParamTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector;
@@ -36,7 +35,6 @@ use Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-        ParamTypeDeclarationRector::class,
         ReturnTypeDeclarationRector::class,
         PropertyTypeDeclarationRector::class,
         AddClosureReturnTypeRector::class,
