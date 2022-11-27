@@ -101,7 +101,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramType = $this->paramTypeInferer->inferParam($param);
+            $paramType = $this->paramTypeInferer->resolveClassMethodParamDocType($node, $param);
             if ($paramType instanceof MixedType) {
                 continue;
             }
@@ -172,6 +172,8 @@ CODE_SAMPLE
             return true;
         }
 
-        return $type->isIterable()->maybe() || $type->isArray()->maybe();
+        return $type->isIterable()
+            ->maybe() || $type->isArray()
+            ->maybe();
     }
 }
