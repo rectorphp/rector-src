@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\TypeDeclaration\TypeInferer\ParamTypeInferer;
+namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use Nette\Utils\Strings;
+use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Yield_;
@@ -19,41 +20,129 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\TypeDeclaration\Contract\TypeInferer\ParamTypeInfererInterface;
-use Symfony\Contracts\Service\Attribute\Required;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class PHPUnitDataProviderParamTypeInferer implements ParamTypeInfererInterface
+/**
+ * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector\AddParamTypeBasedOnPHPUnitDataProviderRectorTest
+ */
+final class AddParamTypeBasedOnPHPUnitDataProviderRector extends AbstractRector
 {
+    /**
+     * @var string
+     */
+    private const ERROR_MESSAGE = 'Adds param type declaration based on PHPUnit provider return type declaration';
+
     /**
      * @see https://regex101.com/r/hW09Vt/1
      * @var string
      */
     private const METHOD_NAME_REGEX = '#^(?<method_name>\w+)(\(\))?#';
 
-    private NodeTypeResolver $nodeTypeResolver;
-
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly TypeFactory $typeFactory,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 
-    // Prevents circular reference
-
-    #[Required]
-    public function autowire(NodeTypeResolver $nodeTypeResolver): void
+    public function getRuleDefinition(): RuleDefinition
     {
-        $this->nodeTypeResolver = $nodeTypeResolver;
+        return new RuleDefinition(self::ERROR_MESSAGE, [
+            new CodeSample(
+                <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase
+
+final class SomeTest extends TestCase
+{
+    /**
+     * @dataProvider provideData()
+     */
+    public function test($value)
+    {
     }
 
-    public function inferParam(Param $param): Type
+    public function provideData()
+    {
+        yield ['name'];
+    }
+}
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+use PHPUnit\Framework\TestCase
+
+final class SomeTest extends TestCase
+{
+    /**
+     * @dataProvider provideData()
+     */
+    public function test(string $value)
+    {
+    }
+
+    public function provideData()
+    {
+        yield ['name'];
+    }
+}
+CODE_SAMPLE
+            ),
+        ]);
+
+    }
+
+    public function getNodeTypes(): array
+    {
+        return [ClassMethod::class];
+    }
+
+    /**
+     * @param ClassMethod $node
+     */
+    public function refactor(Node $node)
+    {
+        if (! $node->isPublic()) {
+            return null;
+        }
+
+        if ($node->getParams() === []) {
+            return null;
+        }
+
+        if (! $this->testsNodeAnalyzer->isInTestClass($node)) {
+            return null;
+        }
+
+        $hasChanged = false;
+
+        foreach ($node->getParams() as $param) {
+            $paramTypeDeclaration = $this->inferParam($param);
+            if ($paramTypeDeclaration instanceof MixedType) {
+                continue;
+            }
+
+            $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                $paramTypeDeclaration,
+                TypeKind::PARAM
+            );
+            $hasChanged = true;
+        }
+
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function inferParam(Param $param): Type
     {
         $dataProviderClassMethod = $this->resolveDataProviderClassMethod($param);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
