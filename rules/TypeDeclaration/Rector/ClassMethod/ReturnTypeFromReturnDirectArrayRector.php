@@ -104,9 +104,11 @@ CODE_SAMPLE
             if (! $stmt instanceof Return_) {
                 continue;
             }
+
             if (! $stmt->expr instanceof Array_) {
                 continue;
             }
+
             return true;
         }
 
