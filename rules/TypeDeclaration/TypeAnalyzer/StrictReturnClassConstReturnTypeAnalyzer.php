@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -22,7 +20,7 @@ final class StrictReturnClassConstReturnTypeAnalyzer
     ) {
     }
 
-    public function matchAlwaysReturnConstFetch(ClassMethod|Closure|Function_ $functionLike): ?Type
+    public function matchAlwaysReturnConstFetch(ClassMethod $functionLike): ?Type
     {
         $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($functionLike);
         if ($returns === null) {

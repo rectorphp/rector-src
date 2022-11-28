@@ -75,7 +75,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
             return null;
         }
 

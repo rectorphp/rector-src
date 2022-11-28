@@ -84,16 +84,21 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class, Closure::class];
     }
 
+    private function shouldSkip(ClassMethod|Function_|Closure $node): bool
+    {
+        if ($node->returnType !== null) {
+            return true;
+        }
+
+        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node);
+    }
+
     /**
      * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->returnType !== null) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 

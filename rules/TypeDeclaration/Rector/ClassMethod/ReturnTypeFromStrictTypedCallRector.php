@@ -209,7 +209,7 @@ CODE_SAMPLE
             return $this->isUnionPossibleReturnsVoid($node);
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
             return true;
         }
 
