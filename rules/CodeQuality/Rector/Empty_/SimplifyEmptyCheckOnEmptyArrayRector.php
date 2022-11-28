@@ -24,8 +24,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRector
 {
-    public function __construct(private readonly ExprAnalyzer $exprAnalyzer)
-    {
+    public function __construct(
+        private readonly ExprAnalyzer $exprAnalyzer
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
