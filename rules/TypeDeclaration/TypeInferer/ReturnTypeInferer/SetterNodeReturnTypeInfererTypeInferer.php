@@ -35,6 +35,8 @@ final class SetterNodeReturnTypeInfererTypeInferer implements ReturnTypeInfererI
 
     public function inferFunctionLike(FunctionLike $functionLike): Type
     {
+        // @todo work on the Class_ node
+
         $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
         if (! $classLike instanceof ClassLike) {
             return new MixedType();
