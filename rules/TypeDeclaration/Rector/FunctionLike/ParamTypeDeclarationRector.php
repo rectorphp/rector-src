@@ -22,6 +22,7 @@ final class ParamTypeDeclarationRector extends AbstractRector
         private readonly SymfonyStyle $symfonyStyle
     ) {
     }
+
     /**
      * @return array<class-string<Node>>
      */
