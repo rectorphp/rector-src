@@ -91,7 +91,7 @@ final class PhpVersionProvider
         $this->throwInvalidTypeException($phpVersionFeatures);
     }
 
-    private function throwInvalidTypeException(mixed $phpVersionFeatures): void
+    private function throwInvalidTypeException(mixed $phpVersionFeatures): never
     {
         $errorMessage = sprintf(
             'Parameter "%s::%s" must be int, "%s" given.%sUse constant from "%s" to provide it, e.g. "%s::%s"',
