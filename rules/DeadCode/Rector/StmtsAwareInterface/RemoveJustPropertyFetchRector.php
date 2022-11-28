@@ -276,13 +276,13 @@ CODE_SAMPLE
      */
     private function isOverridenWithConcatAssign(array $variables): bool
     {
-        foreach ($variables as $variableUsage) {
-            $parentNode = $variableUsage->getAttribute(AttributeKey::PARENT_NODE);
+        foreach ($variables as $variable) {
+            $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
             if (! $parentNode instanceof Concat) {
                 continue;
             }
 
-            if ($parentNode->var === $variableUsage) {
+            if ($parentNode->var === $variable) {
                 return true;
             }
         }
