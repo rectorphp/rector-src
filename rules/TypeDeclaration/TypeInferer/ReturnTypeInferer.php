@@ -70,16 +70,6 @@ final class ReturnTypeInferer
 
     public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
     {
-        return $this->inferFunctionLikeWithExcludedInferers($functionLike, []);
-    }
-
-    /**
-     * @param array<class-string<ReturnTypeInfererInterface>> $excludedInferers
-     */
-    public function inferFunctionLikeWithExcludedInferers(
-        ClassMethod|Function_|Closure $functionLike,
-        array $excludedInferers
-    ): Type {
         $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
             PhpVersionFeature::STATIC_RETURN_TYPE
         );
@@ -90,10 +80,6 @@ final class ReturnTypeInferer
         }
 
         foreach ($this->returnTypeInferers as $returnTypeInferer) {
-            if ($this->shouldSkipExcludedTypeInferer($returnTypeInferer, $excludedInferers)) {
-                continue;
-            }
-
             $originalType = $returnTypeInferer->inferFunctionLike($functionLike);
             if ($originalType instanceof MixedType) {
                 continue;
@@ -267,22 +253,6 @@ final class ReturnTypeInferer
         }
 
         return $type->getClassName() === ObjectReference::STATIC;
-    }
-
-    /**
-     * @param array<class-string<ReturnTypeInfererInterface>> $excludedInferers
-     */
-    private function shouldSkipExcludedTypeInferer(
-        ReturnTypeInfererInterface $returnTypeInferer,
-        array $excludedInferers
-    ): bool {
-        foreach ($excludedInferers as $excludedInferer) {
-            if (is_a($returnTypeInferer, $excludedInferer)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function resolveUnionStaticTypes(UnionType $unionType, bool $isSupportedStaticReturnType): UnionType|null
