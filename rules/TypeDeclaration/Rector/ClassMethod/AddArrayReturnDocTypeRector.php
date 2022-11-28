@@ -32,7 +32,7 @@ use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
 use Rector\TypeDeclaration\TypeAnalyzer\AdvancedArrayAnalyzer;
 use Rector\TypeDeclaration\TypeAnalyzer\IterableTypeAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
-use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnTypeDeclarationReturnTypeInfererTypeInferer;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnTypeDeclarationReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -123,7 +123,7 @@ CODE_SAMPLE
 
         $inferredReturnType = $this->returnTypeInferer->inferFunctionLikeWithExcludedInferers(
             $node,
-            [ReturnTypeDeclarationReturnTypeInfererTypeInferer::class]
+            [ReturnTypeDeclarationReturnTypeInferer::class]
         );
 
         $inferredReturnType = $this->normalizeTypeToRespectArrayScalarType->normalizeToArray(

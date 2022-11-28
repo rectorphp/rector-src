@@ -11,7 +11,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\FunctionLikeReturnTypeResolver;
 
-final class ReturnTypeDeclarationReturnTypeInfererTypeInferer implements ReturnTypeInfererInterface
+final class ReturnTypeDeclarationReturnTypeInferer implements ReturnTypeInfererInterface
 {
     public function __construct(
         private readonly FunctionLikeReturnTypeResolver $functionLikeReturnTypeResolver,
