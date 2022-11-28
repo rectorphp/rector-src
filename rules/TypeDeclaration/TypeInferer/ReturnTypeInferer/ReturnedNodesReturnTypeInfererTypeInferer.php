@@ -26,7 +26,6 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\TypeDeclaration\TypeInferer\SplArrayFixedTypeNarrower;
 
@@ -34,7 +33,7 @@ use Rector\TypeDeclaration\TypeInferer\SplArrayFixedTypeNarrower;
  * @deprecated
  * @todo Split into many narrow-focused rules
  */
-final class ReturnedNodesReturnTypeInfererTypeInferer implements ReturnTypeInfererInterface
+final class ReturnedNodesReturnTypeInfererTypeInferer
 {
     public function __construct(
         private readonly SilentVoidResolver $silentVoidResolver,
@@ -80,11 +79,6 @@ final class ReturnedNodesReturnTypeInfererTypeInferer implements ReturnTypeInfer
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($types);
-    }
-
-    public function getPriority(): int
-    {
-        return 1000;
     }
 
     /**
