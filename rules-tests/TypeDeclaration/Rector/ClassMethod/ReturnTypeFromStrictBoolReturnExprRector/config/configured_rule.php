@@ -7,6 +7,4 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExpr
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(ReturnTypeFromStrictBoolReturnExprRector::class);
-
-    $rectorConfig->import(__DIR__ . '/../../../../../../config/config.php');
 };

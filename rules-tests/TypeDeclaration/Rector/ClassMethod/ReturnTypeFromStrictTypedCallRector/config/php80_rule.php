@@ -9,6 +9,4 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRecto
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(ReturnTypeFromStrictTypedCallRector::class);
     $rectorConfig->phpVersion(PhpVersion::PHP_80);
-
-    $rectorConfig->import(__DIR__ . '/../../../../../../config/config.php');
 };

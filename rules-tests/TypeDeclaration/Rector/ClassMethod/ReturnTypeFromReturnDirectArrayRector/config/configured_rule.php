@@ -7,6 +7,4 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRec
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(ReturnTypeFromReturnDirectArrayRector::class);
-
-    $rectorConfig->import(__DIR__ . '/../../../../../../config/config.php');
 };
