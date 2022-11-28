@@ -84,15 +84,6 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class, Closure::class];
     }
 
-    private function shouldSkip(ClassMethod|Function_|Closure $node): bool
-    {
-        if ($node->returnType !== null) {
-            return true;
-        }
-
-        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node);
-    }
-
     /**
      * @param ClassMethod|Function_|Closure $node
      */
@@ -159,6 +150,15 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    private function shouldSkip(ClassMethod|Function_|Closure $node): bool
+    {
+        if ($node->returnType !== null) {
+            return true;
+        }
+
+        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node);
     }
 
     private function changeReturnType(Node $node, Type $exprType): void
