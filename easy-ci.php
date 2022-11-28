@@ -96,5 +96,8 @@ return static function (EasyCIConfig $easyCiConfig): void {
         NamespacedNameDecorator::class,
         NamedVariableFactory::class,
         BinaryOpTreeRootLocator::class,
+
+        // create own rule to handle this
+        \Rector\TypeDeclaration\PhpDocParser\NonInformativeReturnTagRemover::class,
     ]);
 };

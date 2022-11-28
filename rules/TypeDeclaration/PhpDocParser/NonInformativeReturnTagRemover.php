@@ -31,6 +31,9 @@ use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
+/**
+ * @todo create own rule to clean these in dead-code set
+ */
 final class NonInformativeReturnTagRemover
 {
     /**

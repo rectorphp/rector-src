@@ -8,12 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BenevolentUnionType;
@@ -24,8 +22,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
@@ -49,7 +45,6 @@ final class ReturnTypeInferer
         private readonly ReturnedNodesReturnTypeInfererTypeInferer $returnedNodesReturnTypeInfererTypeInferer,
         private readonly GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly ParameterProvider $parameterProvider,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeTypeResolver $nodeTypeResolver,
@@ -62,11 +57,6 @@ final class ReturnTypeInferer
         $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
             PhpVersionFeature::STATIC_RETURN_TYPE
         );
-
-        $isAutoImport = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
-        if ($this->isAutoImportWithFullyQualifiedReturn($isAutoImport, $functionLike)) {
-            return new MixedType();
-        }
 
         $originalType = $this->returnedNodesReturnTypeInfererTypeInferer->inferFunctionLike($functionLike);
         if ($originalType instanceof MixedType) {
@@ -196,39 +186,6 @@ final class ReturnTypeInferer
         }
 
         return $types[0];
-    }
-
-    private function isAutoImportWithFullyQualifiedReturn(bool $isAutoImport, FunctionLike $functionLike): bool
-    {
-        if (! $isAutoImport) {
-            return false;
-        }
-
-        if (! $functionLike instanceof ClassMethod) {
-            return false;
-        }
-
-        if ($this->isNamespacedFullyQualified($functionLike->returnType)) {
-            return true;
-        }
-
-        if (! $functionLike->returnType instanceof PhpParserUnionType) {
-            return false;
-        }
-
-        $types = $functionLike->returnType->types;
-        foreach ($types as $type) {
-            if ($this->isNamespacedFullyQualified($type)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function isNamespacedFullyQualified(?Node $node): bool
-    {
-        return $node instanceof FullyQualified && str_contains($node->toString(), '\\');
     }
 
     private function isStaticType(Type $type): bool
