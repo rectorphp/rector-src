@@ -10,6 +10,9 @@ use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @deprecated Use specific rules working with strict type declarations instead.
+ */
 final class AddArrayParamDocTypeRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
@@ -69,7 +72,8 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         trigger_error(
-            'The AddArrayParamDocTypeRector rule is deprecated, as it works with doc block types that are not reliable and might infer incorrect types'
+            'The AddArrayParamDocTypeRector rule is deprecated, as it works with doc block types that are not reliable and might infer incorrect types',
+            E_ERROR
         );
         sleep(3);
 
