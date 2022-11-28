@@ -20,9 +20,9 @@ final class StrictReturnClassConstReturnTypeAnalyzer
     ) {
     }
 
-    public function matchAlwaysReturnConstFetch(ClassMethod $functionLike): ?Type
+    public function matchAlwaysReturnConstFetch(ClassMethod $classMethod): ?Type
     {
-        $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($functionLike);
+        $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($classMethod);
         if ($returns === null) {
             return null;
         }

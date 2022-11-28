@@ -94,20 +94,20 @@ CODE_SAMPLE
 
     private function hasReturnArray(ClassMethod|Function_|Closure|ArrowFunction $functionLike): bool
     {
-        if ($functionLike instanceof ArrowFunction) {
-            $stmts = $functionLike->getStmts();
-        } else {
-            $stmts = $functionLike->stmts;
-        }
+        $stmts = $functionLike instanceof ArrowFunction ? $functionLike->getStmts() : $functionLike->stmts;
 
         if (! is_array($stmts)) {
             return false;
         }
 
         foreach ($stmts as $stmt) {
-            if ($stmt instanceof Return_ && $stmt->expr instanceof Array_) {
-                return true;
+            if (! $stmt instanceof Return_) {
+                continue;
             }
+            if (! $stmt->expr instanceof Array_) {
+                continue;
+            }
+            return true;
         }
 
         return false;
