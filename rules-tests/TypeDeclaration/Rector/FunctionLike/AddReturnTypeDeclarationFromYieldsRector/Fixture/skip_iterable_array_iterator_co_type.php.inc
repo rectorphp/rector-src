@@ -1,11 +1,11 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector\Fixture;
 
 use Iterator;
 use Traversable;
 
-class SkipIterableArrayIteratorCoType
+final class SkipIterableArrayIteratorCoType
 {
     public function run(): Iterator
     {
