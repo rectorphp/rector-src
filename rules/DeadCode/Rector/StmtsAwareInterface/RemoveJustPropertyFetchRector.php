@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\StmtsAwareInterface;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp\Concat;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\FuncCall;
@@ -124,6 +125,10 @@ CODE_SAMPLE
         // filter out variable usages that are part of nested property fetch, or change variable
         $variableUsages = $this->filterOutReferencedVariableUsages($variableUsages);
 
+        if ($this->isOverridenWithConcatAssign($variableUsages)) {
+            return null;
+        }
+
         if (! $variableToPropertyAssign instanceof PropertyFetchToVariableAssign) {
             return null;
         }
@@ -197,6 +202,7 @@ CODE_SAMPLE
     {
         return array_filter($variableUsages, function (Variable $variable): bool {
             $variableUsageParent = $variable->getAttribute(AttributeKey::PARENT_NODE);
+
             if ($variableUsageParent instanceof Arg) {
                 $variableUsageParent = $variableUsageParent->getAttribute(AttributeKey::PARENT_NODE);
             }
@@ -263,5 +269,24 @@ CODE_SAMPLE
         $nodeObjectType = new ObjectType('PhpParser\Node');
         return $nodeObjectType->isSuperTypeOf($propertyFetchCallerType)
             ->yes();
+    }
+
+    /**
+     * @param Variable[] $variables
+     */
+    private function isOverridenWithConcatAssign(array $variables): bool
+    {
+        foreach ($variables as $variableUsage) {
+            $parentNode = $variableUsage->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof Concat) {
+                continue;
+            }
+
+            if ($parentNode->var === $variableUsage) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
