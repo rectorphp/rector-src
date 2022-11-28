@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,6 +24,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRector
 {
+    public function __construct(
+        private readonly ExprAnalyzer $exprAnalyzer
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -49,6 +55,10 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         }
 
         if (! $scope->getType($node->expr) instanceof ArrayType) {
+            return null;
+        }
+
+        if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
             return null;
         }
 
