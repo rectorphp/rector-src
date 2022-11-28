@@ -121,7 +121,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->attrGroups = $attributeGroups;
+        $node->attrGroups = array_merge($node->attrGroups, $attributeGroups);
         $this->completeExtraUseImports($attributeGroups);
 
         return $node;
