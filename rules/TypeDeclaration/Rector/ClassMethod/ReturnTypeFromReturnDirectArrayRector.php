@@ -92,7 +92,7 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function hasReturnArray(ClassMethod|Function_|ArrowFunction $functionLike): bool
+    private function hasReturnArray(ClassMethod|Function_|Closure|ArrowFunction $functionLike): bool
     {
         if ($functionLike instanceof ArrowFunction) {
             $stmts = $functionLike->getStmts();
