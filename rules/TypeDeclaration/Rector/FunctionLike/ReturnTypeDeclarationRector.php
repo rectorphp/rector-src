@@ -18,7 +18,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\TypeDeclaration\PhpDocParser\NonInformativeReturnTagRemover;
@@ -156,16 +155,6 @@ CODE_SAMPLE
         }
 
         return $this->classMethodReturnVendorLockResolver->isVendorLocked($classMethod);
-    }
-
-    private function shouldSkipInferredReturnNode(ClassMethod | Function_ $functionLike): bool
-    {
-        // already overridden by previous populateChild() method run
-        if ($functionLike->returnType === null) {
-            return false;
-        }
-
-        return (bool) $functionLike->returnType->getAttribute(AttributeKey::DO_NOT_CHANGE);
     }
 
     private function shouldSkipClassLike(FunctionLike $functionLike): bool
