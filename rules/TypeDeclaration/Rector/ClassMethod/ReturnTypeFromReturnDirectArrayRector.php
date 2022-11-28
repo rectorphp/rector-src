@@ -5,54 +5,55 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\PhpVersion;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictBoolReturnTypeAnalyzer;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Enterprise\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector\ReturnTypeFromStrictBoolReturnExprRectorTest
+ * @see \Rector\Enterprise\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector\ReturnTypeFromReturnDirectArrayRectorTest
  */
-final class ReturnTypeFromStrictBoolReturnExprRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnTypeFromReturnDirectArrayRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly StrictBoolReturnTypeAnalyzer $strictBoolReturnTypeAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add strict return type based on returned strict expr type', [
+        return new RuleDefinition('Add return type to function like with return new', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function run()
+    public function action()
     {
-        return $this->first() && $this->somethingElse();
+        return new Response();
     }
 }
 CODE_SAMPLE
-
                 ,
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function run(): bool
+    public function action(): Response
     {
-        return $this->first() && $this->somethingElse();
+        return new Response();
     }
 }
 CODE_SAMPLE
             ),
+
         ]);
     }
 
@@ -61,11 +62,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -77,16 +78,38 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->strictBoolReturnTypeAnalyzer->hasAlwaysStrictBoolReturn($node)) {
+        if (! $this->hasReturnArray($node)) {
             return null;
         }
 
-        $node->returnType = new Identifier('bool');
+        $node->returnType = new Identifier('array');
+
         return $node;
     }
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersion::PHP_70;
+        return PhpVersionFeature::SCALAR_TYPES;
+    }
+
+    private function hasReturnArray(ClassMethod|Function_|ArrowFunction $functionLike): bool
+    {
+        if ($functionLike instanceof ArrowFunction) {
+            $stmts = $functionLike->getStmts();
+        } else {
+            $stmts = $functionLike->stmts;
+        }
+
+        if (! is_array($stmts)) {
+            return false;
+        }
+
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof Return_ && $stmt->expr instanceof Array_) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

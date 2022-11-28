@@ -27,12 +27,13 @@ use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictReturnNewAnalyzer;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\ReturnTypeFromReturnNewRectorTest
+ * @see \Rector\Enterprise\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\ReturnTypeFromReturnNewRectorTest
  */
 final class ReturnTypeFromReturnNewRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -40,7 +41,8 @@ final class ReturnTypeFromReturnNewRector extends AbstractRector implements MinP
         private readonly TypeFactory $typeFactory,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer
+        private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
@@ -85,6 +87,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->returnType !== null) {
+            return null;
+        }
+
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
             return null;
         }
 

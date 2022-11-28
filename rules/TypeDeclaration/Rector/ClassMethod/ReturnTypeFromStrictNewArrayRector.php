@@ -27,18 +27,20 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\ReturnTypeFromStrictNewArrayRectorTest
+ * @see \Rector\Enterprise\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\ReturnTypeFromStrictNewArrayRectorTest
  */
 final class ReturnTypeFromStrictNewArrayRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly TypeComparator $typeComparator
+        private readonly TypeComparator $typeComparator,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
@@ -91,6 +93,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
+            return null;
+        }
+
         // 1. is variable instantiated with array
         $stmts = $node->stmts;
         if ($stmts === null) {
@@ -124,7 +130,7 @@ CODE_SAMPLE
 
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
 
-        if (! $returnType->isArray()->yes()) {
+        if (! $returnType instanceof ArrayType) {
             return null;
         }
 
@@ -221,8 +227,7 @@ CODE_SAMPLE
             return ! $exprType->getItemType() instanceof NeverType;
         }
 
-        return $exprType->isArray()
-            ->yes();
+        return $exprType instanceof ArrayType;
     }
 
     private function narrowConstantArrayType(Type $type): Type

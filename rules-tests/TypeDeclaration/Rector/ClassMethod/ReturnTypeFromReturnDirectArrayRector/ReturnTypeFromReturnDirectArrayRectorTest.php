@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class ReturnTypeFromStrictTypedPropertyRectorTest extends AbstractRectorTestCase
+final class ReturnTypeFromReturnDirectArrayRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

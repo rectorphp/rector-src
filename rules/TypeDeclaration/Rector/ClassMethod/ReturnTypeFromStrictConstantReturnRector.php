@@ -5,50 +5,52 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
+use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictBoolReturnTypeAnalyzer;
+use Rector\TypeDeclaration\TypeAnalyzer\StrictReturnClassConstReturnTypeAnalyzer;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Enterprise\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector\ReturnTypeFromStrictBoolReturnExprRectorTest
+ * @see \Rector\Enterprise\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictConstantReturnRector\ReturnTypeFromStrictConstantReturnRectorTest
  */
-final class ReturnTypeFromStrictBoolReturnExprRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnTypeFromStrictConstantReturnRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly StrictBoolReturnTypeAnalyzer $strictBoolReturnTypeAnalyzer,
+        private readonly StrictReturnClassConstReturnTypeAnalyzer $strictReturnClassConstReturnTypeAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add strict return type based on returned strict expr type', [
+        return new RuleDefinition('Add strict type declaration based on returned constants', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-final class SomeClass
+class SomeClass
 {
+    public const NAME = 'name';
+
     public function run()
     {
-        return $this->first() && $this->somethingElse();
+        return self::NAME;
     }
 }
 CODE_SAMPLE
-
                 ,
                 <<<'CODE_SAMPLE'
-final class SomeClass
+class SomeClass
 {
-    public function run(): bool
+    public const NAME = 'name';
+
+    public function run(): string
     {
-        return $this->first() && $this->somethingElse();
+        return self::NAME;
     }
 }
 CODE_SAMPLE
@@ -61,15 +63,15 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->returnType !== null) {
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
@@ -77,14 +79,24 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->strictBoolReturnTypeAnalyzer->hasAlwaysStrictBoolReturn($node)) {
+        $matchedType = $this->strictReturnClassConstReturnTypeAnalyzer->matchAlwaysReturnConstFetch($node);
+        if (! $matchedType instanceof Type) {
             return null;
         }
 
-        $node->returnType = new Identifier('bool');
+        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($matchedType, TypeKind::RETURN);
+        if (! $returnTypeNode instanceof Node) {
+            return null;
+        }
+
+        $node->returnType = $returnTypeNode;
+
         return $node;
     }
 
+    /**
+     * @return PhpVersion::*
+     */
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;

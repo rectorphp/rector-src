@@ -16,10 +16,13 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRe
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictConstantReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
@@ -60,5 +63,13 @@ return static function (RectorConfig $rectorConfig): void {
         AddParamTypeBasedOnPHPUnitDataProviderRector::class,
         AddParamTypeFromPropertyTypeRector::class,
         AddReturnTypeDeclarationFromYieldsRector::class,
+        ReturnTypeFromReturnDirectArrayRector::class,
+        ReturnTypeFromReturnNewRector::class,
+        ReturnTypeFromStrictBoolReturnExprRector::class,
+        ReturnTypeFromStrictConstantReturnRector::class,
+        ReturnTypeFromStrictNativeCallRector::class,
+        ReturnTypeFromStrictNewArrayRector::class,
+        ReturnTypeFromStrictTypedCallRector::class,
+        ReturnTypeFromStrictTypedPropertyRector::class,
     ]);
 };

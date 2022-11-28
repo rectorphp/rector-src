@@ -8,4 +8,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRect
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(ReturnTypeFromStrictNativeCallRector::class);
+
+    $rectorConfig->import(__DIR__ . '/../../../../../../config/config.php');
 };

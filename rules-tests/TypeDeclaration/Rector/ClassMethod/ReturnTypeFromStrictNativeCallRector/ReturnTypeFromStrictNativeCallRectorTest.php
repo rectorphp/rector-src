@@ -17,9 +17,6 @@ final class ReturnTypeFromStrictNativeCallRectorTest extends AbstractRectorTestC
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<array<string>>
-     */
     public function provideData(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
