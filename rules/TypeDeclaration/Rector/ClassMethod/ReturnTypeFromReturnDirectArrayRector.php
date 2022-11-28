@@ -31,24 +31,24 @@ final class ReturnTypeFromReturnDirectArrayRector extends AbstractRector impleme
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add return type to function like with return new', [
+        return new RuleDefinition('Add return type from return direct array', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-final class SomeClass
+final class AddReturnArray
 {
-    public function action()
+    public function getArray()
     {
-        return new Response();
+        return [1, 2, 3];
     }
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-final class SomeClass
+final class AddReturnArray
 {
-    public function action(): Response
+    public function getArray(): array
     {
-        return new Response();
+        return [1, 2, 3];
     }
 }
 CODE_SAMPLE
