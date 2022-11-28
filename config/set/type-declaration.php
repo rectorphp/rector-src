@@ -39,7 +39,6 @@ return static function (RectorConfig $rectorConfig): void {
         PropertyTypeDeclarationRector::class,
         AddClosureReturnTypeRector::class,
         AddArrowFunctionReturnTypeRector::class,
-        AddArrayParamDocTypeRector::class,
         AddArrayReturnDocTypeRector::class,
         ParamTypeByMethodCallTypeRector::class,
         TypedPropertyFromAssignsRector::class,
