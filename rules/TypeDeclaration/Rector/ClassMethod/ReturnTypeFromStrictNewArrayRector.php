@@ -126,7 +126,7 @@ CODE_SAMPLE
 
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
 
-        if (! $returnType instanceof ArrayType) {
+        if (! $returnType->isArray()->yes()) {
             return null;
         }
 
