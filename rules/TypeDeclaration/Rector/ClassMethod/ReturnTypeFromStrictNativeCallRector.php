@@ -14,6 +14,7 @@ use Rector\Core\ValueObject\PhpVersion;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictNativeFunctionReturnTypeAnalyzer;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,6 +27,7 @@ final class ReturnTypeFromStrictNativeCallRector extends AbstractRector implemen
     public function __construct(
         private readonly StrictNativeFunctionReturnTypeAnalyzer $strictNativeFunctionReturnTypeAnalyzer,
         private readonly TypeFactory $typeFactory,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
@@ -71,6 +73,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node->returnType !== null) {
+            return null;
+        }
+
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
             return null;
         }
 

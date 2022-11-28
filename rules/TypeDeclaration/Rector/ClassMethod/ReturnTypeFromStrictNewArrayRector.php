@@ -27,6 +27,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -38,7 +39,8 @@ final class ReturnTypeFromStrictNewArrayRector extends AbstractRector implements
 {
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly TypeComparator $typeComparator
+        private readonly TypeComparator $typeComparator,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
@@ -87,7 +89,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->returnType !== null) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -148,6 +150,15 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    private function shouldSkip(ClassMethod|Function_|Closure $node): bool
+    {
+        if ($node->returnType !== null) {
+            return true;
+        }
+
+        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node);
     }
 
     private function changeReturnType(Node $node, Type $exprType): void
