@@ -46,7 +46,11 @@ final class ReturnTypeInferer
 {
     public function __construct(
         private readonly TypeNormalizer $typeNormalizer,
+<<<<<<< HEAD
         private readonly ReturnedNodesReturnTypeInfererTypeInferer $returnedNodesReturnTypeInfererTypeInferer,
+=======
+        private ReturnedNodesReturnTypeInfererTypeInferer $returnedNodesReturnTypeInfererTypeInferer,
+>>>>>>> 241cae5181 (remove prioarity aware sorter etc)
         private readonly GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly ParameterProvider $parameterProvider,
