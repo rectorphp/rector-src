@@ -21,7 +21,7 @@ use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\Contract\TypeInferer\ReturnTypeInfererInterface;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 
-final class SetterNodeReturnTypeInfererTypeInferer implements ReturnTypeInfererInterface
+final class SetterNodeReturnTypeInfererTypeInferer // implements ReturnTypeInfererInterface
 {
     public function __construct(
         private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
