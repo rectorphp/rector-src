@@ -73,7 +73,7 @@ CODE_SAMPLE
     {
         trigger_error(
             'The AddArrayParamDocTypeRector rule is deprecated, as it works with doc block types that are not reliable and might infer incorrect types',
-            E_ERROR
+            E_USER_ERROR
         );
         sleep(3);
 

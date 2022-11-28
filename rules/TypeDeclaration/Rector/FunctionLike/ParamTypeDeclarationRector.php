@@ -64,7 +64,7 @@ CODE_SAMPLE
     {
         trigger_error(
             'Use specific rules to infer params instead. This rule will was split info many small ones.',
-            E_ERROR
+            E_USER_ERROR
         );
         sleep(3);
 
