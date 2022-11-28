@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration;
 
-use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -16,9 +16,9 @@ final class FunctionLikeReturnTypeResolver
     ) {
     }
 
-    public function resolveFunctionLikeReturnTypeToPHPStanType(FunctionLike $functionLike): Type
+    public function resolveFunctionLikeReturnTypeToPHPStanType(ClassMethod $classMethod): Type
     {
-        $functionReturnType = $functionLike->getReturnType();
+        $functionReturnType = $classMethod->getReturnType();
         if ($functionReturnType === null) {
             return new MixedType();
         }
