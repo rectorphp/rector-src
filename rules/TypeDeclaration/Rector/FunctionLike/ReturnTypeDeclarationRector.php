@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -90,6 +89,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // skip already added types
+        if ($node->returnType instanceof Node) {
+            return null;
+        }
+
         if ($this->shouldSkipClassLike($node)) {
             return null;
         }
@@ -98,26 +102,9 @@ CODE_SAMPLE
             return null;
         }
 
-        // skip already added types
-        if ($node->returnType instanceof Node) {
-            return null;
-        }
-
         $inferedReturnType = $this->returnTypeInferer->inferFunctionLike($node);
-
         if ($inferedReturnType instanceof MixedType || $inferedReturnType instanceof NonExistingObjectType) {
             return null;
-        }
-
-        if (! $inferedReturnType instanceof UnionType) {
-            return $this->processType($node, $inferedReturnType);
-        }
-
-        foreach ($inferedReturnType->getTypes() as $unionedType) {
-            // mixed type cannot be joined with another types
-            if ($unionedType instanceof MixedType) {
-                return null;
-            }
         }
 
         return $this->processType($node, $inferedReturnType);
