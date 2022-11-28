@@ -23,6 +23,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector\PropertyTypeDeclarationRectorTest
+ *
+ * @deprecated This rule move doctypes to strict type declarations and often breaks the code.
+ * Instead use specific rules that handle exact type declarations.
  */
 final class PropertyTypeDeclarationRector extends AbstractRector
 {

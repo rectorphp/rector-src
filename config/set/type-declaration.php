@@ -35,8 +35,6 @@ use Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-        // ReturnTypeDeclarationRector::class,
-        PropertyTypeDeclarationRector::class,
         AddClosureReturnTypeRector::class,
         AddArrowFunctionReturnTypeRector::class,
         AddArrayReturnDocTypeRector::class,
