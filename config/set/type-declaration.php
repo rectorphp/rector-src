@@ -65,7 +65,6 @@ return static function (RectorConfig $rectorConfig): void {
         AddReturnTypeDeclarationFromYieldsRector::class,
         ReturnTypeFromReturnDirectArrayRector::class,
         ReturnTypeFromReturnNewRector::class,
-        ReturnTypeFromStrictBoolReturnExprRector::class,
         ReturnTypeFromStrictConstantReturnRector::class,
         ReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
