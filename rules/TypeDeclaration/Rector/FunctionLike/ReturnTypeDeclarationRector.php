@@ -24,7 +24,6 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\TypeDeclaration\PhpDocParser\NonInformativeReturnTagRemover;
 use Rector\TypeDeclaration\PhpParserTypeAnalyzer;
-use Rector\TypeDeclaration\TypeAlreadyAddedChecker\ReturnTypeAlreadyAddedChecker;
 use Rector\TypeDeclaration\TypeAnalyzer\ObjectTypeComparator;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -45,7 +44,6 @@ final class ReturnTypeDeclarationRector extends AbstractRector implements MinPhp
 {
     public function __construct(
         private readonly ReturnTypeInferer $returnTypeInferer,
-        private readonly ReturnTypeAlreadyAddedChecker $returnTypeAlreadyAddedChecker,
         private readonly NonInformativeReturnTagRemover $nonInformativeReturnTagRemover,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly PhpParserTypeAnalyzer $phpParserTypeAnalyzer,
@@ -107,13 +105,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $inferedReturnType = $this->returnTypeInferer->inferFunctionLike($node);
-
-        if ($inferedReturnType instanceof MixedType || $inferedReturnType instanceof NonExistingObjectType) {
+        // skip already added types
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
-        if ($this->returnTypeAlreadyAddedChecker->isSameOrBetterReturnTypeAlreadyAdded($node, $inferedReturnType)) {
+        $inferedReturnType = $this->returnTypeInferer->inferFunctionLike($node);
+
+        if ($inferedReturnType instanceof MixedType || $inferedReturnType instanceof NonExistingObjectType) {
             return null;
         }
 
