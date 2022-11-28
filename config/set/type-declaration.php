@@ -64,11 +64,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddParamTypeFromPropertyTypeRector::class,
         AddReturnTypeDeclarationFromYieldsRector::class,
         ReturnTypeFromReturnDirectArrayRector::class,
-        ReturnTypeFromReturnNewRector::class,
         ReturnTypeFromStrictConstantReturnRector::class,
-        ReturnTypeFromStrictNativeCallRector::class,
-        ReturnTypeFromStrictNewArrayRector::class,
         ReturnTypeFromStrictTypedCallRector::class,
-        ReturnTypeFromStrictTypedPropertyRector::class,
     ]);
 };
