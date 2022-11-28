@@ -26,7 +26,6 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\TypeDeclaration\TypeNormalizer;
@@ -40,7 +39,6 @@ final class TypeComparator
         private readonly ArrayTypeComparator $arrayTypeComparator,
         private readonly ScalarTypeComparator $scalarTypeComparator,
         private readonly TypeFactory $typeFactory,
-        private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
@@ -131,35 +129,6 @@ final class TypeComparator
         }
 
         return $this->arrayTypeComparator->isSubtype($checkedType, $mainType);
-    }
-
-    public function areTypesPossiblyIncluded(Type $assumptionType, ?Type $exactType): bool
-    {
-        if (! $exactType instanceof Type) {
-            return true;
-        }
-
-        if ($this->areTypesEqual($assumptionType, $exactType)) {
-            return true;
-        }
-
-        if (! $assumptionType instanceof UnionType) {
-            return true;
-        }
-
-        if (! $exactType instanceof UnionType) {
-            return true;
-        }
-
-        $countAssumpionTypeTypes = count($assumptionType->getTypes());
-        $countExactTypeTypes = count($exactType->getTypes());
-
-        if ($countAssumpionTypeTypes === $countExactTypeTypes) {
-            $unionType = $this->unionTypeAnalyzer->mapGenericToClassStringType($exactType);
-            return $this->areTypesEqual($assumptionType, $unionType);
-        }
-
-        return $countAssumpionTypeTypes > $countExactTypeTypes;
     }
 
     private function areAliasedObjectMatchingFqnObject(Type $firstType, Type $secondType): bool

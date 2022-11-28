@@ -13,20 +13,12 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Type\Generic\TemplateType;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\ValueObject\PropertyPromotionCandidate;
-use Rector\TypeDeclaration\TypeInferer\VarDocPropertyTypeInferer;
 
 final class PromotedPropertyCandidateResolver
 {
@@ -34,10 +26,6 @@ final class PromotedPropertyCandidateResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator,
-        private readonly VarDocPropertyTypeInferer $varDocPropertyTypeInferer,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly TypeComparator $typeComparator,
-        private readonly TypeFactory $typeFactory,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
@@ -111,7 +99,7 @@ final class PromotedPropertyCandidateResolver
                 continue;
             }
 
-            if ($this->shouldSkipParam($matchedParam, $property, $assignedExpr, $firstParamAsVariable)) {
+            if ($this->shouldSkipParam($matchedParam, $assignedExpr, $firstParamAsVariable)) {
                 continue;
             }
 
@@ -180,64 +168,11 @@ final class PromotedPropertyCandidateResolver
         return $firstVariablePosition < $variable->getStartTokenPos();
     }
 
-    private function hasConflictingParamType(Param $param, Type $propertyType): bool
-    {
-        if ($param->type === null) {
-            return false;
-        }
-
-        $matchedParamType = $this->nodeTypeResolver->getType($param);
-        if ($param->default !== null) {
-            $defaultValueType = $this->nodeTypeResolver->getType($param->default);
-            $matchedParamType = $this->typeFactory->createMixedPassedOrUnionType(
-                [$matchedParamType, $defaultValueType]
-            );
-        }
-
-        if (! $propertyType instanceof UnionType) {
-            return false;
-        }
-
-        if ($this->typeComparator->areTypesEqual($propertyType, $matchedParamType)) {
-            return false;
-        }
-
-        // different types, check not has mixed and not has templated generic types
-        if (! $this->hasMixedType($propertyType)) {
-            return false;
-        }
-
-        return ! $this->hasTemplatedGenericType($propertyType);
-    }
-
-    private function hasTemplatedGenericType(UnionType $unionType): bool
-    {
-        foreach ($unionType->getTypes() as $type) {
-            if ($type instanceof TemplateType) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function hasMixedType(UnionType $unionType): bool
-    {
-        foreach ($unionType->getTypes() as $type) {
-            if ($type instanceof MixedType) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
      * @param int[] $firstParamAsVariable
      */
     private function shouldSkipParam(
         Param $matchedParam,
-        Property $property,
         Variable $assignedVariable,
         array $firstParamAsVariable
     ): bool {
@@ -246,12 +181,6 @@ final class PromotedPropertyCandidateResolver
             return true;
         }
 
-        if ($this->isParamUsedBeforeAssign($assignedVariable, $firstParamAsVariable)) {
-            return true;
-        }
-
-        // @todo unknown type, not suitable?
-        $propertyType = $this->varDocPropertyTypeInferer->inferProperty($property);
-        return $this->hasConflictingParamType($matchedParam, $propertyType);
+        return $this->isParamUsedBeforeAssign($assignedVariable, $firstParamAsVariable);
     }
 }

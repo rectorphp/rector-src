@@ -11,6 +11,7 @@ use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -35,7 +36,7 @@ final class TypedPropertyRector extends AbstractScopeAwareRector implements MinP
         return new RuleDefinition(
             'Changes property type by `@var` annotations or default value.',
             [
-                new \Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample(
+                new CodeSample(
                     <<<'CODE_SAMPLE'
 final class SomeClass
 {
