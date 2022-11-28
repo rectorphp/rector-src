@@ -15,9 +15,9 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Type\MixedType;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 
 final class ReturnStrictTypeAnalyzer
 {
