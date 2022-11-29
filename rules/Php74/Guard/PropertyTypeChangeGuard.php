@@ -64,7 +64,7 @@ final class PropertyTypeChangeGuard
         }
 
         if ($isConstructorPromotion) {
-            return $this->parentPropertyLookupGuard->isLegal($property);
+            return true;
         }
 
         return $this->isSafeProtectedProperty($property);
