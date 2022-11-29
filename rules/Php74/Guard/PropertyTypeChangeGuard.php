@@ -63,16 +63,16 @@ final class PropertyTypeChangeGuard
             return true;
         }
 
-        return $this->isSafeProtectedProperty($property, $isConstructorPromotion);
+        if ($isConstructorPromotion) {
+            return $this->parentPropertyLookupGuard->isLegal($property);
+        }
+
+        return $this->isSafeProtectedProperty($property);
     }
 
-    private function isSafeProtectedProperty(Property $property, bool $isConstructorPromotion): bool
+    private function isSafeProtectedProperty(Property $property): bool
     {
         if (! $property->isProtected()) {
-            if ($isConstructorPromotion) {
-                return $this->parentPropertyLookupGuard->isLegal($property);
-            }
-
             return false;
         }
 
@@ -82,10 +82,6 @@ final class PropertyTypeChangeGuard
         }
 
         if (! $parentNode->isFinal()) {
-            if ($isConstructorPromotion) {
-                return $this->parentPropertyLookupGuard->isLegal($property);
-            }
-
             return false;
         }
 
