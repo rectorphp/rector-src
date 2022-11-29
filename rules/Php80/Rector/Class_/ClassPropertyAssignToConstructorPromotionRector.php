@@ -50,7 +50,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
      *  – private modifier property
      *  - protected/public modifier property when property typed
      *
-     * Set to true will allow change other modifiers as well as far as not forbidden, eg: callable type, null type, etc.
+     * Set to true will allow change whether property is typed or not as far as not forbidden, eg: callable type, null type, etc.
      */
     private bool $inlinePublic = false;
 
