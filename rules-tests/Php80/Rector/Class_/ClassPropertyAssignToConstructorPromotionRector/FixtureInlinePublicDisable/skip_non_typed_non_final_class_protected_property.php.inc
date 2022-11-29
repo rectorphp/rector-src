@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\FixtureInlinePublicDisable;
 
-class SkipNonTypedFinalClassProtectedProperty
+class SkipNonTypedNonFinalClassProtectedProperty
 {
     /**
      * @var object
