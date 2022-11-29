@@ -48,7 +48,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
      * Default to false, which only apply changes:
      *
      *  – private modifier property
-     *  - protected modifier property on final class without extends or has extends but property and/or its usage only in current class
+     *  - protected/public modifier property when property typed
      *
      * Set to true will allow change other modifiers as well as far as not forbidden, eg: callable type, null type, etc.
      */
