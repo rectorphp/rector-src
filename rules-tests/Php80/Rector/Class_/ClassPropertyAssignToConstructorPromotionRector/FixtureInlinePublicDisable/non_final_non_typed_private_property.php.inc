@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\FixtureInlinePublicDisable;
 
-final class FinalClassProtectedProperty
+class NonFinalNonTypedPrivateProperty
 {
     /**
      * @var object
      */
-    protected $x;
+    private $x;
 
     public function __construct(object $x)
     {
@@ -21,9 +21,9 @@ final class FinalClassProtectedProperty
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\FixtureInlinePublicDisable;
 
-final class FinalClassProtectedProperty
+class NonFinalNonTypedPrivateProperty
 {
-    public function __construct(protected object $x)
+    public function __construct(private object $x)
     {
     }
 }
