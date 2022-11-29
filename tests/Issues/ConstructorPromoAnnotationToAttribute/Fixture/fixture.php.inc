@@ -4,7 +4,7 @@ namespace Rector\Core\Tests\Issues\ConstructorPromoAnnotationToAttribute\Fixture
 
 use OpenApi\Annotations as OA;
 
-class TestResponse
+final class TestResponse
 {
     /**
      * @OA\Property(
@@ -27,7 +27,7 @@ namespace Rector\Core\Tests\Issues\ConstructorPromoAnnotationToAttribute\Fixture
 
 use OpenApi\Annotations as OA;
 
-class TestResponse
+final class TestResponse
 {
     public function __construct(
         /**
