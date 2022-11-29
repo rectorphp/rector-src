@@ -25,6 +25,8 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php74\Guard\MakePropertyTypedGuard;
+use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -60,7 +62,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly VarTagRemover $varTagRemover,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly PropertyAnalyzer $propertyAnalyzer
+        private readonly PropertyAnalyzer $propertyAnalyzer,
+        private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard
     ) {
     }
 
@@ -142,7 +145,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->shouldSkipInlinePublicDisabled($node, $property, $param)) {
+            if (! $this->makePropertyPromotionGuard->isLegal($property, $param, $this->inlinePublic)) {
                 continue;
             }
 
