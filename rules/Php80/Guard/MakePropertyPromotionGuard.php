@@ -27,10 +27,15 @@ final class MakePropertyPromotionGuard
             return true;
         }
 
-        if (! $inlinePublic && ! $property->isPrivate() && $param->type instanceof Node && ! $property->type instanceof Node) {
-            return false;
+        if ($inlinePublic) {
+            return true;
         }
-
-        return true;
+        if ($property->isPrivate()) {
+            return true;
+        }
+        if (! $param->type instanceof Node) {
+            return true;
+        }
+        return $property->type instanceof Node;
     }
 }
