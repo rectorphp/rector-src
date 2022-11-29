@@ -18,8 +18,12 @@ final class MakePropertyPromotionGuard
 
     public function isLegal(Property $property, Param $param, bool $inlinePublic = true): bool
     {
-        if ($param->type instanceof Node && ! $property->type instanceof Node) {
-            return $this->propertyTypeChangeGuard->isLegal($property, $inlinePublic);
+        if (! $this->propertyTypeChangeGuard->isLegal($property, $inlinePublic)) {
+            return false;
+        }
+
+        if (! $inlinePublic && ! $property->isPrivate() && $param->type instanceof Node && ! $property->type instanceof Node) {
+            return false;
         }
 
         return true;
