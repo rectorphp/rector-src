@@ -18,7 +18,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
-use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -61,7 +60,6 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly VarTagRemover $varTagRemover,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly PropertyAnalyzer $propertyAnalyzer,
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard
     ) {
     }
@@ -137,10 +135,6 @@ CODE_SAMPLE
             $param = $promotionCandidate->getParam();
 
             if ($this->shouldSkipParam($param)) {
-                continue;
-            }
-
-            if ($this->propertyAnalyzer->hasForbiddenType($property)) {
                 continue;
             }
 
