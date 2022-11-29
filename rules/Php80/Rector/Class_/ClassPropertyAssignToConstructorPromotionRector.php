@@ -16,6 +16,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -27,7 +28,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -35,8 +36,24 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\ClassPropertyAssignToConstructorPromotionRectorTest
  */
-final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRector implements MinPhpVersionInterface
+final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRector implements MinPhpVersionInterface, AllowEmptyConfigurableRectorInterface
 {
+    /**
+     * @api
+     * @var string
+     */
+    public const INLINE_PUBLIC = 'inline_public';
+
+    /**
+     * Default to false, which only apply changes:
+     *
+     *  – private modifier property
+     *  - protected modifier property on final class without extends or has extends but property and/or its usage only in current class
+     *
+     * Set to true will allow change other modifiers as well as far as not forbidden, eg: callable type, null type, etc.
+     */
+    private bool $inlinePublic = false;
+
     public function __construct(
         private readonly PromotedPropertyCandidateResolver $promotedPropertyCandidateResolver,
         private readonly VariableRenamer $variableRenamer,
@@ -52,7 +69,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         return new RuleDefinition(
             'Change simple property init and assign to constructor promotion',
             [
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -75,9 +92,18 @@ class SomeClass
     }
 }
 CODE_SAMPLE
+                    ,
+                    [
+                        self::INLINE_PUBLIC => false,
+                    ]
                 ),
             ]
         );
+    }
+
+    public function configure(array $configuration): void
+    {
+        $this->inlinePublic = $configuration[self::INLINE_PUBLIC] ?? (bool) current($configuration);
     }
 
     /**
@@ -113,6 +139,10 @@ CODE_SAMPLE
             }
 
             if ($this->propertyAnalyzer->hasForbiddenType($property)) {
+                continue;
+            }
+
+            if ($this->shouldSkipInlinePublicDisabled($node, $property, $param)) {
                 continue;
             }
 
@@ -154,6 +184,24 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::PROPERTY_PROMOTION;
+    }
+
+    private function shouldSkipInlinePublicDisabled(Class_ $node, Property $property, Param $param): bool
+    {
+        $node = null;
+        if ($this->inlinePublic) {
+            return false;
+        }
+        if ($property->isPrivate()) {
+            return false;
+        }
+        if ($node->isFinal()) {
+            return false;
+        }
+        if ($property->type instanceof Node) {
+            return false;
+        }
+        return $param->type instanceof Node;
     }
 
     private function processNullableType(Property $property, Param $param): void
