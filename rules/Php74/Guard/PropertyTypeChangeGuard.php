@@ -82,6 +82,14 @@ final class PropertyTypeChangeGuard
             throw new ShouldNotHappenException();
         }
 
+        if (! $parentNode->isFinal()) {
+            if ($isConstructorPromotion) {
+                return $this->parentPropertyLookupGuard->isLegal($property);
+            }
+
+            return false;
+        }
+
         return $this->parentPropertyLookupGuard->isLegal($property);
     }
 }
