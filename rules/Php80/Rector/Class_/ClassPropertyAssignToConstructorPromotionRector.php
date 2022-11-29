@@ -144,7 +144,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->makePropertyPromotionGuard->isLegal($property, $param, $this->inlinePublic)) {
+            if (! $this->makePropertyPromotionGuard->isLegal($node, $property, $param, $this->inlinePublic)) {
                 continue;
             }
 
