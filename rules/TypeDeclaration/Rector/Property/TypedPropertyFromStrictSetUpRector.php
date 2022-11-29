@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -75,7 +76,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
-        if (! $setUpClassMethod instanceof Node\Stmt\ClassMethod) {
+        if (! $setUpClassMethod instanceof ClassMethod) {
             return null;
         }
 
