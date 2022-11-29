@@ -2,7 +2,7 @@
 
 namespace Rector\Core\Tests\Issues\Issue6840\Fixture;
 
-class Fixture
+final class Fixture
 {
     protected string $imageId;
     protected array $imageSize;
@@ -19,7 +19,7 @@ class Fixture
 
 namespace Rector\Core\Tests\Issues\Issue6840\Fixture;
 
-class Fixture
+final class Fixture
 {
     protected array $imageSize;
 
