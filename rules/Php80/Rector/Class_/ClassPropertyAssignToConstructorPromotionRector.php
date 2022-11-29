@@ -188,7 +188,6 @@ CODE_SAMPLE
 
     private function shouldSkipInlinePublicDisabled(Class_ $node, Property $property, Param $param): bool
     {
-        $node = null;
         if ($this->inlinePublic) {
             return false;
         }
