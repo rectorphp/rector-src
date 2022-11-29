@@ -791,3 +791,4 @@ parameters:
         # on purpose, as rule it about to be removed
         - '#Class "Rector\\TypeDeclaration\\Rector\\ClassMethod\\AddArrayParamDocTypeRector" is missing @see annotation with test case class reference#'
         - '#Register "Rector\\Php74\\Rector\\Property\\TypedPropertyRector" service to "php74\.php" config set#'
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorRector\:\:refactor\(\)" is 11, keep it under 10#'

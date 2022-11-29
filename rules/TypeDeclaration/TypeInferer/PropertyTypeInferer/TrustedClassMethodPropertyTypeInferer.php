@@ -57,16 +57,11 @@ final class TrustedClassMethodPropertyTypeInferer
     ) {
     }
 
-    public function inferProperty(Property $property, string $methodName): ?Type
+    public function inferProperty(Property $property, ClassMethod $classMethod): Type
     {
         $classLike = $this->betterNodeFinder->findParentType($property, ClassLike::class);
         if (! $classLike instanceof ClassLike) {
-            return null;
-        }
-
-        $classMethod = $classLike->getMethod($methodName);
-        if (! $classMethod instanceof ClassMethod) {
-            return null;
+            return new MixedType();
         }
 
         $propertyName = $this->nodeNameResolver->getName($property);
@@ -74,12 +69,7 @@ final class TrustedClassMethodPropertyTypeInferer
         // 1. direct property = param assign
         $param = $this->classMethodPropertyFetchManipulator->findParamAssignToPropertyName($classMethod, $propertyName);
         if ($param instanceof Param) {
-            if ($param->type === null) {
-                return null;
-            }
-
-            $resolvedType = $this->resolveFromParamType($param, $classMethod, $propertyName);
-            return $this->resolveType($property, $propertyName, $classLike, $resolvedType);
+            return $this->resolveTypeFromParam($param, $classMethod, $propertyName, $property, $classLike);
         }
 
         // 2. different assign
@@ -95,7 +85,7 @@ final class TrustedClassMethodPropertyTypeInferer
         }
 
         if ($resolvedTypes === []) {
-            return null;
+            return new MixedType();
         }
 
         $resolvedType = count($resolvedTypes) === 1
@@ -109,12 +99,8 @@ final class TrustedClassMethodPropertyTypeInferer
         Property $property,
         string $propertyName,
         ClassLike $classLike,
-        ?Type $resolvedType
-    ): ?Type {
-        if (! $resolvedType instanceof Type) {
-            return null;
-        }
-
+        Type $resolvedType
+    ): Type {
         $exactType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
             $property,
             $propertyName,
@@ -129,7 +115,7 @@ final class TrustedClassMethodPropertyTypeInferer
             return $resolvedType;
         }
 
-        return null;
+        return new MixedType();
     }
 
     private function resolveFromParamType(Param $param, ClassMethod $classMethod, string $propertyName): Type
@@ -252,5 +238,20 @@ final class TrustedClassMethodPropertyTypeInferer
         }
 
         return null;
+    }
+
+    private function resolveTypeFromParam(
+        Param $param,
+        ClassMethod $classMethod,
+        string $propertyName,
+        Property $property,
+        ClassLike $classLike
+    ): Type {
+        if ($param->type === null) {
+            return new MixedType();
+        }
+
+        $resolvedType = $this->resolveFromParamType($param, $classMethod, $propertyName);
+        return $this->resolveType($property, $propertyName, $classLike, $resolvedType);
     }
 }
