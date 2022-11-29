@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
@@ -103,6 +104,12 @@ CODE_SAMPLE
             );
 
             if ($propertyType instanceof MixedType) {
+                continue;
+            }
+
+            if ($propertyType instanceof ObjectType && $propertyType->isInstanceOf(
+                'Doctrine\Common\Collections\Collection'
+            )->yes()) {
                 continue;
             }
 
