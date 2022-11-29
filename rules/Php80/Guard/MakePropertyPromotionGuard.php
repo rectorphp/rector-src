@@ -19,7 +19,7 @@ final class MakePropertyPromotionGuard
 
     public function isLegal(Class_ $class, Property $property, Param $param, bool $inlinePublic = true): bool
     {
-        if (! $this->propertyTypeChangeGuard->isLegal($property, $inlinePublic)) {
+        if (! $this->propertyTypeChangeGuard->isLegal($property, $inlinePublic, true)) {
             return false;
         }
 

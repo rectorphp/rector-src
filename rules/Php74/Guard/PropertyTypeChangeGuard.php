@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Guard;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
@@ -26,7 +27,7 @@ final class PropertyTypeChangeGuard
     ) {
     }
 
-    public function isLegal(Property $property, bool $inlinePublic = true): bool
+    public function isLegal(Property $property, bool $inlinePublic = true, bool $isConstructorPromotion = false): bool
     {
         if (count($property->props) > 1) {
             return false;
@@ -51,30 +52,34 @@ final class PropertyTypeChangeGuard
             return false;
         }
 
+        if ($this->propertyAnalyzer->hasForbiddenType($property)) {
+            return false;
+        }
+
         if ($inlinePublic) {
-            return ! $this->propertyAnalyzer->hasForbiddenType($property);
+            return true;
         }
 
         if ($property->isPrivate()) {
-            return ! $this->propertyAnalyzer->hasForbiddenType($property);
+            return true;
         }
 
-        return $this->isSafeProtectedProperty($property);
+        return $this->isSafeProtectedProperty($property, $isConstructorPromotion);
     }
 
-    private function isSafeProtectedProperty(Property $property): bool
+    private function isSafeProtectedProperty(Property $property, bool $isConstructorPromotion): bool
     {
         if (! $property->isProtected()) {
+            if ($isConstructorPromotion) {
+                return $this->parentPropertyLookupGuard->isLegal($property);
+            }
+
             return false;
         }
 
         $parentNode = $property->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof Class_) {
             throw new ShouldNotHappenException();
-        }
-
-        if (! $parentNode->isFinal()) {
-            return false;
         }
 
         return $this->parentPropertyLookupGuard->isLegal($property);
