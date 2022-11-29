@@ -188,27 +188,6 @@ CODE_SAMPLE
         return PhpVersionFeature::PROPERTY_PROMOTION;
     }
 
-    private function shouldSkipInlinePublicDisabled(Class_ $class, Property $property, Param $param): bool
-    {
-        if ($this->inlinePublic) {
-            return false;
-        }
-
-        if ($property->isPrivate()) {
-            return false;
-        }
-
-        if ($class->isFinal()) {
-            return false;
-        }
-
-        if ($property->type instanceof Node) {
-            return false;
-        }
-
-        return $param->type instanceof Node;
-    }
-
     private function processNullableType(Property $property, Param $param): void
     {
         if ($this->nodeTypeResolver->isNullableType($property)) {
