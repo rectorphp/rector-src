@@ -38,7 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         AddClosureReturnTypeRector::class,
         AddArrowFunctionReturnTypeRector::class,
-        AddArrayReturnDocTypeRector::class,
         ParamTypeByMethodCallTypeRector::class,
         TypedPropertyFromAssignsRector::class,
         ReturnAnnotationIncorrectNullableRector::class,
