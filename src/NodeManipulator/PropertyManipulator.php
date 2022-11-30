@@ -242,10 +242,6 @@ final class PropertyManipulator
                 continue;
             }
 
-            if ($trait->getProperty($propertyName) instanceof Property) {
-                return true;
-            }
-
             if ($this->propertyFetchAnalyzer->containsLocalPropertyFetchName($trait, $propertyName)) {
                 return true;
             }
