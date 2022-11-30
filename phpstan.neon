@@ -779,4 +779,4 @@ parameters:
 
         # on purpose, as rule it about to be removed
         - '#Register "Rector\\Php74\\Rector\\Property\\TypedPropertyRector" service to "php74\.php" config set#'
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorRector\:\:refactor\(\)" is 13, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorRector\:\:refactor\(\)" is 12, keep it under 10#'
