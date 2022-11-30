@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
@@ -17,6 +16,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\Guard\PropertyTypeOverrideGuard;
@@ -37,7 +37,7 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
-        private readonly ReflectionProvider $reflectionProvider,
+        private readonly MakePropertyTypedGuard $makePropertyTypedGuard
     ) {
     }
 
@@ -94,7 +94,7 @@ CODE_SAMPLE
         }
 
         foreach ($node->getProperties() as $property) {
-            if ($this->shouldSkipProperty($property, $node)) {
+            if (! $this->makePropertyTypedGuard->isLegal($property)) {
                 continue;
             }
 
@@ -157,41 +157,6 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::TYPED_PROPERTIES;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function resolveTraitPropertyNames(Class_ $class): array
-    {
-        $traitPropertyNames = [];
-
-        foreach ($class->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $traitName) {
-                $traitNameString = $this->getName($traitName);
-                if (! $this->reflectionProvider->hasClass($traitNameString)) {
-                    continue;
-                }
-
-                $traitClassReflection = $this->reflectionProvider->getClass($traitNameString);
-                $nativeReflection = $traitClassReflection->getNativeReflection();
-                foreach ($nativeReflection->getProperties() as $property) {
-                    $traitPropertyNames[] = $property->getName();
-                }
-            }
-        }
-
-        return $traitPropertyNames;
-    }
-
-    private function shouldSkipProperty(Property $property, Class_ $class): bool
-    {
-        if ($property->type !== null) {
-            return true;
-        }
-
-        $traitPropertyNames = $this->resolveTraitPropertyNames($class);
-        return $this->isNames($property, $traitPropertyNames);
     }
 
     private function isVarDocPreffered(Property $property): bool
