@@ -8,12 +8,14 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Php74\Guard\MakePropertyTypedGuard;
 
 final class PropertyTypeOverrideGuard
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly MakePropertyTypedGuard $makePropertyTypedGuard
     ) {
     }
 
@@ -22,10 +24,14 @@ final class PropertyTypeOverrideGuard
         $classReflection = $this->reflectionResolver->resolveClassReflection($property);
 
         if (! $classReflection instanceof ClassReflection) {
-            return true;
+            return false;
         }
 
         $propertyName = $this->nodeNameResolver->getName($property);
+        if (! $this->makePropertyTypedGuard->isLegal($property)) {
+            return false;
+        }
+
         foreach ($classReflection->getParents() as $parentClassReflection) {
             $nativeReflectionClass = $parentClassReflection->getNativeReflection();
 

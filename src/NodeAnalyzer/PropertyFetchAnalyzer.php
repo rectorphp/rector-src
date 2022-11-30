@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Enum\ObjectReference;
@@ -107,6 +108,10 @@ final class PropertyFetchAnalyzer
 
     public function containsLocalPropertyFetchName(Trait_ $trait, string $propertyName): bool
     {
+        if ($trait->getProperty($propertyName) instanceof Property) {
+            return true;
+        }
+
         return (bool) $this->betterNodeFinder->findFirst(
             $trait,
             fn (Node $node): bool => $this->isLocalPropertyFetchName($node, $propertyName)
