@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Rector\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
@@ -38,7 +37,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         AddClosureReturnTypeRector::class,
         AddArrowFunctionReturnTypeRector::class,
-        AddArrayReturnDocTypeRector::class,
         ParamTypeByMethodCallTypeRector::class,
         TypedPropertyFromAssignsRector::class,
         ReturnAnnotationIncorrectNullableRector::class,
