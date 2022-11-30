@@ -10,18 +10,12 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\Generic\GenericClassStringType;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\StaticTypeMapper\PhpDoc\CustomPHPStanDetector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 final class ClassMethodReturnTypeOverrideGuard
@@ -40,7 +34,6 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly CustomPHPStanDetector $customPHPStanDetector,
         private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
@@ -76,28 +69,6 @@ final class ClassMethodReturnTypeOverrideGuard
         }
 
         return $this->hasClassMethodExprReturn($classMethod);
-    }
-
-    public function shouldSkipClassMethodOldTypeWithNewType(
-        Type $oldType,
-        Type $newType,
-        ClassMethod $classMethod
-    ): bool {
-        if ($this->customPHPStanDetector->isCustomType($oldType, $classMethod)) {
-            return true;
-        }
-
-        if ($oldType instanceof MixedType) {
-            return false;
-        }
-
-        // new generic string type is more advanced than old array type
-        if ($this->isFirstArrayTypeMoreAdvanced($oldType, $newType)) {
-            return false;
-        }
-
-        return $oldType->isSuperTypeOf($newType)
-            ->yes();
     }
 
     /**
@@ -168,22 +139,5 @@ final class ClassMethodReturnTypeOverrideGuard
                 return $node->expr instanceof Expr;
             }
         );
-    }
-
-    private function isFirstArrayTypeMoreAdvanced(Type $oldType, Type $newType): bool
-    {
-        if (! $oldType instanceof ArrayType) {
-            return false;
-        }
-
-        if (! $newType instanceof ArrayType) {
-            return false;
-        }
-
-        if (! $oldType->getItemType() instanceof StringType) {
-            return false;
-        }
-
-        return $newType->getItemType() instanceof GenericClassStringType;
     }
 }
