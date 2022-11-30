@@ -36,8 +36,7 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
-        private readonly MakePropertyTypedGuard $makePropertyTypedGuard
+        private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard
     ) {
     }
 
@@ -94,10 +93,6 @@ CODE_SAMPLE
         }
 
         foreach ($node->getProperties() as $property) {
-            if (! $this->makePropertyTypedGuard->isLegal($property)) {
-                continue;
-            }
-
             $propertyType = $this->trustedClassMethodPropertyTypeInferer->inferProperty(
                 $property,
                 $constructClassMethod
