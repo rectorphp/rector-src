@@ -50,11 +50,14 @@ jobs:
 
             -   run: composer config minimum-stability dev
 
+            # tweak early require symfony dependencyinjection 6.1 due to vendor-patch crash on 6.2
+            -   run: composer require symfony/dependency-injection:~6.1.3
+
             # test with current commit in a pull-request
             -
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
                 if: ${{ github.event_name == 'pull_request' }}
 
-            -   run: composer install --ansi --prefer-lowest
+            -   run: composer install --ansi
 
             -   run: ${{ matrix.actions.run }}
