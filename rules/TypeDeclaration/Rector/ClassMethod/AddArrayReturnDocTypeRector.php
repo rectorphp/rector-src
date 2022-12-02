@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
+use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -15,7 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @deprecated Use specific rules working with strict type declarations instead of this docs blocks non-reliable one
  */
-final class AddArrayReturnDocTypeRector extends AbstractScopeAwareRector
+final class AddArrayReturnDocTypeRector extends AbstractScopeAwareRector implements DeprecatedRectorInterface
 {
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,

@@ -15,6 +15,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRe
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector;
@@ -64,5 +65,6 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeFromReturnDirectArrayRector::class,
         ReturnTypeFromStrictConstantReturnRector::class,
         ReturnTypeFromStrictTypedCallRector::class,
+        ReturnNeverTypeRector::class,
     ]);
 };

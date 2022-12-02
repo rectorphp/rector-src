@@ -14,8 +14,11 @@ use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector;
+use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
+use Rector\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
 use Rector\CodeQuality\Rector\Do_\DoWhileBreakFalseToIfElseRector;
+use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
 use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
 use Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector;
@@ -194,6 +197,9 @@ return static function (RectorConfig $rectorConfig): void {
         InlineConstructorDefaultToPropertyRector::class,
         SimplifyIfExactValueReturnValueRector::class,
         SimplifyUselessLastVariableAssignRector::class,
+        ReturnTypeFromStrictScalarReturnExprRector::class,
+        TernaryEmptyArrayArrayDimFetchToCoalesceRector::class,
+        OptionalParametersAfterRequiredRector::class,
+        SimplifyEmptyCheckOnEmptyArrayRector::class,
     ]);
-    $rectorConfig->rule(TernaryEmptyArrayArrayDimFetchToCoalesceRector::class);
 };
