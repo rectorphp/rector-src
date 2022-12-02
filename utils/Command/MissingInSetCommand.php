@@ -7,6 +7,8 @@ namespace Rector\Utils\Command;
 use Nette\Loaders\RobotLoader;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,10 +29,10 @@ final class MissingInSetCommand extends Command
     ];
 
     /**
-     * @see https://regex101.com/r/HuWjgn/1
+     * @see https://regex101.com/r/HtsmKC/1
      * @var string
      */
-    private const SHORT_CLASS_REGEX = '#(?<short_class_name>\w+)::class#m';
+    private const RECTOR_CLASS_REGEX = '#use (?<class_name>[\\\\\w]+Rector)#m';
 
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle
@@ -46,16 +48,31 @@ final class MissingInSetCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $hasError = false;
+
         foreach (self::RULES_DIRECTORY_TO_SET_CONFIG as $rulesDirectory => $setFile) {
-            $shortClassesInSetFile = $this->resolveShortClassesFromSetFiles($setFile);
-            $existingShortRectorClasses = $this->findShortRectorClasses($rulesDirectory);
+            $classesInSetFile = $this->resolveClassesFromSetFiles($setFile);
+            $existingRectorClasses = $this->findRectorClasses($rulesDirectory);
 
-            $shortRectorClassesNotInSetConfig = array_diff($existingShortRectorClasses, $shortClassesInSetFile);
+            $rectorClassesNotInSetConfig = array_diff($existingRectorClasses, $classesInSetFile);
 
-            if ($shortRectorClassesNotInSetConfig === []) {
+            // remove deprecated and configurable rules
+            $rectorClassesNotInSetConfig = array_filter(
+                $rectorClassesNotInSetConfig,
+                static function (string $rectorClass): bool {
+                    if (is_a($rectorClass, ConfigurableRectorInterface::class, true)) {
+                        return false;
+                    }
+
+                    return ! is_a($rectorClass, DeprecatedRectorInterface::class, true);
+                }
+            );
+
+            if ($rectorClassesNotInSetConfig === []) {
                 continue;
             }
 
+            $hasError = true;
             $this->symfonyStyle->title('We could not find there rules in configs');
 
             $setRealpath = (string) realpath($setFile);
@@ -64,9 +81,15 @@ final class MissingInSetCommand extends Command
             $this->symfonyStyle->writeln(' * ' . $relativeFilePath);
             $this->symfonyStyle->newLine(1);
 
-            $this->symfonyStyle->listing($shortRectorClassesNotInSetConfig);
+            $this->symfonyStyle->listing($rectorClassesNotInSetConfig);
             $this->symfonyStyle->newLine(1);
         }
+
+        if ($hasError) {
+            return self::FAILURE;
+        }
+
+        $this->symfonyStyle->success('All sets contains the rules from their category');
 
         return self::SUCCESS;
     }
@@ -74,36 +97,30 @@ final class MissingInSetCommand extends Command
     /**
      * @return string[]
      */
-    private function resolveShortClassesFromSetFiles(string $setFile): array
+    private function resolveClassesFromSetFiles(string $setFile): array
     {
-        $shortClasses = [];
+        $rectorClasses = [];
 
         $setFileContents = FileSystem::read($setFile);
-        $matches = Strings::matchAll($setFileContents, self::SHORT_CLASS_REGEX);
+        $matches = Strings::matchAll($setFileContents, self::RECTOR_CLASS_REGEX);
 
         foreach ($matches as $match) {
-            $shortClasses[] = $match['short_class_name'];
+            $rectorClasses[] = $match['class_name'];
         }
 
-        return $shortClasses;
+        return $rectorClasses;
     }
 
     /**
      * @return string[]
      */
-    private function findShortRectorClasses(string $rulesDirectory): array
+    private function findRectorClasses(string $rulesDirectory): array
     {
         $robotLoader = new RobotLoader();
         $robotLoader->setTempDirectory(sys_get_temp_dir() . '/rector-missing-in-set');
         $robotLoader->addDirectory($rulesDirectory);
         $robotLoader->rebuild();
 
-        $existingRectorClasses = array_keys($robotLoader->getIndexedClasses());
-        $existingRectorShortClasses = [];
-        foreach ($existingRectorClasses as $existingRectorClass) {
-            $existingRectorShortClasses[] = (string) Strings::after($existingRectorClass, '\\', -1);
-        }
-
-        return $existingRectorShortClasses;
+        return array_keys($robotLoader->getIndexedClasses());
     }
 }

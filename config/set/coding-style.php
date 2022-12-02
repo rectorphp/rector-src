@@ -30,6 +30,7 @@ use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Property\AddFalseDefaultToBoolPropertyRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
+use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
 use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
@@ -77,5 +78,6 @@ return static function (RectorConfig $rectorConfig): void {
         CallUserFuncToMethodCallRector::class,
         FuncGetArgsToVariadicParamRector::class,
         StrictArraySearchRector::class,
+        UseClassKeywordForClassNameResolutionRector::class,
     ]);
 };
