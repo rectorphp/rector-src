@@ -34,9 +34,9 @@
         "symfony/dependency-injection": "^6.2",
         "symfony/finder": "^6.2",
         "symfony/string": "^6.2",
-        "symplify/autowire-array-parameter": "^11.1.10",
-        "symplify/easy-parallel": "^11.1.10",
-        "symplify/rule-doc-generator-contracts": "^11.1.10",
+        "symplify/autowire-array-parameter": "^11.1.17",
+        "symplify/easy-parallel": "^11.1.17",
+        "symplify/rule-doc-generator-contracts": "^11.1.17",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
@@ -45,7 +45,7 @@
         "icanhazstring/composer-unused": "^0.8.3",
         "myclabs/php-enum": "^1.8.4",
         "nategood/httpful": "^0.3.2",
-        "phpstan/extension-installer": "^1.1",
+        "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan-php-parser": "^1.1",
         "phpstan/phpstan-strict-rules": "^1.4.4",
         "phpstan/phpstan-webmozart-assert": "^1.2.1",
@@ -55,13 +55,13 @@
         "rector/rector-generator": "dev-main",
         "spatie/enum": "^3.13",
         "symfony/process": "^6.2",
-        "symplify/easy-ci": "^11.1.10",
-        "symplify/easy-coding-standard": "^11.1.10",
-        "symplify/monorepo-builder": "^11.1.10",
-        "symplify/phpstan-extensions": "^11.1.10",
-        "symplify/phpstan-rules": "^11.1.10",
-        "symplify/rule-doc-generator": "^11.1.10",
-        "symplify/vendor-patches": "^11.1.10"
+        "symplify/easy-ci": "^11.1.17",
+        "symplify/easy-coding-standard": "^11.1.17",
+        "symplify/monorepo-builder": "^11.1.17",
+        "symplify/phpstan-extensions": "^11.1.17",
+        "symplify/phpstan-rules": "^11.1.17",
+        "symplify/rule-doc-generator": "^11.1.17",
+        "symplify/vendor-patches": "^11.1.17"
     },
     "replace": {
         "rector/rector": "self.version",

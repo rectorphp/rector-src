@@ -9,6 +9,7 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
+use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,7 +65,12 @@ final class MissingInSetCommand extends Command
                         return false;
                     }
 
-                    return ! is_a($rectorClass, DeprecatedRectorInterface::class, true);
+                    if (is_a($rectorClass, DeprecatedRectorInterface::class, true)) {
+                        return false;
+                    }
+
+                    // needs more work before adding to the set, @todo
+                    return ! is_a($rectorClass, RemoveJustPropertyFetchRector::class, true);
                 }
             );
 
