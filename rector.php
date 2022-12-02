@@ -70,10 +70,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/packages/Caching/ValueObject/Storage/FileCacheStorage.php',
 
         // keep configs untouched, as the classes are just strings
-        UseClassKeywordForClassNameResolutionRector::class => [
-            __DIR__ . '/config',
-            '*/config/*',
-        ],
+        UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
     ]);
 
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-rector.neon');
