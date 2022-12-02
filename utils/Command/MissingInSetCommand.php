@@ -15,18 +15,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class MissingInSetCommand extends Command
 {
     /**
-     * @var array<string, string[]>
+     * @var array<string, string>
      */
-    private const RULES_DIRECTORY_TO_SET_CONFIGS = [
-        __DIR__ . '/../../rules/CodeQuality/Rector' => [__DIR__ . '/../../config/set/code-quality.php'],
-        __DIR__ . '/../../rules/CodingStyle/Rector' => [__DIR__ . '/../../config/set/coding-style.php'],
-        __DIR__ . '/../../rules/DeadCode/Rector' => [__DIR__ . '/../../config/set/dead-code.php'],
-        __DIR__ . '/../../rules/EarlyReturn/Rector' => [__DIR__ . '/../../config/set/early-return.php'],
-        __DIR__ . '/../../rules/Naming/Rector' => [__DIR__ . '/../../config/set/naming.php'],
-        __DIR__ . '/../../rules/TypeDeclaration/Rector' => [
-            __DIR__ . '/../../config/set/type-declaration.php',
-            __DIR__ . '/../../config/set/type-declaration-strict.php',
-        ],
+    private const RULES_DIRECTORY_TO_SET_CONFIG = [
+        __DIR__ . '/../../rules/CodeQuality/Rector' => __DIR__ . '/../../config/set/code-quality.php',
+        __DIR__ . '/../../rules/CodingStyle/Rector' => __DIR__ . '/../../config/set/coding-style.php',
+        __DIR__ . '/../../rules/DeadCode/Rector' => __DIR__ . '/../../config/set/dead-code.php',
+        __DIR__ . '/../../rules/EarlyReturn/Rector' => __DIR__ . '/../../config/set/early-return.php',
+        __DIR__ . '/../../rules/Naming/Rector' => __DIR__ . '/../../config/set/naming.php',
+        __DIR__ . '/../../rules/TypeDeclaration/Rector' => __DIR__ . '/../../config/set/type-declaration.php',
     ];
 
     /**
@@ -49,8 +46,8 @@ final class MissingInSetCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        foreach (self::RULES_DIRECTORY_TO_SET_CONFIGS as $rulesDirectory => $setFiles) {
-            $shortClassesInSetFile = $this->resolveShortClassesFromSetFiles($setFiles);
+        foreach (self::RULES_DIRECTORY_TO_SET_CONFIG as $rulesDirectory => $setFile) {
+            $shortClassesInSetFile = $this->resolveShortClassesFromSetFiles($setFile);
             $existingShortRectorClasses = $this->findShortRectorClasses($rulesDirectory);
 
             $shortRectorClassesNotInSetConfig = array_diff($existingShortRectorClasses, $shortClassesInSetFile);
@@ -61,13 +58,10 @@ final class MissingInSetCommand extends Command
 
             $this->symfonyStyle->title('We could not find there rules in configs');
 
-            foreach ($setFiles as $setFile) {
-                $setRealpath = (string) realpath($setFile);
-                $relativeFilePath = Strings::after($setRealpath, getcwd() . '/');
+            $setRealpath = (string) realpath($setFile);
+            $relativeFilePath = Strings::after($setRealpath, getcwd() . '/');
 
-                $this->symfonyStyle->writeln(' * ' . $relativeFilePath);
-            }
-
+            $this->symfonyStyle->writeln(' * ' . $relativeFilePath);
             $this->symfonyStyle->newLine(1);
 
             $this->symfonyStyle->listing($shortRectorClassesNotInSetConfig);
@@ -78,20 +72,17 @@ final class MissingInSetCommand extends Command
     }
 
     /**
-     * @param string[] $setFiles
      * @return string[]
      */
-    private function resolveShortClassesFromSetFiles(array $setFiles): array
+    private function resolveShortClassesFromSetFiles(string $setFile): array
     {
         $shortClasses = [];
 
-        foreach ($setFiles as $setFile) {
-            $setFileContents = FileSystem::read($setFile);
-            $matches = Strings::matchAll($setFileContents, self::SHORT_CLASS_REGEX);
+        $setFileContents = FileSystem::read($setFile);
+        $matches = Strings::matchAll($setFileContents, self::SHORT_CLASS_REGEX);
 
-            foreach ($matches as $match) {
-                $shortClasses[] = $match['short_class_name'];
-            }
+        foreach ($matches as $match) {
+            $shortClasses[] = $match['short_class_name'];
         }
 
         return $shortClasses;

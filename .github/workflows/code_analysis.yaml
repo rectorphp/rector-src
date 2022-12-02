@@ -45,6 +45,10 @@ jobs:
                         name: 'Compatible PHPStan versions'
                         run: php bin/validate-phpstan-version.php
 
+                    -
+                        name: 'Detect Rules Missing in Set'
+                        run: bin/rector missing-in-set
+
                     # see https://github.com/rectorphp/rector-generator
                     -
                         name: 'Rector Generate From Recipe'
