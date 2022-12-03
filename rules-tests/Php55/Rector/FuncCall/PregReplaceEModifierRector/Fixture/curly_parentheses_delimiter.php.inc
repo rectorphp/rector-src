@@ -31,7 +31,7 @@ function run($str)
 {
     $eval_links = '$link = clean_link("$0")';
 
-    return preg_replace_callback('{tst}i',function ($matches) use ($eval_links) {
+    return preg_replace_callback('{test}i',function ($matches) use ($eval_links) {
         return $link = clean_link($matches[0]);
     },$str);
 }
