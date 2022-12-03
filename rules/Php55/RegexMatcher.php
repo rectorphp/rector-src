@@ -45,22 +45,21 @@ final class RegexMatcher
             }
 
             $delimiter = $pattern[0];
+            $delimiter = match ($delimiter) {
+                '(' => ')',
+                '{' => '}',
+                '[' => ']',
+                '<' => '>',
+                default => $delimiter
+            };
 
             /** @var string $modifiers */
-            $modifiers = Strings::after($pattern, $delimiter, -1);
+            $modifiers = $this->resolveModifiers((string) Strings::after($pattern, $delimiter, -1));
             if (! \str_contains($modifiers, 'e')) {
                 return null;
             }
 
-            if (in_array($pattern[strlen($pattern) - 1], [')', '}', ']', '>'], true)) {
-                return null;
-            }
-
             $patternWithoutE = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);
-            if (Strings::after($patternWithoutE, $delimiter, -1) === $modifiers) {
-                return null;
-            }
-
             return new String_($patternWithoutE);
         }
 
@@ -71,37 +70,24 @@ final class RegexMatcher
         return null;
     }
 
-    /**
-     * @return string[]
-     */
-    private function resolveValidModifiers(string $modifiers): array
+    private function resolveModifiers(string $modifiersCandidate): string
     {
-        $chars = [];
-        for ($modifierIndex = 0; $modifierIndex < strlen($modifiers); ++$modifierIndex) {
-            if (! in_array($modifiers[$modifierIndex], self::ALL_MODIFIERS_VALUES, true)) {
-                $chars = [];
+        $modifiers = '';
+        for ($modifierIndex = 0; $modifierIndex < strlen($modifiersCandidate); ++$modifierIndex) {
+            if (! in_array($modifiersCandidate[$modifierIndex], self::ALL_MODIFIERS_VALUES, true)) {
+                $modifiers = '';
                 continue;
             }
 
-            $chars[$modifierIndex] = $modifiers[$modifierIndex];
+            $modifiers .= $modifiersCandidate[$modifierIndex];
         }
 
-        return $chars;
+        return $modifiers;
     }
 
     private function createPatternWithoutE(string $pattern, string $delimiter, string $modifiers): string
     {
-        $validModifiers = $this->resolveValidModifiers($modifiers);
-        $chars = str_split($modifiers, 1);
-
-        for ($charIndex = 0; $charIndex < strlen($modifiers); ++$charIndex) {
-            if ($modifiers[$charIndex] === 'e' && (isset($validModifiers[$charIndex]) && $validModifiers[$charIndex] === 'e')) {
-                unset($chars[$charIndex]);
-                break;
-            }
-        }
-
-        $modifiersWithoutE = implode('', $chars);
+        $modifiersWithoutE = Strings::replace($modifiers, '#e#', '');
 
         return Strings::before($pattern, $delimiter, -1) . $delimiter . $modifiersWithoutE;
     }
