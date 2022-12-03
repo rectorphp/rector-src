@@ -62,7 +62,9 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->bootstrapFiles([]);
     $rectorConfig->parallel(seconds: 120, maxNumberOfProcess: 16, jobSize: 20);
 
-    $rectorConfig->disableImportNames();
+    // to avoid autoimporting out of the box
+    $rectorConfig->importNames(false);
+
     $rectorConfig->importShortClasses();
     $rectorConfig->indent(' ', 4);
 
