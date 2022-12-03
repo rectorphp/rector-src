@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
@@ -20,7 +19,7 @@ use PHPStan\Type\UnionType;
 use Rector\CodeQuality\NodeFactory\ArrayFilterFactory;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\ReadWrite\NodeAnalyzer\ReadExprAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -32,6 +31,7 @@ final class SimplifyForeachToArrayFilterRector extends AbstractRector
     public function __construct(
         private readonly ArrayFilterFactory $arrayFilterFactory,
         private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
+        private readonly ReadExprAnalyzer $readExprAnalyzer
     ) {
     }
 
@@ -127,25 +127,23 @@ CODE_SAMPLE
         return $ifNode->elseifs !== [];
     }
 
-    private function shouldSkipForeachKeyUsage(If_ $ifNode, Expr $keyVar): bool
+    private function shouldSkipForeachKeyUsage(If_ $if, Expr $expr): bool
     {
-        if (! $keyVar instanceof Variable) {
+        if (! $expr instanceof Variable) {
             return false;
         }
 
+        /** @var Variable[] $keyVarUsage */
         $keyVarUsage = $this->betterNodeFinder->find(
-            $ifNode,
-            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $keyVar)
+            $if,
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr)
         );
 
         $keyVarUsageCount = count($keyVarUsage);
         if ($keyVarUsageCount === 1) {
-            $parentArrayDimFetch = $keyVarUsage[0]->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentArrayDimFetch instanceof ArrayDimFetch) {
-                return true;
-            }
-
-            return $parentArrayDimFetch->dim !== $keyVarUsage[0];
+            /** @var Variable $currentVarUsage */
+            $currentVarUsage = current($keyVarUsage);
+            return ! $this->readExprAnalyzer->isExprRead($currentVarUsage);
         }
 
         return $keyVarUsageCount !== 0;
