@@ -99,7 +99,8 @@ final class InlineCodeParser
             $printedExpr = trim($this->nodePrinter->print($expr), '""');
 
             if (str_starts_with($printedExpr, '{') && str_ends_with($printedExpr, '}') && count($expr->parts) === 1) {
-                return $this->valueResolver->getValue(current($expr->parts));
+                $currentPart = current($expr->parts);
+                return $this->valueResolver->getValue($currentPart);
             }
 
             // use \$ → $
