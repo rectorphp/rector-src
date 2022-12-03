@@ -178,7 +178,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function indent(): void
     {
-        $multiplier = $this->tabOrSpaceIndentCharacter === ' ' ? 4 : 1;
+        $multiplier = $this->rectorConfigProvider->getIndentSize();
 
         $this->indentLevel += $multiplier;
         $this->nl .= str_repeat($this->tabOrSpaceIndentCharacter, $multiplier);
