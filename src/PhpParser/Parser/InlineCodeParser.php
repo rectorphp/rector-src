@@ -100,7 +100,7 @@ final class InlineCodeParser
 
             if (str_starts_with($printedExpr, '{') && str_ends_with($printedExpr, '}') && count($expr->parts) === 1) {
                 $currentPart = current($expr->parts);
-                return $this->valueResolver->getValue($currentPart);
+                $printedExpr = $this->valueResolver->getValue($currentPart);
             }
 
             // use \$ → $
