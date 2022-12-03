@@ -12,6 +12,7 @@ use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 
@@ -57,6 +58,7 @@ final class InlineCodeParser
         private readonly NodePrinterInterface $nodePrinter,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly SimplePhpParser $simplePhpParser,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 
@@ -94,11 +96,20 @@ final class InlineCodeParser
 
         if ($expr instanceof Encapsed) {
             // remove "
-            $expr = trim($this->nodePrinter->print($expr), '""');
+            $printedExpr = trim($this->nodePrinter->print($expr), '""');
+
+            /**
+             * Encapsed "$eval_links" is printed as {$eval_links} → use its value when possible
+             */
+            if (str_starts_with($printedExpr, '{') && str_ends_with($printedExpr, '}') && count($expr->parts) === 1) {
+                $currentPart = current($expr->parts);
+                $printedExpr = (string) $this->valueResolver->getValue($currentPart);
+            }
+
             // use \$ → $
-            $expr = Strings::replace($expr, self::PRESLASHED_DOLLAR_REGEX, '$');
+            $printedExpr = Strings::replace($printedExpr, self::PRESLASHED_DOLLAR_REGEX, '$');
             // use \'{$...}\' → $...
-            return Strings::replace($expr, self::CURLY_BRACKET_WRAPPER_REGEX, '$1');
+            return Strings::replace($printedExpr, self::CURLY_BRACKET_WRAPPER_REGEX, '$1');
         }
 
         if ($expr instanceof Concat) {
