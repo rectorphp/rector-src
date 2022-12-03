@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
@@ -40,20 +41,27 @@ final class ArrayFilterFactory
         return new Assign($arrayDimFetch->var, $arrayFilterFuncCall);
     }
 
+    /**
+     * @param Variable[] $uses
+     */
     public function createWithClosure(
         ArrayDimFetch $arrayDimFetch,
         Variable $valueVariable,
         Expr $condExpr,
-        Foreach_ $foreach
+        Foreach_ $foreach,
+        array $uses
     ): Assign {
-        $filterFunction = $this->createClosure($valueVariable, $condExpr);
+        $filterFunction = $this->createClosure($valueVariable, $condExpr, $uses);
         $args = [new Arg($foreach->expr), new Arg($filterFunction)];
 
         $arrayFilterFuncCall = new FuncCall(new Name('array_filter'), $args);
         return new Assign($arrayDimFetch->var, $arrayFilterFuncCall);
     }
 
-    private function createClosure(Variable $valueVariable, Expr $condExpr): ArrowFunction|Closure
+    /**
+     * @param Variable[] $uses
+     */
+    private function createClosure(Variable $valueVariable, Expr $condExpr, array $uses): ArrowFunction|Closure
     {
         $params = [new Param($valueVariable)];
 
@@ -67,6 +75,7 @@ final class ArrayFilterFactory
         return new Closure([
             'params' => $params,
             'stmts' => [new Return_($condExpr)],
+            'uses' => array_map(static fn (Variable $variable) => new ClosureUse($variable), $uses),
         ]);
     }
 }

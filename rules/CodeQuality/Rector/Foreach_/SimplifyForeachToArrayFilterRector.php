@@ -17,7 +17,9 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\UnionType;
 use Rector\CodeQuality\NodeFactory\ArrayFilterFactory;
+use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\ReadWrite\NodeAnalyzer\ReadExprAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -31,7 +33,8 @@ final class SimplifyForeachToArrayFilterRector extends AbstractRector
     public function __construct(
         private readonly ArrayFilterFactory $arrayFilterFactory,
         private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
-        private readonly ReadExprAnalyzer $readExprAnalyzer
+        private readonly ReadExprAnalyzer $readExprAnalyzer,
+        private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -257,7 +260,8 @@ CODE_SAMPLE
         }
 
         // the keyvar must be variable in array dim fetch
-        if (! $foreach->keyVar instanceof Expr) {
+        $keyVar = $foreach->keyVar;
+        if (! $keyVar instanceof Variable) {
             return null;
         }
 
@@ -265,6 +269,39 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->arrayFilterFactory->createWithClosure($assign->var, $variable, $condExpr, $foreach);
+        return $this->arrayFilterFactory->createWithClosure(
+            $assign->var,
+            $variable,
+            $condExpr,
+            $foreach,
+            $this->getUsedVariablesForClosure($keyVar, $variable, $condExpr)
+        );
+    }
+
+    /**
+     * @return Variable[]
+     */
+    private function getUsedVariablesForClosure(Variable $keyVar, Variable $valueVar, Expr $condExpr): array
+    {
+        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARROW_FUNCTION)) {
+            return [];
+        }
+
+        /** @var Variable[] $filteredVariables */
+        $filteredVariables = $this->betterNodeFinder->find(
+            $condExpr,
+            fn (Node $node): bool => $node instanceof Variable
+                && ! $this->nodeComparator->areNodesEqual($keyVar, $node)
+                && ! $this->nodeComparator->areNodesEqual($valueVar, $node)
+                && ! $this->nodeNameResolver->isName($node, 'this')
+        );
+
+        $uniqueVariables = [];
+        foreach ($filteredVariables as $variable) {
+            $variableName = $this->nodeNameResolver->getName($variable);
+            $uniqueVariables[$variableName] = $variable;
+        }
+
+        return array_values($uniqueVariables);
     }
 }
