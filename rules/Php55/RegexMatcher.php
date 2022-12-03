@@ -24,6 +24,12 @@ final class RegexMatcher
      */
     private const LETTER_SUFFIX_REGEX = '#(?<modifiers>\w+)$#';
 
+    /**
+     * @var string[]
+     * @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
+     */
+    private const ALL_MODIFIERS_VALUES = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
+
     public function __construct(
         private readonly ValueResolver $valueResolver
     ) {
@@ -51,6 +57,10 @@ final class RegexMatcher
             }
 
             $patternWithoutE = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);
+            if (Strings::after($patternWithoutE, $delimiter, -1) === $modifiers) {
+                return null;
+            }
+
             return new String_($patternWithoutE);
         }
 
@@ -61,18 +71,36 @@ final class RegexMatcher
         return null;
     }
 
+    /**
+     * @return string[]
+     */
+    private function resolveValidModifiers(string $modifiers): array
+    {
+        $chars = [];
+        for ($modifierIndex = 0; $modifierIndex < strlen($modifiers); ++$modifierIndex) {
+            if (! in_array($modifiers[$modifierIndex], self::ALL_MODIFIERS_VALUES, true)) {
+                $chars = [];
+                continue;
+            }
+
+            $chars[$modifierIndex] = $modifiers[$modifierIndex];
+        }
+
+        return $chars;
+    }
+
     private function createPatternWithoutE(string $pattern, string $delimiter, string $modifiers): string
     {
-        $removedCharIndex = 0;
-        $chars = [];
+        $validModifiers = $this->resolveValidModifiers($modifiers);
+        $chars = str_split($modifiers, 1);
+
         for ($charIndex = 0; $charIndex < strlen($modifiers); ++$charIndex) {
-            $chars[] = $modifiers[$charIndex];
-            if ($modifiers[$charIndex] === 'e') {
-                $removedCharIndex = $charIndex;
+            if ($modifiers[$charIndex] === 'e' && (isset($validModifiers[$charIndex]) && $validModifiers[$charIndex] === 'e')) {
+                unset($chars[$charIndex]);
+                break;
             }
         }
 
-        unset($chars[$removedCharIndex]);
         $modifiersWithoutE = implode('', $chars);
 
         return Strings::before($pattern, $delimiter, -1) . $delimiter . $modifiersWithoutE;
