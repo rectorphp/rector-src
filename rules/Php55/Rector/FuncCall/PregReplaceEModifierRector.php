@@ -103,13 +103,12 @@ CODE_SAMPLE
         $secondArgument = $node->args[1];
         $secondArgumentValue = $secondArgument->value;
         $anonymousFunction = $this->anonymousFunctionFactory->createAnonymousFunctionFromExpr($secondArgumentValue);
-        $firstArgument->value = $patternWithoutEExpr;
-
         if (! $anonymousFunction instanceof Closure) {
-            return $node;
+            return null;
         }
 
         $node->name = new Name('preg_replace_callback');
+        $firstArgument->value = $patternWithoutEExpr;
         $secondArgument->value = $anonymousFunction;
 
         return $node;
