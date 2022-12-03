@@ -98,6 +98,9 @@ final class InlineCodeParser
             // remove "
             $printedExpr = trim($this->nodePrinter->print($expr), '""');
 
+            /**
+             * Encapsed "$eval_links" is printed as {$eval_links} → use its value when possible
+             */
             if (str_starts_with($printedExpr, '{') && str_ends_with($printedExpr, '}') && count($expr->parts) === 1) {
                 $currentPart = current($expr->parts);
                 $printedExpr = (string) $this->valueResolver->getValue($currentPart);
