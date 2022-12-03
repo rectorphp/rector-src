@@ -63,7 +63,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->parallel(seconds: 120, maxNumberOfProcess: 16, jobSize: 20);
 
     // to avoid autoimporting out of the box
-    $rectorConfig->importNames(false);
+    $rectorConfig->importNames(false, false);
 
     $rectorConfig->importShortClasses();
     $rectorConfig->indent(' ', 4);
