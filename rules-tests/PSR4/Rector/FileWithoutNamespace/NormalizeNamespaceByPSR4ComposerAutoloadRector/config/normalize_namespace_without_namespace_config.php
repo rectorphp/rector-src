@@ -9,7 +9,7 @@ use Rector\Tests\PSR4\Rector\FileWithoutNamespace\NormalizeNamespaceByPSR4Compos
 
 return static function (RectorConfig $rectorConfig): void {
     $services = $rectorConfig->services();
-    $rectorConfig->disableImportNames();
+    $rectorConfig->importNames(false, false);
     $rectorConfig->rule(NormalizeNamespaceByPSR4ComposerAutoloadRector::class);
 
     $services->set(DummyPSR4AutoloadWithoutNamespaceMatcher::class);
