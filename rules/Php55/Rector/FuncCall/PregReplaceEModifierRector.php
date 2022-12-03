@@ -104,7 +104,8 @@ CODE_SAMPLE
         $secondArgumentValue = $secondArgument->value;
         $anonymousFunction = $this->anonymousFunctionFactory->createAnonymousFunctionFromExpr($secondArgumentValue);
         if (! $anonymousFunction instanceof Closure) {
-            return null;
+            $node->args[0]->value = $patternWithoutEExpr;
+            return $node;
         }
 
         $node->name = new Name('preg_replace_callback');

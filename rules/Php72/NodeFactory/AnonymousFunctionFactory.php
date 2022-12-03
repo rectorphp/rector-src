@@ -149,6 +149,10 @@ final class AnonymousFunctionFactory
     {
         $stringValue = $this->inlineCodeParser->stringify($expr);
 
+        if (isset($stringValue[0]) && in_array($stringValue[0], ['(', '{', '[', '<'], true)) {
+            return null;
+        }
+
         $phpCode = '<?php ' . $stringValue . ';';
         $contentStmts = $this->simplePhpParser->parseString($phpCode);
 
