@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
@@ -19,6 +18,8 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\UnionType;
 use Rector\CodeQuality\NodeFactory\ArrayFilterFactory;
 use Rector\Core\Rector\AbstractRector;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
+use Rector\ReadWrite\NodeAnalyzer\ReadExprAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,6 +30,8 @@ final class SimplifyForeachToArrayFilterRector extends AbstractRector
 {
     public function __construct(
         private readonly ArrayFilterFactory $arrayFilterFactory,
+        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
+        private readonly ReadExprAnalyzer $readExprAnalyzer
     ) {
     }
 
@@ -85,6 +88,11 @@ CODE_SAMPLE
 
         $condExpr = $ifNode->cond;
 
+        $foreachKeyVar = $node->keyVar;
+        if ($foreachKeyVar !== null && $this->shouldSkipForeachKeyUsage($ifNode, $foreachKeyVar)) {
+            return null;
+        }
+
         if ($condExpr instanceof FuncCall) {
             return $this->refactorFuncCall($ifNode, $condExpr, $node, $foreachValueVar);
         }
@@ -117,6 +125,28 @@ CODE_SAMPLE
         }
 
         return $ifNode->elseifs !== [];
+    }
+
+    private function shouldSkipForeachKeyUsage(If_ $if, Expr $expr): bool
+    {
+        if (! $expr instanceof Variable) {
+            return false;
+        }
+
+        /** @var Variable[] $keyVarUsage */
+        $keyVarUsage = $this->betterNodeFinder->find(
+            $if,
+            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $expr)
+        );
+
+        $keyVarUsageCount = count($keyVarUsage);
+        if ($keyVarUsageCount === 1) {
+            /** @var Variable $currentVarUsage */
+            $currentVarUsage = current($keyVarUsage);
+            return ! $this->readExprAnalyzer->isExprRead($currentVarUsage);
+        }
+
+        return $keyVarUsageCount !== 0;
     }
 
     private function isArrayDimFetchInForLoop(Foreach_ $foreach, ArrayDimFetch $arrayDimFetch): bool
