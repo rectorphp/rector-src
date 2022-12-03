@@ -15,6 +15,9 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class ConditionSearcher
 {
+    /**
+     * @noRector test me
+     */
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator
