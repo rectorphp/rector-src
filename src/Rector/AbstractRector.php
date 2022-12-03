@@ -387,9 +387,6 @@ CODE_SAMPLE;
             return true;
         }
 
-        // @todo report deprecated @noRector
-        // if (str_contains($this->file->getFileContent(), '@noRector'
-
         $filePath = $this->file->getFilePath();
         if ($this->skipper->shouldSkipElementAndFilePath($this, $filePath)) {
             return true;

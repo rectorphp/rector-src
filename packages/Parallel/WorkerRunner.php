@@ -95,10 +95,12 @@ final class WorkerRunner
                     );
 
                     // warn about deprecated @noRector annotation
-                    if (str_contains($file->getFileContent(), ' @noRector ') || str_contains(
-                        $file->getFileContent(),
-                        ' @norector '
-                    )) {
+                    if (! str_ends_with($file->getFilePath(), 'WorkerRunner.php')
+                        && (
+                            str_contains($file->getFileContent(), ' @noRector ') ||
+                            str_contains($file->getFileContent(), ' @norector ')
+                        )
+                    ) {
                         $systemErrors[] = new SystemError(
                             'The @noRector annotation was deprecated and removed due to hiding fixed errors. Use more precise $rectorConfig->skip() method in the rector.php config.',
                             $file->getFilePath()
