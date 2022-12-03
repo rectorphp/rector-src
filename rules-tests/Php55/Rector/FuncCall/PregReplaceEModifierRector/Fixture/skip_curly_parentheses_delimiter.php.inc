@@ -2,11 +2,17 @@
 
 namespace Rector\Tests\Php55\Rector\FuncCall\PregReplaceEModifierRector\Fixture;
 
-function run()
+// https://3v4l.org/fqdPZ#v5.4.45 vs https://3v4l.org/Zm16C#v5.5.38
+function clean_link($a)
 {
-    $eval_links = '$link = clean_link("$1","$2")';
+    return "change";
+}
 
-    echo preg_replace('{\[link:([^\|].*?)\|([^\]].*?)\]}ei',"$eval_links",$str);
+function run($str)
+{
+    $eval_links = '$link = clean_link("$0")';
+
+    return preg_replace('{test}ei',"$eval_links",$str);
 }
 
 ?>
@@ -15,12 +21,18 @@ function run()
 
 namespace Rector\Tests\Php55\Rector\FuncCall\PregReplaceEModifierRector\Fixture;
 
-function run()
+// https://3v4l.org/fqdPZ#v5.4.45 vs https://3v4l.org/Zm16C#v5.5.38
+function clean_link($a)
 {
-    $eval_links = '$link = clean_link("$1","$2")';
+    return "change";
+}
 
-    echo preg_replace_callback('{\[link:([^\|].*?)\|([^\]].*?)\]}i',function ($matches) use ($eval_links) {
-        return $link = clean_link($matches[1], $matches[2]);
+function run($str)
+{
+    $eval_links = '$link = clean_link("$0")';
+
+    return preg_replace_callback('{tst}i',function ($matches) use ($eval_links) {
+        return $link = clean_link($matches[0]);
     },$str);
 }
 
