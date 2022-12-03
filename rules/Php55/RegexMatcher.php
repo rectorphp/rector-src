@@ -63,7 +63,17 @@ final class RegexMatcher
 
     private function createPatternWithoutE(string $pattern, string $delimiter, string $modifiers): string
     {
-        $modifiersWithoutE = Strings::replace($modifiers, '#e#', '');
+        $removedCharIndex = 0;
+        $chars = [];
+        for ($charIndex = 0; $charIndex < strlen($modifiers); ++$charIndex) {
+            $chars[] = $modifiers[$charIndex];
+            if ($modifiers[$charIndex] === 'e') {
+                $removedCharIndex = $charIndex;
+            }
+        }
+
+        unset($chars[$removedCharIndex]);
+        $modifiersWithoutE = implode('', $chars);
 
         return Strings::before($pattern, $delimiter, -1) . $delimiter . $modifiersWithoutE;
     }
