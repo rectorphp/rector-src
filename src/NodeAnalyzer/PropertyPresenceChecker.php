@@ -30,18 +30,18 @@ final class PropertyPresenceChecker
     }
 
     // ref https://3v4l.org/FMoB9#v5.2.17 vs
-    function clean_link($a, $b)
+    public function clean_link($a, $b)
     {
-        return "change";
+        return 'change';
     }
 
-    function run($str)
+    public function run($str)
     {
         $eval_links = '$link = clean_link("$1","$2")';
 
-        echo preg_replace_callback('{\[link:([^\|].*?)\|([^\]].*?)\]}i',function ($matches) use ($eval_links) {
+        echo preg_replace_callback('{\[link:([^\|].*?)\|([^\]].*?)\]}i', static function ($matches) use ($eval_links) {
             return $link = clean_link($matches[1], $matches[2]);
-        },$str);
+        }, $str);
     }
 
     /**
