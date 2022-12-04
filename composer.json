@@ -34,7 +34,6 @@
         "symfony/dependency-injection": "6.1.*",
         "symfony/finder": "^6.2",
         "symfony/string": "^6.2",
-        "symplify/autowire-array-parameter": "^11.1.17",
         "symplify/easy-parallel": "^11.1.17",
         "symplify/rule-doc-generator-contracts": "^11.1.17",
         "webmozart/assert": "^1.11"

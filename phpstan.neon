@@ -370,7 +370,9 @@ parameters:
 
         -
             message: '#Only booleans are allowed in an if condition, array\|null given#'
-            path: rules/Naming/Naming/PropertyNaming.php
+            paths:
+                - rules/Naming/Naming/PropertyNaming.php
+                - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
 
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
@@ -486,7 +488,13 @@ parameters:
                 - src/Bootstrap/ExtensionConfigResolver.php
                 # for config class reflection
                 - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
+                - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
+                - src/DependencyInjection/Skipper/ParameterSkipper.php
+                - src/DependencyInjection/DefinitionFinder.php
 
+        -
+            message: '#Function "interface_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+            path: src/DependencyInjection/Skipper/ParameterSkipper.php
 
         # use of internal phpstan classes
         -
@@ -691,6 +699,14 @@ parameters:
             path: packages/Testing/Fixture/FixtureFileUpdater.php
 
         -
+            message: '#Only booleans are allowed in a negated boolean, array<int, ReflectionParameter> given#'
+            path: src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
+
+        -
+            message: '#Only booleans are allowed in an if condition, array\|string\|null give#'
+            path: src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
+
+        -
             message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
             paths:
                 - packages/NodeTypeResolver/NodeTypeResolver.php
@@ -780,3 +796,8 @@ parameters:
         # on purpose, as rule it about to be removed
         - '#Register "Rector\\Php74\\Rector\\Property\\TypedPropertyRector" service to "php74\.php" config set#'
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorRector\:\:refactor\(\)" is 12, keep it under 10#'
+
+        -
+            message: '#Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary#'
+            paths:
+                - src/DependencyInjection/DefinitionFinder.php
