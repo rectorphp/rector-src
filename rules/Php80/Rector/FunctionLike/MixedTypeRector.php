@@ -93,9 +93,11 @@ CODE_SAMPLE
         if ($this->hasChanged) {
             return $node;
         }
+
         if ($hasChanged) {
             return $node;
         }
+
         return null;
     }
 
