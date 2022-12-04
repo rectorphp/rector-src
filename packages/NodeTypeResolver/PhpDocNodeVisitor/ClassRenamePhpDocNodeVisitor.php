@@ -16,6 +16,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\CurrentNodeProvider;
+use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
@@ -39,7 +40,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
@@ -66,12 +68,20 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $node->name = $this->resolveNamespacedName($node, $phpParserNode, $node->name);
-        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($node, $phpParserNode);
+        $identifier = clone $node;
+        $identifier->name = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
+        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
+
+        $shouldImport = $this->rectorConfigProvider->shouldImportNames();
+        $isNoNamespacedName = ! str_starts_with($identifier->name, '\\') && substr_count($identifier->name, '\\') === 0;
+
+        // tweak overlapped import + rename
+        if ($shouldImport && $isNoNamespacedName) {
+            return null;
+        }
 
         // make sure to compare FQNs
         $objectType = $this->expandShortenedObjectType($staticType);
-
         foreach ($this->oldToNewTypes as $oldToNewType) {
             if (! $objectType->equals($oldToNewType->getOldType())) {
                 continue;
@@ -136,19 +146,14 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $originalNode = $namespace->getAttribute(AttributeKey::ORIGINAL_NODE);
-
-        if (! $originalNode instanceof Namespace_) {
-            return $name;
-        }
-
         $namespaceName = (string) $this->nodeNameResolver->getName($namespace);
 
-        if (! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
+        if ($originalNode instanceof Namespace_ && ! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
             return $name;
         }
 
         if ($uses === []) {
-            return '\\' . ltrim($namespaceName . '\\' . $name, '\\');
+            return $namespaceName . '\\' . $name;
         }
 
         $nameFromUse = $this->resolveNamefromUse($uses, $name);
@@ -157,7 +162,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $nameFromUse;
         }
 
-        return '\\' . ltrim($namespaceName . '\\' . $nameFromUse, '\\');
+        return $namespaceName . '\\' . $nameFromUse;
     }
 
     /**
