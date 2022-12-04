@@ -780,19 +780,3 @@ parameters:
         # on purpose, as rule it about to be removed
         - '#Register "Rector\\Php74\\Rector\\Property\\TypedPropertyRector" service to "php74\.php" config set#'
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorRector\:\:refactor\(\)" is 12, keep it under 10#'
-
-        # overlapped namespace re-definition
-        -
-            message: '#Instanceof between PhpParser\\Node\\Name\|null and PhpParser\\Node\\Stmt\\Namespace_ will always evaluate to false#'
-            paths:
-                - rules/PSR4/Rector/FileWithoutNamespace/NormalizeNamespaceByPSR4ComposerAutoloadRector.php
-                - rules/PSR4/Rector/Namespace_/MultipleClassFileToPsr4ClassesRector.php
-                - rules/Renaming/Rector/FileWithoutNamespace/PseudoNamespaceToNamespaceRector.php
-
-        # overlapped namespace re-definition
-        -
-            message: '#Result of && is always false#'
-            paths:
-                - rules/PSR4/Rector/FileWithoutNamespace/NormalizeNamespaceByPSR4ComposerAutoloadRector.php
-                - rules/PSR4/Rector/Namespace_/MultipleClassFileToPsr4ClassesRector.php
-                - rules/Renaming/Rector/FileWithoutNamespace/PseudoNamespaceToNamespaceRector.php

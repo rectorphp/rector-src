@@ -87,11 +87,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // overlapped namespace re-definition
-        if ($node instanceof Namespace_ && $node->name instanceof Namespace_) {
-            return null;
-        }
-
         if (! $this->hasAtLeastTwoClassLikes($node)) {
             return null;
         }

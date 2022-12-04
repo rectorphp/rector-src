@@ -82,11 +82,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // overlapped namespace re-definition
-        if ($node instanceof Namespace_ && $node->name instanceof Namespace_) {
-            return null;
-        }
-
         $this->newNamespace = null;
 
         if ($node instanceof FileWithoutNamespace) {

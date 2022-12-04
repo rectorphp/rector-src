@@ -84,11 +84,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): Node|null|array
     {
-        // overlapped namespace re-definition
-        if ($node instanceof Namespace_ && $node->name instanceof Namespace_) {
-            return null;
-        }
-
         $processNode = clone $node;
         if ($this->inlineHTMLAnalyzer->hasInlineHTML($processNode)) {
             return null;
