@@ -75,7 +75,7 @@ final class ArrayFilterFactory
         return new Closure([
             'params' => $params,
             'stmts' => [new Return_($condExpr)],
-            'uses' => array_map(static fn (Variable $variable) => new ClosureUse($variable), $uses),
+            'uses' => array_map(static fn (Variable $variable): ClosureUse => new ClosureUse($variable), $uses),
         ]);
     }
 }
