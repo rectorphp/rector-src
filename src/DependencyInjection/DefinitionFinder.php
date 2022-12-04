@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection;
 
+use Rector\Core\DependencyInjection\Exception\DefinitionForTypeNotFoundException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symplify\AutowireArrayParameter\Exception\DependencyInjection\DefinitionForTypeNotFoundException;
 use Throwable;
 
 /**
