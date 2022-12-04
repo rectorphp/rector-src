@@ -297,9 +297,9 @@ CODE_SAMPLE
         );
 
         $uniqueVariables = [];
-        foreach ($filteredVariables as $variable) {
-            $variableName = $this->nodeNameResolver->getName($variable);
-            $uniqueVariables[$variableName] = $variable;
+        foreach ($filteredVariables as $filteredVariable) {
+            $variableName = $this->nodeNameResolver->getName($filteredVariable);
+            $uniqueVariables[$variableName] = $filteredVariable;
         }
 
         return array_values($uniqueVariables);
