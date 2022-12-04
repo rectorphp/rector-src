@@ -6,6 +6,7 @@ namespace Rector\Core\Kernel;
 
 use Rector\Core\Config\Loader\ConfigureCallMergingLoaderFactory;
 use Rector\Core\DependencyInjection\Collector\ConfigureCallValuesCollector;
+use Rector\Core\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\AutowireRectorCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
@@ -14,7 +15,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symplify\AutowireArrayParameter\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
 
 final class RectorKernel
 {
