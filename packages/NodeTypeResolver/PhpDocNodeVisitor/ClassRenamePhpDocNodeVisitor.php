@@ -148,7 +148,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         if ($uses === []) {
-            return '\\' . $namespaceName . '\\' . $name;
+            return '\\'. ltrim($namespaceName . '\\' . $name, '\\');
         }
 
         $nameFromUse = $this->resolveNamefromUse($uses, $name);
@@ -157,7 +157,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $nameFromUse;
         }
 
-        return '\\' . $namespaceName . '\\' . $nameFromUse;
+        return '\\' . ltrim($namespaceName . '\\' . $nameFromUse, '\\');
     }
 
     /**
