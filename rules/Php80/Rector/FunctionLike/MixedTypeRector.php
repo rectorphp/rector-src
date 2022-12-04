@@ -89,9 +89,9 @@ CODE_SAMPLE
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $this->refactorParamTypes($node, $phpDocInfo);
-        $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
+        $hasChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
 
-        if (! $this->hasChanged) {
+        if (! $this->hasChanged && ! $hasChanged) {
             return null;
         }
 
