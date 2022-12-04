@@ -37,9 +37,16 @@ final class ClassFromEnumFactory
             $classStmts[] = new ClassConst([new Const_($stmt->name, $constValue)], Visibility::PUBLIC);
         }
 
-        $class = new Class_($shortClassName, [
-            'stmts' => $classStmts,
-        ]);
+        $class = new Class_(
+            $shortClassName,
+            [
+                'stmts' => $classStmts,
+            ],
+            [
+                'startLine' => $enum->getStartLine(),
+                'endLine' => $enum->getEndLine(),
+            ]
+        );
 
         $class->namespacedName = $enum->namespacedName;
 
