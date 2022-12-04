@@ -34,7 +34,10 @@ final class ClassFromEnumFactory
             }
 
             $constValue = $this->createConstValue($stmt);
-            $classStmts[] = new ClassConst([new Const_($stmt->name, $constValue)], Visibility::PUBLIC);
+            $classStmts[] = new ClassConst([new Const_($stmt->name, $constValue)], Visibility::PUBLIC, [
+                'startLine' => $stmt->getStartLine(),
+                'endLine' => $stmt->getEndLine(),
+            ]);
         }
 
         $class = new Class_(
