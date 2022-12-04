@@ -153,11 +153,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
-        // re-build Namespace_ object
-        if ($node->getType() === 'Name' && $node instanceof Namespace_) {
-            $node = new Namespace_($node->name, $node->stmts, $node->getAttributes());
-        }
-
         $content = parent::p($node, $parentFormatPreserved);
 
         if ($node instanceof Expr) {
