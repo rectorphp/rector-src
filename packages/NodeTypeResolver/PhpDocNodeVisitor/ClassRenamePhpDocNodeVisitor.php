@@ -82,7 +82,10 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             }
 
             // tweak overlapped import + rename
-            if ($shouldImport && ! str_starts_with($identifier->name, '\\') && substr_count($identifier->name, '\\') === 0) {
+            if ($shouldImport && ! str_starts_with($identifier->name, '\\') && substr_count(
+                $identifier->name,
+                '\\'
+            ) === 0) {
                 continue;
             }
 
