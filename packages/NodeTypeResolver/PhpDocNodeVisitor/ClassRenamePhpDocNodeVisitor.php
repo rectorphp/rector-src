@@ -16,6 +16,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\CurrentNodeProvider;
+use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
@@ -39,7 +40,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
@@ -72,9 +74,15 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         // make sure to compare FQNs
         $objectType = $this->expandShortenedObjectType($staticType);
+        $shouldImport = $this->rectorConfigProvider->shouldImportNames();
 
         foreach ($this->oldToNewTypes as $oldToNewType) {
             if (! $objectType->equals($oldToNewType->getOldType())) {
+                continue;
+            }
+
+            // tweak overlapped import + rename
+            if ($shouldImport && ! str_starts_with($identifier->name, '\\') && substr_count($identifier->name, '\\') === 0) {
                 continue;
             }
 
