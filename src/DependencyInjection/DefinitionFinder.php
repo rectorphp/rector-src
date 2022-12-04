@@ -11,6 +11,7 @@ use Throwable;
 
 /**
  * @api
+ * @see \Rector\Core\Tests\DependencyInjection\DefinitionFinderTest
  */
 final class DefinitionFinder
 {

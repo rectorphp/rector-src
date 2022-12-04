@@ -386,7 +386,7 @@ parameters:
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
         # PHPStan 1.4.7
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsAOf|isAOf\(\) with .* will always evaluate to true#'
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsAOf|isAOf|assertInstanceOf\(\) with .* will always evaluate to true#'
 
         -
             message: '#Make callable type explicit#'
