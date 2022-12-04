@@ -72,20 +72,18 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $identifier->name = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
 
+        $shouldImport = $this->rectorConfigProvider->shouldImportNames();
+        $isNoNamespacedName = ! str_starts_with($identifier->name, '\\') && substr_count($identifier->name, '\\') === 0;
+
+        // tweak overlapped import + rename
+        if ($shouldImport && $isNoNamespacedName) {
+            return null;
+        }
+
         // make sure to compare FQNs
         $objectType = $this->expandShortenedObjectType($staticType);
-        $shouldImport = $this->rectorConfigProvider->shouldImportNames();
-
         foreach ($this->oldToNewTypes as $oldToNewType) {
             if (! $objectType->equals($oldToNewType->getOldType())) {
-                continue;
-            }
-
-            // tweak overlapped import + rename
-            if ($shouldImport && ! str_starts_with($identifier->name, '\\') && substr_count(
-                $identifier->name,
-                '\\'
-            ) === 0) {
                 continue;
             }
 
