@@ -10,7 +10,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Reflection\Constant\RuntimeConstantReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -63,10 +62,6 @@ final class FullyQualifyStmtsAnalyzer
             }
 
             if ($parentNode instanceof UseUse) {
-                return null;
-            }
-
-            if ($parentNode instanceof Namespace_) {
                 return null;
             }
 

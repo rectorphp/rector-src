@@ -24,6 +24,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
@@ -152,6 +153,11 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
+        // re-build Namespace_ object
+        if ($node->getType() === 'Name' && $node instanceof Namespace_) {
+            $node = new Namespace_($node->name, $node->stmts, $node->getAttributes());
+        }
+
         $content = parent::p($node, $parentFormatPreserved);
 
         if ($node instanceof Expr) {
