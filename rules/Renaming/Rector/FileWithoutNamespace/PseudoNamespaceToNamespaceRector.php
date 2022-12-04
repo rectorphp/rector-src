@@ -221,6 +221,10 @@ CODE_SAMPLE
 
     private function refactorNamespace(Namespace_ $namespace): ?Namespace_
     {
+        if (! $namespace->name instanceof Name) {
+            return null;
+        }
+
         $changedStmts = $this->refactorStmts($namespace->stmts);
         if ($changedStmts === null) {
             return null;
