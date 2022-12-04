@@ -24,7 +24,7 @@ class Foo2 extends FooBar
     /**
      * @param DateTime $foo
      *
-     * @return Storage|\Illuminate\Support\Facades\Storage
+     * @return Foo2\Storage|\Illuminate\Support\Facades\Storage
      */
     public function bar($foo){}
 }
