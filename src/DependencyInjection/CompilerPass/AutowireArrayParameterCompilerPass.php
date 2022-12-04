@@ -7,6 +7,7 @@ namespace Rector\Core\DependencyInjection\CompilerPass;
 use Nette\Utils\Strings;
 use ReflectionClass;
 use ReflectionMethod;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -31,9 +32,9 @@ final class AutowireArrayParameterCompilerPass implements CompilerPassInterface
     /**
      * Classes that create circular dependencies
      *
-     * @var string[]
+     * @var class-string<LoaderInterface>[]|string[]
      */
-    private array $excludedFatalClasses = [
+    private const EXCLUDED_FATAL_CLASSES = [
         'Symfony\Component\Form\FormExtensionInterface',
         'Symfony\Component\Asset\PackageInterface',
         'Symfony\Component\Config\Loader\LoaderInterface',
@@ -45,11 +46,11 @@ final class AutowireArrayParameterCompilerPass implements CompilerPassInterface
         'Symfony\Component\HttpKernel\KernelInterface',
     ];
 
-    private DefinitionFinder $definitionFinder;
+    private readonly DefinitionFinder $definitionFinder;
 
-    private ParameterTypeResolver $parameterTypeResolver;
+    private readonly ParameterTypeResolver $parameterTypeResolver;
 
-    private ParameterSkipper $parameterSkipper;
+    private readonly ParameterSkipper $parameterSkipper;
 
     /**
      * @param string[] $excludedFatalClasses
@@ -103,7 +104,7 @@ final class AutowireArrayParameterCompilerPass implements CompilerPassInterface
             return true;
         }
 
-        if (in_array($resolvedClassName, $this->excludedFatalClasses, true)) {
+        if (in_array($resolvedClassName, self::EXCLUDED_FATAL_CLASSES, true)) {
             return true;
         }
 
