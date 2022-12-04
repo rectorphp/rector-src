@@ -23,7 +23,7 @@ use Foo\Bar;
 class Foo2 extends FooBar
 {
     /**
-     * @return \Foo2\Storage|\Illuminate\Support\Facades\Storage
+     * @return Storage|\Illuminate\Support\Facades\Storage
      */
     public function bar($foo){}
 }
