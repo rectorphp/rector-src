@@ -6,6 +6,7 @@ namespace Rector\Core\DependencyInjection\CompilerPass;
 
 use Nette\Utils\Strings;
 use Rector\Core\DependencyInjection\DefinitionFinder;
+use Rector\Core\DependencyInjection\DocBlock\ParamTypeDocBlockResolver;
 use ReflectionClass;
 use ReflectionMethod;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -13,7 +14,6 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symplify\AutowireArrayParameter\DocBlock\ParamTypeDocBlockResolver;
 use Symplify\AutowireArrayParameter\Skipper\ParameterSkipper;
 use Symplify\AutowireArrayParameter\TypeResolver\ParameterTypeResolver;
 
