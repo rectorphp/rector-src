@@ -66,8 +66,9 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $node->name = $this->resolveNamespacedName($node, $phpParserNode, $node->name);
-        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($node, $phpParserNode);
+        $identifier = clone $node;
+        $identifier->name = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
+        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
 
         // make sure to compare FQNs
         $objectType = $this->expandShortenedObjectType($staticType);
@@ -136,19 +137,14 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $originalNode = $namespace->getAttribute(AttributeKey::ORIGINAL_NODE);
-
-        if (! $originalNode instanceof Namespace_) {
-            return $name;
-        }
-
         $namespaceName = (string) $this->nodeNameResolver->getName($namespace);
 
-        if (! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
+        if ($originalNode instanceof Namespace_ && ! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
             return $name;
         }
 
         if ($uses === []) {
-            return '\\' . ltrim($namespaceName . '\\' . $name, '\\');
+            return $namespaceName . '\\' . $name;
         }
 
         $nameFromUse = $this->resolveNamefromUse($uses, $name);
@@ -157,7 +153,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return $nameFromUse;
         }
 
-        return '\\' . ltrim($namespaceName . '\\' . $nameFromUse, '\\');
+        return $namespaceName . '\\' . $nameFromUse;
     }
 
     /**
