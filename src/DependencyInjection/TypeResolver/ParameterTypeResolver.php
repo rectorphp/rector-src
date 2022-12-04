@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection\TypeResolver;
 
-use Rector\Core\DependencyInjection\DocBlock\ParamTypeDocBlockResolver;
 use Nette\Utils\Reflection;
+use Rector\Core\DependencyInjection\DocBlock\ParamTypeDocBlockResolver;
 use ReflectionMethod;
 
 final class ParameterTypeResolver

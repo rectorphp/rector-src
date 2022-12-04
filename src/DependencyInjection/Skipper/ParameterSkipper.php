@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection\Skipper;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Rector\Core\DependencyInjection\TypeResolver\ParameterTypeResolver;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Definition;
 
 final class ParameterSkipper
