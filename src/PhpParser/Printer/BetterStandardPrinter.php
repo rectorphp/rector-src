@@ -181,7 +181,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $indentSize = $this->rectorConfigProvider->getIndentSize();
 
         $this->indentLevel += $indentSize;
-
         $this->nl .= str_repeat($this->tabOrSpaceIndentCharacter, $indentSize);
     }
 
