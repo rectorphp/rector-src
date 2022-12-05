@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Rector\ClassConst\SplitGroupedConstantsAndPropertiesRector;
+namespace Rector\Tests\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class SplitGroupedConstantsAndPropertiesRectorTest extends AbstractRectorTestCase
+final class SplitGroupedPropertiesRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

@@ -47,7 +47,7 @@ jobs:
 
                     -
                         name: 'Detect Rules Missing in Set'
-                        run: bin/rector missing-in-set
+                        run: bin/rector missing-in-set --ansi
 
                     # see https://github.com/rectorphp/rector-generator
                     -
