@@ -93,6 +93,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $this->insertionMap['Stmt_Function->returnType'] = [')', false, ': ', null];
         $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
         $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
+
+        $this->tabOrSpaceIndentCharacter = $this->rectorConfigProvider->getIndentChar();
     }
 
     /**
@@ -103,8 +105,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     public function printFormatPreserving(array $stmts, array $origStmts, array $origTokens): string
     {
         $newStmts = $this->resolveNewStmts($stmts);
-
-        $this->tabOrSpaceIndentCharacter = $this->rectorConfigProvider->getIndentChar();
 
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
@@ -181,10 +181,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $indentSize = $this->rectorConfigProvider->getIndentSize();
 
         $this->indentLevel += $indentSize;
-
-        if ($this->tabOrSpaceIndentCharacter === ' ' && $this->indentLevel < 4) {
-            $this->indentLevel = 4;
-        }
 
         $this->nl .= str_repeat($this->tabOrSpaceIndentCharacter, $indentSize);
     }
