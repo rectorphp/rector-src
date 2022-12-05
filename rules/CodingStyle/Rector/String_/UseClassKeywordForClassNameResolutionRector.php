@@ -74,7 +74,6 @@ CODE_SAMPLE
             return null;
         }
 
-
         $parts = $this->getParts($node, $classNames);
         if ($parts === []) {
             return null;
@@ -146,6 +145,6 @@ CODE_SAMPLE
      */
     private function filterOurShortClasses(array $classNames): array
     {
-        return array_filter($classNames, fn (string $className): bool => str_contains($className, '\\'));
+        return array_filter($classNames, static fn (string $className): bool => str_contains($className, '\\'));
     }
 }
