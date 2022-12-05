@@ -7,7 +7,7 @@ use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
 use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
-use Rector\CodingStyle\Rector\ClassConst\SplitGroupedConstantsAndPropertiesRector;
+use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
 use Rector\CodingStyle\Rector\ClassConst\VarConstantCommentRector;
 use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
@@ -28,6 +28,7 @@ use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Property\AddFalseDefaultToBoolPropertyRector;
+use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
@@ -57,7 +58,6 @@ return static function (RectorConfig $rectorConfig): void {
         ConsistentImplodeRector::class,
         TernaryConditionVariableAssignmentRector::class,
         SymplifyQuoteEscapeRector::class,
-        SplitGroupedConstantsAndPropertiesRector::class,
         StringClassNameToClassConstantRector::class,
         ConsistentPregDelimiterRector::class,
         CatchExceptionNameMatchingTypeRector::class,
@@ -79,5 +79,7 @@ return static function (RectorConfig $rectorConfig): void {
         FuncGetArgsToVariadicParamRector::class,
         StrictArraySearchRector::class,
         UseClassKeywordForClassNameResolutionRector::class,
+        SplitGroupedPropertiesRector::class,
+        SplitGroupedClassConstantsRector::class,
     ]);
 };

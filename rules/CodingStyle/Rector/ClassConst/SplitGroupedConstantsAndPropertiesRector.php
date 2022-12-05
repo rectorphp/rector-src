@@ -5,19 +5,24 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassConst;
 
 use PhpParser\Node;
-use PhpParser\Node\Const_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
+use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\ClassConst\SplitGroupedConstantsAndPropertiesRector\SplitGroupedConstantsAndPropertiesRectorTest
+ * @deprecated Use SplitGroupedConstantsRector and SplitGroupedPropertiesRector instead
  */
-final class SplitGroupedConstantsAndPropertiesRector extends AbstractRector
+final class SplitGroupedConstantsAndPropertiesRector extends AbstractRector implements DeprecatedRectorInterface
 {
+    public function __construct(
+        private readonly SymfonyStyle $symfonyStyle,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -72,52 +77,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?array
     {
-        if ($node instanceof ClassConst) {
-            if (count($node->consts) < 2) {
-                return null;
-            }
+        $this->symfonyStyle->error(
+            'The "SplitGroupedConstantsAndPropertiesRector" rule is deprecated. Use "SplitGroupedConstantsRector" and "SplitGroupedPropertiesRector" instead'
+        );
+        sleep(5);
 
-            /** @var Const_[] $allConsts */
-            $allConsts = $node->consts;
-
-            /** @var Const_ $firstConst */
-            $firstConst = array_shift($allConsts);
-            $node->consts = [$firstConst];
-
-            $nextClassConsts = $this->createNextClassConsts($allConsts, $node);
-
-            return array_merge([$node], $nextClassConsts);
-        }
-
-        if (count($node->props) < 2) {
-            return null;
-        }
-
-        $allProperties = $node->props;
-        /** @var PropertyProperty $firstPropertyProperty */
-        $firstPropertyProperty = array_shift($allProperties);
-        $node->props = [$firstPropertyProperty];
-
-        $nextProperties = [];
-        foreach ($allProperties as $allProperty) {
-            $nextProperties[] = new Property($node->flags, [$allProperty], $node->getAttributes());
-        }
-
-        return [...[$node], ...$nextProperties];
-    }
-
-    /**
-     * @param Const_[] $consts
-     * @return ClassConst[]
-     */
-    private function createNextClassConsts(array $consts, ClassConst $classConst): array
-    {
-        $decoratedConsts = [];
-
-        foreach ($consts as $const) {
-            $decoratedConsts[] = new ClassConst([$const], $classConst->flags, $classConst->getAttributes());
-        }
-
-        return $decoratedConsts;
+        return null;
     }
 }
