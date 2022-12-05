@@ -808,3 +808,9 @@ parameters:
             message: '#Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary#'
             paths:
                 - src/DependencyInjection/DefinitionFinder.php
+
+        # on purpose, it is intended to be used by end users configuring the RenameClassRector rule
+        -
+            message: "#^Class constant \"CALLBACKS\" is never used outside of its class$#"
+            count: 1
+            path: rules/Renaming/Rector/Name/RenameClassRector.php
