@@ -647,10 +647,12 @@ parameters:
 
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
 
-        # simple filter
+        # simple array filters
         -
             message: '#Use separate function calls with readable variable names#'
-            path: utils/RuleDocGenerator/PostRectorOutFilter.php
+            paths:
+                - utils/RuleDocGenerator/PostRectorOutFilter.php
+                - rules/CodingStyle/Rector/String_/UseClassKeywordForClassNameResolutionRector.php
 
         # phpdoc node traversing
         -
