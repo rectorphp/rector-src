@@ -26,7 +26,7 @@ final class AnonymousExtendsExistingClassInUnionRemoveDocblock
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
-final class AnonymousExtendsExistingClassInUnion
+final class AnonymousExtendsExistingClassInUnionRemoveDocblock
 {
     private \DateTime|null $x = null;
 
