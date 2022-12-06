@@ -19,6 +19,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
+use Rector\BetterPhpDocParser\Guard\NewPhpDocFromPHPStanTypeGuard;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
@@ -55,7 +56,8 @@ final class PhpDocTypeChanger
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly CommentsMerger $commentsMerger,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly NewPhpDocFromPHPStanTypeGuard $newPhpDocFromPHPStanTypeGuard
     ) {
     }
 
@@ -73,6 +75,10 @@ final class PhpDocTypeChanger
 
         // prevent existing type override by mixed
         if (! $phpDocInfo->getVarType() instanceof MixedType && $newType instanceof ConstantArrayType && $newType->getItemType() instanceof NeverType) {
+            return;
+        }
+
+        if (! $this->newPhpDocFromPHPStanTypeGuard->isLegal($newType)) {
             return;
         }
 
@@ -107,6 +113,10 @@ final class PhpDocTypeChanger
             return false;
         }
 
+        if (! $this->newPhpDocFromPHPStanTypeGuard->isLegal($newType)) {
+            return false;
+        }
+
         // override existing type
         $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $newType,
@@ -132,6 +142,10 @@ final class PhpDocTypeChanger
     {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@param')) {
+            return;
+        }
+
+        if (! $this->newPhpDocFromPHPStanTypeGuard->isLegal($newType)) {
             return;
         }
 
