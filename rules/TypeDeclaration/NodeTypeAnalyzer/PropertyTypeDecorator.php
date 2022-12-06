@@ -30,12 +30,16 @@ final class PropertyTypeDecorator
         UnionType $unionType,
         Name|ComplexType $typeNode,
         Property $property,
-        PhpDocInfo $phpDocInfo
+        PhpDocInfo $phpDocInfo,
+        bool $changeVarTypeFallback = true
     ): void {
         if (! $this->unionTypeAnalyzer->isNullable($unionType)) {
             if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
                 $property->type = $typeNode;
-            } else {
+                return;
+            }
+
+            if ($changeVarTypeFallback) {
                 $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
             }
 
@@ -52,9 +56,15 @@ final class PropertyTypeDecorator
         }
 
         // has array with defined type? add docs
-        if ($this->isDocBlockRequired($unionType)) {
-            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
+        if (! $this->isDocBlockRequired($unionType)) {
+            return;
         }
+
+        if (! $changeVarTypeFallback) {
+            return;
+        }
+
+        $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
     }
 
     private function isDocBlockRequired(UnionType $unionType): bool
