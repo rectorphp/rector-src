@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
-final class StaticPropertyWithDefaultNull
+final class PropertyWithDefaultNull
 {
     private $cacheFile = null;
     private $cacheFiles = null;
@@ -31,12 +31,9 @@ final class StaticPropertyWithDefaultNull
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
-final class StaticPropertyWithDefaultNull
+final class PropertyWithDefaultNull
 {
     private ?string $cacheFile = null;
-    /**
-     * @var string[]|null
-     */
     private ?array $cacheFiles = null;
 
     /**

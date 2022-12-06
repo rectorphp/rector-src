@@ -139,9 +139,19 @@ CODE_SAMPLE
         }
 
         if ($inferredType instanceof UnionType) {
-            $this->propertyTypeDecorator->decoratePropertyUnionType($inferredType, $typeNode, $node, $phpDocInfo);
+            $this->propertyTypeDecorator->decoratePropertyUnionType(
+                $inferredType,
+                $typeNode,
+                $node,
+                $phpDocInfo,
+                false
+            );
         } else {
             $node->type = $typeNode;
+        }
+
+        if (! $node->type instanceof Node) {
+            return null;
         }
 
         $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
