@@ -56,9 +56,13 @@ final class PropertyTypeDecorator
         }
 
         // has array with defined type? add docs
-        if ($this->isDocBlockRequired($unionType) && $changeVarTypeFallback) {
-            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
+        if (! $this->isDocBlockRequired($unionType)) {
+            return;
         }
+        if (! $changeVarTypeFallback) {
+            return;
+        }
+        $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
     }
 
     private function isDocBlockRequired(UnionType $unionType): bool
