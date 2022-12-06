@@ -59,9 +59,11 @@ final class PropertyTypeDecorator
         if (! $this->isDocBlockRequired($unionType)) {
             return;
         }
+
         if (! $changeVarTypeFallback) {
             return;
         }
+
         $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
     }
 
