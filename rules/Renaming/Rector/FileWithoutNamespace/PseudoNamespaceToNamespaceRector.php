@@ -82,15 +82,14 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $processNode = clone $node;
         $this->newNamespace = null;
 
-        if ($node instanceof FileWithoutNamespace) {
-            $changedStmts = $this->refactorStmts($node->stmts);
+        if ($processNode instanceof FileWithoutNamespace) {
+            $changedStmts = $this->refactorStmts($processNode->stmts);
             if ($changedStmts === null) {
                 return null;
             }
-
-            $node->stmts = $changedStmts;
 
             // add a new namespace?
             if ($this->newNamespace !== null) {
@@ -98,8 +97,8 @@ CODE_SAMPLE
             }
         }
 
-        if ($node instanceof Namespace_) {
-            return $this->refactorNamespace($node);
+        if ($processNode instanceof Namespace_) {
+            return $this->refactorNamespace($processNode);
         }
 
         return null;
