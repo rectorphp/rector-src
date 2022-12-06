@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Namespace_;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
@@ -132,6 +133,11 @@ final class NodeNameResolver
 
         // unable to resolve
         if ($node->name instanceof Expr) {
+            return null;
+        }
+
+        // hiccup on CI
+        if ($node->name instanceof Namespace_) {
             return null;
         }
 
