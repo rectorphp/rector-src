@@ -211,7 +211,7 @@ final class NodeNameResolver
         return strtolower($resolvedName) === strtolower($desiredName);
     }
 
-    private function resolveExprOrNodewithName(Expr|Namespace_|Identifier|Name|string $name): ?string
+    private function resolveExprOrNodewithName(Expr|Namespace_|Identifier|Name|string|null $name): ?string
     {
         // unable to resolve
         if ($name instanceof Expr) {
