@@ -18,6 +18,7 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -76,6 +77,10 @@ final class PhpDocTypeChanger
             return;
         }
 
+        if ($this->shouldSkipNewUnionType($newType)) {
+            return;
+        }
+
         // override existing type
         $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $newType,
@@ -107,6 +112,10 @@ final class PhpDocTypeChanger
             return false;
         }
 
+        if ($this->shouldSkipNewUnionType($newType)) {
+            return false;
+        }
+
         // override existing type
         $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $newType,
@@ -132,6 +141,10 @@ final class PhpDocTypeChanger
     {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@param')) {
+            return;
+        }
+
+        if ($this->shouldSkipNewUnionType($newType)) {
             return;
         }
 
@@ -231,6 +244,21 @@ final class PhpDocTypeChanger
         // add completely new one
         $varTagValueNode = new VarTagValueNode($typeNode, '', '');
         $phpDocInfo->addTagValueNode($varTagValueNode);
+    }
+
+    private function shouldSkipNewUnionType(Type $newType): bool
+    {
+        if (! $newType instanceof UnionType) {
+            return false;
+        }
+
+        foreach ($newType->getTypes() as $type) {
+            if ($type instanceof MixedType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function processKeepComments(Property $property, Param $param): void
