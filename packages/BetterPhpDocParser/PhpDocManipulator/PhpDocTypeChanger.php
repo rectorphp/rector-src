@@ -77,7 +77,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if ($this->shouldSkipNewUnionType($newType)) {
+        if ($this->shouldSkipUnionType($newType)) {
             return;
         }
 
@@ -112,7 +112,7 @@ final class PhpDocTypeChanger
             return false;
         }
 
-        if ($this->shouldSkipNewUnionType($newType)) {
+        if ($this->shouldSkipUnionType($newType)) {
             return false;
         }
 
@@ -144,7 +144,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if ($this->shouldSkipNewUnionType($newType)) {
+        if ($this->shouldSkipUnionType($newType)) {
             return;
         }
 
@@ -246,7 +246,7 @@ final class PhpDocTypeChanger
         $phpDocInfo->addTagValueNode($varTagValueNode);
     }
 
-    private function shouldSkipNewUnionType(Type $newType): bool
+    private function shouldSkipUnionType(Type $newType): bool
     {
         if (! $newType instanceof UnionType) {
             return false;
