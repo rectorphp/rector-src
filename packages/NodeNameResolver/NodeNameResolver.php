@@ -221,7 +221,7 @@ final class NodeNameResolver
         // hiccup on CI
         if ($name instanceof Namespace_) {
             if ($name->name instanceof Name) {
-                return (string) $name;
+                return (string) $name->name;
             }
 
             return null;
