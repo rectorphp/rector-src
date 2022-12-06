@@ -11,6 +11,7 @@ use Rector\Core\Console\Output\RectorOutputStyle;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
+use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,6 +24,7 @@ final class ListRulesCommand extends Command
      */
     public function __construct(
         private readonly RectorOutputStyle $rectorOutputStyle,
+        private readonly SkippedClassResolver $skippedClassResolver,
         private readonly array $rectors
     ) {
         parent::__construct();
@@ -46,10 +48,13 @@ final class ListRulesCommand extends Command
     {
         $rectorClasses = $this->resolveRectorClasses();
 
+        $skippedClasses = $this->getSkippedCheckers();
+
         $outputFormat = $input->getOption(Option::OUTPUT_FORMAT);
         if ($outputFormat === 'json') {
             $data = [
                 'rectors' => $rectorClasses,
+                'skipped-rectors' => $skippedClasses,
             ];
 
             echo Json::encode($data, Json::PRETTY) . PHP_EOL;
@@ -58,6 +63,11 @@ final class ListRulesCommand extends Command
 
         $this->rectorOutputStyle->title('Loaded Rector rules');
         $this->rectorOutputStyle->listing($rectorClasses);
+
+        if ($skippedClasses !== []) {
+            $this->rectorOutputStyle->title('Skipped Rector rules');
+            $this->rectorOutputStyle->listing($skippedClasses);
+        }
 
         return Command::SUCCESS;
     }
@@ -82,5 +92,23 @@ final class ListRulesCommand extends Command
         sort($rectorClasses);
 
         return $rectorClasses;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getSkippedCheckers(): array
+    {
+        $skippedCheckers = [];
+        foreach ($this->skippedClassResolver->resolve() as $checkerClass => $fileList) {
+            // ignore specific skips
+            if ($fileList !== null) {
+                continue;
+            }
+
+            $skippedCheckers[] = $checkerClass;
+        }
+
+        return $skippedCheckers;
     }
 }
