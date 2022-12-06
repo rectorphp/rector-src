@@ -18,8 +18,8 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
+use Rector\BetterPhpDocParser\Guard\NewPhpDocFromPHPStanTypeGuard;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode;
@@ -56,7 +56,8 @@ final class PhpDocTypeChanger
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly CommentsMerger $commentsMerger,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly NewPhpDocFromPHPStanTypeGuard $newPhpDocFromPHPStanTypeGuard
     ) {
     }
 
@@ -77,7 +78,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if ($this->shouldSkipUnionType($newType)) {
+        if (! $this->newPhpDocFromPHPStanTypeGuard->isLegal($newType)) {
             return;
         }
 
@@ -112,7 +113,7 @@ final class PhpDocTypeChanger
             return false;
         }
 
-        if ($this->shouldSkipUnionType($newType)) {
+        if (! $this->newPhpDocFromPHPStanTypeGuard->isLegal($newType)) {
             return false;
         }
 
@@ -144,7 +145,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if ($this->shouldSkipUnionType($newType)) {
+        if (! $this->newPhpDocFromPHPStanTypeGuard->isLegal($newType)) {
             return;
         }
 
@@ -244,21 +245,6 @@ final class PhpDocTypeChanger
         // add completely new one
         $varTagValueNode = new VarTagValueNode($typeNode, '', '');
         $phpDocInfo->addTagValueNode($varTagValueNode);
-    }
-
-    private function shouldSkipUnionType(Type $newType): bool
-    {
-        if (! $newType instanceof UnionType) {
-            return false;
-        }
-
-        foreach ($newType->getTypes() as $type) {
-            if ($type instanceof MixedType) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function processKeepComments(Property $property, Param $param): void
