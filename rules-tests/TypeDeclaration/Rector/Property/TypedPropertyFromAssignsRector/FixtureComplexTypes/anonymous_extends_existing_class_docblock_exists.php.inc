@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
-final class AnonymousExtendsExistingClassInUnionRemoveDocblock
+final class AnonymousExtendsExistingClassDocblockExists
 {
     /**
      * @var \DateTime|null
@@ -22,12 +22,15 @@ final class AnonymousExtendsExistingClassInUnionRemoveDocblock
 
 ?>
 -----
-<?php
+<?php declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
-final class AnonymousExtendsExistingClassInUnionRemoveDocblock
+final class AnonymousExtendsExistingClassDocblockExists
 {
+    /**
+     * @var \DateTime|null
+     */
     private \DateTime|null $x = null;
 
     public function __construct()
