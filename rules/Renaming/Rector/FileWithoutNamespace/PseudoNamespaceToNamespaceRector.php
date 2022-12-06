@@ -91,6 +91,8 @@ CODE_SAMPLE
                 return null;
             }
 
+            $processNode->stmts = $changedStmts;
+
             // add a new namespace?
             if ($this->newNamespace !== null) {
                 return new Namespace_(new Name($this->newNamespace), $changedStmts);
