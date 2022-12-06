@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\CodingStyle\Naming\ClassNaming;
@@ -131,17 +132,7 @@ final class NodeNameResolver
             return null;
         }
 
-        // unable to resolve
-        if ($node->name instanceof Expr) {
-            return null;
-        }
-
-        // hiccup on CI
-        if ($node->name instanceof Namespace_) {
-            return null;
-        }
-
-        return (string) $node->name;
+        return $this->resolveExprOrNodewithName($node->name);
     }
 
     public function areNamesEqual(Node $firstNode, Node $secondNode): bool
@@ -219,6 +210,21 @@ final class NodeNameResolver
         }
 
         return strtolower($resolvedName) === strtolower($desiredName);
+    }
+
+    private function resolveExprOrNodewithName(Expr|Stmt|Identifier|Name|string $name): ?string
+    {
+        // unable to resolve
+        if ($name instanceof Expr) {
+            return null;
+        }
+
+        // hiccup on CI
+        if ($name instanceof Namespace_) {
+            return null;
+        }
+
+        return (string) $name;
     }
 
     private function isCallOrIdentifier(Expr|Identifier $node): bool
