@@ -73,6 +73,4 @@ jobs:
                     commit_message: [ci-review] Rector Rectify
                     commit_author: GitHub Action <actions@github.com>
                     commit_user_email: action@github.com
-                env:
-                    # to get push access
-                    GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+                    token: ${{ secrets.ACCESS_TOKEN }}
