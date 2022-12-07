@@ -121,8 +121,10 @@ final class ReturnTypeInferer
         return new MixedType();
     }
 
-    private function resolveTypeWithVoidHandling(ClassMethod|Function_|Closure|ArrowFunction $functionLike, Type $resolvedType): Type
-    {
+    private function resolveTypeWithVoidHandling(
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
+        Type $resolvedType
+    ): Type {
         if ($resolvedType instanceof VoidType) {
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $functionLike,
