@@ -226,7 +226,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->phpAttributeAnalyzer->hasPhpAttribute($param, \SensitiveParameter::class)) {
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($param, 'SensitiveParameter')) {
             return true;
         }
 
