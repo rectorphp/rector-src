@@ -126,6 +126,10 @@ final class ReturnTypeInferer
         Type $resolvedType
     ): Type {
         if ($resolvedType instanceof VoidType) {
+            if ($functionLike instanceof ArrowFunction) {
+                return new MixedType();
+            }
+
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $functionLike,
                 static function (Node $subNode): bool {
@@ -164,6 +168,10 @@ final class ReturnTypeInferer
         }
 
         if (! ($types[0] instanceof IntegerType && $types[1]->isString()->yes())) {
+            return $unionType;
+        }
+
+        if ($functionLike instanceof ArrowFunction) {
             return $unionType;
         }
 
