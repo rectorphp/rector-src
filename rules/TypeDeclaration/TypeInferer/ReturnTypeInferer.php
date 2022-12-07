@@ -178,7 +178,8 @@ final class ReturnTypeInferer
                 static fn (Return_ $return): bool => $return->expr instanceof Expr
             );
         } else {
-            $returnsWithExpr = $functionLike->getStmts();
+            $returns = $functionLike->getStmts();
+            $returnsWithExpr = $returns;
         }
 
         if ($returns !== $returnsWithExpr) {
