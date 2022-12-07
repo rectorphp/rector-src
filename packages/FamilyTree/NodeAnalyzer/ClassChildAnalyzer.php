@@ -13,6 +13,8 @@ use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 final class ClassChildAnalyzer
 {
+    private $unusedPrivateProperty;
+
     public function __construct(
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
