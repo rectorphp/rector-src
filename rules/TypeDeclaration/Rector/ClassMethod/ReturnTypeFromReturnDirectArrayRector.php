@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -25,7 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromReturnDirectArrayRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -79,6 +81,11 @@ CODE_SAMPLE
         }
 
         if (! $this->hasReturnArray($node)) {
+            return null;
+        }
+
+        $type = $this->returnTypeInferer->inferFunctionLike($node);
+        if (! $type->isArray()->yes()) {
             return null;
         }
 
