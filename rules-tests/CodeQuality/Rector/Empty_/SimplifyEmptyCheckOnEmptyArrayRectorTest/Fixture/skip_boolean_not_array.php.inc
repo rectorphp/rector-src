@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRectorTest\Fixture;
 
-final class SkipBooleanNotNotArray
+final class SkipBooleanNotArray
 {
     public function verify($values): bool
     {
