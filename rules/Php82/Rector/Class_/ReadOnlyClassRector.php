@@ -19,7 +19,6 @@ use Rector\Core\ValueObject\Visibility;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
-use Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture\readonly;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
