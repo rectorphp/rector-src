@@ -84,8 +84,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $return = $this->returnTypeInferer->inferFunctionLike($node);
-        if (! $return->isArray()->yes()) {
+        $type = $this->returnTypeInferer->inferFunctionLike($node);
+        if (! $type->isArray()->yes()) {
             return null;
         }
 
