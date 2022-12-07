@@ -55,7 +55,7 @@ final class ReplaceArrayType
 
     public function isNotEmptyArray(array $values): bool
     {
-        return !($values === []);
+        return $values !== [];
     }
 
     public function isEmptyArrayMixedType(mixed $values): bool
