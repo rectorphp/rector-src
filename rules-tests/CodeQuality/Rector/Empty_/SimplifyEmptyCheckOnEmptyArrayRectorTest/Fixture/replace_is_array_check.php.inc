@@ -39,7 +39,7 @@ final class ReplaceIsArrayCheck
 
     public function isNotEmptyArray($values): bool
     {
-        return is_array($values) && !($values === []);
+        return is_array($values) && $values !== [];
     }
 
     public function isEmptyArrayProperty(): bool
