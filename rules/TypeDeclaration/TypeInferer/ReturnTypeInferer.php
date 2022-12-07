@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\TypeInferer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Class_;
@@ -52,7 +53,7 @@ final class ReturnTypeInferer
     ) {
     }
 
-    public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
+    public function inferFunctionLike(ClassMethod|Function_|Closure|ArrowFunction $functionLike): Type
     {
         $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
             PhpVersionFeature::STATIC_RETURN_TYPE
@@ -120,7 +121,7 @@ final class ReturnTypeInferer
         return new MixedType();
     }
 
-    private function resolveTypeWithVoidHandling(ClassMethod|Function_|Closure $functionLike, Type $resolvedType): Type
+    private function resolveTypeWithVoidHandling(ClassMethod|Function_|Closure|ArrowFunction $functionLike, Type $resolvedType): Type
     {
         if ($resolvedType instanceof VoidType) {
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
@@ -150,7 +151,7 @@ final class ReturnTypeInferer
     }
 
     private function resolveBenevolentUnionTypeInteger(
-        ClassMethod|Function_|Closure $functionLike,
+        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
         UnionType $unionType
     ): UnionType|IntegerType {
         $types = $unionType->getTypes();
