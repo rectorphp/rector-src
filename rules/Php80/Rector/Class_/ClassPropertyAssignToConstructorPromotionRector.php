@@ -25,6 +25,7 @@ use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -60,7 +61,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly VarTagRemover $varTagRemover,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard
+        private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -221,6 +223,10 @@ CODE_SAMPLE
     private function shouldSkipParam(Param $param): bool
     {
         if ($param->variadic) {
+            return true;
+        }
+
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($param, \SensitiveParameter::class)) {
             return true;
         }
 
