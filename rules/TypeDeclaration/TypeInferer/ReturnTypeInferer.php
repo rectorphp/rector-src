@@ -171,12 +171,12 @@ final class ReturnTypeInferer
             return $unionType;
         }
 
-        if ($functionLike instanceof ArrowFunction) {
-            return $unionType;
+        if (! $functionLike instanceof ArrowFunction) {
+            $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
+            $returnsWithExpr = array_filter($returns, static fn (Return_ $return): bool => $return->expr instanceof Expr);
+        } else {
+            $returnsWithExpr = $functionLike->getStmts();
         }
-
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
-        $returnsWithExpr = array_filter($returns, static fn (Return_ $return): bool => $return->expr instanceof Expr);
 
         if ($returns !== $returnsWithExpr) {
             return $unionType;
