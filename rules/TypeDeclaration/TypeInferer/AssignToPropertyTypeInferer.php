@@ -75,8 +75,8 @@ final class AssignToPropertyTypeInferer
 
         $defaultPropertyValue = $property->props[0]->default;
         if ($assignedExprTypes === []) {
-            // never assigned, but has default value, then pull from type from default value
-            if ($defaultPropertyValue instanceof Expr) {
+            // not typed, never assigned, but has default value, then pull type from default value
+            if (! $property->type instanceof Node && $defaultPropertyValue instanceof Expr) {
                 return $this->nodeTypeResolver->getType($defaultPropertyValue);
             }
 
