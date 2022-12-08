@@ -8,12 +8,10 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 final class PropertyAssignMatcher
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
@@ -25,21 +23,16 @@ final class PropertyAssignMatcher
      */
     public function matchPropertyAssignExpr(Assign $assign, string $propertyName): ?Expr
     {
-        if ($this->propertyFetchAnalyzer->isLocalPropertyFetch($assign->var)) {
-            if (! $this->nodeNameResolver->isName($assign->var, $propertyName)) {
-                return null;
-            }
-
+        $assignVar = $assign->var;
+        if ($this->propertyFetchAnalyzer->isLocalPropertyFetchName($assignVar, $propertyName)) {
             return $assign->expr;
         }
 
-        if ($assign->var instanceof ArrayDimFetch && $this->propertyFetchAnalyzer->isLocalPropertyFetch(
-            $assign->var->var
-        )) {
-            if (! $this->nodeNameResolver->isName($assign->var->var, $propertyName)) {
-                return null;
-            }
+        if (! $assignVar instanceof ArrayDimFetch) {
+            return null;
+        }
 
+        if ($this->propertyFetchAnalyzer->isLocalPropertyFetchName($assignVar->var, $propertyName)) {
             return $assign->expr;
         }
 
