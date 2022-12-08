@@ -232,7 +232,7 @@ final class PropertyFetchAnalyzer
         return $this->nodeNameResolver->isNames($expr->name, $propertyNames);
     }
 
-    private function isTraitLocalPropertyFetch(Node $node)
+    private function isTraitLocalPropertyFetch(Node $node): bool
     {
         if ($node instanceof PropertyFetch) {
             if (! $node->var instanceof Variable) {
