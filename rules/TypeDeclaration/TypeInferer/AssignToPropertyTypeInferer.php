@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
@@ -63,9 +65,13 @@ final class AssignToPropertyTypeInferer
 
             $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
             if (! $expr instanceof Expr) {
-                if ($this->propertyFetchAnalyzer->isPropertyFetch(
-                    $node->var
-                ) && ! $node->var->name instanceof Identifier) {
+                if (! $this->propertyFetchAnalyzer->isPropertyFetch($node->var)) {
+                    return null;
+                }
+
+                /** @var PropertyFetch|StaticPropertyFetch $assignVar */
+                $assignVar = $node->var;
+                if (! $assignVar->name instanceof Identifier) {
                     $hasAssignDynamicPropertyValue = true;
                     return NodeTraverser::STOP_TRAVERSAL;
                 }
@@ -90,6 +96,14 @@ final class AssignToPropertyTypeInferer
             $assignedExprTypes[] = new NullType();
         }
 
+        return $this->resolveTypeWithVerifyDefaultValue($property, $assignedExprTypes);
+    }
+
+    /**
+     * @param Type[] $assignedExprTypes
+     */
+    private function resolveTypeWithVerifyDefaultValue(Property $property, array $assignedExprTypes): ?Type
+    {
         $defaultPropertyValue = $property->props[0]->default;
         if ($assignedExprTypes === []) {
             // not typed, never assigned, but has default value, then pull type from default value
