@@ -70,6 +70,8 @@ final class PropertyFetchAnalyzer
             if ($currentClassLike instanceof ClassLike) {
                 return $this->nodeNameResolver->isName($currentClassLike, $variableType->getClassName());
             }
+
+            return false;
         }
 
         return $variableType instanceof ThisType;
