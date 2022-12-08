@@ -56,7 +56,7 @@ final class AssignToPropertyTypeInferer
             $propertyName,
             &$assignedExprTypes,
             &$hasAssignDynamicPropertyValue
-        ) {
+        ): ?int {
             if (! $node instanceof Assign) {
                 return null;
             }
