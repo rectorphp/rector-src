@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\ArrayType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
