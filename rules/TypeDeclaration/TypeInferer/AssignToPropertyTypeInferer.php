@@ -63,7 +63,7 @@ final class AssignToPropertyTypeInferer
                 return null;
             }
 
-            if (! $this->propertyFetchAnalyzer->isPropertyFetch($node->var)) {
+            if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($node->var)) {
                 return null;
             }
 
