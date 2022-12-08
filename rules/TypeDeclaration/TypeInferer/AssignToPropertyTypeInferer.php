@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer;
 
-use Nette\Security\Identity;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -64,7 +63,9 @@ final class AssignToPropertyTypeInferer
 
             $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
             if (! $expr instanceof Expr) {
-                if ($this->propertyFetchAnalyzer->isPropertyFetch($node->var) && ! $node->var->name instanceof Identifier) {
+                if ($this->propertyFetchAnalyzer->isPropertyFetch(
+                    $node->var
+                ) && ! $node->var->name instanceof Identifier) {
                     $hasAssignDynamicPropertyValue = true;
                     return NodeTraverser::STOP_TRAVERSAL;
                 }

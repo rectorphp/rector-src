@@ -33,7 +33,9 @@ final class PropertyAssignMatcher
             return $assign->expr;
         }
 
-        if ($assign->var instanceof ArrayDimFetch && $this->propertyFetchAnalyzer->isLocalPropertyFetch($assign->var->var)) {
+        if ($assign->var instanceof ArrayDimFetch && $this->propertyFetchAnalyzer->isLocalPropertyFetch(
+            $assign->var->var
+        )) {
             if (! $this->nodeNameResolver->isName($assign->var->var, $propertyName)) {
                 return null;
             }
