@@ -8,13 +8,18 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\NodeTraverser;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -39,24 +44,38 @@ final class AssignToPropertyTypeInferer
         private readonly TypeFactory $typeFactory,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
     public function inferPropertyInClassLike(Property $property, string $propertyName, ClassLike $classLike): ?Type
     {
         $assignedExprTypes = [];
+        $hasAssignDynamicPropertyValue = false;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
             $propertyName,
-            &$assignedExprTypes
-        ) {
+            &$assignedExprTypes,
+            &$hasAssignDynamicPropertyValue
+        ): ?int {
             if (! $node instanceof Assign) {
                 return null;
             }
 
             $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
             if (! $expr instanceof Expr) {
+                if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($node->var)) {
+                    return null;
+                }
+
+                /** @var PropertyFetch|StaticPropertyFetch $assignVar */
+                $assignVar = $node->var;
+                if (! $assignVar->name instanceof Identifier) {
+                    $hasAssignDynamicPropertyValue = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 return null;
             }
 
@@ -69,17 +88,33 @@ final class AssignToPropertyTypeInferer
             return null;
         });
 
+        if ($hasAssignDynamicPropertyValue) {
+            return null;
+        }
+
         if ($this->shouldAddNullType($classLike, $propertyName, $assignedExprTypes)) {
             $assignedExprTypes[] = new NullType();
         }
 
+        return $this->resolveTypeWithVerifyDefaultValue($property, $assignedExprTypes);
+    }
+
+    /**
+     * @param Type[] $assignedExprTypes
+     */
+    private function resolveTypeWithVerifyDefaultValue(Property $property, array $assignedExprTypes): ?Type
+    {
+        $defaultPropertyValue = $property->props[0]->default;
         if ($assignedExprTypes === []) {
+            // not typed, never assigned, but has default value, then pull type from default value
+            if (! $property->type instanceof Node && $defaultPropertyValue instanceof Expr) {
+                return $this->nodeTypeResolver->getType($defaultPropertyValue);
+            }
+
             return null;
         }
 
         $inferredType = $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes);
-        $defaultPropertyValue = $property->props[0]->default;
-
         if ($this->shouldSkipWithDifferentDefaultValueType($defaultPropertyValue, $inferredType)) {
             return null;
         }

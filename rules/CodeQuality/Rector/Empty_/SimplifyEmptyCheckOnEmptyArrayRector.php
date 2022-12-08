@@ -14,10 +14,17 @@ use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Reflection\ReflectionResolver;
+use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -27,7 +34,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRector
 {
     public function __construct(
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ExprAnalyzer $exprAnalyzer,
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly AstResolver $astResolver,
+        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer
     ) {
     }
 
@@ -77,10 +87,44 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
             return ! $this->exprAnalyzer->isNonTypedFromParam($expr);
         }
 
-        if ($expr instanceof PropertyFetch) {
-            return true;
+        if (! $expr instanceof PropertyFetch && ! $expr instanceof StaticPropertyFetch) {
+            return false;
         }
 
-        return $expr instanceof StaticPropertyFetch;
+        if (! $expr->name instanceof Identifier) {
+            return false;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($expr);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        $propertyName = $expr->name->toString();
+        if (! $classReflection->hasNativeProperty($propertyName)) {
+            return false;
+        }
+
+        $phpPropertyReflection = $classReflection->getNativeProperty($propertyName);
+        $nativeType = $phpPropertyReflection->getNativeType();
+
+        if (! $nativeType instanceof MixedType) {
+            return $nativeType instanceof ArrayType;
+        }
+
+        $property = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
+
+        /**
+         * Skip property promotion mixed type for now, as:
+         *
+         *   - require assign in default param check
+         *   - check all assign of property promotion params under the class
+         */
+        if (! $property instanceof Property) {
+            return false;
+        }
+
+        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
+        return $type instanceof ArrayType;
     }
 }
