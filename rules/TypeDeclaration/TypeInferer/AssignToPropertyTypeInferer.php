@@ -63,19 +63,19 @@ final class AssignToPropertyTypeInferer
                 return null;
             }
 
+            if (! $this->propertyFetchAnalyzer->isPropertyFetch($node->var)) {
+                return null;
+            }
+
+            /** @var PropertyFetch|StaticPropertyFetch $assignVar */
+            $assignVar = $node->var;
+            if (! $assignVar->name instanceof Identifier) {
+                $hasAssignDynamicPropertyValue = true;
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
             $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
             if (! $expr instanceof Expr) {
-                if (! $this->propertyFetchAnalyzer->isPropertyFetch($node->var)) {
-                    return null;
-                }
-
-                /** @var PropertyFetch|StaticPropertyFetch $assignVar */
-                $assignVar = $node->var;
-                if (! $assignVar->name instanceof Identifier) {
-                    $hasAssignDynamicPropertyValue = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
-
                 return null;
             }
 
