@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
@@ -107,12 +108,23 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         $phpPropertyReflection = $classReflection->getNativeProperty($propertyName);
         $nativeType = $phpPropertyReflection->getNativeType();
 
-        if ($nativeType instanceof MixedType) {
-            $property = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
-            $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
-            return $type instanceof ArrayType;
+        if (! $nativeType instanceof MixedType) {
+            return $nativeType instanceof ArrayType;
         }
 
-        return $nativeType instanceof ArrayType;
+        $property = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
+
+        /**
+         * Skip property promotion mixed type for now, as:
+         *
+         *   - require assign in default param check
+         *   - check all assign of property promotion params under the class
+         */
+        if (! $property instanceof Property) {
+            return false;
+        }
+
+        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
+        return $type instanceof ArrayType;
     }
 }
