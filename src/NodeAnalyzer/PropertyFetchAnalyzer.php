@@ -24,6 +24,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -48,6 +49,14 @@ final class PropertyFetchAnalyzer
     {
         if (! $node instanceof PropertyFetch && ! $node instanceof StaticPropertyFetch) {
             return false;
+        }
+
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        /**
+         * Property Fetch on Trait currently doesn't has Parent Node, so fallback to use this, self, static name instead
+         */
+        if (! $parentNode instanceof Node) {
+            return $this->isTraitLocalPropertyFetch($node);
         }
 
         $variableType = $node instanceof PropertyFetch
@@ -220,6 +229,30 @@ final class PropertyFetchAnalyzer
 
         /** @var PropertyFetch $expr */
         return $this->nodeNameResolver->isNames($expr->name, $propertyNames);
+    }
+
+    private function isTraitLocalPropertyFetch(Node $node)
+    {
+        if ($node instanceof PropertyFetch) {
+            if (! $node->var instanceof Variable) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isName($node->var, self::THIS);
+        }
+
+        if ($node instanceof StaticPropertyFetch) {
+            if (! $node->class instanceof Name) {
+                return false;
+            }
+
+            return $this->nodeNameResolver->isNames($node->class, [
+                ObjectReference::SELF,
+                ObjectReference::STATIC,
+            ]);
+        }
+
+        return false;
     }
 
     private function isPropertyAssignFoundInClassMethod(
