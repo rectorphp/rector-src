@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer;
 
+use Nette\Security\Identity;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\NodeTraverser;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -39,17 +43,20 @@ final class AssignToPropertyTypeInferer
         private readonly TypeFactory $typeFactory,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
     public function inferPropertyInClassLike(Property $property, string $propertyName, ClassLike $classLike): ?Type
     {
         $assignedExprTypes = [];
+        $hasAssignDynamicPropertyValue = false;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
             $propertyName,
-            &$assignedExprTypes
+            &$assignedExprTypes,
+            &$hasAssignDynamicPropertyValue
         ) {
             if (! $node instanceof Assign) {
                 return null;
@@ -57,6 +64,11 @@ final class AssignToPropertyTypeInferer
 
             $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
             if (! $expr instanceof Expr) {
+                if ($this->propertyFetchAnalyzer->isPropertyFetch($node->var) && ! $node->var->name instanceof Identifier) {
+                    $hasAssignDynamicPropertyValue = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 return null;
             }
 
@@ -68,6 +80,10 @@ final class AssignToPropertyTypeInferer
 
             return null;
         });
+
+        if ($hasAssignDynamicPropertyValue) {
+            return null;
+        }
 
         if ($this->shouldAddNullType($classLike, $propertyName, $assignedExprTypes)) {
             $assignedExprTypes[] = new NullType();

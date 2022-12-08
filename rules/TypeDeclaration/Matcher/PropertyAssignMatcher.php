@@ -25,7 +25,7 @@ final class PropertyAssignMatcher
      */
     public function matchPropertyAssignExpr(Assign $assign, string $propertyName): ?Expr
     {
-        if ($this->propertyFetchAnalyzer->isPropertyFetch($assign->var)) {
+        if ($this->propertyFetchAnalyzer->isLocalPropertyFetch($assign->var)) {
             if (! $this->nodeNameResolver->isName($assign->var, $propertyName)) {
                 return null;
             }
@@ -33,7 +33,7 @@ final class PropertyAssignMatcher
             return $assign->expr;
         }
 
-        if ($assign->var instanceof ArrayDimFetch && $this->propertyFetchAnalyzer->isPropertyFetch($assign->var->var)) {
+        if ($assign->var instanceof ArrayDimFetch && $this->propertyFetchAnalyzer->isLocalPropertyFetch($assign->var->var)) {
             if (! $this->nodeNameResolver->isName($assign->var->var, $propertyName)) {
                 return null;
             }
