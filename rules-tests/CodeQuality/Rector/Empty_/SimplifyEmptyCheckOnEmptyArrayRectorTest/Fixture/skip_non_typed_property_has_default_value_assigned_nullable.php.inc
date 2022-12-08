@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRectorTest\Fixture;
 
-final class NonTypedPropertyHasDefaultValueAssignedNullable
+final class SkipNonTypedPropertyHasDefaultValueAssignedNullable
 {
     /** @var array */
     public $property = [];
