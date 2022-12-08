@@ -18,6 +18,7 @@ use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -104,12 +105,14 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         }
 
         $phpPropertyReflection = $classReflection->getNativeProperty($propertyName);
-        if ($phpPropertyReflection->getNativeType() instanceof ArrayType) {
-            return true;
+        $nativeType = $phpPropertyReflection->getNativeType();
+
+        if ($nativeType instanceof MixedType) {
+            $property = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
+            $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
+            return $type instanceof ArrayType;
         }
 
-        $property = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
-        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
-        return $type instanceof ArrayType;
+        return $nativeType instanceof ArrayType;
     }
 }
