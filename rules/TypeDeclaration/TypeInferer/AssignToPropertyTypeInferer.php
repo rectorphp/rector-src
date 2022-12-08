@@ -73,13 +73,17 @@ final class AssignToPropertyTypeInferer
             $assignedExprTypes[] = new NullType();
         }
 
+        $defaultPropertyValue = $property->props[0]->default;
         if ($assignedExprTypes === []) {
+            // never assigned, but has default value, then pull from type from default value
+            if ($defaultPropertyValue instanceof Expr) {
+                return $this->nodeTypeResolver->getType($defaultPropertyValue);
+            }
+
             return null;
         }
 
         $inferredType = $this->typeFactory->createMixedPassedOrUnionType($assignedExprTypes);
-        $defaultPropertyValue = $property->props[0]->default;
-
         if ($this->shouldSkipWithDifferentDefaultValueType($defaultPropertyValue, $inferredType)) {
             return null;
         }
