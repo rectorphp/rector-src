@@ -21,5 +21,3 @@ final class DemoFile
         return true;
     }
 }
-
-?>
