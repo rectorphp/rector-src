@@ -1,0 +1,3 @@
+<?php
+$someVar = @$anArray[$value];
+?>
