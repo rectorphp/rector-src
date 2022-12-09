@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Enum_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -25,8 +26,8 @@ final class ClassConstManipulator
 
     public function hasClassConstFetch(ClassConst $classConst, ClassReflection $classReflection): bool
     {
-        $class = $this->betterNodeFinder->findParentType($classConst, Class_::class);
-        if (! $class instanceof Class_) {
+        $class = $this->betterNodeFinder->findParentByTypes($classConst, [Class_::class, Enum_::class]);
+        if ($class === null) {
             return false;
         }
 
