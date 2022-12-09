@@ -27,7 +27,7 @@ final class ClassConstManipulator
     public function hasClassConstFetch(ClassConst $classConst, ClassReflection $classReflection): bool
     {
         $class = $this->betterNodeFinder->findParentByTypes($classConst, [Class_::class, Enum_::class]);
-        if (! $class instanceof \PhpParser\Node\Stmt\ClassLike) {
+        if (! $class instanceof ClassLike) {
             return true;
         }
 
