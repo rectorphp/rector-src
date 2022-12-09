@@ -28,10 +28,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsR
 
 final class AnonymousExtendsExistingClassDocblockExists
 {
-    /**
-     * @var \DateTime|null
-     */
-    private \DateTime|null $x = null;
+    private ?\DateTime $x = null;
 
     public function __construct()
     {

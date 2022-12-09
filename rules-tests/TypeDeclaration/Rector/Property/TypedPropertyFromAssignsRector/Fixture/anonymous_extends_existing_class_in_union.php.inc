@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
 final class AnonymousExtendsExistingClassInUnion
 {
@@ -20,7 +20,7 @@ final class AnonymousExtendsExistingClassInUnion
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
 final class AnonymousExtendsExistingClassInUnion
 {

@@ -106,7 +106,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         if ($this->boolUnionTypeAnalyzer->isNullableBoolUnionType(
             $type
         ) && ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
-            return new NullableType(new Name('bool'));
+            return $this->resolveNullableType(new NullableType(new Name('bool')));
         }
 
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES) && $this->isFalseBoolUnion(
@@ -124,6 +124,15 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         return $this->mapNullabledType($nullabledType, $typeKind);
+    }
+
+    private function resolveNullableType(NullableType $nullableType): ?NullableType
+    {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NULLABLE_TYPE)) {
+            return null;
+        }
+
+        return $nullableType;
     }
 
     /**
@@ -147,7 +156,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         /** @var Name $nullabledTypeNode */
         if (! $this->nodeNameResolver->isNames($nullabledTypeNode, ['false', 'mixed'])) {
-            return new NullableType($nullabledTypeNode);
+            return $this->resolveNullableType(new NullableType($nullabledTypeNode));
         }
 
         return null;
@@ -176,10 +185,34 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         $type = $unionTypeAnalysis->hasIterable() ? 'iterable' : 'array';
         if ($unionTypeAnalysis->isNullableType()) {
-            return new NullableType($type);
+            return $this->resolveNullableType(new NullableType($type));
         }
 
         return new Name($type);
+    }
+
+    private function resolveTypeWithNullablePHPParserUnionType(
+        PhpParserUnionType $phpParserUnionType
+    ): PhpParserUnionType|NullableType|null {
+        if (count($phpParserUnionType->types) === 2) {
+            $phpParserUnionType->types = array_values($phpParserUnionType->types);
+            $firstType = $phpParserUnionType->types[0];
+            $secondType = $phpParserUnionType->types[1];
+
+            if ($firstType instanceof Name && $firstType->toString() === 'null' && ! $secondType instanceof PHPParserNodeIntersectionType) {
+                return $this->resolveNullableType(new NullableType($secondType));
+            }
+
+            if ($secondType instanceof Name && $secondType->toString() === 'null' && ! $firstType instanceof PHPParserNodeIntersectionType) {
+                return $this->resolveNullableType(new NullableType($firstType));
+            }
+        }
+
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
+            return null;
+        }
+
+        return $phpParserUnionType;
     }
 
     private function matchTypeForNullableUnionType(UnionType $unionType): ?Type
@@ -217,6 +250,11 @@ final class UnionTypeMapper implements TypeMapperInterface
     private function matchTypeForUnionedObjectTypes(UnionType $unionType, string $typeKind): ?Node
     {
         $phpParserUnionType = $this->matchPhpParserUnionType($unionType, $typeKind);
+
+        if ($phpParserUnionType instanceof NullableType) {
+            return $phpParserUnionType;
+        }
+
         if ($phpParserUnionType !== null) {
             if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
                 // maybe all one type?
@@ -264,7 +302,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         if ($compatibleObjectType instanceof UnionType) {
             $type = $this->matchTypeForNullableUnionType($compatibleObjectType);
             if ($type instanceof ObjectType) {
-                return new NullableType(new FullyQualified($type->getClassName()));
+                return $this->resolveNullableType(new NullableType(new FullyQualified($type->getClassName())));
             }
         }
 
@@ -278,12 +316,10 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param TypeKind::* $typeKind
      */
-    private function matchPhpParserUnionType(UnionType $unionType, string $typeKind): ?PhpParserUnionType
-    {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
-            return null;
-        }
-
+    private function matchPhpParserUnionType(
+        UnionType $unionType,
+        string $typeKind
+    ): PhpParserUnionType|NullableType|null {
         $phpParserUnionedTypes = [];
 
         foreach ($unionType->getTypes() as $unionedType) {
@@ -316,11 +352,12 @@ final class UnionTypeMapper implements TypeMapperInterface
         /** @var Identifier[]|Name[] $phpParserUnionedTypes */
         $phpParserUnionedTypes = array_unique($phpParserUnionedTypes);
 
-        if (count($phpParserUnionedTypes) < 2) {
+        $countPhpParserUnionedTypes = count($phpParserUnionedTypes);
+        if ($countPhpParserUnionedTypes < 2) {
             return null;
         }
 
-        return new PhpParserUnionType($phpParserUnionedTypes);
+        return $this->resolveTypeWithNullablePHPParserUnionType(new PhpParserUnionType($phpParserUnionedTypes));
     }
 
     private function resolveCompatibleObjectCandidate(UnionType $unionType): UnionType|TypeWithClassName|null
