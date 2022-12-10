@@ -53,14 +53,6 @@ final class PropertyFetchAnalyzer
             return false;
         }
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        /**
-         * Property Fetch on Trait currently doesn't has Parent Node, so fallback to use this, self, static name instead
-         */
-        if (! $parentNode instanceof Node) {
-            return $this->isTraitLocalPropertyFetch($node);
-        }
-
         $variableType = $node instanceof PropertyFetch
             ? $this->nodeTypeResolver->getType($node->var)
             : $this->nodeTypeResolver->getType($node->class);
