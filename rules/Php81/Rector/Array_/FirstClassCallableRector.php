@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Analyser\Scope;
@@ -134,6 +135,10 @@ CODE_SAMPLE
         }
 
         $class = $this->astResolver->resolveClassFromName($arrayCallable->getClass());
+        if (! $class instanceof ClassLike) {
+            return false;
+        }
+
         $classMethod = $class->getMethod($arrayCallable->getMethod());
 
         if (! $classMethod instanceof ClassMethod) {
