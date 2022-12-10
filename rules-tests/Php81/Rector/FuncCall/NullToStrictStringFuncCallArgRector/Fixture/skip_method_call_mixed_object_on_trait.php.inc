@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
 
-trait SkipMethodCallOnTrait
+trait SkipMethodCallMixedObjectOnTrait
 {
     public function run()
     {
