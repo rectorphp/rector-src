@@ -15,7 +15,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
@@ -380,7 +379,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->shouldSkip($node, $scope)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -477,18 +476,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($args[$position]->value instanceof MethodCall) {
-            $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
-            if ($trait instanceof Trait_) {
-                return null;
-            }
-        }
-
-        if ($this->isCastedReassign($argValue)) {
+        if ($this->shouldSkipTrait($argValue, $isTrait)) {
             return null;
         }
 
-        if ($isTrait && $this->propertyFetchAnalyzer->isLocalPropertyFetch($argValue)) {
+        if ($this->isCastedReassign($argValue)) {
             return null;
         }
 
@@ -496,6 +488,15 @@ CODE_SAMPLE
         $funcCall->args = $args;
 
         return $funcCall;
+    }
+
+    private function shouldSkipTrait(Expr $expr, bool $isTrait): bool
+    {
+        if (! $expr instanceof MethodCall) {
+            return $isTrait && $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr);
+        }
+
+        return $isTrait;
     }
 
     private function isCastedReassign(Expr $expr): bool
@@ -561,7 +562,7 @@ CODE_SAMPLE
         return $positions;
     }
 
-    private function shouldSkip(FuncCall $funcCall, Scope $scope): bool
+    private function shouldSkip(FuncCall $funcCall): bool
     {
         $functionNames = array_keys(self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING);
         if (! $this->nodeNameResolver->isNames($funcCall, $functionNames)) {
