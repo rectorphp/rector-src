@@ -13,10 +13,3 @@ trait SkipTrait
         return trim($this->title);
     }
 }
-
-class UseTrait
-{
-    private ?string $title;
-
-    use SkipTrait;
-}
