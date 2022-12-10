@@ -170,7 +170,7 @@ CODE_SAMPLE
 
             $param->flags = $property->flags;
             // Copy over attributes of the "old" property
-            $param->attrGroups = $property->attrGroups;
+            $param->attrGroups = array_merge($param->attrGroups, $property->attrGroups);
             $this->processNullableType($property, $param);
 
             $this->phpDocTypeChanger->copyPropertyDocToParam($property, $param);
@@ -223,10 +223,6 @@ CODE_SAMPLE
     private function shouldSkipParam(Param $param): bool
     {
         if ($param->variadic) {
-            return true;
-        }
-
-        if ($this->phpAttributeAnalyzer->hasPhpAttribute($param, 'SensitiveParameter')) {
             return true;
         }
 
