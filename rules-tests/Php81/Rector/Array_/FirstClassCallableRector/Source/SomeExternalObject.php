@@ -8,4 +8,8 @@ final class SomeExternalObject
     public function sleepOver()
     {
     }
+
+    public static function sleepStatic()
+    {
+    }
 }
