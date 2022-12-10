@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Config;
 
+use Fidry\CpuCoreCounter\CpuCoreCounter;
+use Fidry\CpuCoreCounter\NumberOfCpuCoreNotFound;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\ValueObjectInliner;
@@ -50,8 +52,18 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PARALLEL, false);
     }
 
-    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 20): void
+    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 0, int $jobSize = 20): void
     {
+        if ($maxNumberOfProcess === 0) {
+            $cpuCounter = new CpuCoreCounter();
+
+            try {
+                $maxNumberOfProcess = $cpuCounter->getCount();
+            } catch (NumberOfCpuCoreNotFound) {
+                $maxNumberOfProcess = 16;
+            }
+        }
+
         $parameters = $this->parameters();
         $parameters->set(Option::PARALLEL, true);
 
