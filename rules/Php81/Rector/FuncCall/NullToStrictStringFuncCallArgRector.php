@@ -22,6 +22,7 @@ use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -331,7 +332,8 @@ final class NullToStrictStringFuncCallArgRector extends AbstractScopeAwareRector
 
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -391,9 +393,12 @@ CODE_SAMPLE
             return null;
         }
 
+        $classReflection = $scope->getClassReflection();
+        $isTrait = $classReflection instanceof ClassReflection && $classReflection->isTrait();
+
         $isChanged = false;
         foreach ($positions as $position) {
-            $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position);
+            $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position, $isTrait);
             if ($result instanceof Node) {
                 $node = $result;
                 $isChanged = true;
@@ -443,7 +448,8 @@ CODE_SAMPLE
     private function processNullToStrictStringOnNodePosition(
         FuncCall $funcCall,
         array $args,
-        int|string $position
+        int|string $position,
+        bool $isTrait
     ): ?FuncCall {
         if (! isset($args[$position])) {
             return null;
@@ -479,6 +485,10 @@ CODE_SAMPLE
         }
 
         if ($this->isCastedReassign($argValue)) {
+            return null;
+        }
+
+        if ($isTrait && $this->propertyFetchAnalyzer->isLocalPropertyFetch($argValue)) {
             return null;
         }
 
@@ -555,11 +565,6 @@ CODE_SAMPLE
     {
         $functionNames = array_keys(self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING);
         if (! $this->nodeNameResolver->isNames($funcCall, $functionNames)) {
-            return true;
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if ($classReflection instanceof ClassReflection && $classReflection->isTrait()) {
             return true;
         }
 

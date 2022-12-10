@@ -74,7 +74,11 @@ final class PropertyFetchAnalyzer
             return false;
         }
 
-        return $variableType instanceof ThisType;
+        if (! $variableType instanceof ThisType) {
+            return $this->isTraitLocalPropertyFetch($node);
+        }
+
+        return true;
     }
 
     public function isLocalPropertyFetchName(Node $node, string $desiredPropertyName): bool
