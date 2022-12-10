@@ -26,7 +26,6 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -53,14 +52,6 @@ final class PropertyFetchAnalyzer
             return false;
         }
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        /**
-         * Property Fetch on Trait currently doesn't has Parent Node, so fallback to use this, self, static name instead
-         */
-        if (! $parentNode instanceof Node) {
-            return $this->isTraitLocalPropertyFetch($node);
-        }
-
         $variableType = $node instanceof PropertyFetch
             ? $this->nodeTypeResolver->getType($node->var)
             : $this->nodeTypeResolver->getType($node->class);
@@ -74,7 +65,11 @@ final class PropertyFetchAnalyzer
             return false;
         }
 
-        return $variableType instanceof ThisType;
+        if (! $variableType instanceof ThisType) {
+            return $this->isTraitLocalPropertyFetch($node);
+        }
+
+        return true;
     }
 
     public function isLocalPropertyFetchName(Node $node, string $desiredPropertyName): bool

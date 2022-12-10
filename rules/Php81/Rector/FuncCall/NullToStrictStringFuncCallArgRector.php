@@ -15,13 +15,13 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -331,7 +331,8 @@ final class NullToStrictStringFuncCallArgRector extends AbstractScopeAwareRector
 
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
@@ -378,7 +379,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->shouldSkip($node, $scope)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -391,9 +392,12 @@ CODE_SAMPLE
             return null;
         }
 
+        $classReflection = $scope->getClassReflection();
+        $isTrait = $classReflection instanceof ClassReflection && $classReflection->isTrait();
+
         $isChanged = false;
         foreach ($positions as $position) {
-            $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position);
+            $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position, $isTrait);
             if ($result instanceof Node) {
                 $node = $result;
                 $isChanged = true;
@@ -443,7 +447,8 @@ CODE_SAMPLE
     private function processNullToStrictStringOnNodePosition(
         FuncCall $funcCall,
         array $args,
-        int|string $position
+        int|string $position,
+        bool $isTrait
     ): ?FuncCall {
         if (! isset($args[$position])) {
             return null;
@@ -471,11 +476,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($args[$position]->value instanceof MethodCall) {
-            $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
-            if ($trait instanceof Trait_) {
-                return null;
-            }
+        if ($this->shouldSkipTrait($argValue, $isTrait)) {
+            return null;
         }
 
         if ($this->isCastedReassign($argValue)) {
@@ -486,6 +488,15 @@ CODE_SAMPLE
         $funcCall->args = $args;
 
         return $funcCall;
+    }
+
+    private function shouldSkipTrait(Expr $expr, bool $isTrait): bool
+    {
+        if (! $expr instanceof MethodCall) {
+            return $isTrait && $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr);
+        }
+
+        return $isTrait;
     }
 
     private function isCastedReassign(Expr $expr): bool
@@ -551,15 +562,10 @@ CODE_SAMPLE
         return $positions;
     }
 
-    private function shouldSkip(FuncCall $funcCall, Scope $scope): bool
+    private function shouldSkip(FuncCall $funcCall): bool
     {
         $functionNames = array_keys(self::ARG_POSITION_NAME_NULL_TO_STRICT_STRING);
         if (! $this->nodeNameResolver->isNames($funcCall, $functionNames)) {
-            return true;
-        }
-
-        $classReflection = $scope->getClassReflection();
-        if ($classReflection instanceof ClassReflection && $classReflection->isTrait()) {
             return true;
         }
 
