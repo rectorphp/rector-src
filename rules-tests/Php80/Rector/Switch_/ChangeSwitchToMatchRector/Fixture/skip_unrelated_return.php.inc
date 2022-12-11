@@ -34,6 +34,8 @@ final class UnrelatedReturn
             ProductService::SPECIAL_GESTION_PRESTIGE => $proxyQuery->getQueryBuilder()->andWhere($alias . '.editionPrestige = true'),
             default => true,
         };
+
+        return true;
     }
 }
 
