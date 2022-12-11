@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -26,7 +27,8 @@ final class ParentPropertyLookupGuard
         private readonly ReflectionResolver $reflectionResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly AstResolver $astResolver
+        private readonly AstResolver $astResolver,
+        private readonly PropertyManipulator $propertyManipulator
     ) {
     }
 
@@ -38,18 +40,21 @@ final class ParentPropertyLookupGuard
             return false;
         }
 
-        if ($class->extends === null) {
-            return true;
-        }
-
         $classReflection = $this->reflectionResolver->resolveClassReflection($property);
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
         $propertyName = $this->nodeNameResolver->getName($property);
-        $className = $classReflection->getName();
+        if ($this->propertyManipulator->isUsedByTrait($classReflection, $propertyName)) {
+            return false;
+        }
 
+        if ($class->extends === null) {
+            return true;
+        }
+
+        $className = $classReflection->getName();
         $parents = $classReflection->getParents();
 
         // parent class not autoloaded

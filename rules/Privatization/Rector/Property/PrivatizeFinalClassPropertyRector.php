@@ -7,8 +7,6 @@ namespace Rector\Privatization\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\TraitUse;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
@@ -23,7 +21,6 @@ final class PrivatizeFinalClassPropertyRector extends AbstractRector
     public function __construct(
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard,
-        private readonly ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -65,12 +62,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $traitPropertyNames = $this->resolveTraitPropertyNames($node);
-
         $hasChanged = false;
-
         foreach ($node->getProperties() as $property) {
-            if ($this->shouldSkipProperty($property, $traitPropertyNames)) {
+            if ($this->shouldSkipProperty($property)) {
                 continue;
             }
 
@@ -89,49 +83,12 @@ CODE_SAMPLE
         return null;
     }
 
-    /**
-     * @return string[]
-     */
-    private function resolveTraitPropertyNames(Class_ $class): array
-    {
-        $traitPropertyNames = [];
-
-        foreach ($class->stmts as $classStmt) {
-            if (! $classStmt instanceof TraitUse) {
-                continue;
-            }
-
-            foreach ($classStmt->traits as $trait) {
-                $traitName = $this->getName($trait);
-                if (! $this->reflectionProvider->hasClass($traitName)) {
-                    continue;
-                }
-
-                $traitReflection = $this->reflectionProvider->getClass($traitName);
-                $nativeTraitReflection = $traitReflection->getNativeReflection();
-
-                foreach ($nativeTraitReflection->getProperties() as $propertyReflection) {
-                    $traitPropertyNames[] = $propertyReflection->getName();
-                }
-            }
-        }
-
-        return $traitPropertyNames;
-    }
-
-    /**
-     * @param string[] $traitPropertyNames
-     */
-    private function shouldSkipProperty(Property $property, array $traitPropertyNames): bool
+    private function shouldSkipProperty(Property $property): bool
     {
         if (count($property->props) !== 1) {
             return true;
         }
 
-        if (! $property->isProtected()) {
-            return true;
-        }
-
-        return $this->isNames($property, $traitPropertyNames);
+        return ! $property->isProtected();
     }
 }
