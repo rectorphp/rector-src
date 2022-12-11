@@ -22,7 +22,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
 
     private TestingParser $testingParser;
 
-    private BetterNodeFinder $nodeFinder;
+    private BetterNodeFinder $betterNodeFinder;
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
@@ -34,7 +34,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
 
         $this->classAnnotationMatcher = $this->getService(ClassAnnotationMatcher::class);
         $this->testingParser = $this->getService(TestingParser::class);
-        $this->nodeFinder = $this->getService(BetterNodeFinder::class);
+        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
         $this->nodeNameResolver = $this->getService(NodeNameResolver::class);
     }
@@ -45,7 +45,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
     public function testResolvesClass(string $filePath): void
     {
         $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
-        $properties = $this->nodeFinder->findInstancesOf($nodes, [Property::class]);
+        $properties = $this->betterNodeFinder->findInstancesOf($nodes, [Property::class]);
 
         foreach ($properties as $property) {
             /** @var Property $property */

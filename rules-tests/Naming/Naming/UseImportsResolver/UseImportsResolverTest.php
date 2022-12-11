@@ -21,14 +21,14 @@ final class UseImportsResolverTest extends AbstractTestCase
 
     private TestingParser $testingParser;
 
-    private BetterNodeFinder $nodeFinder;
+    private BetterNodeFinder $betterNodeFinder;
 
     protected function setUp(): void
     {
         $this->boot();
         $this->useImportsResolver = $this->getService(UseImportsResolver::class);
         $this->testingParser = $this->getService(TestingParser::class);
-        $this->nodeFinder = $this->getService(BetterNodeFinder::class);
+        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
     }
 
     /**
@@ -38,7 +38,7 @@ final class UseImportsResolverTest extends AbstractTestCase
     {
         $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
 
-        $firstProperty = $this->nodeFinder->findFirstInstanceOf($nodes, Property::class);
+        $firstProperty = $this->betterNodeFinder->findFirstInstanceOf($nodes, Property::class);
         $resolvedUses = $this->useImportsResolver->resolveForNode($firstProperty);
 
         $stringUses = [];
