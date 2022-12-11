@@ -113,11 +113,19 @@ CODE_SAMPLE
             [$eachFuncCall->args[0]]
         ) : $eachFuncCall->args[0]->value;
 
-        /** @var ArrayItem $arrayItem */
         $arrayItem = array_pop($listNode->items);
-        $foreach = new Foreach_($foreachedExpr, $arrayItem, [
-            'stmts' => $node->stmts,
-        ]);
+        $isTrailingCommaLast = false;
+        if ($arrayItem instanceof ArrayItem) {
+            $foreach = new Foreach_($foreachedExpr, $arrayItem, [
+                'stmts' => $node->stmts,
+            ]);
+        } else {
+            $foreachedExpr = $this->nodeFactory->createFuncCall('array_keys', [$eachFuncCall->args[0]]);
+            $foreach = new Foreach_($foreachedExpr, current($listNode->items), [
+                'stmts' => $node->stmts,
+            ]);
+            $isTrailingCommaLast = true;
+        }
 
         $this->mirrorComments($foreach, $node);
 
@@ -126,7 +134,7 @@ CODE_SAMPLE
             /** @var ArrayItem|null $keyItem */
             $keyItem = array_pop($listNode->items);
 
-            if ($keyItem !== null) {
+            if ($keyItem !== null && ! $isTrailingCommaLast) {
                 $foreach->keyVar = $keyItem->value;
             }
         }
