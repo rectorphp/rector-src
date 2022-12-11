@@ -79,7 +79,6 @@ final class ReflectionResolver
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-
         if (! $scope instanceof Scope) {
             return null;
         }

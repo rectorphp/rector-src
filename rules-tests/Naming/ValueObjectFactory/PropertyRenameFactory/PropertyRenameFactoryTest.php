@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Naming\ValueObjectFactory\PropertyRenameFactory;
 
 use Iterator;
-use PhpParser\Node\Stmt\Property;
-use Rector\Core\Exception\ShouldNotHappenException;
+use PhpParser\Node\Stmt\Class_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
@@ -42,9 +41,14 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
      */
     public function test(string $filePathWithProperty, string $expectedName, string $currentName): void
     {
-        $property = $this->getPropertyFromFilePath($filePathWithProperty);
+        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($filePathWithProperty);
 
-        $expectedPropertyName = $this->matchPropertyTypeExpectedNameResolver->resolve($property);
+        /** @var Class_ $class */
+        $class = $this->betterNodeFinder->findFirstInstanceOf($nodes, Class_::class);
+
+        $property = $class->getProperty($currentName);
+
+        $expectedPropertyName = $this->matchPropertyTypeExpectedNameResolver->resolve($property, $class);
         if ($expectedPropertyName === null) {
             return;
         }
@@ -61,17 +65,5 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
     public function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/skip_some_class.php.inc', 'eliteManager', 'eventManager'];
-    }
-
-    private function getPropertyFromFilePath(string $filePath): Property
-    {
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($filePath);
-
-        $property = $this->betterNodeFinder->findFirstInstanceOf($nodes, Property::class);
-        if (! $property instanceof Property) {
-            throw new ShouldNotHappenException();
-        }
-
-        return $property;
     }
 }

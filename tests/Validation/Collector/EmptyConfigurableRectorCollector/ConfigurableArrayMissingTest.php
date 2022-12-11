@@ -12,17 +12,17 @@ use Rector\Testing\PHPUnit\AbstractTestCase;
  */
 final class ConfigurableArrayMissingTest extends AbstractTestCase
 {
-    private EmptyConfigurableRectorCollector $collector;
+    private EmptyConfigurableRectorCollector $emptyConfigurableRectorCollector;
 
     protected function setUp(): void
     {
         $this->bootFromConfigFiles([__DIR__ . '/config/configurable_array_missing.php']);
-        $this->collector = $this->getService(EmptyConfigurableRectorCollector::class);
+        $this->emptyConfigurableRectorCollector = $this->getService(EmptyConfigurableRectorCollector::class);
     }
 
     public function test(): void
     {
-        $emptyConfigurableRectors = $this->collector->resolveEmptyConfigurableRectorClasses();
+        $emptyConfigurableRectors = $this->emptyConfigurableRectorCollector->resolveEmptyConfigurableRectorClasses();
         $this->assertCount(1, $emptyConfigurableRectors);
     }
 }
