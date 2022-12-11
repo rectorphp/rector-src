@@ -3,16 +3,31 @@
 namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
 
 use PhpParser\ParserFactory as NikicParserFactory;
+use Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Source\GitWrapper;
 
-final class KeepAliasPrefix
+final class PropertyTypeOverDocblock
 {
     /**
      * @var NikicParserFactory
      */
-    private  $nikicParserFactory;
-
-    public function __construct(NikicParserFactory $nikicParserFactory)
-    {
-        $this->nikicParserFactory = $nikicParserFactory;
-    }
+    private GitWrapper $whatever;
 }
+
+?>
+-----
+<?php
+
+namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
+
+use PhpParser\ParserFactory as NikicParserFactory;
+use Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Source\GitWrapper;
+
+final class PropertyTypeOverDocblock
+{
+    /**
+     * @var NikicParserFactory
+     */
+    private GitWrapper $gitWrapper;
+}
+
+?>
