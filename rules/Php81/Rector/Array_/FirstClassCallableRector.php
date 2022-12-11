@@ -145,6 +145,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return ! $classMethod->isStatic();
+        return ! $classMethod->isStatic() || ! $classMethod->isPublic();
     }
 }

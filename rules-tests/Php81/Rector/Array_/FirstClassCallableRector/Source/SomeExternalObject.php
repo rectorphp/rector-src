@@ -12,4 +12,8 @@ final class SomeExternalObject
     public static function sleepStatic()
     {
     }
+
+    private static function sleepPrivateStatic()
+    {
+    }
 }
