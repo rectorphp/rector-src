@@ -6,6 +6,7 @@ namespace Rector\Privatization\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
@@ -63,7 +64,7 @@ CODE_SAMPLE
 
         $hasChanged = false;
         foreach ($node->getProperties() as $property) {
-            if (! $property->isProtected()) {
+            if ($this->shouldSkipProperty($property)) {
                 continue;
             }
 
@@ -80,5 +81,14 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function shouldSkipProperty(Property $property): bool
+    {
+        if (count($property->props) !== 1) {
+            return true;
+        }
+
+        return ! $property->isProtected();
     }
 }
