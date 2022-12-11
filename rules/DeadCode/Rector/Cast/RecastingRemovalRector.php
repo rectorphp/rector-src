@@ -13,8 +13,11 @@ use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
@@ -27,6 +30,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -52,7 +56,8 @@ final class RecastingRemovalRector extends AbstractRector
     public function __construct(
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ExprAnalyzer $exprAnalyzer,
+        private readonly AstResolver $astResolver
     ) {
     }
 
@@ -111,7 +116,25 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkipCall($node->expr)) {
+            return null;
+        }
+
         return $node->expr;
+    }
+
+    private function shouldSkipCall(Expr $expr): bool
+    {
+        if (! $expr instanceof MethodCall && ! $expr instanceof StaticCall) {
+            return false;
+        }
+
+        $classMethod = $this->astResolver->resolveClassMethodFromCall($expr);
+        if (! $classMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        return ! $classMethod->returnType instanceof Node;
     }
 
     private function shouldSkip(Expr $expr): bool
