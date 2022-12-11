@@ -115,17 +115,17 @@ CODE_SAMPLE
 
         $arrayItem = array_pop($listNode->items);
         $isTrailingCommaLast = false;
-        if ($arrayItem instanceof ArrayItem) {
-            $foreach = new Foreach_($foreachedExpr, $arrayItem, [
-                'stmts' => $node->stmts,
-            ]);
-        } else {
+        if (! $arrayItem instanceof ArrayItem) {
             $foreachedExpr = $this->nodeFactory->createFuncCall('array_keys', [$eachFuncCall->args[0]]);
-            $foreach = new Foreach_($foreachedExpr, current($listNode->items), [
-                'stmts' => $node->stmts,
-            ]);
+            /** @var ArrayItem $arrayItem */
+            $arrayItem = current($listNode->items);
+
             $isTrailingCommaLast = true;
         }
+
+        $foreach = new Foreach_($foreachedExpr, $arrayItem, [
+            'stmts' => $node->stmts,
+        ]);
 
         $this->mirrorComments($foreach, $node);
 
