@@ -108,7 +108,7 @@ CODE_SAMPLE
             }
 
             $match = $matchResult->getMatch();
-            if ($matchResult->shouldRemoveNextStmt()) {
+            if ($matchResult->shouldRemoveNextStmt() && $isReturn) {
                 unset($node->stmts[$key + 1]);
             }
 
