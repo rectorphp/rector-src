@@ -144,7 +144,9 @@ CODE_SAMPLE
         if (! $classMethod instanceof ClassMethod) {
             return false;
         }
-
-        return ! $classMethod->isStatic() || ! $classMethod->isPublic();
+        if (! $classMethod->isStatic()) {
+            return true;
+        }
+        return ! $classMethod->isPublic();
     }
 }
