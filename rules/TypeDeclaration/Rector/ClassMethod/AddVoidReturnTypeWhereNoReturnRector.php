@@ -182,8 +182,8 @@ CODE_SAMPLE
             return false;
         }
 
-        /** @var Class_ $class */
-        $class = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
-        return $class->isFinal();
+        /** @var Class_ $node */
+        $node = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
+        return $node->isFinal();
     }
 }
