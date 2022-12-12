@@ -13,11 +13,13 @@ use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
-use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\FunctionLike;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
@@ -31,7 +33,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -39,7 +41,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\RecastingRemovalRectorTest
  */
-final class RecastingRemovalRector extends AbstractRector
+final class RecastingRemovalRector extends AbstractScopeAwareRector
 {
     /**
      * @var array<class-string<Node>, class-string<Type>>
@@ -95,7 +97,7 @@ CODE_SAMPLE
     /**
      * @param Cast $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $nodeClass = $node::class;
         if (! isset(self::CAST_CLASS_TO_NODE_TYPE[$nodeClass])) {
@@ -116,25 +118,25 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipCall($node->expr)) {
+        if ($this->shouldSkipCall($node->expr, $scope)) {
             return null;
         }
 
         return $node->expr;
     }
 
-    private function shouldSkipCall(Expr $expr): bool
+    private function shouldSkipCall(Expr $expr, Scope $scope): bool
     {
-        if (! $expr instanceof MethodCall && ! $expr instanceof StaticCall) {
+        if (! $expr instanceof MethodCall && ! $expr instanceof StaticCall && ! $expr instanceof FuncCall) {
             return false;
         }
 
-        $classMethod = $this->astResolver->resolveClassMethodFromCall($expr);
-        if (! $classMethod instanceof ClassMethod) {
+        $classMethod = $this->astResolver->resolveClassMethodOrFunctionFromCall($expr, $scope);
+        if (! $classMethod instanceof FunctionLike) {
             return false;
         }
 
-        return ! $classMethod->returnType instanceof Node;
+        return ! $classMethod->getReturnType() instanceof Node;
     }
 
     private function shouldSkip(Expr $expr): bool
