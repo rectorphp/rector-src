@@ -7,6 +7,7 @@ namespace Rector\Utils\Command;
 use Nette\Loaders\RobotLoader;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
@@ -27,6 +28,16 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../rules/EarlyReturn/Rector' => __DIR__ . '/../../config/set/early-return.php',
         __DIR__ . '/../../rules/Naming/Rector' => __DIR__ . '/../../config/set/naming.php',
         __DIR__ . '/../../rules/TypeDeclaration/Rector' => __DIR__ . '/../../config/set/type-declaration.php',
+    ];
+
+    /**
+     * @var list<string>
+     */
+    private const SKIPPED_RULES = [
+        ConfigurableRectorInterface::class,
+        DeprecatedRectorInterface::class,
+        ConvertStaticPrivateConstantToSelfRector::class,
+        RemoveJustPropertyFetchRector::class,
     ];
 
     /**
@@ -61,16 +72,12 @@ final class MissingInSetCommand extends Command
             $rectorClassesNotInSetConfig = array_filter(
                 $rectorClassesNotInSetConfig,
                 static function (string $rectorClass): bool {
-                    if (is_a($rectorClass, ConfigurableRectorInterface::class, true)) {
-                        return false;
+                    foreach (self::SKIPPED_RULES as $rule) {
+                        if (is_a($rectorClass, $rule, true)) {
+                            return false;
+                        }
                     }
-
-                    if (is_a($rectorClass, DeprecatedRectorInterface::class, true)) {
-                        return false;
-                    }
-
-                    // needs more work before adding to the set, @todo
-                    return ! is_a($rectorClass, RemoveJustPropertyFetchRector::class, true);
+                    return true;
                 }
             );
 
