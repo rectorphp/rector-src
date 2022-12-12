@@ -6,13 +6,13 @@ class SkipMethodCallReturnDocblockString
 {
     public function run(): string
     {
-        return (string) $this->getResult();
+        return (string) $this->getResultWithDocblock();
     }
 
     /**
      * @return string
      */
-    private function getResult()
+    private function getResultWithDocblock()
     {
         return 1;
     }
