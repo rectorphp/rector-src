@@ -178,12 +178,11 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $classReflection->isClass()) {
+        $node = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $node instanceof Class_) {
             return false;
         }
 
-        /** @var Class_ $node */
-        $node = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
         return $node->isFinal();
     }
 }

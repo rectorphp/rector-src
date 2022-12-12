@@ -74,12 +74,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $classReflection->isClass()) {
+        $class = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $class instanceof Class_) {
             return null;
         }
 
-        /** @var Class_ $class */
-        $class = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $class->isFinal()) {
             return null;
         }
