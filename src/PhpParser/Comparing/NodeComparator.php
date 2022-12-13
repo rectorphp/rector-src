@@ -97,6 +97,13 @@ final class NodeComparator
             return false;
         }
 
-        return $firstNode->getEndTokenPos() === $secondNode->getEndTokenPos();
+        if ($firstNode->getEndTokenPos() !== $secondNode->getEndTokenPos()) {
+            return false;
+        }
+
+        $printFirstNode = $this->nodePrinter->print($firstNode);
+        $printSecondNode = $this->nodePrinter->print($secondNode);
+
+        return $printFirstNode === $printSecondNode;
     }
 }
