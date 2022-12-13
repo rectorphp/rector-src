@@ -77,6 +77,7 @@ final class MissingInSetCommand extends Command
                             return false;
                         }
                     }
+
                     return true;
                 }
             );
