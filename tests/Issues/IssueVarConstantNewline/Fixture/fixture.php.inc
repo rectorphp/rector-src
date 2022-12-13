@@ -32,7 +32,6 @@ class Fixture
      * @var string
      */
     public const B = 'b';
-
     /**
      * @var string
      */
@@ -42,7 +41,6 @@ class Fixture
      * @var string
      */
     public const D = 'd';
-
     /**
      * @var string
      */

@@ -231,16 +231,18 @@ CODE_SAMPLE;
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
         $filePath = $this->file->getFilePath();
 
-        if (is_array($refactoredNode)) {
-            $originalNodeHash = spl_object_hash($originalNode);
-            $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
+        // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
+        $originalNodeHash = spl_object_hash($originalNode);
 
+        if (is_array($refactoredNode)) {
             $firstNode = current($refactoredNode);
             $this->mirrorComments($firstNode, $originalNode);
 
             $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
             $this->connectNodes($refactoredNode, $node);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
+
+            $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
@@ -254,15 +256,7 @@ CODE_SAMPLE;
         $this->connectNodes([$refactoredNode], $node);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
-        // is equals node type? return node early
-        if ($originalNode::class === $refactoredNode::class) {
-            return $refactoredNode;
-        }
-
-        // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-        $originalNodeHash = spl_object_hash($originalNode);
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
-
         return $refactoredNode;
     }
 

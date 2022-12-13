@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeResolver;
 
-use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\ParametersAcceptor;
 
 final class RequireOptionalParamResolver
 {
     /**
      * @return ParameterReflection[]
      */
-    public function resolveFromReflection(MethodReflection $methodReflection): array
+    public function resolveFromParametersAcceptor(ParametersAcceptor $parametersAcceptor): array
     {
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
-
         $optionalParams = [];
         $requireParams = [];
 

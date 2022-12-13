@@ -393,13 +393,19 @@ parameters:
             path: src/NodeManipulator/BinaryOpManipulator.php
 
         # 3rd party code without types
-        - '#Add explicit array type to assigned "(.*?)->(args|params|items|parts|stmts)" expression#'
+        - '#Add explicit array type to assigned "(.*?)(args|params|items|parts|stmts)" expression#'
         # false positive on string type
         - '#Add explicit array type to assigned "\$unusedParameters" expression#'
 
         - '#Add explicit array type to assigned "\$innerPattern" expression#'
         # known doc
         - '#Add explicit array type to assigned "\$spreadParams" expression#'
+
+        - '#Add explicit array type to assigned "\$items" expression#'
+
+        - '#Add explicit array type to assigned "\$chunks" expression#'
+
+        - '#Add explicit array type to assigned "\$resolvedValue" expression#'
 
         - '#foreach\(\), while\(\), for\(\) or if\(\) cannot contain a complex expression\. Extract it to a new variable on a line before#'
 
@@ -758,7 +764,7 @@ parameters:
             path: packages/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
 
         -
-            message: '#Offset \(int\|string\) on non\-empty\-array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
+            message: '#Offset \(int\|string\) on array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
             path: packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
         -
