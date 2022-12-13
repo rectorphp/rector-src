@@ -119,7 +119,7 @@ final class TypeHasher
                 return new FullyQualifiedObjectType($currentType->getFullyQualifiedName());
             }
 
-            if ($currentType instanceof ObjectType && ! $currentType instanceof GenericObjectType && ! $currentType instanceof AliasedObjectType && $currentType->getClassName() !== 'Iterator' && $currentType->getClassName() !== 'iterable') {
+            if ($currentType instanceof ObjectType && ! $currentType instanceof GenericObjectType && $currentType->getClassName() !== 'Iterator' && $currentType->getClassName() !== 'iterable') {
                 return new FullyQualifiedObjectType($currentType->getClassName());
             }
 
