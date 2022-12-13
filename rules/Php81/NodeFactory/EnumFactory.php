@@ -8,8 +8,10 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -66,13 +68,36 @@ final class EnumFactory
 
         // constant to cases
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
+        $mapping = [];
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof ClassMethod && 'values' === $stmt->name->name) {
+                foreach ($stmt->stmts as $methodStmt) {
+                    if (!($methodStmt instanceof Return_)) {
+                        continue;
+                    }
+                    foreach ($methodStmt->expr->items as $item) {
+                        $mapping[$item->key->value] = $item->value->value;
+                    }
+                }
+            }
+        }
+
 
         $docBlockMethods = $phpDocInfo->getTagsByName('@method');
         if ($docBlockMethods !== []) {
-            $enum->scalarType = new Identifier('string');
+            $valueTypes = array_unique(array_map(function ($value) {return gettype($value);}, array_values($mapping)));
+            if (count($valueTypes) === 1) {
+                $identifierType = reset($valueTypes);
+                if ('integer' === $identifierType) {
+                    $identifierType = 'int';
+                }
+            } else {
+                $identifierType = 'string';
+            }
+            $enum->scalarType = new Identifier($identifierType);
 
             foreach ($docBlockMethods as $docBlockMethod) {
-                $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod);
+                $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod, $mapping);
             }
         }
 
@@ -91,13 +116,17 @@ final class EnumFactory
         return $enumCase;
     }
 
-    private function createEnumCaseFromDocComment(PhpDocTagNode $phpDocTagNode): EnumCase
+    private function createEnumCaseFromDocComment(PhpDocTagNode $phpDocTagNode, array $mapping): EnumCase
     {
         /** @var MethodTagValueNode $nodeValue */
         $nodeValue = $phpDocTagNode->value;
-
+        if (!empty($mapping[$nodeValue->methodName])) {
+            $enumValue = $mapping[$nodeValue->methodName];
+        } else {
+            $enumValue = $nodeValue->methodName;
+        }
         $enumName = strtoupper($nodeValue->methodName);
-        $enumExpr = $this->builderFactory->val($nodeValue->methodName);
+        $enumExpr = $this->builderFactory->val($enumValue);
 
         return new EnumCase($enumName, $enumExpr);
     }
