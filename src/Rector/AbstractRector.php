@@ -235,14 +235,14 @@ CODE_SAMPLE;
         $originalNodeHash = spl_object_hash($originalNode);
 
         if (is_array($refactoredNode)) {
-            $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
-
             $firstNode = current($refactoredNode);
             $this->mirrorComments($firstNode, $originalNode);
 
             $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
             $this->connectNodes($refactoredNode, $node);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
+
+            $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
             // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
