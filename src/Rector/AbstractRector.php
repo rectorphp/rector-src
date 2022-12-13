@@ -254,11 +254,6 @@ CODE_SAMPLE;
         $this->connectNodes([$refactoredNode], $node);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
-        // is equals node type? return node early
-        if ($originalNode::class === $refactoredNode::class) {
-            return $refactoredNode;
-        }
-
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
