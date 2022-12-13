@@ -246,6 +246,9 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
+        // replace current Stmt when trying to change Expr to Stmt
+        $this->replaceCurrentStmtOnTransformExprToStmt($originalNode, $refactoredNode);
+
         $refactoredNode = $originalNode instanceof Stmt && $refactoredNode instanceof Expr
             ? new Expression($refactoredNode)
             : $refactoredNode;
@@ -347,6 +350,14 @@ CODE_SAMPLE;
     protected function removeNode(Node $node): void
     {
         $this->nodeRemover->removeNode($node);
+    }
+
+    private function replaceCurrentStmtOnTransformExprToStmt(Node $originalNode, Node $refactoredNode): void
+    {
+        if ($originalNode instanceof Expr && $refactoredNode instanceof Stmt) {
+            $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($originalNode);
+            $currentStmt = $refactoredNode;
+        }
     }
 
     /**
