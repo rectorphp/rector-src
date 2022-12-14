@@ -22,6 +22,7 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\ValueObject\PropertyFetchToVariableAssign;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\ReadWrite\NodeAnalyzer\ReadExprAnalyzer;
 use Rector\ReadWrite\NodeFinder\NodeUsageFinder;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -32,7 +33,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveJustPropertyFetchRector extends AbstractRector
 {
     public function __construct(
-        private readonly NodeUsageFinder $nodeUsageFinder
+        private readonly NodeUsageFinder $nodeUsageFinder,
+        private readonly ReadExprAnalyzer $readExprAnalyzer
     ) {
     }
 
@@ -109,6 +111,10 @@ CODE_SAMPLE
             $followingStmts = array_slice($stmts, $key + 1);
             if ($this->isFollowingStatementStaticClosure($followingStmts)) {
                 // can not replace usages in anonymous static functions
+                continue;
+            }
+
+            if (! $this->readExprAnalyzer->isExprRead($variableToPropertyAssign->getVariable())) {
                 continue;
             }
 
