@@ -140,7 +140,7 @@ CODE_SAMPLE
 
         $parents = $this->resolveParentClassReflections($class);
         if (! $class->isFinal()) {
-            return $this->isExtendsReadonlyClass($parents);
+            return ! $this->isExtendsReadonlyClass($parents);
         }
 
         foreach ($parents as $parent) {
@@ -180,11 +180,11 @@ CODE_SAMPLE
     {
         foreach ($parents as $parent) {
             if ($parent->isReadOnly()) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
