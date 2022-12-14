@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\NodeFactory;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
@@ -68,32 +69,11 @@ final class EnumFactory
 
         // constant to cases
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
-        $mapping = [];
-        foreach ($class->stmts as $stmt) {
-            if ($stmt instanceof ClassMethod && 'values' === $stmt->name->name) {
-                foreach ($stmt->stmts as $methodStmt) {
-                    if (!($methodStmt instanceof Return_)) {
-                        continue;
-                    }
-                    foreach ($methodStmt->expr->items as $item) {
-                        $mapping[$item->key->value] = $item->value->value;
-                    }
-                }
-            }
-        }
-
 
         $docBlockMethods = $phpDocInfo->getTagsByName('@method');
         if ($docBlockMethods !== []) {
-            $valueTypes = array_unique(array_map(function ($value) {return gettype($value);}, array_values($mapping)));
-            if (count($valueTypes) === 1) {
-                $identifierType = reset($valueTypes);
-                if ('integer' === $identifierType) {
-                    $identifierType = 'int';
-                }
-            } else {
-                $identifierType = 'string';
-            }
+            $mapping = $this->generateMappingFromClass($class);
+            $identifierType = $this->getIdentifierTypeFromMappings($mapping);
             $enum->scalarType = new Identifier($identifierType);
 
             foreach ($docBlockMethods as $docBlockMethod) {
@@ -116,18 +96,76 @@ final class EnumFactory
         return $enumCase;
     }
 
-    private function createEnumCaseFromDocComment(PhpDocTagNode $phpDocTagNode, array $mapping): EnumCase
+    /**
+     * @param array<string, int|string> $mapping
+     */
+    private function createEnumCaseFromDocComment(PhpDocTagNode $phpDocTagNode, array $mapping = []): EnumCase
     {
         /** @var MethodTagValueNode $nodeValue */
         $nodeValue = $phpDocTagNode->value;
-        if (!empty($mapping[$nodeValue->methodName])) {
-            $enumValue = $mapping[$nodeValue->methodName];
-        } else {
-            $enumValue = $nodeValue->methodName;
-        }
+        $enumValue = $mapping[$nodeValue->methodName] ?? $nodeValue->methodName;
         $enumName = strtoupper($nodeValue->methodName);
         $enumExpr = $this->builderFactory->val($enumValue);
 
         return new EnumCase($enumName, $enumExpr);
+    }
+
+    /**
+     * @return array<string, int|string>
+     */
+    private function generateMappingFromClass(Class_ $class): array
+    {
+        $mapping = [];
+
+        $classMethod = $this->getValuesClassMethod($class);
+        if ($classMethod === null || ! is_array($classMethod->stmts)) {
+            return $mapping;
+        }
+
+        foreach ($classMethod->stmts as $methodStmt) {
+            if (
+                ! ($methodStmt instanceof Return_)
+                || ! ($methodStmt->expr instanceof Expr\Array_)
+            ) {
+                continue;
+            }
+            foreach ($methodStmt->expr->items as $item) {
+                if ($item instanceof Expr\ArrayItem) {
+                    $mapping[$item->key->value] = $item->value->value;
+                }
+            }
+        }
+
+        return $mapping;
+    }
+
+    private function getValuesClassMethod(Class_ $class): ?ClassMethod
+    {
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof ClassMethod && $stmt->name->name === 'values') {
+                return $stmt;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array<string, int|string> $mapping
+     */
+    private function getIdentifierTypeFromMappings(array $mapping): string
+    {
+        $valueTypes = array_map(static fn ($value): string => gettype($value), $mapping);
+        $valueTypes = array_unique($valueTypes);
+        if (count($valueTypes) === 1) {
+            $identifierType = reset($valueTypes);
+            if ($identifierType === 'integer') {
+                $identifierType = 'int';
+            }
+        } else {
+            $identifierType = 'string';
+        }
+
+        return $identifierType;
     }
 }
