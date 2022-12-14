@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\FuncCall\Utf8DecodeToMbConvertEncodingRector;
+namespace Rector\Tests\Php82\Rector\FuncCall\Utf8DecodeEncodeToMbConvertEncodingRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class Utf8DecodeToMbConvertEncodingRectorTest extends AbstractRectorTestCase
+final class Utf8DecodeEncodeToMbConvertEncodingRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

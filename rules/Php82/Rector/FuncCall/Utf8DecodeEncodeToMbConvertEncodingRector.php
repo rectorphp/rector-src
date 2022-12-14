@@ -19,9 +19,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @changelog https://wiki.php.net/rfc/remove_utf8_decode_and_utf8_encode
  *
  * @see https://3v4l.org/ZuZl5
- * @see \Rector\Tests\Php82\Rector\FuncCall\Utf8DecodeToMbConvertEncodingRector\Utf8DecodeToMbConvertEncodingRectorTest
+ * @see \Rector\Tests\Php82\Rector\FuncCall\Utf8DecodeEncodeToMbConvertEncodingRector\Utf8DecodeEncodeToMbConvertEncodingRectorTest
  */
-final class Utf8DecodeToMbConvertEncodingRector extends AbstractRector implements MinPhpVersionInterface
+final class Utf8DecodeEncodeToMbConvertEncodingRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
