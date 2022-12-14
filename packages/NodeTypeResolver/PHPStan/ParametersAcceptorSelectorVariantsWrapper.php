@@ -21,7 +21,7 @@ final class ParametersAcceptorSelectorVariantsWrapper
     ): ParametersAcceptor {
         $variants = $reflection->getVariants();
 
-        if ($node->isFirstClassCallable()) {
+        if ($node instanceof CallLike && $node->isFirstClassCallable()) {
             return ParametersAcceptorSelector::selectSingle($variants);
         }
 
