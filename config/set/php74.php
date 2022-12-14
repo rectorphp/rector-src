@@ -18,7 +18,6 @@ use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 use Rector\Php74\Rector\StaticCall\ExportToReflectionFunctionRector;
 use Rector\Php74\Rector\Ternary\ParenthesizeNestedTernaryRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
-use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
@@ -47,6 +46,5 @@ return static function (RectorConfig $rectorConfig): void {
         CurlyToSquareBracketArrayStringRector::class,
         MoneyFormatToNumberFormatRector::class,
         ParenthesizeNestedTernaryRector::class,
-        TypedPropertyFromAssignsRector::class,
     ]);
 };
