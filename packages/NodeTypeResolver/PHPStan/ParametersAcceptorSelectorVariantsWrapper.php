@@ -19,8 +19,11 @@ final class ParametersAcceptorSelectorVariantsWrapper
         CallLike|FunctionLike $node,
         Scope $scope
     ): ParametersAcceptor {
+        if ($node instanceof FunctionLike) {
+            return ParametersAcceptorSelector::selectSingle($variants);
+        }
+        
         $variants = $reflection->getVariants();
-
         if ($node instanceof CallLike && $node->isFirstClassCallable()) {
             return ParametersAcceptorSelector::selectSingle($variants);
         }
