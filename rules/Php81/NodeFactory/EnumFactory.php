@@ -7,6 +7,8 @@ namespace Rector\Php81\NodeFactory;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Enum_;
@@ -130,7 +132,10 @@ final class EnumFactory
                 continue;
             }
             foreach ($methodStmt->expr->items as $item) {
-                if ($item instanceof Expr\ArrayItem) {
+                if ($item instanceof Expr\ArrayItem
+                    && ($item->key instanceof LNumber || $item->key instanceof String_)
+                    && ($item->value instanceof LNumber || $item->value instanceof String_)
+                ) {
                     $mapping[$item->key->value] = $item->value->value;
                 }
             }
