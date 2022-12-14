@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Return_;
@@ -23,11 +22,12 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class EnumFactory
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BuilderFactory $builderFactory,
-        private readonly ValueResolver $valueResolver
-    ) {
+        private readonly NodeNameResolver   $nodeNameResolver,
+        private readonly PhpDocInfoFactory  $phpDocInfoFactory,
+        private readonly BuilderFactory     $builderFactory,
+        private readonly ValueResolver      $valueResolver
+    )
+    {
     }
 
     public function createFromClass(Class_ $class): Enum_
@@ -97,7 +97,7 @@ final class EnumFactory
     }
 
     /**
-     * @param array<string, int|string> $mapping
+     * @param array<int|string, mixed> $mapping
      */
     private function createEnumCaseFromDocComment(PhpDocTagNode $phpDocTagNode, array $mapping = []): EnumCase
     {
@@ -111,21 +111,21 @@ final class EnumFactory
     }
 
     /**
-     * @return array<string, int|string>
+     * @return array<int|string, mixed>
      */
     private function generateMappingFromClass(Class_ $class): array
     {
         $mapping = [];
 
-        $classMethod = $this->getValuesClassMethod($class);
-        if ($classMethod === null || ! is_array($classMethod->stmts)) {
+        $classMethod = $class->getMethod('values');
+        if ($classMethod === null || !is_array($classMethod->stmts)) {
             return $mapping;
         }
 
         foreach ($classMethod->stmts as $methodStmt) {
             if (
-                ! ($methodStmt instanceof Return_)
-                || ! ($methodStmt->expr instanceof Expr\Array_)
+                !($methodStmt instanceof Return_)
+                || !($methodStmt->expr instanceof Expr\Array_)
             ) {
                 continue;
             }
@@ -139,26 +139,17 @@ final class EnumFactory
         return $mapping;
     }
 
-    private function getValuesClassMethod(Class_ $class): ?ClassMethod
-    {
-        foreach ($class->stmts as $stmt) {
-            if ($stmt instanceof ClassMethod && $stmt->name->name === 'values') {
-                return $stmt;
-            }
-        }
-
-        return null;
-    }
-
     /**
-     * @param array<string, int|string> $mapping
+     * @param array<int|string, mixed> $mapping
      */
     private function getIdentifierTypeFromMappings(array $mapping): string
     {
-        $valueTypes = array_map(static fn ($value): string => gettype($value), $mapping);
-        $valueTypes = array_unique($valueTypes);
-        if (count($valueTypes) === 1) {
-            $identifierType = reset($valueTypes);
+        $valueTypes = array_map(static function ($value): string {
+            return gettype($value);
+        }, $mapping);
+        $uniqueValueTypes = array_unique($valueTypes);
+        if (count($uniqueValueTypes) === 1) {
+            $identifierType = reset($uniqueValueTypes);
             if ($identifierType === 'integer') {
                 $identifierType = 'int';
             }
