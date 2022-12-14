@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/remove_utf8_decode_and_utf8_encode
  *
- * @see https://3v4l.org/WkmFR
+ * @see https://3v4l.org/Q14UR
  * @see \Rector\Tests\Php82\Rector\FuncCall\Utf8DecodeEncodeToMbConvertEncodingRector\Utf8DecodeEncodeToMbConvertEncodingRectorTest
  */
 final class Utf8DecodeEncodeToMbConvertEncodingRector extends AbstractRector implements MinPhpVersionInterface
@@ -67,7 +67,7 @@ CODE_SAMPLE
 
         if ($this->isName($node, 'utf8_encode')) {
             $node->name = new Name('mb_convert_encoding');
-            $node->args[1] = new Arg(new String_('UTF8'));
+            $node->args[1] = new Arg(new String_('UTF-8'));
             $node->args[2] = new Arg(new String_('ISO-8859-1'));
 
             return $node;
