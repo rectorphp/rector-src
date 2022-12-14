@@ -48,7 +48,7 @@
 
 - [Php81](#php81) (11)
 
-- [Php82](#php82) (2)
+- [Php82](#php82) (3)
 
 - [Privatization](#privatization) (8)
 
@@ -6550,6 +6550,19 @@ Refactor Spatie enum class to native Enum
 <br>
 
 ## Php82
+
+### FilesystemIteratorSkipDotsRector
+
+Prior PHP 8.2 FilesystemIterator::SKIP_DOTS was always set and could not be removed, therefore FilesystemIterator::SKIP_DOTS is added in order to keep this behaviour.
+
+- class: [`Rector\Php82\Rector\New_\FilesystemIteratorSkipDotsRector`](../rules/Php82/Rector/New_/FilesystemIteratorSkipDotsRector.php)
+
+```diff
+-new \FilesystemIterator(__DIR__, \FilesystemIterator::KEY_AS_FILENAME);
++new \FilesystemIterator(__DIR__, \FilesystemIterator::KEY_AS_FILENAME | \FilesystemIterator::SKIP_DOTS);
+```
+
+<br>
 
 ### ReadOnlyClassRector
 
