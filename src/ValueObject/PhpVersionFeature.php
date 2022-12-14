@@ -601,4 +601,9 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_NULL_ARG_IN_STRING_FUNCTION = PhpVersion::PHP_81;
+
+    /**
+     * @var int
+     */
+    public const DEPRECATE_UTF8_DECODE_FUNCTION = PhpVersion::PHP_82;
 }
