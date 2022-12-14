@@ -25,7 +25,7 @@ final class ParametersAcceptorSelectorVariantsWrapper
             return ParametersAcceptorSelector::selectSingle($variants);
         }
         
-        if ($node instanceof CallLike && $node->isFirstClassCallable()) {
+        if ($node->isFirstClassCallable()) {
             return ParametersAcceptorSelector::selectSingle($variants);
         }
 
