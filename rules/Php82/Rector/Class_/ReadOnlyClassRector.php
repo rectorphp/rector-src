@@ -104,17 +104,24 @@ CODE_SAMPLE
         return PhpVersionFeature::READONLY_CLASS;
     }
 
-    private function shouldSkip(Class_ $class): bool
+    /**
+     * @return ClassReflection[]
+     */
+    private function resolveParentClassReflections(Class_ $class): array
     {
-        if ($this->shouldSkipClass($class)) {
-            return true;
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        if (! $classReflection instanceof ClassReflection) {
+            return [];
         }
 
-        $properties = $class->getProperties();
-        if ($this->hasWritableProperty($properties)) {
-            return true;
-        }
+        return $classReflection->getParents();
+    }
 
+    /**
+     * @param Property[] $properties
+     */
+    private function hasNonTypedProperty(array $properties): bool
+    {
         foreach ($properties as $property) {
             // properties of readonly class must always have type
             if ($property->type === null) {
@@ -122,19 +129,62 @@ CODE_SAMPLE
             }
         }
 
+        return false;
+    }
+
+    private function shouldSkip(Class_ $class): bool
+    {
+        if ($this->shouldSkipClass($class)) {
+            return true;
+        }
+
+        $parents = $this->resolveParentClassReflections($class);
+        if (! $class->isFinal()) {
+            return $this->isExtendsReadonlyClass($parents);
+        }
+
+        foreach ($parents as $parent) {
+            if (! $parent->isReadOnly()) {
+                return true;
+            }
+        }
+
+        $properties = $class->getProperties();
+        if ($this->hasWritableProperty($properties)) {
+            return true;
+        }
+
+        if ($this->hasNonTypedProperty($properties)) {
+            return true;
+        }
+
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
-            // no __construct means no property promotion, skip if class has no property defined
+            // no __construct means no property promotion, skip if class has no property defined and not extends readonly class
             return $properties === [];
         }
 
         $params = $constructClassMethod->getParams();
         if ($params === []) {
-            // no params means no property promotion, skip if class has no property defined
+            // no params means no property promotion, skip if class has no property defined and not extends readonly class
             return $properties === [];
         }
 
         return $this->shouldSkipParams($params);
+    }
+
+    /**
+     * @param ClassReflection[] $parents
+     */
+    private function isExtendsReadonlyClass(array $parents): bool
+    {
+        foreach ($parents as $parent) {
+            if ($parent->isReadOnly()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -160,22 +210,6 @@ CODE_SAMPLE
 
         if ($this->classAnalyzer->isAnonymousClass($class)) {
             return true;
-        }
-
-        if (! $class->isFinal()) {
-            return true;
-        }
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
-        $parents = $classReflection->getParents();
-        foreach ($parents as $parent) {
-            if (! $parent->isReadOnly()) {
-                return true;
-            }
         }
 
         return $this->phpAttributeAnalyzer->hasPhpAttribute($class, AttributeName::ALLOW_DYNAMIC_PROPERTIES);
