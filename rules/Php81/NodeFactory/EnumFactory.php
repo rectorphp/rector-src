@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -24,12 +25,12 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class EnumFactory
 {
     public function __construct(
-        private readonly NodeNameResolver   $nodeNameResolver,
-        private readonly PhpDocInfoFactory  $phpDocInfoFactory,
-        private readonly BuilderFactory     $builderFactory,
-        private readonly ValueResolver      $valueResolver
-    )
-    {
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly BuilderFactory $builderFactory,
+        private readonly ValueResolver $valueResolver,
+        private readonly BetterNodeFinder $betterNodeFinder
+    ) {
     }
 
     public function createFromClass(Class_ $class): Enum_
@@ -117,21 +118,18 @@ final class EnumFactory
      */
     private function generateMappingFromClass(Class_ $class): array
     {
-        $mapping = [];
-
         $classMethod = $class->getMethod('values');
-        if ($classMethod === null || !is_array($classMethod->stmts)) {
-            return $mapping;
+        if ($classMethod === null) {
+            return [];
         }
 
-        foreach ($classMethod->stmts as $methodStmt) {
-            if (
-                !($methodStmt instanceof Return_)
-                || !($methodStmt->expr instanceof Expr\Array_)
-            ) {
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($classMethod, Return_::class);
+        $mapping = [];
+        foreach ($returns as $returnStmt) {
+            if (! ($returnStmt->expr instanceof Expr\Array_)) {
                 continue;
             }
-            foreach ($methodStmt->expr->items as $item) {
+            foreach ($returnStmt->expr->items as $item) {
                 if ($item instanceof Expr\ArrayItem
                     && ($item->key instanceof LNumber || $item->key instanceof String_)
                     && ($item->value instanceof LNumber || $item->value instanceof String_)
