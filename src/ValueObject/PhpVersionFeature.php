@@ -605,5 +605,5 @@ final class PhpVersionFeature
     /**
      * @var int
      */
-    public const DEPRECATE_UTF8_DECODE_FUNCTION = PhpVersion::PHP_82;
+    public const DEPRECATE_UTF8_DECODE_ENCODE_FUNCTION = PhpVersion::PHP_82;
 }
