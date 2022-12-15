@@ -9,15 +9,13 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Property;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\Naming\ConstantNaming;
 
 final class ClassConstantFactory
 {
     public function __construct(
-        private readonly ConstantNaming $constantNaming,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly ConstantNaming $constantNaming
     ) {
     }
 
