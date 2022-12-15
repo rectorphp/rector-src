@@ -125,28 +125,42 @@ final class EnumFactory
             return [];
         }
 
+        /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($classMethod, Return_::class);
+        /** @var array<int|string, mixed> $mapping */
         $mapping = [];
         foreach ($returns as $return) {
             if (! ($return->expr instanceof Array_)) {
                 continue;
             }
 
-            foreach ($return->expr->items as $item) {
-                if (! $item instanceof ArrayItem) {
-                    continue;
-                }
+            $mapping = $this->collectMappings($return->expr->items, $mapping);
+        }
 
-                if (! $item->key instanceof LNumber && ! $item->key instanceof String_) {
-                    continue;
-                }
+        return $mapping;
+    }
 
-                if (! $item->value instanceof LNumber && ! $item->value instanceof String_) {
-                    continue;
-                }
-
-                $mapping[$item->key->value] = $item->value->value;
+    /**
+     * @param null[]|ArrayItem[] $items
+     * @param array<int|string, mixed> $mapping
+     * @return array<int|string, mixed>
+     */
+    private function collectMappings(array $items, array $mapping): array
+    {
+        foreach ($items as $item) {
+            if (! $item instanceof ArrayItem) {
+                continue;
             }
+
+            if (! $item->key instanceof LNumber && ! $item->key instanceof String_) {
+                continue;
+            }
+
+            if (! $item->value instanceof LNumber && ! $item->value instanceof String_) {
+                continue;
+            }
+
+            $mapping[$item->key->value] = $item->value->value;
         }
 
         return $mapping;
@@ -157,7 +171,8 @@ final class EnumFactory
      */
     private function getIdentifierTypeFromMappings(array $mapping): string
     {
-        $valueTypes = array_map(static fn ($value): string => gettype($value), $mapping);
+        $callableGetType = static fn ($value): string => gettype($value);
+        $valueTypes = array_map($callableGetType, $mapping);
         $uniqueValueTypes = array_unique($valueTypes);
         if (count($uniqueValueTypes) === 1) {
             $identifierType = reset($uniqueValueTypes);
