@@ -50,7 +50,7 @@ jobs:
 
             -   run: composer config minimum-stability dev
 
-            # issue with array shape
+            # issue with array shape on just released 1.15.1
             -   run: composer require phpstan/phpdoc-parser:1.15.0
 
             # test with current commit in a pull-request
