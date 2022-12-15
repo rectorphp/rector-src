@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace Rector\Php81\NodeFactory;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -23,7 +28,8 @@ final class EnumFactory
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly BuilderFactory $builderFactory,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -69,10 +75,12 @@ final class EnumFactory
 
         $docBlockMethods = $phpDocInfo->getTagsByName('@method');
         if ($docBlockMethods !== []) {
-            $enum->scalarType = new Identifier('string');
+            $mapping = $this->generateMappingFromClass($class);
+            $identifierType = $this->getIdentifierTypeFromMappings($mapping);
+            $enum->scalarType = new Identifier($identifierType);
 
             foreach ($docBlockMethods as $docBlockMethod) {
-                $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod);
+                $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod, $mapping);
             }
         }
 
@@ -91,14 +99,67 @@ final class EnumFactory
         return $enumCase;
     }
 
-    private function createEnumCaseFromDocComment(PhpDocTagNode $phpDocTagNode): EnumCase
+    /**
+     * @param array<int|string, mixed> $mapping
+     */
+    private function createEnumCaseFromDocComment(PhpDocTagNode $phpDocTagNode, array $mapping = []): EnumCase
     {
         /** @var MethodTagValueNode $nodeValue */
         $nodeValue = $phpDocTagNode->value;
-
+        $enumValue = $mapping[$nodeValue->methodName] ?? $nodeValue->methodName;
         $enumName = strtoupper($nodeValue->methodName);
-        $enumExpr = $this->builderFactory->val($nodeValue->methodName);
+        $enumExpr = $this->builderFactory->val($enumValue);
 
         return new EnumCase($enumName, $enumExpr);
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function generateMappingFromClass(Class_ $class): array
+    {
+        $classMethod = $class->getMethod('values');
+        if ($classMethod === null) {
+            return [];
+        }
+
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($classMethod, Return_::class);
+        $mapping = [];
+        foreach ($returns as $returnStmt) {
+            if (! ($returnStmt->expr instanceof Expr\Array_)) {
+                continue;
+            }
+            foreach ($returnStmt->expr->items as $item) {
+                if ($item instanceof Expr\ArrayItem
+                    && ($item->key instanceof LNumber || $item->key instanceof String_)
+                    && ($item->value instanceof LNumber || $item->value instanceof String_)
+                ) {
+                    $mapping[$item->key->value] = $item->value->value;
+                }
+            }
+        }
+
+        return $mapping;
+    }
+
+    /**
+     * @param array<int|string, mixed> $mapping
+     */
+    private function getIdentifierTypeFromMappings(array $mapping): string
+    {
+        $valueTypes = array_map(static function ($value): string {
+            return gettype($value);
+        }, $mapping);
+        $uniqueValueTypes = array_unique($valueTypes);
+        if (count($uniqueValueTypes) === 1) {
+            $identifierType = reset($uniqueValueTypes);
+            if ($identifierType === 'integer') {
+                $identifierType = 'int';
+            }
+        } else {
+            $identifierType = 'string';
+        }
+
+        return $identifierType;
     }
 }
