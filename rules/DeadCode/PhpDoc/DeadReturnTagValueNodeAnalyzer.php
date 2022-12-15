@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
+use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
@@ -13,6 +14,7 @@ use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\DeadCode\PhpDoc\Guard\StandaloneTypeRemovalGuard;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\DeadCode\TypeNodeAnalyzer\MixedArrayTypeNodeAnalyzer;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -24,6 +26,7 @@ final class DeadReturnTagValueNodeAnalyzer
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
         private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
+        private readonly StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard
     ) {
     }
 
@@ -52,7 +55,7 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         if (! $returnTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
-            return $returnTagValueNode->description === '';
+            return $this->isIdentiferRemovalAllowed($returnTagValueNode, $returnType);
         }
 
         if ($this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type)) {
@@ -68,6 +71,15 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         return $returnTagValueNode->description === '';
+    }
+
+    private function isIdentiferRemovalAllowed(ReturnTagValueNode $returnTagValueNode, Node $node): bool
+    {
+        if ($returnTagValueNode->description === '') {
+            return $this->standaloneTypeRemovalGuard->isLegal($returnTagValueNode->type, $node);
+        }
+
+        return false;
     }
 
     private function hasTruePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
