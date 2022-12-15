@@ -36,10 +36,8 @@ final class ClassConstantFactory
 
         $const->setAttribute(AttributeKey::PARENT_NODE, $classConst);
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-        $phpDocInfo->markAsChanged();
-
-        $classConst->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
+        $classConst->setAttribute(AttributeKey::PHP_DOC_INFO, $property->getAttribute(AttributeKey::PHP_DOC_INFO));
+        $classConst->setAttribute(AttributeKey::COMMENTS, $property->getAttribute(AttributeKey::COMMENTS));
         $classConst->setAttribute(AttributeKey::PARENT_NODE, $property->getAttribute(AttributeKey::PARENT_NODE));
 
         return $classConst;
