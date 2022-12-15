@@ -136,12 +136,15 @@ final class EnumFactory
                 if (! $item instanceof ArrayItem) {
                     continue;
                 }
+
                 if (! $item->key instanceof LNumber && ! $item->key instanceof String_) {
                     continue;
                 }
+
                 if (! $item->value instanceof LNumber && ! $item->value instanceof String_) {
                     continue;
                 }
+
                 $mapping[$item->key->value] = $item->value->value;
             }
         }
