@@ -9,7 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\IntersectionType;
+use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeManipulator\PropertyManipulator;
@@ -69,16 +69,16 @@ final class MatchPropertyTypeExpectedNameResolver
         // property type first
         if ($property->type instanceof Node) {
             $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
+            // not has docblock, use property type
             if (! $isPhpDocInfo) {
                 return $this->propertyNaming->getExpectedNameFromType($propertyType);
             }
 
+            // @var type is ObjectType, use property type
             $varType = $phpDocInfo->getVarType();
-            if (! $varType instanceof IntersectionType) {
+            if ($varType instanceof ObjectType) {
                 return $this->propertyNaming->getExpectedNameFromType($propertyType);
             }
-
-            return $this->propertyNaming->getExpectedNameFromType($varType);
         }
 
         // fallback to docblock
