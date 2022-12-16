@@ -320,6 +320,12 @@ CODE_SAMPLE;
             return;
         }
 
+        // comments attribute already exists in refactored Node
+        $newNodeComments = $newNode->getAttribute(AttributeKey::COMMENTS);
+        if ($newNodeComments !== null) {
+            return;
+        }
+
         $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO));
         if (! $newNode instanceof Nop) {
             $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
