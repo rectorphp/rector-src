@@ -319,9 +319,11 @@ CODE_SAMPLE;
         if ($this->nodeComparator->areSameNode($newNode, $oldNode)) {
             return;
         }
-
         // comments or php_doc_info attribute already exists in refactored Node
-        if ($newNode->hasAttribute(AttributeKey::COMMENTS) || $newNode->hasAttribute(AttributeKey::PHP_DOC_INFO)) {
+        if ($newNode->hasAttribute(AttributeKey::COMMENTS)) {
+            return;
+        }
+        if ($newNode->hasAttribute(AttributeKey::PHP_DOC_INFO)) {
             return;
         }
 
