@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Naming\ExpectedNameResolver;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\IntersectionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeManipulator\PropertyManipulator;
@@ -61,15 +63,26 @@ final class MatchPropertyTypeExpectedNameResolver
 
     private function resolveExpectedName(Property $property): ?ExpectedName
     {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+        $isPhpDocInfo = $phpDocInfo instanceof PhpDocInfo;
+
         // property type first
-        if ($property->type instanceof \PhpParser\Node) {
+        if ($property->type instanceof Node) {
             $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
-            return $this->propertyNaming->getExpectedNameFromType($propertyType);
+            if (! $isPhpDocInfo) {
+                return $this->propertyNaming->getExpectedNameFromType($propertyType);
+            }
+
+            $varType = $phpDocInfo->getVarType();
+            if (! $varType instanceof IntersectionType) {
+                return $this->propertyNaming->getExpectedNameFromType($propertyType);
+            }
+
+            return $this->propertyNaming->getExpectedNameFromType($varType);
         }
 
         // fallback to docblock
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-        if ($phpDocInfo instanceof PhpDocInfo) {
+        if ($isPhpDocInfo) {
             return $this->propertyNaming->getExpectedNameFromType($phpDocInfo->getVarType());
         }
 
