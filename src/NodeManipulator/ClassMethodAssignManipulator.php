@@ -232,7 +232,7 @@ final class ClassMethodAssignManipulator
     private function findParentForeach(Assign $assign): ?Foreach_
     {
         /** @var Foreach_|FunctionLike|null $foundNode */
-        $foundNode = $this->betterNodeFinder->findParentByTypes($assign, [Foreach_::class, FunctionLike::class],);
+        $foundNode = $this->betterNodeFinder->findParentByTypes($assign, [Foreach_::class, FunctionLike::class]);
 
         if (! $foundNode instanceof Foreach_) {
             return null;
