@@ -321,8 +321,7 @@ CODE_SAMPLE;
         }
 
         // comments attribute already exists in refactored Node
-        $newNodeComments = $newNode->getAttribute(AttributeKey::COMMENTS);
-        if ($newNodeComments !== null) {
+        if ($newNode->hasAttribute(AttributeKey::COMMENTS)) {
             return;
         }
 
