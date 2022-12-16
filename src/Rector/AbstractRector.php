@@ -252,6 +252,8 @@ CODE_SAMPLE;
             ? new Expression($refactoredNode)
             : $refactoredNode;
 
+        $this->mirrorComments($refactoredNode, $node);
+
         $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
         $this->connectNodes([$refactoredNode], $node);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
