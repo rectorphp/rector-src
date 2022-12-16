@@ -177,7 +177,6 @@ CODE_SAMPLE
             $this->iteratedExpr,
             $this->keyValueName
         );
-        $this->mirrorComments($foreach, $for);
 
         if ($this->keyValueName === null) {
             throw new ShouldNotHappenException();
