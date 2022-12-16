@@ -320,8 +320,8 @@ CODE_SAMPLE;
             return;
         }
 
-        // comments attribute already exists in refactored Node
-        if ($newNode->hasAttribute(AttributeKey::COMMENTS)) {
+        // comments or php_doc_info attribute already exists in refactored Node
+        if ($newNode->hasAttribute(AttributeKey::COMMENTS) || $newNode->hasAttribute(AttributeKey::PHP_DOC_INFO)) {
             return;
         }
 
