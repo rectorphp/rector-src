@@ -28,7 +28,7 @@ final class ConvertStaticPrivateConstantToSelfRector extends AbstractRector impl
      * @api
      * @var string
      */
-    public const ENABLE_FOR_NON_FINAL_CLASSES = 'enable_self_non_final_classes';
+    public const ENABLE_FOR_NON_FINAL_CLASSES = 'enable_for_non_final_classes';
 
     private bool $enableForNonFinalClasses = false;
 
