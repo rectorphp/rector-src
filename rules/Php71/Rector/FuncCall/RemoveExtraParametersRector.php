@@ -87,6 +87,10 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
             return null;
         }
 
+        if ($this->shouldSkipFunctionReflection($functionLikeReflection)) {
+            return null;
+        }
+
         $numberOfArguments = count($node->getRawArgs());
         if ($numberOfArguments <= $maximumAllowedParameterCount) {
             return null;
@@ -97,6 +101,18 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
         }
 
         return $node;
+    }
+
+    private function shouldSkipFunctionReflection(MethodReflection|FunctionReflection $reflection): bool
+    {
+        if ($reflection instanceof FunctionReflection) {
+            $fileName = (string) $reflection->getFileName();
+            if (str_contains($fileName, 'phpstan.phar')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function shouldSkip(FuncCall | MethodCall | StaticCall $call): bool
