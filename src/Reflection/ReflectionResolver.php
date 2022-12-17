@@ -280,8 +280,12 @@ final class ReflectionResolver
     }
 
     private function resolveFunction(
-        FunctionReflection | MethodReflection $reflection
+        FunctionReflection | MethodReflection | null $reflection
     ): FunctionReflection | MethodReflection | null {
+        if ($reflection === null) {
+            return null;
+        }
+
         $fileName = (string) $reflection->getFileName();
 
         // function inside phpstan.phar may conflict with defined function
