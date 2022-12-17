@@ -18,6 +18,8 @@ use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Renaming\Helper\RenameClassCallbackHandler;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -28,10 +30,16 @@ use Webmozart\Assert\Assert;
  */
 final class RenameClassRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const CALLBACKS = '#callbacks#';
+
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ClassRenamer $classRenamer,
         private readonly RectorConfigProvider $rectorConfigProvider,
+        private readonly RenameClassCallbackHandler $renameClassCallbackHandler,
     ) {
     }
 
@@ -95,7 +103,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
-        if ($oldToNewClasses === []) {
+        if ($oldToNewClasses === [] && ! $this->renameClassCallbackHandler->hasOldToNewClassCallbacks()) {
             return null;
         }
 
@@ -115,6 +123,15 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
+        $oldToNewClassCallbacks = $configuration[self::CALLBACKS] ?? [];
+        Assert::isArray($oldToNewClassCallbacks);
+        if ($oldToNewClassCallbacks !== []) {
+            Assert::allIsCallable($oldToNewClassCallbacks);
+            /** @var array<callable(ClassLike, NodeNameResolver): ?string> $oldToNewClassCallbacks */
+            $this->renameClassCallbackHandler->addOldToNewClassCallbacks($oldToNewClassCallbacks);
+            unset($configuration[self::CALLBACKS]);
+        }
+
         Assert::allString($configuration);
         Assert::allString(array_keys($configuration));
 

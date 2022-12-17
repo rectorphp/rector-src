@@ -18,7 +18,7 @@ final class NodeScopeAndMetadataDecorator
         private readonly CloningVisitor $cloningVisitor,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private readonly NodeConnectingVisitor $nodeConnectingVisitor,
-        private readonly FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor
+        private readonly FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
     ) {
     }
 

@@ -362,6 +362,7 @@ parameters:
                 - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
                 - rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
                 - rules/PSR4/Rector/FileWithoutNamespace/NormalizeNamespaceByPSR4ComposerAutoloadRector.php
+                - rules/Renaming/NodeManipulator/ClassRenamer.php
 
         - '#Method Rector\\Core\\Application\\ApplicationFileProcessor\:\:runParallel\(\) should return array\{system_errors\: array<Rector\\Core\\ValueObject\\Error\\SystemError\>, file_diffs\: array<Rector\\Core\\ValueObject\\Reporting\\FileDiff\>\} but returns array#'
 
@@ -807,3 +808,9 @@ parameters:
             message: '#Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary#'
             paths:
                 - src/DependencyInjection/DefinitionFinder.php
+
+        # on purpose, it is intended to be used by end users configuring the RenameClassRector rule
+        -
+            message: "#^Class constant \"CALLBACKS\" is never used outside of its class$#"
+            count: 1
+            path: rules/Renaming/Rector/Name/RenameClassRector.php
