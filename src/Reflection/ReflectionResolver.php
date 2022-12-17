@@ -263,14 +263,7 @@ final class ReflectionResolver
         if ($funcCall->name instanceof Name) {
             if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
                 $function = $this->reflectionProvider->getFunction($funcCall->name, $scope);
-                $fileName = (string) $function->getFileName();
-
-                // function inside phpstan.phar may conflict with defined function
-                if (str_contains($fileName, 'phpstan.phar')) {
-                    return null;
-                }
-
-                return $function;
+                return $this->resolveFunction($function);
             }
 
             return null;
@@ -282,6 +275,20 @@ final class ReflectionResolver
 
         // fallback to callable
         $funcCallNameType = $scope->getType($funcCall->name);
-        return $this->typeToCallReflectionResolverRegistry->resolve($funcCallNameType, $scope);
+        $function = $this->typeToCallReflectionResolverRegistry->resolve($funcCallNameType, $scope);
+        return $this->resolveFunction($function);
+    }
+
+    private function resolveFunction(
+        FunctionReflection | MethodReflection $reflection
+    ): FunctionReflection | MethodReflection | null {
+        $fileName = (string) $reflection->getFileName();
+
+        // function inside phpstan.phar may conflict with defined function
+        if (str_contains($fileName, 'phpstan.phar')) {
+            return null;
+        }
+
+        return $reflection;
     }
 }
