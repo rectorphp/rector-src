@@ -504,7 +504,7 @@ CODE_SAMPLE
             return $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr);
         }
 
-        return $isTrait;
+        return true;
     }
 
     private function isCastedReassign(Expr $expr): bool
