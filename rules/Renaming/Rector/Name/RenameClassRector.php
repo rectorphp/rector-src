@@ -33,7 +33,7 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
     /**
      * @var string
      */
-    public const CALLBACKS = '__callbacks__';
+    public const CALLBACKS = '#callbacks#';
 
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
