@@ -476,7 +476,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipTrait($argValue, $isTrait)) {
+        if ($this->shouldSkipTrait($argValue, $type, $isTrait)) {
             return null;
         }
 
@@ -490,10 +490,18 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    private function shouldSkipTrait(Expr $expr, bool $isTrait): bool
+    private function shouldSkipTrait(Expr $expr, MixedType $type, bool $isTrait): bool
     {
+        if (! $isTrait) {
+            return false;
+        }
+
+        if ($type->isExplicitMixed()) {
+            return false;
+        }
+
         if (! $expr instanceof MethodCall) {
-            return $isTrait && $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr);
+            return $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr);
         }
 
         return $isTrait;
