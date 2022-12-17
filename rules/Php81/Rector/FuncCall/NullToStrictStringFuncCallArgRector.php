@@ -490,13 +490,13 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    private function shouldSkipTrait(Expr $expr, MixedType $type, bool $isTrait): bool
+    private function shouldSkipTrait(Expr $expr, MixedType $mixedType, bool $isTrait): bool
     {
         if (! $isTrait) {
             return false;
         }
 
-        if ($type->isExplicitMixed()) {
+        if ($mixedType->isExplicitMixed()) {
             return false;
         }
 
