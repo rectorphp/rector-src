@@ -262,7 +262,15 @@ final class ReflectionResolver
 
         if ($funcCall->name instanceof Name) {
             if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
-                return $this->reflectionProvider->getFunction($funcCall->name, $scope);
+                $function = $this->reflectionProvider->getFunction($funcCall->name, $scope);
+                $fileName = (string) $function->getFileName();
+
+                // function inside phpstan.phar may conflict with defined function
+                if (str_contains($fileName, 'phpstan.phar')) {
+                    return null;
+                }
+
+                return $function;
             }
 
             return null;
