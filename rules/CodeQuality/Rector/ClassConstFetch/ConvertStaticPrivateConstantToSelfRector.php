@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -112,12 +113,13 @@ CODE_SAMPLE
         return $classConstFetch->class->toString() === 'static';
     }
 
-    private function isPrivateConstant(ClassConstFetch $constant, Class_ $class): bool
+    private function isPrivateConstant(ClassConstFetch $classConstFetch, Class_ $class): bool
     {
-        $constantName = $this->getConstantName($constant);
+        $constantName = $this->getConstantName($classConstFetch);
         if ($constantName === null) {
             return false;
         }
+
         foreach ($class->getConstants() as $classConst) {
             if (! $this->nodeNameResolver->isName($classConst, $constantName)) {
                 continue;
@@ -129,11 +131,11 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isUsedInPrivateMethod(ClassConstFetch $node): bool
+    private function isUsedInPrivateMethod(ClassConstFetch $classConstFetch): bool
     {
-        $method = $this->betterNodeFinder->findParentType($node, Node\Stmt\ClassMethod::class);
+        $method = $this->betterNodeFinder->findParentType($classConstFetch, ClassMethod::class);
 
-        if (! $method instanceof Node\Stmt\ClassMethod) {
+        if (! $method instanceof ClassMethod) {
             return false;
         }
 
@@ -145,9 +147,11 @@ CODE_SAMPLE
         if (! $this->isUsingStatic($classConstFetch)) {
             return true;
         }
+
         if (! $this->isPrivateConstant($classConstFetch, $class)) {
             return true;
         }
+
         if ($this->isUsedInPrivateMethod($classConstFetch)) {
             return false;
         }
@@ -170,10 +174,11 @@ CODE_SAMPLE
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
+
         $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
 
-        foreach ($childrenClassReflections as $childrenClassReflection) {
-            if ($childrenClassReflection->hasConstant($constantName)) {
+        foreach ($childrenClassReflections as $childClassReflection) {
+            if ($childClassReflection->hasConstant($constantName)) {
                 return true;
             }
         }
