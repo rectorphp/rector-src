@@ -286,6 +286,10 @@ final class ReflectionResolver
             return null;
         }
 
+        if ($reflection instanceof MethodReflection) {
+            return $reflection;
+        }
+
         $fileName = (string) $reflection->getFileName();
 
         // function inside phpstan.phar may conflict with defined function
