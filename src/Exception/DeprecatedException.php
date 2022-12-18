@@ -6,6 +6,9 @@ namespace Rector\Core\Exception;
 
 use Exception;
 
+/**
+ * @api
+ */
 final class DeprecatedException extends Exception
 {
 }
