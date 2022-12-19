@@ -7,6 +7,7 @@ namespace Rector\Core\Application\FileProcessor;
 use Nette\Utils\FileSystem;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Util\ArrayParametersMerger;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
@@ -14,18 +15,18 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 
 final class FileProcessorRunner
 {
-    public $arrayParametersMerger;
-
     /**
      * @param FileProcessorInterface[] $fileProcessors
      */
     public function __construct(
         private readonly NodeScopeResolver $nodeScopeResolver,
+        private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly array $fileProcessors = []
     ) {
     }
 
     /**
+     * @param string[] $filePaths
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
     public function run(array $filePaths, Configuration $configuration): array
@@ -34,17 +35,18 @@ final class FileProcessorRunner
         $this->configurePHPStanNodeScopeResolver($filePaths);
 
         // 2. process files
-        $errorAndFileDiffs = $this->processFiles($filePaths, $configuration, []);
+        $errorAndFileDiffs = $this->processFiles($filePaths, $configuration);
 
         return $errorAndFileDiffs;
     }
 
     /**
-     * @param array{system_errors: SystemError[], file_diffs: FileDiff[]}|mixed[] $errorAndFileDiffs
+     * @param string[] $filePaths
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    public function processFiles(array $filePaths, Configuration $configuration, array $errorAndFileDiffs): array
+    public function processFiles(array $filePaths, Configuration $configuration): array
     {
+        $errorAndFileDiffs = [];
         foreach ($filePaths as $filePath) {
             $file = new File($filePath, FileSystem::read($filePath));
 
