@@ -11,7 +11,4 @@ return static function (Rector\Config\RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
         __DIR__ . '/src',
     ]);
-
-    // TODO: Make it run in parallel.
-    $rectorConfig->disableParallel();
 };
