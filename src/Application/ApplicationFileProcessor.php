@@ -81,7 +81,7 @@ final class ApplicationFileProcessor
             $files = $this->fileFactory->createFromPaths($fileInfos);
 
             // 2. PHPStan has to know about all files too
-            $this->configurePHPStanNodeScopeResolver($files);
+            $this->configurePHPStanNodeScopeResolver($fileInfos);
 
             $systemErrorsAndFileDiffs = $this->processFiles($files, $configuration);
 
@@ -262,32 +262,11 @@ final class ApplicationFileProcessor
     }
 
     /**
-     * @param File[] $files
+     * @param string[] $filePaths
      */
-    private function configurePHPStanNodeScopeResolver(array $files): void
+    public function configurePHPStanNodeScopeResolver(array $filePaths): void
     {
-        $filePaths = $this->resolvePhpFilePaths($files);
-        $this->nodeScopeResolver->setAnalysedFiles($filePaths);
-    }
-
-    /**
-     * @param File[] $files
-     * @return string[]
-     */
-    private function resolvePhpFilePaths(array $files): array
-    {
-        Assert::allIsAOf($files, File::class);
-
-        $phpFilePaths = [];
-
-        foreach ($files as $file) {
-            $filePath = $file->getFilePath();
-
-            if (\str_ends_with($filePath, '.php')) {
-                $phpFilePaths[] = $filePath;
-            }
-        }
-
-        return $phpFilePaths;
+        $phpFilePaths = array_filter($filePaths, static fn (string $filePath): bool => str_ends_with($filePath, '.php'));
+        $this->nodeScopeResolver->setAnalysedFiles($phpFilePaths);
     }
 }

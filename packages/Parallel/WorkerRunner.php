@@ -8,6 +8,7 @@ use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
 use PHPStan\Analyser\NodeScopeResolver;
+use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
@@ -41,6 +42,7 @@ final class WorkerRunner
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
+        private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly array $fileProcessors = []
     ) {
     }
@@ -82,7 +84,7 @@ final class WorkerRunner
             $systemErrors = [];
 
             // 1. allow PHPStan to work with static reflection on provided files
-            $this->nodeScopeResolver->setAnalysedFiles($filePaths);
+            $this->applicationFileProcessor->configurePHPStanNodeScopeResolver($filePaths);
 
             foreach ($filePaths as $filePath) {
                 try {
