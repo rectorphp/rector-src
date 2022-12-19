@@ -9,6 +9,7 @@ use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
+use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
@@ -35,7 +36,8 @@ final class WorkerRunner
         private readonly PhpFileProcessor $phpFileProcessor,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle
+        private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
+        private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor
     ) {
     }
 
@@ -111,6 +113,8 @@ final class WorkerRunner
                     ++$systemErrorsCount;
                     $systemErrors = $this->collectSystemErrors($systemErrors, $throwable, $filePath);
                 }
+
+                $this->removedAndAddedFilesProcessor->run($configuration);
             }
 
             /**
