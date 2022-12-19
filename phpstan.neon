@@ -329,6 +329,7 @@ parameters:
                 - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
                 # reported only in non-CI, for some reason; keep it there even if it's reported as fixed error
                 - packages/Parallel/Application/ParallelFileProcessor.php
+                - packages/Parallel/WorkerRunner.php
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'

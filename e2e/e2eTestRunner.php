@@ -34,6 +34,7 @@ if (isset($argv[1]) && $argv[1] === '-a') {
 
 exec($e2eCommand, $output, $exitCode);
 $output = trim(implode("\n", $output));
+$output = str_replace(__DIR__, '.', $output);
 
 $expectedDiff = 'expected-output.diff';
 if (!file_exists($expectedDiff)) {
