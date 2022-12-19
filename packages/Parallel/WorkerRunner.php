@@ -8,15 +8,16 @@ use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
 use PHPStan\Analyser\NodeScopeResolver;
-use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
+use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\ArrayParametersMerger;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
 use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
@@ -30,14 +31,17 @@ final class WorkerRunner
      */
     private const RESULT = 'result';
 
+    /**
+     * @param FileProcessorInterface[] $fileProcessors
+     */
     public function __construct(
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly PhpFileProcessor $phpFileProcessor,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
-        private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor
+        private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
+        private readonly array $fileProcessors = []
     ) {
     }
 
@@ -85,16 +89,7 @@ final class WorkerRunner
                     $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
-                    if (! $this->phpFileProcessor->supports($file, $configuration)) {
-                        continue;
-                    }
-
-                    $currentErrorsAndFileDiffs = $this->phpFileProcessor->process($file, $configuration);
-
-                    $errorAndFileDiffs = $this->arrayParametersMerger->merge(
-                        $errorAndFileDiffs,
-                        $currentErrorsAndFileDiffs
-                    );
+                    $errorAndFileDiffs = $this->processFiles($file, $configuration, $errorAndFileDiffs);
 
                     // warn about deprecated @noRector annotation
                     if (! str_ends_with($file->getFilePath(), 'WorkerRunner.php')
@@ -113,8 +108,6 @@ final class WorkerRunner
                     ++$systemErrorsCount;
                     $systemErrors = $this->collectSystemErrors($systemErrors, $throwable, $filePath);
                 }
-
-                $this->removedAndAddedFilesProcessor->run($configuration);
             }
 
             /**
@@ -132,6 +125,28 @@ final class WorkerRunner
         });
 
         $decoder->on(ReactEvent::ERROR, $handleErrorCallback);
+    }
+
+    /**
+     * @param array{system_errors: SystemError[], file_diffs: FileDiff[]}|mixed[] $errorAndFileDiffs
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
+     */
+    public function processFiles(File $file, Configuration $configuration, array $errorAndFileDiffs): array
+    {
+        foreach ($this->fileProcessors as $fileProcessor) {
+            if (! $fileProcessor->supports($file, $configuration)) {
+                continue;
+            }
+
+            $currentErrorsAndFileDiffs = $fileProcessor->process($file, $configuration);
+            $errorAndFileDiffs = $this->arrayParametersMerger->merge(
+                $errorAndFileDiffs,
+                $currentErrorsAndFileDiffs
+            );
+        }
+
+        $this->removedAndAddedFilesProcessor->run($configuration);
+        return $errorAndFileDiffs;
     }
 
     /**
