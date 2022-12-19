@@ -75,8 +75,6 @@ final class PhpFileProcessor implements FileProcessorInterface
             $this->printFile($file, $configuration);
         } while ($file->hasChanged());
 
-        $this->removedAndAddedFilesProcessor->run($configuration);
-
         // return json here
         $fileDiff = $file->getFileDiff();
         if (! $fileDiff instanceof FileDiff) {
