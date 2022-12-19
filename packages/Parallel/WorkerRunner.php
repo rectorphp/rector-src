@@ -110,6 +110,8 @@ final class WorkerRunner
                 }
             }
 
+            $this->removedAndAddedFilesProcessor->run($configuration);
+
             /**
              * this invokes all listeners listening $decoder->on(...) @see \Symplify\EasyParallel\Enum\ReactEvent::DATA
              */
@@ -145,7 +147,6 @@ final class WorkerRunner
             );
         }
 
-        $this->removedAndAddedFilesProcessor->run($configuration);
         return $errorAndFileDiffs;
     }
 
