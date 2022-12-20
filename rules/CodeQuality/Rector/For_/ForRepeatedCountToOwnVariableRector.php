@@ -104,7 +104,7 @@ CODE_SAMPLE
             return new Variable($variableName);
         });
 
-        if ($countInCond === null) {
+        if (! $countInCond instanceof FuncCall) {
             return null;
         }
 

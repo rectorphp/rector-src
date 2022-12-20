@@ -94,7 +94,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($newReturnNode === null) {
+        if (! $newReturnNode instanceof Return_) {
             return null;
         }
 
