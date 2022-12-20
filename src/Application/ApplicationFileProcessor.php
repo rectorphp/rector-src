@@ -24,7 +24,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
 use Symplify\EasyParallel\ScheduleFactory;
-use Webmozart\Assert\Assert;
 
 final class ApplicationFileProcessor
 {
@@ -137,6 +136,18 @@ final class ApplicationFileProcessor
         $this->removedAndAddedFilesProcessor->run($configuration);
 
         return $systemErrorsAndFileDiffs;
+    }
+
+    /**
+     * @param string[] $filePaths
+     */
+    public function configurePHPStanNodeScopeResolver(array $filePaths): void
+    {
+        $phpFilePaths = array_filter(
+            $filePaths,
+            static fn (string $filePath): bool => str_ends_with($filePath, '.php')
+        );
+        $this->nodeScopeResolver->setAnalysedFiles($phpFilePaths);
     }
 
     /**
@@ -259,14 +270,5 @@ final class ApplicationFileProcessor
         }
 
         return $potentialEcsBinaryPath;
-    }
-
-    /**
-     * @param string[] $filePaths
-     */
-    public function configurePHPStanNodeScopeResolver(array $filePaths): void
-    {
-        $phpFilePaths = array_filter($filePaths, static fn (string $filePath): bool => str_ends_with($filePath, '.php'));
-        $this->nodeScopeResolver->setAnalysedFiles($phpFilePaths);
     }
 }
