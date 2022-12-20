@@ -12,14 +12,17 @@ use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -118,7 +121,7 @@ CODE_SAMPLE
     {
         $yieldNodes = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $functionLike->getStmts(), static function (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $functionLike->getStmts(), function (
             Node $node
         ) use (&$yieldNodes): ?int {
             // skip anonymous class and inner function
@@ -135,11 +138,36 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($this->isOptionalYield($node)) {
+                $yieldNodes = [];
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
             $yieldNodes[] = $node;
             return null;
         });
 
         return $yieldNodes;
+    }
+
+    private function isOptionalYield(Yield_|YieldFrom $yield): bool
+    {
+        $parentNode = $yield->getAttribute(AttributeKey::PARENT_NODE);
+
+        while ($parentNode instanceof Node) {
+            if ($parentNode instanceof FunctionLike) {
+                return false;
+            }
+
+            if ($parentNode instanceof Expression) {
+                $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     private function resolveYieldValue(Yield_ | YieldFrom $yield): ?Expr
