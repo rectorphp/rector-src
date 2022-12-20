@@ -12,6 +12,7 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([
@@ -25,6 +26,8 @@ return static function (RectorConfig $rectorConfig): void {
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         SetList::CODING_STYLE,
     ]);
+
+    $rectorConfig->rules([FalseReturnClassMethodToNullableRector::class]);
 
     $rectorConfig->ruleWithConfiguration(
         PreferThisOrSelfMethodCallRector::class,
