@@ -11,6 +11,7 @@ use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelf
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,6 +39,7 @@ final class MissingInSetCommand extends Command
         DeprecatedRectorInterface::class,
         ConvertStaticPrivateConstantToSelfRector::class,
         RemoveJustPropertyFetchRector::class,
+        FalseReturnClassMethodToNullableRector::class,
     ];
 
     /**

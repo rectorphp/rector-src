@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -138,7 +139,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Name|ComplexType|null
+     * @return Identifier|Name|ComplexType|null
      */
     private function matchPropertySingleTypeNode(PropertyFetch $propertyFetch): ?Node
     {

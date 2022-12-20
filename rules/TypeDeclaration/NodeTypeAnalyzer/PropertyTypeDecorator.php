@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeTypeAnalyzer;
 
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\UnionType;
@@ -28,7 +29,7 @@ final class PropertyTypeDecorator
 
     public function decoratePropertyUnionType(
         UnionType $unionType,
-        Name|ComplexType $typeNode,
+        Name|ComplexType|Identifier $typeNode,
         Property $property,
         PhpDocInfo $phpDocInfo,
         bool $changeVarTypeFallback = true

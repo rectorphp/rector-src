@@ -815,3 +815,7 @@ parameters:
             message: "#^Class constant \"CALLBACKS\" is never used outside of its class$#"
             count: 1
             path: rules/Renaming/Rector/Name/RenameClassRector.php
+
+        -
+            message: '#Parameter \#1 \$node of method Rector\\Core\\Rector\\AbstractRector\:\:getType\(\) expects PhpParser\\Node, PhpParser\\Node\\Expr\|null given#'
+            path: rules/TypeDeclaration/Rector/ClassMethod/FalseReturnClassMethodToNullableRector.php

@@ -278,7 +278,7 @@ final class AnonymousFunctionFactory
         return $params;
     }
 
-    private function resolveParamType(ParameterReflection $parameterReflection): Name|ComplexType|null
+    private function resolveParamType(ParameterReflection $parameterReflection): Name|ComplexType|Identifier|null
     {
         if ($parameterReflection->getType() instanceof MixedType) {
             return null;
