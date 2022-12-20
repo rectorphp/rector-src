@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
@@ -74,11 +75,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Function_::class, ClassMethod::class];
+        return [Function_::class, ClassMethod::class, Closure::class];
     }
 
     /**
-     * @param Function_|ClassMethod $node
+     * @param Function_|ClassMethod|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -181,7 +182,7 @@ CODE_SAMPLE
      */
     private function resolveYieldType(
         array $yieldNodes,
-        ClassMethod|Function_ $functionLike
+        ClassMethod|Function_|Closure $functionLike
     ): FullyQualifiedObjectType|FullyQualifiedGenericObjectType {
         $yieldedTypes = $this->resolveYieldedTypes($yieldNodes);
 
@@ -195,7 +196,7 @@ CODE_SAMPLE
         return new FullyQualifiedGenericObjectType($className, [$yieldedTypes]);
     }
 
-    private function resolveClassName(Function_|ClassMethod $functionLike): string
+    private function resolveClassName(Function_|ClassMethod|Closure $functionLike): string
     {
         $returnTypeNode = $functionLike->getReturnType();
 

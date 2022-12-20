@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -134,7 +135,8 @@ final class ReturnTypeInferer
                 $functionLike,
                 static function (Node $subNode): bool {
                     if (! $subNode instanceof Return_) {
-                        return false;
+                        // yield return is handled on speicific rule: AddReturnTypeDeclarationFromYieldsRector
+                        return $subNode instanceof Yield_;
                     }
 
                     return $subNode->expr instanceof Expr;
