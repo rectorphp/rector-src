@@ -7,7 +7,6 @@ namespace Rector\Parallel;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
-use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
@@ -38,7 +37,6 @@ final class WorkerRunner
     public function __construct(
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
