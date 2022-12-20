@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -21,7 +22,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -120,7 +120,7 @@ CODE_SAMPLE
     {
         $yieldNodes = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $functionLike->getStmts(), function (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $functionLike->getStmts(), static function (
             Node $node
         ) use (&$yieldNodes): ?int {
             // skip anonymous class and inner function
@@ -133,13 +133,13 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
             }
 
-            if (! $node instanceof Yield_ && ! $node instanceof YieldFrom) {
-                return null;
-            }
-
-            if ($this->isOptionalYield($node)) {
+            if ($node instanceof Stmt && ! $node instanceof Expression) {
                 $yieldNodes = [];
                 return NodeTraverser::STOP_TRAVERSAL;
+            }
+
+            if (! $node instanceof Yield_ && ! $node instanceof YieldFrom) {
+                return null;
             }
 
             $yieldNodes[] = $node;
@@ -147,26 +147,6 @@ CODE_SAMPLE
         });
 
         return $yieldNodes;
-    }
-
-    private function isOptionalYield(Yield_|YieldFrom $yield): bool
-    {
-        $parentNode = $yield->getAttribute(AttributeKey::PARENT_NODE);
-
-        while ($parentNode instanceof Node) {
-            if ($parentNode instanceof FunctionLike) {
-                return false;
-            }
-
-            if ($parentNode instanceof Expression) {
-                $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     private function resolveYieldValue(Yield_ | YieldFrom $yield): ?Expr
