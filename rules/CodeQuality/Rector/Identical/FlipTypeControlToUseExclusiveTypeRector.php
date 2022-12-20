@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Expression;
@@ -32,7 +33,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FlipTypeControlToUseExclusiveTypeRector extends AbstractRector
 {
     public function __construct(
-        private readonly PhpDocTagRemover $phpDocTagRemover
+        private readonly PhpDocTagRemover $phpDocTagRemover,
     ) {
     }
 
@@ -43,29 +44,17 @@ final class FlipTypeControlToUseExclusiveTypeRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function __construct(array $values)
-    {
-        /** @var PhpDocInfo|null $phpDocInfo */
-        $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
-        if ($phpDocInfo === null) {
-            return;
-        }
-    }
+/** @var PhpDocInfo|null $phpDocInfo */
+$phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
+if ($phpDocInfo === null) {
+    return;
 }
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function __construct(array $values)
-    {
-        $phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return;
-        }
-    }
+$phpDocInfo = $functionLike->getAttribute(AttributeKey::PHP_DOC_INFO);
+if (! $phpDocInfo instanceof PhpDocInfo) {
+    return;
 }
 CODE_SAMPLE
                 ),
@@ -78,48 +67,37 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Identical::class];
+        return [Identical::class, Empty_::class];
     }
 
     /**
-     * @param Identical $node
+     * @param Identical|Empty_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->valueResolver->isNull($node->left) && ! $this->valueResolver->isNull($node->right)) {
+        if ($node instanceof Identical) {
+            return $this->refactorIdentical($node);
+        }
+
+        $exprType = $this->getType($node->expr);
+        if (! $exprType instanceof ObjectType) {
             return null;
         }
 
-        $variable = $this->valueResolver->isNull($node->left) ? $node->right : $node->left;
-
-        $assign = $this->getVariableAssign($node, $variable);
-        if (! $assign instanceof Assign) {
+        // the empty false positively reports epxr, even if nullable
+        $previousAssignToExpr = $this->betterNodeFinder->findPreviousAssignToExpr($node->expr);
+        if (! $previousAssignToExpr instanceof Expr) {
             return null;
         }
 
-        $expression = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $expression instanceof Expression) {
-            return null;
-        }
+        $previousAssignToExprType = $this->getType($previousAssignToExpr);
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
-        $type = $phpDocInfo->getVarType();
-
-        if (! $type instanceof UnionType) {
-            $type = $this->getType($assign->expr);
-        }
-
-        if (! $type instanceof UnionType) {
-            return null;
-        }
-
-        /** @var Type[] $types */
-        $types = $this->getTypes($type);
+        $types = $this->getExactlyTwoUnionedTypes($previousAssignToExprType);
         if ($this->isNotNullOneOf($types)) {
             return null;
         }
 
-        return $this->processConvertToExclusiveType($types, $variable, $phpDocInfo);
+        return $this->processConvertToExclusiveType($types, $node->expr);
     }
 
     private function getVariableAssign(Identical $identical, Expr $expr): ?Node
@@ -136,9 +114,13 @@ CODE_SAMPLE
     /**
      * @return Type[]
      */
-    private function getTypes(UnionType $unionType): array
+    private function getExactlyTwoUnionedTypes(\PHPStan\Type\Type $type): array
     {
-        $types = $unionType->getTypes();
+        if (! $type instanceof UnionType) {
+            return [];
+        }
+
+        $types = $type->getTypes();
         if (count($types) > 2) {
             return [];
         }
@@ -169,20 +151,75 @@ CODE_SAMPLE
     /**
      * @param Type[] $types
      */
-    private function processConvertToExclusiveType(array $types, Expr $expr, PhpDocInfo $phpDocInfo): ?BooleanNot
-    {
+    private function processConvertToExclusiveType(
+        array $types,
+        Expr $expr,
+        ?PhpDocInfo $phpDocInfo = null
+    ): ?BooleanNot {
         $type = $types[0] instanceof NullType ? $types[1] : $types[0];
         if (! $type instanceof FullyQualifiedObjectType && ! $type instanceof ObjectType) {
             return null;
         }
 
-        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-        if ($varTagValueNode instanceof VarTagValueNode) {
-            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $varTagValueNode);
+        if ($phpDocInfo instanceof PhpDocInfo) {
+            $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+            if ($varTagValueNode instanceof VarTagValueNode) {
+                $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $varTagValueNode);
+            }
         }
 
         $fullyQualifiedType = $type instanceof ShortenedObjectType ? $type->getFullyQualifiedName() : $type->getClassName();
 
         return new BooleanNot(new Instanceof_($expr, new FullyQualified($fullyQualifiedType)));
+    }
+
+    private function refactorIdentical(Identical $identical): ?BooleanNot
+    {
+        $variable = $this->matchNullComparedExpr($identical);
+        if (! $variable instanceof Expr) {
+            return null;
+        }
+
+        $assign = $this->getVariableAssign($identical, $variable);
+        if (! $assign instanceof Assign) {
+            return null;
+        }
+
+        $expression = $assign->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $expression instanceof Expression) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
+        $type = $phpDocInfo->getVarType();
+
+        if (! $type instanceof UnionType) {
+            $type = $this->getType($assign->expr);
+        }
+
+        if (! $type instanceof UnionType) {
+            return null;
+        }
+
+        /** @var Type[] $types */
+        $types = $this->getExactlyTwoUnionedTypes($type);
+        if ($this->isNotNullOneOf($types)) {
+            return null;
+        }
+
+        return $this->processConvertToExclusiveType($types, $variable, $phpDocInfo);
+    }
+
+    private function matchNullComparedExpr(Identical $identical): ?Expr
+    {
+        if ($this->valueResolver->isNull($identical->left)) {
+            return $identical->right;
+        }
+
+        if ($this->valueResolver->isNull($identical->right)) {
+            return $identical->left;
+        }
+
+        return null;
     }
 }
