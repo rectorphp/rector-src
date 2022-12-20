@@ -14,8 +14,10 @@ use PhpParser\NodeTraverser;
 use PHPStan\Type\ObjectType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\ValueObject\MethodName;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 
@@ -31,7 +33,8 @@ final class ConstructorAssignDetector
         private readonly PropertyAssignMatcher $propertyAssignMatcher,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly NodesToRemoveCollector $nodesToRemoveCollector
     ) {
     }
 
@@ -61,6 +64,11 @@ final class ConstructorAssignDetector
 
                 // cannot be nested
                 if ($isFirstLevelStatement !== true) {
+                    return null;
+                }
+
+                $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parentNode instanceof Expression && $this->nodesToRemoveCollector->isNodeRemoved($parentNode)) {
                     return null;
                 }
 
