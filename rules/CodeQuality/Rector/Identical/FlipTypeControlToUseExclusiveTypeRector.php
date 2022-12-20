@@ -85,12 +85,12 @@ CODE_SAMPLE
         }
 
         // the empty false positively reports epxr, even if nullable
-        $previousAssignToExpr = $this->betterNodeFinder->findPreviousAssignToExpr($node->expr);
-        if (! $previousAssignToExpr instanceof Expr) {
+        $assign = $this->betterNodeFinder->findPreviousAssignToExpr($node->expr);
+        if (! $assign instanceof Expr) {
             return null;
         }
 
-        $previousAssignToExprType = $this->getType($previousAssignToExpr);
+        $previousAssignToExprType = $this->getType($assign);
 
         $types = $this->getExactlyTwoUnionedTypes($previousAssignToExprType);
         if ($this->isNotNullOneOf($types)) {
@@ -114,7 +114,7 @@ CODE_SAMPLE
     /**
      * @return Type[]
      */
-    private function getExactlyTwoUnionedTypes(\PHPStan\Type\Type $type): array
+    private function getExactlyTwoUnionedTypes(Type $type): array
     {
         if (! $type instanceof UnionType) {
             return [];
@@ -175,17 +175,17 @@ CODE_SAMPLE
 
     private function refactorIdentical(Identical $identical): ?BooleanNot
     {
-        $variable = $this->matchNullComparedExpr($identical);
-        if (! $variable instanceof Expr) {
+        $expr = $this->matchNullComparedExpr($identical);
+        if (! $expr instanceof Expr) {
             return null;
         }
 
-        $assign = $this->getVariableAssign($identical, $variable);
-        if (! $assign instanceof Assign) {
+        $node = $this->getVariableAssign($identical, $expr);
+        if (! $node instanceof Assign) {
             return null;
         }
 
-        $expression = $assign->getAttribute(AttributeKey::PARENT_NODE);
+        $expression = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $expression instanceof Expression) {
             return null;
         }
@@ -194,7 +194,7 @@ CODE_SAMPLE
         $type = $phpDocInfo->getVarType();
 
         if (! $type instanceof UnionType) {
-            $type = $this->getType($assign->expr);
+            $type = $this->getType($node->expr);
         }
 
         if (! $type instanceof UnionType) {
@@ -207,7 +207,7 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->processConvertToExclusiveType($types, $variable, $phpDocInfo);
+        return $this->processConvertToExclusiveType($types, $expr, $phpDocInfo);
     }
 
     private function matchNullComparedExpr(Identical $identical): ?Expr
