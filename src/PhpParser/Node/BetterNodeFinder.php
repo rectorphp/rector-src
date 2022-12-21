@@ -562,7 +562,7 @@ final class BetterNodeFinder
     /**
      * @return Closure|Function_|ClassMethod|Class_|Namespace_|null
      */
-    private function findParentScope(Node $node): ?Node
+    private function findParentScope(Node $node): Node|null
     {
         return $this->findParentByTypes($node, [
             Closure::class,

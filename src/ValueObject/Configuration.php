@@ -20,10 +20,10 @@ final class Configuration
         private readonly array $fileExtensions = ['php'],
         private readonly array $paths = [],
         private readonly bool $showDiffs = true,
-        private readonly ?string $parallelPort = null,
-        private readonly ?string $parallelIdentifier = null,
+        private readonly string | null $parallelPort = null,
+        private readonly string | null $parallelIdentifier = null,
         private readonly bool $isParallel = false,
-        private readonly ?string $memoryLimit = null
+        private readonly string|null $memoryLimit = null
     ) {
     }
 

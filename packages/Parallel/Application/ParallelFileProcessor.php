@@ -42,7 +42,7 @@ final class ParallelFileProcessor
      */
     private const SYSTEM_ERROR_LIMIT = 50;
 
-    private ?ProcessPool $processPool = null;
+    private ProcessPool|null $processPool = null;
 
     public function __construct(
         private readonly WorkerCommandLineFactory $workerCommandLineFactory,

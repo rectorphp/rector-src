@@ -70,7 +70,7 @@ final class ExprParameterReflectionTypeCorrector
         string|int $name,
         mixed $item,
         ParameterReflection $parameterReflection,
-    ): ?Expr {
+    ): Expr|null {
         if (! $item instanceof Expr) {
             return null;
         }

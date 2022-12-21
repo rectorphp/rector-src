@@ -30,7 +30,7 @@ final class ConstExprClassNameDecorator implements PhpDocNodeDecoratorInterface
     {
         $this->phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function (Node $node) use (
             $phpNode
-        ): ?Node {
+        ): Node|null {
             if (! $node instanceof ConstExprNode) {
                 return null;
             }

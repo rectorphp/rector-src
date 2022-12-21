@@ -20,7 +20,7 @@ final class RectorKernel
 {
     private readonly ConfigureCallValuesCollector $configureCallValuesCollector;
 
-    private ?ContainerInterface $container = null;
+    private ContainerInterface|null $container = null;
 
     public function __construct()
     {

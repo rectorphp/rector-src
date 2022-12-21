@@ -18,7 +18,7 @@ final class RectorConsoleOutputStyle extends SymfonyStyle
      */
     public $progressBar;
 
-    private ?bool $isCiDetected = null;
+    private bool|null $isCiDetected = null;
 
     public function __construct(InputInterface $input, OutputInterface $output)
     {
