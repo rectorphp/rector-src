@@ -115,7 +115,7 @@ CODE_SAMPLE
     {
         $nullableType = $this->resolveNullableType($node->type);
 
-        if (! $nullableType instanceof Node) {
+        if (! $nullableType instanceof NullableType) {
             return null;
         }
 
@@ -128,7 +128,7 @@ CODE_SAMPLE
     ): ?FunctionLike {
         $nullableType = $this->resolveNullableType($functionLike->returnType);
 
-        if (! $nullableType instanceof Node) {
+        if (! $nullableType instanceof NullableType) {
             return null;
         }
 
