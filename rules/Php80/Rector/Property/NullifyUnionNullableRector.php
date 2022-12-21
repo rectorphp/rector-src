@@ -74,7 +74,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Property || $node instanceof Param) {
-            return $this->processNullableParamPropertyType($node);
+            return $this->processNullablePropertyParamType($node);
         }
 
         return $this->processNullableFunctionLikeReturnType($node);
@@ -138,7 +138,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function processNullableParamPropertyType(Param|Property $node): null|Param|Property
+    private function processNullablePropertyParamType(Property|Param $node): null|Property|Param
     {
         $nullableType = $this->resolveNullableType($node->type);
 
