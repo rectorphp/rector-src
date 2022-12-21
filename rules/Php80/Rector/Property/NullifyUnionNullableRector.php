@@ -73,12 +73,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node instanceof Property) {
-            return $this->processNullablePropertyType($node);
-        }
-
-        if ($node instanceof Param) {
-            return $this->processNullableParamType($node);
+        if ($node instanceof Property || $node instanceof Param) {
+            return $this->processNullableParamPropertyType($node);
         }
 
         return $this->processNullableFunctionLikeReturnType($node);
@@ -116,10 +112,12 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var Identifier|Name $firstType */
         if ($firstType->toString() === 'null') {
             return $secondType;
         }
 
+        /** @var Identifier|Name $secondType */
         if ($secondType->toString() === 'null') {
             return $firstType;
         }
@@ -140,28 +138,16 @@ CODE_SAMPLE
         return false;
     }
 
-    private function processNullablePropertyType(Property $property): ?Property
+    private function processNullableParamPropertyType(Param|Property $node): null|Param|Property
     {
-        $nullableType = $this->resolveNullableType($property->type);
+        $nullableType = $this->resolveNullableType($node->type);
 
         if (! $nullableType instanceof Node) {
             return null;
         }
 
-        $property->type = new NullableType($nullableType);
-        return $property;
-    }
-
-    private function processNullableParamType(Param $param): ?Param
-    {
-        $nullableType = $this->resolveNullableType($param->type);
-
-        if (! $nullableType instanceof Node) {
-            return null;
-        }
-
-        $param->type = new NullableType($nullableType);
-        return $param;
+        $node->type = new NullableType($nullableType);
+        return $node;
     }
 
     private function processNullableFunctionLikeReturnType(
