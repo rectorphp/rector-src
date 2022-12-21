@@ -104,7 +104,7 @@ CODE_SAMPLE
         }
 
         $nullableType = $this->unionTypeMapper->resolveTypeWithNullablePHPParserUnionType($node);
-        if ($nullableType instanceof UnionType) {
+        if (! $nullableType instanceof NullableType) {
             return null;
         }
 
