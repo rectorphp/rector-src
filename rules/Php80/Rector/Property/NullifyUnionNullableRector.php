@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -23,6 +22,7 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
+use Webmozart\Assert\InvalidArgumentException;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\NullifyUnionNullableRector\NullifyUnionNullableRectorTest
@@ -110,12 +110,13 @@ CODE_SAMPLE
         $firstType = $node->types[0];
         $secondType = $node->types[1];
 
-        if (! $this->areBothValidNullableType($firstType, $secondType)) {
+        try {
+            Assert::isAnyOf($firstType, [Identifier::class, Name::class]);
+            Assert::isAnyOf($secondType, [Identifier::class, Name::class]);
+        } catch (InvalidArgumentException) {
+            // Skip Intersection type
             return null;
         }
-
-        Assert::isAnyOf($firstType, [Identifier::class, Name::class]);
-        Assert::isAnyOf($secondType, [Identifier::class, Name::class]);
 
         $firstTypeValue = $firstType->toString();
         $secondTypeValue = $secondType->toString();
@@ -133,11 +134,6 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    private function areBothValidNullableType(Node $firstType, Node $secondType): bool
-    {
-        return ! $firstType instanceof IntersectionType && ! $secondType instanceof IntersectionType;
     }
 
     private function processNullablePropertyParamType(Property|Param $node): null|Property|Param
