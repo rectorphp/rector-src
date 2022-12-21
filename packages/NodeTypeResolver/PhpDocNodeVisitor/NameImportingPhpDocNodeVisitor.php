@@ -229,7 +229,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private function enterSpacelessPhpDocTagNode(
         SpacelessPhpDocTagNode $spacelessPhpDocTagNode
-    ): SpacelessPhpDocTagNode | null {
+    ): ?SpacelessPhpDocTagNode {
         if (! $spacelessPhpDocTagNode->value instanceof DoctrineAnnotationTagValueNode) {
             return null;
         }

@@ -11,9 +11,9 @@ final class SystemError implements SerializableInterface
 {
     public function __construct(
         private readonly string $message,
-        private readonly string|null $relativeFilePath = null,
-        private readonly int|null $line = null,
-        private readonly string|null $rectorClass = null
+        private readonly ?string $relativeFilePath = null,
+        private readonly ?int $line = null,
+        private readonly ?string $rectorClass = null
     ) {
     }
 
@@ -22,12 +22,12 @@ final class SystemError implements SerializableInterface
         return $this->message;
     }
 
-    public function getFile(): string|null
+    public function getFile(): ?string
     {
         return $this->relativeFilePath;
     }
 
-    public function getLine(): int|null
+    public function getLine(): ?int
     {
         return $this->line;
     }

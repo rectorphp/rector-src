@@ -129,7 +129,7 @@ final class PlainValueParser
         return new DoctrineAnnotationTagValueNode($identifierTypeNode, $annotationShortName, $values);
     }
 
-    private function matchConstantValue(string $currentTokenValue): ConstExprNode | null
+    private function matchConstantValue(string $currentTokenValue): ?ConstExprNode
     {
         if (strtolower($currentTokenValue) === 'false') {
             return new ConstExprFalseNode();
