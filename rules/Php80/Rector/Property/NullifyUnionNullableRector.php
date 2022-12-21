@@ -117,6 +117,10 @@ CODE_SAMPLE
         Assert::isAnyOf($firstType, [Identifier::class, Name::class]);
         Assert::isAnyOf($secondType, [Identifier::class, Name::class]);
 
+        if ($firstType->toString() === $secondType->toString()) {
+            return null;
+        }
+
         if ($firstType->toString() === 'null') {
             return $secondType;
         }
