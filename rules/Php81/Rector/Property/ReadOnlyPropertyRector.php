@@ -147,7 +147,7 @@ CODE_SAMPLE
         return $property;
     }
 
-    private function refactorParam(Param $param): Param | null
+    private function refactorParam(Param $param): ?Param
     {
         if (! $this->visibilityManipulator->hasVisibility($param, Visibility::PRIVATE)) {
             return null;

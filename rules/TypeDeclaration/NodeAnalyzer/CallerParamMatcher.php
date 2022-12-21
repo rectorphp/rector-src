@@ -73,7 +73,7 @@ final class CallerParamMatcher
         return $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
     }
 
-    private function matchCallArgPosition(StaticCall | MethodCall | FuncCall $call, Param $param): int | null
+    private function matchCallArgPosition(StaticCall | MethodCall | FuncCall $call, Param $param): ?int
     {
         $paramName = $this->nodeNameResolver->getName($param);
 

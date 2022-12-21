@@ -109,7 +109,7 @@ CODE_SAMPLE
         return $ifStmt->stmts;
     }
 
-    private function matchTruableIf(If_ $if): If_|null
+    private function matchTruableIf(If_ $if): ?If_
     {
         // just one if
         if ($if->elseifs !== []) {

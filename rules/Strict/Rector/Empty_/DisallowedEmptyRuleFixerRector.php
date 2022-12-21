@@ -72,7 +72,7 @@ CODE_SAMPLE
     /**
      * @param Empty_|BooleanNot $node
      */
-    public function refactor(Node $node): Expr|null
+    public function refactor(Node $node): ?Expr
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
@@ -90,7 +90,7 @@ CODE_SAMPLE
         return $this->refactorEmpty($node, $scope, $this->treatAsNonEmpty);
     }
 
-    private function refactorBooleanNot(BooleanNot $booleanNot, Scope $scope): Expr|null
+    private function refactorBooleanNot(BooleanNot $booleanNot, Scope $scope): ?Expr
     {
         if (! $booleanNot->expr instanceof Empty_) {
             return null;
@@ -106,7 +106,7 @@ CODE_SAMPLE
         );
     }
 
-    private function refactorEmpty(Empty_ $empty, Scope $scope, bool $treatAsNonEmpty): Expr|null
+    private function refactorEmpty(Empty_ $empty, Scope $scope, bool $treatAsNonEmpty): ?Expr
     {
         $exprType = $scope->getType($empty->expr);
         return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr, $treatAsNonEmpty);

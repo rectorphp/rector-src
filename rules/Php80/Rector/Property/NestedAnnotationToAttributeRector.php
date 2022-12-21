@@ -181,7 +181,7 @@ CODE_SAMPLE
 
     private function matchAnnotationToAttribute(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
-    ): NestedAnnotationToAttribute|null {
+    ): ?NestedAnnotationToAttribute {
         foreach ($this->nestedAnnotationsToAttributes as $nestedAnnotationToAttribute) {
             $doctrineResolvedClass = $doctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
                 PhpDocAttributeKey::RESOLVED_CLASS

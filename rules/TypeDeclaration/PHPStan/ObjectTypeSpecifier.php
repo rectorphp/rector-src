@@ -43,7 +43,7 @@ final class ObjectTypeSpecifier
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
         ObjectType $objectType,
-        Scope|null $scope
+        ?Scope $scope
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
         //        $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
         // @todo reuse name scope

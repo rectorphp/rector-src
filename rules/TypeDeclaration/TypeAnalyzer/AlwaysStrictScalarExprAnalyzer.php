@@ -87,7 +87,7 @@ final class AlwaysStrictScalarExprAnalyzer
         return $type instanceof BooleanType;
     }
 
-    private function resolveTypeFromScalar(Scalar $scalar): Type|null
+    private function resolveTypeFromScalar(Scalar $scalar): ?Type
     {
         if ($scalar instanceof String_) {
             return new StringType();

@@ -59,7 +59,7 @@ CODE_SAMPLE
      * @param Do_ $node
      * @return Stmt[]|null
      */
-    public function refactor(Node $node): array|null
+    public function refactor(Node $node): ?array
     {
         if (! $this->valueResolver->isFalse($node->cond)) {
             return null;

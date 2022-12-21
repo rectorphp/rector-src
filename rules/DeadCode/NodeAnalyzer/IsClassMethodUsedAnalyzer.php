@@ -137,7 +137,7 @@ final class IsClassMethodUsedAnalyzer
         return false;
     }
 
-    private function shouldSkipArrayCallable(Class_ $class, null | ArrayCallable $arrayCallable): bool
+    private function shouldSkipArrayCallable(Class_ $class, ?ArrayCallable $arrayCallable): bool
     {
         if (! $arrayCallable instanceof ArrayCallable) {
             return true;

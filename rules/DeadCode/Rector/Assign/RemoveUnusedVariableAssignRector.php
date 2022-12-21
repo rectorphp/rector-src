@@ -233,7 +233,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function refactorUsedVariable(Assign $assign): null|Expr
+    private function refactorUsedVariable(Assign $assign): ?Expr
     {
         $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof Expression) {

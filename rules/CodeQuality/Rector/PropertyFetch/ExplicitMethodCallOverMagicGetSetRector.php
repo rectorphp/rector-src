@@ -133,7 +133,7 @@ CODE_SAMPLE
         return $parentNode->var === $propertyFetch;
     }
 
-    private function refactorPropertyFetch(PropertyFetch $propertyFetch, Scope $scope): MethodCall|null
+    private function refactorPropertyFetch(PropertyFetch $propertyFetch, Scope $scope): ?MethodCall
     {
         $callerType = $this->getType($propertyFetch->var);
         if (! $callerType instanceof ObjectType) {
@@ -179,7 +179,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorMagicSet(Expr $expr, PropertyFetch $propertyFetch, Scope $scope): MethodCall|null
+    private function refactorMagicSet(Expr $expr, PropertyFetch $propertyFetch, Scope $scope): ?MethodCall
     {
         $propertyCallerType = $this->getType($propertyFetch->var);
         if (! $propertyCallerType instanceof ObjectType) {

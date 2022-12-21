@@ -214,7 +214,7 @@ final class ReturnTypeInferer
         return $type->getClassName() === ObjectReference::STATIC;
     }
 
-    private function resolveUnionStaticTypes(UnionType $unionType, bool $isSupportedStaticReturnType): UnionType|null
+    private function resolveUnionStaticTypes(UnionType $unionType, bool $isSupportedStaticReturnType): ?UnionType
     {
         $resolvedTypes = [];
         $hasStatic = false;

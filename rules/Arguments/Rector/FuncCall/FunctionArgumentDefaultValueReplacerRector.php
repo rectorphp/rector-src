@@ -61,7 +61,7 @@ CODE_SAMPLE
     /**
      * @param FuncCall $node
      */
-    public function refactor(Node $node): FuncCall|null
+    public function refactor(Node $node): ?FuncCall
     {
         $hasChanged = false;
         foreach ($this->replacedArguments as $replacedArgument) {
