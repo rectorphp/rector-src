@@ -102,7 +102,7 @@ CODE_SAMPLE
         }
 
         $types = $node->types;
-        if (count($types) > 2) {
+        if (count($types) !== 2) {
             return null;
         }
 
