@@ -93,7 +93,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
         ) use (&$returns): ?int {
             // skip Return_ nodes in nested functions or switch statements
             if ($node instanceof FunctionLike) {
-                return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if (! $node instanceof Return_) {

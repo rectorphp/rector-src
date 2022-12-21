@@ -125,12 +125,12 @@ CODE_SAMPLE
         ) use (&$yieldNodes): ?int {
             // skip anonymous class and inner function
             if ($node instanceof Class_) {
-                return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             // skip nested scope
             if ($node instanceof FunctionLike) {
-                return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Stmt && ! $node instanceof Expression) {
