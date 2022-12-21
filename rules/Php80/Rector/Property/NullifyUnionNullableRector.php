@@ -22,6 +22,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\NullifyUnionNullableRector\NullifyUnionNullableRectorTest
@@ -113,15 +114,14 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Identifier|Name $firstType */
+        Assert::isAnyOf($firstType, [Identifier::class, Name::class]);
+        Assert::isAnyOf($secondType, [Identifier::class, Name::class]);
+
         if ($firstType->toString() === 'null') {
-            /** @var Identifier|Name $secondType */
             return $secondType;
         }
 
-        /** @var Identifier|Name $secondType */
         if ($secondType->toString() === 'null') {
-            /** @var Identifier|Name $firstType */
             return $firstType;
         }
 
