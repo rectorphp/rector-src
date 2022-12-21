@@ -24,7 +24,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
 use Symplify\EasyParallel\ScheduleFactory;
-use Webmozart\Assert\Assert;
 
 final class ApplicationFileProcessor
 {
@@ -81,7 +80,7 @@ final class ApplicationFileProcessor
             $files = $this->fileFactory->createFromPaths($fileInfos);
 
             // 2. PHPStan has to know about all files too
-            $this->configurePHPStanNodeScopeResolver($files);
+            $this->configurePHPStanNodeScopeResolver($fileInfos);
 
             $systemErrorsAndFileDiffs = $this->processFiles($files, $configuration);
 
@@ -137,6 +136,18 @@ final class ApplicationFileProcessor
         $this->removedAndAddedFilesProcessor->run($configuration);
 
         return $systemErrorsAndFileDiffs;
+    }
+
+    /**
+     * @param string[] $filePaths
+     */
+    public function configurePHPStanNodeScopeResolver(array $filePaths): void
+    {
+        $phpFilePaths = array_filter(
+            $filePaths,
+            static fn (string $filePath): bool => str_ends_with($filePath, '.php')
+        );
+        $this->nodeScopeResolver->setAnalysedFiles($phpFilePaths);
     }
 
     /**
@@ -259,35 +270,5 @@ final class ApplicationFileProcessor
         }
 
         return $potentialEcsBinaryPath;
-    }
-
-    /**
-     * @param File[] $files
-     */
-    private function configurePHPStanNodeScopeResolver(array $files): void
-    {
-        $filePaths = $this->resolvePhpFilePaths($files);
-        $this->nodeScopeResolver->setAnalysedFiles($filePaths);
-    }
-
-    /**
-     * @param File[] $files
-     * @return string[]
-     */
-    private function resolvePhpFilePaths(array $files): array
-    {
-        Assert::allIsAOf($files, File::class);
-
-        $phpFilePaths = [];
-
-        foreach ($files as $file) {
-            $filePath = $file->getFilePath();
-
-            if (\str_ends_with($filePath, '.php')) {
-                $phpFilePaths[] = $filePath;
-            }
-        }
-
-        return $phpFilePaths;
     }
 }
