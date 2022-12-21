@@ -10,14 +10,6 @@ use Rector\Utils\ChangelogGenerator\Changelog\ChangelogContentsFactory;
 use Rector\Utils\ChangelogGenerator\Enum\Option;
 use Rector\Utils\ChangelogGenerator\Enum\RepositoryName;
 use Rector\Utils\ChangelogGenerator\GithubApiCaller;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-use Httpful\Request;
-use InvalidArgumentException;
->>>>>>> b44a70fd30 (fixup! misc)
-=======
->>>>>>> 14a065d6df (fixup! fixup! misc)
 use Rector\Utils\ChangelogGenerator\GitResolver;
 use Rector\Utils\ChangelogGenerator\ValueObject\Commit;
 use Symfony\Component\Console\Command\Command;
@@ -41,14 +33,16 @@ final class GenerateChangelogCommand extends Command
      */
     private const EXCLUDED_THANKS_NAMES = ['TomasVotruba', 'samsonasik'];
 
+    /**
+     * @see https://regex101.com/r/jdT01W/1
+     * @var string
+     */
+    private const ISSUE_NAME_REGEX = '#(.*?)( \(\#\d+\))?$#ms';
+
     public function __construct(
         private readonly GitResolver $gitResolver,
         private readonly GithubApiCaller $githubApiCaller,
-<<<<<<< HEAD
-        private readonly ChangelogContentsFactory $changelogContentsFactory
-=======
         private readonly ChangelogContentsFactory $changelogContentsFactory,
->>>>>>> b44a70fd30 (fixup! misc)
     ) {
         parent::__construct();
     }
@@ -72,21 +66,12 @@ final class GenerateChangelogCommand extends Command
         $changelogLines = [];
 
         foreach ($commits as $commit) {
-<<<<<<< HEAD
-            $searchPullRequestsResponse = $this->githubApiCaller->searchPullRequests($commit, $output);
-
-            $searchIssuesResponse = $this->githubApiCaller->searchIssues($commit, $output);
-
-            $items = array_merge($searchPullRequestsResponse->items, $searchIssuesResponse->items);
-            $parenthesis = 'https://github.com/' . RepositoryName::DEVELOPMENT . '/commit/' . $commit->getHash();
-=======
             $searchPullRequestsResponse = $this->githubApiCaller->searchPullRequests($commit);
             $searchIssuesResponse = $this->githubApiCaller->searchIssues($commit);
 
             $items = array_merge($searchPullRequestsResponse->items, $searchIssuesResponse->items);
             $parenthesis = 'https://github.com/' . RepositoryName::DEVELOPMENT . '/commit/' . $commit->getHash();
 
->>>>>>> b44a70fd30 (fixup! misc)
             $thanks = null;
             $issuesToReference = [];
 
@@ -94,24 +79,24 @@ final class GenerateChangelogCommand extends Command
                 if (property_exists($item, 'pull_request') && $item->pull_request !== null) {
                     $parenthesis = sprintf(
                         '[#%d](%s)',
-                        $item->number,
+                        (int) $item->number,
                         'https://github.com/' . RepositoryName::DEVELOPMENT . '/pull/' . $item->number
                     );
                     $thanks = $item->user->login;
                     break;
                 }
 
-                $issuesToReference[] = sprintf('#%d', $item->number);
+                $issuesToReference[] = '#' . $item->number;
             }
 
             // clean commit from duplicating issue number
-            $commitMatch = Strings::match($commit->getMessage(), '#(.*?)( \(\#\d+\))?$#ms');
+            $commitMatch = Strings::match($commit->getMessage(), self::ISSUE_NAME_REGEX);
 
             $commit = $commitMatch[1] ?? $commit->getMessage();
 
             $changelogLine = sprintf(
                 '* %s (%s)%s%s',
-                $commit,
+                (string) $commit,
                 $parenthesis,
                 $issuesToReference !== [] ? ', ' . implode(', ', $issuesToReference) : '',
                 $this->createThanks($thanks)
@@ -130,64 +115,16 @@ final class GenerateChangelogCommand extends Command
             ++$i;
         }
 
-<<<<<<< HEAD
-        //        // summarize into "Added Features" and "Bugfixes" groups
-        //        $linesByCategory = [
-        //
-        //        ];
-        //
-        //        $filterKeywordsByCategory = [
-        //            ChangelogCategory::NEW_FEATURES => ['Add support'],
-        //        ];
-        //
-        //        // @todo test this one
-        //        foreach ($changelogLines as $changelogLine) {
-        //            foreach ($filterKeywordsByCategory as $category => $filterKeywords) {
-        //                foreach ($filterKeywords as $filterKeyword) {
-        //                    if (Strings::contains($changelogLine, $filterKeyword)) {
-        //                        $linesByCategory[$category][] = $changelogLine;
-        //                        continue 3;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //
-        //        $fileContents = '';
-        //        foreach ($linesByCategory as $category => $lines) {
-        //            $fileContents .= '## ' . $category . PHP_EOL . PHP_EOL;
-        //            foreach ($lines as $line) {
-        //                $fileContents .= $line . PHP_EOL . PHP_EOL;
-        //            }
-        //
-        //            // end space
-        //            $fileContents .= PHP_EOL . PHP_EOL;
-        //        }
+        $releaseChangelogContents = $this->changelogContentsFactory->create($changelogLines);
 
-=======
->>>>>>> b44a70fd30 (fixup! misc)
         $filePath = getcwd() . '/next-release-changelog.md';
 
-        FileSystem::write($filePath, $fileContents);
+        FileSystem::write($filePath, $releaseChangelogContents);
         $output->write(sprintf('Changelog dumped into "%s" file', $filePath));
 
         return self::SUCCESS;
     }
 
-<<<<<<< HEAD
-    /**
-     * @param string[] $commitLines
-     * @return Commit[]
-     */
-    private function mapCommitLinesToCommits(array $commitLines): array
-    {
-        return array_map(static function (string $line): Commit {
-            [$hash, $message] = explode(' ', $line, 2);
-            return new Commit($hash, $message);
-        }, $commitLines);
-    }
-
-=======
->>>>>>> b44a70fd30 (fixup! misc)
     private function createThanks(string|null $thanks): string
     {
         if ($thanks === null) {

@@ -819,3 +819,32 @@ parameters:
         -
             message: '#Parameter \#1 \$node of method Rector\\Core\\Rector\\AbstractRector\:\:getType\(\) expects PhpParser\\Node, PhpParser\\Node\\Expr\|null given#'
             path: rules/TypeDeclaration/Rector/ClassMethod/FalseReturnClassMethodToNullableRector.php
+
+        # changelog generator
+        -
+            message: '#Do not use chained method calls\. Put each on separated lines#'
+            path: utils/ChangelogGenerator/GithubApiCaller.php
+
+        -
+            message: '#Anonymous (variable|variables) in#'
+            path: utils/ChangelogGenerator
+
+        -
+            message: '#Separate function "sprintf\(\)" in method call to standalone row to improve readability#'
+            path: utils/ChangelogGenerator
+
+        -
+            message: '#Regex must use string named capture groups instead of numeric#'
+            path: utils/ChangelogGenerator
+
+        # std class api
+        -
+            message: '#Function "property_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+            path: utils/ChangelogGenerator
+
+        -
+            message: '#Function "property_exists\(\)" cannot be used/left in the code#'
+            path: utils/ChangelogGenerator
+
+
+        - '#Cognitive complexity for "Rector\\Utils\\ChangelogGenerator\\Changelog\\ChangelogContentsFactory\:\:create\(\)" is 11, keep it under 10#'

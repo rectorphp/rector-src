@@ -10,10 +10,12 @@ use Rector\Utils\ChangelogGenerator\Enum\ChangelogCategory;
 final class ChangelogContentsFactory
 {
     /**
-     * @param array<string, $changelogLines string[]>
+     * @var array<string, string[]>
      */
     private const FILTER_KEYWORDS_BY_CATEGORY = [
-        ChangelogCategory::NEW_FEATURES => ['Add support'],
+        ChangelogCategory::NEW_FEATURES => ['Add support', 'Add'],
+        ChangelogCategory::SKIPPED => ['Fix wrong reference'],
+        ChangelogCategory::BUGFIXES => ['Fixed', 'Fix'],
     ];
 
     /**
@@ -28,14 +30,27 @@ final class ChangelogContentsFactory
         foreach ($changelogLines as $changelogLine) {
             foreach (self::FILTER_KEYWORDS_BY_CATEGORY as $category => $filterKeywords) {
                 foreach ($filterKeywords as $filterKeyword) {
-                    if (Strings::contains($changelogLine, $filterKeyword)) {
-                        $linesByCategory[$category][] = $changelogLine;
-                        continue 3;
+                    if (! Strings::contains($changelogLine, $filterKeyword)) {
+                        continue;
                     }
+
+                    $linesByCategory[$category][] = $changelogLine;
+                    continue 2;
                 }
             }
         }
 
+        // remove skipped lines
+        unset($linesByCategory[ChangelogCategory::SKIPPED]);
+
+        return $this->generateFileContentsFromGroupedItems($linesByCategory);
+    }
+
+    /**
+     * @param array<string, string[]> $linesByCategory
+     */
+    private function generateFileContentsFromGroupedItems(array $linesByCategory): string
+    {
         $fileContents = '';
 
         foreach ($linesByCategory as $category => $lines) {
