@@ -95,10 +95,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof NullableType) {
-            return null;
-        }
-
         if (! $node instanceof UnionType) {
             return null;
         }
