@@ -8,6 +8,7 @@ use Nette\Loaders\RobotLoader;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
+use Rector\CodingStyle\Rector\Property\NullifyUnionNullableRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
@@ -40,6 +41,7 @@ final class MissingInSetCommand extends Command
         ConvertStaticPrivateConstantToSelfRector::class,
         RemoveJustPropertyFetchRector::class,
         FalseReturnClassMethodToNullableRector::class,
+        NullifyUnionNullableRector::class,
     ];
 
     /**
