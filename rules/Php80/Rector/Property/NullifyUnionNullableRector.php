@@ -114,11 +114,13 @@ CODE_SAMPLE
 
         /** @var Identifier|Name $firstType */
         if ($firstType->toString() === 'null') {
+            /** @var Identifier|Name $secondType */
             return $secondType;
         }
 
         /** @var Identifier|Name $secondType */
         if ($secondType->toString() === 'null') {
+            /** @var Identifier|Name $firstType */
             return $firstType;
         }
 
