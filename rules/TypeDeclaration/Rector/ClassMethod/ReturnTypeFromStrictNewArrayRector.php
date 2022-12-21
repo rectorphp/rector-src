@@ -199,7 +199,7 @@ CODE_SAMPLE
     /**
      * @param Stmt[] $stmts
      */
-    private function matchArrayAssignedVariable(array $stmts): ?Variable
+    private function matchArrayAssignedVariable(array $stmts): Variable|null
     {
         foreach ($stmts as $stmt) {
             if (! $stmt instanceof Expression) {

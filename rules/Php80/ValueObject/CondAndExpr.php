@@ -14,7 +14,7 @@ final class CondAndExpr
      * @param MatchKind::* $matchKind
      */
     public function __construct(
-        private readonly ?array $condExprs,
+        private readonly array|null $condExprs,
         private readonly Expr $expr,
         private readonly string $matchKind
     ) {
@@ -28,7 +28,7 @@ final class CondAndExpr
     /**
      * @return Expr[]|null
      */
-    public function getCondExprs(): ?array
+    public function getCondExprs(): array|null
     {
         // internally checked by PHPStan, cannot be empty array
         if ($this->condExprs === []) {

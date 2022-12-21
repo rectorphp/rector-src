@@ -216,7 +216,7 @@ CODE_SAMPLE
         return $kind === String_::KIND_SINGLE_QUOTED && str_contains($string->value, "'");
     }
 
-    private function refactorArgument(FuncCall|StaticCall $node, Arg $arg): ?Node
+    private function refactorArgument(FuncCall|StaticCall $node, Arg $arg): Node|null
     {
         if (! $arg->value instanceof String_) {
             return null;

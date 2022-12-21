@@ -249,7 +249,7 @@ CODE_SAMPLE
 
     private function matchAnnotationToAttribute(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
-    ): ?AnnotationToAttribute {
+    ): AnnotationToAttribute|null {
         foreach ($this->annotationsToAttributes as $annotationToAttribute) {
             if (! $doctrineAnnotationTagValueNode->hasClassName($annotationToAttribute->getTag())) {
                 continue;

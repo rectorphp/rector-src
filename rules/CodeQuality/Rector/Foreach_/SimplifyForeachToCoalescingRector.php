@@ -129,7 +129,7 @@ CODE_SAMPLE
         });
     }
 
-    private function processForeachNodeWithReturnInside(Foreach_ $foreach, Return_ $return): ?Return_
+    private function processForeachNodeWithReturnInside(Foreach_ $foreach, Return_ $return): Return_|null
     {
         if (! $this->nodeComparator->areNodesEqual($foreach->valueVar, $return->expr)) {
             return null;

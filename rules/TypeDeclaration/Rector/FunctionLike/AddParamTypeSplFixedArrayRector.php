@@ -124,7 +124,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveGenericType(TypeWithClassName $typeWithClassName): ?GenericObjectType
+    private function resolveGenericType(TypeWithClassName $typeWithClassName): GenericObjectType|null
     {
         foreach (self::SPL_FIXED_ARRAY_TO_SINGLE as $fixedArrayClass => $singleClass) {
             if ($typeWithClassName->getClassName() === $fixedArrayClass) {

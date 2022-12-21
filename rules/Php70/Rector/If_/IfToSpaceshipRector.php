@@ -48,9 +48,9 @@ final class IfToSpaceshipRector extends AbstractRector implements MinPhpVersionI
 
     private ?Expr $secondValue = null;
 
-    private ?Node $nextNode = null;
+    private Node|null $nextNode = null;
 
-    private ?Ternary $ternary = null;
+    private Ternary|null $ternary = null;
 
     public function getRuleDefinition(): RuleDefinition
     {

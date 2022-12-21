@@ -109,7 +109,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function matchOnlyIfStmtReturnExpr(Stmt $onlyIfStmt, Variable $returnVariable): ?Expr
+    private function matchOnlyIfStmtReturnExpr(Stmt $onlyIfStmt, Variable $returnVariable): Expr|null
     {
         if (! $onlyIfStmt instanceof Expression) {
             return null;
@@ -147,7 +147,7 @@ CODE_SAMPLE
         return $assign->expr;
     }
 
-    private function matchNextStmtReturnVariable(StmtsAwareInterface $stmtsAware, int $key): ?Variable
+    private function matchNextStmtReturnVariable(StmtsAwareInterface $stmtsAware, int $key): Variable|null
     {
         $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
 
