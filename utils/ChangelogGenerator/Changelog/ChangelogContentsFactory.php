@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Utils\ChangelogGenerator\Changelog;
 
-use Nette\Utils\Strings;
 use Rector\Utils\ChangelogGenerator\Enum\ChangelogCategory;
 
 final class ChangelogContentsFactory
@@ -30,7 +29,7 @@ final class ChangelogContentsFactory
         foreach ($changelogLines as $changelogLine) {
             foreach (self::FILTER_KEYWORDS_BY_CATEGORY as $category => $filterKeywords) {
                 foreach ($filterKeywords as $filterKeyword) {
-                    if (! Strings::contains($changelogLine, $filterKeyword)) {
+                    if (! \str_contains($changelogLine, $filterKeyword)) {
                         continue;
                     }
 

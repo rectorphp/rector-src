@@ -6,8 +6,10 @@ namespace Rector\Utils\ChangelogGenerator;
 
 use Httpful\Request;
 use Httpful\Response;
+use Rector\Utils\ChangelogGenerator\Enum\RepositoryName;
 use Rector\Utils\ChangelogGenerator\Exception\GithubRequestException;
 use Rector\Utils\ChangelogGenerator\ValueObject\Commit;
+use stdClass;
 
 final class GithubApiCaller
 {
@@ -16,29 +18,29 @@ final class GithubApiCaller
     ) {
     }
 
-    public function searchIssues(Commit $commit): \stdClass
+    public function searchIssues(Commit $commit): stdClass
     {
         $requestUri = sprintf(
             'https://api.github.com/search/issues?q=repo:%s+%s',
-            Enum\RepositoryName::DEPLOY,
+            RepositoryName::DEPLOY,
             $commit->getHash()
         );
 
         return $this->sendRequest($requestUri);
     }
 
-    public function searchPullRequests(Commit $commit): \stdClass
+    public function searchPullRequests(Commit $commit): stdClass
     {
         $requestUri = sprintf(
             'https://api.github.com/search/issues?q=repo:%s+%s',
-            Enum\RepositoryName::DEVELOPMENT,
+            RepositoryName::DEVELOPMENT,
             $commit->getHash()
         );
 
         return $this->sendRequest($requestUri);
     }
 
-    private function sendRequest(string $requestUri): \stdClass
+    private function sendRequest(string $requestUri): stdClass
     {
         /** @var Response $response */
         $response = Request::get($requestUri)
