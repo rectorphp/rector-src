@@ -118,7 +118,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $enumConstFetch = $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
+        $upperCaseName = mb_strtoupper($enumCaseName);
+        $enumConstFetch = $this->nodeFactory->createClassConstFetch($className, $upperCaseName);
 
         return new PropertyFetch($enumConstFetch, $property);
     }
@@ -133,7 +134,7 @@ CODE_SAMPLE
             return $this->refactorGetterToMethodCall($methodCall, 'name');
         }
 
-        if ($methodName === 'getValue') {
+        if ($methodName === 'getValue' || $methodName === 'value') {
             return $this->refactorGetterToMethodCall($methodCall, 'value');
         }
 
