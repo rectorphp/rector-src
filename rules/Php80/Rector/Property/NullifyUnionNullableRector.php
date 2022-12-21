@@ -8,8 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -18,17 +16,21 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
-use Webmozart\Assert\InvalidArgumentException;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\NullifyUnionNullableRector\NullifyUnionNullableRectorTest
  */
 final class NullifyUnionNullableRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly UnionTypeMapper $unionTypeMapper
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -87,7 +89,7 @@ CODE_SAMPLE
         return PhpVersionFeature::UNION_TYPES;
     }
 
-    private function resolveNullableType(?Node $node): null|Identifier|Name
+    private function resolveNullableType(?Node $node): ?NullableType
     {
         if (! $node instanceof Node) {
             return null;
@@ -101,39 +103,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $types = $node->types;
-        if (count($types) !== 2) {
+        $nullableType = $this->unionTypeMapper->resolveTypeWithNullablePHPParserUnionType($node);
+        if ($nullableType instanceof UnionType) {
             return null;
         }
 
-        $node->types = array_values($node->types);
-        $firstType = $node->types[0];
-        $secondType = $node->types[1];
-
-        try {
-            Assert::isAnyOf($firstType, [Identifier::class, Name::class]);
-            Assert::isAnyOf($secondType, [Identifier::class, Name::class]);
-        } catch (InvalidArgumentException) {
-            // Skip Intersection type
-            return null;
-        }
-
-        $firstTypeValue = $firstType->toString();
-        $secondTypeValue = $secondType->toString();
-
-        if ($firstTypeValue === $secondTypeValue) {
-            return null;
-        }
-
-        if ($firstTypeValue === 'null') {
-            return $secondType;
-        }
-
-        if ($secondTypeValue === 'null') {
-            return $firstType;
-        }
-
-        return null;
+        return $nullableType;
     }
 
     private function processNullablePropertyParamType(Property|Param $node): null|Property|Param
@@ -144,7 +119,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->type = new NullableType($nullableType);
+        $node->type = $nullableType;
         return $node;
     }
 
@@ -157,7 +132,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $functionLike->returnType = new NullableType($nullableType);
+        $functionLike->returnType = $nullableType;
         return $functionLike;
     }
 }
