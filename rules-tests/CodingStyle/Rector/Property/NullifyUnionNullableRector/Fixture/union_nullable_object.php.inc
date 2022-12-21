@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
 
 final class UnionNullableObject
 {
@@ -12,7 +12,7 @@ final class UnionNullableObject
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
 
 final class UnionNullableObject
 {

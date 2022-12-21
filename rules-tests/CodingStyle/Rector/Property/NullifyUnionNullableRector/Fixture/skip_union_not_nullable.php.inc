@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\NullifyUnionNullableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Property\NullifyUnionNullableRector\Fixture;
 
 use stdClass;
 

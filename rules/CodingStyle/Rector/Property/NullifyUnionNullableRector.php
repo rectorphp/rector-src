@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php80\Rector\Property;
+namespace Rector\CodingStyle\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -22,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\Property\NullifyUnionNullableRector\NullifyUnionNullableRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\Property\NullifyUnionNullableRector\NullifyUnionNullableRectorTest
  */
 final class NullifyUnionNullableRector extends AbstractRector implements MinPhpVersionInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\NullifyUnionNullableRector;
+namespace Rector\Tests\CodingStyle\Rector\Property\NullifyUnionNullableRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;

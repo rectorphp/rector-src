@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
 
 final class UnionNullableFunctionLikeReturn
 {
@@ -19,7 +19,7 @@ final class UnionNullableFunctionLikeReturn
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
 
 final class UnionNullableFunctionLikeReturn
 {
