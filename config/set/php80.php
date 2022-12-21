@@ -25,7 +25,6 @@ use Rector\Php80\Rector\FunctionLike\UnionTypesRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
-use Rector\Php80\Rector\Property\NullifyUnionNullableRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Php80\Rector\Ternary\GetDebugTypeRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
@@ -110,5 +109,4 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(AddParamBasedOnParentClassMethodRector::class);
     $rectorConfig->rule(MixedTypeRector::class);
     $rectorConfig->rule(ClassOnThisVariableObjectRector::class);
-    $rectorConfig->rule(NullifyUnionNullableRector::class);
 };
