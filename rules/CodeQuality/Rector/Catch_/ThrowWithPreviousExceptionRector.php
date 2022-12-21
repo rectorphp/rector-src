@@ -160,7 +160,7 @@ CODE_SAMPLE
         $new->setAttribute(AttributeKey::ORIGINAL_NODE, null);
 
         // nothing more to add
-        return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+        return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
     }
 
     private function resolveExceptionArgumentPosition(Name $exceptionName): ?int
