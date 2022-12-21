@@ -85,7 +85,7 @@ CODE_SAMPLE
         return PhpVersionFeature::UNION_TYPES;
     }
 
-    private function resolveNullableType(?Node $node): ?Node
+    private function resolveNullableType(?Node $node): null|Identifier|Name
     {
         if (! $node instanceof Node) {
             return null;
