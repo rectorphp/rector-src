@@ -40,9 +40,11 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
         return [New_::class];
     }
 
+    /**
+     * @param New_ $node
+     */
     public function refactor(Node $node): ?New_
     {
-        assert($node instanceof New_);
         if (! array_key_exists(1, $node->args)) {
             return null;
         }
