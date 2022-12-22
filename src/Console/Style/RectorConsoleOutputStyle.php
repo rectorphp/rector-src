@@ -16,7 +16,7 @@ final class RectorConsoleOutputStyle extends SymfonyStyle
     /**
      * @var mixed|ProgressBar
      */
-    private $progressBar;
+    private ?ProgressBar $progressBar = null;
 
     private bool|null $isCiDetected = null;
 
