@@ -60,7 +60,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->autoloadPaths([]);
     $rectorConfig->bootstrapFiles([]);
-    $rectorConfig->parallel(seconds: 120, maxNumberOfProcess: 16, jobSize: 20);
+    $rectorConfig->parallel(120, 16, 20);
 
     // to avoid autoimporting out of the box
     $rectorConfig->importNames(false, false);
