@@ -94,11 +94,25 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($this->shouldSkip($node)) {
+            return null;
+        }
+
         if ($node instanceof Param) {
             return $this->refactorParam($node);
         }
 
         return $this->refactorProperty($node);
+    }
+
+    private function shouldSkip(Property|Param $node): bool
+    {
+        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+        if (! $class instanceof Class_) {
+            return true;
+        }
+
+        return $class->isReadonly();
     }
 
     public function provideMinPhpVersion(): int
