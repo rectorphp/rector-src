@@ -94,10 +94,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
-            return null;
-        }
-
         if ($node instanceof Param) {
             return $this->refactorParam($node);
         }
@@ -110,7 +106,7 @@ CODE_SAMPLE
         return PhpVersionFeature::READONLY_PROPERTY;
     }
 
-    private function shouldSkip(Property|Param $node): bool
+    private function shouldSkipInReadonlyClass(Property|Param $node): bool
     {
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
         if (! $class instanceof Class_) {
@@ -151,6 +147,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($this->shouldSkipInReadonlyClass($property)) {
+            return null;
+        }
+
         $this->visibilityManipulator->makeReadonly($property);
 
         $attributeGroups = $property->attrGroups;
@@ -185,6 +185,10 @@ CODE_SAMPLE
         }
 
         if ($this->isPromotedPropertyAssigned($param)) {
+            return null;
+        }
+
+        if ($this->shouldSkipInReadonlyClass($param)) {
             return null;
         }
 
