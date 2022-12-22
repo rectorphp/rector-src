@@ -91,11 +91,11 @@ final class AstResolver
         $classReflection = $methodReflection->getDeclaringClass();
 
         $classLikeName = $classReflection->getName();
-        $methodReflectionName = $methodReflection->getName();
+        $methodName = $methodReflection->getName();
 
         if (array_key_exists($classLikeName, $this->classMethodsByClassAndMethod)
-            && array_key_exists($methodReflectionName, $this->classMethodsByClassAndMethod[$classLikeName])) {
-            return $this->classMethodsByClassAndMethod[$classLikeName][$methodReflectionName];
+            && array_key_exists($methodName, $this->classMethodsByClassAndMethod[$classLikeName])) {
+            return $this->classMethodsByClassAndMethod[$classLikeName][$methodName];
         }
 
         $fileName = $classReflection->getFileName();
@@ -118,17 +118,17 @@ final class AstResolver
                 continue;
             }
 
-            $classMethod = $classLike->getMethod($methodReflectionName);
+            $classMethod = $classLike->getMethod($methodName);
             if (! $classMethod instanceof ClassMethod) {
                 continue;
             }
 
-            $this->classMethodsByClassAndMethod[$classLikeName][$methodReflectionName] = $classMethod;
+            $this->classMethodsByClassAndMethod[$classLikeName][$methodName] = $classMethod;
             return $classMethod;
         }
 
         // avoids looking for a class in a file where is not present
-        $this->classMethodsByClassAndMethod[$classLikeName][$methodReflectionName] = null;
+        $this->classMethodsByClassAndMethod[$classLikeName][$methodName] = null;
         return null;
     }
 
@@ -145,9 +145,9 @@ final class AstResolver
 
     public function resolveFunctionFromFunctionReflection(FunctionReflection $functionReflection): ?Function_
     {
-        $functionReflectionName = $functionReflection->getName();
-        if (array_key_exists($functionReflectionName, $this->functionsByName)) {
-            return $this->functionsByName[$functionReflectionName];
+        $functionName = $functionReflection->getName();
+        if (array_key_exists($functionName, $this->functionsByName)) {
+            return $this->functionsByName[$functionName];
         }
 
         $fileName = $functionReflection->getFileName();
@@ -163,18 +163,18 @@ final class AstResolver
         /** @var Function_[] $functions */
         $functions = $this->betterNodeFinder->findInstanceOf($nodes, Function_::class);
         foreach ($functions as $function) {
-            if (! $this->nodeNameResolver->isName($function, $functionReflectionName)) {
+            if (! $this->nodeNameResolver->isName($function, $functionName)) {
                 continue;
             }
 
             // to avoid parsing missing function again
-            $this->functionsByName[$functionReflectionName] = $function;
+            $this->functionsByName[$functionName] = $function;
 
             return $function;
         }
 
         // to avoid parsing missing function again
-        $this->functionsByName[$functionReflectionName] = null;
+        $this->functionsByName[$functionName] = null;
 
         return null;
     }
