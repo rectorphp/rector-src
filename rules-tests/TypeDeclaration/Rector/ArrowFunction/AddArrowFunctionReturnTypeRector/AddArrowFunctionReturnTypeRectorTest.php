@@ -27,6 +27,6 @@ final class AddArrowFunctionReturnTypeRectorTest extends AbstractRectorTestCase
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/before_union_types.php';
+        return __DIR__ . '/config/union_types.php';
     }
 }

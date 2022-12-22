@@ -21,6 +21,12 @@ use Rector\Testing\PHPUnit\AbstractTestCase;
 
 final class TagValueNodeReprintTest extends AbstractTestCase
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/0UHYBt/1
+     */
+    private const SPLIT_LINE_REGEX = "#-----\n#";
+
     private FileInfoParser $fileInfoParser;
 
     private BetterNodeFinder $betterNodeFinder;
@@ -50,7 +56,10 @@ final class TagValueNodeReprintTest extends AbstractTestCase
     {
         $fixtureFileContents = FileSystem::read($filePath);
 
-        [$fileContents, $nodeClass, $tagValueNodeClasses] = Strings::split($fixtureFileContents, "#-----\n#");
+        [$fileContents, $nodeClass, $tagValueNodeClasses] = Strings::split(
+            $fixtureFileContents,
+            self::SPLIT_LINE_REGEX
+        );
 
         $nodeClass = trim((string) $nodeClass);
         $tagValueNodeClasses = $this->splitListByEOL($tagValueNodeClasses);

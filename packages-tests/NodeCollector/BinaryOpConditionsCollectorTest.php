@@ -17,17 +17,18 @@ final class BinaryOpConditionsCollectorTest extends TestCase
         $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Plus (Plus a b) c)
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $c = new Variable('c');
-        $abcPlus = new Plus(new Plus($a, $b), $c);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
+        $thirdVariable = new Variable('c');
+
+        $abcPlus = new Plus(new Plus($firstVariable, $secondVariable), $thirdVariable);
 
         $result = $binaryOpConditionsCollector->findConditions($abcPlus, Plus::class);
 
         $this->assertSame([
-            2 => $a,
-            1 => $b,
-            0 => $c,
+            2 => $firstVariable,
+            1 => $secondVariable,
+            0 => $thirdVariable,
         ], $result);
     }
 
@@ -36,16 +37,17 @@ final class BinaryOpConditionsCollectorTest extends TestCase
         $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Plus a (Plus b c))
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $c = new Variable('c');
-        $bcPlus = new Plus($b, $c);
-        $abcPlus = new Plus($a, $bcPlus);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
+        $thirdVariable = new Variable('c');
+
+        $bcPlus = new Plus($secondVariable, $thirdVariable);
+        $abcPlus = new Plus($firstVariable, $bcPlus);
 
         $result = $binaryOpConditionsCollector->findConditions($abcPlus, Plus::class);
 
         $this->assertSame([
-            1 => $a,
+            1 => $firstVariable,
             0 => $bcPlus,
         ], $result);
     }
@@ -55,10 +57,11 @@ final class BinaryOpConditionsCollectorTest extends TestCase
         $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Minus (Plus a b) c)
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $c = new Variable('c');
-        $abcMinus = new Minus(new Plus($a, $b), $c);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
+        $thirdVariable = new Variable('c');
+
+        $abcMinus = new Minus(new Plus($firstVariable, $secondVariable), $thirdVariable);
 
         $result = $binaryOpConditionsCollector->findConditions($abcMinus, Plus::class);
 
@@ -85,17 +88,18 @@ final class BinaryOpConditionsCollectorTest extends TestCase
         $binaryOpConditionsCollector = new BinaryOpConditionsCollector();
 
         // (Plus (Minus a b) c)
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $c = new Variable('c');
-        $abMinus = new Minus($a, $b);
-        $abcPlus = new Plus($abMinus, $c);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
+        $thirdVariable = new Variable('c');
+
+        $abMinus = new Minus($firstVariable, $secondVariable);
+        $abcPlus = new Plus($abMinus, $thirdVariable);
 
         $result = $binaryOpConditionsCollector->findConditions($abcPlus, Plus::class);
 
         $this->assertSame([
             1 => $abMinus,
-            0 => $c,
+            0 => $thirdVariable,
         ], $result);
     }
 }

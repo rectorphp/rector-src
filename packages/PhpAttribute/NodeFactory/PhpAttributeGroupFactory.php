@@ -51,6 +51,7 @@ final class PhpAttributeGroupFactory
     {
         $fullyQualified = new FullyQualified($attributeClass);
         $args = $this->createArgsFromItems($items, $attributeClass);
+
         $attribute = new Attribute($fullyQualified, $args);
 
         return new AttributeGroup([$attribute]);
@@ -83,7 +84,7 @@ final class PhpAttributeGroupFactory
     }
 
     /**
-     * @param ArrayItemNode[] $items
+     * @param ArrayItemNode[]|mixed[] $items
      * @return Arg[]
      */
     public function createArgsFromItems(array $items, string $attributeClass): array

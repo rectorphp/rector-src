@@ -4,6 +4,11 @@ includes:
 parameters:
     reportUnmatchedIgnoredErrors: false
 
+    unused_public:
+        properties: true
+        constants: true
+        methods: true
+
     level: 8
 
     # requires exact closure types
@@ -19,7 +24,10 @@ parameters:
         - src
         - rules
         - packages
+        # tests
+        - packages-tests
         - tests
+        - rules-tests
         - utils
         # this cannot be put it, because it wipes PHPStan cache on each run :( - must run in separate
         #- config
@@ -32,12 +40,11 @@ parameters:
     excludePaths:
         # too modern code for PHPStan 0.12.2
         - bin/validate-phpstan-version.php
-        - bin/detect-rules-not-used-in-any-set.php
 
         # temporary stinrgable migration from template type provider
         - bin/generate-changelog.php
 
-        - */config.php
+        #- */config.php
 
         # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
         - packages/BetterPhpDocParser/ValueObject/PhpDocNode/AbstractTagValueNode.php
@@ -52,7 +59,8 @@ parameters:
         - "*tests/*/Expected/*"
         - '*tests/*/Fixture/*'
         - '*tests/*/Source/*'
-        - '*tests/Source/*'
+        - '*tests/*/Source*'
+        - '*tests/*/Fixture*'
         # part of composer
         - '*/tests/Rector/Psr4/MultipleClassFileToPsr4ClassesRector/Expected/Just*ExceptionWithoutNamespace.php'
         - packages-tests/BetterPhpDocPraser/PhpDocParser/TagValueNodeReprint/Fixture/SymfonyRoute/RouteName.php
@@ -149,6 +157,7 @@ parameters:
             message: '#Array destruct is not allowed\. Use value object to pass data instead#'
             paths:
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
+                - *Test.php
 
         -
             message: '#\$this as argument is not allowed\. Refactor method to service composition#'
@@ -403,8 +412,6 @@ parameters:
         # known doc
         - '#Add explicit array type to assigned "\$spreadParams" expression#'
 
-        - '#Add explicit array type to assigned "\$items" expression#'
-
         - '#Add explicit array type to assigned "\$chunks" expression#'
 
         - '#Add explicit array type to assigned "\$resolvedValue" expression#'
@@ -657,7 +664,6 @@ parameters:
             message: '#Use separate function calls with readable variable names#'
             paths:
                 - utils/RuleDocGenerator/PostRectorOutFilter.php
-                - rules/CodingStyle/Rector/String_/UseClassKeywordForClassNameResolutionRector.php
 
         # phpdoc node traversing
         -
@@ -810,12 +816,6 @@ parameters:
             paths:
                 - src/DependencyInjection/DefinitionFinder.php
 
-        # on purpose, it is intended to be used by end users configuring the RenameClassRector rule
-        -
-            message: "#^Class constant \"CALLBACKS\" is never used outside of its class$#"
-            count: 1
-            path: rules/Renaming/Rector/Name/RenameClassRector.php
-
         -
             message: '#Parameter \#1 \$node of method Rector\\Core\\Rector\\AbstractRector\:\:getType\(\) expects PhpParser\\Node, PhpParser\\Node\\Expr\|null given#'
             path: rules/TypeDeclaration/Rector/ClassMethod/FalseReturnClassMethodToNullableRector.php
@@ -848,3 +848,42 @@ parameters:
 
 
         - '#Cognitive complexity for "Rector\\Utils\\ChangelogGenerator\\Changelog\\ChangelogContentsFactory\:\:create\(\)" is 11, keep it under 10#'
+
+        -
+            message: '#"Tests" namespace cannot be used outside of "tests" directory#'
+            path: rules-tests
+        -
+            message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
+            path: rules-tests
+
+        -
+            message: '#Class (.*?) not found#'
+            paths:
+                - tests/*/config/*
+                - rules-tests/*/config/*
+                - packages-tests/*/config/*
+                - packages-tests/*/*Test.php
+        -
+            message: '#Value object "(.*?)" should be named "(.*?)" instead to respect used service#'
+            paths:
+                - rules-tests/*/config/*
+        -
+            message: '#Offset \d does not exist on array<string, string>#'
+            paths:
+                - *Test.php
+
+        -
+            message: '#Relative file path "(.*?)" is not allowed, use absolute one with __DIR__#'
+            paths:
+                - packages-tests/Skipper/Skipper/Skipper/SkipperTest.php
+        -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
+
+        # @todo fix in symplify
+        - '#Relative file path "mearie\\\.org" is not allowed, use absolute one with __DIR__#'
+        - '#Parameter \#3 \$nodeClass of method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:doTestPrintedPhpDocInfo\(\) expects class\-string<PhpParser\\Node>, string given#'
+
+        -
+            message: '#Method call return value that should be used, but is not#'
+            path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
+
+        - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'

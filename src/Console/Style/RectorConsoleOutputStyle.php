@@ -13,10 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class RectorConsoleOutputStyle extends SymfonyStyle
 {
-    /**
-     * @var mixed|ProgressBar
-     */
-    public $progressBar;
+    private ?ProgressBar $progressBar = null;
 
     private bool|null $isCiDetected = null;
 

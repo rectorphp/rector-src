@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Fixture;
 
-use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Contract\ParentTypeToMixed;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Source\Contract\ParentTypeToMixed;
 
 final class AddParamMixed implements ParentTypeToMixed
 {
@@ -17,7 +17,7 @@ final class AddParamMixed implements ParentTypeToMixed
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Fixture;
 
-use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Contract\ParentTypeToMixed;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Source\Contract\ParentTypeToMixed;
 
 final class AddParamMixed implements ParentTypeToMixed
 {

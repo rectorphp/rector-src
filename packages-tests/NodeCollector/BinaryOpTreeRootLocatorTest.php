@@ -18,20 +18,28 @@ final class BinaryOpTreeRootLocatorTest extends TestCase
         $binaryOpTreeRootLocator = new BinaryOpTreeRootLocator();
 
         // (Plus (Plus a b) c)
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $abPlus = new Plus($a, $b);
-        $a->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
-        $b->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
-        $c = new Variable('c');
-        $abcPlus = new Plus($abPlus, $c);
-        $abPlus->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
-        $c->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
+        $abPlus = new Plus($firstVariable, $secondVariable);
+        $firstVariable->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
+        $secondVariable->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
 
-        $this->assertSame($abcPlus, $binaryOpTreeRootLocator->findOperationRoot($a, Plus::class));
-        $this->assertSame($abcPlus, $binaryOpTreeRootLocator->findOperationRoot($b, Plus::class));
-        $this->assertSame($abcPlus, $binaryOpTreeRootLocator->findOperationRoot($abPlus, Plus::class));
-        $this->assertSame($abcPlus, $binaryOpTreeRootLocator->findOperationRoot($c, Plus::class));
+        $thirdVariable = new Variable('c');
+        $abcPlus = new Plus($abPlus, $thirdVariable);
+        $abPlus->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
+        $thirdVariable->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
+
+        $firstOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($firstVariable, Plus::class);
+        $this->assertSame($abcPlus, $firstOperationRoot);
+
+        $secondOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($secondVariable, Plus::class);
+        $this->assertSame($abcPlus, $secondOperationRoot);
+
+        $plusOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($abPlus, Plus::class);
+        $this->assertSame($abcPlus, $plusOperationRoot);
+
+        $thirdOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($thirdVariable, Plus::class);
+        $this->assertSame($abcPlus, $thirdOperationRoot);
     }
 
     public function testRightAssociative(): void
@@ -39,20 +47,29 @@ final class BinaryOpTreeRootLocatorTest extends TestCase
         $binaryOpTreeRootLocator = new BinaryOpTreeRootLocator();
 
         // (Plus a (Plus b c))
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $c = new Variable('c');
-        $bcPlus = new Plus($b, $c);
-        $b->setAttribute(AttributeKey::PARENT_NODE, $bcPlus);
-        $c->setAttribute(AttributeKey::PARENT_NODE, $bcPlus);
-        $abcPlus = new Plus($a, $bcPlus);
-        $a->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
+        $thirdVariable = new Variable('c');
+
+        $bcPlus = new Plus($secondVariable, $thirdVariable);
+        $secondVariable->setAttribute(AttributeKey::PARENT_NODE, $bcPlus);
+        $thirdVariable->setAttribute(AttributeKey::PARENT_NODE, $bcPlus);
+
+        $abcPlus = new Plus($firstVariable, $bcPlus);
+        $firstVariable->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
         $bcPlus->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
 
-        $this->assertSame($abcPlus, $binaryOpTreeRootLocator->findOperationRoot($a, Plus::class));
-        $this->assertSame($bcPlus, $binaryOpTreeRootLocator->findOperationRoot($b, Plus::class));
-        $this->assertSame($bcPlus, $binaryOpTreeRootLocator->findOperationRoot($c, Plus::class));
-        $this->assertSame($bcPlus, $binaryOpTreeRootLocator->findOperationRoot($bcPlus, Plus::class));
+        $firstOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($firstVariable, Plus::class);
+        $this->assertSame($abcPlus, $firstOperationRoot);
+
+        $secondOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($secondVariable, Plus::class);
+        $this->assertSame($bcPlus, $secondOperationRoot);
+
+        $thirdOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($thirdVariable, Plus::class);
+        $this->assertSame($bcPlus, $thirdOperationRoot);
+
+        $plusOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($bcPlus, Plus::class);
+        $this->assertSame($bcPlus, $plusOperationRoot);
     }
 
     public function testWrongRootOp(): void
@@ -60,20 +77,29 @@ final class BinaryOpTreeRootLocatorTest extends TestCase
         $binaryOpTreeRootLocator = new BinaryOpTreeRootLocator();
 
         // (Minus (Plus a b) c)
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $abPlus = new Plus($a, $b);
-        $a->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
-        $b->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
-        $c = new Variable('c');
-        $abcMinus = new Minus($abPlus, $c);
-        $abPlus->setAttribute(AttributeKey::PARENT_NODE, $abcMinus);
-        $c->setAttribute(AttributeKey::PARENT_NODE, $abcMinus);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
 
-        $this->assertSame($abPlus, $binaryOpTreeRootLocator->findOperationRoot($a, Plus::class));
-        $this->assertSame($abPlus, $binaryOpTreeRootLocator->findOperationRoot($b, Plus::class));
-        $this->assertSame($abPlus, $binaryOpTreeRootLocator->findOperationRoot($abPlus, Plus::class));
-        $this->assertSame($c, $binaryOpTreeRootLocator->findOperationRoot($c, Plus::class));
+        $abPlus = new Plus($firstVariable, $secondVariable);
+        $firstVariable->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
+        $secondVariable->setAttribute(AttributeKey::PARENT_NODE, $abPlus);
+
+        $thirdVariable = new Variable('c');
+        $abcMinus = new Minus($abPlus, $thirdVariable);
+        $abPlus->setAttribute(AttributeKey::PARENT_NODE, $abcMinus);
+        $thirdVariable->setAttribute(AttributeKey::PARENT_NODE, $abcMinus);
+
+        $plusOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($firstVariable, Plus::class);
+        $this->assertSame($abPlus, $plusOperationRoot);
+
+        $secondOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($secondVariable, Plus::class);
+        $this->assertSame($abPlus, $secondOperationRoot);
+
+        $plusOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($abPlus, Plus::class);
+        $this->assertSame($abPlus, $plusOperationRoot);
+
+        $thirdOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($thirdVariable, Plus::class);
+        $this->assertSame($thirdVariable, $thirdOperationRoot);
     }
 
     public function testInnerNodeDifferentOp(): void
@@ -81,19 +107,28 @@ final class BinaryOpTreeRootLocatorTest extends TestCase
         $binaryOpTreeRootLocator = new BinaryOpTreeRootLocator();
 
         // (Plus (Minus a b) c)
-        $a = new Variable('a');
-        $b = new Variable('b');
-        $c = new Variable('c');
-        $abMinus = new Minus($a, $b);
-        $a->setAttribute(AttributeKey::PARENT_NODE, $abMinus);
-        $b->setAttribute(AttributeKey::PARENT_NODE, $abMinus);
-        $abcPlus = new Plus($abMinus, $c);
-        $abMinus->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
-        $c->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
+        $firstVariable = new Variable('a');
+        $secondVariable = new Variable('b');
+        $thirdVariable = new Variable('c');
 
-        $this->assertSame($a, $binaryOpTreeRootLocator->findOperationRoot($a, Plus::class));
-        $this->assertSame($b, $binaryOpTreeRootLocator->findOperationRoot($b, Plus::class));
-        $this->assertSame($abcPlus, $binaryOpTreeRootLocator->findOperationRoot($abMinus, Plus::class));
-        $this->assertSame($abcPlus, $binaryOpTreeRootLocator->findOperationRoot($c, Plus::class));
+        $abMinus = new Minus($firstVariable, $secondVariable);
+        $firstVariable->setAttribute(AttributeKey::PARENT_NODE, $abMinus);
+        $secondVariable->setAttribute(AttributeKey::PARENT_NODE, $abMinus);
+
+        $abcPlus = new Plus($abMinus, $thirdVariable);
+        $abMinus->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
+        $thirdVariable->setAttribute(AttributeKey::PARENT_NODE, $abcPlus);
+
+        $firstOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($firstVariable, Plus::class);
+        $this->assertSame($firstVariable, $firstOperationRoot);
+
+        $secondOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($secondVariable, Plus::class);
+        $this->assertSame($secondVariable, $secondOperationRoot);
+
+        $minusOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($abMinus, Plus::class);
+        $this->assertSame($abcPlus, $minusOperationRoot);
+
+        $thirdOperationRoot = $binaryOpTreeRootLocator->findOperationRoot($thirdVariable, Plus::class);
+        $this->assertSame($abcPlus, $thirdOperationRoot);
     }
 }

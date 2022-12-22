@@ -43,7 +43,7 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
         $useUse = new UseUse(new Name($useImportName), $useAlias);
         $useUse->setAttribute(AttributeKey::ORIGINAL_NODE, $useUse);
 
-        $uses = [new Use_([$useUse, $useAlias])];
+        $uses = [new Use_([$useUse])];
 
         // uses
         $useAliasMetadata = $this->useAliasNameMatcher->match($uses, $shortAnnotationName, $annotationToAttribute);

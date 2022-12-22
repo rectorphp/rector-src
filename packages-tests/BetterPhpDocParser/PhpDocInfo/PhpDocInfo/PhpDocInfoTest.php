@@ -30,7 +30,10 @@ final class PhpDocInfoTest extends AbstractTestCase
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
         $this->docBlockTagReplacer = $this->getService(DocBlockTagReplacer::class);
 
-        $this->phpDocInfo = $this->createPhpDocInfoFromFile(__DIR__ . '/Source/doc.txt');
+        $phpDocInfo = $this->createPhpDocInfoFromFile(__DIR__ . '/Source/doc.txt');
+        $this->assertInstanceOf(PhpDocInfo::class, $phpDocInfo);
+
+        $this->phpDocInfo = $phpDocInfo;
     }
 
     public function testGetTagsByName(): void
@@ -54,6 +57,8 @@ final class PhpDocInfoTest extends AbstractTestCase
     public function testReplaceTagByAnother(): void
     {
         $phpDocInfo = $this->createPhpDocInfoFromFile(__DIR__ . '/Source/test-tag.txt');
+        $this->assertInstanceOf(PhpDocInfo::class, $phpDocInfo);
+
         $this->docBlockTagReplacer->replaceTagByAnother($phpDocInfo, 'test', 'flow');
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);

@@ -25,12 +25,12 @@ final class PropertyNamingTest extends AbstractTestCase
      */
     public function testGetExpectedNameFromMethodName(string $methodName, ?string $expectedPropertyName): void
     {
-        /** @var ExpectedName $expectedName */
         $expectedName = $this->propertyNaming->getExpectedNameFromMethodName($methodName);
 
         if ($expectedPropertyName === null) {
             $this->assertNull($expectedName);
         } else {
+            $this->assertInstanceOf(ExpectedName::class, $expectedName);
             $this->assertSame($expectedPropertyName, $expectedName->getSingularized());
         }
     }
@@ -59,9 +59,6 @@ final class PropertyNamingTest extends AbstractTestCase
         $this->assertSame($expectedVariableName, $variableName);
     }
 
-    /**
-     * @return Iterator<string, string>
-     */
     public function provideDataPropertyName(): Iterator
     {
         yield ['SomeVariable', 'someVariable'];
