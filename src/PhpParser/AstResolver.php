@@ -93,6 +93,10 @@ final class AstResolver
         $classLikeName = $classReflection->getName();
         $methodName = $methodReflection->getName();
 
+        if (isset($this->classMethodsByClassAndMethod[$classLikeName][$methodName])) {
+            return $this->classMethodsByClassAndMethod[$classLikeName][$methodName];
+        }
+
         if (array_key_exists($classLikeName, $this->classMethodsByClassAndMethod)
             && array_key_exists($methodName, $this->classMethodsByClassAndMethod[$classLikeName])) {
             return $this->classMethodsByClassAndMethod[$classLikeName][$methodName];
@@ -146,6 +150,11 @@ final class AstResolver
     public function resolveFunctionFromFunctionReflection(FunctionReflection $functionReflection): ?Function_
     {
         $functionName = $functionReflection->getName();
+
+        if (isset($this->functionsByName[$functionName])) {
+            return $this->functionsByName[$functionName];
+        }
+
         if (array_key_exists($functionName, $this->functionsByName)) {
             return $this->functionsByName[$functionName];
         }
