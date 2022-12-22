@@ -886,4 +886,4 @@ parameters:
             message: '#Method call return value that should be used, but is not#'
             path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
 
-        - '#Used function Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
+        - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
