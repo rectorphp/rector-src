@@ -63,8 +63,16 @@ final class PhpFileProcessor implements FileProcessorInterface
             $file->changeHasChanged(false);
             $this->fileProcessor->refactor($file, $configuration);
 
+            $oldStmts = $file->getOldStmts();
+            $newStmts = $file->getNewStmts();
+
             // 3. apply post rectors
-            $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
+            $newStmts = $this->postFileProcessor->traverse($newStmts);
+
+            if ($oldStmts === $newStmts) {
+                break;
+            }
+
             // this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($newStmts);
 
