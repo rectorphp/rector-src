@@ -21,6 +21,8 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
 
     protected function tearDown(): void
     {
+        parent::tearDown();
+
         $this->changedFilesDetector->clear();
     }
 

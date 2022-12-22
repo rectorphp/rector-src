@@ -7,6 +7,7 @@ namespace Rector\Tests\ChangesReporting\Annotation;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use Rector\ChangesReporting\Annotation\AnnotationExtractor;
+use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolver\Source\RectorWithChangelog;
 use Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolver\Source\RectorWithOutChangelog;
 
@@ -20,6 +21,7 @@ final class AnnotationExtractorTest extends TestCase
     }
 
     /**
+     * @param class-string<RectorInterface> $className
      * @dataProvider extractAnnotationProvider()
      */
     public function testExtractAnnotationFromClass(string $className, string $annotation, ?string $expected): void

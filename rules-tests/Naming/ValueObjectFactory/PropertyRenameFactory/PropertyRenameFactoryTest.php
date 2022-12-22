@@ -6,6 +6,7 @@ namespace Rector\Tests\Naming\ValueObjectFactory\PropertyRenameFactory;
 
 use Iterator;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
@@ -47,6 +48,7 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
         $class = $this->betterNodeFinder->findFirstInstanceOf($nodes, Class_::class);
 
         $property = $class->getProperty($currentName);
+        $this->assertInstanceOf(Property::class, $property);
 
         $expectedPropertyName = $this->matchPropertyTypeExpectedNameResolver->resolve($property, $class);
         if ($expectedPropertyName === null) {

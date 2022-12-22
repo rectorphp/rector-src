@@ -34,9 +34,6 @@ final class ShortNameResolverTest extends AbstractTestCase
         $this->assertSame($expectedShortNames, $shortNames);
     }
 
-    /**
-     * @return Iterator<array<int, array<string, string|class-string>>
-     */
     public function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/various_imports.php.inc', [

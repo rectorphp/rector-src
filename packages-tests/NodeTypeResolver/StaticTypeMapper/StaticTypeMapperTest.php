@@ -83,6 +83,7 @@ final class StaticTypeMapperTest extends AbstractTestCase
     }
 
     /**
+     * @param class-string $expectedType
      * @dataProvider provideDataForMapPhpParserNodePHPStanType()
      */
     public function testMapPhpParserNodePHPStanType(Node $node, string $expectedType): void

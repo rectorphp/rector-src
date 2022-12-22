@@ -41,7 +41,7 @@ final class File
     private array $rectorWithLineChanges = [];
 
     public function __construct(
-        private readonly string $filepath,
+        private readonly string $filePath,
         private string $fileContent
     ) {
         $this->originalFileContent = $fileContent;
@@ -49,7 +49,7 @@ final class File
 
     public function getFilePath(): string
     {
-        return $this->filepath;
+        return $this->filePath;
     }
 
     public function getFileContent(): string

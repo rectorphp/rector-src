@@ -7,7 +7,7 @@ namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\Spec
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class OrderAttributesRectorTest extends AbstractRectorTestCase
+final class SpecificOrderAttributesRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

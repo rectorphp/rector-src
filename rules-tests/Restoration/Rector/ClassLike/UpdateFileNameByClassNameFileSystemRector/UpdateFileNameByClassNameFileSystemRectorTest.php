@@ -8,6 +8,7 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
+use Webmozart\Assert\Assert;
 
 final class UpdateFileNameByClassNameFileSystemRectorTest extends AbstractRectorTestCase
 {
@@ -18,6 +19,7 @@ final class UpdateFileNameByClassNameFileSystemRectorTest extends AbstractRector
     {
         $this->doTestFile($filePath);
 
+        Assert::string($this->originalTempFilePath);
         $originalDirectory = dirname($this->originalTempFilePath);
 
         $expectedAddedFileWithContent = new AddedFileWithContent(

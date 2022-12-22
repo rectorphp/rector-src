@@ -29,6 +29,7 @@ final class PhpDocTypeMapperTest extends AbstractTestCase
     }
 
     /**
+     * @param class-string $expectedPHPStanType
      * @dataProvider provideData()
      */
     public function test(TypeNode $typeNode, string $expectedPHPStanType): void
@@ -37,7 +38,6 @@ final class PhpDocTypeMapperTest extends AbstractTestCase
         $nameScope = $this->nameScopeFactory->createNameScopeFromNode($nop);
 
         $phpStanType = $this->phpDocTypeMapper->mapToPHPStanType($typeNode, $nop, $nameScope);
-
         $this->assertInstanceOf($expectedPHPStanType, $phpStanType);
     }
 

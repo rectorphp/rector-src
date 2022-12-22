@@ -39,6 +39,8 @@ final class UseImportsResolverTest extends AbstractTestCase
         $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
 
         $firstProperty = $this->betterNodeFinder->findFirstInstanceOf($nodes, Property::class);
+        $this->assertInstanceOf(Property::class, $firstProperty);
+
         $resolvedUses = $this->useImportsResolver->resolveForNode($firstProperty);
 
         $stringUses = [];
@@ -46,7 +48,7 @@ final class UseImportsResolverTest extends AbstractTestCase
         foreach ($resolvedUses as $resolvedUse) {
             foreach ($resolvedUse->uses as $useUse) {
                 $stringUses[] = $resolvedUse instanceof Use_
-                    ? $useUse->name->tostring()
+                    ? $useUse->name->toString()
                     : $resolvedUse->prefix->toString() . '\\' . $useUse->name->toString();
             }
         }

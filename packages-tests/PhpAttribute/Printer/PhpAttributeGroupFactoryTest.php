@@ -6,6 +6,7 @@ namespace Rector\Tests\PhpAttribute\Printer;
 
 use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Tests\Transform\Rector\FuncCall\ArgumentFuncCallToMethodCallRector\Fixture\Route;
@@ -36,8 +37,8 @@ final class PhpAttributeGroupFactoryTest extends AbstractTestCase
     public function testCreateArgsFromItems(): void
     {
         $args = $this->phpAttributeGroupFactory->createArgsFromItems([
-            'path' => '/path',
-            'name' => 'action',
+            new ArrayItemNode('/path', 'path'),
+            new ArrayItemNode('action', 'name'),
         ], Route::class);
 
         $this->assertCount(2, $args);

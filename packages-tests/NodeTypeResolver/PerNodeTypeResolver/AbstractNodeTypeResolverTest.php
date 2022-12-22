@@ -32,9 +32,9 @@ abstract class AbstractNodeTypeResolverTest extends AbstractTestCase
      * @param class-string<T> $type
      * @return T[]
      */
-    protected function getNodesForFileOfType(string $filepath, string $type): array
+    protected function getNodesForFileOfType(string $filePath, string $type): array
     {
-        $nodes = $this->testingParser->parseFileToDecoratedNodes($filepath);
+        $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
         return $this->betterNodeFinder->findInstanceOf($nodes, $type);
     }
 }

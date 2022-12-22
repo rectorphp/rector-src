@@ -19,11 +19,16 @@ final class FileCacheStorageTest extends AbstractRectorTestCase
         $this->fileCacheStorage = new FileCacheStorage(__DIR__ . '/Source', new Filesystem());
     }
 
-    public function testClean(): void
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testCleanNonExistingFile(): void
     {
         $this->fileCacheStorage->clean('inexistant/file');
-        $this->assertTrue(true, 'Non existant file cleaning is correctly handled');
+    }
 
+    public function testClean(): void
+    {
         $this->fileCacheStorage->save('aaK1STfY', 'TEST', 'file cached');
         $file1 = __DIR__ . '/Source/0e/76/0e76658526655756207688271159624026011393.php';
 
