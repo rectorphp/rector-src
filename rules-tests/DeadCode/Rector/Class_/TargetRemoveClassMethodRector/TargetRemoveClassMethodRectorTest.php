@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector;
+namespace Rector\Tests\DeadCode\Rector\Class_\TargetRemoveClassMethodRector;
 
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class Php74Test extends AbstractRectorTestCase
+final class TargetRemoveClassMethodRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
@@ -17,9 +17,12 @@ final class Php74Test extends AbstractRectorTestCase
         $this->doTestFile($filePath);
     }
 
+    /**
+     * @return Iterator<string>
+     */
     public function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp74');
+        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string
