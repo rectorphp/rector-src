@@ -39,7 +39,7 @@ final class ClassLikeAstResolver
         }
 
         $className = $classReflection->getName();
-        if (isset($this->classLikesByName[$className])) {
+        if (array_key_exists($className, $this->classLikesByName)) {
             return $this->classLikesByName[$className];
         }
 
