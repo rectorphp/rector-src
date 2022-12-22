@@ -24,7 +24,10 @@ parameters:
         - src
         - rules
         - packages
+        # tests
+        - packages-tests
         - tests
+        - rules-tests
         - utils
         # this cannot be put it, because it wipes PHPStan cache on each run :( - must run in separate
         #- config
