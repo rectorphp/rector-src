@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final readonly class SkipNonReadOnlyPromoted
+final readonly class SkipOnReadonlyClass
 {
     public function __construct(
         private string $name
