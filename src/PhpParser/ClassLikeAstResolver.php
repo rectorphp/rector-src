@@ -43,8 +43,9 @@ final class ClassLikeAstResolver
             return $this->classLikesByName[$className];
         }
 
+        // saved as null data
         if (array_key_exists($className, $this->classLikesByName)) {
-            return $this->classLikesByName[$className];
+            return null;
         }
 
         $fileName = $classReflection->getFileName();

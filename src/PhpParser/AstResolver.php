@@ -97,9 +97,10 @@ final class AstResolver
             return $this->classMethodsByClassAndMethod[$classLikeName][$methodName];
         }
 
+        // saved as null data
         if (array_key_exists($classLikeName, $this->classMethodsByClassAndMethod)
             && array_key_exists($methodName, $this->classMethodsByClassAndMethod[$classLikeName])) {
-            return $this->classMethodsByClassAndMethod[$classLikeName][$methodName];
+            return null;
         }
 
         $fileName = $classReflection->getFileName();
@@ -155,8 +156,9 @@ final class AstResolver
             return $this->functionsByName[$functionName];
         }
 
+        // saved as null data
         if (array_key_exists($functionName, $this->functionsByName)) {
-            return $this->functionsByName[$functionName];
+            return null;
         }
 
         $fileName = $functionReflection->getFileName();
