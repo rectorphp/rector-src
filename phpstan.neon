@@ -4,6 +4,9 @@ includes:
 parameters:
     reportUnmatchedIgnoredErrors: false
 
+    unused_public:
+        properties: true
+
     level: 8
 
     # requires exact closure types
