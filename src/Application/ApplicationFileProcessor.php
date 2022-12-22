@@ -143,10 +143,8 @@ final class ApplicationFileProcessor
      */
     public function configurePHPStanNodeScopeResolver(array $filePaths): void
     {
-        $phpFilePaths = array_filter(
-            $filePaths,
-            static fn (string $filePath): bool => str_ends_with($filePath, '.php')
-        );
+        $phpFilter = static fn (string $filePath): bool => str_ends_with($filePath, '.php');
+        $phpFilePaths = array_filter($filePaths, $phpFilter);
         $this->nodeScopeResolver->setAnalysedFiles($phpFilePaths);
     }
 

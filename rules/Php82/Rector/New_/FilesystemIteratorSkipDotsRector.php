@@ -10,7 +10,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -71,14 +70,13 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
      */
     private function isSkipDotsPresent(Expr $node): bool
     {
-        $element = $this->betterNodeFinder->findFirst($node, static function (Node $node) {
-            if (! ($node instanceof Identifier)) {
+        $element = $this->betterNodeFinder->findFirst($node, static function (Node $node): bool {
+            if (! $node instanceof ClassConstFetch) {
                 return false;
             }
-
-            return $node->name === 'SKIP_DOTS';
+            return strval($node->name) === 'SKIP_DOTS';
         });
 
-        return $element instanceof Node;
+        return $element instanceof ClassConstFetch;
     }
 }
