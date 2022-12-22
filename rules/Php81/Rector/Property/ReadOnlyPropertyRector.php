@@ -105,6 +105,11 @@ CODE_SAMPLE
         return $this->refactorProperty($node);
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::READONLY_PROPERTY;
+    }
+
     private function shouldSkip(Property|Param $node): bool
     {
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
@@ -113,11 +118,6 @@ CODE_SAMPLE
         }
 
         return $class->isReadonly();
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::READONLY_PROPERTY;
     }
 
     private function refactorProperty(Property $property): ?Property
