@@ -9,6 +9,15 @@ parameters:
         constants: true
         methods: true
 
+    type_coverage:
+        param_type: 99
+        return_type: 99
+        property_type: 99
+
+    cognitive_complexity:
+        class: 50
+        function: 12
+
     level: 8
 
     # requires exact closure types
