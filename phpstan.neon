@@ -202,8 +202,6 @@ parameters:
             path: packages/BetterPhpDocParser/Printer/PhpDocInfoPrinter.php
 
         - '#expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
-        # weird generics
-        - '#Method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:getByType\(\) should return array<TNode of PHPStan\\PhpDocParser\\Ast\\Node\> but returns array<PHPStan\\PhpDocParser\\Ast\\Node\>#'
 
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
@@ -610,8 +608,6 @@ parameters:
 
         - '#Class has a static method must so must contains "Static" in its name#'
 
-        - '#Class method ".+\(\)" is never used#'
-
         # regex re-validation
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
@@ -681,9 +677,6 @@ parameters:
         -
             message: '#Instead of abstract class, use specific service with composition#'
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeVisitor/AbstractPhpDocNodeVisitor.php"
-        -
-            message: '#Use explicit return value over magic &reference#'
-            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
         -
             message: '#Cognitive complexity for "Rector\\PhpDocParser\\PhpDocParser\\PhpDocNodeTraverser\:\:(.*?)\(\)" is \d+, keep it under 10#'
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
@@ -766,8 +759,9 @@ parameters:
             message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
             path: src/Util/Reflection/PrivatesAccessor.php
 
-        # generic usage
-        - '#Parameters should use "Rector\\Core\\Tests\\Util\\Reflection\\Fixture\\SomeClassWithPrivateMethods\|string\|int" types as the only types passed to this method#'
+        -
+            message: '#Use explicit return value over magic &reference#'
+            path: packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
 
         # for reflection
         -
@@ -784,14 +778,6 @@ parameters:
 
         -
             message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
-            path: src/Util/ArrayParametersMerger.php
-
-        -
-            message: '#Construct empty\(\) is not allowed\. Use more strict comparison#'
-            path: src/Util/ArrayParametersMerger.php
-
-        -
-            message: '#"empty\(\$right\)" is forbidden to use#'
             path: src/Util/ArrayParametersMerger.php
 
         # not relevant anymore
@@ -887,7 +873,3 @@ parameters:
             path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
 
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
-
-        # false positive
-        - '#Public method "Rector\\PhpAttribute\\NodeFactory\\DoctrineAnnotationFactory\:\:createFromAttribute\(\)" is never used#'
-
