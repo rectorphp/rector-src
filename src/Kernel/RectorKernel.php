@@ -27,6 +27,9 @@ final class RectorKernel
         $this->configureCallValuesCollector = new ConfigureCallValuesCollector();
     }
 
+    /**
+     * @api used in tests
+     */
     public function create(): ContainerInterface
     {
         return $this->createFromConfigs([]);

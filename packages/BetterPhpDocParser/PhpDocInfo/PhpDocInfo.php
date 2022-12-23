@@ -12,7 +12,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PropertyTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
@@ -421,19 +420,6 @@ final class PhpDocInfo
         return $changedPhpDocNodeVisitor->hasChanged();
     }
 
-    /**
-     * @return string[]
-     */
-    public function getMethodTagNames(): array
-    {
-        $methodTagNames = [];
-        foreach ($this->phpDocNode->getMethodTagValues() as $methodTagValueNode) {
-            $methodTagNames[] = $methodTagValueNode->methodName;
-        }
-
-        return $methodTagNames;
-    }
-
     public function makeMultiLined(): void
     {
         $this->isSingleLine = false;
@@ -444,7 +430,7 @@ final class PhpDocInfo
         return $this->node;
     }
 
-    public function resolveNameForPhpDocTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): ?string
+    private function resolveNameForPhpDocTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): ?string
     {
         foreach (self::TAGS_TYPES_TO_NAMES as $tagValueNodeType => $name) {
             /** @var class-string<PhpDocTagNode> $tagValueNodeType */

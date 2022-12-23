@@ -887,3 +887,7 @@ parameters:
             path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
 
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
+
+        # false positive
+        - '#Public method "Rector\\PhpAttribute\\NodeFactory\\DoctrineAnnotationFactory\:\:createFromAttribute\(\)" is never used#'
+
