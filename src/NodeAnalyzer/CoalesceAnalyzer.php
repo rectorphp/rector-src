@@ -23,6 +23,9 @@ final class CoalesceAnalyzer
         StaticPropertyFetch::class,
     ];
 
+    /**
+     * @api downgrade
+     */
     public function hasIssetableLeft(Coalesce $coalesce): bool
     {
         $leftClass = $coalesce->left::class;

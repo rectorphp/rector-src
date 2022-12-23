@@ -135,7 +135,7 @@ final class PhpDocInfoPrinter
         return Strings::replace($phpDocString, self::CALLABLE_REGEX, 'callable(');
     }
 
-    public function getCurrentPhpDocInfo(): PhpDocInfo
+    private function getCurrentPhpDocInfo(): PhpDocInfo
     {
         if ($this->phpDocInfo === null) {
             throw new ShouldNotHappenException();

@@ -223,6 +223,9 @@ final class PhpDocInfo
         return $doctrineAnnotationTagValueNodes[0] ?? null;
     }
 
+    /**
+     * @api doctrine/symfony
+     */
     public function getByAnnotationClass(string $class): ?DoctrineAnnotationTagValueNode
     {
         $doctrineAnnotationTagValueNodes = $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass(
@@ -269,15 +272,6 @@ final class PhpDocInfo
     }
 
     /**
-     * @param class-string $desiredClass
-     * @return DoctrineAnnotationTagValueNode[]
-     */
-    public function findByAnnotationClass(string $desiredClass): array
-    {
-        return $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass($this->phpDocNode, $desiredClass);
-    }
-
-    /**
      * @template T of \PHPStan\PhpDocParser\Ast\Node
      * @param class-string<T> $typeToRemove
      */
@@ -308,25 +302,6 @@ final class PhpDocInfo
             $this->markAsChanged();
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
-    }
-
-    /**
-     * @return array<string, Type>
-     */
-    public function getParamTypesByName(): array
-    {
-        $paramTypesByName = [];
-
-        foreach ($this->phpDocNode->getParamTagValues() as $paramTagValueNode) {
-            $parameterType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType(
-                $paramTagValueNode,
-                $this->node
-            );
-
-            $paramTypesByName[$paramTagValueNode->parameterName] = $parameterType;
-        }
-
-        return $paramTypesByName;
     }
 
     public function addTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): void
@@ -508,6 +483,15 @@ final class PhpDocInfo
         }
 
         return null;
+    }
+
+    /**
+     * @param class-string $desiredClass
+     * @return DoctrineAnnotationTagValueNode[]
+     */
+    private function findByAnnotationClass(string $desiredClass): array
+    {
+        return $this->phpDocNodeByTypeFinder->findDoctrineAnnotationsByClass($this->phpDocNode, $desiredClass);
     }
 
     private function getTypeOrMixed(?PhpDocTagValueNode $phpDocTagValueNode): MixedType | Type

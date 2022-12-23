@@ -19,7 +19,6 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeManipulator\ClassManipulator;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Renaming\Collector\MethodCallRenameCollector;
 use Rector\Renaming\Contract\MethodCallRenameInterface;
 use Rector\Renaming\ValueObject\MethodCallRename;
 use Rector\Renaming\ValueObject\MethodCallRenameWithArrayKey;
@@ -39,7 +38,6 @@ final class RenameMethodRector extends AbstractScopeAwareRector implements Confi
 
     public function __construct(
         private readonly ClassManipulator $classManipulator,
-        private readonly MethodCallRenameCollector $methodCallRenameCollector,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReflectionProvider $reflectionProvider
     ) {
@@ -119,7 +117,6 @@ CODE_SAMPLE
         Assert::allIsAOf($configuration, MethodCallRenameInterface::class);
 
         $this->methodCallRenames = $configuration;
-        $this->methodCallRenameCollector->addMethodCallRenames($configuration);
     }
 
     private function shouldSkipClassMethod(

@@ -15,6 +15,9 @@ use PhpParser\Node\Name;
  */
 final class FluentChainMethodCallNodeAnalyzer
 {
+    /**
+     * @api doctrine
+     */
     public function resolveRootMethodCall(MethodCall $methodCall): ?MethodCall
     {
         $callerNode = $methodCall->var;

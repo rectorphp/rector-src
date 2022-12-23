@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Rector\FamilyTree\NodeAnalyzer;
 
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\Php\PhpMethodReflection;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 final class ClassChildAnalyzer
@@ -65,29 +62,10 @@ final class ClassChildAnalyzer
         return false;
     }
 
-    public function resolveParentClassMethodReturnType(ClassReflection $classReflection, string $methodName): Type
-    {
-        $parentClassMethods = $this->resolveParentClassMethods($classReflection, $methodName);
-        if ($parentClassMethods === []) {
-            return new MixedType();
-        }
-
-        foreach ($parentClassMethods as $parentClassMethod) {
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethod->getVariants());
-            $nativeReturnType = $parametersAcceptor->getNativeReturnType();
-
-            if (! $nativeReturnType instanceof MixedType) {
-                return $nativeReturnType;
-            }
-        }
-
-        return new MixedType();
-    }
-
     /**
      * @return PhpMethodReflection[]
      */
-    public function resolveParentClassMethods(ClassReflection $classReflection, string $methodName): array
+    private function resolveParentClassMethods(ClassReflection $classReflection, string $methodName): array
     {
         $parentClassMethods = [];
         $parents = array_merge($classReflection->getParents(), $classReflection->getInterfaces());

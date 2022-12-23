@@ -14,6 +14,9 @@ final class Unprefixer
      */
     private const QUOTED_VALUE_REGEX = '#\'\\\\(\w|@)#';
 
+    /**
+     * @api
+     */
     public static function unprefixQuoted(string $content, string $prefix): string
     {
         $match = sprintf('\'%s\\\\r\\\\n\'', $prefix);

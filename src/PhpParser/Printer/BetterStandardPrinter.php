@@ -143,6 +143,9 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return parent::prettyPrintFile($stmts) . PHP_EOL;
     }
 
+    /**
+     * @api magic method in parent
+     */
     public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
     {
         $content = $this->pStmts($fileWithoutNamespace->stmts, false);

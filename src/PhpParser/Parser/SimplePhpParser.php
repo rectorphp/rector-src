@@ -22,6 +22,7 @@ final class SimplePhpParser
     }
 
     /**
+     * @api tests
      * @return Stmt[]
      */
     public function parseFile(string $filePath): array

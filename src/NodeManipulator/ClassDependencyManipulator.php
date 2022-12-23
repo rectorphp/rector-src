@@ -74,6 +74,9 @@ final class ClassDependencyManipulator
         }
     }
 
+    /**
+     * @api doctrine
+     */
     public function addConstructorDependencyWithCustomAssign(
         Class_ $class,
         string $name,
@@ -109,6 +112,7 @@ final class ClassDependencyManipulator
     }
 
     /**
+     * @api doctrine
      * @param Stmt[] $stmts
      */
     public function addStmtsToConstructorIfNotThereYet(Class_ $class, array $stmts): void

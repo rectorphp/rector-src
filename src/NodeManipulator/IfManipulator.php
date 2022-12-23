@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Exit_;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Foreach_;
@@ -20,13 +19,11 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 final class IfManipulator
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly StmtsManipulator $stmtsManipulator,
         private readonly ValueResolver $valueResolver,
         private readonly ConditionInverter $conditionInverter,
@@ -154,25 +151,6 @@ final class IfManipulator
         }
 
         return $this->nodeComparator->areNodesEqual($desiredExpr, $lastElseStmt->var);
-    }
-
-    /**
-     * Matches:
-     * if (<some_function>) {
-     * } else {
-     * }
-     */
-    public function isIfOrIfElseWithFunctionCondition(If_ $if, string $functionName): bool
-    {
-        if ((bool) $if->elseifs) {
-            return false;
-        }
-
-        if (! $if->cond instanceof FuncCall) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($if->cond, $functionName);
     }
 
     /**

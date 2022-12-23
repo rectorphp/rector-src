@@ -45,6 +45,7 @@ final class PhpAttributeGroupFactory
     }
 
     /**
+     * @api tests
      * @param mixed[] $items
      */
     public function createFromClassWithItems(string $attributeClass, array $items): AttributeGroup
@@ -84,6 +85,8 @@ final class PhpAttributeGroupFactory
     }
 
     /**
+     * @api tests
+     *
      * @param ArrayItemNode[]|mixed[] $items
      * @return Arg[]
      */

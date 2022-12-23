@@ -59,6 +59,9 @@ final class RectorKernel
         return $containerBuilder;
     }
 
+    /**
+     * @api used in tests
+     */
     public function getContainer(): ContainerInterface
     {
         if ($this->container === null) {

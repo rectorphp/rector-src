@@ -97,34 +97,6 @@ final class BetterTokenIterator extends TokenIterator
         return $content;
     }
 
-    public function print(): string
-    {
-        $content = '';
-        foreach ($this->getTokens() as $token) {
-            $content .= $token[0];
-        }
-
-        return $content;
-    }
-
-    public function nextTokenType(): ?int
-    {
-        $tokens = $this->getTokens();
-
-        // does next token exist?
-        $nextIndex = $this->currentPosition() + 1;
-        if (! isset($tokens[$nextIndex])) {
-            return null;
-        }
-
-        $this->pushSavePoint();
-        $this->next();
-        $nextTokenType = $this->currentTokenType();
-        $this->rollback();
-
-        return $nextTokenType;
-    }
-
     public function currentPosition(): int
     {
         return $this->privatesAccessor->getPrivateProperty($this, self::INDEX);
@@ -160,5 +132,23 @@ final class BetterTokenIterator extends TokenIterator
         }
 
         return false;
+    }
+
+    private function nextTokenType(): ?int
+    {
+        $tokens = $this->getTokens();
+
+        // does next token exist?
+        $nextIndex = $this->currentPosition() + 1;
+        if (! isset($tokens[$nextIndex])) {
+            return null;
+        }
+
+        $this->pushSavePoint();
+        $this->next();
+        $nextTokenType = $this->currentTokenType();
+        $this->rollback();
+
+        return $nextTokenType;
     }
 }

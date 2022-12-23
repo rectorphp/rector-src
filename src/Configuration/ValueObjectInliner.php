@@ -28,7 +28,7 @@ final class ValueObjectInliner
      * @param ReflectionClass<object> $reflectionClass
      * @return mixed[]
      */
-    public static function resolveArgumentValues(ReflectionClass $reflectionClass, object $object): array
+    private static function resolveArgumentValues(ReflectionClass $reflectionClass, object $object): array
     {
         $argumentValues = [];
 

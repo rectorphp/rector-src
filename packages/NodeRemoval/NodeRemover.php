@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeRemoval;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -61,18 +60,6 @@ final class NodeRemover
         foreach ($nodes as $node) {
             $this->removeNode($node);
         }
-    }
-
-    public function removeStmt(Closure | ClassMethod | Function_ $functionLike, int $key): void
-    {
-        if ($functionLike->stmts === null) {
-            throw new ShouldNotHappenException();
-        }
-
-        // notify about remove node
-        $this->rectorChangeCollector->notifyNodeFileInfo($functionLike->stmts[$key]);
-
-        unset($functionLike->stmts[$key]);
     }
 
     public function removeParam(ClassMethod $classMethod, int | Param $keyOrParam): void

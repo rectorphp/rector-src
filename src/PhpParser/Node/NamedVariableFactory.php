@@ -18,6 +18,9 @@ final class NamedVariableFactory
     ) {
     }
 
+    /**
+     * @api downgrade
+     */
     public function createVariable(Node $node, string $variableName): Variable
     {
         $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($node);

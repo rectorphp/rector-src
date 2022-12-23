@@ -14,6 +14,9 @@ use Rector\NodeTypeResolver\Contract\SourceLocatorProviderInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Webmozart\Assert\Assert;
 
+/**
+ * @api phpstan external
+ */
 final class DynamicSourceLocatorProvider implements SourceLocatorProviderInterface
 {
     /**

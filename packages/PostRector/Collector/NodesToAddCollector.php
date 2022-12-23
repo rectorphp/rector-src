@@ -132,6 +132,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @api downgrade
      * @deprecated Return created nodes right in refactor() method to keep context instead.
      * @param Node[] $newNodes
      */

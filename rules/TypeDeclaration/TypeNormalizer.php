@@ -6,11 +6,8 @@ namespace Rector\TypeDeclaration;
 
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
@@ -32,30 +29,6 @@ final class TypeNormalizer
         private readonly TypeFactory $typeFactory,
         private readonly PrivatesAccessor $privatesAccessor
     ) {
-    }
-
-    public function convertConstantArrayTypeToArrayType(ConstantArrayType $constantArrayType): ?ArrayType
-    {
-        $nonConstantValueTypes = [];
-
-        if ($constantArrayType->getItemType() instanceof UnionType) {
-            /** @var UnionType $unionType */
-            $unionType = $constantArrayType->getItemType();
-            foreach ($unionType->getTypes() as $unionedType) {
-                if ($unionedType instanceof ConstantStringType) {
-                    $stringType = new StringType();
-                    $nonConstantValueTypes[$stringType::class] = $stringType;
-                } elseif ($unionedType instanceof ObjectType) {
-                    $nonConstantValueTypes[] = $unionedType;
-                } else {
-                    return null;
-                }
-            }
-        } else {
-            return null;
-        }
-
-        return $this->createArrayTypeFromNonConstantValueTypes($nonConstantValueTypes);
     }
 
     /**
@@ -180,21 +153,6 @@ final class TypeNormalizer
         return $countTraversedTypes === 2 && ($this->isArrayNeverType(
             $traversedTypeTypes[0]
         ) || $this->isArrayNeverType($traversedTypeTypes[1]));
-    }
-
-    /**
-     * @param array<string|int, Type> $nonConstantValueTypes
-     */
-    private function createArrayTypeFromNonConstantValueTypes(array $nonConstantValueTypes): ArrayType
-    {
-        $nonConstantValueTypes = array_values($nonConstantValueTypes);
-        if (count($nonConstantValueTypes) > 1) {
-            $nonConstantValueType = new UnionType($nonConstantValueTypes);
-        } else {
-            $nonConstantValueType = $nonConstantValueTypes[0];
-        }
-
-        return new ArrayType(new MixedType(), $nonConstantValueType);
     }
 
     private function collectNestedArrayTypeFromUnionType(UnionType $unionType, int $arrayNesting): void

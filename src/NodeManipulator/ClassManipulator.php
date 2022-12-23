@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
@@ -43,6 +42,9 @@ final class ClassManipulator
         return false;
     }
 
+    /**
+     * @api phpunit
+     */
     public function hasTrait(Class_ $class, string $desiredTrait): bool
     {
         foreach ($class->getTraitUses() as $traitUse) {
@@ -56,19 +58,5 @@ final class ClassManipulator
         }
 
         return false;
-    }
-
-    public function replaceTrait(Class_ $class, string $oldTrait, string $newTrait): void
-    {
-        foreach ($class->getTraitUses() as $traitUse) {
-            foreach ($traitUse->traits as $key => $traitTrait) {
-                if (! $this->nodeNameResolver->isName($traitTrait, $oldTrait)) {
-                    continue;
-                }
-
-                $traitUse->traits[$key] = new FullyQualified($newTrait);
-                break;
-            }
-        }
     }
 }

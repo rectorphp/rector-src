@@ -24,6 +24,7 @@ final class FileInfoParser
     }
 
     /**
+     * @api tests only
      * @return Stmt[]
      */
     public function parseFileInfoToNodesAndDecorate(string $filePath): array

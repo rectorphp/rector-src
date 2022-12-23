@@ -42,28 +42,6 @@ final class PrivatesAccessorTest extends TestCase
         yield [new SomeClassWithPrivateMethods(), 'plus10', [30], 40];
     }
 
-    /**
-     * @dataProvider provideDataReference()
-     */
-    public function testReference(
-        SomeClassWithPrivateMethods $someClassWithPrivateMethods,
-        string $methodName,
-        int $referencedArgument,
-        int $expectedResult
-    ): void {
-        $result = $this->privatesAccessor->callPrivateMethodWithReference(
-            $someClassWithPrivateMethods,
-            $methodName,
-            $referencedArgument
-        );
-        $this->assertSame($expectedResult, $result);
-    }
-
-    public function provideDataReference(): Iterator
-    {
-        yield [new SomeClassWithPrivateMethods(), 'multipleByTwo', 10, 20];
-    }
-
     public function testGetterSetter(): void
     {
         $privatesAccessor = new PrivatesAccessor();

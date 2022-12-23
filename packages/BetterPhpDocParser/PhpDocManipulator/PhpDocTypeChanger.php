@@ -240,6 +240,9 @@ final class PhpDocTypeChanger
         $this->processKeepComments($property, $param);
     }
 
+    /**
+     * @api doctrine
+     */
     public function changeVarTypeNode(PhpDocInfo $phpDocInfo, TypeNode $typeNode): void
     {
         // add completely new one

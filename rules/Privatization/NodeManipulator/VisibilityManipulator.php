@@ -42,11 +42,6 @@ final class VisibilityManipulator
         $node->flags -= Class_::MODIFIER_STATIC;
     }
 
-    public function makeAbstract(ClassMethod | Class_ $node): void
-    {
-        $this->addVisibilityFlag($node, Visibility::ABSTRACT);
-    }
-
     /**
      * @api
      */
@@ -74,30 +69,6 @@ final class VisibilityManipulator
         }
 
         $node->flags -= Class_::MODIFIER_FINAL;
-    }
-
-    /**
-     * This way "abstract", "static", "final" are kept
-     */
-    public function removeVisibility(ClassMethod | Property | ClassConst $node): void
-    {
-        // no modifier
-        if ($node->flags === 0) {
-            return;
-        }
-
-        if ($node->isPublic()) {
-            $node->flags |= Class_::MODIFIER_PUBLIC;
-            $node->flags -= Class_::MODIFIER_PUBLIC;
-        }
-
-        if ($node->isProtected()) {
-            $node->flags -= Class_::MODIFIER_PROTECTED;
-        }
-
-        if ($node->isPrivate()) {
-            $node->flags -= Class_::MODIFIER_PRIVATE;
-        }
     }
 
     public function changeNodeVisibility(ClassMethod | Property | ClassConst $node, int $visibility): void
@@ -137,6 +108,9 @@ final class VisibilityManipulator
         $node->flags -= Class_::MODIFIER_FINAL;
     }
 
+    /**
+     * @api downgrade
+     */
     public function removeAbstract(ClassMethod $classMethod): void
     {
         $classMethod->flags -= Class_::MODIFIER_ABSTRACT;
@@ -155,6 +129,30 @@ final class VisibilityManipulator
     public function removeReadonly(Class_ | Property | Param $node): void
     {
         $this->removeVisibilityFlag($node, Visibility::READONLY);
+    }
+
+    /**
+     * This way "abstract", "static", "final" are kept
+     */
+    private function removeVisibility(ClassMethod | Property | ClassConst $node): void
+    {
+        // no modifier
+        if ($node->flags === 0) {
+            return;
+        }
+
+        if ($node->isPublic()) {
+            $node->flags |= Class_::MODIFIER_PUBLIC;
+            $node->flags -= Class_::MODIFIER_PUBLIC;
+        }
+
+        if ($node->isProtected()) {
+            $node->flags -= Class_::MODIFIER_PROTECTED;
+        }
+
+        if ($node->isPrivate()) {
+            $node->flags -= Class_::MODIFIER_PRIVATE;
+        }
     }
 
     /**
