@@ -18,6 +18,9 @@ final class CacheFactory
     ) {
     }
 
+    /**
+     * @api config factory
+     */
     public function create(): Cache
     {
         $cacheDirectory = $this->parameterProvider->provideStringParameter(Option::CACHE_DIR);

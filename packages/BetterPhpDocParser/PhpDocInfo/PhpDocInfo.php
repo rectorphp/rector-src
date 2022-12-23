@@ -397,25 +397,6 @@ final class PhpDocInfo
         return $this->phpDocNode->getTemplateTagValues();
     }
 
-    public function hasInheritDoc(): bool
-    {
-        if ($this->hasByNames(['inheritdoc', 'inheritDoc'])) {
-            return true;
-        }
-
-        foreach ($this->phpDocNode->children as $children) {
-            if (! $children instanceof PhpDocTextNode) {
-                continue;
-            }
-
-            if (in_array($children->text, ['{@inheritdoc}', '{@inheritDoc}'], true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
      * @deprecated
      * Should be handled by attributes of phpdoc node - if stard_and_end is missing in one of nodes, it has been changed

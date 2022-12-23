@@ -19,6 +19,7 @@ final class MethodTypeAnalyzer
     }
 
     /**
+     * @api downgrade
      * @param class-string $expectedClass
      * @param non-empty-string $expectedMethod
      */
