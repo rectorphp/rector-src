@@ -7,6 +7,8 @@ class Strpos
     public function run()
     {
         $isMatch = strpos($haystack, $needle) === 0;
+
+        $isMatch = strpos($haystack, $needle) == 0;
     }
 }
 
@@ -20,6 +22,8 @@ class Strpos
 {
     public function run()
     {
+        $isMatch = str_starts_with($haystack, $needle);
+
         $isMatch = str_starts_with($haystack, $needle);
     }
 }

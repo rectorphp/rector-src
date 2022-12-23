@@ -6,7 +6,9 @@ class Fixture
 {
     public function run()
     {
-        return strpos('abc', 'a') !== false;
+        $isMatch = strpos('abc', 'a') !== false;
+
+        $isMatch = strpos('abc', 'a') != false;
     }
 }
 
@@ -20,7 +22,9 @@ class Fixture
 {
     public function run()
     {
-        return str_contains('abc', 'a');
+        $isMatch = str_contains('abc', 'a');
+
+        $isMatch = str_contains('abc', 'a');
     }
 }
 

@@ -7,7 +7,9 @@ namespace Rector\Php80\Rector\NotIdentical;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
@@ -71,7 +73,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Identical::class, NotIdentical::class];
+        return [Identical::class, NotIdentical::class, Equal::class, NotEqual::class];
     }
 
     /**
@@ -98,14 +100,14 @@ CODE_SAMPLE
 
         $funcCall->name = new Name('str_contains');
 
-        if ($node instanceof Identical) {
+        if ($node instanceof Identical || $node instanceof Equal) {
             return new BooleanNot($funcCall);
         }
 
         return $funcCall;
     }
 
-    private function matchIdenticalOrNotIdenticalToFalse(Identical | NotIdentical $expr): ?FuncCall
+    private function matchIdenticalOrNotIdenticalToFalse(Identical | NotIdentical | Equal | NotEqual $expr): ?FuncCall
     {
         if ($this->valueResolver->isFalse($expr->left)) {
             if (! $expr->right instanceof FuncCall) {

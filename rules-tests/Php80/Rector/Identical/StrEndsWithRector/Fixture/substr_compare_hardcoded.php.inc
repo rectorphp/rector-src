@@ -9,6 +9,10 @@ class SubstrCompare
         $isMatch = substr_compare($haystack, 'needle', -6) === 0;
 
         $isMatch = 0 === substr_compare($haystack, 'needle', -6);
+
+        $isMatch = substr_compare($haystack, 'needle', -6) == 0;
+
+        $isMatch = 0 == substr_compare($haystack, 'needle', -6);
     }
 }
 
@@ -22,6 +26,10 @@ class SubstrCompare
 {
     public function run()
     {
+        $isMatch = str_ends_with($haystack, 'needle');
+
+        $isMatch = str_ends_with($haystack, 'needle');
+
         $isMatch = str_ends_with($haystack, 'needle');
 
         $isMatch = str_ends_with($haystack, 'needle');

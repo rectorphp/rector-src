@@ -9,6 +9,10 @@ class HardCodedNotIdentical
         $isMatch = substr($haystack, -3) !== 'foo';
 
         $isMatch = 'foo' !== substr($haystack, -3);
+
+        $isMatch = substr($haystack, -3) != 'foo';
+
+        $isMatch = 'foo' != substr($haystack, -3);
     }
 }
 
@@ -22,6 +26,10 @@ class HardCodedNotIdentical
 {
     public function run()
     {
+        $isMatch = !str_ends_with($haystack, 'foo');
+
+        $isMatch = !str_ends_with($haystack, 'foo');
+
         $isMatch = !str_ends_with($haystack, 'foo');
 
         $isMatch = !str_ends_with($haystack, 'foo');

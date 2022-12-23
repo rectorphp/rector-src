@@ -9,5 +9,9 @@ class SkipStrncmpHardCodedInvalidLength
         $isMatch = strncmp($haystack, 'invalid_length', 1) === 0;
 
         $isMatch = 0 === strncmp($haystack, 'invalid_length', 1);
+
+        $isMatch = strncmp($haystack, 'invalid_length', 1) == 0;
+
+        $isMatch = 0 == strncmp($haystack, 'invalid_length', 1);
     }
 }

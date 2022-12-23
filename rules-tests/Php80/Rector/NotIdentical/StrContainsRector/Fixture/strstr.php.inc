@@ -6,7 +6,9 @@ class Strstr
 {
     public function run()
     {
-        return strstr('abc', 'a') !== false;
+        $isMatch = strstr('abc', 'a') !== false;
+
+        $isMatch = strstr('abc', 'a') != false;
     }
 }
 
@@ -20,7 +22,9 @@ class Strstr
 {
     public function run()
     {
-        return str_contains('abc', 'a');
+        $isMatch = str_contains('abc', 'a');
+
+        $isMatch = str_contains('abc', 'a');
     }
 }
 

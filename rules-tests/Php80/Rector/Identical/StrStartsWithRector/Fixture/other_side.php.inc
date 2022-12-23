@@ -9,6 +9,10 @@ class OtherSide
         $isMatch = $needle === substr($haystack, 0, strlen($needle));
 
         $isNotMatch = $needle !== substr($haystack, 0, strlen($needle));
+
+        $isMatch = $needle == substr($haystack, 0, strlen($needle));
+
+        $isNotMatch = $needle != substr($haystack, 0, strlen($needle));
     }
 }
 
@@ -22,6 +26,10 @@ class OtherSide
 {
     public function run()
     {
+        $isMatch = str_starts_with($haystack, $needle);
+
+        $isNotMatch = !str_starts_with($haystack, $needle);
+
         $isMatch = str_starts_with($haystack, $needle);
 
         $isNotMatch = !str_starts_with($haystack, $needle);

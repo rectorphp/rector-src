@@ -9,6 +9,10 @@ class Strncmp
         $isMatch = strncmp($haystack, $needle, strlen($needle)) === 0;
 
         $isMatch = 0 === strncmp($haystack, $needle, strlen($needle));
+
+        $isMatch = strncmp($haystack, $needle, strlen($needle)) == 0;
+
+        $isMatch = 0 == strncmp($haystack, $needle, strlen($needle));
     }
 }
 
@@ -22,6 +26,10 @@ class Strncmp
 {
     public function run()
     {
+        $isMatch = str_starts_with($haystack, $needle);
+
+        $isMatch = str_starts_with($haystack, $needle);
+
         $isMatch = str_starts_with($haystack, $needle);
 
         $isMatch = str_starts_with($haystack, $needle);

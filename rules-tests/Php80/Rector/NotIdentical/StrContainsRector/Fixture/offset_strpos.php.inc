@@ -6,7 +6,9 @@ class OffsetStrpos
 {
     public function run()
     {
-        return strpos('abc', 'a', 1) !== false;
+        $isMatch = strpos('abc', 'a', 1) !== false;
+
+        $isMatch = strpos('abc', 'a', 1) != false;
     }
 }
 ?>
@@ -19,7 +21,9 @@ class OffsetStrpos
 {
     public function run()
     {
-        return str_contains(substr('abc', 1), 'a');
+        $isMatch = str_contains(substr('abc', 1), 'a');
+
+        $isMatch = str_contains(substr('abc', 1), 'a');
     }
 }
 ?>

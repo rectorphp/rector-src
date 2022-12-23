@@ -7,6 +7,8 @@ class Fixture
     public function run()
     {
         $isMatch = substr($haystack, 0, strlen($needle)) === $needle;
+
+        $isMatch = substr($haystack, 0, strlen($needle)) == $needle;
     }
 }
 
@@ -20,6 +22,8 @@ class Fixture
 {
     public function run()
     {
+        $isMatch = str_starts_with($haystack, $needle);
+
         $isMatch = str_starts_with($haystack, $needle);
     }
 }

@@ -7,6 +7,8 @@ class StrposHardCoded
     public function run()
     {
         $isMatch = strpos($haystack, 'hardcoded') === 0;
+
+        $isMatch = strpos($haystack, 'hardcoded') == 0;
     }
 }
 
@@ -20,6 +22,8 @@ class StrposHardCoded
 {
     public function run()
     {
+        $isMatch = str_starts_with($haystack, 'hardcoded');
+
         $isMatch = str_starts_with($haystack, 'hardcoded');
     }
 }

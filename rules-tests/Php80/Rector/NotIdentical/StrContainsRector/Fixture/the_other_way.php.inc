@@ -6,7 +6,9 @@ class TheOtherWay
 {
     public function run()
     {
-        return false !== strpos('abc', 'a');
+        $isMatch = false !== strpos('abc', 'a');
+
+        $isMatch = false != strpos('abc', 'a');
     }
 }
 
@@ -20,7 +22,9 @@ class TheOtherWay
 {
     public function run()
     {
-        return str_contains('abc', 'a');
+        $isMatch = str_contains('abc', 'a');
+
+        $isMatch = str_contains('abc', 'a');
     }
 }
 

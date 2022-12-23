@@ -9,6 +9,10 @@ class Fixture
         $isMatch = substr($haystack, -strlen($needle)) === $needle;
 
         $isMatch = $needle === substr($haystack, -strlen($needle));
+
+        $isMatch = substr($haystack, -strlen($needle)) == $needle;
+
+        $isMatch = $needle == substr($haystack, -strlen($needle));
     }
 }
 
@@ -22,6 +26,10 @@ class Fixture
 {
     public function run()
     {
+        $isMatch = str_ends_with($haystack, $needle);
+
+        $isMatch = str_ends_with($haystack, $needle);
+
         $isMatch = str_ends_with($haystack, $needle);
 
         $isMatch = str_ends_with($haystack, $needle);
