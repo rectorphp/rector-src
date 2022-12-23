@@ -45,7 +45,7 @@ final class ArgumentDefaultValueReplacer
         return $this->processArgs($node, $replaceArgumentDefaultValue);
     }
 
-    public function isDefaultValueMatched(?Expr $expr, mixed $value): bool
+    private function isDefaultValueMatched(?Expr $expr, mixed $value): bool
     {
         // allow any values before, also allow param without default value
         if ($value === ReplaceArgumentDefaultValue::ANY_VALUE_BEFORE) {

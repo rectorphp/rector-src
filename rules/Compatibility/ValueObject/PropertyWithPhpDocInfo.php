@@ -29,11 +29,6 @@ final class PropertyWithPhpDocInfo
         return $this->phpDocInfo;
     }
 
-    public function getPropertyName(): string
-    {
-        return $this->propertyName;
-    }
-
     public function getParamTagValueNode(): ParamTagValueNode
     {
         $varTagValueNode = $this->phpDocInfo->getVarTagValueNode();

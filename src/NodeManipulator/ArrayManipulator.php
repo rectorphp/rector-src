@@ -47,6 +47,9 @@ final class ArrayManipulator
         return false;
     }
 
+    /**
+     * @api symfony
+     */
     public function addItemToArrayUnderKey(Array_ $array, ArrayItem $newArrayItem, string $key): void
     {
         foreach ($array->items as $item) {
@@ -67,6 +70,9 @@ final class ArrayManipulator
         $array->items[] = new ArrayItem(new Array_([$newArrayItem]), new String_($key));
     }
 
+    /**
+     * @api
+     */
     public function findItemInInArrayByKeyAndUnset(Array_ $array, string $keyName): ?ArrayItem
     {
         foreach ($array->items as $i => $item) {
@@ -94,6 +100,9 @@ final class ArrayManipulator
         return null;
     }
 
+    /**
+     * @api symfony
+     */
     public function hasKeyName(ArrayItem $arrayItem, string $name): bool
     {
         if (! $arrayItem->key instanceof String_) {

@@ -9,6 +9,15 @@ parameters:
         constants: true
         methods: true
 
+    type_coverage:
+        param_type: 99
+        return_type: 99
+        property_type: 99
+
+    cognitive_complexity:
+        class: 50
+        function: 10
+
     level: 8
 
     # requires exact closure types
@@ -702,12 +711,6 @@ parameters:
             message: '#Creating new PHPStan\\Parser\\(CachedParser|SimpleParser) is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: packages/PhpDocParser/PhpParser/SmartPhpParserFactory.php
 
-        # used in a trait
-        - '#Class constant "TEMP_FIXTURE_DIRECTORY" is never used#'
-
-        # used in abstract test case
-        - '#Class constant "SPLIT_LINE_REGEX" is never used#'
-
         -
             message: '#Only booleans are allowed in a negated boolean, string\|false given#'
             path: packages/Testing/Fixture/FixtureFileUpdater.php
@@ -850,9 +853,6 @@ parameters:
         - '#Cognitive complexity for "Rector\\Utils\\ChangelogGenerator\\Changelog\\ChangelogContentsFactory\:\:create\(\)" is 11, keep it under 10#'
 
         -
-            message: '#"Tests" namespace cannot be used outside of "tests" directory#'
-            path: rules-tests
-        -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
             path: rules-tests
 
@@ -887,3 +887,7 @@ parameters:
             path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
 
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
+
+        # false positive
+        - '#Public method "Rector\\PhpAttribute\\NodeFactory\\DoctrineAnnotationFactory\:\:createFromAttribute\(\)" is never used#'
+

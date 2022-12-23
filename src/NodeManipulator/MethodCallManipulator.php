@@ -22,6 +22,7 @@ final class MethodCallManipulator
     }
 
     /**
+     * @api
      * @return string[]
      */
     public function findMethodCallNamesOnVariable(Variable $variable): array
@@ -44,7 +45,7 @@ final class MethodCallManipulator
     /**
      * @return MethodCall[]
      */
-    public function findMethodCallsOnVariable(Variable $variable): array
+    private function findMethodCallsOnVariable(Variable $variable): array
     {
         // get scope node, e.g. parent function call, method call or anonymous function
         $classMethod = $this->betterNodeFinder->findParentType($variable, ClassMethod::class);

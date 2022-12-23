@@ -17,7 +17,6 @@ use Rector\Core\NodeAnalyzer\CoalesceAnalyzer;
 use Rector\Core\NodeDecorator\NamespacedNameDecorator;
 use Rector\Core\NodeManipulator\MethodCallManipulator;
 use Rector\Core\PhpParser\Node\NamedVariableFactory;
-use Rector\Defluent\NodeAnalyzer\SameClassMethodCallAnalyzer;
 use Rector\DependencyInjection\NodeManipulator\PropertyConstructorInjectionManipulator;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Naming\Contract\AssignVariableNameResolverInterface;
@@ -80,7 +79,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         PropertyConstructorInjectionManipulator::class,
         // used in tests
         FileInfoParser::class,
-        SameClassMethodCallAnalyzer::class,
         AnnotationToAttributeMapperInterface::class,
         TypeWithClassTypeSpecifierInterface::class,
         ParentNodeReadAnalyzerInterface::class,

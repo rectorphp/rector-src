@@ -94,18 +94,6 @@ final class PropertyManipulator
     ) {
     }
 
-    public function isAllowedReadOnly(Property | Param $propertyOrPromotedParam, PhpDocInfo $phpDocInfo): bool
-    {
-        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
-            return true;
-        }
-
-        return $this->phpAttributeAnalyzer->hasPhpAttributes(
-            $propertyOrPromotedParam,
-            self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
-        );
-    }
-
     public function isPropertyUsedInReadContext(Class_ $class, Property | Param $propertyOrPromotedParam): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
@@ -248,6 +236,18 @@ final class PropertyManipulator
         }
 
         return false;
+    }
+
+    private function isAllowedReadOnly(Property | Param $propertyOrPromotedParam, PhpDocInfo $phpDocInfo): bool
+    {
+        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
+            return true;
+        }
+
+        return $this->phpAttributeAnalyzer->hasPhpAttributes(
+            $propertyOrPromotedParam,
+            self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
+        );
     }
 
     private function isPropertyAssignedOnlyInConstructor(

@@ -84,9 +84,23 @@ CODE_SAMPLE
     }
 
     /**
+     * @param string[] $classNames
+     * @return mixed[]
+     */
+    private function getParts(String_ $string, array $classNames): array
+    {
+        $quotedClassNames = array_map('preg_quote', $classNames);
+
+        // @see https://regex101.com/r/8nGS0F/1
+        $parts = Strings::split($string->value, '#(' . implode('|', $quotedClassNames) . ')#');
+
+        return array_filter($parts, static fn (string $className): bool => $className !== '');
+    }
+
+    /**
      * @return string[]
      */
-    public function getExistingClasses(String_ $string): array
+    private function getExistingClasses(String_ $string): array
     {
         /** @var mixed[] $matches */
         $matches = Strings::matchAll($string->value, self::CLASS_BEFORE_STATIC_ACCESS_REGEX, PREG_PATTERN_ORDER);
@@ -105,20 +119,6 @@ CODE_SAMPLE
         }
 
         return $classNames;
-    }
-
-    /**
-     * @param string[] $classNames
-     * @return mixed[]
-     */
-    public function getParts(String_ $string, array $classNames): array
-    {
-        $quotedClassNames = array_map('preg_quote', $classNames);
-
-        // @see https://regex101.com/r/8nGS0F/1
-        $parts = Strings::split($string->value, '#(' . implode('|', $quotedClassNames) . ')#');
-
-        return array_filter($parts, static fn (string $className): bool => $className !== '');
     }
 
     /**

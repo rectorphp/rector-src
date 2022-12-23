@@ -50,9 +50,11 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
         foreach ($properties as $property) {
             /** @var Property $property */
             $phpDoc = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-            /** @var VarTagValueNode $varTag */
-            $varTag = $phpDoc->getByType(VarTagValueNode::class)[0];
-            $value = $varTag->type->__toString();
+
+            $varTagValueNode = $phpDoc->getVarTagValueNode();
+            $this->assertInstanceOf(VarTagValueNode::class, $varTagValueNode);
+
+            $value = $varTagValueNode->type->__toString();
             $propertyName = strtolower($this->nodeNameResolver->getName($property));
 
             $result = $this->classAnnotationMatcher->resolveTagToKnownFullyQualifiedName($value, $property);

@@ -115,7 +115,7 @@ final class PhpNestedAttributeGroupFactory
     /**
      * @return Arg[]
      */
-    public function createAttributeArgs(
+    private function createAttributeArgs(
         DoctrineAnnotationTagValueNode $nestedDoctrineAnnotationTagValueNode,
         NestedAnnotationToAttribute $nestedAnnotationToAttribute
     ): array {

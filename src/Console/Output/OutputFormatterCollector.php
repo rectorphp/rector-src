@@ -31,24 +31,18 @@ final class OutputFormatterCollector
         return $this->outputFormatters[$name];
     }
 
-    /**
-     * @return string[]
-     */
-    public function getNames(): array
-    {
-        return array_keys($this->outputFormatters);
-    }
-
     private function ensureOutputFormatExists(string $name): void
     {
         if (isset($this->outputFormatters[$name])) {
             return;
         }
 
+        $outputFormatterNames = array_keys($this->outputFormatters);
+
         throw new InvalidConfigurationException(sprintf(
             'Output formatter "%s" was not found. Pick one of "%s".',
             $name,
-            implode('", "', $this->getNames())
+            implode('", "', $outputFormatterNames)
         ));
     }
 }

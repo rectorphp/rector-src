@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem;
 final class FixtureTempFileDumper
 {
     /**
+     * @api
      * @var string
      */
     public const TEMP_FIXTURE_DIRECTORY = '/rector/tests_fixture_';
@@ -21,6 +22,9 @@ final class FixtureTempFileDumper
         return $temporaryFileName;
     }
 
+    /**
+     * @api
+     */
     public static function getTempDirectory(): string
     {
         return sys_get_temp_dir() . self::TEMP_FIXTURE_DIRECTORY;

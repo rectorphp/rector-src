@@ -34,32 +34,6 @@ final class ArrayParametersMerger
     }
 
     /**
-     * The same as above, just with the case if both values being non-array, it will combined them to array:
-     *
-     * $this->mergeWithCombine(1, 2); // [1, 2]
-     */
-    public function mergeWithCombine(mixed $left, mixed $right): mixed
-    {
-        if (is_array($left) && is_array($right)) {
-            return $this->mergeLeftToRightWithCallable(
-                $left,
-                $right,
-                fn ($leftValue, $rightValue) => $this->mergeWithCombine($leftValue, $rightValue)
-            );
-        }
-
-        if ($left === null && is_array($right)) {
-            return $right;
-        }
-
-        if (! empty($right) && (array) $left !== (array) $right) {
-            return $this->mergeWithCombine((array) $right, (array) $left);
-        }
-
-        return $left;
-    }
-
-    /**
      * @param array<int|string, mixed> $left
      * @param array<int|string, mixed> $right
      * @return mixed[]

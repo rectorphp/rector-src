@@ -32,6 +32,9 @@ final class ClassAnnotationMatcher
     ) {
     }
 
+    /**
+     * @api doctrine
+     */
     public function resolveTagToKnownFullyQualifiedName(string $tag, Property $property): ?string
     {
         return $this->_resolveTagFullyQualifiedName($tag, $property, true);

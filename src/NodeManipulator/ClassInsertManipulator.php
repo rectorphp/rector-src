@@ -55,6 +55,7 @@ final class ClassInsertManipulator
     }
 
     /**
+     * @api
      * @param Property[] $properties
      */
     public function addPropertiesToClass(Class_ $class, array $properties): void

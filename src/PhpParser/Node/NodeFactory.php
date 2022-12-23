@@ -36,8 +36,6 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\Type;
@@ -70,16 +68,6 @@ final class NodeFactory
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
     ) {
-    }
-
-    /**
-     * Creates "SomeClass::CONSTANT"
-     * @deprecated
-     */
-    public function createShortClassConstFetch(string $shortClassName, string $constantName): ClassConstFetch
-    {
-        $name = new Name($shortClassName);
-        return $this->createClassConstFetchFromName($name, $constantName);
     }
 
     /**
@@ -205,6 +193,7 @@ final class NodeFactory
     }
 
     /**
+     * @api symfony
      * @param mixed[] $arguments
      */
     public function createLocalMethodCall(string $method, array $arguments = []): MethodCall
@@ -240,6 +229,9 @@ final class NodeFactory
         );
     }
 
+    /**
+     * @api doctrine
+     */
     public function createPrivateProperty(string $name): Property
     {
         $propertyBuilder = new PropertyBuilder($name);
@@ -271,21 +263,6 @@ final class NodeFactory
         }
 
         return $previousConcat;
-    }
-
-    /**
-     * @param string[] $names
-     * @return Use_[]
-     */
-    public function createUsesFromNames(array $names): array
-    {
-        $uses = [];
-        foreach ($names as $name) {
-            $useUse = new UseUse(new Name($name));
-            $uses[] = new Use_([$useUse]);
-        }
-
-        return $uses;
     }
 
     /**
@@ -365,6 +342,7 @@ final class NodeFactory
     }
 
     /**
+     * @api phpunit
      * @param string|ObjectReference::* $constantName
      */
     public function createClassConstFetchFromName(Name $className, string $constantName): ClassConstFetch

@@ -19,6 +19,7 @@ final class ConfigurationFactory
     }
 
     /**
+     * @api used in tests
      * @param string[] $paths
      */
     public function createForTests(array $paths): Configuration

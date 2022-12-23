@@ -78,16 +78,13 @@ final class ReturnTypeInferer
         }
 
         $type = $this->verifyThisType($type, $functionLike);
-        if (! $type instanceof Type) {
-            return new MixedType();
-        }
 
         // normalize ConstStringType to ClassStringType
         $resolvedType = $this->genericClassStringTypeNormalizer->normalize($type);
         return $this->resolveTypeWithVoidHandling($functionLike, $resolvedType);
     }
 
-    public function verifyStaticType(Type $type, bool $isSupportedStaticReturnType): ?Type
+    private function verifyStaticType(Type $type, bool $isSupportedStaticReturnType): ?Type
     {
         if ($this->isStaticType($type)) {
             /** @var TypeWithClassName $type */
@@ -101,7 +98,7 @@ final class ReturnTypeInferer
         return $type;
     }
 
-    public function verifyThisType(Type $type, FunctionLike $functionLike): ?Type
+    private function verifyThisType(Type $type, FunctionLike $functionLike): Type
     {
         if (! $type instanceof ThisType) {
             return $type;

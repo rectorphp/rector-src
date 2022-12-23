@@ -90,7 +90,7 @@ CODE_SAMPLE
 
             unset($node->args[0]);
 
-            return new MethodCall($node, 'usePutenv');
+            return new MethodCall($node, $newArgToMethodCall->getMethodCall());
         }
 
         return null;

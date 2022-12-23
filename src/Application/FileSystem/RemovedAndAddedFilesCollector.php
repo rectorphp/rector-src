@@ -106,7 +106,7 @@ final class RemovedAndAddedFilesCollector
     }
 
     /**
-     * For testing
+     * @api For testing
      */
     public function reset(): void
     {

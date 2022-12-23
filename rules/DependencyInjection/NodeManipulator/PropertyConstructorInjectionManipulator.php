@@ -29,6 +29,9 @@ final class PropertyConstructorInjectionManipulator
     ) {
     }
 
+    /**
+     * @api symfony
+     */
     public function refactor(
         Property $property,
         Type $type,

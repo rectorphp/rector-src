@@ -21,6 +21,9 @@ final class ClassFromEnumFactory
     ) {
     }
 
+    /**
+     * @api downgrade
+     */
     public function createFromEnum(Enum_ $enum): Class_
     {
         $shortClassName = $this->nodeNameResolver->getShortName($enum);

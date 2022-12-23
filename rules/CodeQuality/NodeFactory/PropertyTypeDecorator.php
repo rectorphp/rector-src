@@ -40,6 +40,9 @@ final class PropertyTypeDecorator
         $this->decoratePropertyWithType($property, $propertyType);
     }
 
+    /**
+     * @api downgrade
+     */
     public function decoratePropertyWithDocBlock(Property $property, ComplexType|Identifier|Name $typeNode): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);

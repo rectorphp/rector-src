@@ -42,21 +42,6 @@ final class CallerParamMatcher
         return $callParam->type;
     }
 
-    public function matchCallParam(StaticCall | MethodCall | FuncCall $call, Param $param, Scope $scope): ?Param
-    {
-        $callArgPosition = $this->matchCallArgPosition($call, $param);
-        if ($callArgPosition === null) {
-            return null;
-        }
-
-        $classMethodOrFunction = $this->astResolver->resolveClassMethodOrFunctionFromCall($call, $scope);
-        if ($classMethodOrFunction === null) {
-            return null;
-        }
-
-        return $classMethodOrFunction->params[$callArgPosition] ?? null;
-    }
-
     public function matchParentParam(StaticCall $parentStaticCall, Param $param, Scope $scope): ?Param
     {
         $methodName = $this->nodeNameResolver->getName($parentStaticCall->name);
@@ -71,6 +56,21 @@ final class CallerParamMatcher
         }
 
         return $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
+    }
+
+    private function matchCallParam(StaticCall | MethodCall | FuncCall $call, Param $param, Scope $scope): ?Param
+    {
+        $callArgPosition = $this->matchCallArgPosition($call, $param);
+        if ($callArgPosition === null) {
+            return null;
+        }
+
+        $classMethodOrFunction = $this->astResolver->resolveClassMethodOrFunctionFromCall($call, $scope);
+        if ($classMethodOrFunction === null) {
+            return null;
+        }
+
+        return $classMethodOrFunction->params[$callArgPosition] ?? null;
     }
 
     private function matchCallArgPosition(StaticCall | MethodCall | FuncCall $call, Param $param): int | null

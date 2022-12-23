@@ -122,6 +122,7 @@ final class AssignManipulator
     }
 
     /**
+     * @api doctrine
      * @return array<PropertyFetch|StaticPropertyFetch>
      */
     public function resolveAssignsToLocalPropertyFetches(FunctionLike $functionLike): array

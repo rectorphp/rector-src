@@ -148,6 +148,6 @@ final class StrictReturnNewAnalyzer
             return null;
         }
 
-        return new AssignToVariable($assignedVar, $variableName, $assign->expr);
+        return new AssignToVariable($variableName, $assign->expr);
     }
 }

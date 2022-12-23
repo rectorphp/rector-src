@@ -27,25 +27,9 @@ final class PrivatesAccessor
             $object = $reflectionClass->newInstanceWithoutConstructor();
         }
 
-        $methodReflection = $this->createAccessibleMethodReflection($object, $methodName);
+        $reflectionMethod = $this->createAccessibleMethodReflection($object, $methodName);
 
-        return $methodReflection->invokeArgs($object, $arguments);
-    }
-
-    /**
-     * @param object|class-string $object
-     */
-    public function callPrivateMethodWithReference(object|string $object, string $methodName, mixed $argument): mixed
-    {
-        if (is_string($object)) {
-            $reflectionClass = new ReflectionClass($object);
-            $object = $reflectionClass->newInstanceWithoutConstructor();
-        }
-
-        $methodReflection = $this->createAccessibleMethodReflection($object, $methodName);
-        $methodReflection->invokeArgs($object, [&$argument]);
-
-        return $argument;
+        return $reflectionMethod->invokeArgs($object, $arguments);
     }
 
     /**

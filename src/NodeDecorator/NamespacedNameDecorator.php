@@ -11,6 +11,7 @@ use PhpParser\NodeVisitor\NameResolver;
 final class NamespacedNameDecorator
 {
     /**
+     * @api downgrade
      * @param Node|Node[] $node
      */
     public function decorate(Node|array $node): void

@@ -80,12 +80,6 @@ final class AstResolver
         return $this->resolveClassFromClassReflection($classReflection);
     }
 
-    public function resolveClassFromObjectType(
-        TypeWithClassName $typeWithClassName
-    ): Class_ | Trait_ | Interface_ | Enum_ | null {
-        return $this->resolveClassFromName($typeWithClassName->getClassName());
-    }
-
     public function resolveClassMethodFromMethodReflection(MethodReflection $methodReflection): ?ClassMethod
     {
         $classReflection = $methodReflection->getDeclaringClass();

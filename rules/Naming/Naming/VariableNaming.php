@@ -90,7 +90,7 @@ final class VariableNaming
         return $this->createCountedValueName($bareName, $scope);
     }
 
-    public function resolveFromNodeAndType(Node $node, Type $type): ?string
+    private function resolveFromNodeAndType(Node $node, Type $type): ?string
     {
         $variableName = $this->resolveBareFromNode($node);
         if ($variableName === null) {
