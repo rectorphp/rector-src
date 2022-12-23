@@ -47,7 +47,6 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
         if ($node->isFirstClassCallable()) {
             return null;
         }
-        
         if (! array_key_exists(1, $node->args)) {
             return null;
         }
