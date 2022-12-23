@@ -128,7 +128,7 @@ CODE_SAMPLE
             }
         }
 
-        return false;
+        return $encapsed->hasAttribute(AttributeKey::DOC_LABEL);
     }
 
     private function collectEncapsedStringPart(EncapsedStringPart $encapsedStringPart): void

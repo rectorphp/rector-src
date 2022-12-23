@@ -169,4 +169,9 @@ final class AttributeKey
      * @var string
      */
     public const EXTRA_USE_IMPORT = 'extra_use_import';
+
+    /**
+     * @var string
+     */
+    public const DOC_LABEL = 'docLabel';
 }
