@@ -18,7 +18,10 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector
 
 class Fixture
 {
-    public int $value;
+    /**
+     * @var int
+     */
+    public $value;
     public function set()
     {
         $this->value = 5;

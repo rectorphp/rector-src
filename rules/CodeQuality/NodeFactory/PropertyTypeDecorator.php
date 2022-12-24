@@ -54,18 +54,18 @@ final class PropertyTypeDecorator
         $this->phpDocTypeChanger->changeVarType($phpDocInfo, $newType);
     }
 
-    private function decoratePropertyWithVarDoc(Property $property, Type $propertyType): void
+    public function decoratePropertyWithVarDoc(Property $property, Type $propertyType, bool $changeOnlyDoc = false): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
         $phpDocInfo->makeMultiLined();
 
-        if ($this->isNonMixedArrayType($propertyType)) {
+        if ($this->isNonMixedArrayType($propertyType) && ! $changeOnlyDoc) {
             $this->phpDocTypeChanger->changeVarType($phpDocInfo, $propertyType);
             $property->type = new Identifier('array');
             return;
         }
 
-        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
+        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES) && ! $changeOnlyDoc) {
             $phpParserNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                 $propertyType,
                 TypeKind::PROPERTY

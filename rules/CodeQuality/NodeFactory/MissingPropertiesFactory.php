@@ -30,7 +30,7 @@ final class MissingPropertiesFactory
             }
 
             $property = new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty($propertyName)]);
-            $this->propertyTypeDecorator->decorateProperty($property, $propertyType);
+            $this->propertyTypeDecorator->decoratePropertyWithVarDoc($property, $propertyType, true);
 
             $newProperties[] = $property;
         }
