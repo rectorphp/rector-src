@@ -19,7 +19,7 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector
 final class WithArrayType
 {
     /**
-     * @var array<string, true>
+     * @var array<string, bool>
      */
     public $someProperty;
     public function addSome(string $name)

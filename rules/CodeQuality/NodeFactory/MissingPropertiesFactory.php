@@ -10,11 +10,13 @@ use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Privatization\TypeManipulator\TypeNormalizer;
 
 final class MissingPropertiesFactory
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly TypeNormalizer $typeNormalizer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
@@ -36,6 +38,9 @@ final class MissingPropertiesFactory
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
             $phpDocInfo->makeMultiLined();
+
+            // generalize false/true type to bool, as mostly default value but accepts both
+            $propertyType = $this->typeNormalizer->generalizeConstantBoolTypes($propertyType);
 
             $this->phpDocTypeChanger->changeVarType($phpDocInfo, $propertyType);
 
