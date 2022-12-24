@@ -12,7 +12,6 @@ use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\ArrayParametersMerger;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
@@ -37,7 +36,6 @@ final class WorkerRunner
     public function __construct(
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
@@ -47,8 +45,6 @@ final class WorkerRunner
 
     public function run(Encoder $encoder, Decoder $decoder, Configuration $configuration): void
     {
-        $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
-
         // 1. handle system error
         $handleErrorCallback = static function (Throwable $throwable) use ($encoder): void {
             $systemErrors = new SystemError($throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
