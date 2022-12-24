@@ -21,7 +21,7 @@ final class WithArrayType
     /**
      * @var array<string, bool>
      */
-    public array $someProperty;
+    public $someProperty;
     public function addSome(string $name)
     {
         $this->someProperty[$name] = true;
