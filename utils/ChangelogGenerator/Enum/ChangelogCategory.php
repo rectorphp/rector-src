@@ -9,7 +9,7 @@ final class ChangelogCategory
     /**
      * @var string
      */
-    public const NEW_FEATURES = 'New Features';
+    public const NEW_FEATURES = 'New Features :partying_face:';
 
     /**
      * @var string
@@ -19,5 +19,10 @@ final class ChangelogCategory
     /**
      * @var string
      */
-    public const BUGFIXES = 'Bugfixes';
+    public const BUGFIXES = 'Bugfixes :bug:';
+
+    /**
+     * @var string
+     */
+    public const REMOVED = 'Removed :skull:';
 }
