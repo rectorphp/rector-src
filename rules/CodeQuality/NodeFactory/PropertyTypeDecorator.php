@@ -31,15 +31,6 @@ final class PropertyTypeDecorator
     ) {
     }
 
-    public function decorateProperty(Property $property, Type $propertyType): void
-    {
-        // generalize false/true type to bool, as mostly default value but accepts both
-        $propertyType = $this->typeNormalizer->generalizeConstantBoolTypes($propertyType);
-
-        $this->decoratePropertyWithVarDoc($property, $propertyType);
-        $this->decoratePropertyWithType($property, $propertyType);
-    }
-
     /**
      * @api downgrade
      */
