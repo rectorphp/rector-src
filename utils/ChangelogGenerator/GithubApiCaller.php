@@ -49,7 +49,7 @@ final class GithubApiCaller
             ->send();
 
         if ($response->code !== 200) {
-            throw new GithubRequestException(get_debug_type($response->body), (int) $response->code);
+            throw new GithubRequestException($response->body->message, (int) $response->code);
         }
 
         return $response->body;

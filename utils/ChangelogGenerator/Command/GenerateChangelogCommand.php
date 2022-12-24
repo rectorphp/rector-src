@@ -109,7 +109,7 @@ final class GenerateChangelogCommand extends Command
 
             // not to throttle the GitHub API
             if ($i > 0 && $i % 8 === 0) {
-                sleep(30);
+                sleep(60);
             }
 
             ++$i;
