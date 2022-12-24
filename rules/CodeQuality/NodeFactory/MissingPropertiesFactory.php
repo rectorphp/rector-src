@@ -8,11 +8,14 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 
 final class MissingPropertiesFactory
 {
     public function __construct(
-        private readonly PropertyTypeDecorator $propertyTypeDecorator
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -30,7 +33,11 @@ final class MissingPropertiesFactory
             }
 
             $property = new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty($propertyName)]);
-            $this->propertyTypeDecorator->decoratePropertyWithVarDoc($property, $propertyType, true);
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+            $phpDocInfo->makeMultiLined();
+
+            $this->phpDocTypeChanger->changeVarType($phpDocInfo, $propertyType);
 
             $newProperties[] = $property;
         }
