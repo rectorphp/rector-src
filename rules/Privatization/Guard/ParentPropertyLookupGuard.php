@@ -39,7 +39,7 @@ final class ParentPropertyLookupGuard
         if ($this->classAnalyzer->isAnonymousClass($class)) {
             return false;
         }
-        
+
         $classReflection = $this->reflectionResolver->resolveClassReflection($class);
         if (! $classReflection instanceof ClassReflection) {
             return false;
