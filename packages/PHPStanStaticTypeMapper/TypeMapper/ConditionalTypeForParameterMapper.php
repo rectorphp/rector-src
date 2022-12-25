@@ -35,8 +35,8 @@ final class ConditionalTypeForParameterMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param ConditionalTypeForParameter $type
+     * @param TypeKind::* $typeKind
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
@@ -45,6 +45,7 @@ final class ConditionalTypeForParameterMapper implements TypeMapperInterface
 
     /**
      * @param ConditionalTypeForParameter $type
+     * @param TypeKind::* $typeKind
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
