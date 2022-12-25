@@ -1,0 +1,43 @@
+! [NOTE] File
+ !        "./multiple-class-psr4/src/C
+ !        lassMatchFileName.php" will be added
+
+ ! [NOTE] File
+ !        "./multiple-class-psr4/src/S
+ !        omeInterface.php" will be added
+
+ ! [NOTE] File
+ !        "./multiple-class-psr4/src/S
+ !        omeClass.php" will be added
+
+ ! [NOTE] File
+ !        "./multiple-class-psr4/src/S
+ !        omeOtherInterface.php" will be added
+
+ [WARNING] File "src/ClassNoMatchFileName.php" will be removed
+
+
+1 file with changes
+===================
+
+1) src/ClassMatchFileName.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ namespace App;
+
+-class ClassMatchFileName implements SomeInterface
+-{
+-}
+-
+-interface SomeInterface
+-{
+-}
+    ----------- end diff -----------
+
+Applied rules:
+ * MultipleClassFileToPsr4ClassesRector
+
+
+ [OK] 1 file would have changed (dry-run) by Rector

@@ -9,9 +9,11 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Printer\NeighbourClassLikePrinter;
 use Rector\Core\Rector\AbstractRector;
+use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\PSR4\FileInfoAnalyzer\FileInfoDeletionAnalyzer;
 use Rector\PSR4\NodeManipulator\NamespaceManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,6 +29,7 @@ final class MultipleClassFileToPsr4ClassesRector extends AbstractRector
         private readonly FileInfoDeletionAnalyzer $fileInfoDeletionAnalyzer,
         private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
+        private readonly ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -105,10 +108,17 @@ CODE_SAMPLE
             return $nodeToReturn;
         }
 
-        // 2. nothing to return - remove the file
-        $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
+        $isInaddedFiles = array_filter(
+            $this->removedAndAddedFilesCollector->getAddedFilesWithContent(),
+            fn (AddedFileWithContent $addedFileWithContent): bool => $addedFileWithContent->getFilePath() === $this->file->getFilePath()
+        );
 
-        return null;
+        if ($isInaddedFiles === []) {
+            // 2. nothing to return - remove the file
+            $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
+        }
+
+        return $node;
     }
 
     private function hasAtLeastTwoClassLikes(Node $node): bool
@@ -173,12 +183,12 @@ CODE_SAMPLE
     {
         $classLikes = $this->betterNodeFinder->findInstanceOf([$node], ClassLike::class);
 
-        return array_filter($classLikes, static function (ClassLike $classLike): bool {
+        return array_filter($classLikes, function (ClassLike $classLike): bool {
             if (! $classLike instanceof Class_) {
                 return true;
             }
 
-            return ! $classLike->isAnonymous();
+            return ! $this->classAnalyzer->isAnonymousClass($classLike);
         });
     }
 }
