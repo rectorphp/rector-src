@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\AstResolver;
@@ -28,21 +29,18 @@ final class ParentPropertyLookupGuard
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly AstResolver $astResolver,
-        private readonly PropertyManipulator $propertyManipulator
+        private readonly PropertyManipulator $propertyManipulator,
+        private readonly ClassAnalyzer $classAnalyzer,
     ) {
     }
 
-    public function isLegal(Property $property, ?Class_ $class = null): bool
+    public function isLegal(Property $property, Class_ $class): bool
     {
-        if (! $class instanceof Class_) {
-            // @todo optimize
-            $class = $this->betterNodeFinder->findParentType($property, Class_::class);
-            if (! $class instanceof Class_) {
-                return false;
-            }
+        if ($this->classAnalyzer->isAnonymousClass($class)) {
+            return false;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($property);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }

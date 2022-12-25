@@ -110,7 +110,7 @@ CODE_SAMPLE
             }
 
             // include fault value in the type
-            if ($this->isConclictingDefaultExprType($property, $getterReturnType)) {
+            if ($this->isConflictingDefaultExprType($property, $getterReturnType)) {
                 continue;
             }
 
@@ -148,7 +148,7 @@ CODE_SAMPLE
         $propertyProperty->default = $this->nodeFactory->createNull();
     }
 
-    private function isConclictingDefaultExprType(Property $property, Type $getterReturnType): bool
+    private function isConflictingDefaultExprType(Property $property, Type $getterReturnType): bool
     {
         $onlyPropertyProperty = $property->props[0];
         if (! $onlyPropertyProperty->default instanceof Expr) {
