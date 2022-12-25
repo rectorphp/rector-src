@@ -1,1 +1,31 @@
- [OK] Rector is done!
+! [NOTE] File "./multiple-class-psr4/src/ClassMatchFileName.php" will be added
+
+ ! [NOTE] File "./multiple-class-psr4/src/SomeInterface.php" will be added
+
+ ! [NOTE] File "./multiple-class-psr4/src/SomeClass.php" will be added
+
+ ! [NOTE] File "./multiple-class-psr4/src/SomeOtherInterface.php" will be added
+
+ [WARNING] File "src/ClassNoMatchFileName.php" will be removed
+
+
+1 file with changes
+===================
+
+1) src/ClassMatchFileName.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ namespace App;
+
+-class ClassMatchFileName implements SomeInterface
+-{
+-}
+-
+-interface SomeInterface
+-{
+-}
+    ----------- end diff -----------
+
+ [OK] 1 file would have changed (dry-run) by Rector

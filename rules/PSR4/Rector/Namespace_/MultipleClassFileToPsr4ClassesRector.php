@@ -13,6 +13,7 @@ use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Printer\NeighbourClassLikePrinter;
 use Rector\Core\Rector\AbstractRector;
+use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\PSR4\FileInfoAnalyzer\FileInfoDeletionAnalyzer;
 use Rector\PSR4\NodeManipulator\NamespaceManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -107,8 +108,15 @@ CODE_SAMPLE
             return $nodeToReturn;
         }
 
-        // 2. nothing to return - remove the file
-        $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
+        $isInaddedFiles = array_filter(
+            $this->removedAndAddedFilesCollector->getAddedFilesWithContent(),
+            fn (AddedFileWithContent $addedFileWithContent): bool => $addedFileWithContent->getFilePath() === $this->file->getFilePath()
+        );
+
+        if ($isInaddedFiles === []) {
+            // 2. nothing to return - remove the file
+            $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
+        }
 
         return null;
     }
