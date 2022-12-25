@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Printer\NeighbourClassLikePrinter;
 use Rector\Core\Rector\AbstractRector;
@@ -27,6 +28,7 @@ final class MultipleClassFileToPsr4ClassesRector extends AbstractRector
         private readonly FileInfoDeletionAnalyzer $fileInfoDeletionAnalyzer,
         private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
+        private readonly ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -173,12 +175,12 @@ CODE_SAMPLE
     {
         $classLikes = $this->betterNodeFinder->findInstanceOf([$node], ClassLike::class);
 
-        return array_filter($classLikes, static function (ClassLike $classLike): bool {
+        return array_filter($classLikes, function (ClassLike $classLike): bool {
             if (! $classLike instanceof Class_) {
                 return true;
             }
 
-            return ! $classLike->isAnonymous();
+            return ! $this->classAnalyzer->isAnonymousClass($classLike);
         });
     }
 }
