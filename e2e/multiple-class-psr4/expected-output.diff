@@ -1,10 +1,18 @@
-! [NOTE] File "./multiple-class-psr4/src/ClassMatchFileName.php" will be added
+! [NOTE] File
+ !        "./multiple-class-psr4/src/C
+ !        lassMatchFileName.php" will be added
 
- ! [NOTE] File "./multiple-class-psr4/src/SomeInterface.php" will be added
+ ! [NOTE] File
+ !        "./multiple-class-psr4/src/S
+ !        omeInterface.php" will be added
 
- ! [NOTE] File "./multiple-class-psr4/src/SomeClass.php" will be added
+ ! [NOTE] File
+ !        "./multiple-class-psr4/src/S
+ !        omeClass.php" will be added
 
- ! [NOTE] File "./multiple-class-psr4/src/SomeOtherInterface.php" will be added
+ ! [NOTE] File
+ !        "./multiple-class-psr4/src/S
+ !        omeOtherInterface.php" will be added
 
  [WARNING] File "src/ClassNoMatchFileName.php" will be removed
 
