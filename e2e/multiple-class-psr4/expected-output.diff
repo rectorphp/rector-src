@@ -36,4 +36,7 @@
 -}
     ----------- end diff -----------
 
+Applied rules:
+ * MultipleClassFileToPsr4ClassesRector
+
  [OK] 1 file would have changed (dry-run) by Rector

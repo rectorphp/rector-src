@@ -118,7 +118,7 @@ CODE_SAMPLE
             $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
         }
 
-        return null;
+        return $node;
     }
 
     private function hasAtLeastTwoClassLikes(Node $node): bool
