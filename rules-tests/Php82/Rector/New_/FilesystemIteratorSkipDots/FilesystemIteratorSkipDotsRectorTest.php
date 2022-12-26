@@ -7,7 +7,7 @@ namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots;
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class FilesystemIteratorSkipDotsRectorTests extends AbstractRectorTestCase
+final class FilesystemIteratorSkipDotsRectorTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()

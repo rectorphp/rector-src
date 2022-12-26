@@ -18,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\FilesystemIteratorSkipDotsRectorTests
+ * @see \Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\FilesystemIteratorSkipDotsRectorTest
  */
 class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
 {
