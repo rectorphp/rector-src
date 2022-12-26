@@ -77,7 +77,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Identical|NotIdentical $node
+     * @param Identical|NotIdentical|Equal|NotEqual $node
      */
     public function refactor(Node $node): ?Node
     {
