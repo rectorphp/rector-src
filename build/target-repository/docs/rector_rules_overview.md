@@ -1,4 +1,4 @@
-# 416 Rules Overview
+# 417 Rules Overview
 
 <br>
 
@@ -6522,10 +6522,14 @@ Refactor Spatie enum method calls
 - class: [`Rector\Php81\Rector\MethodCall\SpatieEnumMethodCallToEnumConstRector`](../rules/Php81/Rector/MethodCall/SpatieEnumMethodCallToEnumConstRector.php)
 
 ```diff
--$name = SomeEnum::SOME_CONSTANT()->getValue();
--$name = SomeEnum::SOME_CONSTANT()->value;
-+$name = SomeEnum::SOME_CONSTANT->value;
-+$name = SomeEnum::SOME_CONSTANT->value;
+-$value1 = SomeEnum::SOME_CONSTANT()->getValue();
+-$value2 = SomeEnum::SOME_CONSTANT()->value;
+-$name1 = SomeEnum::SOME_CONSTANT()->getName();
+-$name2 = SomeEnum::SOME_CONSTANT()->name;
++$value1 = SomeEnum::SOME_CONSTANT->value;
++$value2 = SomeEnum::SOME_CONSTANT->value;
++$name1 = SomeEnum::SOME_CONSTANT->name;
++$name2 = SomeEnum::SOME_CONSTANT->name;
 ```
 
 <br>

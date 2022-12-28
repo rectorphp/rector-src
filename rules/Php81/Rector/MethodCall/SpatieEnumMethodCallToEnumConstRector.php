@@ -35,13 +35,17 @@ final class SpatieEnumMethodCallToEnumConstRector extends AbstractRector impleme
         return new RuleDefinition('Refactor Spatie enum method calls', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-$name = SomeEnum::SOME_CONSTANT()->getValue();
-$name = SomeEnum::SOME_CONSTANT()->value;
+$value1 = SomeEnum::SOME_CONSTANT()->getValue();
+$value2 = SomeEnum::SOME_CONSTANT()->value;
+$name1 = SomeEnum::SOME_CONSTANT()->getName();
+$name2 = SomeEnum::SOME_CONSTANT()->name;
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-$name = SomeEnum::SOME_CONSTANT->value;
-$name = SomeEnum::SOME_CONSTANT->value;
+$value1 = SomeEnum::SOME_CONSTANT->value;
+$value2 = SomeEnum::SOME_CONSTANT->value;
+$name1 = SomeEnum::SOME_CONSTANT->name;
+$name2 = SomeEnum::SOME_CONSTANT->name;
 CODE_SAMPLE
             ),
         ]);
@@ -86,7 +90,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $constantName = mb_strtoupper($enumCaseName);
+        $constantName = strtoupper($enumCaseName);
 
         return $this->nodeFactory->createClassConstFetch($className, $constantName);
     }
@@ -117,7 +121,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $upperCaseName = mb_strtoupper($enumCaseName);
+        $upperCaseName = strtoupper($enumCaseName);
         $enumConstFetch = $this->nodeFactory->createClassConstFetch($className, $upperCaseName);
 
         return new PropertyFetch($enumConstFetch, $property);
