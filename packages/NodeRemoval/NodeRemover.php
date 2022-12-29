@@ -43,12 +43,13 @@ final class NodeRemover
         Class_ | ClassMethod | Function_ $nodeWithStatements,
         Node $toBeRemovedNode
     ): void {
-        foreach ((array) $nodeWithStatements->stmts as $stmt) {
+        foreach ((array) $nodeWithStatements->stmts as $key => $stmt) {
             if ($toBeRemovedNode !== $stmt) {
                 continue;
             }
 
             $this->removeNode($stmt);
+            unset($nodeWithStatements->stmts[$key]);
             break;
         }
     }
@@ -77,6 +78,7 @@ final class NodeRemover
         }
 
         $this->removeNode($classMethod->params[$key]);
+        unset($classMethod->params[$key]);
     }
 
     public function removeArg(FuncCall | MethodCall | StaticCall $node, int $key): void
@@ -91,6 +93,7 @@ final class NodeRemover
         }
 
         $this->removeNode($node->args[$key]);
+        unset($node->args[$key]);
     }
 
     /**
@@ -108,5 +111,6 @@ final class NodeRemover
         }
 
         $this->removeNode($functionLike->stmts[$key]);
+        unset($functionLike->stmts[$key]);
     }
 }
