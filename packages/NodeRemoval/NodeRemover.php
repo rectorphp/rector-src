@@ -43,12 +43,12 @@ final class NodeRemover
         Class_ | ClassMethod | Function_ $nodeWithStatements,
         Node $toBeRemovedNode
     ): void {
-        foreach ((array) $nodeWithStatements->stmts as $key => $stmt) {
+        foreach ((array) $nodeWithStatements->stmts as $stmt) {
             if ($toBeRemovedNode !== $stmt) {
                 continue;
             }
 
-            $this->removeNode($nodeWithStatements->stmts[$key]);
+            $this->removeNode($stmt);
             break;
         }
     }
