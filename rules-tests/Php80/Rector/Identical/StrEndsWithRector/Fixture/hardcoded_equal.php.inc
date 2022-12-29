@@ -6,9 +6,9 @@ class HardCoded
 {
     public function run()
     {
-        $isMatch = substr($haystack, -3) === 'foo';
+        $isMatch = substr($haystack, -3) == 'foo';
 
-        $isMatch = 'foo' === substr($haystack, -3);
+        $isMatch = 'foo' == substr($haystack, -3);
     }
 }
 

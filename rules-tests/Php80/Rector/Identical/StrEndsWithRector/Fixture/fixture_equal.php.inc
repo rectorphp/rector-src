@@ -6,9 +6,9 @@ class Fixture
 {
     public function run()
     {
-        $isMatch = substr($haystack, -strlen($needle)) === $needle;
+        $isMatch = substr($haystack, -strlen($needle)) == $needle;
 
-        $isMatch = $needle === substr($haystack, -strlen($needle));
+        $isMatch = $needle == substr($haystack, -strlen($needle));
     }
 }
 

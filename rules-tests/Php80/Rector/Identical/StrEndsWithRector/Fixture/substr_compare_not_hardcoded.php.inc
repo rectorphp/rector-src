@@ -9,10 +9,6 @@ class SubstrCompareNot
         $isNotMatch = substr_compare($haystack, 'needle', -6) !== 0;
 
         $isNotMatch = 0 !== substr_compare($haystack, 'needle', -6);
-
-        $isNotMatch = substr_compare($haystack, 'needle', -6) != 0;
-
-        $isNotMatch = 0 != substr_compare($haystack, 'needle', -6);
     }
 }
 
@@ -26,10 +22,6 @@ class SubstrCompareNot
 {
     public function run()
     {
-        $isNotMatch = !str_ends_with($haystack, 'needle');
-
-        $isNotMatch = !str_ends_with($haystack, 'needle');
-
         $isNotMatch = !str_ends_with($haystack, 'needle');
 
         $isNotMatch = !str_ends_with($haystack, 'needle');

@@ -6,9 +6,9 @@ class SubstrCompare
 {
     public function run()
     {
-        $isMatch = substr_compare($haystack, 'needle', -6) === 0;
+        $isMatch = substr_compare($haystack, 'needle', -6) == 0;
 
-        $isMatch = 0 === substr_compare($haystack, 'needle', -6);
+        $isMatch = 0 == substr_compare($haystack, 'needle', -6);
     }
 }
 

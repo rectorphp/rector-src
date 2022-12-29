@@ -6,9 +6,9 @@ class HardCodedNotIdentical
 {
     public function run()
     {
-        $isMatch = substr($haystack, 0, 3) !== 'foo';
+        $isMatch = substr($haystack, 0, 3) != 'foo';
 
-        $isMatch = 'foo' !== substr($haystack, 0, 3);
+        $isMatch = 'foo' != substr($haystack, 0, 3);
     }
 }
 

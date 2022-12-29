@@ -9,10 +9,6 @@ class HardCoded
         $isMatch = substr($haystack, 0, 3) === 'foo';
 
         $isMatch = 'foo' === substr($haystack, 0, 3);
-
-        $isMatch = substr($haystack, 0, 3) === 'foo';
-
-        $isMatch = 'foo' === substr($haystack, 0, 3);
     }
 }
 
@@ -26,10 +22,6 @@ class HardCoded
 {
     public function run()
     {
-        $isMatch = str_starts_with($haystack, 'foo');
-
-        $isMatch = str_starts_with($haystack, 'foo');
-
         $isMatch = str_starts_with($haystack, 'foo');
 
         $isMatch = str_starts_with($haystack, 'foo');

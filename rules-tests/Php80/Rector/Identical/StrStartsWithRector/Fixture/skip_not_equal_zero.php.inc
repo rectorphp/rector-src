@@ -6,6 +6,6 @@ class SkipNonZero
 {
     public function run()
     {
-        $isMatch = substr($haystack, 1, strlen($needle)) === $needle;
+        $isMatch = substr($haystack, 1, strlen($needle)) == $needle;
     }
 }

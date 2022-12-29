@@ -2,13 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\NotIdentical\StrContainsRector\Fixture;
 
-class IdenticalStrstr
+class Strstr
 {
     public function run()
     {
-        $isMatch = strstr('abc', 'a') === false;
-
-        $isMatch = strstr('abc', 'a') == false;
+        $isMatch = strstr('abc', 'a') != false;
     }
 }
 
@@ -18,13 +16,11 @@ class IdenticalStrstr
 
 namespace Rector\Tests\Php80\Rector\NotIdentical\StrContainsRector\Fixture;
 
-class IdenticalStrstr
+class Strstr
 {
     public function run()
     {
-        $isMatch = !str_contains('abc', 'a');
-
-        $isMatch = !str_contains('abc', 'a');
+        $isMatch = str_contains('abc', 'a');
     }
 }
 

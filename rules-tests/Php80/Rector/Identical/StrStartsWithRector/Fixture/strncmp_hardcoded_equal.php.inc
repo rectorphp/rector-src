@@ -2,11 +2,13 @@
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class StrposHardCoded
+class StrncmpHardCoded
 {
     public function run()
     {
-        $isMatch = strpos($haystack, 'hardcoded') === 0;
+        $isMatch = strncmp($haystack, 'hardcoded', 9) == 0;
+
+        $isMatch = 0 == strncmp($haystack, 'hardcoded', 9);
     }
 }
 
@@ -16,10 +18,12 @@ class StrposHardCoded
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class StrposHardCoded
+class StrncmpHardCoded
 {
     public function run()
     {
+        $isMatch = str_starts_with($haystack, 'hardcoded');
+
         $isMatch = str_starts_with($haystack, 'hardcoded');
     }
 }

@@ -7,8 +7,6 @@ class StrposNotPrefix
     public function run()
     {
         $notMatch = strpos($haystack, $needle) !== 0;
-
-        $notMatch = strpos($haystack, $needle) != 0;
     }
 }
 
@@ -22,8 +20,6 @@ class StrposNotPrefix
 {
     public function run()
     {
-        $notMatch = !str_starts_with($haystack, $needle);
-
         $notMatch = !str_starts_with($haystack, $needle);
     }
 }

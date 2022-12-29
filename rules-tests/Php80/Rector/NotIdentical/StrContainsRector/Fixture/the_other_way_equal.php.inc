@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\NotIdentical\StrContainsRector\Fixture;
 
-class Strstr
+class TheOtherWay
 {
     public function run()
     {
-        $isMatch = strstr('abc', 'a') !== false;
+        $isMatch = false != strpos('abc', 'a');
     }
 }
 
@@ -16,7 +16,7 @@ class Strstr
 
 namespace Rector\Tests\Php80\Rector\NotIdentical\StrContainsRector\Fixture;
 
-class Strstr
+class TheOtherWay
 {
     public function run()
     {

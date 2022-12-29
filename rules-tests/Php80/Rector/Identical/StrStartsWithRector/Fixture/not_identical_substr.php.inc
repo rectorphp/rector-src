@@ -7,8 +7,6 @@ class NotIdenticalSubstr
     public function run()
     {
         $isNotMatch = substr($haystack, 0, strlen($needle)) !== $needle;
-
-        $isNotMatch = substr($haystack, 0, strlen($needle)) !== $needle;
     }
 }
 
@@ -22,8 +20,6 @@ class NotIdenticalSubstr
 {
     public function run()
     {
-        $isNotMatch = !str_starts_with($haystack, $needle);
-
         $isNotMatch = !str_starts_with($haystack, $needle);
     }
 }

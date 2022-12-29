@@ -6,9 +6,9 @@ class OtherSide
 {
     public function run()
     {
-        $isMatch = $needle === substr($haystack, 0, strlen($needle));
+        $isMatch = $needle == substr($haystack, 0, strlen($needle));
 
-        $isNotMatch = $needle !== substr($haystack, 0, strlen($needle));
+        $isNotMatch = $needle != substr($haystack, 0, strlen($needle));
     }
 }
 

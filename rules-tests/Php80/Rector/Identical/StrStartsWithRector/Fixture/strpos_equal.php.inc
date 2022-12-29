@@ -2,13 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class OtherSide
+class Strpos
 {
     public function run()
     {
-        $isMatch = $needle === substr($haystack, 0, strlen($needle));
-
-        $isNotMatch = $needle !== substr($haystack, 0, strlen($needle));
+        $isMatch = strpos($haystack, $needle) == 0;
     }
 }
 
@@ -18,13 +16,11 @@ class OtherSide
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class OtherSide
+class Strpos
 {
     public function run()
     {
         $isMatch = str_starts_with($haystack, $needle);
-
-        $isNotMatch = !str_starts_with($haystack, $needle);
     }
 }
 

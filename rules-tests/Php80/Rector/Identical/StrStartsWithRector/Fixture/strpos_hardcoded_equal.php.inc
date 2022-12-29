@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class StrposOtherSide
+class StrposHardCoded
 {
     public function run()
     {
-        $isMatch = 0 === strpos($haystack, $needle);
+        $isMatch = strpos($haystack, 'hardcoded') == 0;
     }
 }
 
@@ -16,11 +16,11 @@ class StrposOtherSide
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class StrposOtherSide
+class StrposHardCoded
 {
     public function run()
     {
-        $isMatch = str_starts_with($haystack, $needle);
+        $isMatch = str_starts_with($haystack, 'hardcoded');
     }
 }
 

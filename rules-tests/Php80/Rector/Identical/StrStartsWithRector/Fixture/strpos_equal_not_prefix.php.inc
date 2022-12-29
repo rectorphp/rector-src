@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class StrposOtherSide
+class StrposNotPrefix
 {
     public function run()
     {
-        $isMatch = 0 === strpos($haystack, $needle);
+        $notMatch = strpos($haystack, $needle) != 0;
     }
 }
 
@@ -16,11 +16,11 @@ class StrposOtherSide
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class StrposOtherSide
+class StrposNotPrefix
 {
     public function run()
     {
-        $isMatch = str_starts_with($haystack, $needle);
+        $notMatch = !str_starts_with($haystack, $needle);
     }
 }
 

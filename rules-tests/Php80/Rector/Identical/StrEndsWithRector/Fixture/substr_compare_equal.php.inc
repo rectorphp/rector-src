@@ -2,13 +2,13 @@
 
 namespace Rector\Tests\Php80\Rector\Identical\StrEndsWithRector\Fixture;
 
-class Fixture
+class SubstrCompare
 {
     public function run()
     {
-        $isMatch = substr($haystack, -strlen($needle)) === $needle;
+        $isMatch = substr_compare($haystack, $needle, -strlen($needle)) == 0;
 
-        $isMatch = $needle === substr($haystack, -strlen($needle));
+        $isMatch = 0 == substr_compare($haystack, $needle, -strlen($needle));
     }
 }
 
@@ -18,7 +18,7 @@ class Fixture
 
 namespace Rector\Tests\Php80\Rector\Identical\StrEndsWithRector\Fixture;
 
-class Fixture
+class SubstrCompare
 {
     public function run()
     {
