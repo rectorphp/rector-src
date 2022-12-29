@@ -2,10 +2,10 @@
 
 namespace Rector\Tests\Php80\Rector\Identical\StrStartsWithRector\Fixture;
 
-class SkipSubstrWeak
+class SkipEqualNonZero
 {
     public function run()
     {
-        $isMatch = substr($haystack, 0, strlen($needle)) == $needle;
+        $isMatch = substr($haystack, 1, strlen($needle)) == $needle;
     }
 }

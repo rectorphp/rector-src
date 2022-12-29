@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
@@ -56,8 +58,7 @@ class SomeClass
         $isNotMatch = substr($haystack, -strlen($needle)) !== $needle;
     }
 }
-CODE_SAMPLE
-                ,
+CODE_SAMPLE,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -81,8 +82,7 @@ class SomeClass
         $isNotMatch = substr($haystack, -9) !== 'hardcoded';
     }
 }
-CODE_SAMPLE
-                ,
+CODE_SAMPLE,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -103,11 +103,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Identical::class, NotIdentical::class];
+        return [Identical::class, NotIdentical::class, Equal::class, NotEqual::class];
     }
 
     /**
-     * @param Identical|NotIdentical $node
+     * @param Identical|NotIdentical|Equal|NotEqual $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -131,14 +131,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($substrFuncCall->args, [0, 1])) {
+        if (!$this->argsAnalyzer->isArgsInstanceInArgsPositions($substrFuncCall->args, [0, 1])) {
             return null;
         }
 
         /** @var Arg $secondArg */
         $secondArg = $substrFuncCall->args[1];
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($secondArg->value, $comparedNeedleExpr) &&
-            ! $this->isHardCodedLNumberAndString($secondArg->value, $comparedNeedleExpr)
+        if (
+            !$this->isUnaryMinusStrlenFuncCallArgValue($secondArg->value, $comparedNeedleExpr) &&
+            !$this->isHardCodedLNumberAndString($secondArg->value, $comparedNeedleExpr)
         ) {
             return null;
         }
@@ -146,7 +147,7 @@ CODE_SAMPLE
         /** @var Arg $firstArg */
         $firstArg = $substrFuncCall->args[0];
         $haystack = $firstArg->value;
-        $isPositive = $binaryOp instanceof Identical;
+        $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         return $this->buildReturnNode($haystack, $comparedNeedleExpr, $isPositive);
     }
@@ -154,17 +155,17 @@ CODE_SAMPLE
     private function refactorSubstrCompare(BinaryOp $binaryOp): FuncCall | BooleanNot | null
     {
         $funcCallAndExpr = $this->binaryOpAnalyzer->matchFuncCallAndOtherExpr($binaryOp, 'substr_compare');
-        if (! $funcCallAndExpr instanceof FuncCallAndExpr) {
+        if (!$funcCallAndExpr instanceof FuncCallAndExpr) {
             return null;
         }
 
         $expr = $funcCallAndExpr->getExpr();
-        if (! $this->valueResolver->isValue($expr, 0)) {
+        if (!$this->valueResolver->isValue($expr, 0)) {
             return null;
         }
 
         $substrCompareFuncCall = $funcCallAndExpr->getFuncCall();
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($substrCompareFuncCall->args, [0, 1, 2])) {
+        if (!$this->argsAnalyzer->isArgsInstanceInArgsPositions($substrCompareFuncCall->args, [0, 1, 2])) {
             return null;
         }
 
@@ -180,38 +181,39 @@ CODE_SAMPLE
         $thirdArg = $substrCompareFuncCall->args[2];
         $thirdArgValue = $thirdArg->value;
 
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($thirdArgValue, $needle) &&
-            ! $this->isHardCodedLNumberAndString($thirdArgValue, $needle)
+        if (
+            !$this->isUnaryMinusStrlenFuncCallArgValue($thirdArgValue, $needle) &&
+            !$this->isHardCodedLNumberAndString($thirdArgValue, $needle)
         ) {
             return null;
         }
 
-        $isPositive = $binaryOp instanceof Identical;
+        $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         return $this->buildReturnNode($haystack, $needle, $isPositive);
     }
 
     private function isUnaryMinusStrlenFuncCallArgValue(Expr $substrOffset, Expr $needle): bool
     {
-        if (! $substrOffset instanceof UnaryMinus) {
+        if (!$substrOffset instanceof UnaryMinus) {
             return false;
         }
 
-        if (! $substrOffset->expr instanceof FuncCall) {
+        if (!$substrOffset->expr instanceof FuncCall) {
             return false;
         }
 
         $funcCall = $substrOffset->expr;
 
-        if (! $this->nodeNameResolver->isName($funcCall, 'strlen')) {
+        if (!$this->nodeNameResolver->isName($funcCall, 'strlen')) {
             return false;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (!isset($funcCall->args[0])) {
             return false;
         }
 
-        if (! $funcCall->args[0] instanceof Arg) {
+        if (!$funcCall->args[0] instanceof Arg) {
             return false;
         }
 
@@ -220,17 +222,17 @@ CODE_SAMPLE
 
     private function isHardCodedLNumberAndString(Expr $substrOffset, Expr $needle): bool
     {
-        if (! $substrOffset instanceof UnaryMinus) {
+        if (!$substrOffset instanceof UnaryMinus) {
             return false;
         }
 
-        if (! $substrOffset->expr instanceof LNumber) {
+        if (!$substrOffset->expr instanceof LNumber) {
             return false;
         }
 
         $lNumber = $substrOffset->expr;
 
-        if (! $needle instanceof String_) {
+        if (!$needle instanceof String_) {
             return false;
         }
 
@@ -241,7 +243,7 @@ CODE_SAMPLE
     {
         $funcCall = $this->nodeFactory->createFuncCall('str_ends_with', [$haystack, $needle]);
 
-        if (! $isPositive) {
+        if (!$isPositive) {
             return new BooleanNot($funcCall);
         }
 
