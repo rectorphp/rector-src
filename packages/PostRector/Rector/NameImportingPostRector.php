@@ -214,10 +214,6 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->classNameImportSkipper->isFoundInUse($name, $currentUses)) {
-            return true;
-        }
-
         if ($this->classNameImportSkipper->isAlreadyImported($name, $currentUses)) {
             return true;
         }

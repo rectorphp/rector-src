@@ -47,6 +47,7 @@ final class ClassNameImportSkipper
     public function isAlreadyImported(Name $name, array $uses): bool
     {
         $stringName = $name->toString();
+        $nameLastName = strtolower($name->getLast());
 
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
@@ -55,24 +56,7 @@ final class ClassNameImportSkipper
                 if ($prefix . $useUse->name->toString() === $stringName) {
                     return true;
                 }
-            }
-        }
 
-        return false;
-    }
-
-    /**
-     * @param Use_[]|GroupUse[] $uses
-     */
-    public function isFoundInUse(Name $name, array $uses): bool
-    {
-        $stringName = $name->toString();
-        $nameLastName = strtolower($name->getLast());
-
-        foreach ($uses as $use) {
-            $prefix = $this->useImportsResolver->resolvePrefix($use);
-
-            foreach ($use->uses as $useUse) {
                 $useUseLastName = strtolower($useUse->name->getLast());
 
                 if ($useUseLastName !== $nameLastName) {
