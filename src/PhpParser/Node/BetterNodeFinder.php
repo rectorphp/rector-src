@@ -55,10 +55,8 @@ final class BetterNodeFinder
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         while ($parentNode instanceof Node) {
-            foreach ($types as $type) {
-                if ($parentNode instanceof $type) {
-                    return $parentNode;
-                }
+            if ($this->multiInstanceofChecker->isInstanceOf($parentNode, $types)) {
+                return $parentNode;
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
