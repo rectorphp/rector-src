@@ -56,7 +56,7 @@ final class BetterNodeFinder
 
         while ($parentNode instanceof Node) {
             foreach ($types as $type) {
-                if (is_a($parentNode, $type, true)) {
+                if ($parentNode instanceof $type) {
                     return $parentNode;
                 }
             }
@@ -79,7 +79,7 @@ final class BetterNodeFinder
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         while ($parentNode instanceof Node) {
-            if (is_a($parentNode, $type, true)) {
+            if ($parentNode instanceof $type) {
                 return $parentNode;
             }
 
