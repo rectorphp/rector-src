@@ -452,10 +452,7 @@ final class PHPStanNodeScopeResolver
         );
 
         // 2. get Rector locator
-        $aggregateSourceLocator = new AggregateSourceLocator([
-            $sourceLocator,
-            $this->renamedClassesSourceLocator
-        ]);
+        $aggregateSourceLocator = new AggregateSourceLocator([$sourceLocator, $this->renamedClassesSourceLocator]);
         $this->privatesAccessor->setPrivatePropertyOfClass(
             $reflector,
             'sourceLocator',
