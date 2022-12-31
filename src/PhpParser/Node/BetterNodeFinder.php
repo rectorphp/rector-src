@@ -48,21 +48,24 @@ final class BetterNodeFinder
      * @param array<class-string<TNode>> $types
      * @return TNode|null
      */
-    public function findParentByTypes(Node $currentNode, array $types): ?Node
+    public function findParentByTypes(Node $node, array $types): ?Node
     {
         Assert::allIsAOf($types, Node::class);
 
-        while ($currentNode = $currentNode->getAttribute(AttributeKey::PARENT_NODE)) {
-            /** @var Node|null $currentNode */
-            if (! $currentNode instanceof Node) {
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+        while ($parentNode instanceof Node) {
+            if (! $parentNode instanceof Node) {
                 return null;
             }
 
             foreach ($types as $type) {
-                if (is_a($currentNode, $type, true)) {
-                    return $currentNode;
+                if (is_a($parentNode, $type, true)) {
+                    return $parentNode;
                 }
             }
+
+            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         }
 
         return null;
@@ -78,17 +81,18 @@ final class BetterNodeFinder
         Assert::isAOf($type, Node::class);
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Node) {
-            return null;
-        }
 
-        do {
+        while ($parentNode instanceof Node) {
+            if (! $parentNode instanceof Node) {
+                return null;
+            }
+
             if (is_a($parentNode, $type, true)) {
                 return $parentNode;
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-        } while ($parentNode instanceof Node);
+        }
 
         return null;
     }
