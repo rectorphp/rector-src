@@ -62,9 +62,6 @@ final class BetterNodeFinder
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentNode instanceof Node) {
-                return null;
-            }
         }
 
         return null;
@@ -87,9 +84,6 @@ final class BetterNodeFinder
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentNode instanceof Node) {
-                return null;
-            }
         }
 
         return null;
