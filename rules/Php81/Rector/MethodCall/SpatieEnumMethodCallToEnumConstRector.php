@@ -13,6 +13,7 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Spatie\Enum\Enum;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -23,6 +24,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SpatieEnumMethodCallToEnumConstRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var class-string<Enum>
+     */
     private const SPATIE_FQN = 'Spatie\Enum\Enum';
 
     /**
@@ -133,11 +137,19 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($methodName === 'getName' || $methodName === 'label') {
+        if ($methodName === 'getName') {
             return $this->refactorGetterToMethodCall($methodCall, 'name');
         }
 
-        if ($methodName === 'getValue' || $methodName === 'value') {
+        if ($methodName === 'label') {
+            return $this->refactorGetterToMethodCall($methodCall, 'name');
+        }
+
+        if ($methodName === 'getValue') {
+            return $this->refactorGetterToMethodCall($methodCall, 'value');
+        }
+
+        if ($methodName === 'value') {
             return $this->refactorGetterToMethodCall($methodCall, 'value');
         }
 
