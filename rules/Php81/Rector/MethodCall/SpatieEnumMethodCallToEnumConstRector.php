@@ -136,15 +136,19 @@ CODE_SAMPLE
         if (! $this->isObjectType($methodCall->var, new ObjectType(self::SPATIE_FQN))) {
             return null;
         }
+
         if ($methodName === 'getName') {
             return $this->refactorGetterToMethodCall($methodCall, 'name');
         }
+
         if ($methodName === 'label') {
             return $this->refactorGetterToMethodCall($methodCall, 'name');
         }
+
         if ($methodName === 'getValue') {
             return $this->refactorGetterToMethodCall($methodCall, 'value');
         }
+
         if ($methodName === 'value') {
             return $this->refactorGetterToMethodCall($methodCall, 'value');
         }
