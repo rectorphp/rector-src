@@ -55,10 +55,6 @@ final class BetterNodeFinder
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         while ($parentNode instanceof Node) {
-            if (! $parentNode instanceof Node) {
-                return null;
-            }
-
             foreach ($types as $type) {
                 if (is_a($parentNode, $type, true)) {
                     return $parentNode;
@@ -66,6 +62,9 @@ final class BetterNodeFinder
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof Node) {
+                return null;
+            }
         }
 
         return null;
@@ -83,15 +82,14 @@ final class BetterNodeFinder
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         while ($parentNode instanceof Node) {
-            if (! $parentNode instanceof Node) {
-                return null;
-            }
-
             if (is_a($parentNode, $type, true)) {
                 return $parentNode;
             }
 
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof Node) {
+                return null;
+            }
         }
 
         return null;
