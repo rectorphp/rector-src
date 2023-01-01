@@ -9,7 +9,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 
@@ -36,7 +35,7 @@ final class GenericClassStringTypeCorrector
             /** @var ClassReflection $classReflection */
             $classReflection = $this->reflectionProvider->getClass($value);
             if ($classReflection->getName() !== $value) {
-                return new StringType();
+                return $traverseCallback($traversedType);
             }
 
             return new GenericClassStringType(new ObjectType($value));
