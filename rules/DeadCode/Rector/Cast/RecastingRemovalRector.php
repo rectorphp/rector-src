@@ -108,7 +108,7 @@ CODE_SAMPLE
         }
 
         $sameNodeType = self::CAST_CLASS_TO_NODE_TYPE[$nodeClass];
-        if (! is_a($nodeType, $sameNodeType, true)) {
+        if (! $nodeType instanceof $sameNodeType) {
             return null;
         }
 
