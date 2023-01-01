@@ -113,7 +113,8 @@ final class ClassMethodAssignManipulator
                         return false;
                     }
 
-                    return $this->arrayChecker->isExists($node->parts,
+                    return $this->arrayChecker->isExists(
+                        $node->parts,
                         fn (Expr $expr): bool => $this->nodeComparator->areNodesEqual($expr, $variable)
                     );
                 }
