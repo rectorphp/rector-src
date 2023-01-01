@@ -26,6 +26,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\Util\ArrayChecker;
 use Rector\Core\ValueObject\Application\File;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -46,7 +47,8 @@ final class ClassMethodAssignManipulator
         private readonly NodeComparator $nodeComparator,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ArrayDestructVariableFilter $arrayDestructVariableFilter,
-        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer
+        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer,
+        private readonly ArrayChecker $arrayChecker
     ) {
     }
 
@@ -111,8 +113,7 @@ final class ClassMethodAssignManipulator
                         return false;
                     }
 
-                    return (bool) array_filter(
-                        $node->parts,
+                    return $this->arrayChecker->isExists($node->parts,
                         fn (Expr $expr): bool => $this->nodeComparator->areNodesEqual($expr, $variable)
                     );
                 }
