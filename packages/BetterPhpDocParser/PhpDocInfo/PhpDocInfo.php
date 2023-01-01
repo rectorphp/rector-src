@@ -270,7 +270,7 @@ final class PhpDocInfo
         $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', function (Node $node) use (
             $typeToRemove
         ): ?int {
-            if ($node instanceof PhpDocTagNode && is_a($node->value, $typeToRemove, true)) {
+            if ($node instanceof PhpDocTagNode && $node->value instanceof $typeToRemove) {
                 // keep special annotation for tools
                 if (str_starts_with($node->name, '@psalm-')) {
                     return null;
@@ -284,7 +284,7 @@ final class PhpDocInfo
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
 
-            if (! is_a($node, $typeToRemove, true)) {
+            if (! $node instanceof $typeToRemove) {
                 return null;
             }
 
@@ -434,7 +434,7 @@ final class PhpDocInfo
     {
         foreach (self::TAGS_TYPES_TO_NAMES as $tagValueNodeType => $name) {
             /** @var class-string<PhpDocTagNode> $tagValueNodeType */
-            if (is_a($phpDocTagValueNode, $tagValueNodeType, true)) {
+            if ($phpDocTagValueNode instanceof $tagValueNodeType) {
                 return $name;
             }
         }

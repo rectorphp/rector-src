@@ -137,7 +137,7 @@ final class BinaryOpManipulator
             return $condition;
         }
 
-        return static fn (Node $node): bool => is_a($node, $condition, true);
+        return static fn (Node $node): bool => $node instanceof $condition;
     }
 
     /**
