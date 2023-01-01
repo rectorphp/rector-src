@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocInfo;
 
+use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
@@ -35,7 +36,7 @@ final class PhpDocInfoFactory
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly AnnotationNaming $annotationNaming,
         private readonly RectorChangeCollector $rectorChangeCollector,
-        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder,
+        private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder
     ) {
     }
 
@@ -65,24 +66,36 @@ final class PhpDocInfoFactory
         /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
         $this->currentNodeProvider->setNode($node);
 
+        $comments = $node->getComments();
         $docComment = $node->getDocComment();
 
         if (! $docComment instanceof Doc) {
-            if ($node->getComments() === []) {
+            if ($comments === []) {
                 return null;
             }
 
             // create empty node
             $tokenIterator = new BetterTokenIterator([]);
             $phpDocNode = new PhpDocNode([]);
-        } else {
-            $text = $docComment->getText();
-            $tokens = $this->lexer->tokenize($text);
-            $tokenIterator = new BetterTokenIterator($tokens);
 
-            $phpDocNode = $this->betterPhpDocParser->parse($tokenIterator);
-            $this->setPositionOfLastToken($phpDocNode);
+            $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, $tokenIterator, $node);
+            $this->phpDocInfosByObjectHash[$objectHash] = $phpDocInfo;
+
+            return $phpDocInfo;
         }
+
+        $docs = array_filter($comments, static fn (Comment $comment): bool => $comment instanceof Doc);
+
+        if (count($docs) > 1) {
+            $this->storePreviousDocs($node, $comments, $docComment);
+        }
+
+        $text = $docComment->getText();
+        $tokens = $this->lexer->tokenize($text);
+        $tokenIterator = new BetterTokenIterator($tokens);
+
+        $phpDocNode = $this->betterPhpDocParser->parse($tokenIterator);
+        $this->setPositionOfLastToken($phpDocNode);
 
         $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, $tokenIterator, $node);
         $this->phpDocInfosByObjectHash[$objectHash] = $phpDocInfo;
@@ -105,6 +118,39 @@ final class PhpDocInfoFactory
         $phpDocInfo->makeMultiLined();
 
         return $phpDocInfo;
+    }
+
+    /**
+     * @param Comment[]|Doc[] $comments
+     * @param Doc[] $docs
+     */
+    private function storePreviousDocs(Node $node, array $comments, Doc $docComment): void
+    {
+        $previousDocsAsComments = [];
+        foreach ($comments as $comment) {
+            if ($comment === $docComment) {
+                break;
+            }
+
+            // pure comment
+            if (! $comment instanceof Doc) {
+                $previousDocsAsComments[] = $comment;
+                continue;
+            }
+
+            // make Doc as comment Doc that not last
+            $previousDocsAsComments[] = new Comment(
+                $comment->getText(),
+                $comment->getStartLine(),
+                $comment->getStartFilePos(),
+                $comment->getStartTokenPos(),
+                $comment->getEndLine(),
+                $comment->getEndFilePos(),
+                $comment->getEndTokenPos()
+            );
+        }
+
+        $node->setAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS, $previousDocsAsComments);
     }
 
     /**

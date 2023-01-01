@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocInfo;
 
+use PhpParser\Comment\Doc;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\InvalidTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
@@ -28,6 +29,7 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\Core\Configuration\CurrentNodeProvider;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -291,6 +293,13 @@ final class PhpDocInfo
             $this->markAsChanged();
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
+
+        if ($this->phpDocNode->children === []) {
+            $node = $this->getNode();
+            if ($node->hasAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS)) {
+                $node->setAttribute(AttributeKey::COMMENTS, $node->getAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS));
+            }
+        }
     }
 
     public function addTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): void

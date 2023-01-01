@@ -42,6 +42,11 @@ final class AttributeKey
     public const COMMENTS = 'comments';
 
     /**
+     * Cover multi docs
+     */
+    public const PREVIOUS_DOCS_AS_COMMENTS = 'previous_docs_as_comments';
+
+    /**
      * Internal php-parser name.
      * Do not change this even if you want!
      *
