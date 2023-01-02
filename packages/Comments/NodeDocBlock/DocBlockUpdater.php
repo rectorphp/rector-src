@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Comments\NodeDocBlock;
 
+use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -29,16 +30,7 @@ final class DocBlockUpdater
 
         // make sure, that many separated comments are not removed
         if ($phpDoc === '') {
-            if (count($node->getComments()) > 1) {
-                foreach ($node->getComments() as $comment) {
-                    $phpDoc .= $comment->getText() . PHP_EOL;
-                }
-            }
-
-            if ($phpDocInfo->getOriginalPhpDocNode()->children !== []) {
-                // all comments were removed → null
-                $node->setAttribute(AttributeKey::COMMENTS, null);
-            }
+            $this->setCommentsAttribute($node);
 
             return;
         }
@@ -57,11 +49,17 @@ final class DocBlockUpdater
 
         $phpDocNode = $phpDocInfo->getPhpDocNode();
         if ($phpDocNode->children === []) {
-            $node->setAttribute(AttributeKey::COMMENTS, null);
+            $this->setCommentsAttribute($node);
             return;
         }
 
         $node->setDocComment(new Doc((string) $phpDocNode));
+    }
+
+    private function setCommentsAttribute(Node $node): void
+    {
+        $comments = array_filter($node->getComments(), static fn (Comment $comment): bool => ! $comment instanceof Doc);
+        $node->setAttribute(AttributeKey::COMMENTS, $comments);
     }
 
     private function resolveChangedPhpDocInfo(Node $node): ?PhpDocInfo
