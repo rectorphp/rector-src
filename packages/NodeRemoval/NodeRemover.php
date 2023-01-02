@@ -48,6 +48,7 @@ final class NodeRemover
                 continue;
             }
 
+            $this->removeNode($stmt);
             unset($nodeWithStatements->stmts[$key]);
             break;
         }
@@ -76,9 +77,7 @@ final class NodeRemover
             return;
         }
 
-        // notify about remove node
-        $this->rectorChangeCollector->notifyNodeFileInfo($classMethod->params[$key]);
-
+        $this->removeNode($classMethod->params[$key]);
         unset($classMethod->params[$key]);
     }
 
@@ -93,9 +92,7 @@ final class NodeRemover
             return;
         }
 
-        // notify about remove node
-        $this->rectorChangeCollector->notifyNodeFileInfo($node->args[$key]);
-
+        $this->removeNode($node->args[$key]);
         unset($node->args[$key]);
     }
 
@@ -108,9 +105,12 @@ final class NodeRemover
             throw new ShouldNotHappenException();
         }
 
-        // notify about remove node
-        $this->rectorChangeCollector->notifyNodeFileInfo($functionLike->stmts[$key]);
+        // already removed
+        if (! isset($functionLike->stmts[$key])) {
+            return;
+        }
 
+        $this->removeNode($functionLike->stmts[$key]);
         unset($functionLike->stmts[$key]);
     }
 }
