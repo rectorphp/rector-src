@@ -86,7 +86,7 @@ final class ClosureArrowFunctionAnalyzer
                 }
 
                 foreach ($referencedValues as $referencedValue) {
-                    $isFoundInInnerUses = $this->arrayChecker->isExists(
+                    $isFoundInInnerUses = $this->arrayChecker->doesExist(
                         $subNode->uses,
                         fn (ClosureUse $closureUse): bool => $closureUse->byRef && $this->nodeComparator->areNodesEqual(
                             $closureUse->var,
