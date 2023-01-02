@@ -283,6 +283,6 @@ final class IfManipulator
             return false;
         }
 
-        return is_a($stmts[0], $desiredType);
+        return $stmts[0] instanceof $desiredType;
     }
 }

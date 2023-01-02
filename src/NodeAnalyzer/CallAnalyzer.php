@@ -53,7 +53,7 @@ final class CallAnalyzer
         }
 
         foreach (self::OBJECT_CALL_TYPES as $objectCallType) {
-            if (is_a($expr, $objectCallType, true)) {
+            if ($expr instanceof $objectCallType) {
                 return true;
             }
         }

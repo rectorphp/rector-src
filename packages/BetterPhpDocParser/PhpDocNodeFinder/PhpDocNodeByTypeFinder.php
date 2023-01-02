@@ -28,7 +28,7 @@ final class PhpDocNodeByTypeFinder
             &$foundNodes,
             $desiredType
         ): Node {
-            if (! is_a($node, $desiredType, true)) {
+            if (! $node instanceof $desiredType) {
                 return $node;
             }
 

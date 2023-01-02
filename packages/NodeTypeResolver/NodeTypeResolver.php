@@ -258,7 +258,7 @@ final class NodeTypeResolver
         }
 
         $bareType = TypeCombinator::removeNull($nodeType);
-        return is_a($bareType, $desiredType, true);
+        return $bareType instanceof $desiredType;
     }
 
     public function getFullyQualifiedClassName(TypeWithClassName $typeWithClassName): string
@@ -325,7 +325,7 @@ final class NodeTypeResolver
     private function resolveByNodeTypeResolvers(Node $node): ?Type
     {
         foreach ($this->nodeTypeResolvers as $nodeClass => $nodeTypeResolver) {
-            if (! is_a($node, $nodeClass, true)) {
+            if (! $node instanceof $nodeClass) {
                 continue;
             }
 
