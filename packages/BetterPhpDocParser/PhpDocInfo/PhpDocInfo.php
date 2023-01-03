@@ -295,19 +295,26 @@ final class PhpDocInfo
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
 
-        if ($this->phpDocNode->children === []) {
-            $node = $this->getNode();
-            if ($node->hasAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS)) {
-                /** @var Comment[] $previousDocsAsComments */
-                $previousDocsAsComments = $node->getAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS);
-                $node->setAttribute(AttributeKey::COMMENTS, $previousDocsAsComments);
-            }
+        $this->renewMainDocOnMultipleDocs();
+    }
 
-            if ($node->hasAttribute(AttributeKey::NEW_MAIN_DOC)) {
-                /** @var Doc $newMainDoc */
-                $newMainDoc = $node->getAttribute(AttributeKey::NEW_MAIN_DOC);
-                $node->setDocComment($newMainDoc);
-            }
+    private function renewMainDocOnMultipleDocs()
+    {
+        if ($this->phpDocNode->children !== []) {
+            return;
+        }
+
+        $node = $this->getNode();
+        if ($node->hasAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS)) {
+            /** @var Comment[] $previousDocsAsComments */
+            $previousDocsAsComments = $node->getAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS);
+            $node->setAttribute(AttributeKey::COMMENTS, $previousDocsAsComments);
+        }
+
+        if ($node->hasAttribute(AttributeKey::NEW_MAIN_DOC)) {
+            /** @var Doc $newMainDoc */
+            $newMainDoc = $node->getAttribute(AttributeKey::NEW_MAIN_DOC);
+            $node->setDocComment($newMainDoc);
         }
     }
 
