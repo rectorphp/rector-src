@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeNameResolver\NodeNameResolver\ClassConstFetchNameResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,6 +23,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
 {
+    protected ClassConstFetchNameResolver $classConstFetchNameResolver;
+
+    public function __construct(ClassConstFetchNameResolver $classConstFetchNameResolver)
+    {
+        $this->classConstFetchNameResolver = $classConstFetchNameResolver;
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -90,6 +98,9 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
      */
     protected function isSkipDots(Expr $expr): bool
     {
-        return ($expr instanceof ClassConstFetch) && (strval($expr->name) === 'SKIP_DOTS');
+        if (!$expr instanceof ClassConstFetch) {
+            return false;
+        }
+        return $this->classConstFetchNameResolver->resolve($expr) === 'FilesystemIterator::SKIP_DOTS';
     }
 }
