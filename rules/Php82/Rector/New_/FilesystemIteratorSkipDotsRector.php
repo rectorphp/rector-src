@@ -79,10 +79,6 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
      */
     private function isSkipDotsPresent(Expr $node): bool
     {
-        if ($this->isSkipDots($node)) {
-            return true;
-        }
-
         while ($node instanceof BitwiseOr) {
             if ($this->isSkipDots($node->right)) {
                 return true;
@@ -90,7 +86,7 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
             $node = $node->left;
         }
 
-        return false;
+        return $this->isSkipDots($node);
     }
 
     /**
