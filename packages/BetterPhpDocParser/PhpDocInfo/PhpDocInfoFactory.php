@@ -77,25 +77,20 @@ final class PhpDocInfoFactory
             // create empty node
             $tokenIterator = new BetterTokenIterator([]);
             $phpDocNode = new PhpDocNode([]);
+        } else {
+            $docs = array_filter($comments, static fn (Comment $comment): bool => $comment instanceof Doc);
 
-            $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, $tokenIterator, $node);
-            $this->phpDocInfosByObjectHash[$objectHash] = $phpDocInfo;
+            if (count($docs) > 1) {
+                $this->storePreviousDocs($node, $comments, $docComment);
+            }
 
-            return $phpDocInfo;
+            $text = $docComment->getText();
+            $tokens = $this->lexer->tokenize($text);
+            $tokenIterator = new BetterTokenIterator($tokens);
+
+            $phpDocNode = $this->betterPhpDocParser->parse($tokenIterator);
+            $this->setPositionOfLastToken($phpDocNode);
         }
-
-        $docs = array_filter($comments, static fn (Comment $comment): bool => $comment instanceof Doc);
-
-        if (count($docs) > 1) {
-            $this->storePreviousDocs($node, $comments, $docComment);
-        }
-
-        $text = $docComment->getText();
-        $tokens = $this->lexer->tokenize($text);
-        $tokenIterator = new BetterTokenIterator($tokens);
-
-        $phpDocNode = $this->betterPhpDocParser->parse($tokenIterator);
-        $this->setPositionOfLastToken($phpDocNode);
 
         $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, $tokenIterator, $node);
         $this->phpDocInfosByObjectHash[$objectHash] = $phpDocInfo;
