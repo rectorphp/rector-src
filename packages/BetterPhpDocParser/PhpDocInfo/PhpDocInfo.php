@@ -435,13 +435,13 @@ final class PhpDocInfo
         return $this->node;
     }
 
-    private function renewMainDocOnMultipleDocs()
+    private function renewMainDocOnMultipleDocs(): void
     {
         if ($this->phpDocNode->children !== []) {
             return;
         }
 
-        $node = $this->getNode();
+        $node = $this->node;
         if ($node->hasAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS)) {
             /** @var Comment[] $previousDocsAsComments */
             $previousDocsAsComments = $node->getAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS);
