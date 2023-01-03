@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\Fixture;
 
-final class ConstantPresentWithFqn
+final class SkipConstantPresentWithFqn
 {
     public function getIterator(): \FilesystemIterator
     {

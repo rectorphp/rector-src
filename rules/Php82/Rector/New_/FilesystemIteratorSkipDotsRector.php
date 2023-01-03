@@ -23,7 +23,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
 {
-    protected ClassConstFetchNameResolver $classConstFetchNameResolver;
+    private ClassConstFetchNameResolver $classConstFetchNameResolver;
 
     public function __construct(ClassConstFetchNameResolver $classConstFetchNameResolver)
     {
@@ -92,11 +92,12 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
     /**
      * Tells if $expr is equal to {@see \FilesystemIterator::SKIP_DOTS}.
      */
-    protected function isSkipDots(Expr $expr): bool
+    private function isSkipDots(Expr $expr): bool
     {
         if (!$expr instanceof ClassConstFetch) {
             return false;
         }
+
         return $this->classConstFetchNameResolver->resolve($expr) === 'FilesystemIterator::SKIP_DOTS';
     }
 }

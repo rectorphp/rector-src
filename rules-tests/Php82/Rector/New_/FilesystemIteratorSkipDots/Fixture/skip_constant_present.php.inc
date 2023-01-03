@@ -4,7 +4,7 @@ namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\Fixture;
 
 use FilesystemIterator;
 
-final class ConstantPresent
+final class SkipConstantPresent
 {
     public function getIterator(): FilesystemIterator
     {
