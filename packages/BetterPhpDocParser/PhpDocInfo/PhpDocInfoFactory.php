@@ -66,11 +66,10 @@ final class PhpDocInfoFactory
         /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
         $this->currentNodeProvider->setNode($node);
 
-        $comments = $node->getComments();
         $docComment = $node->getDocComment();
 
         if (! $docComment instanceof Doc) {
-            if ($comments === []) {
+            if ($node->getComments() === []) {
                 return null;
             }
 
@@ -78,6 +77,7 @@ final class PhpDocInfoFactory
             $tokenIterator = new BetterTokenIterator([]);
             $phpDocNode = new PhpDocNode([]);
         } else {
+            $comments = $node->getComments();
             $docs = array_filter($comments, static fn (Comment $comment): bool => $comment instanceof Doc);
 
             if (count($docs) > 1) {
