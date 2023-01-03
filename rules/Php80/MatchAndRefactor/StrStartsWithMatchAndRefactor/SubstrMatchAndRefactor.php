@@ -6,7 +6,9 @@ namespace Rector\Php80\MatchAndRefactor\StrStartsWithMatchAndRefactor;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
@@ -30,9 +32,9 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
     ) {
     }
 
-    public function match(Identical|NotIdentical $binaryOp): ?StrStartsWith
+    public function match(Identical|NotIdentical|Equal|NotEqual $binaryOp): ?StrStartsWith
     {
-        $isPositive = $binaryOp instanceof Identical;
+        $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         if ($binaryOp->left instanceof FuncCall && $this->nodeNameResolver->isName($binaryOp->left, 'substr')) {
             /** @var FuncCall $funcCall */

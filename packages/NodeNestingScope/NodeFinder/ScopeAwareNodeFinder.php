@@ -39,7 +39,7 @@ final class ScopeAwareNodeFinder
             }
 
             foreach ($parentNestingBreakTypes as $parentNestingBreakType) {
-                if (! is_a($node, $parentNestingBreakType, true)) {
+                if (! $node instanceof $parentNestingBreakType) {
                     continue;
                 }
 

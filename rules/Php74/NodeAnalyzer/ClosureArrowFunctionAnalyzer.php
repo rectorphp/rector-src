@@ -12,12 +12,14 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Util\ArrayChecker;
 
 final class ClosureArrowFunctionAnalyzer
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator,
+        private readonly ArrayChecker $arrayChecker
     ) {
     }
 
@@ -84,7 +86,7 @@ final class ClosureArrowFunctionAnalyzer
                 }
 
                 foreach ($referencedValues as $referencedValue) {
-                    $isFoundInInnerUses = (bool) array_filter(
+                    $isFoundInInnerUses = $this->arrayChecker->doesExist(
                         $subNode->uses,
                         fn (ClosureUse $closureUse): bool => $closureUse->byRef && $this->nodeComparator->areNodesEqual(
                             $closureUse->var,

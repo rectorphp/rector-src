@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
@@ -103,11 +105,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Identical::class, NotIdentical::class];
+        return [Identical::class, NotIdentical::class, Equal::class, NotEqual::class];
     }
 
     /**
-     * @param Identical|NotIdentical $node
+     * @param Identical|NotIdentical|Equal|NotEqual $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -137,7 +139,8 @@ CODE_SAMPLE
 
         /** @var Arg $secondArg */
         $secondArg = $substrFuncCall->args[1];
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($secondArg->value, $comparedNeedleExpr) &&
+        if (
+            ! $this->isUnaryMinusStrlenFuncCallArgValue($secondArg->value, $comparedNeedleExpr) &&
             ! $this->isHardCodedLNumberAndString($secondArg->value, $comparedNeedleExpr)
         ) {
             return null;
@@ -146,7 +149,7 @@ CODE_SAMPLE
         /** @var Arg $firstArg */
         $firstArg = $substrFuncCall->args[0];
         $haystack = $firstArg->value;
-        $isPositive = $binaryOp instanceof Identical;
+        $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         return $this->buildReturnNode($haystack, $comparedNeedleExpr, $isPositive);
     }
@@ -180,13 +183,14 @@ CODE_SAMPLE
         $thirdArg = $substrCompareFuncCall->args[2];
         $thirdArgValue = $thirdArg->value;
 
-        if (! $this->isUnaryMinusStrlenFuncCallArgValue($thirdArgValue, $needle) &&
+        if (
+            ! $this->isUnaryMinusStrlenFuncCallArgValue($thirdArgValue, $needle) &&
             ! $this->isHardCodedLNumberAndString($thirdArgValue, $needle)
         ) {
             return null;
         }
 
-        $isPositive = $binaryOp instanceof Identical;
+        $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         return $this->buildReturnNode($haystack, $needle, $isPositive);
     }
