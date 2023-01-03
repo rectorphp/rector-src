@@ -122,13 +122,14 @@ final class PhpDocInfoFactory
 
     /**
      * @param Comment[]|Doc[] $comments
-     * @param Doc[] $docs
      */
-    private function storePreviousDocs(Node $node, array $comments, Doc $docComment): void
+    private function storePreviousDocs(Node $node, array $comments, Doc $doc): void
     {
         $previousDocsAsComments = [];
+        $newMainDoc = null;
+
         foreach ($comments as $comment) {
-            if ($comment === $docComment) {
+            if ($comment === $doc) {
                 break;
             }
 
@@ -148,9 +149,11 @@ final class PhpDocInfoFactory
                 $comment->getEndFilePos(),
                 $comment->getEndTokenPos()
             );
+            $newMainDoc = $comment;
         }
 
         $node->setAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS, $previousDocsAsComments);
+        $node->setAttribute(AttributeKey::NEW_MAIN_DOC, $newMainDoc);
     }
 
     /**
