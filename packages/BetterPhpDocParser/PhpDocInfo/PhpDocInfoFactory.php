@@ -124,6 +124,7 @@ final class PhpDocInfoFactory
         $newMainDoc = null;
 
         foreach ($comments as $comment) {
+            // On last Doc, stop
             if ($comment === $doc) {
                 break;
             }
@@ -144,6 +145,11 @@ final class PhpDocInfoFactory
                 $comment->getEndFilePos(),
                 $comment->getEndTokenPos()
             );
+
+            /**
+             * Make last Doc before main Doc to candidate main Doc
+             * so it can immediatelly be used as replacement of Main doc when main doc removed
+             */
             $newMainDoc = $comment;
         }
 
