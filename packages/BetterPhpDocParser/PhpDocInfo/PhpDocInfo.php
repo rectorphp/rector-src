@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocInfo;
 
-use PhpParser\Comment;
-use PhpParser\Comment\Doc;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\InvalidTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
@@ -30,7 +28,6 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\Core\Configuration\CurrentNodeProvider;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -294,8 +291,6 @@ final class PhpDocInfo
             $this->markAsChanged();
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
-
-        $this->renewMainDocOnMultipleDocs();
     }
 
     public function addTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): void
@@ -433,26 +428,6 @@ final class PhpDocInfo
     public function getNode(): \PhpParser\Node
     {
         return $this->node;
-    }
-
-    private function renewMainDocOnMultipleDocs(): void
-    {
-        if ($this->phpDocNode->children !== []) {
-            return;
-        }
-
-        $node = $this->node;
-        if ($node->hasAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS)) {
-            /** @var Comment[] $previousDocsAsComments */
-            $previousDocsAsComments = $node->getAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS);
-            $node->setAttribute(AttributeKey::COMMENTS, $previousDocsAsComments);
-        }
-
-        if ($node->hasAttribute(AttributeKey::NEW_MAIN_DOC)) {
-            /** @var Doc $newMainDoc */
-            $newMainDoc = $node->getAttribute(AttributeKey::NEW_MAIN_DOC);
-            $node->setDocComment($newMainDoc);
-        }
     }
 
     private function resolveNameForPhpDocTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): ?string
