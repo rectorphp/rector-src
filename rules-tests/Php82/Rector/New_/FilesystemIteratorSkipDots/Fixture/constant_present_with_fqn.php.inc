@@ -6,7 +6,7 @@ final class ConstantPresentWithFqn
 {
     public function getIterator(): \FilesystemIterator
     {
-        return new \FilesystemIterator(__DIR__, \FilesystemIterator::SKIP_DOTS);
+        return new \FilesystemIterator(__DIR__, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::KEY_AS_FILENAME);
     }
 }
 

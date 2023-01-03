@@ -40,6 +40,8 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
     }
 
     /**
+     * Add {@see \FilesystemIterator::SKIP_DOTS} to $node when required.
+     *
      * @param New_ $node
      */
     public function refactor(Node $node): ?New_
@@ -47,7 +49,7 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
         if ($node->isFirstClassCallable()) {
             return null;
         }
-        if (! array_key_exists(1, $node->args)) {
+        if (!array_key_exists(1, $node->args)) {
             return null;
         }
         $flags = $node->args[1]->value;
@@ -65,17 +67,29 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
     }
 
     /**
-     * Is the constant {@see \FilesystemIterator::SKIP_DOTS} present?
+     * Is the constant {@see \FilesystemIterator::SKIP_DOTS} present within $node?
      */
     private function isSkipDotsPresent(Expr $node): bool
     {
-        $element = $this->betterNodeFinder->findFirst($node, static function (Node $node): bool {
-            if (! $node instanceof ClassConstFetch) {
-                return false;
-            }
-            return strval($node->name) === 'SKIP_DOTS';
-        });
+        if ($this->isSkipDots($node)) {
+            return true;
+        }
 
-        return $element instanceof ClassConstFetch;
+        while ($node instanceof BitwiseOr) {
+            if ($this->isSkipDots($node->right)) {
+                return true;
+            }
+            $node = $node->left;
+        }
+
+        return false;
+    }
+
+    /**
+     * Tells if $expr is equal to {@see \FilesystemIterator::SKIP_DOTS}.
+     */
+    protected function isSkipDots(Expr $expr): bool
+    {
+        return ($expr instanceof ClassConstFetch) && (strval($expr->name) === 'SKIP_DOTS');
     }
 }
