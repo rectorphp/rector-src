@@ -339,16 +339,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     }
 
     /**
-     * @param Node[] $nodes
-     */
-    protected function pStmts(array $nodes, bool $indent = true): string
-    {
-        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
-
-        return parent::pStmts($nodes, $indent);
-    }
-
-    /**
      * "...$params) : ReturnType"
      * ↓
      * "...$params): ReturnType"
