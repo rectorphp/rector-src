@@ -4,12 +4,12 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictCo
 
 final class SkipDefaultFalseInParam
 {
-    private $nullableString = false;
+    private $someString = false;
 
-    public function __construct(string $nullableString)
+    public function __construct(string $someString)
     {
         if (mt_rand(0, 1)) {
-            $this->nullableString = $nullableString;
+            $this->someString = $someString;
         }
     }
 }
