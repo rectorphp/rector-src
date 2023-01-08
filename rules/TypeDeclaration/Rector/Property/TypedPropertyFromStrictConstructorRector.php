@@ -182,11 +182,6 @@ CODE_SAMPLE
         if ($propertyType instanceof MixedType) {
             return true;
         }
-
-        if ($this->isDoctrineCollectionType($propertyType)) {
-            return true;
-        }
-
-        return false;
+        return $this->isDoctrineCollectionType($propertyType);
     }
 }
