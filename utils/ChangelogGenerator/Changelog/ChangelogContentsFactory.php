@@ -24,6 +24,8 @@ final class ChangelogContentsFactory
             'cleanup phpstan',
             'compatibility with betterreflection',
             'update to',
+            '[automated]',
+            '[core]',
         ],
         ChangelogCategory::NEW_FEATURES => ['add', 'added', 'improve'],
         ChangelogCategory::BUGFIXES => ['fixed', 'fix'],
