@@ -154,6 +154,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($currentClassMethodParam->variadic) {
+                continue;
+            }
+
             $currentClassMethodParams[$key]->default = $this->nodeFactory->createNull();
             $hasChanged = true;
         }
