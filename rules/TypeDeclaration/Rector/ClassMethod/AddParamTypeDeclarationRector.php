@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -125,13 +124,8 @@ CODE_SAMPLE
             return true;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
+        $classLike = $this->betterNodeFinder->findParentByTypes($classMethod, [Class_::class, Interface_::class]);
         if (! $classLike instanceof ClassLike) {
-            return true;
-        }
-
-        // skip traits
-        if ($classLike instanceof Trait_) {
             return true;
         }
 
