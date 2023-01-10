@@ -125,13 +125,8 @@ CODE_SAMPLE
             return true;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
+        $classLike = $this->betterNodeFinder->findParentType($classMethod, Class_::class, Interface_::class);
         if (! $classLike instanceof ClassLike) {
-            return true;
-        }
-
-        // skip traits
-        if ($classLike instanceof Trait_) {
             return true;
         }
 
