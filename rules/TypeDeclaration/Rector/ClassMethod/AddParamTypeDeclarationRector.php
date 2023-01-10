@@ -124,7 +124,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, Class_::class, Interface_::class);
+        $classLike = $this->betterNodeFinder->findParentByTypes($classMethod, [Class_::class, Interface_::class]);
         if (! $classLike instanceof ClassLike) {
             return true;
         }
