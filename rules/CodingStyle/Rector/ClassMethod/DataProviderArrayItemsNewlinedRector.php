@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -100,12 +102,35 @@ CODE_SAMPLE
         }
 
         // find array in data provider - must contain a return node
-        $returns = $this->betterNodeFinder->findInstanceOf($node->stmts, Return_::class);
-        if ($returns === []) {
-            return null;
+
+        /** @var Return_[] $returns */
+        $returns = $this->betterNodeFinder->findInstanceOf((array) $node->stmts, Return_::class);
+
+        $hasChanged = false;
+
+        foreach ($returns as $return) {
+            if (! $return->expr instanceof Array_) {
+                continue;
+            }
+
+            $array = $return->expr;
+            if ($array->items === []) {
+                continue;
+            }
+
+            // ensure newlined printed
+            $array->setAttribute(AttributeKey::NEWLINED_ARRAY_PRINT, true);
+
+            // invoke reprint
+            $array->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+
+            $hasChanged = true;
         }
 
-        dump(12345);
-        die;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 }

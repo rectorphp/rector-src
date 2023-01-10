@@ -123,18 +123,6 @@ final class PropertyNaming
         return $this->prolongIfTooShort($variableName, $className);
     }
 
-    /**
-     * @api symfony
-     * @see https://stackoverflow.com/a/2792045/1348344
-     */
-    public function underscoreToName(string $underscoreName): string
-    {
-        $uppercaseWords = ucwords($underscoreName, '_');
-        $pascalCaseName = str_replace('_', '', $uppercaseWords);
-
-        return lcfirst($pascalCaseName);
-    }
-
     private function resolveShortClassName(string $className): string
     {
         if (\str_contains($className, '\\')) {
@@ -273,7 +261,7 @@ final class PropertyNaming
         }
 
         // remove "_"
-        $shortClassName = Strings::replace($shortClassName, '#_#', '');
+        $shortClassName = Strings::replace($shortClassName, '#_#');
         return $this->normalizeUpperCase($shortClassName);
     }
 

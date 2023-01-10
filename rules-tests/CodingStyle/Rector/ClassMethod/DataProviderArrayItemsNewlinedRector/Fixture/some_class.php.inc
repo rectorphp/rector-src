@@ -42,7 +42,7 @@ final class ImageBinaryTest extends TestCase
     {
         return [
             ['content', 8],
-            ['content123', 11]
+            ['content123', 11],
         ];
     }
 }

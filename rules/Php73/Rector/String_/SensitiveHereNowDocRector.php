@@ -24,11 +24,6 @@ final class SensitiveHereNowDocRector extends AbstractRector implements MinPhpVe
      */
     private const WRAP_SUFFIX = '_WRAP';
 
-    /**
-     * @var string
-     */
-    private const ATTRIBUTE_DOC_LABEL = 'docLabel';
-
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SENSITIVE_HERE_NOW_DOC;
@@ -76,13 +71,13 @@ CODE_SAMPLE
 
         // the doc label is not in the string → ok
         /** @var string $docLabel */
-        $docLabel = $node->getAttribute(self::ATTRIBUTE_DOC_LABEL);
+        $docLabel = $node->getAttribute(AttributeKey::DOC_LABEL);
 
         if (! \str_contains($node->value, $docLabel)) {
             return null;
         }
 
-        $node->setAttribute(self::ATTRIBUTE_DOC_LABEL, $this->uniquateDocLabel($node->value, $docLabel));
+        $node->setAttribute(AttributeKey::DOC_LABEL, $this->uniquateDocLabel($node->value, $docLabel));
 
         // invoke redraw
         $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
