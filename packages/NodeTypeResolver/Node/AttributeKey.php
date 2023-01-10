@@ -186,4 +186,10 @@ final class AttributeKey
      * @var string
      */
     public const DOC_LABEL = 'docLabel';
+
+    /**
+     * Prints array in newlined fastion, one item per line
+     * @var string
+     */
+    public const NEWLINED_ARRAY_PRINT = 'newlined_array_print';
 }

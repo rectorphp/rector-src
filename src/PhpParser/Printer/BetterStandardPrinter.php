@@ -234,7 +234,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
-        return Strings::replace($content, self::EXTRA_SPACE_BEFORE_NOP_REGEX, '');
+        return Strings::replace($content, self::EXTRA_SPACE_BEFORE_NOP_REGEX);
     }
 
     /**
@@ -313,6 +313,13 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $array->setAttribute(AttributeKey::KIND, Array_::KIND_SHORT);
         }
 
+        if ($array->getAttribute(AttributeKey::NEWLINED_ARRAY_PRINT) === true) {
+            $printedArray = '[';
+            $printedArray .= $this->pCommaSeparatedMultiline($array->items, true);
+
+            return $printedArray . ($this->nl . ']');
+        }
+
         return parent::pExpr_Array($array);
     }
 
@@ -372,7 +379,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     {
         $declareString = parent::pStmt_Declare($declare);
 
-        return Strings::replace($declareString, '#\s+#', '');
+        return Strings::replace($declareString, '#\s+#');
     }
 
     protected function pExpr_Ternary(Ternary $ternary): string
