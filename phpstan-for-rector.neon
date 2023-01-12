@@ -1,3 +1,6 @@
+includes:
+    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/bleedingEdge.neon
+
 # this config has extensions, that helps PHPStan inside Rector to resolve more precise types
 parameters:
     inferPrivatePropertyTypeFromConstructor: true
