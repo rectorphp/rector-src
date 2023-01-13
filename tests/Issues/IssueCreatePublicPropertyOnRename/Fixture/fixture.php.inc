@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Fixture;
 
-final class DemoFile
+use Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Source\SomePropertyObject;
+
+final class Fixture
 {
-    public function __construct(private \DateTimeImmutable $date)
+    public function __construct(private SomePropertyObject $date)
     {
     }
 
@@ -23,15 +25,17 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Fixture;
 
-final class DemoFile
+use Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Source\SomePropertyObject;
+
+final class Fixture
 {
-    public function __construct(private \DateTimeImmutable $dateTimeImmutable)
+    public function __construct(private SomePropertyObject $somePropertyObject)
     {
     }
 
     public function run(): string
     {
-        return $this->dateTimeImmutable->format('l, F j, Y');
+        return $this->somePropertyObject->format('l, F j, Y');
     }
 }
 ?>

@@ -8,7 +8,6 @@ use PhpParser\Node\Param;
 use PHPStan\Type\ObjectType;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class MatchParamTypeExpectedNameResolver
@@ -16,7 +15,6 @@ final class MatchParamTypeExpectedNameResolver
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly PropertyNaming $propertyNaming,
-        private readonly NodeNameResolver $nodeNameResolver,
     ) {
     }
 
@@ -31,9 +29,7 @@ final class MatchParamTypeExpectedNameResolver
 
         // skip date time + date time interface, as should be kept
         if ($staticType instanceof ObjectType && $staticType->isInstanceOf('DateTimeInterface')->yes()) {
-            if ($this->nodeNameResolver->isName($param, '*At')) {
-                return null;
-            }
+            return null;
         }
 
         $expectedName = $this->propertyNaming->getExpectedNameFromType($staticType);
