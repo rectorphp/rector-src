@@ -123,6 +123,11 @@ final class ExpectedNameResolver
             return null;
         }
 
+        if ($returnedType instanceof ObjectType && $returnedType->isInstanceOf('DateTimeInterface')->yes()) {
+            // skip date time, as custom naming
+            return null;
+        }
+
         $expectedName = $this->propertyNaming->getExpectedNameFromType($returnedType);
         if ($expectedName !== null) {
             return $expectedName->getName();
