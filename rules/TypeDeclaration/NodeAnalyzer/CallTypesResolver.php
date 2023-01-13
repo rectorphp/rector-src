@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -22,7 +23,8 @@ final class CallTypesResolver
 {
     public function __construct(
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly TypeFactory $typeFactory
+        private readonly TypeFactory $typeFactory,
+        private readonly ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -57,7 +59,18 @@ final class CallTypesResolver
         $argValueType = $this->nodeTypeResolver->getNativeType($arg->value);
 
         // "self" in another object is not correct, this make it independent
-        return $this->correctSelfType($argValueType);
+        $argValueType = $this->correctSelfType($argValueType);
+
+        if (! $argValueType instanceof ObjectType) {
+            return $argValueType;
+        }
+
+        // fix false positive generic type on string
+        if (! $this->reflectionProvider->hasClass($argValueType->getClassName())) {
+            return new MixedType();
+        }
+
+        return $argValueType;
     }
 
     private function correctSelfType(Type $argValueType): Type
