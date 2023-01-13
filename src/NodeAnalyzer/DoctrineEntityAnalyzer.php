@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\Class_;
+use PHPStan\BetterReflection\Reflection\Adapter\ReflectionClass;
 use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -38,7 +39,7 @@ final class DoctrineEntityAnalyzer
 
     public function hasClassReflectionAttribute(ClassReflection $classReflection): bool
     {
-        /** @var \PHPStan\BetterReflection\Reflection\Adapter\ReflectionClass $nativeReflectionClass */
+        /** @var ReflectionClass $nativeReflectionClass */
         $nativeReflectionClass = $classReflection->getNativeReflection();
 
         // skip early in case of no attributes at all
