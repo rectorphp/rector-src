@@ -24,15 +24,9 @@ final class FinalizeClassesWithoutChildrenRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const DOCTRINE_ORM_MAPPING_ANNOTATION = [
+    private const DOCTRINE_MAPPING_CLASSES = [
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Embeddable',
-    ];
-
-    /**
-     * @var string[]
-     */
-    private const DOCTRINE_ODM_MAPPING_ANNOTATION = [
         'Doctrine\ODM\MongoDB\Mapping\Annotations\Document',
         'Doctrine\ODM\MongoDB\Mapping\Annotations\EmbeddedDocument',
     ];
@@ -98,11 +92,7 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_ORM_MAPPING_ANNOTATION)) {
-            return null;
-        }
-
-        if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_ODM_MAPPING_ANNOTATION)) {
+        if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_MAPPING_CLASSES)) {
             return null;
         }
 
@@ -134,11 +124,7 @@ CODE_SAMPLE
                 }
 
                 $className = $this->nodeNameResolver->getName($attribute->name);
-                if (in_array($className, self::DOCTRINE_ORM_MAPPING_ANNOTATION, true)) {
-                    return true;
-                }
-
-                if (in_array($className, self::DOCTRINE_ODM_MAPPING_ANNOTATION, true)) {
+                if (in_array($className, self::DOCTRINE_MAPPING_CLASSES, true)) {
                     return true;
                 }
             }
