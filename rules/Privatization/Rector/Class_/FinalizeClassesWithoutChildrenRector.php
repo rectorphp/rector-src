@@ -106,7 +106,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasDoctrineAttr($node)) {
+        if ($this->hasDoctrineAttr($classReflection)) {
             return null;
         }
 
@@ -115,18 +115,20 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasDoctrineAttr(Class_ $class): bool
+    private function hasDoctrineAttr(ClassReflection $classReflection): bool
     {
-        foreach ($class->attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $attribute) {
-                if (! $attribute->name instanceof FullyQualified) {
-                    continue;
-                }
+        /** @var \PHPStan\BetterReflection\Reflection\Adapter\ReflectionClass $nativeReflectionClass */
+        $nativeReflectionClass = $classReflection->getNativeReflection();
 
-                $className = $this->nodeNameResolver->getName($attribute->name);
-                if (in_array($className, self::DOCTRINE_MAPPING_CLASSES, true)) {
-                    return true;
-                }
+        // skip early in case of no attributes at all
+        if ($nativeReflectionClass->getAttributes() === []) {
+            return false;
+        }
+
+        foreach (self::DOCTRINE_MAPPING_CLASSES as $doctrineMappingClass) {
+            // skip entities
+            if ($nativeReflectionClass->getAttributes($doctrineMappingClass) !== []) {
+                return true;
             }
         }
 
