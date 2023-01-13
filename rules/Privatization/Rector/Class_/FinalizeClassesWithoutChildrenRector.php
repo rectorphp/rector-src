@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rector\Privatization\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\NodeAnalyzer\DoctrineEntityAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
@@ -21,21 +21,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FinalizeClassesWithoutChildrenRector extends AbstractRector
 {
-    /**
-     * @var string[]
-     */
-    private const DOCTRINE_MAPPING_CLASSES = [
-        'Doctrine\ORM\Mapping\Entity',
-        'Doctrine\ORM\Mapping\Embeddable',
-        'Doctrine\ODM\MongoDB\Mapping\Annotations\Document',
-        'Doctrine\ODM\MongoDB\Mapping\Annotations\EmbeddedDocument',
-    ];
-
     public function __construct(
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly DoctrineEntityAnalyzer $doctrineEntityAnalyzer,
     ) {
     }
 
@@ -91,8 +82,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_MAPPING_CLASSES)) {
+        if ($this->doctrineEntityAnalyzer->hasClassAnnotation($node)) {
             return null;
         }
 
@@ -101,38 +91,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
-        if ($childrenClassReflections !== []) {
+        if ($this->doctrineEntityAnalyzer->hasClassReflectionAttribute($classReflection)) {
             return null;
         }
 
-        if ($this->hasDoctrineAttr($classReflection)) {
+        $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
+        if ($childrenClassReflections !== []) {
             return null;
         }
 
         $this->visibilityManipulator->makeFinal($node);
 
         return $node;
-    }
-
-    private function hasDoctrineAttr(ClassReflection $classReflection): bool
-    {
-        /** @var \PHPStan\BetterReflection\Reflection\Adapter\ReflectionClass $nativeReflectionClass */
-        $nativeReflectionClass = $classReflection->getNativeReflection();
-
-        // skip early in case of no attributes at all
-        if ($nativeReflectionClass->getAttributes() === []) {
-            return false;
-        }
-
-        foreach (self::DOCTRINE_MAPPING_CLASSES as $doctrineMappingClass) {
-            // skip entities
-            if ($nativeReflectionClass->getAttributes($doctrineMappingClass) !== []) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function shouldSkipClass(Class_ $class): bool

@@ -880,3 +880,7 @@ parameters:
 
         # trusted items
         - '#Parameter \#1 \$nodes of method PhpParser\\PrettyPrinterAbstract\:\:pCommaSeparatedMultiline\(\) expects array<PhpParser\\Node>, array<PhpParser\\Node\\Expr\\ArrayItem\|null> given#'
+
+
+        # class string
+        - '#Parameter \#1 \$name of method PHPStan\\BetterReflection\\Reflection\\Adapter\\ReflectionClass\:\:getAttributes\(\) expects class\-string\|null, string given#'
