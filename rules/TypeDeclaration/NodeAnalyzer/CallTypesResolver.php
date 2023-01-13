@@ -64,6 +64,7 @@ final class CallTypesResolver
         if (! $argValueType instanceof ObjectType) {
             return $argValueType;
         }
+
         // fix false positive generic type on string
         if (! $this->reflectionProvider->hasClass($argValueType->getClassName())) {
             return new MixedType();
