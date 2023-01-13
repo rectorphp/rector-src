@@ -77,6 +77,11 @@ final class PropertyNaming
 
     public function getExpectedNameFromType(Type $type): ?ExpectedName
     {
+        // keep doctrine collections untouched
+        if ($type instanceof ObjectType && $type->isInstanceOf('Doctrine\Common\Collections\Collection')->yes()) {
+            return null;
+        }
+
         $className = $this->resolveClassNameFromType($type);
         if (! is_string($className)) {
             return null;
@@ -268,7 +273,6 @@ final class PropertyNaming
     private function resolveClassNameFromType(Type $type): ?string
     {
         $type = TypeCombinator::removeNull($type);
-
         if (! $type instanceof TypeWithClassName) {
             return null;
         }
