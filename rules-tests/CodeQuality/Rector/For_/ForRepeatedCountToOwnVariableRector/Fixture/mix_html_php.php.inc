@@ -6,9 +6,6 @@
     ?>
 </div>
 -----
-<?php
-
-?>
 <div>
     <?php 
 $itemsCount = count($items);
@@ -17,4 +14,3 @@ for ($i = 5; $i <= $itemsCount; $i++) {
         }
 ?>
 </div>
-<?php 
