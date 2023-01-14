@@ -437,12 +437,6 @@ CODE_SAMPLE;
         if (! $lastNodeNextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-
-            if ($nextNode instanceof InlineHTML && ! $lastNode instanceof InlineHTML) {
-                // re-print InlineHTML is safe
-                $nextNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
-
             $nodes = [...$nodes, $nextNode];
         }
 
