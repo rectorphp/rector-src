@@ -118,13 +118,19 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
+        $firstStmt = current($newStmts);
         $lastStmt = end($newStmts);
-        if (! $lastStmt instanceof InlineHTML) {
+
+        if (! $firstStmt instanceof InlineHTML && ! $lastStmt instanceof InlineHTML) {
             return $content;
         }
 
+        if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
+            $content = substr($content, 10);
+        }
+
         if (str_ends_with($content, '<?php ' . $this->nl)) {
-            return substr($content, 0, -7);
+            $content = substr($content, 0, -7);
         }
 
         return $content;

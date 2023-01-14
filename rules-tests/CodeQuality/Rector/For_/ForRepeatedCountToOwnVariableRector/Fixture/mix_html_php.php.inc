@@ -6,9 +6,6 @@
     ?>
 </div>
 -----
-<?php
-
-?>
 <div>
     <?php 
 $itemsCount = count($items);
