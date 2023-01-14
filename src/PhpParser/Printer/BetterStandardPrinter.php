@@ -526,9 +526,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
-        $content = substr($content, 3);
 
-        return $content;
+        return substr($content, 3);
     }
 
     private function shouldPrintNewRawValue(LNumber|DNumber $lNumber): bool
