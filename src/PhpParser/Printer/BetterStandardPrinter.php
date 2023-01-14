@@ -122,8 +122,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         /** @var Stmt $firstStmt */
         $firstStmt = current($newStmts);
         $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
-
-        if (! $isFirstStmtReprinted || ! $firstStmt instanceof InlineHTML) {
+        if (! $isFirstStmtReprinted) {
+            return $content;
+        }
+        if (! $firstStmt instanceof InlineHTML) {
             return $content;
         }
 
