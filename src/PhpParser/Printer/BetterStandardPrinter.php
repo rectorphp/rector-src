@@ -119,7 +119,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         $lastStmt = end($newStmts);
-        if (! $lastStmt instanceof InlineHTML && ! $lastStmt instanceof FileWithoutNamespace) {
+        if (! $lastStmt instanceof InlineHTML) {
             return $content;
         }
 
