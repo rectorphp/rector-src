@@ -119,7 +119,21 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
+        $firstStmt = current($newStmts);
         $lastStmt = end($newStmts);
+
+        if (! $firstStmt instanceof InlineHTML && ! $lastStmt instanceof InlineHTML) {
+            return $content;
+        }
+
+        if ($lastStmt instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
+            $content = substr($content, 0, -7);
+        }
+
+        $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
+        if (! $isFirstStmtReprinted) {
+            return $content;
+        }
 
         if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
             $content = substr($content, 10);
@@ -128,10 +142,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         if (str_starts_with($content, '?>' . $this->nl)) {
             $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
             $content = substr($content, 3);
-        }
-
-        if ($lastStmt instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
-            return substr($content, 0, -7);
         }
 
         return $content;
