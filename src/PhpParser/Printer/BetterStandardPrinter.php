@@ -130,7 +130,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         if (str_ends_with($content, '<?php ' . $this->nl)) {
-            $content = substr($content, 0, -7);
+            return substr($content, 0, -7);
         }
 
         return $content;
