@@ -139,10 +139,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
-        return $this->cleanPHPTag($content);
+        return $this->cleanSurplusTag($content);
     }
 
-    private function cleanPHPTag(string $content): string
+    private function cleanSurplusTag(string $content): string
     {
         if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
             $content = substr($content, 10);
