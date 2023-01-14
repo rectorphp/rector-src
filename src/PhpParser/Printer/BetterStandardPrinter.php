@@ -21,6 +21,7 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -118,14 +119,23 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
+        /** @var Stmt $firstStmt */
         $firstStmt = current($newStmts);
+        $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
+
+        if (! $isFirstStmtReprinted || ! $firstStmt instanceof InlineHTML) {
+            return $content;
+        }
+
         $lastStmt = end($newStmts);
 
-        if (
-            $firstStmt instanceof InlineHTML
-            && str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')
-            && $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null) {
+        if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
             $content = substr($content, 10);
+        }
+
+        if (str_starts_with($content, '?>' . $this->nl)) {
+            $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
+            $content = substr($content, 3);
         }
 
         if ($lastStmt instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
