@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
@@ -421,6 +422,12 @@ CODE_SAMPLE;
         if (! $firstNodePreviousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+
+            if ($previousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
+                // re-print InlineHTML is safe
+                $previousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
+
             $nodes = [$previousNode, ...$nodes];
         }
 
@@ -430,6 +437,12 @@ CODE_SAMPLE;
         if (! $lastNodeNextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+
+            if ($nextNode instanceof InlineHTML && ! $lastNode instanceof InlineHTML) {
+                // re-print InlineHTML is safe
+                $nextNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
+
             $nodes = [...$nodes, $nextNode];
         }
 
