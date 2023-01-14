@@ -21,7 +21,6 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -115,12 +114,22 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $content .= $this->nl;
         }
 
-        if ($newStmts === []) {
+        if (count($newStmts) <= 1) {
             return $content;
         }
 
-        /** @var Stmt $firstStmt */
         $firstStmt = current($newStmts);
+        $lastStmt = end($newStmts);
+
+        if (! $firstStmt instanceof InlineHTML && ! $lastStmt instanceof InlineHTML) {
+            return $content;
+        }
+
+        if ($lastStmt instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
+            $content = substr($content, 0, -7);
+        }
+
+        /** @var Node $firstStmt */
         $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
         if (! $isFirstStmtReprinted) {
             return $content;
@@ -130,22 +139,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
-        $lastStmt = end($newStmts);
-
-        if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
-            $content = substr($content, 10);
-        }
-
-        if (str_starts_with($content, '?>' . $this->nl)) {
-            $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
-            $content = substr($content, 3);
-        }
-
-        if ($lastStmt instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
-            return substr($content, 0, -7);
-        }
-
-        return $content;
+        return $this->cleanSurplusTag($content);
     }
 
     /**
@@ -515,6 +509,20 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . ($param->variadic ? '...' : '')
             . $this->p($param->var)
             . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
+    }
+
+    private function cleanSurplusTag(string $content): string
+    {
+        if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
+            $content = substr($content, 10);
+        }
+
+        if (str_starts_with($content, '?>' . $this->nl)) {
+            $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
+            $content = substr($content, 3);
+        }
+
+        return $content;
     }
 
     private function shouldPrintNewRawValue(LNumber|DNumber $lNumber): bool
