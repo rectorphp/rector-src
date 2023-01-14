@@ -110,12 +110,14 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
+        $totalNewStmts = count($newStmts);
+
         // add new line in case of added stmts
-        if (count($stmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
+        if ($totalNewStmts !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
             $content .= $this->nl;
         }
 
-        if ($newStmts === []) {
+        if ($totalNewStmts <= 1) {
             return $content;
         }
 
@@ -130,6 +132,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $content = substr($content, 0, -7);
         }
 
+        /** @var Node $firstStmt */
         $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
         if (! $isFirstStmtReprinted) {
             return $content;
