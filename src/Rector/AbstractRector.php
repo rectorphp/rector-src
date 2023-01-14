@@ -424,6 +424,7 @@ CODE_SAMPLE;
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
             if ($previousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
+                // re-print InlineHTML is safe
                 $previousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
@@ -438,6 +439,7 @@ CODE_SAMPLE;
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
             if ($nextNode instanceof InlineHTML && ! $lastNode instanceof InlineHTML) {
+                // re-print InlineHTML is safe
                 $nextNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
