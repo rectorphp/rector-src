@@ -118,7 +118,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
-        $lastStmt = end($stmts);
+        $lastStmt = end($newStmts);
         if (! $lastStmt instanceof InlineHTML && ! $lastStmt instanceof FileWithoutNamespace) {
             return $content;
         }
