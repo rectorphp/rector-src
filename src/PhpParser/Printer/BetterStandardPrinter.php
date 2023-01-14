@@ -142,20 +142,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return $this->cleanSurplusTag($content);
     }
 
-    private function cleanSurplusTag(string $content): string
-    {
-        if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
-            $content = substr($content, 10);
-        }
-
-        if (str_starts_with($content, '?>' . $this->nl)) {
-            $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
-            $content = substr($content, 3);
-        }
-
-        return $content;
-    }
-
     /**
      * @param Node|Node[]|null $node
      */
@@ -523,6 +509,20 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . ($param->variadic ? '...' : '')
             . $this->p($param->var)
             . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
+    }
+
+    private function cleanSurplusTag(string $content): string
+    {
+        if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
+            $content = substr($content, 10);
+        }
+
+        if (str_starts_with($content, '?>' . $this->nl)) {
+            $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
+            $content = substr($content, 3);
+        }
+
+        return $content;
     }
 
     private function shouldPrintNewRawValue(LNumber|DNumber $lNumber): bool
