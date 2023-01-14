@@ -517,7 +517,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $content = substr($content, 10);
         }
 
-        if (str_starts_with($content, '?>' . $this->nl)) {
+        if (str_starts_with($content, '?>' . $this->nl) && str_contains($content, '<?php <?php' . $this->nl)) {
             $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
             $content = substr($content, 3);
         }
