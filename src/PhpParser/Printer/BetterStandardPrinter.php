@@ -125,6 +125,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         if (! $isFirstStmtReprinted) {
             return $content;
         }
+
         if (! $firstStmt instanceof InlineHTML) {
             return $content;
         }
