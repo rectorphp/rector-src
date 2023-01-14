@@ -423,7 +423,7 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            if ($previousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
+            if ($previousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
                 $previousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
