@@ -17,4 +17,3 @@ for ($i = 5; $i <= $itemsCount; $i++) {
         }
 ?>
 </div>
-<?php 

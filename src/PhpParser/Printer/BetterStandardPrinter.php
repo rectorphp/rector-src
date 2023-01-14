@@ -24,6 +24,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
@@ -111,6 +112,15 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         // add new line in case of added stmts
         if (count($stmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
             $content .= $this->nl;
+        }
+
+        $lastStmt = end($stmts);
+        if (! $lastStmt instanceof InlineHTML && ! $lastStmt instanceof FileWithoutNamespace) {
+            return $content;
+        }
+
+        if (str_ends_with($content, '<?php ' . $this->nl)) {
+            return substr($content, 0, -7);
         }
 
         return $content;
