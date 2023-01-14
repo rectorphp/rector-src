@@ -114,6 +114,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $content .= $this->nl;
         }
 
+        if ($newStmts === []) {
+            return $content;
+        }
+
         $firstStmt = current($newStmts);
         $lastStmt = end($newStmts);
 
