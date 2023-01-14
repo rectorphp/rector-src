@@ -114,7 +114,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $content .= $this->nl;
         }
 
-        if ($newStmts === []) {
+        if (count($newStmts) <= 1) {
             return $content;
         }
 
