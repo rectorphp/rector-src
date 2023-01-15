@@ -520,10 +520,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
     private function cleanEndWithPHPOpenTag(Node $node, string $content): string
     {
-        if ($node instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
-            $content = substr($content, 0, -7);
-        }
-
         if ($node instanceof InlineHTML && str_ends_with($content, '<?php ')) {
             return substr($content, 0, -6);
         }
@@ -537,17 +533,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return substr($content, 10);
         }
 
-        if (! str_starts_with($content, '?>' . $this->nl)) {
-            return $content;
-        }
-
-        if (! str_contains($content, '<?php <?php' . $this->nl)) {
-            return $content;
-        }
-
-        $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
-
-        return substr($content, 3);
+        return $content;
     }
 
     private function shouldPrintNewRawValue(LNumber|DNumber $lNumber): bool
