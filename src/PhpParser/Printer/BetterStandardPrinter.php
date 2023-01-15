@@ -125,9 +125,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
-        if ($lastStmt instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
-            $content = substr($content, 0, -7);
-        }
+        $content = $this->cleanEndWithPHPOpenTag($lastStmt, $content);
 
         /** @var Node $firstStmt */
         $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
@@ -509,6 +507,19 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . ($param->variadic ? '...' : '')
             . $this->p($param->var)
             . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
+    }
+
+    private function cleanEndWithPHPOpenTag(Node $node, string $content): string
+    {
+        if ($node instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
+            $content = substr($content, 0, -7);
+        }
+
+        if ($node instanceof InlineHTML && str_ends_with($content, '<?php ')) {
+            return substr($content, 0, -6);
+        }
+
+        return $content;
     }
 
     private function cleanSurplusTag(string $content): string
