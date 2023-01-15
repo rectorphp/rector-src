@@ -520,6 +520,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
     private function cleanEndWithPHPOpenTag(Node $node, string $content): string
     {
+        if ($node instanceof InlineHTML && str_ends_with($content, '<?php ' . $this->nl)) {
+            $content = substr($content, 0, -7);
+        }
+
         if ($node instanceof InlineHTML && str_ends_with($content, '<?php ')) {
             return substr($content, 0, -6);
         }
