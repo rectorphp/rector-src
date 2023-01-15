@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\InlineHTML;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -49,6 +51,14 @@ final class NodeAddingPostRector extends AbstractPostRector
         if ($nodesToAddBefore !== []) {
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
             $newNodes = array_merge($nodesToAddBefore, $newNodes);
+        }
+
+        $firstNode = current($newNodes);
+        $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
+
+        if ($firstNodePreviousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
+            // re-print InlineHTML is safe
+            $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
         if ($newNodes === [$node]) {

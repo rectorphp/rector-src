@@ -31,6 +31,7 @@ use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
@@ -418,11 +419,6 @@ CODE_SAMPLE;
     {
         $firstNode = current($nodes);
         $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
-
-        if ($firstNodePreviousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
-            // re-print InlineHTML is safe
-            $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-        }
 
         if (! $firstNodePreviousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
             /** @var Node $previousNode */
