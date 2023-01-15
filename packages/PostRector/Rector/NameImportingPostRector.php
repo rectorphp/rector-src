@@ -59,6 +59,11 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
+        $currentStmt = current($file->getNewStmts());
+        if ($currentStmt instanceof InlineHTML) {
+            return null;
+        }
+
         if ($node instanceof Name) {
             return $this->processNodeName($node, $file);
         }
