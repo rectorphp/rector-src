@@ -32,7 +32,10 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
+use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -84,6 +87,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     public function __construct(
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly RectorConfigProvider $rectorConfigProvider,
+        private readonly CurrentFileProvider $currentFileProvider,
         array $options = []
     ) {
         parent::__construct($options);
@@ -112,6 +116,11 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         // add new line in case of added stmts
         if (count($stmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
             $content .= $this->nl;
+        }
+
+        $currentFile = $this->currentFileProvider->getFile();
+        if ($currentFile instanceof File && ! $currentFile->getFileDiff() instanceof FileDiff) {
+            return $content;
         }
 
         $firstStmt = current($newStmts);
