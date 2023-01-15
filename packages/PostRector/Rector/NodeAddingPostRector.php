@@ -51,14 +51,12 @@ final class NodeAddingPostRector extends AbstractPostRector
         if ($nodesToAddBefore !== []) {
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
             $newNodes = array_merge($nodesToAddBefore, $newNodes);
-        }
 
-        $firstNode = current($newNodes);
-        $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
-
-        if ($firstNodePreviousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML && $firstNode !== $node) {
-            // re-print InlineHTML is safe
-            $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $firstNodePreviousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+            if ($firstNodePreviousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
+                // re-print InlineHTML is safe
+                $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
         }
 
         if ($newNodes === [$node]) {
