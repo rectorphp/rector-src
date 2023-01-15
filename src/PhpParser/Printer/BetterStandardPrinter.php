@@ -537,17 +537,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return substr($content, 10);
         }
 
-        if (! str_starts_with($content, '?>' . $this->nl)) {
-            return $content;
-        }
-
-        if (! str_contains($content, '<?php <?php' . $this->nl)) {
-            return $content;
-        }
-
-        $content = str_replace('<?php <?php' . $this->nl, '<?php' . $this->nl, $content);
-
-        return substr($content, 3);
+        return $content;
     }
 
     private function shouldPrintNewRawValue(LNumber|DNumber $lNumber): bool
