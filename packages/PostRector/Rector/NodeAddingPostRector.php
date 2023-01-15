@@ -56,7 +56,7 @@ final class NodeAddingPostRector extends AbstractPostRector
         $firstNode = current($newNodes);
         $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-        if ($firstNodePreviousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
+        if ($firstNodePreviousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML && $firstNode !== $node) {
             // re-print InlineHTML is safe
             $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
