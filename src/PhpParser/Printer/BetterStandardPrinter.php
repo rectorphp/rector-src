@@ -129,6 +129,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $content = substr($content, 0, -7);
         }
 
+        if ($lastStmt instanceof InlineHTML && str_ends_with($content, '<?php ')) {
+            $content = substr($content, 0, -6);
+        }
+
         /** @var Node $firstStmt */
         $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
         if (! $isFirstStmtReprinted) {
