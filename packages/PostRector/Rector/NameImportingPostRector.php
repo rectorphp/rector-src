@@ -10,6 +10,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Reflection\ReflectionProvider;
@@ -50,6 +51,11 @@ final class NameImportingPostRector extends AbstractPostRector
 
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
+            return null;
+        }
+
+        $currentStmt = current($file->getOldStmts());
+        if ($currentStmt instanceof InlineHTML) {
             return null;
         }
 
