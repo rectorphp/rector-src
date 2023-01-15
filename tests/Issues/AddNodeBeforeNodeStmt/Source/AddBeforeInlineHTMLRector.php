@@ -54,6 +54,14 @@ class AddBeforeInlineHTMLRector extends AbstractRector
             ),
             $firstStmt
         );
+        $this->nodesToAddCollector->addNodeBeforeNode(
+            new Expression(
+                new Assign(
+                    new Variable('test2'), new String_('test2')
+                )
+            ),
+            $firstStmt
+        );
         $this->justAdded = true;
         return $node;
     }
