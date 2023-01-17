@@ -209,9 +209,11 @@ final class TokenManipulator
 
             if ($parentNode instanceof Ternary) {
                 $this->replaceTernary($parentNode);
-            } else {
-                $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
+                return $node;
             }
+
+            $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
+            return $node;
         });
     }
 
