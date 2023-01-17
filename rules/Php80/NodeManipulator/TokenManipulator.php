@@ -179,7 +179,7 @@ final class TokenManipulator
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, function (Node $node) use (
             $singleTokenVariable
-        ) {
+        ): ?FuncCall {
             if (! $node instanceof FuncCall) {
                 return null;
             }
