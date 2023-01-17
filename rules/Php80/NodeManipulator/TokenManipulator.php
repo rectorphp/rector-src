@@ -15,10 +15,12 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\If_;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -39,7 +41,8 @@ final class TokenManipulator
         private readonly NodesToRemoveCollector $nodesToRemoveCollector,
         private readonly ValueResolver $valueResolver,
         private readonly NodeComparator $nodeComparator,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -176,7 +179,7 @@ final class TokenManipulator
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, function (Node $node) use (
             $singleTokenVariable
-        ) {
+        ): ?FuncCall {
             if (! $node instanceof FuncCall) {
                 return null;
             }
@@ -202,8 +205,32 @@ final class TokenManipulator
             // remove correct node
             $nodeToRemove = $this->matchParentNodeInCaseOfIdenticalTrue($node);
 
+            $parentNode = $nodeToRemove->getAttribute(AttributeKey::PARENT_NODE);
+
+            if ($parentNode instanceof Ternary) {
+                $this->replaceTernary($parentNode);
+                return $node;
+            }
+
             $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
+            return $node;
         });
+    }
+
+    private function replaceTernary(Ternary $ternary): void
+    {
+        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($ternary);
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $currentStmt,
+            static function (Node $subNode) use ($ternary): ?Expr {
+                if ($subNode === $ternary) {
+                    return $ternary->if;
+                }
+
+                return null;
+            }
+        );
     }
 
     /**
