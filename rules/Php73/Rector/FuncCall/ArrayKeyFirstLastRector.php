@@ -12,6 +12,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\ReadWrite\NodeAnalyzer\ReadExprAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -45,7 +46,8 @@ final class ArrayKeyFirstLastRector extends AbstractRector implements MinPhpVers
     ];
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ReadExprAnalyzer $readExprAnalyzer
     ) {
     }
 
@@ -118,6 +120,26 @@ CODE_SAMPLE
         });
 
         if (! $keyFuncCall instanceof FuncCall) {
+            return null;
+        }
+
+        $hasPrevCall = $this->betterNodeFinder->findFirstNext($node, function (Node $subNode) use ($node): bool {
+            if (! $subNode instanceof FuncCall) {
+                return false;
+            }
+
+            if (! $this->isName($subNode, 'prev')) {
+                return false;
+            }
+
+            if ($subNode->isFirstClassCallable()) {
+                return true;
+            }
+
+            return $this->nodeComparator->areNodesEqual($subNode->args[0]->value, $node->args[0]->value);
+        });
+
+        if ($hasPrevCall) {
             return null;
         }
 
