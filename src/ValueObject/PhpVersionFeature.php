@@ -607,4 +607,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_UTF8_DECODE_ENCODE_FUNCTION = PhpVersion::PHP_82;
+
+    /**
+     * @see https://www.php.net/manual/en/filesystemiterator.construct
+     * @var int
+     */
+    public const FILESYSTEM_ITERATOR_SKIP_DOTS = PhpVersion::PHP_82;
 }
