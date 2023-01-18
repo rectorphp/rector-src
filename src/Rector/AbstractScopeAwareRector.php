@@ -29,18 +29,21 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
      */
     public function refactor(Node $node)
     {
-        /** @var MutatingScope|null $scope */
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+        $originalNode ??= $node;
 
-        if (! $scope instanceof MutatingScope) {
-            $scope = $this->scopeAnalyzer->resolveScope($node, $this->file->getFilePath());
+        /** @var MutatingScope|null $currentScope */
+        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
 
-            if ($scope instanceof MutatingScope) {
-                $this->changedNodeScopeRefresher->refresh($node, $scope, $this->file->getFilePath());
+        if (! $currentScope instanceof MutatingScope) {
+            $currentScope = $this->scopeAnalyzer->resolveScope($node, $this->file->getFilePath());
+
+            if ($currentScope instanceof MutatingScope) {
+                $this->changedNodeScopeRefresher->refresh($node, $currentScope, $this->file->getFilePath());
             }
         }
 
-        if (! $scope instanceof Scope) {
+        if (! $currentScope instanceof Scope) {
             /**
              * @var Node $parentNode
              *
@@ -62,6 +65,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        return $this->refactorWithScope($node, $scope);
+        return $this->refactorWithScope($node, $currentScope);
     }
 }
