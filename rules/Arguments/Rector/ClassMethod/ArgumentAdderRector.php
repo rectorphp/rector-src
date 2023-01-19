@@ -34,6 +34,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\ArgumentAdderRectorTest
+ * @extends AbstractRector<MethodCall|StaticCall|ClassMethod>
  */
 final class ArgumentAdderRector extends AbstractRector implements ConfigurableRectorInterface
 {
@@ -92,17 +93,11 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class, StaticCall::class, ClassMethod::class];
     }
 
-    /**
-     * @param MethodCall|StaticCall|ClassMethod $node
-     */
     public function refactor(Node $node): MethodCall | StaticCall | ClassMethod | null
     {
         $this->haveArgumentsChanged = false;

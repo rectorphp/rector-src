@@ -12,19 +12,16 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Core\Tests\Issues\InfiniteLoop\InfiniteLoopTest
+ * @extends AbstractRector<MethodCall>
  */
 final class InfinityLoopRector extends AbstractRector
 {
-    /**
-     * @return array<class-string<Node>>
-     */
     public function getNodeTypes(): array
     {
         return [MethodCall::class];
     }
 
     /**
-     * @param MethodCall $node
      * @return Assign|null
      */
     public function refactor(Node $node): ?Node

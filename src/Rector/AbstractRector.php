@@ -46,6 +46,10 @@ use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 
+/**
+ * @phpstan-template TNodeType of Node
+ * @implements PhpRectorInterface<TNodeType>
+ */
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
 {
     /**
@@ -206,6 +210,10 @@ CODE_SAMPLE;
             $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
         }
 
+        /**
+         * @phpstan-param TNodeType $node
+         * @phpstan-ignore-next-line
+         */
         $refactoredNode = $this->refactor($node);
 
         // nothing to change → continue
