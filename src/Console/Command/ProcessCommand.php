@@ -9,6 +9,7 @@ use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Console\ExitCode;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -20,7 +21,6 @@ use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObjectFactory\ProcessResultFactory;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -129,18 +129,25 @@ final class ProcessCommand extends AbstractProcessCommand
         }
     }
 
+    /**
+     * @return ExitCode::*
+     */
     private function resolveReturnCode(ProcessResult $processResult, Configuration $configuration): int
     {
         // some system errors were found → fail
         if ($processResult->getErrors() !== []) {
-            return Command::FAILURE;
+            return ExitCode::FAILURE;
         }
 
         // inverse error code for CI dry-run
         if (! $configuration->isDryRun()) {
-            return Command::SUCCESS;
+            return ExitCode::SUCCESS;
         }
 
-        return $processResult->getFileDiffs() === [] ? Command::SUCCESS : Command::FAILURE;
+        if ($processResult->getFileDiffs() !== []) {
+            return ExitCode::CHANGED_CODE;
+        }
+
+        return ExitCode::SUCCESS;
     }
 }

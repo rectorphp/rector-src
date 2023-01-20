@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php82\Rector\New_;
 
+use FilesystemIterator;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -21,13 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\FilesystemIteratorSkipDotsRectorTest
  */
-class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
+final class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
 {
-    private ClassConstFetchNameResolver $classConstFetchNameResolver;
-
-    public function __construct(ClassConstFetchNameResolver $classConstFetchNameResolver)
-    {
-        $this->classConstFetchNameResolver = $classConstFetchNameResolver;
+    public function __construct(
+        private readonly ClassConstFetchNameResolver $classConstFetchNameResolver
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -35,8 +34,8 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
         return new RuleDefinition(
             'Prior PHP 8.2 FilesystemIterator::SKIP_DOTS was always set and could not be removed, therefore FilesystemIterator::SKIP_DOTS is added in order to keep this behaviour.',
             [new CodeSample(
-                'new \\FilesystemIterator(__DIR__, \\FilesystemIterator::KEY_AS_FILENAME);',
-                'new \\FilesystemIterator(__DIR__, \\FilesystemIterator::KEY_AS_FILENAME | \\FilesystemIterator::SKIP_DOTS);'
+                'new ' . FilesystemIterator::class . '(__DIR__, ' . FilesystemIterator::class . '::KEY_AS_FILENAME);',
+                'new ' . FilesystemIterator::class . '(__DIR__, ' . FilesystemIterator::class . '::KEY_AS_FILENAME | ' . FilesystemIterator::class . '::SKIP_DOTS);'
             ),
             ]
         );
@@ -57,15 +56,18 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
         if ($node->isFirstClassCallable()) {
             return null;
         }
-        if (!array_key_exists(1, $node->args)) {
+
+        if (! array_key_exists(1, $node->args)) {
             return null;
         }
+
         $flags = $node->args[1]->value;
         if ($this->isSkipDotsPresent($flags)) {
             return null;
         }
-        $skipDots = new ClassConstFetch(new FullyQualified('FilesystemIterator'), 'SKIP_DOTS');
-        $node->args[1] = new Arg(new BitwiseOr($flags, $skipDots));
+
+        $classConstFetch = new ClassConstFetch(new FullyQualified('FilesystemIterator'), 'SKIP_DOTS');
+        $node->args[1] = new Arg(new BitwiseOr($flags, $classConstFetch));
         return $node;
     }
 
@@ -77,16 +79,17 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
     /**
      * Is the constant {@see \FilesystemIterator::SKIP_DOTS} present within $node?
      */
-    private function isSkipDotsPresent(Expr $node): bool
+    private function isSkipDotsPresent(Expr $expr): bool
     {
-        while ($node instanceof BitwiseOr) {
-            if ($this->isSkipDots($node->right)) {
+        while ($expr instanceof BitwiseOr) {
+            if ($this->isSkipDots($expr->right)) {
                 return true;
             }
-            $node = $node->left;
+
+            $expr = $expr->left;
         }
 
-        return $this->isSkipDots($node);
+        return $this->isSkipDots($expr);
     }
 
     /**
@@ -94,7 +97,7 @@ class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpV
      */
     private function isSkipDots(Expr $expr): bool
     {
-        if (!$expr instanceof ClassConstFetch) {
+        if (! $expr instanceof ClassConstFetch) {
             return false;
         }
 
