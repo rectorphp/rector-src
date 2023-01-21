@@ -14,7 +14,7 @@ final class VersionResolverTest extends TestCase
         $packageVersion = VersionResolver::resolvePackageVersion();
 
         // should be a commit hash size, as we're in untagged test
-        $stringLenght = strlen($packageVersion);
-        $this->assertSame(40, $stringLenght);
+        $stringLength = strlen($packageVersion);
+        $this->assertSame(40, $stringLength);
     }
 }
