@@ -103,7 +103,8 @@ final class FilesystemIteratorSkipDotsRector extends AbstractRector implements M
     private function isSkipDots(Expr $expr): bool
     {
         if (! $expr instanceof ClassConstFetch) {
-            return false;
+            // can be anything
+            return true;
         }
 
         return $this->classConstFetchNameResolver->resolve($expr) === 'FilesystemIterator::SKIP_DOTS';
