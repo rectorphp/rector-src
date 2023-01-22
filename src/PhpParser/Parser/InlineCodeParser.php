@@ -6,9 +6,9 @@ namespace Rector\Core\PhpParser\Parser;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
@@ -123,16 +123,14 @@ final class InlineCodeParser
 
     private function resolveConcatValue(Concat $concat): string
     {
-        if ($concat->left instanceof Concat && $concat->right instanceof String_ && str_starts_with(
-            $concat->right->value,
-            '$'
-        )) {
+        if ($concat->left instanceof Concat &&
+            $concat->right instanceof String_ && str_starts_with($concat->right->value, '$')) {
             $concat->right->value = '.' . $concat->right->value;
         }
 
         if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
             $node = $concat->getAttribute(AttributeKey::NEXT_NODE);
-            if ($node instanceof Node) {
+            if ($node instanceof Variable) {
                 $concat->right->value .= '.';
             }
         }
