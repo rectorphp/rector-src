@@ -119,7 +119,7 @@ final class InlineCodeParser
         return $this->nodePrinter->print($expr);
     }
 
-    private function resolveConcatValue(Concat $expr) {
+    private function resolveConcatValue(Concat $expr)
     {
         if ($expr->right instanceof String_ && str_starts_with($expr->right->value, '($')) {
             $expr->right->value = '(';
