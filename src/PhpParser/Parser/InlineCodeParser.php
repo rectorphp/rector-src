@@ -113,6 +113,10 @@ final class InlineCodeParser
         }
 
         if ($expr instanceof Concat) {
+            if ($expr->right instanceof String_ && str_starts_with($expr->right->value, '($')) {
+                $expr->right->value = '(';
+            }
+
             $string = $this->stringify($expr->left) . $this->stringify($expr->right);
             return Strings::replace(
                 $string,
