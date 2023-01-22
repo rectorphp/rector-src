@@ -29,7 +29,7 @@ class QuotedVariableArg
         $strArgs = join(', ',$argL);
 
         return function ($v) use ($strFunc, $strArgs) {
-            return $strFunc($strArgs);
+            return $strFunc($v . $strArgs);
         };
     }
 }

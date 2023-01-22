@@ -122,7 +122,7 @@ final class InlineCodeParser
     private function resolveConcatValue(Concat $concat): string
     {
         if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
-            $concat->right->value = '(';
+            $concat->right->value .= '.';
         }
 
         $string = $this->stringify($concat->left) . $this->stringify($concat->right);
