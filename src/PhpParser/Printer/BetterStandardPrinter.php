@@ -22,7 +22,6 @@ use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
@@ -87,17 +86,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         parent::__construct($options);
 
         $this->tabOrSpaceIndentCharacter = $this->rectorConfigProvider->getIndentChar();
-    }
-
-    protected function initializeInsertionMap(): void
-    {
-        parent::initializeInsertionMap();
-
-        // print return type double colon right after the bracket "function(): string"
-        $this->insertionMap['Stmt_ClassMethod->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Stmt_Function->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
-        $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
     }
 
     /**
@@ -182,6 +170,17 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $content = $this->pStmts($fileWithoutNamespace->stmts, false);
 
         return ltrim($content);
+    }
+
+    protected function initializeInsertionMap(): void
+    {
+        parent::initializeInsertionMap();
+
+        // print return type double colon right after the bracket "function(): string"
+        $this->insertionMap['Stmt_ClassMethod->returnType'] = [')', false, ': ', null];
+        $this->insertionMap['Stmt_Function->returnType'] = [')', false, ': ', null];
+        $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
+        $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
     }
 
     protected function p(Node $node, $parentFormatPreserved = false): string
