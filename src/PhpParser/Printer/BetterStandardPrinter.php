@@ -92,14 +92,18 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     ) {
         parent::__construct($options);
 
+        $this->tabOrSpaceIndentCharacter = $this->rectorConfigProvider->getIndentChar();
+    }
+
+    protected function initializeInsertionMap(): void
+    {
+        parent::initializeInsertionMap();
+
         // print return type double colon right after the bracket "function(): string"
-        $this->initializeInsertionMap();
         $this->insertionMap['Stmt_ClassMethod->returnType'] = [')', false, ': ', null];
         $this->insertionMap['Stmt_Function->returnType'] = [')', false, ': ', null];
         $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
         $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
-
-        $this->tabOrSpaceIndentCharacter = $this->rectorConfigProvider->getIndentChar();
     }
 
     /**
@@ -386,23 +390,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
 
         return parent::pStmts($nodes, $indent);
-    }
-
-    /**
-     * "...$params) : ReturnType"
-     * ↓
-     * "...$params): ReturnType"
-     */
-    protected function pStmt_ClassMethod(ClassMethod $classMethod): string
-    {
-        $content = parent::pStmt_ClassMethod($classMethod);
-
-        if (! $classMethod->returnType instanceof Node) {
-            return $content;
-        }
-
-        // this approach is chosen, to keep changes in parent pStmt_ClassMethod() updated
-        return Strings::replace($content, self::REPLACE_COLON_WITH_SPACE_REGEX, '$1: ');
     }
 
     /**
