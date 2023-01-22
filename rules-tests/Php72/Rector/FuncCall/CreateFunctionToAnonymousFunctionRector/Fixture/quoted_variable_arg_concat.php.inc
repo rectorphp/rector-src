@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector\Fixture;
 
-class QuotedVariableArg
+class QuotedVariableArgConcat
 {
     public function pk_gen()
     {
@@ -20,7 +20,7 @@ class QuotedVariableArg
 
 namespace Rector\Tests\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector\Fixture;
 
-class QuotedVariableArg
+class QuotedVariableArgConcat
 {
     public function pk_gen()
     {
