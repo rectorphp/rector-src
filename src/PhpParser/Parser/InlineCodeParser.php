@@ -113,18 +113,23 @@ final class InlineCodeParser
         }
 
         if ($expr instanceof Concat) {
-            if ($expr->right instanceof String_ && str_starts_with($expr->right->value, '($')) {
-                $expr->right->value = '(';
-            }
-
-            $string = $this->stringify($expr->left) . $this->stringify($expr->right);
-            return Strings::replace(
-                $string,
-                self::VARIABLE_IN_SINGLE_QUOTED_REGEX,
-                static fn (array $match) => $match['variable']
-            );
+            return $this->resolveConcatValue($expr);
         }
 
         return $this->nodePrinter->print($expr);
+    }
+
+    private function resolveConcatValue(Concat $expr) {
+    {
+        if ($expr->right instanceof String_ && str_starts_with($expr->right->value, '($')) {
+            $expr->right->value = '(';
+        }
+
+        $string = $this->stringify($expr->left) . $this->stringify($expr->right);
+        return Strings::replace(
+            $string,
+            self::VARIABLE_IN_SINGLE_QUOTED_REGEX,
+            static fn (array $match) => $match['variable']
+        );
     }
 }
