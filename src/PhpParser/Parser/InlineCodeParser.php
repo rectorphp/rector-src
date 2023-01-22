@@ -119,13 +119,13 @@ final class InlineCodeParser
         return $this->nodePrinter->print($expr);
     }
 
-    private function resolveConcatValue(Concat $expr)
+    private function resolveConcatValue(Concat $concat): string
     {
-        if ($expr->right instanceof String_ && str_starts_with($expr->right->value, '($')) {
-            $expr->right->value = '(';
+        if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
+            $concat->right->value = '(';
         }
 
-        $string = $this->stringify($expr->left) . $this->stringify($expr->right);
+        $string = $this->stringify($concat->left) . $this->stringify($concat->right);
         return Strings::replace(
             $string,
             self::VARIABLE_IN_SINGLE_QUOTED_REGEX,
