@@ -6,14 +6,17 @@ namespace Rector\Core\PhpParser\Parser;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Util\StringUtils;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 
 final class InlineCodeParser
@@ -122,7 +125,10 @@ final class InlineCodeParser
     private function resolveConcatValue(Concat $concat): string
     {
         if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
-            $concat->right->value .= '.';
+            $nextVariable = $concat->getAttribute(AttributeKey::NEXT_NODE);
+            if ($nextVariable instanceof Node && ! $nextVariable instanceof Concat) {
+                $concat->right->value .= '.';
+            }
         }
 
         $string = $this->stringify($concat->left) . $this->stringify($concat->right);
