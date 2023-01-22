@@ -124,8 +124,8 @@ final class InlineCodeParser
     private function resolveConcatValue(Concat $concat): string
     {
         if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
-            $nextVariable = $concat->getAttribute(AttributeKey::NEXT_NODE);
-            if ($nextVariable instanceof Node) {
+            $node = $concat->getAttribute(AttributeKey::NEXT_NODE);
+            if ($node instanceof Node) {
                 $concat->right->value .= '.';
             }
         }
