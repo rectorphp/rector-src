@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Comment;
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
@@ -56,17 +57,34 @@ final class NodeAddingPostRector extends AbstractPostRector
             $firstNodeAfterNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
             if ($node instanceof Nop && $firstNodeAfterNode instanceof InlineHTML && ! $stmt instanceof InlineHTML) {
-                $this->nodeRemover->removeNode($node);
-
                 // mark node as comment
-                $nopValue = $this->betterStandardPrinter->print($node);
+                $nopComments = [];
+
+                foreach ($node->getAttribute(AttributeKey::COMMENTS) ?? [] as $comment) {
+                    if ($comment instanceof Doc) {
+                        $nopComments[] = new Comment(
+                            $comment->getText(),
+                            $comment->getStartLine(),
+                            $comment->getStartFilePos(),
+                            $comment->getStartTokenPos(),
+                            $comment->getEndLine(),
+                            $comment->getEndFilePos(),
+                            $comment->getEndTokenPos()
+                        );
+                        continue;
+                    }
+
+                    $nopComments[] = $comment;
+                }
+
                 $currentComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
                 $stmt->setAttribute(
                     AttributeKey::COMMENTS,
-                    array_merge([new Comment($nopValue)], $currentComments)
+                    array_merge($nopComments, $currentComments)
                 );
 
                 $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                $this->nodeRemover->removeNode($node);
             }
         }
 
