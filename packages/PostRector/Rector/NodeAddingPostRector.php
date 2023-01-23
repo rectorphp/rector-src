@@ -60,7 +60,7 @@ final class NodeAddingPostRector extends AbstractPostRector
                 // mark node as comment
                 $nopComments = [];
 
-                foreach ($node->getAttribute(AttributeKey::COMMENTS) ?? [] as $comment) {
+                foreach ($node->getComments() as $comment) {
                     if ($comment instanceof Doc) {
                         $nopComments[] = new Comment(
                             $comment->getText(),
@@ -77,7 +77,7 @@ final class NodeAddingPostRector extends AbstractPostRector
                     $nopComments[] = $comment;
                 }
 
-                $currentComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
+                $currentComments = $stmt->getComments();
                 $stmt->setAttribute(
                     AttributeKey::COMMENTS,
                     array_merge($nopComments, $currentComments)
