@@ -65,10 +65,7 @@ final class NodeAddingPostRector extends AbstractPostRector
                 $currentComments = $currentNodeToAddAfter->getAttribute(AttributeKey::COMMENTS) ?? [];
                 $currentNodeToAddAfter->setAttribute(
                     AttributeKey::COMMENTS,
-                    array_merge(
-                        [new Comment($nopValue)],
-                        $currentComments
-                    )
+                    array_merge([new Comment($nopValue)], $currentComments)
                 );
 
                 $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
