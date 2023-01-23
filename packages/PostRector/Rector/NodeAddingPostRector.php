@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
+use PhpParser\Node\Stmt\Nop;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
+use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -25,7 +30,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NodeAddingPostRector extends AbstractPostRector
 {
     public function __construct(
-        private readonly NodesToAddCollector $nodesToAddCollector
+        private readonly NodesToAddCollector $nodesToAddCollector,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
+        private readonly CommentsMerger $commentsMerger,
+        private readonly NodeRemover $nodeRemover
     ) {
     }
 
@@ -45,6 +53,26 @@ final class NodeAddingPostRector extends AbstractPostRector
         if ($nodesToAddAfter !== []) {
             $this->nodesToAddCollector->clearNodesToAddAfter($node);
             $newNodes = array_merge($newNodes, $nodesToAddAfter);
+
+            $currentNodeToAddAfter = current($nodesToAddAfter);
+            $firstNodeAfterNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+
+            if ($node instanceof Nop && $firstNodeAfterNode instanceof InlineHTML && ! $currentNodeToAddAfter instanceof InlineHTML) {
+                $this->nodeRemover->removeNode($node);
+
+                // mark node as comment
+                $nopValue = $this->betterStandardPrinter->print($node);
+                $currentComments = $currentNodeToAddAfter->getAttribute(AttributeKey::COMMENTS) ?? [];
+                $currentNodeToAddAfter->setAttribute(
+                    AttributeKey::COMMENTS,
+                    array_merge(
+                        [new Comment($nopValue)],
+                        $currentComments
+                    )
+                );
+
+                $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
         }
 
         $nodesToAddBefore = $this->nodesToAddCollector->getNodesToAddBeforeNode($node);
