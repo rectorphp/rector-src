@@ -9,7 +9,6 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
-use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
@@ -31,7 +30,6 @@ final class NodeAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NodesToAddCollector $nodesToAddCollector,
-        private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly NodeRemover $nodeRemover
     ) {
     }
