@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\PhpParser\Printer;
+namespace Rector\Core\NodeDecorator;
 
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
@@ -13,7 +13,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-final class MixPhpHtmlPrinter
+final class MixPhpHtmlDecorator
 {
     public function __construct(
         private readonly NodeRemover $nodeRemover,
@@ -21,7 +21,7 @@ final class MixPhpHtmlPrinter
     ) {
     }
 
-    public function before(Node $node): void
+    public function decorateBefore(Node $node): void
     {
         $firstNodePreviousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
         if ($firstNodePreviousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
@@ -33,7 +33,7 @@ final class MixPhpHtmlPrinter
     /**
      * @param Node[] $nodes
      */
-    public function after(Node $node, array $nodes): void
+    public function decorateAfter(Node $node, array $nodes): void
     {
         if (! $node instanceof Nop) {
             return;

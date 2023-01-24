@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
-use Rector\Core\PhpParser\Printer\MixPhpHtmlPrinter;
+use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,7 +25,7 @@ final class NodeAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NodesToAddCollector $nodesToAddCollector,
-        private readonly MixPhpHtmlPrinter $mixPhpHtmlPrinter
+        private readonly MixPhpHtmlDecorator $mixPhpHtmlDecorator
     ) {
     }
 
@@ -46,7 +46,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddAfter($node);
             $newNodes = array_merge($newNodes, $nodesToAddAfter);
 
-            $this->mixPhpHtmlPrinter->after($node, [$node, ...$nodesToAddAfter]);
+            $this->mixPhpHtmlDecorator->decorateAfter($node, [$node, ...$nodesToAddAfter]);
         }
 
         $nodesToAddBefore = $this->nodesToAddCollector->getNodesToAddBeforeNode($node);
@@ -54,7 +54,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
             $newNodes = array_merge($nodesToAddBefore, $newNodes);
 
-            $this->mixPhpHtmlPrinter->before($node);
+            $this->mixPhpHtmlDecorator->decorateBefore($node);
         }
 
         if ($newNodes === [$node]) {
