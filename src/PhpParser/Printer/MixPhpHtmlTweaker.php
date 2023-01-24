@@ -29,7 +29,7 @@ final class MixPhpHtmlTweaker
     }
 
     /**
-     * @param Node[] $nodesToAddAfter
+     * @param Node[]|null[] $nodesToAddAfter
      */
     public function after(Node $node, array $nodesToAddAfter): void
     {

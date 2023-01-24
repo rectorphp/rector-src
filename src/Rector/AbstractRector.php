@@ -439,7 +439,8 @@ CODE_SAMPLE;
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-            $this->mixPhpHtmlTweaker->after($node, $nodes);
+            $nextNodeInAfterNodes = $this->resolveNextNodeInAfterNodes($node, $nodes);
+            $this->mixPhpHtmlTweaker->after($node, [$nextNodeInAfterNodes]);
 
             $nodes = [...$nodes, $nextNode];
         }
@@ -447,6 +448,20 @@ CODE_SAMPLE;
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NodeConnectingVisitor());
         $nodeTraverser->traverse($nodes);
+    }
+
+    /**
+     * @param Node[] $nodes
+     */
+    private function resolveNextNodeInAfterNodes(Node $node, array $nodes): ?Node
+    {
+        foreach ($nodes as $key => $subNode) {
+            if ($this->nodeComparator->areNodesEqual($subNode, $node) && isset($nodes[$key+1])) {
+                return $nodes[$key+1];
+            }
+        }
+
+        return null;
     }
 
     private function printDebugCurrentFileAndRule(): void
