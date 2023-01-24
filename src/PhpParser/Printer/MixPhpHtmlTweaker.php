@@ -7,7 +7,6 @@ namespace Rector\Core\PhpParser\Printer;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\NodeRemoval\NodeRemover;
@@ -30,7 +29,7 @@ final class MixPhpHtmlTweaker
     }
 
     /**
-     * @param Stmt[] $nodesToAddAfter
+     * @param Node[] $nodesToAddAfter
      */
     public function after(Node $node, array $nodesToAddAfter): void
     {
@@ -48,7 +47,7 @@ final class MixPhpHtmlTweaker
         }
 
         $stmt = current($nodesToAddAfter);
-        if (! $stmt instanceof Stmt) {
+        if (! $stmt instanceof Node) {
             return;
         }
 
