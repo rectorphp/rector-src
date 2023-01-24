@@ -438,6 +438,9 @@ CODE_SAMPLE;
         if (! $lastNodeNextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+
+            $this->mixPhpHtmlTweaker->after($node, $nodes);
+
             $nodes = [...$nodes, $nextNode];
         }
 
