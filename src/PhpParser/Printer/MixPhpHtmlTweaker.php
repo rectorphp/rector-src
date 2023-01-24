@@ -87,7 +87,7 @@ final class MixPhpHtmlTweaker
     /**
      * @param Node[] $nodes
      */
-    private function resolveAppendAfterNode(Node $node, array $nodes): ?Node
+    private function resolveAppendAfterNode(Nop $node, array $nodes): ?Node
     {
         foreach ($nodes as $key => $subNode) {
             if (! $this->nodeComparator->areNodesEqual($subNode, $node)) {

@@ -449,26 +449,6 @@ CODE_SAMPLE;
         $nodeTraverser->traverse($nodes);
     }
 
-    /**
-     * @param Node[] $nodes
-     */
-    private function resolveNextNodeInAfterNodes(Node $node, array $nodes): ?Node
-    {
-        foreach ($nodes as $key => $subNode) {
-            if (! $this->nodeComparator->areNodesEqual($subNode, $node)) {
-                continue;
-            }
-
-            if (! isset($nodes[$key + 1])) {
-                continue;
-            }
-
-            return $nodes[$key + 1];
-        }
-
-        return null;
-    }
-
     private function printDebugCurrentFileAndRule(): void
     {
         if (! $this->rectorOutputStyle->isDebug()) {
