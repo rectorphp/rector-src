@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
-use PhpParser\Comment;
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PhpParser\Node\Stmt\InlineHTML;
-use PhpParser\Node\Stmt\Nop;
 use Rector\Core\PhpParser\Printer\MixPhpHtmlTweaker;
 use Rector\NodeRemoval\NodeRemover;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;

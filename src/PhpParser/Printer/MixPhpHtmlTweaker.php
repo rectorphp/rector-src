@@ -14,8 +14,9 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class MixPhpHtmlTweaker
 {
-    public function __construct(private readonly NodeRemover $nodeRemover)
-    {
+    public function __construct(
+        private readonly NodeRemover $nodeRemover
+    ) {
     }
 
     public function before(Node $node): void
