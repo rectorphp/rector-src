@@ -13,7 +13,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-final class MixPhpHtmlTweaker
+final class MixPhpHtmlPrinter
 {
     public function __construct(
         private readonly NodeRemover $nodeRemover,

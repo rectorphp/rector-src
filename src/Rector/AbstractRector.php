@@ -32,7 +32,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\PhpParser\Printer\MixPhpHtmlTweaker;
+use Rector\Core\PhpParser\Printer\MixPhpHtmlPrinter;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -116,7 +116,7 @@ CODE_SAMPLE;
 
     private DocBlockUpdater $docBlockUpdater;
 
-    private MixPhpHtmlTweaker $mixPhpHtmlTweaker;
+    private MixPhpHtmlPrinter $MixPhpHtmlPrinter;
 
     #[Required]
     public function autowire(
@@ -141,7 +141,7 @@ CODE_SAMPLE;
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
         DocBlockUpdater $docBlockUpdater,
-        MixPhpHtmlTweaker $mixPhpHtmlTweaker
+        MixPhpHtmlPrinter $MixPhpHtmlPrinter
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -164,7 +164,7 @@ CODE_SAMPLE;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
-        $this->mixPhpHtmlTweaker = $mixPhpHtmlTweaker;
+        $this->MixPhpHtmlPrinter = $MixPhpHtmlPrinter;
     }
 
     /**
@@ -427,7 +427,7 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            $this->mixPhpHtmlTweaker->before($node);
+            $this->MixPhpHtmlPrinter->before($node);
 
             $nodes = [$previousNode, ...$nodes];
         }
@@ -439,7 +439,7 @@ CODE_SAMPLE;
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-            $this->mixPhpHtmlTweaker->after($node, $nodes);
+            $this->MixPhpHtmlPrinter->after($node, $nodes);
 
             $nodes = [...$nodes, $nextNode];
         }
