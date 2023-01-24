@@ -87,10 +87,10 @@ final class MixPhpHtmlPrinter
     /**
      * @param Node[] $nodes
      */
-    private function resolveAppendAfterNode(Nop $node, array $nodes): ?Node
+    private function resolveAppendAfterNode(Nop $nop, array $nodes): ?Node
     {
         foreach ($nodes as $key => $subNode) {
-            if (! $this->nodeComparator->areNodesEqual($subNode, $node)) {
+            if (! $this->nodeComparator->areNodesEqual($subNode, $nop)) {
                 continue;
             }
 
