@@ -15,8 +15,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class AddNextNopRector extends AbstractRector
 {
-    private bool $justAdded = false;
-
     public function __construct(private readonly NodesToAddCollector $nodesToAddCollector)
     {
     }
@@ -35,15 +33,10 @@ class AddNextNopRector extends AbstractRector
 
     public function refactor(Node $node)
     {
-        if ($this->justAdded) {
-            return null;
-        }
-
         $this->nodesToAddCollector->addNodeAfterNode(
             new Echo_([new String_("this is new stmt after Nop")]),
             $node
         );
-        $this->justAdded = true;
 
         return $node;
     }
