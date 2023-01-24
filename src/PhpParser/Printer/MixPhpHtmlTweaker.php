@@ -33,43 +33,23 @@ final class MixPhpHtmlTweaker
      */
     public function after(Node $node, array $nodesToAddAfter): void
     {
-        $stmt = current($nodesToAddAfter);
-        $firstNodeAfterNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-
         if (! $node instanceof Nop) {
             return;
         }
 
+        $firstNodeAfterNode = $node->getAttribute(AttributeKey::NEXT_NODE);
         if (! $firstNodeAfterNode instanceof InlineHTML) {
             return;
         }
 
+        $stmt = current($nodesToAddAfter);
         if ($stmt instanceof InlineHTML) {
             return;
         }
 
-        // mark node as comment
-        $nopComments = [];
-
-        foreach ($node->getComments() as $comment) {
-            if ($comment instanceof Doc) {
-                $nopComments[] = new Comment(
-                    $comment->getText(),
-                    $comment->getStartLine(),
-                    $comment->getStartFilePos(),
-                    $comment->getStartTokenPos(),
-                    $comment->getEndLine(),
-                    $comment->getEndFilePos(),
-                    $comment->getEndTokenPos()
-                );
-                continue;
-            }
-
-            $nopComments[] = $comment;
-        }
-
+        $nodeComments = $node->getComments();
         $currentComments = $stmt->getComments();
-        $stmt->setAttribute(AttributeKey::COMMENTS, array_merge($nopComments, $currentComments));
+        $stmt->setAttribute(AttributeKey::COMMENTS, array_merge($nodeComments, $currentComments));
 
         $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         $this->nodeRemover->removeNode($node);
