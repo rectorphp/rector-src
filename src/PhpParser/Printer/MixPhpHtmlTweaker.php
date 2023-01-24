@@ -76,7 +76,10 @@ final class MixPhpHtmlTweaker
 
         $stmt->setAttribute(AttributeKey::COMMENTS, $nodeComments);
 
+        // re-print InlineHTML is safe
         $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+
+        // remove Nop is marked  as comment of Next Node
         $this->nodeRemover->removeNode($node);
     }
 }
