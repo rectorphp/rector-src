@@ -6,7 +6,6 @@ namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
 use Rector\Core\PhpParser\Printer\MixPhpHtmlTweaker;
-use Rector\NodeRemoval\NodeRemover;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,7 +25,6 @@ final class NodeAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NodesToAddCollector $nodesToAddCollector,
-        private readonly NodeRemover $nodeRemover,
         private readonly MixPhpHtmlTweaker $mixPhpHtmlTweaker
     ) {
     }
