@@ -9,6 +9,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -47,9 +48,25 @@ final class MixPhpHtmlTweaker
             return;
         }
 
-        $nodeComments = $node->getComments();
-        $currentComments = $stmt->getComments();
-        $stmt->setAttribute(AttributeKey::COMMENTS, array_merge($nodeComments, $currentComments));
+        $nodeComments = [];
+        foreach ($node->getComments() as $comment) {
+            if ($comment instanceof Doc) {
+                $nodeComments[] = new Comment(
+                    $comment->getText(),
+                    $comment->getStartLine(),
+                    $comment->getStartFilePos(),
+                    $comment->getStartTokenPos(),
+                    $comment->getEndLine(),
+                    $comment->getEndFilePos(),
+                    $comment->getEndTokenPos()
+                );
+                continue;
+            }
+
+            $nodeComments[] = $comment;
+        }
+
+        $stmt->setAttribute(AttributeKey::COMMENTS, $nodeComments);
 
         $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         $this->nodeRemover->removeNode($node);
