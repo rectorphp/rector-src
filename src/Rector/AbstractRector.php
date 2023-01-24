@@ -116,7 +116,7 @@ CODE_SAMPLE;
 
     private DocBlockUpdater $docBlockUpdater;
 
-    private MixPhpHtmlPrinter $MixPhpHtmlPrinter;
+    private MixPhpHtmlPrinter $mixPhpHtmlPrinter;
 
     #[Required]
     public function autowire(
@@ -164,7 +164,7 @@ CODE_SAMPLE;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
-        $this->MixPhpHtmlPrinter = $MixPhpHtmlPrinter;
+        $this->mixPhpHtmlPrinter = $MixPhpHtmlPrinter;
     }
 
     /**
@@ -427,7 +427,7 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            $this->MixPhpHtmlPrinter->before($node);
+            $this->mixPhpHtmlPrinter->before($node);
 
             $nodes = [$previousNode, ...$nodes];
         }
@@ -439,7 +439,7 @@ CODE_SAMPLE;
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-            $this->MixPhpHtmlPrinter->after($node, $nodes);
+            $this->mixPhpHtmlPrinter->after($node, $nodes);
 
             $nodes = [...$nodes, $nextNode];
         }

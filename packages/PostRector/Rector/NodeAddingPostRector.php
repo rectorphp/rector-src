@@ -25,7 +25,7 @@ final class NodeAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NodesToAddCollector $nodesToAddCollector,
-        private readonly MixPhpHtmlPrinter $MixPhpHtmlPrinter
+        private readonly MixPhpHtmlPrinter $mixPhpHtmlPrinter
     ) {
     }
 
@@ -46,7 +46,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddAfter($node);
             $newNodes = array_merge($newNodes, $nodesToAddAfter);
 
-            $this->MixPhpHtmlPrinter->after($node, [$node, ...$nodesToAddAfter]);
+            $this->mixPhpHtmlPrinter->after($node, [$node, ...$nodesToAddAfter]);
         }
 
         $nodesToAddBefore = $this->nodesToAddCollector->getNodesToAddBeforeNode($node);
@@ -54,7 +54,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
             $newNodes = array_merge($nodesToAddBefore, $newNodes);
 
-            $this->MixPhpHtmlPrinter->before($node);
+            $this->mixPhpHtmlPrinter->before($node);
         }
 
         if ($newNodes === [$node]) {
