@@ -53,38 +53,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddAfter($node);
             $newNodes = array_merge($newNodes, $nodesToAddAfter);
 
-        //    $this->mixPhpHtmlTweaker->after($node);
-
-            $stmt = current($nodesToAddAfter);
-            $firstNodeAfterNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-
-            if ($node instanceof Nop && $firstNodeAfterNode instanceof InlineHTML && ! $stmt instanceof InlineHTML) {
-                // mark node as comment
-                $nopComments = [];
-
-                foreach ($node->getComments() as $comment) {
-                    if ($comment instanceof Doc) {
-                        $nopComments[] = new Comment(
-                            $comment->getText(),
-                            $comment->getStartLine(),
-                            $comment->getStartFilePos(),
-                            $comment->getStartTokenPos(),
-                            $comment->getEndLine(),
-                            $comment->getEndFilePos(),
-                            $comment->getEndTokenPos()
-                        );
-                        continue;
-                    }
-
-                    $nopComments[] = $comment;
-                }
-
-                $currentComments = $stmt->getComments();
-                $stmt->setAttribute(AttributeKey::COMMENTS, array_merge($nopComments, $currentComments));
-
-                $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-                $this->nodeRemover->removeNode($node);
-            }
+            $this->mixPhpHtmlTweaker->after($node, $nodesToAddAfter);
         }
 
         $nodesToAddBefore = $this->nodesToAddCollector->getNodesToAddBeforeNode($node);

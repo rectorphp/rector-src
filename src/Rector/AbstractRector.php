@@ -33,6 +33,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\Core\PhpParser\Printer\MixPhpHtmlTweaker;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -116,6 +117,8 @@ CODE_SAMPLE;
 
     private DocBlockUpdater $docBlockUpdater;
 
+    private MixPhpHtmlTweaker $mixPhpHtmlTweaker;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -138,7 +141,8 @@ CODE_SAMPLE;
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
-        DocBlockUpdater $docBlockUpdater
+        DocBlockUpdater $docBlockUpdater,
+        MixPhpHtmlTweaker $mixPhpHtmlTweaker
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -161,6 +165,7 @@ CODE_SAMPLE;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
+        $this->mixPhpHtmlTweaker = $mixPhpHtmlTweaker;
     }
 
     /**
@@ -423,10 +428,7 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            if ($previousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
-                // re-print InlineHTML is safe
-                $previousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
+            $this->mixPhpHtmlTweaker->before($node);
 
             $nodes = [$previousNode, ...$nodes];
         }
