@@ -459,9 +459,11 @@ CODE_SAMPLE;
             if (! $this->nodeComparator->areNodesEqual($subNode, $node)) {
                 continue;
             }
+
             if (! isset($nodes[$key + 1])) {
                 continue;
             }
+
             return $nodes[$key + 1];
         }
 
