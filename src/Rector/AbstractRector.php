@@ -9,7 +9,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
@@ -29,6 +28,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
+use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
@@ -116,6 +116,8 @@ CODE_SAMPLE;
 
     private DocBlockUpdater $docBlockUpdater;
 
+    private MixPhpHtmlDecorator $mixPhpHtmlDecorator;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -138,7 +140,8 @@ CODE_SAMPLE;
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
-        DocBlockUpdater $docBlockUpdater
+        DocBlockUpdater $docBlockUpdater,
+        MixPhpHtmlDecorator $mixPhpHtmlDecorator
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -161,6 +164,7 @@ CODE_SAMPLE;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
+        $this->mixPhpHtmlDecorator = $mixPhpHtmlDecorator;
     }
 
     /**
@@ -423,10 +427,7 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            if ($previousNode instanceof InlineHTML && ! $firstNode instanceof InlineHTML) {
-                // re-print InlineHTML is safe
-                $previousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
+            $this->mixPhpHtmlDecorator->decorateBefore($node);
 
             $nodes = [$previousNode, ...$nodes];
         }
@@ -437,6 +438,9 @@ CODE_SAMPLE;
         if (! $lastNodeNextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+
+            $this->mixPhpHtmlDecorator->decorateAfter($node, $nodes);
+
             $nodes = [...$nodes, $nextNode];
         }
 

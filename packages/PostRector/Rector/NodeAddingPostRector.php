@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\InlineHTML;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,7 +24,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NodeAddingPostRector extends AbstractPostRector
 {
     public function __construct(
-        private readonly NodesToAddCollector $nodesToAddCollector
+        private readonly NodesToAddCollector $nodesToAddCollector,
+        private readonly MixPhpHtmlDecorator $mixPhpHtmlDecorator
     ) {
     }
 
@@ -45,6 +45,8 @@ final class NodeAddingPostRector extends AbstractPostRector
         if ($nodesToAddAfter !== []) {
             $this->nodesToAddCollector->clearNodesToAddAfter($node);
             $newNodes = array_merge($newNodes, $nodesToAddAfter);
+
+            $this->mixPhpHtmlDecorator->decorateAfter($node, [$node, ...$nodesToAddAfter]);
         }
 
         $nodesToAddBefore = $this->nodesToAddCollector->getNodesToAddBeforeNode($node);
@@ -52,11 +54,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
             $newNodes = array_merge($nodesToAddBefore, $newNodes);
 
-            $firstNodePreviousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-            if ($firstNodePreviousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
-                // re-print InlineHTML is safe
-                $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
+            $this->mixPhpHtmlDecorator->decorateBefore($node);
         }
 
         if ($newNodes === [$node]) {
