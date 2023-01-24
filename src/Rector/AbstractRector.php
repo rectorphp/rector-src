@@ -456,8 +456,8 @@ CODE_SAMPLE;
     private function resolveNextNodeInAfterNodes(Node $node, array $nodes): ?Node
     {
         foreach ($nodes as $key => $subNode) {
-            if ($this->nodeComparator->areNodesEqual($subNode, $node) && isset($nodes[$key+1])) {
-                return $nodes[$key+1];
+            if ($this->nodeComparator->areNodesEqual($subNode, $node) && isset($nodes[$key + 1])) {
+                return $nodes[$key + 1];
             }
         }
 
