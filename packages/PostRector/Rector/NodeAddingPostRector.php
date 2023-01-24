@@ -9,6 +9,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
+use Rector\Core\PhpParser\Printer\MixPhpHtmlTweaker;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
@@ -30,7 +31,8 @@ final class NodeAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NodesToAddCollector $nodesToAddCollector,
-        private readonly NodeRemover $nodeRemover
+        private readonly NodeRemover $nodeRemover,
+        private readonly MixPhpHtmlTweaker $mixPhpHtmlTweaker
     ) {
     }
 
@@ -50,6 +52,8 @@ final class NodeAddingPostRector extends AbstractPostRector
         if ($nodesToAddAfter !== []) {
             $this->nodesToAddCollector->clearNodesToAddAfter($node);
             $newNodes = array_merge($newNodes, $nodesToAddAfter);
+
+        //    $this->mixPhpHtmlTweaker->after($node);
 
             $stmt = current($nodesToAddAfter);
             $firstNodeAfterNode = $node->getAttribute(AttributeKey::NEXT_NODE);
@@ -88,11 +92,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
             $newNodes = array_merge($nodesToAddBefore, $newNodes);
 
-            $firstNodePreviousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-            if ($firstNodePreviousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
-                // re-print InlineHTML is safe
-                $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
+            $this->mixPhpHtmlTweaker->before($node);
         }
 
         if ($newNodes === [$node]) {
