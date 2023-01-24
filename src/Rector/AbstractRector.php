@@ -9,7 +9,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
@@ -440,10 +439,7 @@ CODE_SAMPLE;
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-            if ($nextNode instanceof InlineHTML) {
-                $nextNodeInAfterNodes = $this->resolveNextNodeInAfterNodes($node, $nodes);
-                $this->mixPhpHtmlTweaker->after($node, [$nextNodeInAfterNodes]);
-            }
+            $this->mixPhpHtmlTweaker->after($node, $nodes);
 
             $nodes = [...$nodes, $nextNode];
         }

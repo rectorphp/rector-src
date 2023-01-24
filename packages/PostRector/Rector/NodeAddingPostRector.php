@@ -46,7 +46,7 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddAfter($node);
             $newNodes = array_merge($newNodes, $nodesToAddAfter);
 
-            $this->mixPhpHtmlTweaker->after($node, $nodesToAddAfter);
+            $this->mixPhpHtmlTweaker->after($node, [$node, ...$nodesToAddAfter]);
         }
 
         $nodesToAddBefore = $this->nodesToAddCollector->getNodesToAddBeforeNode($node);

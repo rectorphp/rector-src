@@ -9,13 +9,15 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class MixPhpHtmlTweaker
 {
     public function __construct(
-        private readonly NodeRemover $nodeRemover
+        private readonly NodeRemover $nodeRemover,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -29,9 +31,9 @@ final class MixPhpHtmlTweaker
     }
 
     /**
-     * @param Node[]|null[] $nodesToAddAfter
+     * @param Node[] $nodes
      */
-    public function after(Node $node, array $nodesToAddAfter): void
+    public function after(Node $node, array $nodes): void
     {
         if (! $node instanceof Nop) {
             return;
@@ -46,7 +48,7 @@ final class MixPhpHtmlTweaker
             return;
         }
 
-        $stmt = current($nodesToAddAfter);
+        $stmt = $this->resolveAppendAfterNode($node, $nodes);
         if (! $stmt instanceof Node) {
             return;
         }
@@ -80,5 +82,25 @@ final class MixPhpHtmlTweaker
 
         // remove Nop is marked  as comment of Next Node
         $this->nodeRemover->removeNode($node);
+    }
+
+    /**
+     * @param Node[] $nodes
+     */
+    private function resolveAppendAfterNode(Node $node, array $nodes): ?Node
+    {
+        foreach ($nodes as $key => $subNode) {
+            if (! $this->nodeComparator->areNodesEqual($subNode, $node)) {
+                continue;
+            }
+
+            if (! isset($nodes[$key + 1])) {
+                continue;
+            }
+
+            return $nodes[$key + 1];
+        }
+
+        return null;
     }
 }
