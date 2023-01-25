@@ -1,4 +1,4 @@
-<div></div>
+<div><?php echo $this->filter ;?></div>
 -----
 <?php
 
