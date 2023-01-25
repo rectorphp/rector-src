@@ -445,7 +445,7 @@ CODE_SAMPLE;
             $nodes = [...$nodes, $nextNode];
         }
 
-        if ($firstNode !== $lastNode) {
+        if (count($nodes) > 1) {
             $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($this->file, $nodes);
         } elseif ($firstNode instanceof FileWithoutNamespace) {
             $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($this->file, $firstNode->stmts);
