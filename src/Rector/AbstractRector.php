@@ -447,11 +447,11 @@ CODE_SAMPLE;
 
         $totalNodes = count($nodes);
         if ($totalNodes === 1 && $firstNode instanceof FileWithoutNamespace) {
-            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($firstNode->stmts);
+            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($this->file, $firstNode->stmts);
         }
 
         if ($totalNodes > 1) {
-            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($nodes);
+            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($this->file, $nodes);
         }
 
         $nodeTraverser = new NodeTraverser();

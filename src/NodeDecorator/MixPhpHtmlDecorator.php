@@ -10,7 +10,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -23,21 +22,15 @@ final class MixPhpHtmlDecorator
 {
     public function __construct(
         private readonly NodeRemover $nodeRemover,
-        private readonly NodeComparator $nodeComparator,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
     /**
      * @param Node[] $nodes
      */
-    public function decorateNextNodesInlineHTML(array $nodes): void
+    public function decorateNextNodesInlineHTML(File $file, array $nodes): void
     {
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return;
-        }
-
         $oldTokens = $file->getOldTokens();
 
         foreach ($nodes as $key => $subNode) {
