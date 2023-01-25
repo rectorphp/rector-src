@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
@@ -31,6 +32,7 @@ use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
@@ -422,6 +424,10 @@ CODE_SAMPLE;
     {
         $firstNode = current($nodes);
         $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
+
+        if ($firstNode instanceof FileWithoutNamespace && isset($firstNode->stmts[0], $firstNode->stmts[1])) {
+            $this->mixPhpHtmlDecorator->decorateFileWithoutNamespace($node);
+        }
 
         if (! $firstNodePreviousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
             /** @var Node $previousNode */

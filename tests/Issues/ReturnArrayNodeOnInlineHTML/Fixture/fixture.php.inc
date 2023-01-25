@@ -4,4 +4,6 @@
 
 echo 'this is new stmt before InlineHTML';
 ?>
-<div><?php echo $this->filter ;?></div>
+<div><?php 
+echo $this->filter ;
+?></div>

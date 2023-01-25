@@ -10,6 +10,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -19,6 +20,13 @@ final class MixPhpHtmlDecorator
         private readonly NodeRemover $nodeRemover,
         private readonly NodeComparator $nodeComparator
     ) {
+    }
+
+    public function decorateFileWithoutNamespace(FileWithoutNamespace $firstNode): void
+    {
+        if ($firstNode->stmts[1] instanceof InlineHTML && ! $firstNode->stmts[0] instanceof InlineHTML) {
+            $firstNode->stmts[1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
     }
 
     public function decorateBefore(Node $node): void
