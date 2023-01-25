@@ -22,11 +22,11 @@ final class MixPhpHtmlDecorator
     ) {
     }
 
-    public function decorateFileWithoutNamespace(FileWithoutNamespace $firstNode): void
+    public function decorateFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): void
     {
-        if ($firstNode->stmts[1] instanceof InlineHTML && ! $firstNode->stmts[0] instanceof InlineHTML) {
+        if ($fileWithoutNamespace->stmts[1] instanceof InlineHTML && ! $fileWithoutNamespace->stmts[0] instanceof InlineHTML) {
             // re-print InlineHTML is safe
-            $firstNode->stmts[1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $fileWithoutNamespace->stmts[1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
     }
 
