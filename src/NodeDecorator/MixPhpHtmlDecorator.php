@@ -30,7 +30,7 @@ final class MixPhpHtmlDecorator
         }
     }
 
-    public function decorateBefore(Node $node, Node $previousNode): void
+    public function decorateBefore(Node $node, Node $previousNode = null): void
     {
         if ($previousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
             // re-print InlineHTML is safe
@@ -104,7 +104,7 @@ final class MixPhpHtmlDecorator
     private function resolveAppendAfterNode(Nop $nop, array $nodes): ?Node
     {
         foreach ($nodes as $key => $subNode) {
-            if (! $this->nodeComparator->areNodesEqual($subNode, $nop)) {
+            if (! $this->nodeComparator->areSameNode($subNode, $nop)) {
                 continue;
             }
 
