@@ -5,4 +5,6 @@
 $test = 'test';
 $test2 = 'test2';
 ?>
-<div><?php echo $this->filter ;?></div>
+<div><?php 
+echo $this->filter ;
+?></div>

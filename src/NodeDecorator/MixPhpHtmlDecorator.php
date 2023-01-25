@@ -27,6 +27,12 @@ final class MixPhpHtmlDecorator
         if ($firstNodePreviousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
             // re-print InlineHTML is safe
             $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            return;
+        }
+
+        if ($node instanceof InlineHTML && ! $firstNodePreviousNode instanceof Node) {
+            // re-print InlineHTML is safe
+            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
     }
 
