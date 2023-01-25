@@ -524,7 +524,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $content;
         }
 
-        if (str_ends_with($content, '<?php \n')) {
+        if (str_ends_with($content, "<?php \n")) {
             $content = substr($content, 0, -7);
         }
 
