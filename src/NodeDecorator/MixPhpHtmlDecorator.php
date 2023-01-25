@@ -30,16 +30,15 @@ final class MixPhpHtmlDecorator
         }
     }
 
-    public function decorateBefore(Node $node): void
+    public function decorateBefore(Node $node, Node $previousNode): void
     {
-        $firstNodePreviousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if ($firstNodePreviousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
+        if ($previousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
             // re-print InlineHTML is safe
-            $firstNodePreviousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $previousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             return;
         }
 
-        if ($node instanceof InlineHTML && ! $firstNodePreviousNode instanceof Node) {
+        if ($node instanceof InlineHTML && ! $previousNode instanceof Node) {
             // re-print InlineHTML is safe
             $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }

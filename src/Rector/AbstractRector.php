@@ -433,7 +433,7 @@ CODE_SAMPLE;
                 /** @var Node $previousNode */
                 $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-                $this->mixPhpHtmlDecorator->decorateBefore($node);
+                $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
 
                 $nodes = [$previousNode, ...$nodes];
             }
