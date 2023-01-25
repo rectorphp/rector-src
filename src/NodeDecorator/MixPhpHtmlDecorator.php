@@ -10,7 +10,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeRemoval\NodeRemover;
@@ -51,14 +50,14 @@ final class MixPhpHtmlDecorator
                 continue;
             }
 
-            if (! isset($nodes[$key+1])) {
+            if (! isset($nodes[$key + 1])) {
                 // already last one, nothing to do
                 return;
             }
 
-            if ($nodes[$key+1] instanceof InlineHTML) {
+            if ($nodes[$key + 1] instanceof InlineHTML) {
                 // No token end? Just added
-                $nodes[$key+1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                $nodes[$key + 1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
         }
     }
