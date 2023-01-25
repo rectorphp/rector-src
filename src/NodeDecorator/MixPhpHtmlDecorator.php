@@ -40,7 +40,7 @@ final class MixPhpHtmlDecorator
 
             $endTokenPost = $subNode->getEndTokenPos();
             if (isset($oldTokens[$endTokenPost])) {
-                continue;
+                return;
             }
 
             if (! isset($nodes[$key + 1])) {
