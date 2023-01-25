@@ -53,7 +53,7 @@ final class MixPhpHtmlDecorator
         }
     }
 
-    public function decorateNextNode(Node $node, InlineHTML $nextNode): void
+    public function decorateNextNode(Node $node, InlineHTML $inlineHTML): void
     {
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
@@ -68,7 +68,7 @@ final class MixPhpHtmlDecorator
         }
 
         // No token end? Just added
-        $nextNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
     }
 
     public function decorateBefore(Node $node, Node $previousNode = null): void
