@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -18,15 +19,23 @@ final class MixPhpHtmlDecorator
 {
     public function __construct(
         private readonly NodeRemover $nodeRemover,
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator,
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
     public function decorateFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): void
     {
         if ($fileWithoutNamespace->stmts[1] instanceof InlineHTML && ! $fileWithoutNamespace->stmts[0] instanceof InlineHTML) {
-            // re-print InlineHTML is safe
-            $fileWithoutNamespace->stmts[1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $file = $this->currentFileProvider->getFile();
+            $oldTokens = $file->getOldTokens();
+            $endTokenPost = $fileWithoutNamespace->stmts[0]->getEndTokenPos();
+
+            // No token end? Just added
+            if (! isset($oldTokens[$endTokenPost])) {
+                // re-print InlineHTML is safe
+                $fileWithoutNamespace->stmts[1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
         }
     }
 
