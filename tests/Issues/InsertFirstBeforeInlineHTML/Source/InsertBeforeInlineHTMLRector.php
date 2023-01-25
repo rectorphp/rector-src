@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ReturnArrayNodeOnInlineHTML\Source;
+namespace Rector\Core\Tests\Issues\InsertFirstBeforeInlineHTML\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
@@ -11,7 +11,7 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class ArrayOnInlineHTMLRector extends AbstractRector
+class InsertBeforeInlineHTMLRector extends AbstractRector
 {
     private bool $justAdded = false;
 

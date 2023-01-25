@@ -7,7 +7,7 @@ namespace Rector\Core\Tests\Issues\ReturnArrayNodeOnInlineHTML;
 use Iterator;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class ReturnArrayNodeOnInlineHTMLTest extends AbstractRectorTestCase
+final class InsertFirstBeforeInlineHTMLTest extends AbstractRectorTestCase
 {
     /**
      * @dataProvider provideData()
