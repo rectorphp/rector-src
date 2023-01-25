@@ -16,7 +16,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * Mix PHP+HTML decorator, which require reprint the InlineHTML
- * which is the safe it to next/prev Node has open and close php tag
+ * which is the safe way to make next/prev Node has open and close php tag
  */
 final class MixPhpHtmlDecorator
 {
