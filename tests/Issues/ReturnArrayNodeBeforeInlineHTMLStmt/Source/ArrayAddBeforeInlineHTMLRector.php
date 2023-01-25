@@ -55,6 +55,7 @@ class ArrayAddBeforeInlineHTMLRector extends AbstractRector
 
         return [
             $echo,
+            $echo,
             $node,
         ];
     }

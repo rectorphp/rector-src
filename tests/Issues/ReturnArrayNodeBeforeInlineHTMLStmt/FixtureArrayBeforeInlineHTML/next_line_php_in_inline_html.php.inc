@@ -7,6 +7,7 @@ echo $this->filter ;
 <?php
 
 echo 'this is new stmt before InlineHTML';
+echo 'this is new stmt before InlineHTML';
 ?>
 <div><?php 
 echo $this->filter ;

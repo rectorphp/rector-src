@@ -7,6 +7,7 @@ namespace Rector\Core\Tests\Issues\InsertFirstBeforeInlineHTML\Source;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Echo_;
+use PhpParser\Node\Stmt\InlineHTML;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,7 +37,7 @@ class InsertBeforeInlineHTMLRector extends AbstractRector
         $echo = new Echo_([new String_('this is new stmt before InlineHTML')]);
 
         $node->stmts = array_merge(
-            [$echo],
+            [$echo, $echo],
             $node->stmts
         );
 
