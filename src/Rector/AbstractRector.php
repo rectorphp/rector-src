@@ -425,7 +425,7 @@ CODE_SAMPLE;
         $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
 
         if ($firstNode instanceof FileWithoutNamespace && isset($firstNode->stmts[0], $firstNode->stmts[1])) {
-            $this->mixPhpHtmlDecorator->decorateFileWithoutNamespace($node);
+            $this->mixPhpHtmlDecorator->decorateFileWithoutNamespace($firstNode);
         }
 
         if (! $firstNodePreviousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
