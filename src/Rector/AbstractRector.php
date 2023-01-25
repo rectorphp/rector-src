@@ -424,17 +424,19 @@ CODE_SAMPLE;
         $firstNode = current($nodes);
         $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-        if ($firstNode instanceof FileWithoutNamespace && isset($firstNode->stmts[0], $firstNode->stmts[1])) {
-            $this->mixPhpHtmlDecorator->decorateFileWithoutNamespace($firstNode);
-        }
+        if (! $firstNodePreviousNode instanceof Node) {
+            if ($firstNode instanceof FileWithoutNamespace && isset($firstNode->stmts[0], $firstNode->stmts[1])) {
+                $this->mixPhpHtmlDecorator->decorateFileWithoutNamespace($firstNode);
+            }
 
-        if (! $firstNodePreviousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
-            /** @var Node $previousNode */
-            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+            if ($node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
+                /** @var Node $previousNode */
+                $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            $this->mixPhpHtmlDecorator->decorateBefore($node);
+                $this->mixPhpHtmlDecorator->decorateBefore($node);
 
-            $nodes = [$previousNode, ...$nodes];
+                $nodes = [$previousNode, ...$nodes];
+            }
         }
 
         $lastNode = end($nodes);
