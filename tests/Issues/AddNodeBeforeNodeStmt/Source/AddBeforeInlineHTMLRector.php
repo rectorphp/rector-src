@@ -17,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class AddBeforeInlineHTMLRector extends AbstractRector
 {
-    private bool $justAdded = false;
+    private array $justAdded = [];
 
     public function __construct(private readonly NodesToAddCollector $nodesToAddCollector)
     {
@@ -40,11 +40,11 @@ class AddBeforeInlineHTMLRector extends AbstractRector
      */
     public function refactor(Node $node)
     {
-        if ($this->justAdded) {
+        if (isset($this->justAdded[$this->file->getFilePath()])) {
             return null;
         }
 
-        $firstStmt = $node->stmts[0];
+        $firstStmt = current($node->stmts);
 
         $this->nodesToAddCollector->addNodeBeforeNode(
             new Expression(
@@ -62,7 +62,7 @@ class AddBeforeInlineHTMLRector extends AbstractRector
             ),
             $firstStmt
         );
-        $this->justAdded = true;
+        $this->justAdded[$this->file->getFilePath()] = true;
         return $node;
     }
 }
