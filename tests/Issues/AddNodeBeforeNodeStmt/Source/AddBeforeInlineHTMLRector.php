@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\InlineHTML;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PostRector\Collector\NodesToAddCollector;
@@ -62,7 +61,9 @@ class AddBeforeInlineHTMLRector extends AbstractRector
             ),
             $firstStmt
         );
+
         $this->justAdded[$this->file->getFilePath()] = true;
+
         return $node;
     }
 }

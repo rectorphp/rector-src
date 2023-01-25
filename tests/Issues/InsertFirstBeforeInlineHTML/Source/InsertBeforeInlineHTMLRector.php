@@ -13,7 +13,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class InsertBeforeInlineHTMLRector extends AbstractRector
 {
-    private bool $justAdded = false;
+    private array $justAdded = [];
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -29,7 +29,7 @@ class InsertBeforeInlineHTMLRector extends AbstractRector
 
     public function refactor(Node $node)
     {
-        if ($this->justAdded) {
+        if (isset($this->justAdded[$this->file->getFilePath()])) {
             return null;
         }
 
@@ -40,7 +40,7 @@ class InsertBeforeInlineHTMLRector extends AbstractRector
             $node->stmts
         );
 
-        $this->justAdded = true;
+        $this->justAdded[$this->file->getFilePath()] = true;
 
         return $node;
     }
