@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
@@ -436,6 +437,10 @@ CODE_SAMPLE;
                 $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
 
                 $nodes = [$previousNode, ...$nodes];
+            }
+
+            if (isset($nodes[1]) && $nodes[1] instanceof InlineHTML) {
+                $this->mixPhpHtmlDecorator->decorateNextNode($firstNode, $nodes[1]);
             }
         }
 

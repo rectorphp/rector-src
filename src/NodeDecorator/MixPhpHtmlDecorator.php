@@ -50,6 +50,25 @@ final class MixPhpHtmlDecorator
         }
     }
 
+    public function decorateNextNode(Node $node, InlineHTML $nextNode): void
+    {
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            return;
+        }
+
+        $oldTokens = $file->getOldTokens();
+        $endTokenPost = $node->getEndTokenPos();
+
+        if (isset($oldTokens[$endTokenPost])) {
+            return;
+        }
+
+        // No token end? Just added
+        // re-print InlineHTML is safe
+        $nextNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+    }
+
     public function decorateBefore(Node $node, Node $previousNode = null): void
     {
         if ($previousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
