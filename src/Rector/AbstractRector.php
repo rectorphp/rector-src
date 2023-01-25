@@ -439,8 +439,8 @@ CODE_SAMPLE;
                 $nodes = [$previousNode, ...$nodes];
             }
 
-            if (isset($nodes[1]) && $nodes[1] instanceof InlineHTML) {
-                $this->mixPhpHtmlDecorator->decorateNextNode($firstNode, $nodes[1]);
+            if (count($nodes) > 1) {
+                $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($nodes);
             }
         }
 

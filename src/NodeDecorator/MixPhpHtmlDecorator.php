@@ -53,7 +53,10 @@ final class MixPhpHtmlDecorator
         }
     }
 
-    public function decorateNextNode(Node $node, InlineHTML $inlineHTML): void
+    /**
+     * @param Node[] $nodes
+     */
+    public function decorateNextNodesInlineHTML(array $nodes): void
     {
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
@@ -61,14 +64,27 @@ final class MixPhpHtmlDecorator
         }
 
         $oldTokens = $file->getOldTokens();
-        $endTokenPost = $node->getEndTokenPos();
 
-        if (isset($oldTokens[$endTokenPost])) {
-            return;
+        foreach ($nodes as $key => $subNode) {
+            if ($subNode instanceof InlineHTML) {
+                continue;
+            }
+
+            $endTokenPost = $subNode->getEndTokenPos();
+            if (isset($oldTokens[$endTokenPost])) {
+                continue;
+            }
+
+            if (! isset($nodes[$key+1])) {
+                // already last one, nothing to do
+                return;
+            }
+
+            if ($nodes[$key+1] instanceof InlineHTML) {
+                // No token end? Just added
+                $nodes[$key+1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
         }
-
-        // No token end? Just added
-        $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
     }
 
     public function decorateBefore(Node $node, Node $previousNode = null): void
