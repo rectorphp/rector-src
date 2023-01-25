@@ -51,6 +51,7 @@ final class MixPhpHtmlDecorator
             if ($nodes[$key + 1] instanceof InlineHTML) {
                 // No token end? Just added
                 $nodes[$key + 1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                break;
             }
         }
     }
