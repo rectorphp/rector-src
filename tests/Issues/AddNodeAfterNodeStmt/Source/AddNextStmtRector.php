@@ -14,6 +14,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class AddNextStmtRector extends AbstractRector
 {
+    private array $justAdded = [];
+
     public function __construct(private readonly NodesToAddCollector $nodesToAddCollector)
     {
     }
@@ -32,10 +34,17 @@ class AddNextStmtRector extends AbstractRector
 
     public function refactor(Node $node)
     {
+        if (isset($this->justAdded[$this->file->getFilePath()])) {
+            return null;
+        }
+
         $this->nodesToAddCollector->addNodeAfterNode(
             new Echo_([new String_("this is new stmt after if")]),
             $node
         );
+
+        $this->justAdded[$this->file->getFilePath()] = true;
+
         return $node;
     }
 }

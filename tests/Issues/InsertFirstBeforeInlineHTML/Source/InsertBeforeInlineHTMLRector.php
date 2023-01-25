@@ -2,23 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AddNodeBeforeNodeStmt\Source;
+namespace Rector\Core\Tests\Issues\InsertFirstBeforeInlineHTML\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\If_;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
-use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class AddBeforeStmtRector extends AbstractRector
+class InsertBeforeInlineHTMLRector extends AbstractRector
 {
     private array $justAdded = [];
-
-    public function __construct(private readonly NodesToAddCollector $nodesToAddCollector)
-    {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -28,7 +23,7 @@ class AddBeforeStmtRector extends AbstractRector
     public function getNodeTypes(): array
     {
         return [
-            If_::class,
+            FileWithoutNamespace::class,
         ];
     }
 
@@ -38,9 +33,11 @@ class AddBeforeStmtRector extends AbstractRector
             return null;
         }
 
-        $this->nodesToAddCollector->addNodeBeforeNode(
-            new Echo_([new String_("this is new stmt before if")]),
-            $node
+        $echo = new Echo_([new String_('this is new stmt before InlineHTML')]);
+
+        $node->stmts = array_merge(
+            [$echo],
+            $node->stmts
         );
 
         $this->justAdded[$this->file->getFilePath()] = true;

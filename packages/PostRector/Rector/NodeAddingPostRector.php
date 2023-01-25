@@ -6,6 +6,7 @@ namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
 use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -54,7 +55,8 @@ final class NodeAddingPostRector extends AbstractPostRector
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
             $newNodes = array_merge($nodesToAddBefore, $newNodes);
 
-            $this->mixPhpHtmlDecorator->decorateBefore($node);
+            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+            $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
         }
 
         if ($newNodes === [$node]) {

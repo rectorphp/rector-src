@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AddNodeAfterNodeStmt\Source;
+namespace Rector\Core\Tests\Issues\ReturnArrayNodeBeforeInlineHTMLStmt\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\Nop;
+use PhpParser\Node\Stmt\InlineHTML;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class AddNextNopRector extends AbstractRector
+class ArrayAddBeforeInlineHTMLRector extends AbstractRector
 {
     private array $justAdded = [];
 
@@ -30,7 +30,7 @@ class AddNextNopRector extends AbstractRector
     public function getNodeTypes(): array
     {
         return [
-            Nop::class,
+            InlineHTML::class,
         ];
     }
 
@@ -40,7 +40,7 @@ class AddNextNopRector extends AbstractRector
             return null;
         }
 
-        $echo = new Echo_([new String_("this is new stmt after Nop")]);
+        $echo = new Echo_([new String_("this is new stmt before InlineHTML")]);
 
         $phpDocInfo = $this->phpDocInfoFactory->createEmpty($echo);
         $phpDocInfo->addTagValueNode(
@@ -51,13 +51,11 @@ class AddNextNopRector extends AbstractRector
             )
         );
 
-        $this->nodesToAddCollector->addNodeAfterNode(
-            $echo,
-            $node
-        );
-
         $this->justAdded[$this->file->getFilePath()] = true;
 
-        return $node;
+        return [
+            $echo,
+            $node,
+        ];
     }
 }

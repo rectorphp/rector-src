@@ -31,6 +31,7 @@ use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
@@ -427,7 +428,7 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            $this->mixPhpHtmlDecorator->decorateBefore($node);
+            $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
 
             $nodes = [$previousNode, ...$nodes];
         }
@@ -442,6 +443,12 @@ CODE_SAMPLE;
             $this->mixPhpHtmlDecorator->decorateAfter($node, $nodes);
 
             $nodes = [...$nodes, $nextNode];
+        }
+
+        if (count($nodes) > 1) {
+            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($this->file, $nodes);
+        } elseif ($firstNode instanceof FileWithoutNamespace) {
+            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($this->file, $firstNode->stmts);
         }
 
         $nodeTraverser = new NodeTraverser();
