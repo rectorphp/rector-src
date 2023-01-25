@@ -434,11 +434,12 @@ CODE_SAMPLE;
                 $nodes = [$previousNode, ...$nodes];
             }
 
-            if (count($nodes) === 1 && $firstNode instanceof FileWithoutNamespace) {
+            $totalNodes = count($nodes);
+            if ($totalNodes === 1 && $firstNode instanceof FileWithoutNamespace) {
                 $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($firstNode->stmts);
             }
 
-            if (count($nodes) > 1) {
+            if ($totalNodes > 1) {
                 $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($nodes);
             }
         }
