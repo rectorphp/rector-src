@@ -537,7 +537,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
     private function cleanSurplusTag(string $content): string
     {
-        if (str_starts_with($content, '<?php' . $this->nl . $this->nl . '?>')) {
+        if (str_starts_with($content, '<?php\n\n?>')) {
             return substr($content, 10);
         }
 
