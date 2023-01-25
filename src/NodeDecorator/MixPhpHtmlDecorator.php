@@ -29,30 +29,6 @@ final class MixPhpHtmlDecorator
     ) {
     }
 
-    public function decorateFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): void
-    {
-        if (! $fileWithoutNamespace->stmts[1] instanceof InlineHTML) {
-            return;
-        }
-
-        if ($fileWithoutNamespace->stmts[0] instanceof InlineHTML) {
-            return;
-        }
-
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return;
-        }
-
-        $oldTokens = $file->getOldTokens();
-        $endTokenPost = $fileWithoutNamespace->stmts[0]->getEndTokenPos();
-
-        // No token end? Just added
-        if (! isset($oldTokens[$endTokenPost])) {
-            $fileWithoutNamespace->stmts[1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-        }
-    }
-
     /**
      * @param Node[] $nodes
      */

@@ -426,10 +426,6 @@ CODE_SAMPLE;
         $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
 
         if (! $firstNodePreviousNode instanceof Node) {
-            if ($firstNode instanceof FileWithoutNamespace && isset($firstNode->stmts[0], $firstNode->stmts[1])) {
-                $this->mixPhpHtmlDecorator->decorateFileWithoutNamespace($firstNode);
-            }
-
             if ($node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
                 /** @var Node $previousNode */
                 $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
@@ -437,6 +433,10 @@ CODE_SAMPLE;
                 $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
 
                 $nodes = [$previousNode, ...$nodes];
+            }
+
+            if (count($nodes) === 1 && $firstNode instanceof FileWithoutNamespace) {
+                $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($firstNode->stmts);
             }
 
             if (count($nodes) > 1) {
