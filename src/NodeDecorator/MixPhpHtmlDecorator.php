@@ -29,17 +29,14 @@ final class MixPhpHtmlDecorator
     /**
      * @param Node[] $nodes
      */
-    public function decorateNextNodesInlineHTML(File $file, array $nodes): void
+    public function decorateNextNodesInlineHTML(array $nodes): void
     {
-        $oldTokens = $file->getOldTokens();
-
         foreach ($nodes as $key => $subNode) {
             if ($subNode instanceof InlineHTML) {
                 continue;
             }
 
-            $endTokenPost = $subNode->getEndTokenPos();
-            if (isset($oldTokens[$endTokenPost])) {
+            if ($subNode->getEndTokenPos() >= 0) {
                 return;
             }
 
