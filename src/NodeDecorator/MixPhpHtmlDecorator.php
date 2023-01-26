@@ -36,7 +36,7 @@ final class MixPhpHtmlDecorator
                 continue;
             }
 
-            if ($subNode->getEndTokenPos() >= 0) {
+            if ($subNode->getStartTokenPos() >= 0) {
                 return;
             }
 
