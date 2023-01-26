@@ -10,7 +10,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
