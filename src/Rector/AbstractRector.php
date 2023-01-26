@@ -428,7 +428,9 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
+            if (! $firstNode instanceof FileWithoutNamespace) {
+                $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
+            }
 
             $nodes = [$previousNode, ...$nodes];
         }
@@ -440,15 +442,17 @@ CODE_SAMPLE;
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-            $this->mixPhpHtmlDecorator->decorateAfter($node, $nodes);
+            if (! $firstNode instanceof FileWithoutNamespace) {
+                $this->mixPhpHtmlDecorator->decorateAfter($node, $nodes);
+            }
 
             $nodes = [...$nodes, $nextNode];
         }
 
-        if (count($nodes) > 1) {
-            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($nodes);
-        } elseif ($firstNode instanceof FileWithoutNamespace) {
+        if ($firstNode instanceof FileWithoutNamespace) {
             $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($firstNode->stmts);
+        } else {
+            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($nodes);
         }
 
         $nodeTraverser = new NodeTraverser();
