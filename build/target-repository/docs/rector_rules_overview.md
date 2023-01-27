@@ -6647,6 +6647,8 @@ Change deprecated utf8_decode and utf8_encode to mb_convert_encoding
 +mb_convert_encoding($value, 'ISO-8859-1');
 +mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
 ```
+### AllowDynamicPropertiesAttributeRector
+[Rule description](#AddAllowDynamicPropertiesAttributeRector)
 
 <br>
 
