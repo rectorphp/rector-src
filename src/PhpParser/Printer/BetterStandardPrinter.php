@@ -605,12 +605,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
 
         // move phpdoc from node to "comment" attribute
         foreach ($nodes as $key => $node) {
-            if (! $node instanceof Stmt) {
-                /**
-                 * Collection not Stmt don't need PhpDocInfo or InlineHTML check
-                 * to improve performance
-                 */
-                return;
+            if (! $node instanceof Node) {
+                continue;
             }
 
             if ($node instanceof InlineHTML && $hasDiff) {

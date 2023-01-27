@@ -19,10 +19,10 @@ final class DocBlockUpdater
     ) {
     }
 
-    public function updateNodeWithPhpDocInfo(Stmt $stmt): void
+    public function updateNodeWithPhpDocInfo(Node $node): void
     {
         // nothing to change? don't save it
-        $phpDocInfo = $this->resolveChangedPhpDocInfo($stmt);
+        $phpDocInfo = $this->resolveChangedPhpDocInfo($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return;
         }
@@ -31,13 +31,13 @@ final class DocBlockUpdater
 
         // make sure, that many separated comments are not removed
         if ($phpDoc === '') {
-            $this->setCommentsAttribute($stmt);
+            $this->setCommentsAttribute($node);
 
             return;
         }
 
         // this is needed to remove duplicated // commentsAsText
-        $stmt->setDocComment(new Doc($phpDoc));
+        $node->setDocComment(new Doc($phpDoc));
     }
 
     public function updateRefactoredNodeWithPhpDocInfo(Node $node): void
