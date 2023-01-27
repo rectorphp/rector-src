@@ -318,6 +318,10 @@ CODE_SAMPLE;
             return;
         }
 
+        if ($newNode->getStartTokenPos() < 0) {
+            return;
+        }
+
         $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO));
         if (! $newNode instanceof Nop) {
             $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));

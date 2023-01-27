@@ -95,7 +95,7 @@ final class MixPhpHtmlDecorator
     private function rePrintInlineHTML(InlineHTML $inlineHTML, Stmt $stmt): void
     {
         // Token start = -1, just added
-        if ($stmt->getStartTokenPos() <= 0) {
+        if ($stmt->getStartTokenPos() < 0) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
     }
