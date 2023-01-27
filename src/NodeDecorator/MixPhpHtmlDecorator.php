@@ -53,11 +53,6 @@ final class MixPhpHtmlDecorator
      */
     public function decorateAfterNop(Nop $nop, array $nodes): void
     {
-        $currentNode = current($nodes);
-        if ($currentNode !== $nop) {
-            return;
-        }
-
         if (! isset($nodes[1]) || $nodes[1] instanceof InlineHTML) {
             return;
         }
