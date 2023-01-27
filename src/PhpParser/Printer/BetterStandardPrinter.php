@@ -612,8 +612,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
                 $this->mixPhpHtmlDecorator->decorateInlineHTML($node, $key, $nodes);
             }
 
-            if ($node instanceof Nop && $hasDiff) {
-                $this->mixPhpHtmlDecorator->decorateAfterNop($node, $key, $nodes);
+            if ($node instanceof Nop && $key === 0 && $hasDiff) {
+                $this->mixPhpHtmlDecorator->decorateAfterNop($node, $nodes);
             }
 
             $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
