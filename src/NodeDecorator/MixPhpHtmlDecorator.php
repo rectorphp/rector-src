@@ -14,10 +14,6 @@ use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symfony\Contracts\Service\Attribute\Required;
 
-/**
- * Mix PHP+HTML decorator, which require reprint the InlineHTML
- * which is the safe way to make next/prev Node has open and close php tag
- */
 final class MixPhpHtmlDecorator
 {
     private NodeRemover $nodeRemover;
