@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
@@ -318,7 +319,7 @@ CODE_SAMPLE;
             return;
         }
 
-        if ($newNode->getStartTokenPos() < 0) {
+        if ($newNode->getStartTokenPos() < 0 && $oldNode instanceof InlineHTML) {
             return;
         }
 
