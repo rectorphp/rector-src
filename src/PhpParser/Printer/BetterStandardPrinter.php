@@ -21,7 +21,6 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -610,12 +609,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             }
 
             if ($node instanceof InlineHTML && $hasDiff) {
-                /** @var Stmt[] $nodes */
                 $this->mixPhpHtmlDecorator->decorateInlineHTML($node, $key, $nodes);
             }
 
             if ($node instanceof Nop && $hasDiff) {
-                /** @var Stmt[] $nodes */
                 $this->mixPhpHtmlDecorator->decorateAfterNop($node, $key, $nodes);
             }
 

@@ -25,44 +25,52 @@ final class MixPhpHtmlDecorator
     }
 
     /**
-     * @param Stmt[] $stmts
+     * @param array<Node|null> $nodes
      */
-    public function decorateInlineHTML(InlineHTML $inlineHTML, int $key, array $stmts): void
+    public function decorateInlineHTML(InlineHTML $inlineHTML, int $key, array $nodes): void
     {
-        if (isset($stmts[$key - 1]) && ! $stmts[$key - 1] instanceof InlineHTML) {
-            $this->rePrintInlineHTML($inlineHTML, $stmts[$key - 1]);
+        if (isset($nodes[$key - 1]) && ! $nodes[$key - 1] instanceof InlineHTML && $nodes[$key - 1] instanceof Stmt) {
+            $this->rePrintInlineHTML($inlineHTML, $nodes[$key - 1]);
         }
 
-        if (! isset($stmts[$key + 1])) {
+        if (! isset($nodes[$key + 1])) {
             return;
         }
 
-        if ($stmts[$key + 1] instanceof InlineHTML) {
+        if ($nodes[$key + 1] instanceof InlineHTML) {
             return;
         }
 
-        $this->rePrintInlineHTML($inlineHTML, $stmts[$key + 1]);
+        if (! $nodes[$key + 1] instanceof Stmt) {
+            return;
+        }
+
+        $this->rePrintInlineHTML($inlineHTML, $nodes[$key + 1]);
     }
 
     /**
-     * @param Stmt[] $stmts
+     * @param array<Node|null> $nodes
      */
-    public function decorateAfterNop(Node $node, int $key, array $stmts): void
+    public function decorateAfterNop(Node $node, int $key, array $nodes): void
     {
         if (! $node instanceof Nop) {
             return;
         }
 
-        $currentNode = current($stmts);
+        $currentNode = current($nodes);
         if ($currentNode !== $node) {
             return;
         }
 
-        if (! isset($stmts[$key + 1]) || $stmts[$key + 1] instanceof InlineHTML) {
+        if (! isset($nodes[$key + 1]) || $nodes[$key + 1] instanceof InlineHTML) {
             return;
         }
 
-        $firstNodeAfterNop = $stmts[$key + 1];
+        if (! $nodes[$key + 1] instanceof Stmt) {
+            return;
+        }
+
+        $firstNodeAfterNop = $nodes[$key + 1];
         if ($firstNodeAfterNop->getStartTokenPos() >= 0) {
             return;
         }
