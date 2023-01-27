@@ -7,11 +7,13 @@ namespace Rector\Core\NodeDecorator;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Mix PHP+HTML decorator, which require reprint the InlineHTML
@@ -19,66 +21,53 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class MixPhpHtmlDecorator
 {
-    public function __construct(
-        private readonly NodeRemover $nodeRemover,
-        private readonly NodeComparator $nodeComparator
-    ) {
+    private NodeRemover $nodeRemover;
+    private NodeComparator $nodeComparator;
+
+    #[Required]
+    public function autowire(
+        NodeRemover $nodeRemover,
+        NodeComparator $nodeComparator
+    ): void {
+        $this->nodeRemover = $nodeRemover;
+        $this->nodeComparator = $nodeComparator;
     }
 
     /**
-     * @param Node[] $nodes
+     * @param Stmt[] $stmts
      */
-    public function decorateNextNodesInlineHTML(array $nodes): void
+    public function decorateInlineHTML(InlineHTML $inlineHTML, int $key, array $stmts)
     {
-        foreach ($nodes as $key => $subNode) {
-            if ($subNode instanceof InlineHTML) {
-                continue;
-            }
-
-            if ($subNode->getStartTokenPos() >= 0) {
-                return;
-            }
-
-            if (! isset($nodes[$key + 1])) {
-                // already last one, nothing to do
-                return;
-            }
-
-            if ($nodes[$key + 1] instanceof InlineHTML) {
-                // No token end? Just added
-                $nodes[$key + 1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-                return;
+        if (isset($stmts[$key - 1]) && ! $stmts[$key - 1] instanceof InlineHTML) {
+            $stmt = $stmts[$key - 1];
+            if ($stmt->getStartTokenPos() <= 0) {
+                $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
         }
-    }
 
-    public function decorateBefore(Node $node, Node $previousNode = null): void
-    {
-        if ($previousNode instanceof InlineHTML && ! $node instanceof InlineHTML) {
-            $previousNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            return;
-        }
-
-        if ($node instanceof InlineHTML && ! $previousNode instanceof Node) {
-            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        if (isset($stmts[$key + 1]) && ! $stmts[$key + 1] instanceof InlineHTML) {
+            $stmt = $stmts[$key + 1];
+            if ($stmt->getStartTokenPos() <= 0) {
+                $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
         }
     }
 
     /**
      * @param Node[] $nodes
      */
-    public function decorateAfter(Node $node, array $nodes): void
+    public function decorateAfterNop(Node $node, int $key, array $nodes): void
     {
         if (! $node instanceof Nop) {
             return;
         }
 
-        $firstNodeAfterNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $firstNodeAfterNode instanceof Node) {
+        if (! isset($nodes[$key+1])) {
             return;
         }
 
-        if (! $firstNodeAfterNode instanceof InlineHTML) {
+        $firstNodeAfterNode = $nodes[$key+1];
+        if (! $firstNodeAfterNode instanceof Stmt || $firstNodeAfterNode instanceof InlineHTML) {
             return;
         }
 

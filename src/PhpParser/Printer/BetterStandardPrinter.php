@@ -21,6 +21,7 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -31,6 +32,7 @@ use PhpParser\PrettyPrinter\Standard;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
@@ -88,6 +90,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly RectorConfigProvider $rectorConfigProvider,
         private readonly CurrentFileProvider $currentFileProvider,
+        private readonly MixPhpHtmlDecorator $mixPhpHtmlDecorator,
         array $options = []
     ) {
         parent::__construct($options);
@@ -255,7 +258,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         // reindex positions for printer
         $nodes = array_values($nodes);
 
-        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
+        $this->decorateInlineHTMLAndUpdatePhpdocInfo($nodes);
 
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
 
@@ -383,7 +386,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function pStmts(array $nodes, bool $indent = true): string
     {
-        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
+        $this->decorateInlineHTMLAndUpdatePhpdocInfo($nodes);
 
         return parent::pStmts($nodes, $indent);
     }
@@ -595,12 +598,27 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     /**
      * @param array<Node|null> $nodes
      */
-    private function moveCommentsFromAttributeObjectToCommentsAttribute(array $nodes): void
+    private function decorateInlineHTMLAndUpdatePhpdocInfo(array $nodes): void
     {
+        $file = $this->currentFileProvider->getFile();
+        $hasDiff = $file instanceof File && $file->getFileDiff() instanceof FileDiff;
+
         // move phpdoc from node to "comment" attribute
-        foreach ($nodes as $node) {
-            if (! $node instanceof Node) {
-                continue;
+        foreach ($nodes as $key => $node) {
+            if (! $node instanceof Stmt) {
+                /**
+                 * Collection not Stmt don't need PhpDocInfo or InlineHTML check
+                 * to improve performance
+                 */
+                return;
+            }
+
+            if ($node instanceof InlineHTML && $hasDiff) {
+                $this->mixPhpHtmlDecorator->decorateInlineHTML($node, $key, $nodes);
+            }
+
+            if ($node instanceof Nop && $hasDiff) {
+                $this->mixPhpHtmlDecorator->decorateAfterNop($node, $key, $nodes);
             }
 
             $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);

@@ -28,10 +28,8 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
-use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
@@ -117,8 +115,6 @@ CODE_SAMPLE;
 
     private DocBlockUpdater $docBlockUpdater;
 
-    private MixPhpHtmlDecorator $mixPhpHtmlDecorator;
-
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -141,8 +137,7 @@ CODE_SAMPLE;
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
-        DocBlockUpdater $docBlockUpdater,
-        MixPhpHtmlDecorator $mixPhpHtmlDecorator
+        DocBlockUpdater $docBlockUpdater
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -165,7 +160,6 @@ CODE_SAMPLE;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
-        $this->mixPhpHtmlDecorator = $mixPhpHtmlDecorator;
     }
 
     /**
@@ -428,8 +422,6 @@ CODE_SAMPLE;
             /** @var Node $previousNode */
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
 
-            $this->mixPhpHtmlDecorator->decorateBefore($node, $previousNode);
-
             $nodes = [$previousNode, ...$nodes];
         }
 
@@ -440,15 +432,7 @@ CODE_SAMPLE;
             /** @var Node $nextNode */
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
-            $this->mixPhpHtmlDecorator->decorateAfter($node, $nodes);
-
             $nodes = [...$nodes, $nextNode];
-        }
-
-        if (count($nodes) > 1) {
-            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($nodes);
-        } elseif ($firstNode instanceof FileWithoutNamespace) {
-            $this->mixPhpHtmlDecorator->decorateNextNodesInlineHTML($firstNode->stmts);
         }
 
         $nodeTraverser = new NodeTraverser();
