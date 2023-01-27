@@ -10,7 +10,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -24,7 +23,7 @@ final class MixPhpHtmlDecorator
     private NodeRemover $nodeRemover;
 
     #[Required]
-    public function autowire(NodeRemover $nodeRemover, NodeComparator $nodeComparator): void
+    public function autowire(NodeRemover $nodeRemover): void
     {
         $this->nodeRemover = $nodeRemover;
     }
