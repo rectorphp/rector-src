@@ -32,12 +32,15 @@ final class MixPhpHtmlDecorator
         if (isset($stmts[$key - 1]) && ! $stmts[$key - 1] instanceof InlineHTML) {
             $this->rePrintInlineHTML($inlineHTML, $stmts[$key - 1]);
         }
+
         if (! isset($stmts[$key + 1])) {
             return;
         }
+
         if ($stmts[$key + 1] instanceof InlineHTML) {
             return;
         }
+
         $this->rePrintInlineHTML($inlineHTML, $stmts[$key + 1]);
     }
 
