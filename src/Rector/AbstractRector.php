@@ -319,7 +319,7 @@ CODE_SAMPLE;
             return;
         }
 
-        if ($newNode->getStartTokenPos() < 0 && $oldNode instanceof InlineHTML) {
+        if ($oldNode instanceof InlineHTML) {
             return;
         }
 
