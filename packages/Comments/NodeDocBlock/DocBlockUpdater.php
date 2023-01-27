@@ -7,6 +7,7 @@ namespace Rector\Comments\NodeDocBlock;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -18,7 +19,7 @@ final class DocBlockUpdater
     ) {
     }
 
-    public function updateNodeWithPhpDocInfo(Node $node): void
+    public function updateNodeWithPhpDocInfo(Stmt $node): void
     {
         // nothing to change? don't save it
         $phpDocInfo = $this->resolveChangedPhpDocInfo($node);

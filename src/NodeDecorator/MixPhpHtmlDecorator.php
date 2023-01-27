@@ -44,28 +44,24 @@ final class MixPhpHtmlDecorator
     }
 
     /**
-     * @param Node[] $nodes
+     * @param Stmt[] $stmts
      */
-    public function decorateAfterNop(Node $node, int $key, array $nodes): void
+    public function decorateAfterNop(Node $node, int $key, array $stmts): void
     {
         if (! $node instanceof Nop) {
             return;
         }
 
-        $currentNode = current($nodes);
+        $currentNode = current($stmts);
         if ($currentNode !== $node) {
             return;
         }
 
-        if (! isset($nodes[$key + 1]) || $nodes[$key + 1] instanceof InlineHTML) {
+        if (! isset($stmts[$key + 1]) || $stmts[$key + 1] instanceof InlineHTML) {
             return;
         }
 
-        $firstNodeAfterNop = $nodes[$key + 1];
-        if (! $firstNodeAfterNop instanceof Stmt) {
-            return;
-        }
-
+        $firstNodeAfterNop = $stmts[$key + 1];
         if ($firstNodeAfterNop->getStartTokenPos() >= 0) {
             return;
         }
