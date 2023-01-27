@@ -35,17 +35,19 @@ final class MixPhpHtmlDecorator
     public function decorateInlineHTML(InlineHTML $inlineHTML, int $key, array $stmts): void
     {
         if (isset($stmts[$key - 1]) && ! $stmts[$key - 1] instanceof InlineHTML) {
-            $stmt = $stmts[$key - 1];
-            if ($stmt->getStartTokenPos() <= 0) {
-                $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
+            $this->rePrintInlineHTML($inlineHTML, $stmts[$key - 1]);
         }
 
         if (isset($stmts[$key + 1]) && ! $stmts[$key + 1] instanceof InlineHTML) {
-            $stmt = $stmts[$key + 1];
-            if ($stmt->getStartTokenPos() <= 0) {
-                $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            }
+            $this->rePrintInlineHTML($inlineHTML, $stmts[$key + 1]);
+        }
+    }
+
+    private function rePrintInlineHTML(InlineHTML $inlineHTML, Stmt $stmt): void
+    {
+        // Token start = -1, just added
+        if ($stmt->getStartTokenPos() <= 0) {
+            $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
     }
 
@@ -76,6 +78,7 @@ final class MixPhpHtmlDecorator
             return;
         }
 
+        // Token start = -1, just added
         $nodeComments = [];
         foreach ($node->getComments() as $comment) {
             if ($comment instanceof Doc) {
