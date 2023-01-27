@@ -258,7 +258,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         // reindex positions for printer
         $nodes = array_values($nodes);
 
-        $this->decorateInlineHTMLAndUpdatePhpdocInfo($nodes);
+        $this->decorateInlineHTMLOrNopAndUpdatePhpdocInfo($nodes);
 
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
 
@@ -386,7 +386,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function pStmts(array $nodes, bool $indent = true): string
     {
-        $this->decorateInlineHTMLAndUpdatePhpdocInfo($nodes);
+        $this->decorateInlineHTMLOrNopAndUpdatePhpdocInfo($nodes);
 
         return parent::pStmts($nodes, $indent);
     }
@@ -598,7 +598,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     /**
      * @param array<Node|null> $nodes
      */
-    private function decorateInlineHTMLAndUpdatePhpdocInfo(array $nodes): void
+    private function decorateInlineHTMLOrNopAndUpdatePhpdocInfo(array $nodes): void
     {
         $file = $this->currentFileProvider->getFile();
         $hasDiff = $file instanceof File && $file->getFileDiff() instanceof FileDiff;
