@@ -61,21 +61,21 @@ final class MixPhpHtmlDecorator
             return;
         }
 
-        if (! isset($nodes[$key + 1])) {
+        $currentNode = current($nodes);
+        if ($currentNode !== $node) {
             return;
         }
 
-        $firstNodeAfterNode = $nodes[$key + 1];
-        if (! $firstNodeAfterNode instanceof Stmt || $firstNodeAfterNode instanceof InlineHTML) {
+        if (! isset($nodes[$key + 1]) || $nodes[$key + 1] instanceof InlineHTML) {
             return;
         }
 
-        $stmt = $this->resolveAppendAfterNode($node, $nodes);
-        if (! $stmt instanceof Node) {
+        $firstNodeAfterNop = $nodes[$key + 1];
+        if (! $firstNodeAfterNop instanceof Stmt) {
             return;
         }
 
-        if ($stmt instanceof InlineHTML) {
+        if ($firstNodeAfterNop->getStartTokenPos() >= 0) {
             return;
         }
 
@@ -97,9 +97,7 @@ final class MixPhpHtmlDecorator
             $nodeComments[] = $comment;
         }
 
-        $stmt->setAttribute(AttributeKey::COMMENTS, $nodeComments);
-
-        $firstNodeAfterNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        $firstNodeAfterNop->setAttribute(AttributeKey::COMMENTS, $nodeComments);
 
         // remove Nop is marked  as comment of Next Node
         $this->nodeRemover->removeNode($node);
