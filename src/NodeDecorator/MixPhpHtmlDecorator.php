@@ -43,14 +43,6 @@ final class MixPhpHtmlDecorator
         }
     }
 
-    private function rePrintInlineHTML(InlineHTML $inlineHTML, Stmt $stmt): void
-    {
-        // Token start = -1, just added
-        if ($stmt->getStartTokenPos() <= 0) {
-            $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-        }
-    }
-
     /**
      * @param Node[] $nodes
      */
@@ -101,5 +93,13 @@ final class MixPhpHtmlDecorator
 
         // remove Nop is marked  as comment of Next Node
         $this->nodeRemover->removeNode($node);
+    }
+
+    private function rePrintInlineHTML(InlineHTML $inlineHTML, Stmt $stmt): void
+    {
+        // Token start = -1, just added
+        if ($stmt->getStartTokenPos() <= 0) {
+            $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
     }
 }
