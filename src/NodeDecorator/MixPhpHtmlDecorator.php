@@ -23,19 +23,16 @@ final class MixPhpHtmlDecorator
 {
     private NodeRemover $nodeRemover;
 
-    private NodeComparator $nodeComparator;
-
     #[Required]
     public function autowire(NodeRemover $nodeRemover, NodeComparator $nodeComparator): void
     {
         $this->nodeRemover = $nodeRemover;
-        $this->nodeComparator = $nodeComparator;
     }
 
     /**
      * @param Stmt[] $stmts
      */
-    public function decorateInlineHTML(InlineHTML $inlineHTML, int $key, array $stmts)
+    public function decorateInlineHTML(InlineHTML $inlineHTML, int $key, array $stmts): void
     {
         if (isset($stmts[$key - 1]) && ! $stmts[$key - 1] instanceof InlineHTML) {
             $stmt = $stmts[$key - 1];
@@ -101,25 +98,5 @@ final class MixPhpHtmlDecorator
 
         // remove Nop is marked  as comment of Next Node
         $this->nodeRemover->removeNode($node);
-    }
-
-    /**
-     * @param Node[] $nodes
-     */
-    private function resolveAppendAfterNode(Nop $nop, array $nodes): ?Node
-    {
-        foreach ($nodes as $key => $subNode) {
-            if (! $this->nodeComparator->areSameNode($subNode, $nop)) {
-                continue;
-            }
-
-            if (! isset($nodes[$key + 1])) {
-                continue;
-            }
-
-            return $nodes[$key + 1];
-        }
-
-        return null;
     }
 }
