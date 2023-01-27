@@ -51,10 +51,10 @@ final class MixPhpHtmlDecorator
     /**
      * @param array<Node|null> $nodes
      */
-    public function decorateAfterNop(Nop $node, array $nodes): void
+    public function decorateAfterNop(Nop $nop, array $nodes): void
     {
         $currentNode = current($nodes);
-        if ($currentNode !== $node) {
+        if ($currentNode !== $nop) {
             return;
         }
 
@@ -73,7 +73,7 @@ final class MixPhpHtmlDecorator
 
         // Token start = -1, just added
         $nodeComments = [];
-        foreach ($node->getComments() as $comment) {
+        foreach ($nop->getComments() as $comment) {
             if ($comment instanceof Doc) {
                 $nodeComments[] = new Comment(
                     $comment->getText(),
@@ -93,7 +93,7 @@ final class MixPhpHtmlDecorator
         $firstNodeAfterNop->setAttribute(AttributeKey::COMMENTS, $nodeComments);
 
         // remove Nop is marked  as comment of Next Node
-        $this->nodeRemover->removeNode($node);
+        $this->nodeRemover->removeNode($nop);
     }
 
     private function rePrintInlineHTML(InlineHTML $inlineHTML, Stmt $stmt): void
