@@ -22,13 +22,12 @@ use Symfony\Contracts\Service\Attribute\Required;
 final class MixPhpHtmlDecorator
 {
     private NodeRemover $nodeRemover;
+
     private NodeComparator $nodeComparator;
 
     #[Required]
-    public function autowire(
-        NodeRemover $nodeRemover,
-        NodeComparator $nodeComparator
-    ): void {
+    public function autowire(NodeRemover $nodeRemover, NodeComparator $nodeComparator): void
+    {
         $this->nodeRemover = $nodeRemover;
         $this->nodeComparator = $nodeComparator;
     }
@@ -62,11 +61,11 @@ final class MixPhpHtmlDecorator
             return;
         }
 
-        if (! isset($nodes[$key+1])) {
+        if (! isset($nodes[$key + 1])) {
             return;
         }
 
-        $firstNodeAfterNode = $nodes[$key+1];
+        $firstNodeAfterNode = $nodes[$key + 1];
         if (! $firstNodeAfterNode instanceof Stmt || $firstNodeAfterNode instanceof InlineHTML) {
             return;
         }
