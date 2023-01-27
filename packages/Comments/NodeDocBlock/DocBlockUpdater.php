@@ -7,7 +7,6 @@ namespace Rector\Comments\NodeDocBlock;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
