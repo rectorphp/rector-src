@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Class_;
 
-use PhpParser\Node\Stmt\Class_;
-use PHPStan\Type\Type;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
+use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -127,10 +127,8 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function matchGetterSetterIdenticalType(
-        Property $property,
-        Class_ $class
-    ): ?Type {
+    private function matchGetterSetterIdenticalType(Property $property, Class_ $class): ?Type
+    {
         $getterBasedStrictType = $this->getterTypeDeclarationPropertyTypeInferer->inferProperty($property, $class);
         if (! $getterBasedStrictType instanceof Type) {
             return null;
@@ -149,10 +147,8 @@ CODE_SAMPLE
         return $getterBasedStrictType;
     }
 
-    private function isDefaultExprTypeCompatible(
-        Property $property,
-        Type $getterSetterPropertyType
-    ): bool {
+    private function isDefaultExprTypeCompatible(Property $property, Type $getterSetterPropertyType): bool
+    {
         $defaultExpr = $property->props[0]->default ?? null;
 
         // make sure default value is not a conflicting type
