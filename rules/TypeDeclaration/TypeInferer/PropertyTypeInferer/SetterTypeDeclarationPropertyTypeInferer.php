@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\TypeDeclaration\FunctionLikeReturnTypeResolver;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeAnalyzer\ClassMethodAndPropertyAnalyzer;
 
-final class GetterTypeDeclarationPropertyTypeInferer
+final class SetterTypeDeclarationPropertyTypeInferer
 {
     public function __construct(
-        private readonly FunctionLikeReturnTypeResolver $functionLikeReturnTypeResolver,
         private readonly ClassMethodAndPropertyAnalyzer $classMethodAndPropertyAnalyzer,
         private readonly NodeNameResolver $nodeNameResolver,
-        //private readonly BetterNodeFinder $betterNodeFinder
+        private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
 
@@ -29,20 +28,24 @@ final class GetterTypeDeclarationPropertyTypeInferer
         $propertyName = $this->nodeNameResolver->getName($property);
 
         foreach ($class->getMethods() as $classMethod) {
-            if (! $this->classMethodAndPropertyAnalyzer->hasPropertyFetchReturn($classMethod, $propertyName)) {
+            if (! $this->classMethodAndPropertyAnalyzer->hasOnlyPropertyAssign($classMethod, $propertyName)) {
                 continue;
             }
 
-            $returnType = $this->functionLikeReturnTypeResolver->resolveFunctionLikeReturnTypeToPHPStanType(
-                $classMethod
-            );
+            $paramTypeNode = $classMethod->params[0]->type ?? null;
+            if (! $paramTypeNode instanceof Node) {
+                return null;
+            }
+
+            $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($paramTypeNode);
+
             // let PhpDoc solve that later for more precise type
-            if ($returnType->isArray()->yes()) {
+            if ($paramType->isArray()->yes()) {
                 return new MixedType();
             }
 
-            if (! $returnType instanceof MixedType) {
-                return $returnType;
+            if (! $paramType instanceof MixedType) {
+                return $paramType;
             }
         }
 
