@@ -137,18 +137,9 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         $content = $this->cleanEndWithPHPOpenTag($lastStmt, $content);
+        $content = str_replace('<?php <?php', '<?php', $content);
 
-        /** @var Node $firstStmt */
-        $isFirstStmtReprinted = $firstStmt->getAttribute(AttributeKey::ORIGINAL_NODE) === null;
-        if (! $isFirstStmtReprinted) {
-            return $this->cleanSurplusTag($content);
-        }
-
-        if (! $firstStmt instanceof InlineHTML) {
-            return str_replace('<?php <?php', '<?php', $content);
-        }
-
-        return $this->cleanSurplusTag($content);
+        return $this->cleanSurplusTag($firstStmt, $content);
     }
 
     /**
@@ -537,8 +528,16 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return $content;
     }
 
-    private function cleanSurplusTag(string $content): string
+    private function cleanSurplusTag(Node $firstStmt, string $content): string
     {
+        if (! $firstStmt instanceof InlineHTML) {
+            return $content;
+        }
+
+        if (str_starts_with($content, "?>\n")) {
+            return substr($content, 3);
+        }
+
         if (str_starts_with($content, "<?php\n\n?>")) {
             return substr($content, 10);
         }
@@ -612,8 +611,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
                 $this->mixPhpHtmlDecorator->decorateInlineHTML($node, $key, $nodes);
             }
 
-            if ($node instanceof Nop && $key === 0 && $hasDiff) {
-                $this->mixPhpHtmlDecorator->decorateAfterNop($node, $nodes);
+            if ($node instanceof Nop && $hasDiff) {
+                $this->mixPhpHtmlDecorator->decorateAfterNop($node, $key, $nodes);
             }
 
             $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
