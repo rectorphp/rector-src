@@ -528,9 +528,9 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return $content;
     }
 
-    private function cleanSurplusTag(Node $firstStmt, string $content): string
+    private function cleanSurplusTag(Node $node, string $content): string
     {
-        if (! $firstStmt instanceof InlineHTML) {
+        if (! $node instanceof InlineHTML) {
             return $content;
         }
 
