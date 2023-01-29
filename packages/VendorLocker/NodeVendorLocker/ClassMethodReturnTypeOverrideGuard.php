@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -110,7 +109,10 @@ final class ClassMethodReturnTypeOverrideGuard
 
     private function shouldSkipChildTyped(ClassMethod $classMethod, Node $type): bool
     {
-        return $classMethod->returnType instanceof Node && ! $this->nodeComparator->areNodesEqual($classMethod->returnType, $type);
+        return $classMethod->returnType instanceof Node && ! $this->nodeComparator->areNodesEqual(
+            $classMethod->returnType,
+            $type
+        );
     }
 
     private function shouldSkipChaoticClassMethods(ClassMethod $classMethod): bool

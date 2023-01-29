@@ -148,8 +148,13 @@ CODE_SAMPLE
         return PhpVersion::PHP_70;
     }
 
-    private function shouldSkipReturnType(Node $node, Variable $expr, Variable $variable, Type $returnType, Identifier $returnTypeNode): bool
-    {
+    private function shouldSkipReturnType(
+        Node $node,
+        Variable $expr,
+        Variable $variable,
+        Type $returnType,
+        Identifier $returnTypeNode
+    ): bool {
         if (! $returnType->isArray()->yes()) {
             return true;
         }
