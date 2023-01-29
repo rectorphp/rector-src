@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Source;
+namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Source;
 
 trait SomeTraitWithProperty
 {

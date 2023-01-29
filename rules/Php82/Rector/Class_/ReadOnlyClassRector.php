@@ -9,7 +9,9 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -34,7 +36,8 @@ final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionI
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -158,6 +161,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($this->shouldSkipConsumeTraitProperty($class)) {
+            return true;
+        }
+
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
             // no __construct means no property promotion, skip if class has no property defined
@@ -171,6 +178,44 @@ CODE_SAMPLE
         }
 
         return $this->shouldSkipParams($params);
+    }
+
+    private function shouldSkipConsumeTraitProperty(Class_ $class): bool
+    {
+        $traitUses = $class->getTraitUses();
+        foreach ($traitUses as $traitUse) {
+            foreach ($traitUse->traits as $trait) {
+                $traitName = $trait->toString();
+
+                // trait not autoloaded
+                if (! $this->reflectionProvider->hasClass($traitName)) {
+                    return true;
+                }
+
+                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
+                $nativeReflection = $traitClassReflection->getNativeReflection();
+
+                if ($this->hasReadonlyProperty($nativeReflection->getProperties())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param ReflectionProperty[] $properties
+     */
+    private function hasReadonlyProperty(array $properties): bool
+    {
+        foreach ($properties as $property) {
+            if (! $property->isReadOnly()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
