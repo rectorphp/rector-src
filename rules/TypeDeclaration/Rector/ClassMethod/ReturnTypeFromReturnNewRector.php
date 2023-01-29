@@ -96,15 +96,15 @@ CODE_SAMPLE
                 return null;
             }
 
-            $returnTypeNode = new FullyQualified($returnedNewClassName);
+            $fullyQualified = new FullyQualified($returnedNewClassName);
             if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
                 $node,
-                $returnTypeNode
+                $fullyQualified
             )) {
                 return null;
             }
 
-            $node->returnType = $returnTypeNode;
+            $node->returnType = $fullyQualified;
 
             return $node;
         }

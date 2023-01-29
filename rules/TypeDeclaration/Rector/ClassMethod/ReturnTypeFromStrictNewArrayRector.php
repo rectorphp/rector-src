@@ -125,13 +125,13 @@ CODE_SAMPLE
         }
 
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
-        $returnTypeNode = new Identifier('array');
-        if ($this->shouldSkipReturnType($node, $onlyReturn->expr, $variable, $returnType, $returnTypeNode)) {
+        $identifier = new Identifier('array');
+        if ($this->shouldSkipReturnType($node, $onlyReturn->expr, $variable, $returnType, $identifier)) {
             return null;
         }
 
         // 3. always returns array
-        $node->returnType = $returnTypeNode;
+        $node->returnType = $identifier;
 
         // 4. add more precise type if suitable
         $exprType = $this->getType($onlyReturn->expr);
@@ -153,7 +153,7 @@ CODE_SAMPLE
         Variable $expr,
         Variable $variable,
         Type $returnType,
-        Identifier $returnTypeNode
+        Identifier $identifier
     ): bool {
         if (! $returnType->isArray()->yes()) {
             return true;
@@ -165,7 +165,7 @@ CODE_SAMPLE
 
         return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-            $returnTypeNode
+            $identifier
         );
     }
 

@@ -106,12 +106,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnTypeNode = new NullableType($typeNode);
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $returnTypeNode)) {
+        $nullableType = new NullableType($typeNode);
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $nullableType)) {
             return null;
         }
 
-        $node->returnType = $returnTypeNode;
+        $node->returnType = $nullableType;
 
         $this->clearReturnPhpDocTagNode($node);
 
