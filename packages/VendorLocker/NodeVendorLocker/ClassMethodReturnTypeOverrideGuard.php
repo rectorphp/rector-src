@@ -9,8 +9,14 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\FunctionVariantWithPhpDocs;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -18,15 +24,6 @@ use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
-use PHPStan\Reflection\FunctionVariantWithPhpDocs;
-use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
-use Rector\Core\FileSystem\FilePathHelper;
-use Rector\Core\ValueObject\MethodName;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class ClassMethodReturnTypeOverrideGuard
 {
@@ -48,6 +45,43 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
         private readonly FilePathHelper $filePathHelper
     ) {
+    }
+
+    public function shouldSkipClassMethod(ClassMethod $classMethod): bool
+    {
+        // 1. skip magic methods
+        if ($classMethod->isMagic()) {
+            return true;
+        }
+
+        // 2. skip chaotic contract class methods
+        if ($this->shouldSkipChaoticClassMethods($classMethod)) {
+            return true;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        if (! $classReflection instanceof ClassReflection) {
+            return true;
+        }
+
+        if (! $this->isReturnTypeChangeAllowed($classMethod)) {
+            return true;
+        }
+
+        $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
+        if ($childrenClassReflections === []) {
+            return false;
+        }
+
+        if ($classMethod->returnType instanceof Node) {
+            return true;
+        }
+
+        if ($this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod)) {
+            return true;
+        }
+
+        return $this->hasClassMethodExprReturn($classMethod);
     }
 
     private function isReturnTypeChangeAllowed(ClassMethod $classMethod): bool
@@ -97,43 +131,6 @@ final class ClassMethodReturnTypeOverrideGuard
         $isParentInVendor = str_contains($normalizedFileName, '/vendor/');
 
         return ($isCurrentInVendor && $isParentInVendor) || (! $isCurrentInVendor && ! $isParentInVendor);
-    }
-
-    public function shouldSkipClassMethod(ClassMethod $classMethod): bool
-    {
-        // 1. skip magic methods
-        if ($classMethod->isMagic()) {
-            return true;
-        }
-
-        // 2. skip chaotic contract class methods
-        if ($this->shouldSkipChaoticClassMethods($classMethod)) {
-            return true;
-        }
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
-        if (! $this->isReturnTypeChangeAllowed($classMethod)) {
-            return true;
-        }
-
-        $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
-        if ($childrenClassReflections === []) {
-            return false;
-        }
-
-        if ($classMethod->returnType instanceof Node) {
-            return true;
-        }
-
-        if ($this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod)) {
-            return true;
-        }
-
-        return $this->hasClassMethodExprReturn($classMethod);
     }
 
     /**
