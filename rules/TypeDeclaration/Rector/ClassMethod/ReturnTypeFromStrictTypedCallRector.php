@@ -187,7 +187,7 @@ CODE_SAMPLE
         ClassMethod | Function_ | Closure $node,
         UnionType $unionType,
         NullableType $nullableType
-    ): Closure | ClassMethod | Function_ {
+    ): Closure | ClassMethod | Function_ | null {
         $types = $unionType->getTypes();
         $returnType = $types[0] instanceof ObjectType && $types[1] instanceof NullType
             ? new NullableType(new FullyQualified($types[0]->getClassName()))
@@ -230,7 +230,7 @@ CODE_SAMPLE
         Return_ $return,
         Identifier|Name|NullableType $returnedStrictTypeNode,
         ClassMethod | Function_ | Closure $functionLike
-    ): Closure | ClassMethod | Function_ {
+    ): Closure | ClassMethod | Function_ | null {
         $resolvedType = $this->nodeTypeResolver->getType($return);
 
         if ($resolvedType instanceof UnionType) {
