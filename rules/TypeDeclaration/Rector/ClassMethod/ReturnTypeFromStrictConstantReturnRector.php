@@ -75,12 +75,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
+        $matchedType = $this->strictReturnClassConstReturnTypeAnalyzer->matchAlwaysReturnConstFetch($node);
+        if (! $matchedType instanceof Type) {
             return null;
         }
 
-        $matchedType = $this->strictReturnClassConstReturnTypeAnalyzer->matchAlwaysReturnConstFetch($node);
-        if (! $matchedType instanceof Type) {
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $matchedType)) {
             return null;
         }
 
