@@ -94,7 +94,7 @@ CODE_SAMPLE
 
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-            $returnTypeNode
+            $scalarReturnType
         )) {
             return null;
         }
