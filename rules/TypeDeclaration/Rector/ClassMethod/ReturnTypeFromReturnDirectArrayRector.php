@@ -76,16 +76,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
         if (! $this->hasReturnArray($node)) {
             return null;
         }
 
         $type = $this->returnTypeInferer->inferFunctionLike($node);
         if (! $type->isArray()->yes()) {
+            return null;
+        }
+
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, new \PHPStan\Type\ArrayType())) {
             return null;
         }
 

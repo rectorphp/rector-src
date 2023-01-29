@@ -85,10 +85,6 @@ CODE_SAMPLE
     {
         $returnType = $node->getReturnType();
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
         if ($returnType === null) {
             return null;
         }
@@ -117,6 +113,10 @@ CODE_SAMPLE
         );
 
         if (! $updatedPhpDocType instanceof Type) {
+            return null;
+        }
+
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $updatedPhpDocType)) {
             return null;
         }
 

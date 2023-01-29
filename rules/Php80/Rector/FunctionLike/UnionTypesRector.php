@@ -96,10 +96,6 @@ CODE_SAMPLE
     {
         $this->hasChanged = false;
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $this->refactorParamTypes($node, $phpDocInfo);
@@ -196,6 +192,10 @@ CODE_SAMPLE
 
         $returnType = $phpDocInfo->getReturnType();
         if (! $returnType instanceof UnionType) {
+            return;
+        }
+
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($functionLike, $returnType)) {
             return;
         }
 

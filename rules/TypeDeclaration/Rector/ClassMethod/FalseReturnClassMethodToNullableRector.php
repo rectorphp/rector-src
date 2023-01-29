@@ -88,10 +88,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
         $returnFalseAndReturnOther = $this->returnFalseAndReturnOtherMatcher->match($node);
         if (! $returnFalseAndReturnOther instanceof ReturnFalseAndReturnOther) {
             return null;
@@ -107,6 +103,11 @@ CODE_SAMPLE
 
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($anotherType, TypeKind::RETURN);
         if (! $typeNode instanceof Name && ! $typeNode instanceof Identifier) {
+            return null;
+        }
+
+        $type = new \PHPStan\Type\UnionType([$anotherType, new \PHPStan\Type\NullType()]);
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $type)) {
             return null;
         }
 

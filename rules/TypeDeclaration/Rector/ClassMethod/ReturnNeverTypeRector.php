@@ -131,7 +131,7 @@ CODE_SAMPLE
         }
 
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node
+            $node, new \PHPStan\Type\NeverType()
         )) {
             return true;
         }
