@@ -2,6 +2,9 @@
 
 namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Fixture;
 
+/**
+ * Use both Enum and usage in same file on purpose to reproduce the error
+ */
 enum Status {
     case Foo;
     case Bar;
