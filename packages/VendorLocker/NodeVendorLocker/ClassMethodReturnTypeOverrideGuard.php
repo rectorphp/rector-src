@@ -73,11 +73,7 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        if ($this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod, $type)) {
-            return true;
-        }
-
-        return ! $this->hasClassMethodExprReturn($classMethod);
+        return $this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod, $type);
     }
 
     /**
@@ -155,19 +151,5 @@ final class ClassMethodReturnTypeOverrideGuard
         }
 
         return false;
-    }
-
-    private function hasClassMethodExprReturn(ClassMethod $classMethod): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst(
-            (array) $classMethod->stmts,
-            static function (Node $node): bool {
-                if (! $node instanceof Return_) {
-                    return false;
-                }
-
-                return $node->expr instanceof Expr;
-            }
-        );
     }
 }
