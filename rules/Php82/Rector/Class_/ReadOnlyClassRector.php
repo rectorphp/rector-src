@@ -173,8 +173,10 @@ CODE_SAMPLE
                 $traitClassReflection = $this->reflectionProvider->getClass($traitName);
                 $nativeReflection = $traitClassReflection->getNativeReflection();
 
-                if ($nativeReflection->getProperties() !== []) {
-                    return true;
+                foreach ($nativeReflection->getProperties() as $property) {
+                    if (! $property->isReadonly()) {
+                        return true;
+                    }
                 }
             }
         }
