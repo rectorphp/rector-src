@@ -290,14 +290,12 @@ final class ValueResolver
             return $classConstantReference;
         }
 
-        $constantReflection = $classReflection->getConstant($constant);
-
-        try {
-            $valueExpr = $constantReflection->getValueExpr();
-        } catch (\LogicException) {
-            // fallback to constant reference itself, to avoid fatal error
+        if ($classReflection->isEnum()) {
             return $classConstantReference;
         }
+
+        $constantReflection = $classReflection->getConstant($constant);
+        $valueExpr = $constantReflection->getValueExpr();
 
         if ($valueExpr instanceof ConstFetch) {
             return $this->resolveExprValueForConst($valueExpr);
