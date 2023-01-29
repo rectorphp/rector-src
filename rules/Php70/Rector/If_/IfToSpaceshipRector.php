@@ -203,7 +203,13 @@ CODE_SAMPLE
                 return;
             }
 
-            $this->onEqual = $this->valueResolver->getValue($onlyIfStmt->expr);
+            // on Enum usage not in same file, it got object
+            $value = $this->valueResolver->getValue($onlyIfStmt->expr);
+            if (is_object($value)) {
+                return;
+            }
+
+            $this->onEqual = $value;
         }
     }
 
