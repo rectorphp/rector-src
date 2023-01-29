@@ -41,7 +41,7 @@ final class SomeParent
     const FIRST = 'hey';
     const SECOND = 'hou';
 
-    public function getValue($number)
+    public function getValue($number): bool
     {
         return $number ? self::FIRST : self::SECOND;
     }
