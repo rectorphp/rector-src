@@ -100,9 +100,7 @@ final class ClassMethodReturnTypeOverrideGuard
             }
 
             if ($method->returnType instanceof Node) {
-                return false;
-                return false;
-                return $this->nodeComparator->areNodesEqual($method->returnType, $returnTypeNode);
+                return ! $this->nodeComparator->areNodesEqual($method->returnType, $returnTypeNode);
             }
 
             $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
