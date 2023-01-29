@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\PropertyFetchAssignManipulator;
 use Rector\Core\NodeManipulator\PropertyManipulator;
@@ -40,8 +39,7 @@ final class ReadOnlyPropertyRector extends AbstractRector implements MinPhpVersi
         private readonly PropertyManipulator $propertyManipulator,
         private readonly PropertyFetchAssignManipulator $propertyFetchAssignManipulator,
         private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly VisibilityManipulator $visibilityManipulator
     ) {
     }
 
