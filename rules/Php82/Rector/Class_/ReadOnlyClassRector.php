@@ -160,25 +160,8 @@ CODE_SAMPLE
             return true;
         }
 
-        $traitUses = $class->getTraitUses();
-        foreach ($traitUses as $traitUse) {
-            foreach ($traitUse->traits as $trait) {
-                $traitName = $trait->toString();
-
-                // trait not autoloaded
-                if (! $this->reflectionProvider->hasClass($traitName)) {
-                    return true;
-                }
-
-                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
-                $nativeReflection = $traitClassReflection->getNativeReflection();
-
-                foreach ($nativeReflection->getProperties() as $property) {
-                    if (! $property->isReadonly()) {
-                        return true;
-                    }
-                }
-            }
+        if ($this->shouldSkipConsumeTraitProperty($class)) {
+            return true;
         }
 
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
@@ -195,6 +178,46 @@ CODE_SAMPLE
 
         return $this->shouldSkipParams($params);
     }
+
+    private function shouldSkipConsumeTraitProperty(Class_ $class): bool
+    {
+        $traitUses = $class->getTraitUses();
+        foreach ($traitUses as $traitUse) {
+            foreach ($traitUse->traits as $trait) {
+                $traitName = $trait->toString();
+
+                // trait not autoloaded
+                if (! $this->reflectionProvider->hasClass($traitName)) {
+                    return true;
+                }
+
+                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
+                $nativeReflection = $traitClassReflection->getNativeReflection();
+
+                if ($this->hasReadonlyProperty($nativeReflection->getProperties())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param \PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty[] $properties
+     * @return bool
+     */
+    private function hasReadonlyProperty(array $properties): bool
+    {
+        foreach ($properties as $property) {
+            if (! $property->isReadOnly()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * @param ClassReflection[] $parents
