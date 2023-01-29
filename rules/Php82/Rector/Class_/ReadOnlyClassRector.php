@@ -9,6 +9,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
@@ -204,7 +205,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param \PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty[] $properties
+     * @param ReflectionProperty[] $properties
      */
     private function hasReadonlyProperty(array $properties): bool
     {
