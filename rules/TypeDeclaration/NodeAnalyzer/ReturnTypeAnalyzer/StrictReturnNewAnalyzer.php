@@ -86,6 +86,14 @@ final class StrictReturnNewAnalyzer
 
         $returnedVariableName = $this->nodeNameResolver->getName($onlyReturn->expr);
 
+        return $this->resolveClassName($returnType, $createdVariablesToTypes, $returnedVariableName);
+    }
+
+    /**
+     * @param string[] $createdVariablesToTypes
+     */
+    private function resolveClassName(ObjectType $returnType, array $createdVariablesToTypes, ?string $returnedVariableName): ?string
+    {
         $className = $createdVariablesToTypes[$returnedVariableName] ?? null;
         if (! is_string($className)) {
             return $className;

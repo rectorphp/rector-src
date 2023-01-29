@@ -103,21 +103,30 @@ final class ClassMethodReturnTypeOverrideGuard
                 continue;
             }
 
-            if ($method->returnType instanceof Node) {
-                if ($type instanceof Type && $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange(
-                    $method,
-                    $type
-                )) {
-                    return true;
-                }
-
-                if ($type instanceof Node && $this->nodeComparator->areNodesEqual($method->returnType, $type)) {
-                    return true;
-                }
+            if ($this->shouldSkipChildTyped($method, $type)) {
+                return true;
             }
 
             $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
             if ($returnType instanceof VoidType && ! $childReturnType instanceof VoidType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function shouldSkipChildTyped(ClassMethod $method, Type|Node $type): bool
+    {
+        if ($method->returnType instanceof Node) {
+            if ($type instanceof Type && $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange(
+                $method,
+                $type
+            )) {
+                return true;
+            }
+
+            if ($type instanceof Node && $this->nodeComparator->areNodesEqual($method->returnType, $type)) {
                 return true;
             }
         }
