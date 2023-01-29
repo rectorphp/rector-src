@@ -291,6 +291,7 @@ final class ValueResolver
         }
 
         if ($classReflection->isEnum()) {
+            // fallback to constant reference itself, to avoid fatal error
             return $classConstantReference;
         }
 
