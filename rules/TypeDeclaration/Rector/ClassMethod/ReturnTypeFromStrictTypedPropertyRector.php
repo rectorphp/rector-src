@@ -93,12 +93,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $propertyType)) {
+        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::RETURN);
+        if (! $propertyTypeNode instanceof Node) {
             return null;
         }
 
-        $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::RETURN);
-        if (! $propertyTypeNode instanceof Node) {
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $propertyTypeNode)) {
             return null;
         }
 
