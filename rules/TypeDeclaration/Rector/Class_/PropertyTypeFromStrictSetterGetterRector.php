@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\GetterTypeDeclarationPropertyTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\SetterTypeDeclarationPropertyTypeInferer;
@@ -24,7 +25,8 @@ final class PropertyTypeFromStrictSetterGetterRector extends AbstractRector impl
 {
     public function __construct(
         private readonly GetterTypeDeclarationPropertyTypeInferer $getterTypeDeclarationPropertyTypeInferer,
-        private readonly SetterTypeDeclarationPropertyTypeInferer $setterTypeDeclarationPropertyTypeInferer
+        private readonly SetterTypeDeclarationPropertyTypeInferer $setterTypeDeclarationPropertyTypeInferer,
+        private readonly MakePropertyTypedGuard $makePropertyTypedGuard
     ) {
     }
 
@@ -100,6 +102,10 @@ CODE_SAMPLE
             }
 
             if (! $this->isDefaultExprTypeCompatible($property, $getterSetterPropertyType)) {
+                continue;
+            }
+
+            if (! $this->makePropertyTypedGuard->isLegal($property, false)) {
                 continue;
             }
 
