@@ -111,7 +111,9 @@ final class ClassMethodReturnTypeOverrideGuard
     private function shouldSkipChildTyped(ClassMethod $classMethod, Type|Node $type): bool
     {
         if ($classMethod->returnType instanceof Node) {
-            if ($type instanceof Type && $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange(
+            // Use ! operator as shouldSkipReturnTypeChange() is used originallly for changing type
+            // use here for re-use, that's why ! can be used
+            if ($type instanceof Type && ! $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange(
                 $classMethod,
                 $type
             )) {
