@@ -134,15 +134,16 @@ CODE_SAMPLE
             return null;
         }
 
+        $returnTypeNode = new Identifier('array');
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-            new \PHPStan\Type\ArrayType()
+            $returnTypeNode
         )) {
             return null;
         }
 
         // 3. always returns array
-        $node->returnType = new Identifier('array');
+        $node->returnType = $returnTypeNode;
 
         // 4. add more precise type if suitable
         $exprType = $this->getType($onlyReturn->expr);

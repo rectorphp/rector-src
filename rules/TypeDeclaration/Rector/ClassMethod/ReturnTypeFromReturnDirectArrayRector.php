@@ -85,9 +85,10 @@ CODE_SAMPLE
             return null;
         }
 
+        $returnType = new Identifier('array');
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-            new \PHPStan\Type\ArrayType()
+            $returnType
         )) {
             return null;
         }
