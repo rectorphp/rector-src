@@ -92,8 +92,11 @@ final class StrictReturnNewAnalyzer
     /**
      * @param string[] $createdVariablesToTypes
      */
-    private function resolveClassName(ObjectType $returnType, array $createdVariablesToTypes, ?string $returnedVariableName): ?string
-    {
+    private function resolveClassName(
+        ObjectType $returnType,
+        array $createdVariablesToTypes,
+        ?string $returnedVariableName
+    ): ?string {
         $className = $createdVariablesToTypes[$returnedVariableName] ?? null;
         if (! is_string($className)) {
             return $className;
