@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
@@ -125,25 +126,12 @@ CODE_SAMPLE
         }
 
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
-
-        if (! $returnType->isArray()->yes()) {
-            return null;
-        }
-
-        if (! $this->nodeNameResolver->areNamesEqual($onlyReturn->expr, $variable)) {
-            return null;
-        }
-
-        $identifier = new Identifier('array');
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $identifier
-        )) {
+        if ($this->shouldSkipReturnType($node, $onlyReturn->expr, $variable, $returnType)) {
             return null;
         }
 
         // 3. always returns array
-        $node->returnType = $identifier;
+        $node->returnType = new Identifier('array');
 
         // 4. add more precise type if suitable
         $exprType = $this->getType($onlyReturn->expr);
@@ -158,6 +146,22 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    private function shouldSkipReturnType(Node $node, Variable $expr, Variable $variable, Type $returnType): bool
+    {
+        if (! $returnType->isArray()->yes()) {
+            return true;
+        }
+
+        if (! $this->nodeNameResolver->areNamesEqual($expr, $variable)) {
+            return true;
+        }
+
+        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $returnType
+        );
     }
 
     private function shouldSkip(ClassMethod|Function_|Closure $node): bool
