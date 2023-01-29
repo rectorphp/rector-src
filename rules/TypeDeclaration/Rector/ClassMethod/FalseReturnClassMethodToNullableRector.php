@@ -11,6 +11,8 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NullType;
+use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -106,8 +108,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $type = new \PHPStan\Type\UnionType([$anotherType, new \PHPStan\Type\NullType()]);
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $type)) {
+        $unionType = new UnionType([$anotherType, new NullType()]);
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $unionType)) {
             return null;
         }
 

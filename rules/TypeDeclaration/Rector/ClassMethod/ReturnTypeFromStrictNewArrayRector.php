@@ -134,16 +134,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnTypeNode = new Identifier('array');
+        $identifier = new Identifier('array');
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-            $returnTypeNode
+            $identifier
         )) {
             return null;
         }
 
         // 3. always returns array
-        $node->returnType = $returnTypeNode;
+        $node->returnType = $identifier;
 
         // 4. add more precise type if suitable
         $exprType = $this->getType($onlyReturn->expr);
