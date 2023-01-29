@@ -48,5 +48,6 @@ return static function (RectorConfig $rectorConfig): void {
             'Foo\Bar' => 'Foo\Bar\BarInterface',
             'Doctrine\DBAL\DBALException' => 'Doctrine\DBAL\Exception',
             'Bar' => 'BarInterface',
+            'App' => 'Illuminate\Support\Facades\App',
         ]);
 };
