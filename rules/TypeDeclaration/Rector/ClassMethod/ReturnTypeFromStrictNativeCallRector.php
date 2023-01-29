@@ -76,10 +76,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
         $nativeCallLikes = $this->strictNativeFunctionReturnTypeAnalyzer->matchAlwaysReturnNativeCallLikes($node);
         if ($nativeCallLikes === null) {
             return null;
@@ -92,6 +88,10 @@ CODE_SAMPLE
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($callLikeTypes);
         if ($returnType instanceof MixedType) {
+            return null;
+        }
+
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $returnType)) {
             return null;
         }
 
