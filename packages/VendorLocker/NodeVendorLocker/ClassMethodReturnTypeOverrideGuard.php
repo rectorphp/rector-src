@@ -9,8 +9,14 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\FunctionVariantWithPhpDocs;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -36,7 +42,8 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -57,7 +64,7 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        if (! $this->parentClassMethodTypeOverrideGuard->isReturnTypeChangeAllowed($classMethod)) {
+        if (! $this->isReturnTypeChangeAllowed($classMethod)) {
             return true;
         }
 
@@ -75,6 +82,55 @@ final class ClassMethodReturnTypeOverrideGuard
         }
 
         return $this->hasClassMethodExprReturn($classMethod);
+    }
+
+    private function isReturnTypeChangeAllowed(ClassMethod $classMethod): bool
+    {
+        // make sure return type is not protected by parent contract
+        $parentClassMethodReflection = $this->parentClassMethodTypeOverrideGuard->getParentClassMethod($classMethod);
+
+        // nothing to check
+        if (! $parentClassMethodReflection instanceof MethodReflection) {
+            return true;
+        }
+
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethodReflection->getVariants());
+        if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs && ! $parametersAcceptor->getNativeReturnType() instanceof MixedType) {
+            return false;
+        }
+
+        $classReflection = $parentClassMethodReflection->getDeclaringClass();
+        $fileName = $classReflection->getFileName();
+
+        // probably internal
+        if ($fileName === null) {
+            return false;
+        }
+
+        /*
+         * Below verify that both current file name and parent file name is not in the /vendor/, if yes, then allowed.
+         * This can happen when rector run into /vendor/ directory while child and parent both are there.
+         *
+         *  @see https://3v4l.org/Rc0RF#v8.0.13
+         *
+         *     - both in /vendor/ -> allowed
+         *     - one of them in /vendor/ -> not allowed
+         *     - both not in /vendor/ -> allowed
+         */
+        /** @var ClassReflection $currentClassReflection */
+        $currentClassReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        /** @var string $currentFileName */
+        $currentFileName = $currentClassReflection->getFileName();
+
+        // child (current)
+        $normalizedCurrentFileName = $this->filePathHelper->normalizePathAndSchema($currentFileName);
+        $isCurrentInVendor = str_contains($normalizedCurrentFileName, '/vendor/');
+
+        // parent
+        $normalizedFileName = $this->filePathHelper->normalizePathAndSchema($fileName);
+        $isParentInVendor = str_contains($normalizedFileName, '/vendor/');
+
+        return ($isCurrentInVendor && $isParentInVendor) || (! $isCurrentInVendor && ! $isParentInVendor);
     }
 
     /**
