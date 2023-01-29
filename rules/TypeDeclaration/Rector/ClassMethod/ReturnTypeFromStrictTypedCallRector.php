@@ -103,26 +103,7 @@ CODE_SAMPLE
             return $this->processArrowFunction($node);
         }
 
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->find((array) $node->stmts, function (Node $subNode) use ($node): bool {
-            $currentFunctionLike = $this->betterNodeFinder->findParentType($subNode, FunctionLike::class);
-
-            if ($currentFunctionLike === $node) {
-                return $subNode instanceof Return_;
-            }
-
-            $currentReturn = $this->betterNodeFinder->findParentType($subNode, Return_::class);
-            if (! $currentReturn instanceof Return_) {
-                return false;
-            }
-
-            $currentFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
-            if ($currentFunctionLike !== $node) {
-                return false;
-            }
-
-            return $subNode instanceof Return_;
-        });
+        $returns = $this->resolveReturns($node);
 
         $returnedStrictTypes = $this->returnStrictTypeAnalyzer->collectStrictReturnTypes($returns);
         if ($returnedStrictTypes === []) {
@@ -148,6 +129,32 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /**
+     * @return Return_[]
+     */
+    private function resolveReturns(ClassMethod|Function_|Closure $node): array
+    {
+        return $this->betterNodeFinder->find((array) $node->stmts, function (Node $subNode) use ($node): bool {
+            $currentFunctionLike = $this->betterNodeFinder->findParentType($subNode, FunctionLike::class);
+
+            if ($currentFunctionLike === $node) {
+                return $subNode instanceof Return_;
+            }
+
+            $currentReturn = $this->betterNodeFinder->findParentType($subNode, Return_::class);
+            if (! $currentReturn instanceof Return_) {
+                return false;
+            }
+
+            $currentFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
+            if ($currentFunctionLike !== $node) {
+                return false;
+            }
+
+            return $subNode instanceof Return_;
+        });
     }
 
     private function processArrowFunction(ArrowFunction $arrowFunction): ?ArrowFunction
