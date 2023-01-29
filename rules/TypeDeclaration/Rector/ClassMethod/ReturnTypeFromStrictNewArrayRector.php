@@ -134,6 +134,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, new \PHPStan\Type\ArrayType())) {
+            return null;
+        }
+
         // 3. always returns array
         $node->returnType = new Identifier('array');
 
@@ -154,11 +158,7 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod|Function_|Closure $node): bool
     {
-        if ($node->returnType !== null) {
-            return true;
-        }
-
-        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node);
+        return $node->returnType !== null;
     }
 
     private function changeReturnType(Node $node, Type $exprType): void

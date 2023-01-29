@@ -209,10 +209,6 @@ CODE_SAMPLE
             return $this->isUnionPossibleReturnsVoid($node);
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return true;
-        }
-
         if (! $node->isMagic()) {
             return $this->isUnionPossibleReturnsVoid($node);
         }
