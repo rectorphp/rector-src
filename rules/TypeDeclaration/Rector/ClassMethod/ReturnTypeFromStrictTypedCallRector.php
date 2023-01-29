@@ -119,7 +119,10 @@ CODE_SAMPLE
             $unwrappedTypes = $this->typeNodeUnwrapper->unwrapNullableUnionTypes($returnedStrictTypes);
 
             $returnType = new PhpParserUnionType($unwrappedTypes);
-            if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $returnType)) {
+            if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+                $node,
+                $returnType
+            )) {
                 return null;
             }
 
@@ -200,7 +203,10 @@ CODE_SAMPLE
             ? new NullableType(new FullyQualified($types[0]->getClassName()))
             : $nullableType;
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $returnType)) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $returnType
+        )) {
             return null;
         }
 
@@ -253,7 +259,10 @@ CODE_SAMPLE
             ? new FullyQualified($resolvedType->getClassName())
             : $returnedStrictTypeNode;
 
-        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($functionLike, $returnType)) {
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $functionLike,
+            $returnType
+        )) {
             return null;
         }
 
