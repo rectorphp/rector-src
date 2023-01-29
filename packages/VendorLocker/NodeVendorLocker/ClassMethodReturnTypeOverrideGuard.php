@@ -17,6 +17,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 
@@ -38,11 +39,11 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly NodeComparator $nodeComparator
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
-    public function shouldSkipClassMethod(ClassMethod $classMethod, Node $returnTypeNode): bool
+    public function shouldSkipClassMethod(ClassMethod $classMethod, \PHPStan\Type\Type $type): bool
     {
         // 1. skip magic methods
         if ($classMethod->isMagic()) {
@@ -72,7 +73,7 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        if ($this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod, $returnTypeNode)) {
+        if ($this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod, $type)) {
             return true;
         }
 
@@ -82,7 +83,7 @@ final class ClassMethodReturnTypeOverrideGuard
     /**
      * @param ClassReflection[] $childrenClassReflections
      */
-    private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod, Node $returnTypeNode): bool
+    private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod, \PHPStan\Type\Type $type): bool
     {
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
 
@@ -99,8 +100,8 @@ final class ClassMethodReturnTypeOverrideGuard
                 continue;
             }
 
-            if ($method->returnType instanceof Node) {
-                return ! $this->nodeComparator->areNodesEqual($method->returnType, $returnTypeNode);
+            if ($method->returnType instanceof Node && $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange($method, $type)) {
+                return true;
             }
 
             $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
