@@ -90,10 +90,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
         if (! $node instanceof ArrowFunction) {
             $returnedNewClassName = $this->strictReturnNewAnalyzer->matchAlwaysReturnVariableNew($node);
             if (is_string($returnedNewClassName)) {
@@ -155,6 +151,10 @@ CODE_SAMPLE
         }
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
+
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $returnType)) {
+            return null;
+        }
 
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
         if (! $returnTypeNode instanceof Node) {

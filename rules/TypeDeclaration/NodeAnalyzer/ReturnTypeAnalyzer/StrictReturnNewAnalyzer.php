@@ -20,6 +20,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\ValueObject\AssignToVariable;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 
 final class StrictReturnNewAnalyzer
 {
@@ -27,7 +28,8 @@ final class StrictReturnNewAnalyzer
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ReturnAnalyzer $returnAnalyzer
+        private readonly ReturnAnalyzer $returnAnalyzer,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
@@ -70,6 +72,10 @@ final class StrictReturnNewAnalyzer
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
 
         if (! $returnType instanceof ObjectType) {
+            return null;
+        }
+
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($functionLike, $returnType)) {
             return null;
         }
 
