@@ -115,34 +115,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($class->isReadonly()) {
-            return true;
-        }
-
-        $traitUses = $class->getTraitUses();
-        if ($traitUses === []) {
-            return false;
-        }
-
-        foreach ($traitUses as $traitUse) {
-            foreach ($traitUse->traits as $trait) {
-                $traitName = $trait->toString();
-
-                // trait not autoloaded
-                if (! $this->reflectionProvider->hasClass($traitName)) {
-                    return true;
-                }
-
-                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
-                $nativeReflection = $traitClassReflection->getNativeReflection();
-
-                if ($nativeReflection->getProperties() !== []) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $class->isReadonly();
     }
 
     private function refactorProperty(Property $property): ?Property

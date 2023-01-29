@@ -22,6 +22,7 @@ use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @changelog https://wiki.php.net/rfc/readonly_classes
@@ -34,7 +35,8 @@ final class ReadOnlyClassRector extends AbstractRector implements MinPhpVersionI
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -156,6 +158,25 @@ CODE_SAMPLE
 
         if ($this->hasNonTypedProperty($properties)) {
             return true;
+        }
+
+        $traitUses = $class->getTraitUses();
+        foreach ($traitUses as $traitUse) {
+            foreach ($traitUse->traits as $trait) {
+                $traitName = $trait->toString();
+
+                // trait not autoloaded
+                if (! $this->reflectionProvider->hasClass($traitName)) {
+                    return true;
+                }
+
+                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
+                $nativeReflection = $traitClassReflection->getNativeReflection();
+
+                if ($nativeReflection->getProperties() !== []) {
+                    return true;
+                }
+            }
         }
 
         $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
