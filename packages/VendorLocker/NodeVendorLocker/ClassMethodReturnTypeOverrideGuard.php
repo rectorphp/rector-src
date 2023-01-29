@@ -38,7 +38,7 @@ final class ClassMethodReturnTypeOverrideGuard
     ) {
     }
 
-    public function shouldSkipClassMethod(ClassMethod $classMethod, Node $type): bool
+    public function shouldSkipClassMethod(ClassMethod $classMethod, Node $node): bool
     {
         // 1. skip magic methods
         if ($classMethod->isMagic()) {
@@ -68,7 +68,7 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        return $this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod, $type);
+        return $this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod, $node);
     }
 
     /**
@@ -77,7 +77,7 @@ final class ClassMethodReturnTypeOverrideGuard
     private function shouldSkipHasChildHasReturnType(
         array $childrenClassReflections,
         ClassMethod $classMethod,
-        Node $type
+        Node $node
     ): bool {
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
 
@@ -94,7 +94,7 @@ final class ClassMethodReturnTypeOverrideGuard
                 continue;
             }
 
-            if ($this->shouldSkipChildTyped($method, $type)) {
+            if ($this->shouldSkipChildTyped($method, $node)) {
                 return true;
             }
 
@@ -107,11 +107,11 @@ final class ClassMethodReturnTypeOverrideGuard
         return false;
     }
 
-    private function shouldSkipChildTyped(ClassMethod $classMethod, Node $type): bool
+    private function shouldSkipChildTyped(ClassMethod $classMethod, Node $node): bool
     {
         return $classMethod->returnType instanceof Node && ! $this->nodeComparator->areNodesEqual(
             $classMethod->returnType,
-            $type
+            $node
         );
     }
 
