@@ -73,11 +73,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
+        if (! $this->strictBoolReturnTypeAnalyzer->hasAlwaysStrictBoolReturn($node)) {
             return null;
         }
 
-        if (! $this->strictBoolReturnTypeAnalyzer->hasAlwaysStrictBoolReturn($node)) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, new \PHPStan\Type\BooleanType())) {
             return null;
         }
 
