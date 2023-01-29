@@ -6,6 +6,7 @@ use Rector\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRe
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSetterGetterRector;
+use Rector\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
@@ -70,5 +71,6 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnNeverTypeRector::class,
         EmptyOnNullableObjectToInstanceOfRector::class,
         PropertyTypeFromStrictSetterGetterRector::class,
+        ReturnTypeFromStrictTernaryRector::class,
     ]);
 };
