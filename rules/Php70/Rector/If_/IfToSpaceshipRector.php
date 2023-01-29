@@ -203,6 +203,7 @@ CODE_SAMPLE
                 return;
             }
 
+            // on Enum usage on same file, it got object
             $value = $this->valueResolver->getValue($onlyIfStmt->expr);
             if (is_object($value)) {
                 return;
