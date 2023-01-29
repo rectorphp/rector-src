@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
 
-class SkipIfChildClassHasTyped
+class SkipIfChildClassHasTypedDifferent
 {
     public function test()
     {
@@ -10,7 +10,7 @@ class SkipIfChildClassHasTyped
     }
 }
 
-class SomeChild extends SkipIfChildClassHasTyped
+class SomeChild extends SkipIfChildClassHasTypedDifferent
 {
     public function test(): string
     {

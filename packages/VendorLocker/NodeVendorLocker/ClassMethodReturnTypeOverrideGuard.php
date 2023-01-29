@@ -118,7 +118,7 @@ final class ClassMethodReturnTypeOverrideGuard
                 return true;
             }
 
-            if ($type instanceof Node && $this->nodeComparator->areNodesEqual($classMethod->returnType, $type)) {
+            if ($type instanceof Node && ! $this->nodeComparator->areNodesEqual($classMethod->returnType, $type)) {
                 return true;
             }
         }
