@@ -12,7 +12,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -32,7 +31,6 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer,
@@ -110,17 +108,17 @@ final class ClassMethodReturnTypeOverrideGuard
         return false;
     }
 
-    private function shouldSkipChildTyped(ClassMethod $method, Type|Node $type): bool
+    private function shouldSkipChildTyped(ClassMethod $classMethod, Type|Node $type): bool
     {
-        if ($method->returnType instanceof Node) {
+        if ($classMethod->returnType instanceof Node) {
             if ($type instanceof Type && $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange(
-                $method,
+                $classMethod,
                 $type
             )) {
                 return true;
             }
 
-            if ($type instanceof Node && $this->nodeComparator->areNodesEqual($method->returnType, $type)) {
+            if ($type instanceof Node && $this->nodeComparator->areNodesEqual($classMethod->returnType, $type)) {
                 return true;
             }
         }
