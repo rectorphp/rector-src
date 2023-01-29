@@ -195,7 +195,10 @@ CODE_SAMPLE
             return;
         }
 
-        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($functionLike, $returnType)) {
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $functionLike,
+            $returnType
+        )) {
             return;
         }
 

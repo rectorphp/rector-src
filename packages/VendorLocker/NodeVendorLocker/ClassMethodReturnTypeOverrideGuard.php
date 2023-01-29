@@ -82,8 +82,11 @@ final class ClassMethodReturnTypeOverrideGuard
     /**
      * @param ClassReflection[] $childrenClassReflections
      */
-    private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod, \PHPStan\Type\Type $type): bool
-    {
+    private function shouldSkipHasChildHasReturnType(
+        array $childrenClassReflections,
+        ClassMethod $classMethod,
+        \PHPStan\Type\Type $type
+    ): bool {
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
 
         $methodName = $this->nodeNameResolver->getName($classMethod);
@@ -99,7 +102,10 @@ final class ClassMethodReturnTypeOverrideGuard
                 continue;
             }
 
-            if ($method->returnType instanceof Node && $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange($method, $type)) {
+            if ($method->returnType instanceof Node && $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange(
+                $method,
+                $type
+            )) {
                 return true;
             }
 

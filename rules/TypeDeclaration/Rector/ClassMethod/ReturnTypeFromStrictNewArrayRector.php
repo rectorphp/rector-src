@@ -134,7 +134,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, new \PHPStan\Type\ArrayType())) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            new \PHPStan\Type\ArrayType()
+        )) {
             return null;
         }
 

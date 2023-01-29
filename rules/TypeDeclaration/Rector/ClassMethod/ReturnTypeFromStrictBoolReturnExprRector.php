@@ -77,7 +77,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, new \PHPStan\Type\BooleanType())) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            new \PHPStan\Type\BooleanType()
+        )) {
             return null;
         }
 

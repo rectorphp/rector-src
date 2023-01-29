@@ -152,7 +152,10 @@ CODE_SAMPLE
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $returnType)) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $returnType
+        )) {
             return null;
         }
 
