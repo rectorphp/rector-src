@@ -98,7 +98,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $propertyTypeNode)) {
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $propertyType)) {
             return null;
         }
 
