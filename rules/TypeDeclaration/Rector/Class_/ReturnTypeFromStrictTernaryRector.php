@@ -106,12 +106,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($classMethod)) {
+            $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($ifType, TypeKind::RETURN);
+            if (! $returnTypeNode instanceof Node) {
                 continue;
             }
 
-            $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($ifType, TypeKind::RETURN);
-            if (! $returnTypeNode instanceof Node) {
+            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($classMethod, $returnTypeNode)) {
                 continue;
             }
 

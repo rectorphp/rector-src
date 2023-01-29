@@ -21,7 +21,7 @@ final class SomeChild extends SomeParent
     const FIRST = 'hey';
     const SECOND = 'hou';
 
-    public function getValue($number): bool
+    public function getValue($number): string
     {
         return $number ? self::FIRST : self::SECOND;
     }
@@ -41,7 +41,7 @@ final class SomeParent
     const FIRST = 'hey';
     const SECOND = 'hou';
 
-    public function getValue($number): bool
+    public function getValue($number): string
     {
         return $number ? self::FIRST : self::SECOND;
     }
@@ -52,7 +52,7 @@ final class SomeChild extends SomeParent
     const FIRST = 'hey';
     const SECOND = 'hou';
 
-    public function getValue($number): bool
+    public function getValue($number): string
     {
         return $number ? self::FIRST : self::SECOND;
     }
