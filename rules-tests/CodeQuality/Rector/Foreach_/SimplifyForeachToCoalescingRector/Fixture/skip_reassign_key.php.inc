@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector\Fixture;
 
-class SkipElseIf
+class SkipReAssignKey
 {
     public function transform(array $data): array
     {
