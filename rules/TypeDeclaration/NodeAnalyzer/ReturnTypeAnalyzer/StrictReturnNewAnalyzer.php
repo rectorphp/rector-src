@@ -93,7 +93,7 @@ final class StrictReturnNewAnalyzer
      * @param string[] $createdVariablesToTypes
      */
     private function resolveClassName(
-        ObjectType $returnType,
+        ObjectType $objectType,
         array $createdVariablesToTypes,
         ?string $returnedVariableName
     ): ?string {
@@ -102,7 +102,7 @@ final class StrictReturnNewAnalyzer
             return $className;
         }
 
-        if ($returnType->getClassName() === $className) {
+        if ($objectType->getClassName() === $className) {
             return $className;
         }
 
