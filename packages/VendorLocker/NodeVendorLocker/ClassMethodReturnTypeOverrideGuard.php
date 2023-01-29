@@ -39,7 +39,7 @@ final class ClassMethodReturnTypeOverrideGuard
     ) {
     }
 
-    public function shouldSkipClassMethod(ClassMethod $classMethod, Type|Node $type): bool
+    public function shouldSkipClassMethod(ClassMethod $classMethod, Node $type): bool
     {
         // 1. skip magic methods
         if ($classMethod->isMagic()) {
@@ -78,7 +78,7 @@ final class ClassMethodReturnTypeOverrideGuard
     private function shouldSkipHasChildHasReturnType(
         array $childrenClassReflections,
         ClassMethod $classMethod,
-        Type|Node $type
+        Node $type
     ): bool {
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
 
@@ -108,24 +108,9 @@ final class ClassMethodReturnTypeOverrideGuard
         return false;
     }
 
-    private function shouldSkipChildTyped(ClassMethod $classMethod, Type|Node $type): bool
+    private function shouldSkipChildTyped(ClassMethod $classMethod, Node $type): bool
     {
-        if ($classMethod->returnType instanceof Node) {
-            // Use ! operator as shouldSkipReturnTypeChange() is used originallly for changing type
-            // use here for re-use, that's why ! can be used
-            if ($type instanceof Type && ! $this->parentClassMethodTypeOverrideGuard->shouldSkipReturnTypeChange(
-                $classMethod,
-                $type
-            )) {
-                return true;
-            }
-
-            if ($type instanceof Node && ! $this->nodeComparator->areNodesEqual($classMethod->returnType, $type)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $classMethod->returnType instanceof Node && ! $this->nodeComparator->areNodesEqual($classMethod->returnType, $type);
     }
 
     private function shouldSkipChaoticClassMethods(ClassMethod $classMethod): bool

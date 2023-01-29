@@ -125,12 +125,13 @@ CODE_SAMPLE
         }
 
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
-        if ($this->shouldSkipReturnType($node, $onlyReturn->expr, $variable, $returnType)) {
+        $returnTypeNode = new Identifier('array');
+        if ($this->shouldSkipReturnType($node, $onlyReturn->expr, $variable, $returnType, $returnTypeNode)) {
             return null;
         }
 
         // 3. always returns array
-        $node->returnType = new Identifier('array');
+        $node->returnType = $returnTypeNode;
 
         // 4. add more precise type if suitable
         $exprType = $this->getType($onlyReturn->expr);
@@ -147,7 +148,7 @@ CODE_SAMPLE
         return PhpVersion::PHP_70;
     }
 
-    private function shouldSkipReturnType(Node $node, Variable $expr, Variable $variable, Type $returnType): bool
+    private function shouldSkipReturnType(Node $node, Variable $expr, Variable $variable, Type $returnType, Identifier $returnTypeNode): bool
     {
         if (! $returnType->isArray()->yes()) {
             return true;
@@ -159,7 +160,7 @@ CODE_SAMPLE
 
         return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-            $returnType
+            $returnTypeNode
         );
     }
 

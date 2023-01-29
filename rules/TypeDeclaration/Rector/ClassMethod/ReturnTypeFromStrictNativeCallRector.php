@@ -91,15 +91,15 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $returnType
-        )) {
+        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
+        if (! $returnTypeNode instanceof Node) {
             return null;
         }
 
-        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
-        if (! $returnTypeNode instanceof Node) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $returnTypeNode
+        )) {
             return null;
         }
 

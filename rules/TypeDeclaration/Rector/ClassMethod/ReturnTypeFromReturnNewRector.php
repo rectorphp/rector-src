@@ -92,11 +92,21 @@ CODE_SAMPLE
 
         if (! $node instanceof ArrowFunction) {
             $returnedNewClassName = $this->strictReturnNewAnalyzer->matchAlwaysReturnVariableNew($node);
-            if (is_string($returnedNewClassName)) {
-                $node->returnType = new FullyQualified($returnedNewClassName);
-
-                return $node;
+            if (! is_string($returnedNewClassName)) {
+                return null;
             }
+
+            $returnTypeNode = new FullyQualified($returnedNewClassName);
+            if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+                $node,
+                $returnTypeNode
+            )) {
+                return null;
+            }
+
+            $node->returnType = $returnTypeNode;
+
+            return $node;
         }
 
         return $this->refactorDirectReturnNew($node);
@@ -152,15 +162,15 @@ CODE_SAMPLE
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $returnType
-        )) {
+        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
+        if (! $returnTypeNode instanceof Node) {
             return null;
         }
 
-        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
-        if (! $returnTypeNode instanceof Node) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $returnTypeNode
+        )) {
             return null;
         }
 

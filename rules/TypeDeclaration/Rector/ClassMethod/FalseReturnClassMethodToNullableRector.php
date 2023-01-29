@@ -108,12 +108,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $unionType = new UnionType([$anotherType, new NullType()]);
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $unionType)) {
+        $returnTypeNode = new NullableType($typeNode);
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $returnTypeNode)) {
             return null;
         }
 
-        $node->returnType = new NullableType($typeNode);
+        $node->returnType = $returnTypeNode;
 
         $this->clearReturnPhpDocTagNode($node);
 

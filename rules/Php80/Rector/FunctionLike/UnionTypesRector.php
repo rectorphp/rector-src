@@ -195,13 +195,6 @@ CODE_SAMPLE
             return;
         }
 
-        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $functionLike,
-            $returnType
-        )) {
-            return;
-        }
-
         $uniqueatedReturnType = $this->filterOutDuplicatedArrayTypes($returnType);
         if (! $uniqueatedReturnType instanceof UnionType) {
             return;
@@ -218,6 +211,13 @@ CODE_SAMPLE
         );
 
         if (! $phpParserUnionType instanceof PhpParserUnionType) {
+            return;
+        }
+
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $functionLike,
+            $phpParserUnionType
+        )) {
             return;
         }
 

@@ -28,8 +28,7 @@ final class StrictReturnNewAnalyzer
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ReturnAnalyzer $returnAnalyzer,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -72,13 +71,6 @@ final class StrictReturnNewAnalyzer
         $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
 
         if (! $returnType instanceof ObjectType) {
-            return null;
-        }
-
-        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $functionLike,
-            $returnType
-        )) {
             return null;
         }
 

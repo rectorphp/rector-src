@@ -111,7 +111,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($classMethod, $ifType)) {
+            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($classMethod, $returnTypeNode)) {
                 continue;
             }
 

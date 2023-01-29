@@ -93,7 +93,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->returnType = new Identifier('array');
+        $node->returnType = $returnType;
 
         return $node;
     }

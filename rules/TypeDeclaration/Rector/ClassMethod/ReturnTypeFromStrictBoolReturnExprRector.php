@@ -78,14 +78,15 @@ CODE_SAMPLE
             return null;
         }
 
+        $identifier = new Identifier('bool');
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-            new BooleanType()
+            $identifier
         )) {
             return null;
         }
 
-        $node->returnType = new Identifier('bool');
+        $node->returnType = $identifier;
         return $node;
     }
 
