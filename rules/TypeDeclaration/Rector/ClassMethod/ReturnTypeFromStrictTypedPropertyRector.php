@@ -82,10 +82,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
-            return null;
-        }
-
         $propertyTypes = $this->resolveReturnPropertyType($node);
         if ($propertyTypes === []) {
             return null;
@@ -94,6 +90,10 @@ CODE_SAMPLE
         // add type to return type
         $propertyType = $this->typeFactory->createMixedPassedOrUnionType($propertyTypes);
         if ($propertyType instanceof MixedType) {
+            return null;
+        }
+
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $propertyType)) {
             return null;
         }
 
