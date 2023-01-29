@@ -205,7 +205,6 @@ CODE_SAMPLE
 
     /**
      * @param \PHPStan\BetterReflection\Reflection\Adapter\ReflectionProperty[] $properties
-     * @return bool
      */
     private function hasReadonlyProperty(array $properties): bool
     {
@@ -217,7 +216,6 @@ CODE_SAMPLE
 
         return false;
     }
-
 
     /**
      * @param ClassReflection[] $parents
