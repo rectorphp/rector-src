@@ -41,10 +41,11 @@ final class ConfigInitializer
             return;
         }
 
-        $rectorPhpTemplateContents = FileSystem::read(__DIR__ . '/../../templates/rector.php.dist');
+        $configContents = FileSystem::read(__DIR__ . '/../../templates/rector.php.dist');
 
-        $rectorPhpTemplateContents = $this->replacePhpLevelContents($rectorPhpTemplateContents);
-        $configContents = $this->replacePathsContents($rectorPhpTemplateContents, $projectDirectory);
+        $configContents = $this->replacePhpLevelContents($configContents);
+
+        $configContents = $this->replacePathsContents($configContents, $projectDirectory);
 
         FileSystem::write($commonRectorConfigPath, $configContents);
         $this->symfonyStyle->success('The config is added now. Re-run command to make Rector do the work!');

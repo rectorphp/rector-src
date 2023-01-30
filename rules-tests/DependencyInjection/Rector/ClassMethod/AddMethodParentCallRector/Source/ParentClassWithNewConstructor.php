@@ -9,9 +9,10 @@ class ParentClassWithNewConstructor
     /**
      * @var int
      */
-    private $defaultValue = 5;
+    private $defaultValue;
 
     public function __construct()
     {
+        $this->defaultValue = 5;
     }
 }
