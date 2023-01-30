@@ -13,7 +13,7 @@ use Rector\Core\Console\ExitCode;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\Reporting\MissingRectorRulesReporter;
+use Rector\Core\Configuration\ConfigInitializer;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
 use Rector\Core\Validation\EmptyConfigurableRectorChecker;
@@ -27,16 +27,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class ProcessCommand extends AbstractProcessCommand
 {
     public function __construct(
-        private readonly AdditionalAutoloader $additionalAutoloader,
-        private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly MissingRectorRulesReporter $missingRectorRulesReporter,
-        private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly ProcessResultFactory $processResultFactory,
-        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
+        private readonly AdditionalAutoloader           $additionalAutoloader,
+        private readonly ChangedFilesDetector           $changedFilesDetector,
+        private readonly ConfigInitializer              $missingRectorRulesReporter,
+        private readonly ApplicationFileProcessor       $applicationFileProcessor,
+        private readonly ProcessResultFactory           $processResultFactory,
+        private readonly DynamicSourceLocatorDecorator  $dynamicSourceLocatorDecorator,
         private readonly EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,
-        private readonly OutputFormatterCollector $outputFormatterCollector,
-        private readonly OutputStyleInterface $rectorOutputStyle,
-        private readonly MemoryLimiter $memoryLimiter,
+        private readonly OutputFormatterCollector       $outputFormatterCollector,
+        private readonly OutputStyleInterface           $rectorOutputStyle,
+        private readonly MemoryLimiter                  $memoryLimiter,
     ) {
         parent::__construct();
     }
@@ -51,7 +51,11 @@ final class ProcessCommand extends AbstractProcessCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $exitCode = $this->missingRectorRulesReporter->reportIfMissing();
+        // missing config? add it :)
+        dump(111);
+        die;
+
+        $exitCode = $this->missingRectorRulesReporter->createConfig();
         if ($exitCode !== null) {
             return $exitCode;
         }
