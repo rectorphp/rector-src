@@ -50,9 +50,6 @@ jobs:
 
             -   run: composer config minimum-stability dev
 
-            # tweak while wait for rector/phpstan-rules release
-            -   run: composer require --dev rector/phpstan-rules:dev-main --no-update
-
             # test with current commit in a pull-request
             -
                 run: composer require rector/rector-src dev-main#${{github.event.pull_request.head.sha}} --no-update
