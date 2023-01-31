@@ -97,7 +97,7 @@ CODE_SAMPLE
         }
 
         $parentClassMethodReturnType = $this->getReturnTypeRecursive($node);
-        if ($parentClassMethodReturnType === null) {
+        if (! $parentClassMethodReturnType instanceof Type) {
             return null;
         }
 
@@ -115,7 +115,10 @@ CODE_SAMPLE
             }
 
             $parentClassMethod = $this->astResolver->resolveClassMethodFromMethodReflection($parentMethodReflection);
-            if (! $parentClassMethod instanceof ClassMethod || $parentClassMethod->isPrivate()) {
+            if (! $parentClassMethod instanceof ClassMethod) {
+                return null;
+            }
+            if ($parentClassMethod->isPrivate()) {
                 return null;
             }
 
