@@ -49,7 +49,7 @@
         "phpstan/phpstan-strict-rules": "^1.4.4",
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
         "phpunit/phpunit": "^9.5.27",
-        "rector/phpstan-rules": "^0.6.3",
+        "rector/phpstan-rules": "dev-main",
         "rector/rector-debugging": "dev-main",
         "rector/rector-generator": "dev-main",
         "spatie/enum": "^3.13",
