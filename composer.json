@@ -164,7 +164,7 @@
         "composer-exit-on-patch-failure": true,
         "enable-patching": true,
         "branch-alias": {
-            "dev-main": "0.14-dev"
+            "dev-main": "0.15-dev"
         }
     },
     "config": {
