@@ -123,16 +123,12 @@
             "vendor/bin/ecs check --ansi",
             "vendor/bin/ecs check-markdown README.md --ansi"
         ],
-        "fix-cs": [
-            "vendor/bin/ecs check --fix --ansi",
-            "vendor/bin/ecs check-markdown README.md --fix --ansi"
-        ],
+        "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify",
         "phpstan-config": "vendor/bin/phpstan analyse config --ansi --error-format symplify",
         "docs": [
             "vendor/bin/rule-doc-generator generate packages rules --output-file build/rector_rules_overview.md --ansi --categorize",
-            "mv build/rector_rules_overview.md build/target-repository/docs/rector_rules_overview.md",
-            "vendor/bin/ecs check-markdown build/target-repository/docs/rector_rules_overview.md --ansi --fix"
+            "mv build/rector_rules_overview.md build/target-repository/docs/rector_rules_overview.md"
         ],
         "rector": "bin/rector process --ansi",
         "preload": "php build/build-preload.php .",
