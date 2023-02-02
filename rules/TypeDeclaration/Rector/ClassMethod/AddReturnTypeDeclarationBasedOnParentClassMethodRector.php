@@ -118,6 +118,7 @@ CODE_SAMPLE
             if (! $parentClassMethod instanceof ClassMethod) {
                 return null;
             }
+
             if ($parentClassMethod->isPrivate()) {
                 return null;
             }
