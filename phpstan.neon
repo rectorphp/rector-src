@@ -1,5 +1,6 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
+    - phpstan-baseline.neon
 
 parameters:
     reportUnmatchedIgnoredErrors: false

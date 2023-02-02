@@ -45,6 +45,7 @@
         "myclabs/php-enum": "^1.8.4",
         "nategood/httpful": "^0.3.2",
         "phpstan/extension-installer": "^1.2",
+        "phpstan/phpstan-deprecation-rules": "^1.1",
         "phpstan/phpstan-php-parser": "^1.1",
         "phpstan/phpstan-strict-rules": "^1.4.4",
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
