@@ -57,7 +57,6 @@
         "symfony/process": "^6.2",
         "symplify/easy-ci": "^11.1.18",
         "symplify/easy-coding-standard": "^11.1.18",
-        "symplify/monorepo-builder": "^11.1.18",
         "symplify/phpstan-extensions": "^11.1.18",
         "symplify/phpstan-rules": "^11.1.28",
         "symplify/rule-doc-generator": "^11.1.18",
