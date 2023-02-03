@@ -16,6 +16,7 @@ final class ConsoleDiffer
         private readonly ColorConsoleDiffFormatter $colorConsoleDiffFormatter
     ) {
         // @see https://github.com/sebastianbergmann/diff#strictunifieddiffoutputbuilder
+        // @see https://github.com/sebastianbergmann/diff/compare/4.0.4...5.0.0#diff-251edf56a6344c03fa264a4926b06c2cee43c25f66192d5f39ebee912b7442dc for upgrade
         $unifiedDiffOutputBuilder = new UnifiedDiffOutputBuilder();
         $this->differ = new Differ($unifiedDiffOutputBuilder);
     }
