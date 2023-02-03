@@ -17,7 +17,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\VariableTypeResolver\Sourc
  */
 final class VariableTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, TypeWithClassName $expectedTypeWithClassName): void
     {
         $variableNodes = $this->getNodesForFileOfType($file, Variable::class);

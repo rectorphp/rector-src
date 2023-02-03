@@ -26,15 +26,15 @@ final class ArrayTypeMapperTest extends AbstractTestCase
         $this->arrayTypeMapper = $this->getService(ArrayTypeMapper::class);
     }
 
-    #[DataProvider('provideDataWithoutKeys()')]
-    #[DataProvider('provideDataUnionedWithoutKeys()')]
+    #[DataProvider('provideDataWithoutKeys')]
+    #[DataProvider('provideDataUnionedWithoutKeys')]
     public function testWithoutKeys(ArrayType $arrayType, string $expectedResult): void
     {
         $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType, TypeKind::ANY);
         $this->assertSame($expectedResult, (string) $actualTypeNode);
     }
 
-    #[DataProvider('provideDataWithKeys()')]
+    #[DataProvider('provideDataWithKeys')]
     public function testWithKeys(ArrayType $arrayType, string $expectedResult): void
     {
         $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType, TypeKind::ANY);

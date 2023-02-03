@@ -29,7 +29,7 @@ final class TypeNormalizerTest extends AbstractTestCase
         unset($this->typeNormalizer);
     }
 
-    #[DataProvider('provideDataNormalizeArrayOfUnionToUnionArray()')]
+    #[DataProvider('provideDataNormalizeArrayOfUnionToUnionArray')]
     public function testNormalizeArrayOfUnionToUnionArray(ArrayType $arrayType, string $expectedDocString): void
     {
         $unionType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($arrayType);

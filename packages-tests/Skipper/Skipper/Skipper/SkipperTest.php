@@ -25,7 +25,7 @@ final class SkipperTest extends TestCase
         $this->skipper = $containerBuilder->get(Skipper::class);
     }
 
-    #[DataProvider('provideDataShouldSkipFileInfo()')]
+    #[DataProvider('provideDataShouldSkipFileInfo')]
     public function testSkipFileInfo(string $filePath, bool $expectedSkip): void
     {
         $filePathResultSkip = $this->skipper->shouldSkipFilePath($filePath);
@@ -46,7 +46,7 @@ final class SkipperTest extends TestCase
     /**
      * @param object|class-string $element
      */
-    #[DataProvider('provideDataShouldSkipElement()')]
+    #[DataProvider('provideDataShouldSkipElement')]
     public function testSkipElement(string|object $element, bool $expectedSkip): void
     {
         $resultSkip = $this->skipper->shouldSkipElement($element);

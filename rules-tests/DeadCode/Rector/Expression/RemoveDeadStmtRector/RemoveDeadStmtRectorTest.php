@@ -10,7 +10,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
@@ -24,7 +24,7 @@ final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
         return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
-    #[DataProvider('provideDataForTestKeepComments()')]
+    #[DataProvider('provideDataForTestKeepComments')]
     public function testKeepComments(string $filePath): void
     {
         $this->doTestFile($filePath);

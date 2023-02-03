@@ -19,7 +19,7 @@ final class ColorConsoleDiffFormatterTest extends TestCase
         $this->colorConsoleDiffFormatter = new ColorConsoleDiffFormatter();
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $content, string $expectedFormatedFileContent): void
     {
         $formattedContent = $this->colorConsoleDiffFormatter->format($content);

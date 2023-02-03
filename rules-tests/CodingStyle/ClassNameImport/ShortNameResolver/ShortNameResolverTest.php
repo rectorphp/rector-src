@@ -26,7 +26,7 @@ final class ShortNameResolverTest extends AbstractTestCase
     /**
      * @param array<string, class-string<SomeFile>|string> $expectedShortNames
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath, array $expectedShortNames): void
     {
         $file = $this->testingParser->parseFilePathToFile($filePath);

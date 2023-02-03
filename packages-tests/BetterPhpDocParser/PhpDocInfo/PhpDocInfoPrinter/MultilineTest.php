@@ -16,9 +16,9 @@ use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\TableCla
 
 final class MultilineTest extends AbstractPhpDocInfoPrinterTest
 {
-    #[DataProvider('provideData()')]
-    #[DataProvider('provideDataForProperty()')]
-    #[DataProvider('provideDataClass()')]
+    #[DataProvider('provideData')]
+    #[DataProvider('provideDataForProperty')]
+    #[DataProvider('provideDataClass')]
     public function test(string $docFilePath, Node $node): void
     {
         $docComment = FileSystem::read($docFilePath);

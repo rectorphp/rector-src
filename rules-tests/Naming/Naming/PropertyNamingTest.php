@@ -49,7 +49,7 @@ final class PropertyNamingTest extends AbstractTestCase
         yield ['resolveDependencies', null];
     }
 
-    #[DataProvider('provideDataPropertyName()')]
+    #[DataProvider('provideDataPropertyName')]
     public function testPropertyName(string $objectName, string $expectedVariableName): void
     {
         $variableName = $this->propertyNaming->fqnToVariableName(new ObjectType($objectName));

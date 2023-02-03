@@ -32,7 +32,7 @@ final class PhpDocTypeMapperTest extends AbstractTestCase
     /**
      * @param class-string $expectedPHPStanType
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(TypeNode $typeNode, string $expectedPHPStanType): void
     {
         $nop = new Nop();

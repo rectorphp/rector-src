@@ -38,7 +38,7 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePathWithProperty, string $expectedName, string $currentName): void
     {
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($filePathWithProperty);

@@ -16,7 +16,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTe
 
 final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);

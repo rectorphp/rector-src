@@ -11,7 +11,7 @@ use Rector\Testing\PHPUnit\AbstractTestCase;
 
 final class PhpVersionProviderTest extends AbstractTestCase
 {
-    #[DataProvider('provideValidConfigData()')]
+    #[DataProvider('provideValidConfigData')]
     public function testValidInput(string $invalidFilePath): void
     {
         $this->bootFromConfigFiles([$invalidFilePath]);

@@ -35,7 +35,7 @@ final class FilesFinderTest extends AbstractTestCase
         $this->assertCount(0, $foundFiles);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function testSingleSuffix(string $suffix, int $count, string $expectedFileName): void
     {
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], [$suffix]);

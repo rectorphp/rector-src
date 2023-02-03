@@ -49,8 +49,8 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
     }
 
-    #[DataProvider('provideData()')]
-    #[DataProvider('provideDataNested()')]
+    #[DataProvider('provideData')]
+    #[DataProvider('provideDataNested')]
     public function test(string $filePath): void
     {
         $fixtureFileContents = FileSystem::read($filePath);

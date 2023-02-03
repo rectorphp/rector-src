@@ -24,7 +24,7 @@ final class AnnotationExtractorTest extends TestCase
     /**
      * @param class-string<RectorInterface> $className
      */
-    #[DataProvider('extractAnnotationProvider()')]
+    #[DataProvider('extractAnnotationProvider')]
     public function testExtractAnnotationFromClass(string $className, string $annotation, ?string $expected): void
     {
         $value = $this->annotationExtractor->extractAnnotationFromClass($className, $annotation);

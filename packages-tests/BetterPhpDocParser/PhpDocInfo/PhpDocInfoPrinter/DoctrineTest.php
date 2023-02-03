@@ -15,7 +15,7 @@ use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine
 
 final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
 {
-    #[DataProvider('provideDataClass()')]
+    #[DataProvider('provideDataClass')]
     public function testClass(string $docFilePath, Node $node): void
     {
         $docComment = FileSystem::read($docFilePath);

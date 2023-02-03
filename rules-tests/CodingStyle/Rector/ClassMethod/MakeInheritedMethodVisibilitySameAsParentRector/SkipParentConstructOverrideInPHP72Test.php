@@ -13,7 +13,7 @@ final class SkipParentConstructOverrideInPHP72Test extends AbstractRectorTestCas
     /**
      * @see https://phpunit.readthedocs.io/en/8.3/incomplete-and-skipped-tests.html#incomplete-and-skipped-tests-requires-tables-api
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);

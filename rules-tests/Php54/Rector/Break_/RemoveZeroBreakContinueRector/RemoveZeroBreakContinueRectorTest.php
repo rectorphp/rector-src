@@ -10,7 +10,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class RemoveZeroBreakContinueRectorTest extends AbstractRectorTestCase
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         // to prevent loading PHP 5.4+ invalid code

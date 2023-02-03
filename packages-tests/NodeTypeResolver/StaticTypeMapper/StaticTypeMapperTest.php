@@ -32,7 +32,7 @@ final class StaticTypeMapperTest extends AbstractTestCase
         $this->staticTypeMapper = $this->getService(StaticTypeMapper::class);
     }
 
-    #[DataProvider('provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType()')]
+    #[DataProvider('provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType')]
     public function testMapPHPStanPhpDocTypeNodeToPHPStanType(TypeNode $typeNode, string $expectedType): void
     {
         $string = new String_('hey');
@@ -84,7 +84,7 @@ final class StaticTypeMapperTest extends AbstractTestCase
     /**
      * @param class-string $expectedType
      */
-    #[DataProvider('provideDataForMapPhpParserNodePHPStanType()')]
+    #[DataProvider('provideDataForMapPhpParserNodePHPStanType')]
     public function testMapPhpParserNodePHPStanType(Node $node, string $expectedType): void
     {
         $phpStanType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node);

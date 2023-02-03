@@ -44,7 +44,7 @@ final class WorkerCommandLineFactoryTest extends TestCase
     /**
      * @param array<string, mixed> $inputParameters
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(array $inputParameters, string $expectedCommand): void
     {
         $inputDefinition = $this->prepareProcessCommandDefinition();

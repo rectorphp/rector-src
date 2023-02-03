@@ -29,7 +29,7 @@ final class NodeFactoryTest extends AbstractTestCase
     /**
      * @param int[]|array<string, int> $inputArray
      */
-    #[DataProvider('provideDataForArray()')]
+    #[DataProvider('provideDataForArray')]
     public function testCreateArray(array $inputArray, Array_ $expectedArrayNode): void
     {
         $arrayNode = $this->nodeFactory->createArray($inputArray);

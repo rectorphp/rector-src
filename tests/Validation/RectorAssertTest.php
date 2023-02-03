@@ -13,14 +13,14 @@ use Webmozart\Assert\InvalidArgumentException;
 
 final class RectorAssertTest extends TestCase
 {
-    #[DataProvider('provideDataValidClassNames()')]
+    #[DataProvider('provideDataValidClassNames')]
     #[DoesNotPerformAssertions]
     public function testValidClasNames(string $className): void
     {
         RectorAssert::className($className);
     }
 
-    #[DataProvider('provideDataInvalidClassNames()')]
+    #[DataProvider('provideDataInvalidClassNames')]
     public function testInvalidClasNames(string $className): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -48,7 +48,7 @@ final class RectorAssertTest extends TestCase
         yield ['3AppSome'];
     }
 
-    #[DataProvider('provideDataValidFunctionNames()')]
+    #[DataProvider('provideDataValidFunctionNames')]
     #[DoesNotPerformAssertions]
     public function testValidFunctionName(string $functionName): void
     {
@@ -65,7 +65,7 @@ final class RectorAssertTest extends TestCase
         yield ['Namespace\\so3me_f6n'];
     }
 
-    #[DataProvider('provideDataValidMehtodNames()')]
+    #[DataProvider('provideDataValidMehtodNames')]
     #[DoesNotPerformAssertions]
     public function testValidMethodName(string $methodName): void
     {
@@ -82,7 +82,7 @@ final class RectorAssertTest extends TestCase
         yield ['__M3th0d'];
     }
 
-    #[DataProvider('provideDataInvalidFunctionNames()')]
+    #[DataProvider('provideDataInvalidFunctionNames')]
     public function testInvalidFunctionName(string $functionName): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -97,7 +97,7 @@ final class RectorAssertTest extends TestCase
         yield ['-key_name'];
     }
 
-    #[DataProvider('provideDataInvalidNamespaceNames()')]
+    #[DataProvider('provideDataInvalidNamespaceNames')]
     public function testNamespaceName(string $namespaceName): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -40,7 +40,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
         $this->nodeNameResolver = $this->getService(NodeNameResolver::class);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function testResolvesClass(string $filePath): void
     {
         $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);

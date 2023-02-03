@@ -10,7 +10,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class NewlineBeforeNewAssignSetRectorTest extends AbstractRectorTestCase
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         if ($this->isWindows()) {

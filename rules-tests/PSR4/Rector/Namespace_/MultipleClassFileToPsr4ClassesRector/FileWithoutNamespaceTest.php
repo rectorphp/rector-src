@@ -16,7 +16,7 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
     /**
      * @param AddedFileWithContent[] $expectedFilePathsWithContents
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(
         string $originalFilePath,
         array $expectedFilePathsWithContents,

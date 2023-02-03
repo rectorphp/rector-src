@@ -32,7 +32,7 @@ final class UseImportsResolverTest extends AbstractTestCase
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function testUsesFromProperty(string $filePath): void
     {
         $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);

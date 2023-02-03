@@ -19,7 +19,7 @@ final class FilePathHelperTest extends TestCase
         $this->filePathHelper = new FilePathHelper(new Filesystem());
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $inputPath, string $expectedNormalizedPath): void
     {
         $normalizedPath = $this->filePathHelper->normalizePathAndSchema($inputPath);

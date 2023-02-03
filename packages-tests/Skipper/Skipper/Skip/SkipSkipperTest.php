@@ -25,8 +25,8 @@ final class SkipSkipperTest extends TestCase
         $this->skipper = $containerBuilder->get(Skipper::class);
     }
 
-    #[DataProvider('provideCheckerAndFile()')]
-    #[DataProvider('provideAnythingAndFilePath()')]
+    #[DataProvider('provideCheckerAndFile')]
+    #[DataProvider('provideAnythingAndFilePath')]
     public function test(string $element, string $filePath, bool $expectedSkip): void
     {
         $resolvedSkip = $this->skipper->shouldSkipElementAndFilePath($element, $filePath);

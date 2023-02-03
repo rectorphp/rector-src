@@ -12,8 +12,8 @@ use Rector\Core\FileSystem\FilePathHelper;
 
 final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
 {
-    #[DataProvider('provideData()')]
-    #[DataProvider('provideDataCallable()')]
+    #[DataProvider('provideData')]
+    #[DataProvider('provideDataCallable')]
     public function test(string $docFilePath): void
     {
         $this->doComparePrintedFileEquals($docFilePath, $docFilePath);
@@ -37,7 +37,7 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureCallable', '*.txt');
     }
 
-    #[DataProvider('provideDataEmpty()')]
+    #[DataProvider('provideDataEmpty')]
     public function testEmpty(string $filePath): void
     {
         $fileContents = FileSystem::read($filePath);

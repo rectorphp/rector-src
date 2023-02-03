@@ -18,7 +18,7 @@ use Rector\Tests\NodeTypeResolver\Source\AnotherClass;
  */
 final class NameTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, Type $expectedType): void
     {
         $nameNodes = $this->getNodesForFileOfType($file, Name::class);

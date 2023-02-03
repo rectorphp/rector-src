@@ -29,7 +29,7 @@ final class ArrayParserTest extends AbstractTestCase
     /**
      * @param ArrayItemNode[] $expectedArrayItemNodes
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $docContent, array $expectedArrayItemNodes): void
     {
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);

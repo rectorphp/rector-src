@@ -11,7 +11,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class NonPhpTest extends AbstractRectorTestCase
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);

@@ -11,7 +11,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class ReturnEmptyNodesTest extends AbstractRectorTestCase
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->expectExceptionMessage('Array of nodes cannot be empty');

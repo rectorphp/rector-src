@@ -29,7 +29,7 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
         $this->useAliasNameMatcher = $this->getService(UseAliasNameMatcher::class);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(
         AnnotationToAttribute $annotationToAttribute,
         string $useImportName,

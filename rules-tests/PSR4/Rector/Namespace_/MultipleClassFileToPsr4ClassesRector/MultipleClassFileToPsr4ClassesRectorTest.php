@@ -15,7 +15,7 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
     /**
      * @param AddedFileWithContent[] $expectedFilePathsWithContents
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(
         string $originalFilePath,
         array $expectedFilePathsWithContents,

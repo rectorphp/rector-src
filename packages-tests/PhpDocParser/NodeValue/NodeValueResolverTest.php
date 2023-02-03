@@ -34,7 +34,7 @@ final class NodeValueResolverTest extends AbstractTestCase
     /**
      * @param string|class-string<\Rector\Tests\PhpDocParser\NodeValue\NodeValueResolverTest>|bool $expectedValue
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(Expr $expr, string|bool $expectedValue): void
     {
         $resolvedValue = $this->nodeValueResolver->resolve($expr, __FILE__);

@@ -24,7 +24,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Sourc
  */
 final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, Type $expectedType): void
     {
         $propertyNodes = $this->getNodesForFileOfType($file, Property::class);

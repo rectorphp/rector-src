@@ -19,7 +19,7 @@ final class ProjectComposerJsonPhpVersionResolverTest extends AbstractTestCase
         $this->projectComposerJsonPhpVersionResolver = $this->getService(ProjectComposerJsonPhpVersionResolver::class);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $composerJsonFilePath, int $expectedPhpVersion): void
     {
         $resolvePhpVersion = $this->projectComposerJsonPhpVersionResolver->resolve($composerJsonFilePath);

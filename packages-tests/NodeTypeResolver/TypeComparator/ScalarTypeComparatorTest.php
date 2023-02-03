@@ -23,7 +23,7 @@ final class ScalarTypeComparatorTest extends AbstractTestCase
         $this->scalarTypeComparator = $this->getService(ScalarTypeComparator::class);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(Type $firstType, Type $secondType, bool $areExpectedEqual): void
     {
         $areEqual = $this->scalarTypeComparator->areEqualScalar($firstType, $secondType);

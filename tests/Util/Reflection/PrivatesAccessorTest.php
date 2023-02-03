@@ -25,7 +25,7 @@ final class PrivatesAccessorTest extends TestCase
      * @param class-string<SomeClassWithPrivateMethods>|SomeClassWithPrivateMethods $object
      * @param mixed[]|int[] $arguments
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(
         string | SomeClassWithPrivateMethods $object,
         string $methodName,

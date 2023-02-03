@@ -15,7 +15,7 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
     /**
      * @param array<string, string> $expectedConfiguration
      */
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function testMainConfigValues(string $configFile, array $expectedConfiguration): void
     {
         $this->bootFromConfigFiles([$configFile]);

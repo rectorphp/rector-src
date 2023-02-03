@@ -17,7 +17,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResol
  */
 final class InterfaceTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    #[DataProvider('dataProvider()')]
+    #[DataProvider('dataProvider')]
     public function test(string $file, int $nodePosition, TypeWithClassName $expectedTypeWithClassName): void
     {
         $variableNodes = $this->getNodesForFileOfType($file, Interface_::class);

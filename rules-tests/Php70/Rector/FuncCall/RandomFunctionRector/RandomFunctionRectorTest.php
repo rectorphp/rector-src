@@ -13,7 +13,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
  */
 final class RandomFunctionRectorTest extends AbstractRectorTestCase
 {
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);

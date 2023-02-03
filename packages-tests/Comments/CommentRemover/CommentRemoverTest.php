@@ -32,7 +32,7 @@ final class CommentRemoverTest extends AbstractTestCase
         $this->nodePrinter = $this->getService(BetterStandardPrinter::class);
     }
 
-    #[DataProvider('provideData()')]
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         [$inputContents, $expectedOutputContents] = FixtureSplitter::loadFileAndSplitInputAndExpected($filePath);

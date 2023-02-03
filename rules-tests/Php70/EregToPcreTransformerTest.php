@@ -18,8 +18,8 @@ final class EregToPcreTransformerTest extends TestCase
         $this->eregToPcreTransformer = new EregToPcreTransformer();
     }
 
-    #[DataProvider('provideDataDropping()')]
-    #[DataProvider('provideDataCaseSensitive()')]
+    #[DataProvider('provideDataDropping')]
+    #[DataProvider('provideDataCaseSensitive')]
     public function testCaseSensitive(string $ereg, string $expectedPcre): void
     {
         $pcre = $this->eregToPcreTransformer->transform($ereg, false);
@@ -34,7 +34,7 @@ final class EregToPcreTransformerTest extends TestCase
         yield ['hi', '#hi#m'];
     }
 
-    #[DataProvider('provideDataCaseInsensitive()')]
+    #[DataProvider('provideDataCaseInsensitive')]
     public function testCaseInsensitive(string $ereg, string $expectedPcre): void
     {
         $pcre = $this->eregToPcreTransformer->transform($ereg, true);

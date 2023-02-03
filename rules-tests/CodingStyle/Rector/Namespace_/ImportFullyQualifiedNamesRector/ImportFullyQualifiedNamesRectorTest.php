@@ -13,9 +13,9 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
  */
 final class ImportFullyQualifiedNamesRectorTest extends AbstractRectorTestCase
 {
-    #[DataProvider('provideData()')]
-    #[DataProvider('provideDataFunction()')]
-    #[DataProvider('provideDataGeneric()')]
+    #[DataProvider('provideData')]
+    #[DataProvider('provideDataFunction')]
+    #[DataProvider('provideDataGeneric')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
