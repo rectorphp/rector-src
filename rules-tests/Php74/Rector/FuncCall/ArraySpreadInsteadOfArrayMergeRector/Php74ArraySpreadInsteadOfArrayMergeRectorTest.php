@@ -18,7 +18,7 @@ final class Php74ArraySpreadInsteadOfArrayMergeRectorTest extends AbstractRector
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp74');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePhp74');
     }
 
     public function provideConfigFilePath(): string

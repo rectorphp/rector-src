@@ -18,7 +18,7 @@ final class TreatAsNonEmptyRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureTreatAsNonEmpty');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureTreatAsNonEmpty');
     }
 
     public function provideConfigFilePath(): string

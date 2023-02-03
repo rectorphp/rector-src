@@ -24,7 +24,7 @@ final class ImportRootNamespaceClassesDisabledTest extends AbstractRectorTestCas
      */
     public static function provideData(): iterable
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureRoot');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureRoot');
     }
 
     public function provideConfigFilePath(): string

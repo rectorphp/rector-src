@@ -21,7 +21,7 @@ final class DisableShortClassNameAutoImportTest extends AbstractRectorTestCase
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureDisableShortClassNameAutoImport');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureDisableShortClassNameAutoImport');
     }
 
     public function provideConfigFilePath(): string

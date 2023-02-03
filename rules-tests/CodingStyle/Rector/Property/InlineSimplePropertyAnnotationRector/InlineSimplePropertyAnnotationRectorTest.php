@@ -18,7 +18,7 @@ final class InlineSimplePropertyAnnotationRectorTest extends AbstractRectorTestC
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/EmptyConfig');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture/EmptyConfig');
     }
 
     public function provideConfigFilePath(): string

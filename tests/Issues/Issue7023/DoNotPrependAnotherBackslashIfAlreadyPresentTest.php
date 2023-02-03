@@ -21,7 +21,7 @@ final class DoNotPrependAnotherBackslashIfAlreadyPresentTest extends AbstractRec
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/Php74');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture/Php74');
     }
 
     public function provideConfigFilePath(): string

@@ -21,7 +21,7 @@ final class DoNotPrependAnotherBackslashIfAlreadyPresent73Test extends AbstractR
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/Php73');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture/Php73');
     }
 
     public function provideConfigFilePath(): string

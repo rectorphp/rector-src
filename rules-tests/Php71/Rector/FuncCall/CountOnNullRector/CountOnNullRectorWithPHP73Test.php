@@ -18,7 +18,7 @@ final class CountOnNullRectorWithPHP73Test extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureForPhp73');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureForPhp73');
     }
 
     public function provideConfigFilePath(): string

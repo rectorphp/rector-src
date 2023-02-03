@@ -85,7 +85,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     /**
      * @return Iterator<<string>>
      */
-    protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
+    protected static function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
         return FixtureFileFinder::yieldDirectory($directory, $suffix);
     }

@@ -18,7 +18,7 @@ final class InlineSimplePropertyAnnotationWithCustomConfigRectorTest extends Abs
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture/CustomConfig');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture/CustomConfig');
     }
 
     public function provideConfigFilePath(): string

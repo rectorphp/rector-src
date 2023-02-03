@@ -18,7 +18,7 @@ final class TypedPropertyFromStrictGetterMethodReturnTypePhp80RectorTest extends
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp80');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePhp80');
     }
 
     public function provideConfigFilePath(): string

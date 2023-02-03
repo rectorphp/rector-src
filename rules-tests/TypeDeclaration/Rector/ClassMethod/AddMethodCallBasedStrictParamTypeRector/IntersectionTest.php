@@ -18,7 +18,7 @@ final class IntersectionTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureIntersection');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureIntersection');
     }
 
     public function provideConfigFilePath(): string

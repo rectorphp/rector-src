@@ -21,7 +21,7 @@ final class ChangeSwitchToMatchMagicGetSetTest extends AbstractRectorTestCase
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureChangeSwitchToMatchMagicGetSet');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureChangeSwitchToMatchMagicGetSet');
     }
 
     public function provideConfigFilePath(): string

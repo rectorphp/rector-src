@@ -18,7 +18,7 @@ final class TypedPropertyFromAssignsComplexTypesRectorTest extends AbstractRecto
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureComplexTypes');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureComplexTypes');
     }
 
     public function provideConfigFilePath(): string

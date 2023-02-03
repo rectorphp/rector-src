@@ -18,7 +18,7 @@ final class IssueReturnBeforeElseIfAndTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureAnd');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureAnd');
     }
 
     public function provideConfigFilePath(): string

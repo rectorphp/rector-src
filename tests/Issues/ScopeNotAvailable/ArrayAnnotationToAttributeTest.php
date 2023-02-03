@@ -18,7 +18,7 @@ final class ArrayAnnotationToAttributeTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureArrayAnnotationToAttribute');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureArrayAnnotationToAttribute');
     }
 
     public function provideConfigFilePath(): string

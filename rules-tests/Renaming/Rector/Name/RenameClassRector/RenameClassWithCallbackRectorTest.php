@@ -21,7 +21,7 @@ final class RenameClassWithCallbackRectorTest extends AbstractRectorTestCase
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureWithCallback');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureWithCallback');
     }
 
     public function provideConfigFilePath(): string

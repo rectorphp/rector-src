@@ -18,7 +18,7 @@ final class SymplifyForeachToArrayFilterRectorPhp73Test extends AbstractRectorTe
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp73');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePhp73');
     }
 
     public function provideConfigFilePath(): string

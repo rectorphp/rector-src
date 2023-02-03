@@ -18,7 +18,7 @@ final class SkipRemoveWithAssignSideEffectTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureSkipSideEffect');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureSkipSideEffect');
     }
 
     public function provideConfigFilePath(): string

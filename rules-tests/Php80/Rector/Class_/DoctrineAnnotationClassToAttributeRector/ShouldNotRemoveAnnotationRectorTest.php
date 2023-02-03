@@ -18,7 +18,7 @@ final class ShouldNotRemoveAnnotationRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureShouldNotRemoveAnnotation');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureShouldNotRemoveAnnotation');
     }
 
     public function provideConfigFilePath(): string

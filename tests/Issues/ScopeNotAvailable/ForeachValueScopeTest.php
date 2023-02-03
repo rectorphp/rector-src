@@ -18,7 +18,7 @@ final class ForeachValueScopeTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureForeachValue');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureForeachValue');
     }
 
     public function provideConfigFilePath(): string

@@ -22,7 +22,7 @@ final class SkipAfterDefinedTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureSkipAfterDefined');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureSkipAfterDefined');
     }
 
     public function provideConfigFilePath(): string

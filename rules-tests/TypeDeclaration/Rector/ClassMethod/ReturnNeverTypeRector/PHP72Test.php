@@ -18,7 +18,7 @@ final class PHP72Test extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePHP72');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePHP72');
     }
 
     public function provideConfigFilePath(): string

@@ -18,7 +18,7 @@ final class InlinePublicTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureInlinePublic');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureInlinePublic');
     }
 
     public function provideConfigFilePath(): string

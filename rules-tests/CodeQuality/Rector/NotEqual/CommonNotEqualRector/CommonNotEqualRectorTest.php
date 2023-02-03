@@ -21,7 +21,7 @@ final class CommonNotEqualRectorTest extends AbstractRectorTestCase
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string

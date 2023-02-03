@@ -18,7 +18,7 @@ final class PregUnmatchedTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureDowngradePregUnmatched');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureDowngradePregUnmatched');
     }
 
     public function provideConfigFilePath(): string

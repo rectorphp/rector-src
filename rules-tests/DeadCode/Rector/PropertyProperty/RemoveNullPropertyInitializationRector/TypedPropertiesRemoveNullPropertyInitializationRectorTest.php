@@ -18,7 +18,7 @@ final class TypedPropertiesRemoveNullPropertyInitializationRectorTest extends Ab
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureTypedProperties');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureTypedProperties');
     }
 
     public function provideConfigFilePath(): string

@@ -18,7 +18,7 @@ final class PostImportTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePostImport');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePostImport');
     }
 
     public function provideConfigFilePath(): string

@@ -21,7 +21,7 @@ final class AddNodeAfterNopRectorTest extends AbstractRectorTestCase
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureNextNop');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureNextNop');
     }
 
     public function provideConfigFilePath(): string

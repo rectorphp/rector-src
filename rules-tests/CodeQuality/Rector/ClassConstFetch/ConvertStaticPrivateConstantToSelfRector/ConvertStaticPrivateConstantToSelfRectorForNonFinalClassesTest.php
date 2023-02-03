@@ -21,7 +21,7 @@ final class ConvertStaticPrivateConstantToSelfRectorForNonFinalClassesTest exten
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureEnableForNonFinalClasses');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureEnableForNonFinalClasses');
     }
 
     public function provideConfigFilePath(): string

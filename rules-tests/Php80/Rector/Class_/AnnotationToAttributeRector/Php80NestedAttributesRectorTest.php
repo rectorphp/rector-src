@@ -18,7 +18,7 @@ final class Php80NestedAttributesRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp80Nested');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePhp80Nested');
     }
 
     public function provideConfigFilePath(): string

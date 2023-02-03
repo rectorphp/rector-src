@@ -21,7 +21,7 @@ final class CodeQualityCodingStyleIndentationCrashTest extends AbstractRectorTes
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureCodeQualityCodingStyle');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureCodeQualityCodingStyle');
     }
 
     public function provideConfigFilePath(): string

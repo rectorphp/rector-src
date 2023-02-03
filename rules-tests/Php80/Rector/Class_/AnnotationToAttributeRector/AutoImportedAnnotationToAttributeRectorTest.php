@@ -18,7 +18,7 @@ final class AutoImportedAnnotationToAttributeRectorTest extends AbstractRectorTe
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureAutoImported');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureAutoImported');
     }
 
     public function provideConfigFilePath(): string

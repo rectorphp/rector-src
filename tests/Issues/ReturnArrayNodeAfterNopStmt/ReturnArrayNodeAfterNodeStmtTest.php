@@ -21,7 +21,7 @@ final class ReturnArrayNodeAfterNodeStmtTest extends AbstractRectorTestCase
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureArrayNextNop');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureArrayNextNop');
     }
 
     public function provideConfigFilePath(): string

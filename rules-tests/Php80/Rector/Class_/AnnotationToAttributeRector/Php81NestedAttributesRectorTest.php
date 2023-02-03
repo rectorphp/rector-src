@@ -21,7 +21,7 @@ final class Php81NestedAttributesRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixturePhp81');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePhp81');
     }
 
     public function provideConfigFilePath(): string

@@ -18,7 +18,7 @@ final class UnionTypeCompleteDynamicPropertiesRectorTest extends AbstractRectorT
 
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureUnionTypes');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureUnionTypes');
     }
 
     public function provideConfigFilePath(): string

@@ -21,7 +21,7 @@ final class ReturnArrayNodeAfterInlineHTMLStmtTest extends AbstractRectorTestCas
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureArrayAfterInlineHTML');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureArrayAfterInlineHTML');
     }
 
     public function provideConfigFilePath(): string

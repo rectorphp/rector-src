@@ -21,7 +21,7 @@ final class TabIndentationCrashTest extends AbstractRectorTestCase
      */
     public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureTab');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureTab');
     }
 
     public function provideConfigFilePath(): string
