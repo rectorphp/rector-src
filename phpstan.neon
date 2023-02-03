@@ -893,3 +893,8 @@ parameters:
                 - rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
                 - src/Console/Command/AbstractProcessCommand.php
                 - src/Rector/AbstractRector.php
+
+        # allow PHPUnit 10 attributes without keys
+        -
+            message: '#Attribute must have all names explicitly defined#'
+            path: '*Test.php'
