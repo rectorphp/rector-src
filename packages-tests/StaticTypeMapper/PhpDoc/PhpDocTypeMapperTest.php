@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ArrayType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -30,8 +31,8 @@ final class PhpDocTypeMapperTest extends AbstractTestCase
 
     /**
      * @param class-string $expectedPHPStanType
-     * @dataProvider provideData()
      */
+    #[DataProvider('provideData')]
     public function test(TypeNode $typeNode, string $expectedPHPStanType): void
     {
         $nop = new Nop();
@@ -44,7 +45,7 @@ final class PhpDocTypeMapperTest extends AbstractTestCase
     /**
      * @return Iterator<class-string<ArrayType>[]|ArrayShapeNode[]>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         $arrayShapeNode = new ArrayShapeNode([new ArrayShapeItemNode(null, true, new IdentifierTypeNode('string'))]);
 

@@ -66,7 +66,7 @@ final class SomeTest extends TestCase
     {
     }
 
-    public function provideData()
+    public static function provideData()
     {
         yield ['name'];
     }
@@ -85,7 +85,7 @@ final class SomeTest extends TestCase
     {
     }
 
-    public function provideData()
+    public static function provideData()
     {
         yield ['name'];
     }

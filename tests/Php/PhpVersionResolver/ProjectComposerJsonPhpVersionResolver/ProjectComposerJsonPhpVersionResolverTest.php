@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -18,9 +19,7 @@ final class ProjectComposerJsonPhpVersionResolverTest extends AbstractTestCase
         $this->projectComposerJsonPhpVersionResolver = $this->getService(ProjectComposerJsonPhpVersionResolver::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $composerJsonFilePath, int $expectedPhpVersion): void
     {
         $resolvePhpVersion = $this->projectComposerJsonPhpVersionResolver->resolve($composerJsonFilePath);
@@ -30,7 +29,7 @@ final class ProjectComposerJsonPhpVersionResolverTest extends AbstractTestCase
     /**
      * @return Iterator<array<string|int>>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/some_composer.json', 70300];
         yield [__DIR__ . '/Fixture/some_composer_with_platform.json', 70400];

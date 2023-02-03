@@ -85,7 +85,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     /**
      * @return Iterator<<string>>
      */
-    protected function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
+    protected static function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
         return FixtureFileFinder::yieldDirectory($directory, $suffix);
     }
@@ -119,7 +119,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFilePath, $fixtureFilePath);
     }
 
-    protected function getFixtureTempDirectory(): string
+    protected static function getFixtureTempDirectory(): string
     {
         return FixtureTempFileDumper::getTempDirectory();
     }

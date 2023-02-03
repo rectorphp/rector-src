@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Parallel\Command;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\Option;
@@ -41,9 +42,9 @@ final class WorkerCommandLineFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideData()
      * @param array<string, mixed> $inputParameters
      */
+    #[DataProvider('provideData')]
     public function test(array $inputParameters, string $expectedCommand): void
     {
         $inputDefinition = $this->prepareProcessCommandDefinition();
@@ -64,7 +65,7 @@ final class WorkerCommandLineFactoryTest extends TestCase
     /**
      * @return Iterator<array<int, array<string, string|string[]|bool>>|string[]>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         $cliInputOptions = array_slice($_SERVER['argv'], 1);
         $cliInputOptionsAsString = implode("' '", $cliInputOptions);

@@ -112,9 +112,6 @@ parameters:
             message: '#Use explicit return value over magic &reference#'
             path: rules/Php70/EregToPcreTransformer.php
 
-        # symplify 9
-        - '#Use another value object over array with string\-keys and objects, array<string, ValueObject\>#'
-
         # false positives checked in another method
         -
             message: '#If condition is always false#'
@@ -179,10 +176,6 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\NodeTypeResolver\\NodeTypeResolver\:\:getType\(\)" is \d+, keep it under 10#'
 
-        -
-            message: '#Property with protected modifier is not allowed\. Use interface contract method instead#'
-            path: 'packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php'
-
         # known types
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
 
@@ -190,11 +183,6 @@ parameters:
             message: '#Class cognitive complexity is \d+, keep it under \d+#'
             paths:
                 - packages/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
-
-        -
-            message: '#Property with protected modifier is not allowed\. Use interface contract method instead#'
-            paths:
-                - src/Rector/AbstractRector.php
 
         - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
 
@@ -236,13 +224,6 @@ parameters:
                 - src/Rector/AbstractRector.php
                 - src/Rector/AbstractScopeAwareRector.php
 
-        -
-            message: '#foreach\(\), while\(\), for\(\) or if\(\) cannot contain a complex expression\. Extract it to a new variable on a line before#'
-            paths:
-                - rules/Php70/Rector/FuncCall/MultiDirnameRector.php
-                - src/Application/FileProcessor.php
-                - src/PhpParser/Node/BetterNodeFinder.php
-
         # find everything class, better then 10 different finders
         -
             message: '#Class cognitive complexity is \d+, keep it under 50#'
@@ -254,12 +235,6 @@ parameters:
             paths:
                 - rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php
 
-        -
-            message: '#Class has a static method must so must contains "Static" in its name#'
-            paths:
-                - src/Application/VersionResolver.php #16
-                - src/Configuration/ValueObjectInliner.php
-
         # waits for phpstan upgrade to php-parser 4.13
         - '#Access to an undefined property PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
         - '#(.*?), array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
@@ -267,11 +242,6 @@ parameters:
         # share configuration to avoid duplication in 5 rules
         -
             message: '#Instead of abstract class, use specific service with composition#'
-            path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
-
-        # false positive - configured parmaeter
-        -
-            message: '#Property with protected modifier is not allowed\. Use interface contract method instead#'
             path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
 
         # internal tag
@@ -304,10 +274,6 @@ parameters:
         # only for empty ctor
         - '#Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
 
-        -
-            message: '#Class has a static method must so must contains "Static" in its name#'
-            path: src/Util/StringUtils.php
-
         # generics
         - '#Method Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:traverse\(\) should return array<TNode of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
         - '#Parameter \#1 \$stmts of class Rector\\Core\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
@@ -332,22 +298,6 @@ parameters:
 
         # confused generics
         - '#Return type \(array<class\-string<PhpParser\\Node\>\>\) of method Rector\\NodeTypeResolver\\NodeTypeResolver\\(.*?)TypeResolver\:\:getNodeClasses\(\) should be covariant with return type \(array<class\-string<PhpParser\\Node\\(.*?)\>\>\) of method Rector\\NodeTypeResolver\\Contract\\NodeTypeResolverInterface<PhpParser\\Node\\(.*?)\>\:\:getNodeClasses\(\)#'
-
-        -
-            message: '#Class has a static method must so must contains "Static" in its name#'
-            path: src/Validation/RectorAssert.php
-
-        # parallel
-        -
-            message: '#Instead of array shape, use value object with specific types in constructor and getters#'
-            paths:
-                - src/ValueObjectFactory/ProcessResultFactory.php
-                - src/*/*Processor.php
-                - src/Contract/Processor/FileProcessorInterface.php
-                - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
-                # reported only in non-CI, for some reason; keep it there even if it's reported as fixed error
-                - packages/Parallel/Application/ParallelFileProcessor.php
-                - packages/Parallel/WorkerRunner.php
 
         # skipped on purpose, as ctor overrie
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'
@@ -412,21 +362,6 @@ parameters:
             message: '#Make callable type explicit#'
             path: src/NodeManipulator/BinaryOpManipulator.php
 
-        # 3rd party code without types
-        - '#Add explicit array type to assigned "(.*?)(args|params|items|parts|stmts)" expression#'
-        # false positive on string type
-        - '#Add explicit array type to assigned "\$unusedParameters" expression#'
-
-        - '#Add explicit array type to assigned "\$innerPattern" expression#'
-        # known doc
-        - '#Add explicit array type to assigned "\$spreadParams" expression#'
-
-        - '#Add explicit array type to assigned "\$chunks" expression#'
-
-        - '#Add explicit array type to assigned "\$resolvedValue" expression#'
-
-        - '#foreach\(\), while\(\), for\(\) or if\(\) cannot contain a complex expression\. Extract it to a new variable on a line before#'
-
         # double protection on purpose to ensure the type
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
@@ -434,9 +369,6 @@ parameters:
 
         - '#Method "processStmt\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorReturnAndAssign\(\)" returns bool type, so the name should start with is/has/was#'
-
-        # move later in BC break release
-        - '#Class "(Rector\\DeadCode\\Rector\\(.*?)\\(RemoveUnreachableStatementRector|RemoveDoubleAssignRector))" has invalid namespace category "(.*?)"\. Pick one of\: "(.*?)"#'
 
         # stmts refactoring
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactor\(\)" is \d+, keep it under 10#'
@@ -451,10 +383,6 @@ parameters:
 
         # cleanup after merge of assing remover refactoring
         - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removePropertyAndUsages\(\)" is \d+, keep it under 10#'
-
-        # avoid moving rule around, while re-targeting to stmt
-        - '#Class "Rector\\(.*?)\\Rector\\(.*?) has invalid namespace category "(.*?)"\. Pick one of\: "(Expression|Class_|NodeTypeGroup)"#'
-        - '#Class "Rector\\DeadCode\\Rector\\ConstFetch\\RemovePhpVersionIdCheckRector" has invalid namespace category "ConstFetch"\. Pick one of\: "If_"#'
 
         -
             message: '#Cognitive complexity for "Rector\\(.*?)Rector\:\:refactor\(\)" is \d+, keep it under 10#'
@@ -484,10 +412,6 @@ parameters:
             message: '#Access to an undefined property PhpParser\\Node\:\:\$expr#'
             paths:
                 - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
-
-        - '#Class "Rector\\(.*?)" has invalid namespace category "(.*?)"\. Pick one of\: "StmtsAwareInterface"#'
-
-        - '#Class "Rector\\CodeQuality\\Rector\\FunctionLike\\RemoveAlwaysTrueConditionSetInConstructorRector" has invalid namespace category "FunctionLike"\. Pick one of\: "If_"#'
 
         # doc arrays cannot be trusted
         -
@@ -536,11 +460,6 @@ parameters:
                 # regex
                 - rules/Php70/EregToPcreTransformer.php
 
-        # Symfony Finder filter
-        -
-            message: '#Instead of "Symfony\\Component\\Finder\\SplFileInfo" class/interface use "Symplify\\SmartFileSystem\\SmartFileInfo"#'
-            path: src/FileSystem/FilesFinder.php #113
-
         -
             message: '#Instead of "DateTime" class/interface use "Nette\\Utils\\DateTime"#'
             path: src/Application/VersionResolver.php
@@ -554,11 +473,6 @@ parameters:
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
             path: packages/Config/RectorConfig.php
-
-        # BC layer
-        -
-            message: '#Class has a static method must so must contains "Static" in its name#'
-            path: rules/CodingStyle/Enum/PreferenceSelfThis.php
 
         # optional rule for PHP 8.1
         - '#Register "Rector\\Php81\\Rector\\Class_\\ConstantListClassToEnumRector" service to "php81\.php" config set#'
@@ -608,8 +522,6 @@ parameters:
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
 
-        - '#Class has a static method must so must contains "Static" in its name#'
-
         # regex re-validation
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
@@ -643,11 +555,6 @@ parameters:
             message: '#Method call return value that should be used, but is not#'
             path: src/PhpParser/Node/NodeFactory.php
             count: 1
-
-        # false positives
-        -
-            message: '#This call has duplicate argument#'
-            path: rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
 
         # false postive, on trait use in multiple classes
         -
@@ -755,9 +662,6 @@ parameters:
 
         # required for reflection
         -
-            message: '#Use explicit return value over magic &reference#'
-            path: src/Util/Reflection/PrivatesAccessor.php
-        -
             message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
             path: src/Util/Reflection/PrivatesAccessor.php
 
@@ -782,9 +686,6 @@ parameters:
             message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
             path: src/Util/ArrayParametersMerger.php
 
-        # not relevant anymore
-        - '#Instead of "Symfony\\Component\\Finder\\SplFileInfo" class/interface use "Symplify\\SmartFileSystem\\SmartFileInfo"#'
-
         # fixture class
         - '#Class "Rector\\Core\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
 
@@ -800,7 +701,6 @@ parameters:
 
         # on purpose, as rule it about to be removed
         - '#Register "Rector\\Php74\\Rector\\Property\\TypedPropertyRector" service to "php74\.php" config set#'
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorRector\:\:refactor\(\)" is 12, keep it under 10#'
 
         -
             message: '#Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary#'
@@ -824,10 +724,6 @@ parameters:
             message: '#Separate function "sprintf\(\)" in method call to standalone row to improve readability#'
             path: utils/ChangelogGenerator
 
-        -
-            message: '#Regex must use string named capture groups instead of numeric#'
-            path: utils/ChangelogGenerator
-
         # std class api
         -
             message: '#Function "property_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
@@ -838,8 +734,6 @@ parameters:
             path: utils/ChangelogGenerator
 
 
-        - '#Cognitive complexity for "Rector\\Utils\\ChangelogGenerator\\Changelog\\ChangelogContentsFactory\:\:create\(\)" is 11, keep it under 10#'
-
         -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
             path: rules-tests
@@ -847,9 +741,7 @@ parameters:
         -
             message: '#Class (.*?) not found#'
             paths:
-                - tests/*/config/*
                 - rules-tests/*/config/*
-                - packages-tests/*/config/*
                 - packages-tests/*/*Test.php
         -
             message: '#Value object "(.*?)" should be named "(.*?)" instead to respect used service#'
@@ -874,7 +766,6 @@ parameters:
             message: '#Method call return value that should be used, but is not#'
             path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
 
-        - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
         -
             message: '#"Tests" namespace cannot be used outside of "tests" directory#'
             path: utils-tests
@@ -893,3 +784,15 @@ parameters:
                 - rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
                 - src/Console/Command/AbstractProcessCommand.php
                 - src/Rector/AbstractRector.php
+
+        # allow PHPUnit 10 attributes without keys
+        -
+            message: '#Attribute must have all names explicitly defined#'
+            path: '*Test.php'
+
+        # useless
+        - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'
+
+        # reported in configs
+        - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
+

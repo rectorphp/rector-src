@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Issues\AddNodeAfterNodeStmt;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class AddNodeAfterNopRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
@@ -20,9 +19,9 @@ final class AddNodeAfterNopRectorTest extends AbstractRectorTestCase
     /**
      * @return Iterator<array<string>>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureNextNop');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureNextNop');
     }
 
     public function provideConfigFilePath(): string

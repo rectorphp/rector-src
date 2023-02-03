@@ -6,6 +6,7 @@ namespace Rector\Tests\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRect
 
 use Iterator;
 use Nette\Utils\FileSystem;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
@@ -13,9 +14,8 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
 {
     /**
      * @param AddedFileWithContent[] $expectedFilePathsWithContents
-     *
-     * @dataProvider provideData()
      */
+    #[DataProvider('provideData')]
     public function test(
         string $originalFilePath,
         array $expectedFilePathsWithContents,
@@ -34,16 +34,16 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
     /**
      * @return Iterator<mixed>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         // source: https://github.com/nette/utils/blob/798f8c1626a8e0e23116d90e588532725cce7d0e/src/Utils/exceptions.php
         $filePathsWithContents = [
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/RegexpException.php',
+                self::getFixtureTempDirectory() . '/RegexpException.php',
                 FileSystem::read(__DIR__ . '/Expected/RegexpException.php')
             ),
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/UnknownImageFileException.php',
+                self::getFixtureTempDirectory() . '/UnknownImageFileException.php',
                 FileSystem::read(__DIR__ . '/Expected/UnknownImageFileException.php')
             ),
         ];
@@ -51,15 +51,15 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
 
         $filePathsWithContents = [
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/MyTrait.php',
+                self::getFixtureTempDirectory() . '/MyTrait.php',
                 FileSystem::read(__DIR__ . '/Expected/MyTrait.php')
             ),
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/ClassTraitAndInterface.php',
+                self::getFixtureTempDirectory() . '/ClassTraitAndInterface.php',
                 FileSystem::read(__DIR__ . '/Expected/ClassTraitAndInterface.php')
             ),
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/MyInterface.php',
+                self::getFixtureTempDirectory() . '/MyInterface.php',
                 FileSystem::read(__DIR__ . '/Expected/MyInterface.php')
             ),
         ];
@@ -68,11 +68,11 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
 
         $filePathsWithContents = [
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/ClassMatchesFilenameException.php',
+                self::getFixtureTempDirectory() . '/ClassMatchesFilenameException.php',
                 FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilenameException.php')
             ),
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/ClassMatchesFilename.php',
+                self::getFixtureTempDirectory() . '/ClassMatchesFilename.php',
                 FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilename.php')
             ),
         ];

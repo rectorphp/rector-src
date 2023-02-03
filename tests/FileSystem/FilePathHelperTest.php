@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\FileSystem;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Rector\Core\FileSystem\FilePathHelper;
 use Symfony\Component\Filesystem\Filesystem;
@@ -18,16 +19,14 @@ final class FilePathHelperTest extends TestCase
         $this->filePathHelper = new FilePathHelper(new Filesystem());
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $inputPath, string $expectedNormalizedPath): void
     {
         $normalizedPath = $this->filePathHelper->normalizePathAndSchema($inputPath);
         $this->assertSame($expectedNormalizedPath, $normalizedPath);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         // based on Linux
         yield ['/any/path', '/any/path'];

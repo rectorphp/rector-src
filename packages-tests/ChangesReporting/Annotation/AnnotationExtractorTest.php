@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\ChangesReporting\Annotation;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Rector\ChangesReporting\Annotation\AnnotationExtractor;
 use Rector\Core\Contract\Rector\RectorInterface;
@@ -22,15 +23,15 @@ final class AnnotationExtractorTest extends TestCase
 
     /**
      * @param class-string<RectorInterface> $className
-     * @dataProvider extractAnnotationProvider()
      */
+    #[DataProvider('extractAnnotationProvider')]
     public function testExtractAnnotationFromClass(string $className, string $annotation, ?string $expected): void
     {
         $value = $this->annotationExtractor->extractAnnotationFromClass($className, $annotation);
         $this->assertSame($expected, $value);
     }
 
-    public function extractAnnotationProvider(): Iterator
+    public static function extractAnnotationProvider(): Iterator
     {
         yield 'Class with changelog annotation' => [
             RectorWithChangelog::class,

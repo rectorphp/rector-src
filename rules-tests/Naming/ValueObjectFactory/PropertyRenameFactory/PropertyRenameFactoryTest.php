@@ -7,6 +7,7 @@ namespace Rector\Tests\Naming\ValueObjectFactory\PropertyRenameFactory;
 use Iterator;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
@@ -37,9 +38,7 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $filePathWithProperty, string $expectedName, string $currentName): void
     {
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($filePathWithProperty);
@@ -64,7 +63,7 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
         $this->assertSame($currentName, $actualPropertyRename->getCurrentName());
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/skip_some_class.php.inc', 'eliteManager', 'eventManager'];
     }

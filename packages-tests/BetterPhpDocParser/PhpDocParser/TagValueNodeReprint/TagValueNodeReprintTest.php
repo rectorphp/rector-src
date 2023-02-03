@@ -9,6 +9,7 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -48,10 +49,8 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     * @dataProvider provideDataNested()
-     */
+    #[DataProvider('provideData')]
+    #[DataProvider('provideDataNested')]
     public function test(string $filePath): void
     {
         $fixtureFileContents = FileSystem::read($filePath);
@@ -71,12 +70,12 @@ final class TagValueNodeReprintTest extends AbstractTestCase
         }
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }
 
-    public function provideDataNested(): Iterator
+    public static function provideDataNested(): Iterator
     {
         return FixtureFileFinder::yieldDirectory(__DIR__ . '/FixtureNested');
     }

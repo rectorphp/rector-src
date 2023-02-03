@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Caching\ValueObject\Storage;
 
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -19,9 +20,7 @@ final class FileCacheStorageTest extends AbstractRectorTestCase
         $this->fileCacheStorage = new FileCacheStorage(__DIR__ . '/Source', new Filesystem());
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
+    #[DoesNotPerformAssertions]
     public function testCleanNonExistingFile(): void
     {
         $this->fileCacheStorage->clean('inexistant/file');

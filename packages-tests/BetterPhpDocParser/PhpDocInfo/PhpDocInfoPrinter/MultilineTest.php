@@ -12,16 +12,15 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Class_\SomeEntityClass;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\TableClass;
 
-final class MultilineTest extends AbstractPhpDocInfoPrinterTest
+final class MultilineTest extends AbstractPhpDocInfoPrinterTestCase
 {
-    /**
-     * @dataProvider provideData()
-     * @dataProvider provideDataForProperty()
-     * @dataProvider provideDataClass()
-     */
+    #[DataProvider('provideData')]
+    #[DataProvider('provideDataForProperty')]
+    #[DataProvider('provideDataClass')]
     public function test(string $docFilePath, Node $node): void
     {
         $docComment = FileSystem::read($docFilePath);
@@ -31,7 +30,7 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
         $this->assertSame($docComment, $printedPhpDocInfo);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/Multiline/multiline1.txt', new Nop()];
         yield [__DIR__ . '/Source/Multiline/multiline2.txt', new Nop()];
@@ -43,31 +42,31 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
     /**
      * @return Iterator<string[]|Class_[]>
      */
-    public function provideDataClass(): Iterator
+    public static function provideDataClass(): Iterator
     {
         yield [__DIR__ . '/Source/Class_/some_entity_class.txt', new Class_(SomeEntityClass::class)];
         yield [__DIR__ . '/Source/Multiline/table.txt', new Class_(TableClass::class)];
     }
 
-    public function provideDataForProperty(): Iterator
+    public static function provideDataForProperty(): Iterator
     {
-        $property = $this->createPublicPropertyUnderClass('manyTo');
+        $property = self::createPublicPropertyUnderClass('manyTo');
         yield [__DIR__ . '/Source/Multiline/many_to.txt', $property];
 
-        $property = $this->createPublicPropertyUnderClass('anotherProperty');
+        $property = self::createPublicPropertyUnderClass('anotherProperty');
         yield [__DIR__ . '/Source/Multiline/assert_serialize.txt', $property];
 
-        $property = $this->createPublicPropertyUnderClass('anotherSerializeSingleLine');
+        $property = self::createPublicPropertyUnderClass('anotherSerializeSingleLine');
         yield [__DIR__ . '/Source/Multiline/assert_serialize_single_line.txt', $property];
 
-        $property = $this->createPublicPropertyUnderClass('someProperty');
+        $property = self::createPublicPropertyUnderClass('someProperty');
         yield [__DIR__ . '/Source/Multiline/multiline6.txt', $property];
 
-        $property = $this->createMethodUnderClass('someMethod');
+        $property = self::createMethodUnderClass('someMethod');
         yield [__DIR__ . '/Source/Multiline/route_property.txt', $property];
     }
 
-    private function createPublicPropertyUnderClass(string $name): Property
+    private static function createPublicPropertyUnderClass(string $name): Property
     {
         $builderFactory = new BuilderFactory();
 
@@ -77,7 +76,7 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
         return $propertyBuilder->getNode();
     }
 
-    private function createMethodUnderClass(string $name): ClassMethod
+    private static function createMethodUnderClass(string $name): ClassMethod
     {
         $builderFactory = new BuilderFactory();
 

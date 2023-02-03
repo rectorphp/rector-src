@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -27,8 +28,8 @@ final class NodeFactoryTest extends AbstractTestCase
 
     /**
      * @param int[]|array<string, int> $inputArray
-     * @dataProvider provideDataForArray()
      */
+    #[DataProvider('provideDataForArray')]
     public function testCreateArray(array $inputArray, Array_ $expectedArrayNode): void
     {
         $arrayNode = $this->nodeFactory->createArray($inputArray);
@@ -39,7 +40,7 @@ final class NodeFactoryTest extends AbstractTestCase
     /**
      * @return Iterator<mixed>
      */
-    public function provideDataForArray(): Iterator
+    public static function provideDataForArray(): Iterator
     {
         $lNumber = new LNumber(1);
         $string = new String_('a');

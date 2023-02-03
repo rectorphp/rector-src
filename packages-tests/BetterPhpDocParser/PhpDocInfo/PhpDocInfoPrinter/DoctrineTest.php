@@ -8,15 +8,14 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\CaseSensitive;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\IndexInTable;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\Short;
 
-final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
+final class DoctrineTest extends AbstractPhpDocInfoPrinterTestCase
 {
-    /**
-     * @dataProvider provideDataClass()
-     */
+    #[DataProvider('provideDataClass')]
     public function testClass(string $docFilePath, Node $node): void
     {
         $docComment = FileSystem::read($docFilePath);
@@ -26,7 +25,7 @@ final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
         $this->assertSame($docComment, $printedPhpDocInfo);
     }
 
-    public function provideDataClass(): Iterator
+    public static function provideDataClass(): Iterator
     {
         yield [__DIR__ . '/Source/Doctrine/index_in_table.txt', new Class_(IndexInTable::class)];
         yield [__DIR__ . '/Source/Doctrine/case_sensitive.txt', new Class_(CaseSensitive::class)];

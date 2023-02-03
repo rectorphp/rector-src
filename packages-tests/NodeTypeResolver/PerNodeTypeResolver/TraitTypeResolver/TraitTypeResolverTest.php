@@ -7,14 +7,14 @@ namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver\Source\AnotherTrait;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\TraitTypeResolver\Source\TraitWithTrait;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver
  */
-final class TraitTypeResolverTest extends AbstractNodeTypeResolverTest
+final class TraitTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     public function test(): void
     {

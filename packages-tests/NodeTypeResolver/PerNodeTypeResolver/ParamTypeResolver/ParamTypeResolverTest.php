@@ -8,17 +8,16 @@ use Iterator;
 use PhpParser\Node\Param;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ParamTypeResolver\Source\Html;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\ParamTypeResolver
  */
-final class ParamTypeResolverTest extends AbstractNodeTypeResolverTest
+final class ParamTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, TypeWithClassName $expectedTypeWithClassName): void
     {
         $variableNodes = $this->getNodesForFileOfType($file, Param::class);
@@ -31,7 +30,7 @@ final class ParamTypeResolverTest extends AbstractNodeTypeResolverTest
         $this->assertSame($expectedTypeWithClassName->getClassName(), $resolvedType->getClassName());
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         $objectType = new ObjectType(Html::class);
 

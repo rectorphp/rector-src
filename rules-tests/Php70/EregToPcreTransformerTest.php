@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Php70;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Rector\Php70\EregToPcreTransformer;
 
@@ -17,10 +18,8 @@ final class EregToPcreTransformerTest extends TestCase
         $this->eregToPcreTransformer = new EregToPcreTransformer();
     }
 
-    /**
-     * @dataProvider provideDataDropping()
-     * @dataProvider provideDataCaseSensitive()
-     */
+    #[DataProvider('provideDataDropping')]
+    #[DataProvider('provideDataCaseSensitive')]
     public function testCaseSensitive(string $ereg, string $expectedPcre): void
     {
         $pcre = $this->eregToPcreTransformer->transform($ereg, false);
@@ -30,14 +29,12 @@ final class EregToPcreTransformerTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideDataCaseSensitive(): Iterator
+    public static function provideDataCaseSensitive(): Iterator
     {
         yield ['hi', '#hi#m'];
     }
 
-    /**
-     * @dataProvider provideDataCaseInsensitive()
-     */
+    #[DataProvider('provideDataCaseInsensitive')]
     public function testCaseInsensitive(string $ereg, string $expectedPcre): void
     {
         $pcre = $this->eregToPcreTransformer->transform($ereg, true);
@@ -47,7 +44,7 @@ final class EregToPcreTransformerTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideDataCaseInsensitive(): Iterator
+    public static function provideDataCaseInsensitive(): Iterator
     {
         yield ['hi', '#hi#mi'];
     }
@@ -55,7 +52,7 @@ final class EregToPcreTransformerTest extends TestCase
     /**
      * @return Iterator<mixed>
      */
-    public function provideDataDropping(): Iterator
+    public static function provideDataDropping(): Iterator
     {
         yield ['mearie\.org', '#mearie\.org#m'];
         yield ['mearie[.,]org', '#mearie[\.,]org#m'];

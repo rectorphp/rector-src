@@ -12,7 +12,8 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\ClassThatExtendsHtml;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\Enum;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\Html;
@@ -21,11 +22,9 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Sourc
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\PropertyTypeResolver
  */
-final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTest
+final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, Type $expectedType): void
     {
         $propertyNodes = $this->getNodesForFileOfType($file, Property::class);
@@ -42,7 +41,7 @@ final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTest
         $this->assertSame($expectedTypeAsString, $resolvedTypeAsString);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/MethodParamDocBlock.php', 0, new ObjectType(Html::class)];
         yield [__DIR__ . '/Source/MethodParamDocBlock.php', 1, new ObjectType(ClassThatExtendsHtml::class)];

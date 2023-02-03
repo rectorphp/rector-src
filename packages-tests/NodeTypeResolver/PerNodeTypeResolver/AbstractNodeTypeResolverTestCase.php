@@ -10,7 +10,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 
-abstract class AbstractNodeTypeResolverTest extends AbstractTestCase
+abstract class AbstractNodeTypeResolverTestCase extends AbstractTestCase
 {
     protected NodeTypeResolver $nodeTypeResolver;
 

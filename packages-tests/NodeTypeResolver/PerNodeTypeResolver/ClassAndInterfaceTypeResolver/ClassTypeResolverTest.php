@@ -8,7 +8,8 @@ use Iterator;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentClass;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentInterface;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentTrait;
@@ -17,11 +18,9 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResol
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\ClassAndInterfaceTypeResolver
  */
-final class ClassTypeResolverTest extends AbstractNodeTypeResolverTest
+final class ClassTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
-    /**
-     * @dataProvider dataProvider()
-     */
+    #[DataProvider('dataProvider')]
     public function test(string $file, int $nodePosition, ObjectType $expectedObjectType): void
     {
         $variableNodes = $this->getNodesForFileOfType($file, Class_::class);
@@ -33,7 +32,7 @@ final class ClassTypeResolverTest extends AbstractNodeTypeResolverTest
         $this->assertSame($expectedObjectType->getClassName(), $resolvedType->getClassName());
     }
 
-    public function dataProvider(): Iterator
+    public static function dataProvider(): Iterator
     {
         yield [
             __DIR__ . '/Source/ClassWithParentInterface.php',

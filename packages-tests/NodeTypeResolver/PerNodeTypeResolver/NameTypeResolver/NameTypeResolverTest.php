@@ -8,18 +8,17 @@ use Iterator;
 use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\Source\AnotherClass;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\NameTypeResolver
  */
-final class NameTypeResolverTest extends AbstractNodeTypeResolverTest
+final class NameTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, Type $expectedType): void
     {
         $nameNodes = $this->getNodesForFileOfType($file, Name::class);
@@ -31,7 +30,7 @@ final class NameTypeResolverTest extends AbstractNodeTypeResolverTest
     /**
      * @return Iterator<int[]|string[]|ObjectType[]>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         $expectedFullyQualifiedObjectType = new FullyQualifiedObjectType(AnotherClass::class);
 

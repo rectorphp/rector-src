@@ -8,6 +8,7 @@ use Iterator;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\UseAliasNameMatcher;
@@ -28,9 +29,7 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
         $this->useAliasNameMatcher = $this->getService(UseAliasNameMatcher::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(
         AnnotationToAttribute $annotationToAttribute,
         string $useImportName,
@@ -56,7 +55,7 @@ final class UseAliasNameMatcherTest extends AbstractTestCase
         $this->assertSame($expectedAttributeUseImportName, $useAliasMetadata->getUseImportName());
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [
             // configuration

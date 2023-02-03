@@ -6,15 +6,14 @@ namespace Rector\Tests\Restoration\Rector\ClassLike\UpdateFileNameByClassNameFil
 
 use Iterator;
 use Nette\Utils\FileSystem;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 use Webmozart\Assert\Assert;
 
 final class UpdateFileNameByClassNameFileSystemRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
@@ -29,9 +28,9 @@ final class UpdateFileNameByClassNameFileSystemRectorTest extends AbstractRector
         $this->assertFileWasAdded($expectedAddedFileWithContent);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
-        return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string

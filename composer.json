@@ -27,7 +27,7 @@
         "rector/rector-php-parser": "dev-main",
         "rector/rector-phpunit": "dev-main",
         "rector/rector-symfony": "dev-main",
-        "sebastian/diff": "^4.0.4",
+        "sebastian/diff": "^5.0",
         "symfony/config": "^6.2",
         "symfony/console": "^6.2.2",
         "symfony/contracts": "^3.2",
@@ -39,7 +39,6 @@
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
-        "brianium/paratest": "^6.7",
         "cweagans/composer-patches": "^1.7.2",
         "icanhazstring/composer-unused": "^0.8.5",
         "myclabs/php-enum": "^1.8.4",
@@ -49,7 +48,7 @@
         "phpstan/phpstan-php-parser": "^1.1",
         "phpstan/phpstan-strict-rules": "^1.4.4",
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
-        "phpunit/phpunit": "^9.5.27",
+        "phpunit/phpunit": "^10.0",
         "rector/phpstan-rules": "^0.6.5",
         "rector/rector-debugging": "dev-main",
         "rector/rector-generator": "dev-main",
