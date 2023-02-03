@@ -13,7 +13,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\ClassThatExtendsHtml;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\Enum;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\Html;
@@ -22,7 +22,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Sourc
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\PropertyTypeResolver
  */
-final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTest
+final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, Type $expectedType): void

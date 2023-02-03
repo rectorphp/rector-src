@@ -10,13 +10,13 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\Source\AnotherClass;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\NameTypeResolver
  */
-final class NameTypeResolverTest extends AbstractNodeTypeResolverTest
+final class NameTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, Type $expectedType): void

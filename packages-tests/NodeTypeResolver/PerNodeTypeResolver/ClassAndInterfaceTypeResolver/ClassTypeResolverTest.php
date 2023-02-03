@@ -9,7 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentClass;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentInterface;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\ClassWithParentTrait;
@@ -18,7 +18,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResol
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\ClassAndInterfaceTypeResolver
  */
-final class ClassTypeResolverTest extends AbstractNodeTypeResolverTest
+final class ClassTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     #[DataProvider('dataProvider')]
     public function test(string $file, int $nodePosition, ObjectType $expectedObjectType): void

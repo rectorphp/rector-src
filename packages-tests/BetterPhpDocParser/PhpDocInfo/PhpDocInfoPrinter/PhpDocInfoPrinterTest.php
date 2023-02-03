@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Nop;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\FileSystem\FilePathHelper;
 
-final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
+final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTestCase
 {
     #[DataProvider('provideData')]
     #[DataProvider('provideDataCallable')]

@@ -13,7 +13,7 @@ use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\IndexInTable;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Doctrine\Short;
 
-final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
+final class DoctrineTest extends AbstractPhpDocInfoPrinterTestCase
 {
     #[DataProvider('provideDataClass')]
     public function testClass(string $docFilePath, Node $node): void

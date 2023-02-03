@@ -9,13 +9,13 @@ use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\VariableTypeResolver\Source\AnotherType;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\VariableTypeResolver
  */
-final class VariableTypeResolverTest extends AbstractNodeTypeResolverTest
+final class VariableTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $file, int $nodePosition, TypeWithClassName $expectedTypeWithClassName): void

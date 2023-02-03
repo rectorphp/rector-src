@@ -14,7 +14,7 @@ use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
-abstract class AbstractPhpDocInfoPrinterTest extends AbstractTestCase
+abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractTestCase
 {
     protected FilePathHelper $filePathHelper;
 

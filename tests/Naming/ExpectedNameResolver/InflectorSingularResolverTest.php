@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Naming\ExpectedNameResolver;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -18,19 +19,14 @@ final class InflectorSingularResolverTest extends AbstractTestCase
         $this->inflectorSingularResolver = $this->getService(InflectorSingularResolver::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function testResolveForForeach(string $currentName, string $expectedSingularName): void
     {
         $singularValue = $this->inflectorSingularResolver->resolve($currentName);
         $this->assertSame($expectedSingularName, $singularValue);
     }
 
-    /**
-     * @return Iterator<string[]>
-     */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield ['psr4NamespacesToPaths', 'psr4NamespaceToPath'];
         yield ['nestedNews', 'nestedNew'];

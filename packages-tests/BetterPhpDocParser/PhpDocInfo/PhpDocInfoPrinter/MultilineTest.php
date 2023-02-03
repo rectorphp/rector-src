@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Class_\SomeEntityClass;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\TableClass;
 
-final class MultilineTest extends AbstractPhpDocInfoPrinterTest
+final class MultilineTest extends AbstractPhpDocInfoPrinterTestCase
 {
     #[DataProvider('provideData')]
     #[DataProvider('provideDataForProperty')]

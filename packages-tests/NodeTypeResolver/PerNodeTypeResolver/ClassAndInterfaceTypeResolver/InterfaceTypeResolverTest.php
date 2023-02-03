@@ -9,13 +9,13 @@ use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\SomeInterfaceWithParentInterface;
 
 /**
  * @see \Rector\NodeTypeResolver\NodeTypeResolver\ClassAndInterfaceTypeResolver
  */
-final class InterfaceTypeResolverTest extends AbstractNodeTypeResolverTest
+final class InterfaceTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     #[DataProvider('dataProvider')]
     public function test(string $file, int $nodePosition, TypeWithClassName $expectedTypeWithClassName): void

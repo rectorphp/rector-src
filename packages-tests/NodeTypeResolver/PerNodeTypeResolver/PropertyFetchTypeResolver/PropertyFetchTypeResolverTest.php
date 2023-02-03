@@ -12,9 +12,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
-use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
+use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 
-final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
+final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
