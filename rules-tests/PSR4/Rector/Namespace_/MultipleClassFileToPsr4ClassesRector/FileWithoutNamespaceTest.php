@@ -40,11 +40,11 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
     {
         $filePathsWithContents = [
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/SkipWithoutNamespace.php',
+                self::getFixtureTempDirectory() . '/SkipWithoutNamespace.php',
                 FileSystem::read(__DIR__ . '/Expected/SkipWithoutNamespace.php')
             ),
             new AddedFileWithContent(
-                $this->getFixtureTempDirectory() . '/JustTwoExceptionWithoutNamespace.php',
+                self::getFixtureTempDirectory() . '/JustTwoExceptionWithoutNamespace.php',
                 FileSystem::read(__DIR__ . '/Expected/JustTwoExceptionWithoutNamespace.php')
             ),
         ];

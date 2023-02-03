@@ -119,7 +119,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFilePath, $fixtureFilePath);
     }
 
-    protected function getFixtureTempDirectory(): string
+    protected static function getFixtureTempDirectory(): string
     {
         return FixtureTempFileDumper::getTempDirectory();
     }

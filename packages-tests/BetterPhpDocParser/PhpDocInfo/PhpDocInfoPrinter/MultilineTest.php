@@ -48,19 +48,19 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
 
     public static function provideDataForProperty(): Iterator
     {
-        $property = $this->createPublicPropertyUnderClass('manyTo');
+        $property = self::createPublicPropertyUnderClass('manyTo');
         yield [__DIR__ . '/Source/Multiline/many_to.txt', $property];
 
-        $property = $this->createPublicPropertyUnderClass('anotherProperty');
+        $property = self::createPublicPropertyUnderClass('anotherProperty');
         yield [__DIR__ . '/Source/Multiline/assert_serialize.txt', $property];
 
-        $property = $this->createPublicPropertyUnderClass('anotherSerializeSingleLine');
+        $property = self::createPublicPropertyUnderClass('anotherSerializeSingleLine');
         yield [__DIR__ . '/Source/Multiline/assert_serialize_single_line.txt', $property];
 
-        $property = $this->createPublicPropertyUnderClass('someProperty');
+        $property = self::createPublicPropertyUnderClass('someProperty');
         yield [__DIR__ . '/Source/Multiline/multiline6.txt', $property];
 
-        $property = $this->createMethodUnderClass('someMethod');
+        $property = self::createMethodUnderClass('someMethod');
         yield [__DIR__ . '/Source/Multiline/route_property.txt', $property];
     }
 
