@@ -792,3 +792,6 @@ parameters:
 
         # useless
         - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'
+
+        # reported in configs
+        - '#Function Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'

@@ -9,7 +9,9 @@ use Nette\Utils\FileSystem;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Nop;
+use PhpParser\Node\Stmt\Property;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\Class_\SomeEntityClass;
 use Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source\TableClass;
@@ -64,7 +66,7 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
         yield [__DIR__ . '/Source/Multiline/route_property.txt', $property];
     }
 
-    private static function createPublicPropertyUnderClass(string $name): Node\Stmt\Property
+    private static function createPublicPropertyUnderClass(string $name): Property
     {
         $builderFactory = new BuilderFactory();
 
@@ -74,7 +76,7 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
         return $propertyBuilder->getNode();
     }
 
-    private static function createMethodUnderClass(string $name): Node\Stmt\ClassMethod
+    private static function createMethodUnderClass(string $name): ClassMethod
     {
         $builderFactory = new BuilderFactory();
 
